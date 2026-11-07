@@ -8,6 +8,8 @@ import { LIST_ROW_CSS } from './list-row-css.js';
  *
  * 外框（底 / 边 / 圆角 / 内距）复用 `Surface`，颜色全走 token；本控件只补
  * 「行」独有的：高度档、两槽布局、行级 hover、选中态。
+ * 两个槽都自带垂直居中（`__main` 与 `__actions` 对称），调用方不必自己补 align-items；
+ * 主内容内部怎么横排仍由调用方决定。
  *
  * 整行刻意**不渲染成 `<button>`**：调用方要在里面放 Button / IconButton，
  * 嵌 button 是非法 HTML。改用 `div[role=button] + tabIndex + Enter/Space`，

@@ -1391,6 +1391,13 @@ export function CardPage(): ReturnType<typeof h> {
         h(ListRow, { bordered: true, hoverable: false },
           h('span', { style: { color: 'var(--dshpc-fg-3)' } }, '只读一行（不可点 · 关掉 hover）'),
         ),
+        // 两槽对称居中回归：主内容故意用 inline-flex 的 span（旧版会按基线偏上）
+        h(ListRow, { hoverable: false },
+          h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } },
+            h(IconCopyOutlineRegular, { size: 14 }),
+            '主内容是 inline-flex 也垂直居中',
+          ),
+        ),
       ),
     ),
     h(

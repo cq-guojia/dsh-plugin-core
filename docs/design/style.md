@@ -296,6 +296,24 @@ EN: `Surface` is a pure frame and deliberately inherits typography, but any cont
 own default `font-size` / `line-height` from tokens (same tier as `Table` / `Input md`). Do not make every consumer
 repeat it; callers can still override that tier inline.
 
+## 行控件的两槽居中
+
+> EN: Symmetric alignment for row slots
+
+`ListRow` 的 `__main` 与 `__actions` 必须**同时**是 `display:flex;align-items:center`。
+只给右侧操作槽居中、主内容槽留成普通块级流，调用方按常规写法把主内容包成 `inline-flex`
+的 `span` 就会按基线排，基线下方多出 descender 空隙 ⇒ 左侧偏上、左右不齐
+（2026-11-08 兄弟项目「附加文件」行真机反馈；用户拍板按正规方式修核心，不接受调用方逐个补）。
+`__main` 的子项统一 `min-width:0`，`MarqueeText` 这类可截断内容在 flex 里才不会被自身内容撑破。
+主内容内部横排结构仍归调用方 —— 核心只负责两槽的垂直对齐，不接管内容排版。
+
+EN: Both slots of `ListRow` — `__main` and `__actions` — must be `display:flex;align-items:center`.
+Centering only the actions slot leaves the main content in normal block flow, so a caller's `inline-flex`
+wrapper is laid out on the baseline and gains a descender gap underneath: the left side rides high while
+the right stays centered (reported from a consuming plugin on 2026-11-08; fixed in the core, not patched
+per consumer). `__main > *` gets `min-width:0` so truncating content such as `MarqueeText` can still shrink
+inside a flex container. The internal horizontal layout of main content remains the caller's job.
+
 ## 卡片 hover 作用域与底色轴
 
 > EN: Card hover scope and fill switch

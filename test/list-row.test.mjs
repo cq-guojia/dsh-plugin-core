@@ -71,6 +71,15 @@ test('ListRow CSS：四边等距 / hover 灰态可见 / 选中浅蓝灰无描边
   assert.ok(!css.includes('border-radius:'), '圆角归 Surface')
 })
 
+// 2026-11-08：兄弟项目「附加文件」行把主内容包成 inline-flex 的 span，__main 是普通块级流时
+// 会按基线排、下方多出 descender 空隙 ⇒ 左侧偏上、右侧 actions 居中。两槽必须对称居中。
+test('ListRow 两槽对称居中：主内容槽不再让 inline-flex 内容按基线偏上', () => {
+  const css = LIST_ROW_CSS.replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.match(css, /\.dshpc-listrow__main\{[^}]*display:flex;align-items:center/, '主内容槽自带垂直居中')
+  assert.match(css, /\.dshpc-listrow__actions\{[^}]*display:flex;align-items:center/, '右侧槽同样居中，两槽对称')
+  assert.match(css, /\.dshpc-listrow__main>\*\{min-width:0;\}/, '主内容子项可收缩，跑马灯仍能省略')
+})
+
 test('ListRow hover token：明暗各一档，且不再吃夸张的 active 灰', () => {
   const darkAt = TOKENS_CSS_TEMPLATE.indexOf('body[data-ds-dark-theme]{')
   const light = TOKENS_CSS_TEMPLATE.slice(0, darkAt)

@@ -6409,7 +6409,7 @@ function Chip(props) {
 var import_react27 = require("react");
 
 // dist/ui/display/list-row-css.generated.js
-var LIST_ROW_CSS = "/* \u2500\u2500 ListRow \xB7 \u4E00\u884C\u4E00\u6761\u7684\u5217\u8868\u6761\u76EE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u6846\uFF08\u5E95 / \u8FB9 / \u5706\u89D2 / \u5185\u8DDD\uFF09\u5168\u90E8\u7531 Surface \u63D0\u4F9B\uFF1A\u7EC4\u4EF6\u8C03 surfaceClass \u62FF\n   dshpc-surface + tone-sunken + border-none\uFF0C\u672C\u6587\u4EF6\u4E0D\u5199 background / border / border-radius\u3002\n   \u6240\u6709\u8F74\u53EA\u6539 --surface-* \u53D8\u91CF\uFF1A\u65E0\u8BBA Surface \u4E0E\u672C\u76AE\u80A4\u8C01\u5148\u6CE8\u5165\uFF0C\u80DC\u8D1F\u90FD\u4E0D\u4F9D\u8D56\u987A\u5E8F\n   \uFF08surface.css:7-8 \u7684\u65E2\u5B9A\u5951\u7EA6\uFF09\u3002\u672C\u6587\u4EF6\u53EA\u7BA1\u300C\u884C\u300D\u72EC\u6709\u7684\uFF1A\u9ED8\u8BA4\u5B57\u53F7\u3001\u9AD8\u5EA6\u3001\u4E24\u69FD\u5E03\u5C40\u3001\u884C\u7EA7 hover\u3001\u9009\u4E2D\u6001\u3002 */\n\n/* \u53CC\u7C7B\u9009\u62E9\u5668\u538B\u8FC7 .dshpc-surface \u57FA\u7C7B\uFF0C\u907F\u514D\u6CE8\u5165\u987A\u5E8F\u5F71\u54CD\u53D8\u91CF\u8986\u76D6\u3002 */\n.dshpc-surface.dshpc-listrow{\n  /* \u56DB\u8FB9\u7B49\u8DDD\uFF088px\uFF0C\u4E0E Surface \u7684 pad-sm \u540C\u6863\uFF09\uFF1A\u4E0D\u5199\u300C\u4E0A\u4E0B 0 / \u5DE6\u53F3 12\u300D\u90A3\u79CD\u6A2A\u5BBD\u7EB5\u7A84\u7684\u503C\u3002 */\n  --surface-pad:var(--dshpc-space-2);\n  /* \u5177\u4F53\u63A7\u4EF6\u81EA\u5E26\u9ED8\u8BA4\u5B57\u53F7\uFF1A\u53EA\u6709 Surface \u8FD9\u79CD\u7EAF\u5BB9\u5668\u624D\u7528 font:inherit\uFF0C\u884C\u5185\u5BB9\u4E0D\u80FD\u7EE7\u627F\u5BBF\u4E3B\u9ED8\u8BA4 16px\u3002\n     \u4E0E Table(table.css:11) / Input md(field.css:22) \u540C\u53E3\u5F84\uFF1B\u8C03\u7528\u65B9\u4ECD\u53EF\u7528\u5185\u8054 style \u8986\u76D6\u3002 */\n  font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);\n  display:flex;align-items:center;gap:var(--dshpc-space-2);\n  min-height:var(--dshpc-control-h-md);width:100%;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-listrow__main{flex:1 1 auto;min-width:0;}\n.dshpc-listrow__actions{flex:none;display:flex;align-items:center;gap:4px;}\n\n/* \u6574\u884C\u53EF\u70B9\uFF1A\u5149\u6807 + \u952E\u76D8\u7126\u70B9\u73AF\uFF08\u4E0E Button / Chip \u540C\u53E3\u5F84\uFF09\u3002 */\n.dshpc-listrow--interactive{cursor:pointer;}\n.dshpc-listrow--interactive:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n\n/* \u4E09\u6001\u5404\u53EA\u6362\u4E00\u4E2A --surface-bg\uFF1A\n     \u5E38\u6001     tone-sunken\uFF08\u6DE1\u5E95\uFF0C\u7531 surface.css \u7ED9\uFF0C\u6B64\u5904\u4E0D\u91CD\u5199\uFF09\n     hover    --dshpc-listrow-hover-bg = \u6BD4\u5E38\u6001\u53EA\u6DF1\u4E00\u70B9\u70B9\u7684\u4E2D\u6027\u7070\uFF08\u53CC\u4E3B\u9898\u5404\u81EA\u5B9A\u4E49\uFF09\n     selected --dshpc-listrow-selected-bg = slate \u6781\u6D45\u84DD\u7070\uFF08\u53CC\u4E3B\u9898\u5404\u81EA\u5B9A\u4E49\uFF09\n   \u26A0\uFE0F hover \u522B\u7528 --dshpc-active\uFF08\u4EAE\u9ED1 18% / \u6697\u767D 24%\uFF09\uFF1A\u76F8\u5BF9\u5E38\u6001 6% \u4E00\u4E0B\u8DF3\u592A\u591A\uFF0C\n     \u6574\u884C\u8FDE\u540C\u5185\u5BB9\u7684\u5BF9\u6BD4\u5EA6\u90FD\u88AB\u6539\u6389\uFF0C\u592A\u5938\u5F20\uFF082026-11-07 \u7528\u6237\u53CD\u9988\uFF09\u3002\n   \u26A0\uFE0F \u4EAE\u8272\u4E5F\u522B\u7528 --dshpc-plate-hover\uFF1A\u5B83\u662F #f5f5f5 \u5B9E\u8272\uFF0C\u5E38\u6001 tone-sunken \u2248 #f0f1f3\uFF0C\n     \u767D\u5E95\u4E0A\u51E0\u4E4E\u540C\u8272\u751A\u81F3\u66F4\u767D \u21D2 \u79FB\u4E0A\u53BB\u770B\u4E0D\u51FA\u53D8\u5316\uFF08\u771F\u8E29\u8FC7\uFF0C\u89C1 tokens.css:153\uFF09\u3002\n   \u26A0\uFE0F \u9009\u4E2D\u522B\u7528\u901A\u7528 --dshpc-selected-bg\uFF1A\u6697\u8272\u5B83\u662F\u4E24\u4E2A\u6DF1\u8272\u9762\u4E92\u63BA \u21D2 \u9009\u4E2D\u884C\u53D1\u9ED1\uFF08\u7528\u6237\u53CD\u9988\uFF09\u3002\n   \u53CC\u7C7B + :hover \u538B\u5F97\u8FC7\u5355\u7C7B tone-sunken\uFF0C\u4E0D\u9700\u8981 !important\u3002 */\n.dshpc-surface.dshpc-listrow--hoverable:not(.dshpc-listrow--selected):hover{\n  --surface-bg:var(--dshpc-listrow-hover-bg);\n}\n\n/* \u9009\u4E2D\u53EA\u6362\u4E00\u4E2A\u80CC\u666F\u8272\uFF1Aslate \u6781\u6D45\u84DD\u7070\uFF0C\u4E0D\u63CF\u8FB9\u3001\u4E0D\u6E10\u53D8\u3001\u4E0D\u7AD6\u6761\uFF1B\u72B6\u6001\u4ECD\u7531\u8C03\u7528\u65B9\u7BA1\u3002 */\n.dshpc-surface.dshpc-listrow--selected{\n  --surface-bg:var(--dshpc-listrow-selected-bg);\n}\n\n@media (prefers-reduced-motion: reduce){.dshpc-listrow{transition:none}}\n";
+var LIST_ROW_CSS = "/* \u2500\u2500 ListRow \xB7 \u4E00\u884C\u4E00\u6761\u7684\u5217\u8868\u6761\u76EE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u6846\uFF08\u5E95 / \u8FB9 / \u5706\u89D2 / \u5185\u8DDD\uFF09\u5168\u90E8\u7531 Surface \u63D0\u4F9B\uFF1A\u7EC4\u4EF6\u8C03 surfaceClass \u62FF\n   dshpc-surface + tone-sunken + border-none\uFF0C\u672C\u6587\u4EF6\u4E0D\u5199 background / border / border-radius\u3002\n   \u6240\u6709\u8F74\u53EA\u6539 --surface-* \u53D8\u91CF\uFF1A\u65E0\u8BBA Surface \u4E0E\u672C\u76AE\u80A4\u8C01\u5148\u6CE8\u5165\uFF0C\u80DC\u8D1F\u90FD\u4E0D\u4F9D\u8D56\u987A\u5E8F\n   \uFF08surface.css:7-8 \u7684\u65E2\u5B9A\u5951\u7EA6\uFF09\u3002\u672C\u6587\u4EF6\u53EA\u7BA1\u300C\u884C\u300D\u72EC\u6709\u7684\uFF1A\u9ED8\u8BA4\u5B57\u53F7\u3001\u9AD8\u5EA6\u3001\u4E24\u69FD\u5E03\u5C40\u3001\u884C\u7EA7 hover\u3001\u9009\u4E2D\u6001\u3002 */\n\n/* \u53CC\u7C7B\u9009\u62E9\u5668\u538B\u8FC7 .dshpc-surface \u57FA\u7C7B\uFF0C\u907F\u514D\u6CE8\u5165\u987A\u5E8F\u5F71\u54CD\u53D8\u91CF\u8986\u76D6\u3002 */\n.dshpc-surface.dshpc-listrow{\n  /* \u56DB\u8FB9\u7B49\u8DDD\uFF088px\uFF0C\u4E0E Surface \u7684 pad-sm \u540C\u6863\uFF09\uFF1A\u4E0D\u5199\u300C\u4E0A\u4E0B 0 / \u5DE6\u53F3 12\u300D\u90A3\u79CD\u6A2A\u5BBD\u7EB5\u7A84\u7684\u503C\u3002 */\n  --surface-pad:var(--dshpc-space-2);\n  /* \u5177\u4F53\u63A7\u4EF6\u81EA\u5E26\u9ED8\u8BA4\u5B57\u53F7\uFF1A\u53EA\u6709 Surface \u8FD9\u79CD\u7EAF\u5BB9\u5668\u624D\u7528 font:inherit\uFF0C\u884C\u5185\u5BB9\u4E0D\u80FD\u7EE7\u627F\u5BBF\u4E3B\u9ED8\u8BA4 16px\u3002\n     \u4E0E Table(table.css:11) / Input md(field.css:22) \u540C\u53E3\u5F84\uFF1B\u8C03\u7528\u65B9\u4ECD\u53EF\u7528\u5185\u8054 style \u8986\u76D6\u3002 */\n  font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);\n  display:flex;align-items:center;gap:var(--dshpc-space-2);\n  min-height:var(--dshpc-control-h-md);width:100%;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n/* \u4E24\u4E2A\u69FD\u90FD\u81EA\u5E26\u5782\u76F4\u5C45\u4E2D\uFF1A__main \u66FE\u662F\u666E\u901A\u5757\u7EA7\u6D41\uFF0C\u8C03\u7528\u65B9\u628A\u4E3B\u5185\u5BB9\u5305\u6210 inline-flex \u7684 span\n   \u4F1A\u6309\u57FA\u7EBF\u6392\u3001\u4E0B\u65B9\u591A\u51FA descender \u7A7A\u9699 \u21D2 \u5DE6\u8FB9\u504F\u4E0A\u3001\u53F3\u8FB9\u5C45\u4E2D\uFF082026-11-08 \u5144\u5F1F\u9879\u76EE\u771F\u673A\u53CD\u9988\uFF09\u3002\n   \u8FD9\u91CC\u8865 display:flex + align-items:center\uFF0C\u4E0E __actions \u5BF9\u79F0\uFF1B\u4E3B\u5185\u5BB9\u600E\u4E48\u6A2A\u6392\u4ECD\u5F52\u8C03\u7528\u65B9\u3002\n   \u5B50\u9879\u8865 min-width:0\uFF0CMarqueeText \u8FD9\u7C7B\u53EF\u622A\u65AD\u5185\u5BB9\u5728 flex \u91CC\u624D\u4E0D\u4F1A\u88AB\u81EA\u8EAB\u5185\u5BB9\u6491\u7834\u3002 */\n.dshpc-listrow__main{flex:1 1 auto;min-width:0;display:flex;align-items:center;}\n.dshpc-listrow__main>*{min-width:0;}\n.dshpc-listrow__actions{flex:none;display:flex;align-items:center;gap:4px;}\n\n/* \u6574\u884C\u53EF\u70B9\uFF1A\u5149\u6807 + \u952E\u76D8\u7126\u70B9\u73AF\uFF08\u4E0E Button / Chip \u540C\u53E3\u5F84\uFF09\u3002 */\n.dshpc-listrow--interactive{cursor:pointer;}\n.dshpc-listrow--interactive:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n\n/* \u4E09\u6001\u5404\u53EA\u6362\u4E00\u4E2A --surface-bg\uFF1A\n     \u5E38\u6001     tone-sunken\uFF08\u6DE1\u5E95\uFF0C\u7531 surface.css \u7ED9\uFF0C\u6B64\u5904\u4E0D\u91CD\u5199\uFF09\n     hover    --dshpc-listrow-hover-bg = \u6BD4\u5E38\u6001\u53EA\u6DF1\u4E00\u70B9\u70B9\u7684\u4E2D\u6027\u7070\uFF08\u53CC\u4E3B\u9898\u5404\u81EA\u5B9A\u4E49\uFF09\n     selected --dshpc-listrow-selected-bg = slate \u6781\u6D45\u84DD\u7070\uFF08\u53CC\u4E3B\u9898\u5404\u81EA\u5B9A\u4E49\uFF09\n   \u26A0\uFE0F hover \u522B\u7528 --dshpc-active\uFF08\u4EAE\u9ED1 18% / \u6697\u767D 24%\uFF09\uFF1A\u76F8\u5BF9\u5E38\u6001 6% \u4E00\u4E0B\u8DF3\u592A\u591A\uFF0C\n     \u6574\u884C\u8FDE\u540C\u5185\u5BB9\u7684\u5BF9\u6BD4\u5EA6\u90FD\u88AB\u6539\u6389\uFF0C\u592A\u5938\u5F20\uFF082026-11-07 \u7528\u6237\u53CD\u9988\uFF09\u3002\n   \u26A0\uFE0F \u4EAE\u8272\u4E5F\u522B\u7528 --dshpc-plate-hover\uFF1A\u5B83\u662F #f5f5f5 \u5B9E\u8272\uFF0C\u5E38\u6001 tone-sunken \u2248 #f0f1f3\uFF0C\n     \u767D\u5E95\u4E0A\u51E0\u4E4E\u540C\u8272\u751A\u81F3\u66F4\u767D \u21D2 \u79FB\u4E0A\u53BB\u770B\u4E0D\u51FA\u53D8\u5316\uFF08\u771F\u8E29\u8FC7\uFF0C\u89C1 tokens.css:153\uFF09\u3002\n   \u26A0\uFE0F \u9009\u4E2D\u522B\u7528\u901A\u7528 --dshpc-selected-bg\uFF1A\u6697\u8272\u5B83\u662F\u4E24\u4E2A\u6DF1\u8272\u9762\u4E92\u63BA \u21D2 \u9009\u4E2D\u884C\u53D1\u9ED1\uFF08\u7528\u6237\u53CD\u9988\uFF09\u3002\n   \u53CC\u7C7B + :hover \u538B\u5F97\u8FC7\u5355\u7C7B tone-sunken\uFF0C\u4E0D\u9700\u8981 !important\u3002 */\n.dshpc-surface.dshpc-listrow--hoverable:not(.dshpc-listrow--selected):hover{\n  --surface-bg:var(--dshpc-listrow-hover-bg);\n}\n\n/* \u9009\u4E2D\u53EA\u6362\u4E00\u4E2A\u80CC\u666F\u8272\uFF1Aslate \u6781\u6D45\u84DD\u7070\uFF0C\u4E0D\u63CF\u8FB9\u3001\u4E0D\u6E10\u53D8\u3001\u4E0D\u7AD6\u6761\uFF1B\u72B6\u6001\u4ECD\u7531\u8C03\u7528\u65B9\u7BA1\u3002 */\n.dshpc-surface.dshpc-listrow--selected{\n  --surface-bg:var(--dshpc-listrow-selected-bg);\n}\n\n@media (prefers-reduced-motion: reduce){.dshpc-listrow{transition:none}}\n";
 
 // dist/ui/display/ListRow.js
 function ListRow(props) {
@@ -62182,7 +62182,7 @@ var DICT2 = {
     demoStripTitle: "StripCard\uFF08\u6D45\u5E95 + \u901A\u9AD8\u8272\u6761\uFF09",
     demoSurfaceTitle: "Surface\uFF08\u533A\u57DF\u5BB9\u5668\uFF09",
     demoListRowTitle: "ListRow\uFF08\u4E00\u884C\u4E00\u6761 \xB7 \u6574\u884C\u53EF\u70B9\uFF09",
-    listRowHint: "\u5E38\u6001\u5E26\u5E95 / \u6309\u94AE\u7070\u6001 hover / \u5E26\u8FB9 \xB7 \u65E0\u8FB9 / \u9009\u4E2D\u6D45\u84DD\u7070 slate / \u53F3\u4FA7\u64CD\u4F5C\u4E0D\u8FDE\u5E26",
+    listRowHint: "\u5E38\u6001\u5E26\u5E95 / \u6309\u94AE\u7070\u6001 hover / \u5E26\u8FB9 \xB7 \u65E0\u8FB9 / \u9009\u4E2D\u6D45\u84DD\u7070 slate / \u53F3\u4FA7\u64CD\u4F5C\u4E0D\u8FDE\u5E26 / \u4E24\u69FD\u81EA\u52A8\u5782\u76F4\u5C45\u4E2D",
     demoBarTitle: "\u8272\u6761\u65B9\u4F4D\uFF1A\u4E0A\u4E0B\u5DE6\u53F3",
     surfaceHint: "\u4E00\u5757\u9762\uFF1A\u5E95 / \u8FB9\u6846 / \u5706\u89D2 / \u5185\u8DDD\u56DB\u8F74",
     barHint: "\u8272\u6761\u6362\u8FB9\u3001\u8DDD\u8FB9\u3001\u95F4\u8DDD\u3001\u957F\u5EA6\u90FD\u53EF\u8C03",
@@ -62450,7 +62450,7 @@ var DICT2 = {
     demoStripTitle: "StripCard (soft tint + full-height bar)",
     demoSurfaceTitle: "Surface (region container)",
     demoListRowTitle: "ListRow (one item per line, clickable row)",
-    listRowHint: "Resting fill / button-grey hover / bordered / pale slate selected / isolated right-side actions",
+    listRowHint: "Resting fill / button-grey hover / bordered / pale slate selected / isolated right-side actions / both slots auto-centered",
     demoBarTitle: "Rail side: top / right / bottom / left",
     surfaceHint: "A surface: fill, border, radius, padding",
     barHint: "Bar side, inset, gap and length",
@@ -65066,8 +65066,8 @@ var docData = {
     },
     "prose": [
       {
-        "zh": "\u4E00\u884C\u4EE3\u8868\u4E00\u4E2A\u53EF\u9009 / \u53EF\u70B9\u7684\u5BF9\u8C61\uFF08\u6587\u4EF6\u3001\u4EFB\u52A1\u3001\u5019\u9009\u9879\uFF09\uFF1A\u5E38\u6001\u5C31\u5E26\u5E95\u8272\uFF0C\u9F20\u6807\u79FB\u4E0A\u53BB\u6309 Button \u7070\u8272\u6863\u52A0\u6DF1\u4E00\u6863\uFF1B\u9009\u4E2D\u6362\u6210 slate \u7684\u6781\u6D45\u84DD\u7070\u5355\u8272\u80CC\u666F\uFF0C\u4E0D\u63CF\u8FB9\u3001\u4E0D\u753B\u7AD6\u6761\u3002\u5DE6\u4E3B\u5185\u5BB9\u3001\u53F3\u4FA7\u4E00\u7EC4\u5C0F\u64CD\u4F5C\uFF0C\u70B9\u53F3\u4FA7\u4E0D\u8FDE\u5E26\u89E6\u53D1\u6574\u884C\u3002\u5E95 / \u8FB9 / \u5706\u89D2\u590D\u7528 Surface\uFF0C\u989C\u8272\u5168\u8D70 token\uFF0C\u63D2\u4EF6\u4E0D\u5199\u7B2C\u4E8C\u5957\u76AE\u80A4\u3002",
-        "en": "One line per selectable / clickable object (file, task, candidate): a visible background at rest that darkens one step on hover using the same grey tokens as Button; selected rows swap to a single pale slate-blue-grey background \u2014 no border, no rail. Main content on the left, a group of small actions on the right that never trigger the row. Background / border / radius come from Surface and colors from tokens, so plugins write no second skin."
+        "zh": "\u4E00\u884C\u4EE3\u8868\u4E00\u4E2A\u53EF\u9009 / \u53EF\u70B9\u7684\u5BF9\u8C61\uFF08\u6587\u4EF6\u3001\u4EFB\u52A1\u3001\u5019\u9009\u9879\uFF09\uFF1A\u5E38\u6001\u5C31\u5E26\u5E95\u8272\uFF0C\u9F20\u6807\u79FB\u4E0A\u53BB\u6309 Button \u7070\u8272\u6863\u52A0\u6DF1\u4E00\u6863\uFF1B\u9009\u4E2D\u6362\u6210 slate \u7684\u6781\u6D45\u84DD\u7070\u5355\u8272\u80CC\u666F\uFF0C\u4E0D\u63CF\u8FB9\u3001\u4E0D\u753B\u7AD6\u6761\u3002\u5DE6\u4E3B\u5185\u5BB9\u3001\u53F3\u4FA7\u4E00\u7EC4\u5C0F\u64CD\u4F5C\uFF0C\u70B9\u53F3\u4FA7\u4E0D\u8FDE\u5E26\u89E6\u53D1\u6574\u884C\u3002\u4E24\u4E2A\u69FD\u90FD\u81EA\u5E26\u5782\u76F4\u5C45\u4E2D\uFF0C\u4E3B\u5185\u5BB9\u5305\u6210 `inline-flex` \u4E5F\u4E0D\u4F1A\u6309\u57FA\u7EBF\u504F\u4E0A\uFF1B\u5185\u90E8\u600E\u4E48\u6A2A\u6392\u4ECD\u7531\u8C03\u7528\u65B9\u5B9A\u3002\u5E95 / \u8FB9 / \u5706\u89D2\u590D\u7528 Surface\uFF0C\u989C\u8272\u5168\u8D70 token\uFF0C\u63D2\u4EF6\u4E0D\u5199\u7B2C\u4E8C\u5957\u76AE\u80A4\u3002",
+        "en": "One line per selectable / clickable object (file, task, candidate): a visible background at rest that darkens one step on hover using the same grey tokens as Button; selected rows swap to a single pale slate-blue-grey background \u2014 no border, no rail. Main content on the left, a group of small actions on the right that never trigger the row. Both slots are vertically centered by the core, so even an `inline-flex` main-content wrapper does not ride high on the baseline; its internal horizontal layout is still yours. Background / border / radius come from Surface and colors from tokens, so plugins write no second skin."
       },
       {
         "zh": "\u9ED8\u8BA4\u4E2D\u53F7\uFF08min-height 28\uFF0C\u4E0E Button md \u540C\u6863\uFF09\uFF0C\u4E0D\u8BBE size \u8F74\uFF1B\u56DB\u8FB9\u5185\u8DDD 8px \u7B49\u8DDD\uFF1B\u9ED8\u8BA4\u5B57\u53F7 13px / \u884C\u9AD8 20px \u7531\u6838\u5FC3\u7ED9\uFF08`--dshpc-font-md` / `--dshpc-line-md`\uFF0C\u4E0E Table \u540C\u6863\uFF09\uFF0C\u8C03\u7528\u65B9\u4E0D\u5FC5\u81EA\u5DF1\u8BBE\u3001\u53EF\u7528\u5185\u8054 style \u8986\u76D6\u3002`bordered` \u5207\u5E26\u8FB9 / \u4E0D\u5E26\u8FB9\uFF0C\u65E0\u8FB9\u6863\u4ECD\u662F 1px \u900F\u660E\u5360\u4F4D\uFF0C\u4E24\u6863\u540C\u9AD8\u3002`selected` \u53EA\u6539\u5916\u89C2\uFF0C\u72B6\u6001\u7531\u8C03\u7528\u65B9\u7BA1\u3002",
@@ -65087,8 +65087,8 @@ var docData = {
             "type": "ReactNode",
             "def": "\u2014",
             "desc": {
-              "zh": "\u4E3B\u5185\u5BB9\uFF1A\u56FE\u6807 / \u540D\u5B57 / \u6807\u7B7E / \u5DE6\u53F3\u5206\u533A\u81EA\u5DF1\u6392",
-              "en": "Main content: icons, labels, tags, left/right layout are yours"
+              "zh": "\u4E3B\u5185\u5BB9\uFF1A\u69FD\u81EA\u5E26\u5782\u76F4\u5C45\u4E2D\uFF0C\u56FE\u6807 / \u540D\u5B57 / \u6807\u7B7E / \u5DE6\u53F3\u5206\u533A\u81EA\u5DF1\u6392",
+              "en": "Main content: the slot centers vertically on its own; icons, labels, tags and left/right layout are yours"
             }
           },
           {
@@ -68597,6 +68597,17 @@ function CardPage() {
           ListRow,
           { bordered: true, hoverable: false },
           (0, import_react92.createElement)("span", { style: { color: "var(--dshpc-fg-3)" } }, "\u53EA\u8BFB\u4E00\u884C\uFF08\u4E0D\u53EF\u70B9 \xB7 \u5173\u6389 hover\uFF09")
+        ),
+        // 两槽对称居中回归：主内容故意用 inline-flex 的 span（旧版会按基线偏上）
+        (0, import_react92.createElement)(
+          ListRow,
+          { hoverable: false },
+          (0, import_react92.createElement)(
+            "span",
+            { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
+            (0, import_react92.createElement)(import_dsh_client_ui_primitives2.IconCopyOutlineRegular, { size: 14 }),
+            "\u4E3B\u5185\u5BB9\u662F inline-flex \u4E5F\u5782\u76F4\u5C45\u4E2D"
+          )
         )
       )
     ),
@@ -71048,9 +71059,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.5"}`],
-            [t3("buildDemo"), `v${"0.35.5"}`],
-            [t3("buildStamp"), "261108-003035-040"]
+            [t3("buildCore"), `v${"0.35.6"}`],
+            [t3("buildDemo"), `v${"0.35.6"}`],
+            [t3("buildStamp"), "261108-005812-381"]
           ].map(
             ([label, value]) => (0, import_react98.createElement)(
               "tr",
@@ -71366,9 +71377,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react100.createElement)("span", null, `core v${"0.35.5"}`),
-          (0, import_react100.createElement)("span", null, `demo v${"0.35.5"}`),
-          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261108-003035-040")
+          (0, import_react100.createElement)("span", null, `core v${"0.35.6"}`),
+          (0, import_react100.createElement)("span", null, `demo v${"0.35.6"}`),
+          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261108-005812-381")
         )
       )
     ),

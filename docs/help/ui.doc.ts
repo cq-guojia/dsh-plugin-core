@@ -672,8 +672,8 @@ const doc: DocTopic = {
       heading: { zh: 'ListRow（一行一条）', en: 'ListRow (one item per line)' },
       prose: [
         {
-          zh: '一行代表一个可选 / 可点的对象（文件、任务、候选项）：常态就带底色，鼠标移上去按 Button 灰色档加深一档；选中换成 slate 的极浅蓝灰单色背景，不描边、不画竖条。左主内容、右侧一组小操作，点右侧不连带触发整行。底 / 边 / 圆角复用 Surface，颜色全走 token，插件不写第二套皮肤。',
-          en: 'One line per selectable / clickable object (file, task, candidate): a visible background at rest that darkens one step on hover using the same grey tokens as Button; selected rows swap to a single pale slate-blue-grey background — no border, no rail. Main content on the left, a group of small actions on the right that never trigger the row. Background / border / radius come from Surface and colors from tokens, so plugins write no second skin.',
+          zh: '一行代表一个可选 / 可点的对象（文件、任务、候选项）：常态就带底色，鼠标移上去按 Button 灰色档加深一档；选中换成 slate 的极浅蓝灰单色背景，不描边、不画竖条。左主内容、右侧一组小操作，点右侧不连带触发整行。两个槽都自带垂直居中，主内容包成 `inline-flex` 也不会按基线偏上；内部怎么横排仍由调用方定。底 / 边 / 圆角复用 Surface，颜色全走 token，插件不写第二套皮肤。',
+          en: 'One line per selectable / clickable object (file, task, candidate): a visible background at rest that darkens one step on hover using the same grey tokens as Button; selected rows swap to a single pale slate-blue-grey background — no border, no rail. Main content on the left, a group of small actions on the right that never trigger the row. Both slots are vertically centered by the core, so even an `inline-flex` main-content wrapper does not ride high on the baseline; its internal horizontal layout is still yours. Background / border / radius come from Surface and colors from tokens, so plugins write no second skin.',
         },
         {
           zh: '默认中号（min-height 28，与 Button md 同档），不设 size 轴；四边内距 8px 等距；默认字号 13px / 行高 20px 由核心给（`--dshpc-font-md` / `--dshpc-line-md`，与 Table 同档），调用方不必自己设、可用内联 style 覆盖。`bordered` 切带边 / 不带边，无边档仍是 1px 透明占位，两档同高。`selected` 只改外观，状态由调用方管。',
@@ -688,7 +688,7 @@ const doc: DocTopic = {
         {
           id: 'ui-list-row',
           rows: [
-            { name: 'children', type: 'ReactNode', def: '—', desc: { zh: '主内容：图标 / 名字 / 标签 / 左右分区自己排', en: 'Main content: icons, labels, tags, left/right layout are yours' } },
+            { name: 'children', type: 'ReactNode', def: '—', desc: { zh: '主内容：槽自带垂直居中，图标 / 名字 / 标签 / 左右分区自己排', en: 'Main content: the slot centers vertically on its own; icons, labels, tags and left/right layout are yours' } },
             { name: 'actions', type: 'ReactNode', def: '—', desc: { zh: '右侧操作槽；核心挡住事件冒泡，不连带整行', en: 'Right-side actions; the core stops propagation so the row is not triggered' } },
             { name: 'onClick', type: '() => void', def: '—', desc: { zh: '给了才让整行可点（role=button / tabIndex / Enter·Space）', en: 'Only makes the row clickable when provided (role=button / tabIndex / Enter·Space)' } },
             { name: 'selected', type: 'boolean', def: "'false'", desc: { zh: '选中态：slate 极浅蓝灰单色背景（明暗各一档），不描边 / 不画竖条，压在 hover 之上', en: 'Selected: a single pale slate-blue-grey background (separate light / dark tiers), no border or rail, above hover' } },

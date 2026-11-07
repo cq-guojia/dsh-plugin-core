@@ -15,7 +15,12 @@
   min-height:var(--dshpc-control-h-md);width:100%;
   transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);
 }
-.dshpc-listrow__main{flex:1 1 auto;min-width:0;}
+/* 两个槽都自带垂直居中：__main 曾是普通块级流，调用方把主内容包成 inline-flex 的 span
+   会按基线排、下方多出 descender 空隙 ⇒ 左边偏上、右边居中（2026-11-08 兄弟项目真机反馈）。
+   这里补 display:flex + align-items:center，与 __actions 对称；主内容怎么横排仍归调用方。
+   子项补 min-width:0，MarqueeText 这类可截断内容在 flex 里才不会被自身内容撑破。 */
+.dshpc-listrow__main{flex:1 1 auto;min-width:0;display:flex;align-items:center;}
+.dshpc-listrow__main>*{min-width:0;}
 .dshpc-listrow__actions{flex:none;display:flex;align-items:center;gap:4px;}
 
 /* 整行可点：光标 + 键盘焦点环（与 Button / Chip 同口径）。 */
