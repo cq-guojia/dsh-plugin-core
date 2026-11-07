@@ -45,8 +45,15 @@ export interface CardSharedProps {
   className?: string
   style?: CSSProperties
   translate?: Translate
-  /** 整卡 hover 变色：统一走 --dshpc-card-hover。默认 false，纯新增、不改现有外观。 */
+  /** 悬停变色开关：统一走 --dshpc-card-hover。默认 false，纯新增、不改现有外观。 */
   hoverable?: boolean
+  /**
+   * 悬停作用域（仅 hoverable 为 true 时生效）：
+   *  - 'head'（默认）：只有头部区这一整块边到边变色并带手势，展开区 `panel` 完全不受影响；
+   *  - 'card'：整卡含展开区一起变色，由消费端显式选。
+   * 展开内容必须放进 `panel`（`children` 归头部区），否则核心无从区分两块区域。
+   */
+  hoverScope?: 'head' | 'card'
   /** 是否带底色：默认 true（Card = surface-1，StripCard = accent 浅底）；false 时底透明、边框仍在。 */
   filled?: boolean
 }
@@ -86,7 +93,9 @@ function CardShell(
     `dshpc-card--bar-${side}`,
     isPreset ? `dshpc-card--${accent}` : '',
     props.hoverable === true ? 'dshpc-card--hoverable' : '',
+    props.hoverable === true ? `dshpc-card--hover-${props.hoverScope ?? 'head'}` : '',
     props.filled === false ? 'dshpc-card--no-fill' : '',
+    props.expanded === true ? 'dshpc-card--expanded' : '',
     props.className ?? '',
   ]
     .filter((s) => s !== '')
@@ -98,7 +107,11 @@ function CardShell(
   if (bar.inset !== undefined) vars['--card-bar-inset'] = lengthOf(bar.inset)
   if (bar.gap !== undefined) vars['--card-bar-gap'] = lengthOf(bar.gap)
   if (bar.length !== undefined) vars['--card-bar-length'] = lengthOf(bar.length)
-  const style = { ...props.style, ...vars } as CSSProperties
+  // 消费端内联的 padding 不能落在根节点：根节点必须保持 0 内距，__body 才是边到边的头部区。
+  // 转成 --card-pad-all 变量交给 __body 的 padding 消费，其余 style 照旧挂根节点。
+  const { padding: padOverride, ...restStyle } = (props.style ?? {}) as CSSProperties
+  if (padOverride !== undefined) vars['--card-pad-all'] = lengthOf(padOverride as number | string)
+  const style = { ...restStyle, ...vars } as CSSProperties
 
   return h(
     'div',

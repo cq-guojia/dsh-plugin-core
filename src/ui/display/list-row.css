@@ -22,16 +22,18 @@
 .dshpc-listrow--interactive{cursor:pointer;}
 .dshpc-listrow--interactive:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}
 
-/* 三态各只换一个 --surface-bg，颜色全取 Button 灰色档那一组 token：
+/* 三态各只换一个 --surface-bg：
      常态     tone-sunken（淡底，由 surface.css 给，此处不重写）
-     hover    --dshpc-active = secondary 灰按钮的 hover 色（亮色黑 18% / 暗色白 24%）
+     hover    --dshpc-listrow-hover-bg = 比常态只深一点点的中性灰（双主题各自定义）
      selected --dshpc-listrow-selected-bg = slate 极浅蓝灰（双主题各自定义）
-   ⚠️ 亮色别用 --dshpc-plate-hover：它是 #f5f5f5 实色，常态 tone-sunken 是叠 6% 蓝灰
-   ≈ #f0f1f3，白底上几乎同色甚至更白 ⇒ 移上去看不出变化（真踩过，见 tokens.css:153）。
-   ⚠️ 选中别用通用 --dshpc-selected-bg：暗色它是两个深色面互掺 ⇒ 选中行发黑（2026-11-07 用户反馈）。
+   ⚠️ hover 别用 --dshpc-active（亮黑 18% / 暗白 24%）：相对常态 6% 一下跳太多，
+     整行连同内容的对比度都被改掉，太夸张（2026-11-07 用户反馈）。
+   ⚠️ 亮色也别用 --dshpc-plate-hover：它是 #f5f5f5 实色，常态 tone-sunken ≈ #f0f1f3，
+     白底上几乎同色甚至更白 ⇒ 移上去看不出变化（真踩过，见 tokens.css:153）。
+   ⚠️ 选中别用通用 --dshpc-selected-bg：暗色它是两个深色面互掺 ⇒ 选中行发黑（用户反馈）。
    双类 + :hover 压得过单类 tone-sunken，不需要 !important。 */
 .dshpc-surface.dshpc-listrow--hoverable:not(.dshpc-listrow--selected):hover{
-  --surface-bg:var(--dshpc-active);
+  --surface-bg:var(--dshpc-listrow-hover-bg);
 }
 
 /* 选中只换一个背景色：slate 极浅蓝灰，不描边、不渐变、不竖条；状态仍由调用方管。 */

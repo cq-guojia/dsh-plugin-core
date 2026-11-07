@@ -28,7 +28,7 @@ const cardExample = `import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'
 h(Card, {
   accent: 'warning',
   bar: { side: 'left', inset: 12, gap: 12 },   // 色条可放 left / right / top / bottom
-  hoverable: true,                             // 整卡 hover 变色（默认关）
+  hoverable: true,                             // 头部区整块悬停变色（默认关）
   action: h(Button, { size: 'sm', variant: 'ghost' }, '跳过'),
 },
   h('div', null, '标题'),
@@ -38,8 +38,10 @@ h(Card, {
 h(StripCard, {
   accent: 'success',
   hoverable: true, filled: false,              // 底色关掉 = 透明（默认有底）
+  // hoverScope 默认 'head'：只有上面头部区变色，展开区完全不受影响
+  // 要连展开区一起变色才显式写 hoverScope: 'card'
   expanded: open, onToggle: () => setOpen(!open),
-  panel: h('div', null, '展开详情'),
+  panel: h('div', null, '展开详情'),           // 展开内容放 panel，别塞进 children
 }, h('div', null, '标题 + 元信息'))`
 
 const surfaceExample = `import { Surface, Card } from 'dsh-plugin-core/ui'
@@ -637,8 +639,12 @@ const doc: DocTopic = {
           en: 'The header centers vertically as a whole; drop a bare element into `action` and it centers. Colors come from tokens, so light/dark follows the host.',
         },
         {
-          zh: '`hoverable` 开启后**整卡**悬停变色、同时把光标改成 `pointer`，统一吃 `--dshpc-card-hover`（亮 7% 蓝 / 暗 13% 蓝），默认关；`filled` 切底色，默认有底（Card = surface-1，StripCard = accent 浅底），`false` 时底透明但边框仍在。两根轴都只改 `--surface-bg`，插件不用再自己写 `:hover` 规则；透明底 + hover 也照常变色。',
-          en: '`hoverable` (default off) changes the **whole card** on hover and switches the cursor to `pointer`, using `--dshpc-card-hover` (7% blue light / 13% blue dark). `filled` (default on) controls the background — Card uses surface-1, StripCard the accent tint; `false` makes it transparent but keeps the border. Both axes only rewrite `--surface-bg`, so plugins no longer need their own `:hover` rules; a transparent card still changes color on hover.',
+          zh: '`hoverable` 开启后悬停变色、同时把光标改成 `pointer`，统一吃 `--dshpc-card-hover`（亮 7% 蓝 / 暗 13% 蓝），默认关；`filled` 切底色，默认有底（Card = surface-1，StripCard = accent 浅底），`false` 时底透明但边框仍在。两根轴都只改 `--surface-bg`，插件不用再自己写 `:hover` 规则。',
+          en: '`hoverable` (default off) changes the fill on hover and switches the cursor to `pointer`, using `--dshpc-card-hover` (7% blue light / 13% blue dark). `filled` (default on) controls the background — Card uses surface-1, StripCard the accent tint; `false` makes it transparent but keeps the border. Both axes only rewrite `--surface-bg`, so plugins no longer need their own `:hover` rules.',
+        },
+        {
+          zh: '展开的卡片用 `hoverScope` 选作用域，默认 `\'head\'`：根节点零内距并统一裁圆角，`__body` 作为「上面那一整块」独立承担内距、边到边变色；展开态不改内距，上下两圈留白对称，两块之间的间隔也属于头部区、跟着一起变色；`__panel` 是它的兄弟节点，不铺背景、不参与 hover，鼠标在展开区里操作时整卡都不触发。StripCard 的通高色条相对根节点定位，展开后仍贯穿整卡（包括展开区）。想要整卡含展开区一起变色，才显式传 `\'card\'`。**展开内容必须放进 `panel`**（`children` 属于头部区），核心才有分区信号。',
+          en: 'For expandable cards, `hoverScope` selects the scope. The default `\'head\'` gives the root zero padding and clips the radius, while `__body` — the header block owning all padding — changes color edge to edge; expanding keeps its top and bottom padding symmetric, so the gap between the two blocks changes color too. `__panel` is a sibling with no background and never hovered, so operating inside the expanded area triggers nothing. The StripCard rail is positioned against the root and stays full-height across the expanded area. Pass `\'card\'` explicitly to include it. **Expandable content must go into `panel`**; `children` belongs to the header block.',
         },
       ],
       api: [
@@ -651,8 +657,9 @@ const doc: DocTopic = {
             { name: 'onToggle', type: '() => void', def: '—', desc: { zh: '传了才显示右侧折叠箭头；展开状态由调用方管', en: 'Only shows the right collapse arrow if provided; caller owns the expanded state' } },
             { name: 'action', type: 'ReactNode', def: '—', desc: { zh: '右上角操作区', en: 'Top-right action area' } },
             { name: 'children', type: 'ReactNode', def: '—', desc: { zh: '主内容，排版随你', en: 'Main content, layout is yours' } },
-            { name: 'panel', type: 'ReactNode', def: '—', desc: { zh: '展开后才显示的额外内容', en: 'Extra content shown only when expanded' } },
-            { name: 'hoverable', type: 'boolean', def: "'false'", desc: { zh: '整卡 hover 变色 + 光标变 pointer，统一 --dshpc-card-hover；默认关', en: 'Whole-card hover plus a pointer cursor, using --dshpc-card-hover; default off' } },
+            { name: 'panel', type: 'ReactNode', def: '—', desc: { zh: '展开后才显示的额外内容；必须放这里，核心才能把展开区与头部区分开', en: 'Extra content shown only when expanded; must live here so the core can separate it from the header' } },
+            { name: 'hoverable', type: 'boolean', def: "'false'", desc: { zh: '悬停变色 + 光标变 pointer，统一 --dshpc-card-hover；默认关', en: 'Hover color plus a pointer cursor, using --dshpc-card-hover; default off' } },
+            { name: 'hoverScope', type: "'head' | 'card'", def: "'head'", desc: { zh: "'head'（默认）只让上面头部区整块边到边变色、展开区不受影响；'card' 整卡含展开区一起变色。仅 hoverable 为 true 时生效", en: "'head' (default) changes only the header block and leaves the expanded area untouched; 'card' includes it. Applies only when hoverable is true" } },
             { name: 'filled', type: 'boolean', def: "'true'", desc: { zh: '是否带底色；false 时底透明、边框仍在。默认有底（Card = surface-1 / StripCard = accent 浅底）', en: 'Background fill; false makes it transparent while keeping the border. Default on (Card = surface-1 / StripCard = accent tint)' } },
             { name: 'className / style', type: '—', def: '—', desc: { zh: '追加类 / 样式', en: 'Append class / style' } },
           ],
@@ -673,8 +680,8 @@ const doc: DocTopic = {
           en: 'One medium tier by default (min-height 28, same as Button md); no size axis; equal 8px padding on all four sides. The core sets a default 13px / 20px type scale (`--dshpc-font-md` / `--dshpc-line-md`, same as Table) — callers need not set it and can override it inline. `bordered` switches the edge on/off — the borderless tier keeps a transparent 1px placeholder so heights stay equal. `selected` only changes appearance; the caller owns the state.',
         },
         {
-          zh: '`hoverable` 默认跟随「整行可点」（可点行开、纯展示行关，与 Table 的 hover 口径一致），可显式开关；hover / 选中色取 `--dshpc-active` / `--dshpc-listrow-selected-bg`（由 `--dshpc-slate` 派生，亮色 14% / 暗色 26% 两档，暗色不发黑）。整行不是 `<button>`：调用方要往里放 Button / IconButton，嵌 button 是非法 HTML；键盘走 Enter / Space，右侧操作槽挡住冒泡。',
-          en: '`hoverable` follows row clickability by default (on for clickable rows, off for static ones, matching Table), and can be forced on/off; hover / selected use `--dshpc-active` / `--dshpc-listrow-selected-bg` (derived from `--dshpc-slate`, 14% light / 26% dark, so the dark theme never goes black). The row is not a `<button>`: callers put Buttons inside it and nested buttons are invalid HTML. Keyboard uses Enter / Space; the actions slot stops propagation.',
+          zh: '`hoverable` 默认跟随「整行可点」（可点行开、纯展示行关，与 Table 的 hover 口径一致），可显式开关；hover 取 `--dshpc-listrow-hover-bg`，只比常态深一点点（亮 9% 黑 / 暗 10% 白），不会把整行内容和文字对比度一起改掉；选中取 `--dshpc-listrow-selected-bg`（由 `--dshpc-slate` 派生，亮色 14% / 暗色 26% 两档，暗色不发黑）。整行不是 `<button>`：调用方要往里放 Button / IconButton，嵌 button 是非法 HTML；键盘走 Enter / Space，右侧操作槽挡住冒泡。',
+          en: '`hoverable` follows row clickability by default (on for clickable rows, off for static ones, matching Table), and can be forced on/off. Hover uses `--dshpc-listrow-hover-bg`, only a touch deeper than the resting row (9% black light / 10% white dark), so it does not repaint the whole row or shift text contrast; selected uses `--dshpc-listrow-selected-bg` (derived from `--dshpc-slate`, 14% light / 26% dark, so the dark theme never goes black). The row is not a `<button>`: callers put Buttons inside it and nested buttons are invalid HTML. Keyboard uses Enter / Space; the actions slot stops propagation.',
         },
       ],
       api: [

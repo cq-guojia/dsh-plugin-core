@@ -57,7 +57,7 @@ test('ListRow CSS：四边等距 / hover 灰态可见 / 选中浅蓝灰无描边
   assert.match(LIST_ROW_CSS, /min-height:var\(--dshpc-control-h-md\)/)
   assert.match(LIST_ROW_CSS, /font-size:var\(--dshpc-font-md\)/, '默认字号由核心给，消费者不必自己设')
   assert.match(LIST_ROW_CSS, /line-height:var\(--dshpc-line-md\)/, '行高同源，不继承宿主')
-  assert.match(LIST_ROW_CSS, /--surface-bg:var\(--dshpc-active\)/, 'hover 吃按钮 secondary 的灰态 token')
+  assert.match(LIST_ROW_CSS, /--surface-bg:var\(--dshpc-listrow-hover-bg\)/, 'hover 吃专用温和 token')
   assert.match(LIST_ROW_CSS, /--surface-bg:var\(--dshpc-listrow-selected-bg\)/, '选中吃 slate 专用浅色 token')
   assert.match(LIST_ROW_CSS, /:not\(\.dshpc-listrow--selected\)/, '选中态必须压在 hover 之上')
   assert.match(LIST_ROW_CSS, /prefers-reduced-motion/)
@@ -69,6 +69,15 @@ test('ListRow CSS：四边等距 / hover 灰态可见 / 选中浅蓝灰无描边
   assert.ok(!css.includes('--dshpc-business'), '选中不带语义蓝')
   assert.ok(!css.includes('background:'), '底归 Surface，不许重写 background 属性')
   assert.ok(!css.includes('border-radius:'), '圆角归 Surface')
+})
+
+test('ListRow hover token：明暗各一档，且不再吃夸张的 active 灰', () => {
+  const darkAt = TOKENS_CSS_TEMPLATE.indexOf('body[data-ds-dark-theme]{')
+  const light = TOKENS_CSS_TEMPLATE.slice(0, darkAt)
+  const dark = TOKENS_CSS_TEMPLATE.slice(darkAt)
+  assert.match(light, /--dshpc-listrow-hover-bg:rgba\(15,15,15,\.09\)/)
+  assert.match(dark, /--dshpc-listrow-hover-bg:rgba\(255,255,255,\.10\)/)
+  assert.ok(!LIST_ROW_CSS.includes('var(--dshpc-active)'), '不许再用 active 那档（亮 18% / 暗 24%）')
 })
 
 test('ListRow 选中 token：slate 极浅蓝灰，明暗各一档且暗色更浓', () => {

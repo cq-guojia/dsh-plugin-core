@@ -34,8 +34,15 @@ export interface CardSharedProps {
     className?: string;
     style?: CSSProperties;
     translate?: Translate;
-    /** 整卡 hover 变色：统一走 --dshpc-card-hover。默认 false，纯新增、不改现有外观。 */
+    /** 悬停变色开关：统一走 --dshpc-card-hover。默认 false，纯新增、不改现有外观。 */
     hoverable?: boolean;
+    /**
+     * 悬停作用域（仅 hoverable 为 true 时生效）：
+     *  - 'head'（默认）：只有头部区这一整块边到边变色并带手势，展开区 `panel` 完全不受影响；
+     *  - 'card'：整卡含展开区一起变色，由消费端显式选。
+     * 展开内容必须放进 `panel`（`children` 归头部区），否则核心无从区分两块区域。
+     */
+    hoverScope?: 'head' | 'card';
     /** 是否带底色：默认 true（Card = surface-1，StripCard = accent 浅底）；false 时底透明、边框仍在。 */
     filled?: boolean;
 }

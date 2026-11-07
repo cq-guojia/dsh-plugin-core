@@ -296,21 +296,59 @@ EN: `Surface` is a pure frame and deliberately inherits typography, but any cont
 own default `font-size` / `line-height` from tokens (same tier as `Table` / `Input md`). Do not make every consumer
 repeat it; callers can still override that tier inline.
 
-## 卡片整卡 hover 与底色轴
+## 卡片 hover 作用域与底色轴
 
-> EN: Whole-card hover and fill switch
+> EN: Card hover scope and fill switch
 
-`Card` / `StripCard` 的整卡悬停统一吃 `--dshpc-card-hover`（亮 `rgba(37,99,235,.07)` / 暗
+`Card` / `StripCard` 的悬停统一吃 `--dshpc-card-hover`（亮 `rgba(37,99,235,.07)` / 暗
 `rgba(96,165,250,.13)`），由 `hoverable` 开启、**默认关**；底色由 `filled` 控制、**默认有底**。
-两者都只改 `--surface-bg` 一个变量，不许写 `background` / `background-image` 属性去覆盖底色 ——
+底色只改 `--surface-bg` 一个变量，不许写 `background` / `background-image` 属性去覆盖根节点底色 ——
 `StripCard` 的浅底也必须走这个变量，否则覆盖顺序会打架（兄弟项目曾用渐变叠加绕过，2026-11-07 收编）。
 
-EN: Whole-card hover on `Card` / `StripCard` uses `--dshpc-card-hover` only; it is opt-in via `hoverable`
-(default off). The fill is controlled by `filled` (default on). Both only rewrite `--surface-bg`; never
-override the fill with `background` / `background-image` properties.
+EN: Hover on `Card` / `StripCard` uses `--dshpc-card-hover` only; it is opt-in via `hoverable`
+(default off). The fill is controlled by `filled` (default on) and only rewrites `--surface-bg`; never
+override the root background with `background` / `background-image` properties.
 
-开启 `hoverable` 时**同时**给 `cursor:pointer` —— 既然声明整卡可交互，手势不能只换背景不变；
+开启 `hoverable` 时**同时**给 `cursor:pointer` —— 既然声明可交互，手势不能只换背景不变；
 没开这根轴的卡片保持默认光标（2026-11-07 用户反馈）。
 
-EN: Enabling `hoverable` also sets `cursor:pointer`: a card that declares itself interactive must change
-the pointer too, not just its background. Cards without the axis keep the default cursor.
+EN: Enabling `hoverable` also sets `cursor:pointer`. Cards without the axis keep the default cursor.
+
+### 展开态：hover 只作用「上面那一块」
+
+2026-11-07 用户否决「只中间变色」：外圈 `padding` 圈也要一起变，否则头部像被挖掉一圈；
+也否决「给展开区铺一层常态底色去盖住根节点」—— 底色 token 是半透明的，叠两层会更暗，
+真机上就是一块深色补丁。
+
+**正解是结构分区，不是遮盖**：根节点 `padding:0`、只铺一层常态底、用 `overflow:hidden` 统一裁圆角；
+`__body` 是「上面那一整块」，独立承担四边内距，是 head 作用域下唯一的 hover 目标；`__panel` 是它的
+兄弟节点，不铺任何背景、不参与 hover，自己承担左右 / 底部内距。**展开态不改 `__body` 内距**：
+上下两圈留白始终对称，色条上下才不会一长一短；两块之间的间隔就是 `__body` 的 `padding-bottom`，
+属于头部区、跟着一起变色，`__panel` 的 `margin-top` 归 0、从分隔线开始，中间不留不变色的带子。
+`__body` 不许写 `border-radius` 裸值（圆角契约只认 Surface 一处），圆角由根节点裁切保证。
+
+`StripCard` 的 4px 色条相对根节点绝对定位（`top:0` / `bottom:0`），展开后仍通高贯穿整卡、
+包括展开区；它不属于 hover 分区，颜色也不随 hover 变（2026-11-08 拍板）。
+
+`hoverScope` 决定展开区是否跟着变，**默认 `'head'`**：
+
+| 作用域 | 变色范围 | 鼠标落在展开区 | 展开区手势 |
+|---|---|---|---|
+| `'head'`（默认） | `__body` 整块边到边变色（含内距圈、圆角） | `__body:hover` 不成立 ⇒ 整卡完全不触发 | `cursor:auto` |
+| `'card'`（消费端显式选） | 根节点改 `--surface-bg`，整卡含展开区一起变色 | 照常触发 | `cursor:pointer` |
+
+内距走 `--card-pad-t/r/b/l` 四根变量（strip / 四方位各自覆盖）；消费端 `style.padding` 由
+`Card.ts` 转成 `--card-pad-all` 交给 `__body`，根节点永远零内距。
+
+**契约**：消费端必须把展开内容放进 `panel`（`children` 属于头部区），核心才有分区信号；
+`__panel` 是 `__body` 的兄弟节点，由 `test/card.test.mjs` 盯着。
+
+EN: The root keeps `padding:0` and paints one resting fill. `__body` is the header block — it owns all four
+paddings, inherits the root radius, and is the only hover target under `hoverScope: 'head'`. `__panel` is its
+sibling: no background at all, never hovered, with its own horizontal / bottom padding. Expanding never
+rewrites the header padding: top and bottom stay symmetric, and the gap between the blocks is the header's
+own `padding-bottom`, so it changes color together with the header. `__panel` starts at the divider with
+`margin-top:0`. The StripCard rail is absolutely positioned against the root (`top:0` / `bottom:0`), so it
+stays full-height across the expanded area too. `:has()` and "paint a resting-fill snapshot over the
+expanded area" are forbidden — semi-transparent tokens stacked twice render darker. Callers must put
+expandable content in `panel`; `children` belongs to the header block.

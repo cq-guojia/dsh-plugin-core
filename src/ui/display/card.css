@@ -1,8 +1,10 @@
 
 /* ── Card / StripCard：Surface 外框 + 头部契约 + 色条 ─────────────────────
-   外框（底 / 边框 / 圆角 / 内距）全部来自 .dshpc-surface（src/ui/surface.css）：
+   外框（底 / 边框 / 圆角）来自 .dshpc-surface（src/ui/surface.css）：
    本文件**不再写 border / border-radius**，圆角契约因此只有一个定义点（容器档 = 12）。
-   这里只管两件 Surface 不该知道的事：色条几何、头部布局。
+   内距不在根节点：根节点 padding:0，__body（头部区）与 __panel（展开区）各自承担 ——
+   两块区域因此彼此独立，hover 只可能落在头部区，展开区不会被波及。
+   这里只管三件 Surface 不该知道的事：色条几何、头部布局、两块区域的内距。
 
    色条几何默认值都可被 props 覆盖（Card.ts 写对应的 CSS 变量）：
      --card-bar-size   条子粗细
@@ -18,6 +20,14 @@
   --card-bar-inset:12px;
   --card-bar-gap:12px;
   --card-bar-length:100%;
+  /* 头部区内距四根轴：根节点自己不留 padding，内距全由 __body / __panel 各自承担。
+     这样 __body 就是「上面那一整块」，hover 铺色边到边，连原本那圈外圈一起变。
+     --card-pad-all 是四轴的组合值，消费端可用 style.padding 覆盖（Card.ts 转成同名变量）。 */
+  --card-pad-t:14px;--card-pad-r:14px;--card-pad-b:14px;--card-pad-l:14px;
+  --card-pad-all:var(--card-pad-t) var(--card-pad-r) var(--card-pad-b) var(--card-pad-l);
+  padding:0;
+  /* 头部区背景铺满根节点内容盒，由根节点统一裁成外框圆角；__body 自己不写圆角裸值。 */
+  overflow:hidden;
 }
 /* 档位 → token（照 records-timeline 的 tone 模式：一个变量切档，不写 5 套规则；浅底与色条同源）。 */
 .dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}
@@ -35,11 +45,20 @@
 .dshpc-card--rose{--card-accent:var(--dshpc-rose);--card-accent-soft:var(--dshpc-rose-soft)}
 .dshpc-card--slate{--card-accent:var(--dshpc-slate);--card-accent-soft:var(--dshpc-slate-soft)}
 
-/* body = 色条 + 头部。方向跟着条子贴的边切 ⇒ 四个方位只是「换一个方向的 flex 项」，
-   不用为每个方位各写一套定位。 */
-.dshpc-card__body{display:flex;gap:var(--card-bar-gap);min-width:0}
+/* body = 色条 + 头部，也是「上面那一整块」：它自己承担内距并铺满根节点内容盒，
+   是 head 作用域下唯一的 hover 目标。圆角由根节点 overflow 裁切 ⇒ hover 色不露方角。
+   --card-pad-all 供消费端 style.padding 覆盖（Card.ts 把内联 padding 转成这个变量）。
+   方向跟着条子贴的边切 ⇒ 四个方位只是「换一个方向的 flex 项」，不用各写一套定位。 */
+.dshpc-card__body{
+  display:flex;gap:var(--card-bar-gap);min-width:0;
+  padding:var(--card-pad-all);
+  background:transparent;
+}
 .dshpc-card--bar-top .dshpc-card__body,
 .dshpc-card--bar-bottom .dshpc-card__body{flex-direction:column}
+/* 展开态不特殊处理内距：头部区上下留白始终对称，色条上下才不会一长一短。
+   两块之间的间隔就是 __body 的 padding-bottom，属于头部区、跟着一起变色；
+   __panel 从分隔线开始，不在中间留一条不变色的带子。 */
 
 /* 头部一行 = 主内容 + 右侧槽，**整体垂直居中**：调用方在 action 里裸放一个元素
    （按钮 / 文字 / 图标）不用自己套容器居中；一行两行、右边怎么放由调用方在框内自定。 */
@@ -63,31 +82,40 @@
    底色 / 方角 / 占位边框由 Surface 的三条修饰类提供（Card.ts 按 kind 传），此处只管内距与条子。 */
 .dshpc-card.dshpc-card--strip{
   --card-bar-size:4px;--card-bar-inset:0;
-  padding:12px 12px 12px 20px;
+  --card-pad-t:12px;--card-pad-r:12px;--card-pad-b:12px;--card-pad-l:20px;
   /* 底色改走 Surface 的 --surface-bg 变量（surface.css:7-8 契约）：不能写 background 属性，
-     否则 hover / 透明档要覆盖时会被属性层打架（兄弟项目曾用 background-image 渐变绕过）。 */
+     否则透明档要覆盖时会被属性层打架（兄弟项目曾用 background-image 渐变绕过）。 */
   --surface-bg:var(--card-accent-soft,transparent);
 }
 /* 左内边距 20px = 16 留白 + 4 条宽 ⇒ 内容从色条右缘起算；色条绝对定位通高，跟着内容高度自适应。
+   定位基准是根节点的 position:relative（Surface 提供），top:0 / bottom:0 因此是整卡通高：
+   展开后色条仍一路贯穿到展开区底部，不随 head 分区被裁短（2026-11-08 拍板）。
    特异性 0,3,0：压过上面 .dshpc-card--bar-left .dshpc-card__bar 的宽度规则，与注入顺序无关。 */
 .dshpc-card.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;align-self:auto}
 
-/* ── 外观二 · Card：Surface 外框（底 + 1px 实色边框 + 圆角 12）+ 色条贴边那一侧的内距 ──
-   内距用 0,2,0 / 0,3,0 的长写法：高过 .dshpc-surface 的 padding 简写，与两份 CSS 的注入顺序无关。 */
-.dshpc-card.dshpc-card--bordered{padding:14px}
-.dshpc-card.dshpc-card--bordered.dshpc-card--bar-left{padding-left:var(--card-bar-inset)}
-.dshpc-card.dshpc-card--bordered.dshpc-card--bar-right{padding-right:var(--card-bar-inset)}
-.dshpc-card.dshpc-card--bordered.dshpc-card--bar-top{padding-top:var(--card-bar-inset)}
-.dshpc-card.dshpc-card--bordered.dshpc-card--bar-bottom{padding-bottom:var(--card-bar-inset)}
+/* ── 外观二 · Card：色条贴边那一侧的内距 = 条子距边缘的距离 ──
+   四方位只改对应那根 --card-pad-* 变量，__body 与 __panel 同时跟着对齐。 */
+.dshpc-card--bar-left{--card-pad-l:var(--card-bar-inset)}
+.dshpc-card--bar-right{--card-pad-r:var(--card-bar-inset)}
+.dshpc-card--bar-top{--card-pad-t:var(--card-bar-inset)}
+.dshpc-card--bar-bottom{--card-pad-b:var(--card-bar-inset)}
 
-/* ── 外观轴（2026-11-07）：整卡 hover + 底色开关 ───────────────────────────
-   只改 --surface-bg 一个变量，Surface 基类的 background:var(--surface-bg) 自动吃到；
-   不写 background / background-image，免得跟浅底属性打架。
-   顺序即优先级：strip 浅底(0,2,0) → no-fill 透明(0,2,0，靠后胜) → hoverable:hover(0,3,0，最高)。 */
+/* ── 外观轴（2026-11-07）：底色开关 + hover 作用域 ───────────────────────────
+   两块区域各自独立：根节点只铺一层常态底（--surface-bg）；__body 是「上面那一整块」，
+   __panel 是它的兄弟节点，不铺任何背景、不参与 hover。
+   hoverScope（默认 head）：
+     head —— 只有 __body 铺 --dshpc-card-hover，边到边（内距圈 + 圆角都在这一块上）；
+             展开态也不改内距，上下两圈留白同属这一块、一起变色，色条上下才对称；
+             鼠标落在 __panel 时 :hover 根本不成立 ⇒ 整卡不触发，下面永远是常态。
+     card —— 根节点改 --surface-bg，整卡含展开区一起变色，由消费端显式选。
+   ⚠️ 绝不用「给展开区铺一层底色去盖住根节点」：半透明 token 叠两层会更深（真踩过）。 */
 .dshpc-card.dshpc-card--no-fill{--surface-bg:transparent}
-/* 开关打开即声明「整卡可交互」：光标跟着一起变，别只换背景不改手势。 */
+/* 开关打开即声明「上面那一块可交互」：手势跟着变，展开区还原成默认光标。 */
 .dshpc-card.dshpc-card--hoverable{cursor:pointer}
-.dshpc-card.dshpc-card--hoverable:hover{--surface-bg:var(--dshpc-card-hover)}
+.dshpc-card.dshpc-card--hover-head .dshpc-card__panel{cursor:auto}
+/* 顺序即优先级：strip 浅底 / no-fill 透明(0,2,0) → card:hover(0,3,0，最高)。 */
+.dshpc-card.dshpc-card--hover-head .dshpc-card__body:hover{background:var(--dshpc-card-hover)}
+.dshpc-card.dshpc-card--hover-card:hover{--surface-bg:var(--dshpc-card-hover)}
 
 .dshpc-card__toggle{
   display:inline-flex;align-items:center;justify-content:center;
@@ -98,4 +126,10 @@
 /* 箭头是 svg（Chevron），不是字形 ⇒ 不要 font-size；inline-flex 免掉 svg 的基线留白。 */
 .dshpc-card__caret{display:inline-flex;transition:transform .15s ease}
 .dshpc-card__caret.is-open{transform:rotate(180deg)}
-.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}
+/* 展开区自己承担左右 / 底部内距：与头部内容对齐，并补上卡片底部留白。
+   margin-top 归 0：分隔线紧贴头部区下缘，上方那段间隔是 __body 的 padding-bottom，跟着 hover 一起变色。 */
+.dshpc-card__panel{
+  margin:0 var(--card-pad-r) 0 var(--card-pad-l);
+  padding:8px 0 var(--card-pad-b);
+  border-top:1px solid var(--dshpc-border-faint);
+}

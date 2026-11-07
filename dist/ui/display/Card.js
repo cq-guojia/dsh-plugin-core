@@ -41,7 +41,9 @@ function CardShell(kind, props) {
         `dshpc-card--bar-${side}`,
         isPreset ? `dshpc-card--${accent}` : '',
         props.hoverable === true ? 'dshpc-card--hoverable' : '',
+        props.hoverable === true ? `dshpc-card--hover-${props.hoverScope ?? 'head'}` : '',
         props.filled === false ? 'dshpc-card--no-fill' : '',
+        props.expanded === true ? 'dshpc-card--expanded' : '',
         props.className ?? '',
     ]
         .filter((s) => s !== '')
@@ -58,7 +60,12 @@ function CardShell(kind, props) {
         vars['--card-bar-gap'] = lengthOf(bar.gap);
     if (bar.length !== undefined)
         vars['--card-bar-length'] = lengthOf(bar.length);
-    const style = { ...props.style, ...vars };
+    // 消费端内联的 padding 不能落在根节点：根节点必须保持 0 内距，__body 才是边到边的头部区。
+    // 转成 --card-pad-all 变量交给 __body 的 padding 消费，其余 style 照旧挂根节点。
+    const { padding: padOverride, ...restStyle } = (props.style ?? {});
+    if (padOverride !== undefined)
+        vars['--card-pad-all'] = lengthOf(padOverride);
+    const style = { ...restStyle, ...vars };
     return h('div', { className: classes, style }, h('div', { className: 'dshpc-card__body' }, 
     // 色条是 body 的第一个子元素：DOM 顺序恒定，左/上 = 天然在前，右/下靠 order 排到头部之后。
     h('span', { className: 'dshpc-card__bar', 'aria-hidden': true }), h('div', { className: 'dshpc-card__head' }, h('div', { className: 'dshpc-card__main' }, props.children ?? null), props.action === undefined && props.onToggle === undefined
