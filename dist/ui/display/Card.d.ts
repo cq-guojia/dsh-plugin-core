@@ -34,6 +34,10 @@ export interface CardSharedProps {
     className?: string;
     style?: CSSProperties;
     translate?: Translate;
+    /** 整卡 hover 变色：统一走 --dshpc-card-hover。默认 false，纯新增、不改现有外观。 */
+    hoverable?: boolean;
+    /** 是否带底色：默认 true（Card = surface-1，StripCard = accent 浅底）；false 时底透明、边框仍在。 */
+    filled?: boolean;
 }
 /**
  * 卡片（框式）：复用 `Surface` 外框（surface 底 + 1px 边框 + 圆角 12），

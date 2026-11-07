@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { CARD_ACCENTS, Card, StripCard, Surface, surfaceClass } from '../dist/ui/index.js'
+import { CARD_CSS } from '../dist/ui/display/card-css.js'
 import { setLocale, t } from '../dist/utils/index.js'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -63,4 +64,40 @@ test('Surface 四根轴的档位都拼到类名上；不给内距时不算内距
   )
   const html = renderToStaticMarkup(createElement(Surface, { tone: 'raised' }, '内容'))
   assert.match(html, /class="dshpc-surface dshpc-surface--tone-raised dshpc-surface--pad-md"/)
+})
+
+// 2026-11-07：整卡 hover / 底色开关（用户拍板：hover 是整卡变色、颜色统一 --dshpc-card-hover）。
+test('默认不挂 hoverable / no-fill 类（零破坏）', () => {
+  for (const Comp of [Card, StripCard]) {
+    const html = renderToStaticMarkup(createElement(Comp, null, '内容'))
+    assert.ok(!html.includes('dshpc-card--hoverable'), 'hover 默认关')
+    assert.ok(!html.includes('dshpc-card--no-fill'), '底色默认有')
+  }
+})
+
+test('hoverable / filled 是独立开关，可单独也可同时', () => {
+  const on = renderToStaticMarkup(createElement(Card, { hoverable: true }, '内容'))
+  assert.match(on, /dshpc-card--hoverable/)
+  assert.ok(!on.includes('dshpc-card--no-fill'))
+  const off = renderToStaticMarkup(createElement(StripCard, { filled: false }, '内容'))
+  assert.match(off, /dshpc-card--no-fill/)
+  assert.ok(!off.includes('dshpc-card--hoverable'))
+  const both = renderToStaticMarkup(createElement(Card, { hoverable: true, filled: false }, '内容'))
+  assert.match(both, /dshpc-card--hoverable/)
+  assert.match(both, /dshpc-card--no-fill/)
+})
+
+test('Card CSS：底色走 --surface-bg 变量，整卡 hover 统一 --dshpc-card-hover', () => {
+  assert.match(CARD_CSS, /--surface-bg:var\(--card-accent-soft,transparent\)/, 'StripCard 底收敛成变量')
+  assert.match(CARD_CSS, /\.dshpc-card\.dshpc-card--no-fill\{--surface-bg:transparent\}/)
+  assert.match(CARD_CSS, /\.dshpc-card\.dshpc-card--hoverable\{cursor:pointer\}/, 'hover 开关打开时手势跟着变')
+  assert.match(CARD_CSS, /\.dshpc-card\.dshpc-card--hoverable:hover\{--surface-bg:var\(--dshpc-card-hover\)\}/)
+  const css = CARD_CSS.replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.ok(!css.includes('background:var(--card-accent-soft'), '不许再写 background 属性')
+  assert.ok(!css.includes('background-image:'), '不许渐变叠加绕契约')
+  assert.ok(!css.includes('--dshpc-plate-hover'), 'hover 不混用别的底色 token')
+  assert.ok(
+    css.indexOf('dshpc-card--hoverable:hover') > css.indexOf('dshpc-card--no-fill'),
+    'hover 规则要压过透明档',
+  )
 })

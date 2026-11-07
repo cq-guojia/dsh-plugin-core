@@ -287,3 +287,22 @@ per plugin. Rules inside a domain consume `var(--dshpc-*)` only; never hard-code
 EN: `Surface` is a pure frame and deliberately inherits typography, but any control that renders text must set its
 own default `font-size` / `line-height` from tokens (same tier as `Table` / `Input md`). Do not make every consumer
 repeat it; callers can still override that tier inline.
+
+## 卡片整卡 hover 与底色轴
+
+> EN: Whole-card hover and fill switch
+
+`Card` / `StripCard` 的整卡悬停统一吃 `--dshpc-card-hover`（亮 `rgba(37,99,235,.07)` / 暗
+`rgba(96,165,250,.13)`），由 `hoverable` 开启、**默认关**；底色由 `filled` 控制、**默认有底**。
+两者都只改 `--surface-bg` 一个变量，不许写 `background` / `background-image` 属性去覆盖底色 ——
+`StripCard` 的浅底也必须走这个变量，否则覆盖顺序会打架（兄弟项目曾用渐变叠加绕过，2026-11-07 收编）。
+
+EN: Whole-card hover on `Card` / `StripCard` uses `--dshpc-card-hover` only; it is opt-in via `hoverable`
+(default off). The fill is controlled by `filled` (default on). Both only rewrite `--surface-bg`; never
+override the fill with `background` / `background-image` properties.
+
+开启 `hoverable` 时**同时**给 `cursor:pointer` —— 既然声明整卡可交互，手势不能只换背景不变；
+没开这根轴的卡片保持默认光标（2026-11-07 用户反馈）。
+
+EN: Enabling `hoverable` also sets `cursor:pointer`: a card that declares itself interactive must change
+the pointer too, not just its background. Cards without the axis keep the default cursor.

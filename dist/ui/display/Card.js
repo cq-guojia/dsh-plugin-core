@@ -40,6 +40,8 @@ function CardShell(kind, props) {
         kind === 'strip' ? 'dshpc-card--strip' : 'dshpc-card--bordered',
         `dshpc-card--bar-${side}`,
         isPreset ? `dshpc-card--${accent}` : '',
+        props.hoverable === true ? 'dshpc-card--hoverable' : '',
+        props.filled === false ? 'dshpc-card--no-fill' : '',
         props.className ?? '',
     ]
         .filter((s) => s !== '')

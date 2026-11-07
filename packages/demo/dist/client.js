@@ -6261,7 +6261,7 @@ function alertModal(opts) {
 var import_react25 = require("react");
 
 // dist/ui/display/card-css.generated.js
-var CARD_CSS = "\n/* \u2500\u2500 Card / StripCard\uFF1ASurface \u5916\u6846 + \u5934\u90E8\u5951\u7EA6 + \u8272\u6761 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u6846\uFF08\u5E95 / \u8FB9\u6846 / \u5706\u89D2 / \u5185\u8DDD\uFF09\u5168\u90E8\u6765\u81EA .dshpc-surface\uFF08src/ui/surface.css\uFF09\uFF1A\n   \u672C\u6587\u4EF6**\u4E0D\u518D\u5199 border / border-radius**\uFF0C\u5706\u89D2\u5951\u7EA6\u56E0\u6B64\u53EA\u6709\u4E00\u4E2A\u5B9A\u4E49\u70B9\uFF08\u5BB9\u5668\u6863 = 12\uFF09\u3002\n   \u8FD9\u91CC\u53EA\u7BA1\u4E24\u4EF6 Surface \u4E0D\u8BE5\u77E5\u9053\u7684\u4E8B\uFF1A\u8272\u6761\u51E0\u4F55\u3001\u5934\u90E8\u5E03\u5C40\u3002\n\n   \u8272\u6761\u51E0\u4F55\u9ED8\u8BA4\u503C\u90FD\u53EF\u88AB props \u8986\u76D6\uFF08Card.ts \u5199\u5BF9\u5E94\u7684 CSS \u53D8\u91CF\uFF09\uFF1A\n     --card-bar-size   \u6761\u5B50\u7C97\u7EC6\n     --card-bar-inset  \u6761\u5B50\u8DDD\u5361\u7247\u8FB9\u7F18\u7684\u8DDD\u79BB\uFF08= \u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD\uFF09\n     --card-bar-gap    \u6761\u5B50\u8DDD\u5185\u5BB9\u7684\u8DDD\u79BB\uFF08= body \u7684 gap\uFF09\n     --card-bar-length \u4E0A\u4E0B\u65B9\u4F4D\u65F6\u7684\u6761\u957F\uFF08100% = \u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\n   \u8FD9\u4E9B\u53D8\u91CF\u53EA\u5728\u672C\u6587\u4EF6\u6D88\u8D39\uFF083 \u4EFD\u6587\u4EF6\u4E00\u8D77\u5F15\u65F6\uFF0C\u8DE8\u6587\u4EF6\u5F15\u7528\u522B\u5904\u7684\u53D8\u91CF\u4F1A\u9759\u9ED8\u5931\u6548\uFF09\uFF0C\n   \u6240\u4EE5\u9ED8\u8BA4\u503C\u5FC5\u987B\u5199\u5728\u8FD9\u91CC\uFF0C\u800C\u4E0D\u662F\u4EE4\u724C\u6216\u522B\u7684\u76AE\u80A4\u91CC\u3002 */\n.dshpc-card{\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n  --card-bar-size:6px;\n  --card-bar-inset:12px;\n  --card-bar-gap:12px;\n  --card-bar-length:100%;\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n/* \u6269\u5C55\u516B\u8272\uFF082026-10-29\uFF09\uFF1A\u8272\u6761 + \u6D45\u5E95\u540C\u6E90\uFF0C\u8F6F\u5E95\u8D70\u5404\u81EA -soft\u3002 */\n.dshpc-card--purple{--card-accent:var(--dshpc-purple);--card-accent-soft:var(--dshpc-purple-soft)}\n.dshpc-card--pink{--card-accent:var(--dshpc-pink);--card-accent-soft:var(--dshpc-pink-soft)}\n.dshpc-card--cyan{--card-accent:var(--dshpc-cyan);--card-accent-soft:var(--dshpc-cyan-soft)}\n.dshpc-card--teal{--card-accent:var(--dshpc-teal);--card-accent-soft:var(--dshpc-teal-soft)}\n.dshpc-card--orange{--card-accent:var(--dshpc-orange);--card-accent-soft:var(--dshpc-orange-soft)}\n.dshpc-card--indigo{--card-accent:var(--dshpc-indigo);--card-accent-soft:var(--dshpc-indigo-soft)}\n.dshpc-card--rose{--card-accent:var(--dshpc-rose);--card-accent-soft:var(--dshpc-rose-soft)}\n.dshpc-card--slate{--card-accent:var(--dshpc-slate);--card-accent-soft:var(--dshpc-slate-soft)}\n\n/* body = \u8272\u6761 + \u5934\u90E8\u3002\u65B9\u5411\u8DDF\u7740\u6761\u5B50\u8D34\u7684\u8FB9\u5207 \u21D2 \u56DB\u4E2A\u65B9\u4F4D\u53EA\u662F\u300C\u6362\u4E00\u4E2A\u65B9\u5411\u7684 flex \u9879\u300D\uFF0C\n   \u4E0D\u7528\u4E3A\u6BCF\u4E2A\u65B9\u4F4D\u5404\u5199\u4E00\u5957\u5B9A\u4F4D\u3002 */\n.dshpc-card__body{display:flex;gap:var(--card-bar-gap);min-width:0}\n.dshpc-card--bar-top .dshpc-card__body,\n.dshpc-card--bar-bottom .dshpc-card__body{flex-direction:column}\n\n/* \u5934\u90E8\u4E00\u884C = \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card--bar-left .dshpc-card__head,\n.dshpc-card--bar-right .dshpc-card__head{flex:1 1 auto}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u8272\u6761\uFF1A\u5DE6/\u53F3 = \u7AD6\u5411\u6761\uFF08\u9AD8\u5EA6\u8DDF\u5185\u5BB9\uFF0C\u6700\u5C0F\u4E00\u884C\uFF09\uFF1B\u4E0A/\u4E0B = \u6A2A\u5411\u6761\uFF08\u957F\u5EA6\u9ED8\u8BA4\u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\u3002\n   \u53F3/\u4E0B\u65B9\u4F4D\u9760 order \u6392\u5230\u5934\u90E8\u4E4B\u540E\uFF0CDOM \u987A\u5E8F\u59CB\u7EC8\u4E0D\u53D8\u3002 */\n.dshpc-card__bar{flex:none;background:var(--card-accent);border-radius:var(--dshpc-radius-xs)}\n.dshpc-card--bar-left .dshpc-card__bar,\n.dshpc-card--bar-right .dshpc-card__bar{width:var(--card-bar-size);align-self:stretch;min-height:var(--dshpc-line-md)}\n.dshpc-card--bar-top .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{width:var(--card-bar-length);height:var(--card-bar-size);align-self:flex-start}\n.dshpc-card--bar-right .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{order:1}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500\n   \u5E95\u8272 / \u65B9\u89D2 / \u5360\u4F4D\u8FB9\u6846\u7531 Surface \u7684\u4E09\u6761\u4FEE\u9970\u7C7B\u63D0\u4F9B\uFF08Card.ts \u6309 kind \u4F20\uFF09\uFF0C\u6B64\u5904\u53EA\u7BA1\u5185\u8DDD\u4E0E\u6761\u5B50\u3002 */\n.dshpc-card.dshpc-card--strip{\n  --card-bar-size:4px;--card-bar-inset:0;\n  padding:12px 12px 12px 20px;\n  background:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 20px = 16 \u7559\u767D + 4 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002\n   \u7279\u5F02\u6027 0,3,0\uFF1A\u538B\u8FC7\u4E0A\u9762 .dshpc-card--bar-left .dshpc-card__bar \u7684\u5BBD\u5EA6\u89C4\u5219\uFF0C\u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u3002 */\n.dshpc-card.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;align-self:auto}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1ASurface \u5916\u6846\uFF08\u5E95 + 1px \u5B9E\u8272\u8FB9\u6846 + \u5706\u89D2 12\uFF09+ \u8272\u6761\u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD \u2500\u2500\n   \u5185\u8DDD\u7528 0,2,0 / 0,3,0 \u7684\u957F\u5199\u6CD5\uFF1A\u9AD8\u8FC7 .dshpc-surface \u7684 padding \u7B80\u5199\uFF0C\u4E0E\u4E24\u4EFD CSS \u7684\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u3002 */\n.dshpc-card.dshpc-card--bordered{padding:14px}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-left{padding-left:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-right{padding-right:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-top{padding-top:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-bottom{padding-bottom:var(--card-bar-inset)}\n\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n/* \u7BAD\u5934\u662F svg\uFF08Chevron\uFF09\uFF0C\u4E0D\u662F\u5B57\u5F62 \u21D2 \u4E0D\u8981 font-size\uFF1Binline-flex \u514D\u6389 svg \u7684\u57FA\u7EBF\u7559\u767D\u3002 */\n.dshpc-card__caret{display:inline-flex;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
+var CARD_CSS = "\n/* \u2500\u2500 Card / StripCard\uFF1ASurface \u5916\u6846 + \u5934\u90E8\u5951\u7EA6 + \u8272\u6761 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u6846\uFF08\u5E95 / \u8FB9\u6846 / \u5706\u89D2 / \u5185\u8DDD\uFF09\u5168\u90E8\u6765\u81EA .dshpc-surface\uFF08src/ui/surface.css\uFF09\uFF1A\n   \u672C\u6587\u4EF6**\u4E0D\u518D\u5199 border / border-radius**\uFF0C\u5706\u89D2\u5951\u7EA6\u56E0\u6B64\u53EA\u6709\u4E00\u4E2A\u5B9A\u4E49\u70B9\uFF08\u5BB9\u5668\u6863 = 12\uFF09\u3002\n   \u8FD9\u91CC\u53EA\u7BA1\u4E24\u4EF6 Surface \u4E0D\u8BE5\u77E5\u9053\u7684\u4E8B\uFF1A\u8272\u6761\u51E0\u4F55\u3001\u5934\u90E8\u5E03\u5C40\u3002\n\n   \u8272\u6761\u51E0\u4F55\u9ED8\u8BA4\u503C\u90FD\u53EF\u88AB props \u8986\u76D6\uFF08Card.ts \u5199\u5BF9\u5E94\u7684 CSS \u53D8\u91CF\uFF09\uFF1A\n     --card-bar-size   \u6761\u5B50\u7C97\u7EC6\n     --card-bar-inset  \u6761\u5B50\u8DDD\u5361\u7247\u8FB9\u7F18\u7684\u8DDD\u79BB\uFF08= \u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD\uFF09\n     --card-bar-gap    \u6761\u5B50\u8DDD\u5185\u5BB9\u7684\u8DDD\u79BB\uFF08= body \u7684 gap\uFF09\n     --card-bar-length \u4E0A\u4E0B\u65B9\u4F4D\u65F6\u7684\u6761\u957F\uFF08100% = \u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\n   \u8FD9\u4E9B\u53D8\u91CF\u53EA\u5728\u672C\u6587\u4EF6\u6D88\u8D39\uFF083 \u4EFD\u6587\u4EF6\u4E00\u8D77\u5F15\u65F6\uFF0C\u8DE8\u6587\u4EF6\u5F15\u7528\u522B\u5904\u7684\u53D8\u91CF\u4F1A\u9759\u9ED8\u5931\u6548\uFF09\uFF0C\n   \u6240\u4EE5\u9ED8\u8BA4\u503C\u5FC5\u987B\u5199\u5728\u8FD9\u91CC\uFF0C\u800C\u4E0D\u662F\u4EE4\u724C\u6216\u522B\u7684\u76AE\u80A4\u91CC\u3002 */\n.dshpc-card{\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n  --card-bar-size:6px;\n  --card-bar-inset:12px;\n  --card-bar-gap:12px;\n  --card-bar-length:100%;\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n/* \u6269\u5C55\u516B\u8272\uFF082026-10-29\uFF09\uFF1A\u8272\u6761 + \u6D45\u5E95\u540C\u6E90\uFF0C\u8F6F\u5E95\u8D70\u5404\u81EA -soft\u3002 */\n.dshpc-card--purple{--card-accent:var(--dshpc-purple);--card-accent-soft:var(--dshpc-purple-soft)}\n.dshpc-card--pink{--card-accent:var(--dshpc-pink);--card-accent-soft:var(--dshpc-pink-soft)}\n.dshpc-card--cyan{--card-accent:var(--dshpc-cyan);--card-accent-soft:var(--dshpc-cyan-soft)}\n.dshpc-card--teal{--card-accent:var(--dshpc-teal);--card-accent-soft:var(--dshpc-teal-soft)}\n.dshpc-card--orange{--card-accent:var(--dshpc-orange);--card-accent-soft:var(--dshpc-orange-soft)}\n.dshpc-card--indigo{--card-accent:var(--dshpc-indigo);--card-accent-soft:var(--dshpc-indigo-soft)}\n.dshpc-card--rose{--card-accent:var(--dshpc-rose);--card-accent-soft:var(--dshpc-rose-soft)}\n.dshpc-card--slate{--card-accent:var(--dshpc-slate);--card-accent-soft:var(--dshpc-slate-soft)}\n\n/* body = \u8272\u6761 + \u5934\u90E8\u3002\u65B9\u5411\u8DDF\u7740\u6761\u5B50\u8D34\u7684\u8FB9\u5207 \u21D2 \u56DB\u4E2A\u65B9\u4F4D\u53EA\u662F\u300C\u6362\u4E00\u4E2A\u65B9\u5411\u7684 flex \u9879\u300D\uFF0C\n   \u4E0D\u7528\u4E3A\u6BCF\u4E2A\u65B9\u4F4D\u5404\u5199\u4E00\u5957\u5B9A\u4F4D\u3002 */\n.dshpc-card__body{display:flex;gap:var(--card-bar-gap);min-width:0}\n.dshpc-card--bar-top .dshpc-card__body,\n.dshpc-card--bar-bottom .dshpc-card__body{flex-direction:column}\n\n/* \u5934\u90E8\u4E00\u884C = \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card--bar-left .dshpc-card__head,\n.dshpc-card--bar-right .dshpc-card__head{flex:1 1 auto}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u8272\u6761\uFF1A\u5DE6/\u53F3 = \u7AD6\u5411\u6761\uFF08\u9AD8\u5EA6\u8DDF\u5185\u5BB9\uFF0C\u6700\u5C0F\u4E00\u884C\uFF09\uFF1B\u4E0A/\u4E0B = \u6A2A\u5411\u6761\uFF08\u957F\u5EA6\u9ED8\u8BA4\u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\u3002\n   \u53F3/\u4E0B\u65B9\u4F4D\u9760 order \u6392\u5230\u5934\u90E8\u4E4B\u540E\uFF0CDOM \u987A\u5E8F\u59CB\u7EC8\u4E0D\u53D8\u3002 */\n.dshpc-card__bar{flex:none;background:var(--card-accent);border-radius:var(--dshpc-radius-xs)}\n.dshpc-card--bar-left .dshpc-card__bar,\n.dshpc-card--bar-right .dshpc-card__bar{width:var(--card-bar-size);align-self:stretch;min-height:var(--dshpc-line-md)}\n.dshpc-card--bar-top .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{width:var(--card-bar-length);height:var(--card-bar-size);align-self:flex-start}\n.dshpc-card--bar-right .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{order:1}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500\n   \u5E95\u8272 / \u65B9\u89D2 / \u5360\u4F4D\u8FB9\u6846\u7531 Surface \u7684\u4E09\u6761\u4FEE\u9970\u7C7B\u63D0\u4F9B\uFF08Card.ts \u6309 kind \u4F20\uFF09\uFF0C\u6B64\u5904\u53EA\u7BA1\u5185\u8DDD\u4E0E\u6761\u5B50\u3002 */\n.dshpc-card.dshpc-card--strip{\n  --card-bar-size:4px;--card-bar-inset:0;\n  padding:12px 12px 12px 20px;\n  /* \u5E95\u8272\u6539\u8D70 Surface \u7684 --surface-bg \u53D8\u91CF\uFF08surface.css:7-8 \u5951\u7EA6\uFF09\uFF1A\u4E0D\u80FD\u5199 background \u5C5E\u6027\uFF0C\n     \u5426\u5219 hover / \u900F\u660E\u6863\u8981\u8986\u76D6\u65F6\u4F1A\u88AB\u5C5E\u6027\u5C42\u6253\u67B6\uFF08\u5144\u5F1F\u9879\u76EE\u66FE\u7528 background-image \u6E10\u53D8\u7ED5\u8FC7\uFF09\u3002 */\n  --surface-bg:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 20px = 16 \u7559\u767D + 4 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002\n   \u7279\u5F02\u6027 0,3,0\uFF1A\u538B\u8FC7\u4E0A\u9762 .dshpc-card--bar-left .dshpc-card__bar \u7684\u5BBD\u5EA6\u89C4\u5219\uFF0C\u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u3002 */\n.dshpc-card.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;align-self:auto}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1ASurface \u5916\u6846\uFF08\u5E95 + 1px \u5B9E\u8272\u8FB9\u6846 + \u5706\u89D2 12\uFF09+ \u8272\u6761\u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD \u2500\u2500\n   \u5185\u8DDD\u7528 0,2,0 / 0,3,0 \u7684\u957F\u5199\u6CD5\uFF1A\u9AD8\u8FC7 .dshpc-surface \u7684 padding \u7B80\u5199\uFF0C\u4E0E\u4E24\u4EFD CSS \u7684\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u3002 */\n.dshpc-card.dshpc-card--bordered{padding:14px}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-left{padding-left:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-right{padding-right:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-top{padding-top:var(--card-bar-inset)}\n.dshpc-card.dshpc-card--bordered.dshpc-card--bar-bottom{padding-bottom:var(--card-bar-inset)}\n\n/* \u2500\u2500 \u5916\u89C2\u8F74\uFF082026-11-07\uFF09\uFF1A\u6574\u5361 hover + \u5E95\u8272\u5F00\u5173 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u53EA\u6539 --surface-bg \u4E00\u4E2A\u53D8\u91CF\uFF0CSurface \u57FA\u7C7B\u7684 background:var(--surface-bg) \u81EA\u52A8\u5403\u5230\uFF1B\n   \u4E0D\u5199 background / background-image\uFF0C\u514D\u5F97\u8DDF\u6D45\u5E95\u5C5E\u6027\u6253\u67B6\u3002\n   \u987A\u5E8F\u5373\u4F18\u5148\u7EA7\uFF1Astrip \u6D45\u5E95(0,2,0) \u2192 no-fill \u900F\u660E(0,2,0\uFF0C\u9760\u540E\u80DC) \u2192 hoverable:hover(0,3,0\uFF0C\u6700\u9AD8)\u3002 */\n.dshpc-card.dshpc-card--no-fill{--surface-bg:transparent}\n/* \u5F00\u5173\u6253\u5F00\u5373\u58F0\u660E\u300C\u6574\u5361\u53EF\u4EA4\u4E92\u300D\uFF1A\u5149\u6807\u8DDF\u7740\u4E00\u8D77\u53D8\uFF0C\u522B\u53EA\u6362\u80CC\u666F\u4E0D\u6539\u624B\u52BF\u3002 */\n.dshpc-card.dshpc-card--hoverable{cursor:pointer}\n.dshpc-card.dshpc-card--hoverable:hover{--surface-bg:var(--dshpc-card-hover)}\n\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n/* \u7BAD\u5934\u662F svg\uFF08Chevron\uFF09\uFF0C\u4E0D\u662F\u5B57\u5F62 \u21D2 \u4E0D\u8981 font-size\uFF1Binline-flex \u514D\u6389 svg \u7684\u57FA\u7EBF\u7559\u767D\u3002 */\n.dshpc-card__caret{display:inline-flex;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n.dshpc-card__panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--dshpc-border-faint)}\n";
 
 // dist/ui/display/surface-css.generated.js
 var SURFACE_CSS = "\n/* \u2500\u2500 Surface \xB7 \u7EAF\u6846\u5BB9\u5668 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u53EA\u56DE\u7B54\u300C\u4E00\u5757\u9762\u957F\u4EC0\u4E48\u6837\u300D\uFF1A\u5E95 / \u8FB9 / \u5706\u89D2 / \u5185\u8DDD\uFF0C\u56DB\u6839\u8F74\uFF0C\u96F6\u4E1A\u52A1\u8BED\u4E49\u3002\n   \u5B83\u662F**\u5706\u89D2\u5951\u7EA6\u7684\u552F\u4E00\u771F\u6E90**\uFF1A\u5BB9\u5668\u6863 = --dshpc-radius-md(12)\uFF0C\u4E0E Button / Input \u540C\u6863\uFF0C\n   \u5916\u6846\u6C38\u8FDC\u4E0D\u5C0F\u4E8E\u91CC\u9762\u7684\u63A7\u4EF6 \u2014\u2014 \u675C\u7EDD\u300C\u5361\u7247 8 < \u6309\u94AE 12\u300D\u8FD9\u7C7B\u5012\u6302\uFF082026-11-01\uFF09\u3002\n\n   \u6240\u6709\u8F74\u90FD\u7528**\u53D8\u91CF**\u8868\u8FBE\uFF0C\u4FEE\u9970\u7C7B\u53EA\u6539\u8FD9\u4E9B\u53D8\u91CF\u3001\u4E0D\u6539\u5C5E\u6027\uFF1A\n   \u6D88\u8D39\u65B9\uFF08Card\u3001\u4E0B\u6E38\u63D2\u4EF6\uFF09\u81EA\u5DF1\u5199\u89C4\u5219\u65F6\uFF0C\u65E0\u8BBA\u4E24\u4EFD CSS \u8C01\u5148\u6CE8\u5165\uFF0C\u80DC\u8D1F\u90FD\u4E0D\u4F9D\u8D56\u987A\u5E8F\u3002\n\n     tone    plain(\u9ED8\u8BA4 surface-1) / raised / sunken / subtle\n     border  \u9ED8\u8BA4 1px \u5B9E\u7EBF\uFF1Bfaint \u66F4\u6DE1\uFF1Bnone \u900F\u660E\uFF08\u4FDD\u7559 1px \u5360\u4F4D\uFF0C\u4E0D\u8DF3\u9AD8\uFF09\uFF1B\n             dashed \u865A\u7EBF\uFF08\u5360\u4F4D\u6846\u7528\uFF0C\u7EBF\u8272\u4ECD\u662F border token\uFF09\n     radius  \u9ED8\u8BA4 md\uFF1Bnone / sm / lg\n     padding \u9ED8\u8BA4\u7531\u8C03\u7528\u65B9\u9009\u6863\uFF1Bnone / sm(8) / md(12) / lg(16)\n   \u57FA\u7C7B\u4E0D\u5E26\u5185\u8DDD\uFF1A\u5BB9\u5668\u8981\u81EA\u5DF1\u7B97\u56DB\u8FB9\u5185\u8DDD\u65F6\uFF08\u5982 Card \u7684\u8272\u6761\u8D34\u8FB9\uFF09\uFF0C\u4E0D\u4F20 pad \u6863\u5373\u53EF\uFF0C\u4E0D\u9700\u8981\u8986\u76D6\u3002 */\n.dshpc-surface{\n  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;\n  --surface-bg:var(--dshpc-surface-1);\n  --surface-border:var(--dshpc-border);\n  --surface-border-style:solid;\n  --surface-radius:var(--dshpc-radius-md);\n  --surface-pad:0;\n  border:1px var(--surface-border-style) var(--surface-border);\n  border-radius:var(--surface-radius);\n  background:var(--surface-bg);\n  padding:var(--surface-pad);\n}\n.dshpc-surface--tone-raised{--surface-bg:var(--dshpc-surface-raised)}\n.dshpc-surface--tone-sunken{--surface-bg:var(--dshpc-surface-sunken)}\n.dshpc-surface--tone-subtle{--surface-bg:var(--dshpc-chip-bg)}\n.dshpc-surface--border-faint{--surface-border:var(--dshpc-border-faint)}\n.dshpc-surface--border-none{--surface-border:transparent}\n.dshpc-surface--border-dashed{--surface-border-style:dashed}\n.dshpc-surface--radius-none{--surface-radius:0}\n.dshpc-surface--radius-sm{--surface-radius:var(--dshpc-radius-sm)}\n.dshpc-surface--radius-lg{--surface-radius:var(--dshpc-radius-lg)}\n.dshpc-surface--pad-none{--surface-pad:0}\n.dshpc-surface--pad-sm{--surface-pad:var(--dshpc-space-2)}\n.dshpc-surface--pad-md{--surface-pad:var(--dshpc-space-3)}\n.dshpc-surface--pad-lg{--surface-pad:var(--dshpc-space-4)}\n";
@@ -6323,6 +6323,8 @@ function CardShell(kind, props) {
     kind === "strip" ? "dshpc-card--strip" : "dshpc-card--bordered",
     `dshpc-card--bar-${side}`,
     isPreset ? `dshpc-card--${accent}` : "",
+    props.hoverable === true ? "dshpc-card--hoverable" : "",
+    props.filled === false ? "dshpc-card--no-fill" : "",
     props.className ?? ""
   ].filter((s) => s !== "").join(" ");
   const vars = {};
@@ -62173,8 +62175,8 @@ var DICT2 = {
     demoBarTitle: "\u8272\u6761\u65B9\u4F4D\uFF1A\u4E0A\u4E0B\u5DE6\u53F3",
     surfaceHint: "\u4E00\u5757\u9762\uFF1A\u5E95 / \u8FB9\u6846 / \u5706\u89D2 / \u5185\u8DDD\u56DB\u8F74",
     barHint: "\u8272\u6761\u6362\u8FB9\u3001\u8DDD\u8FB9\u3001\u95F4\u8DDD\u3001\u957F\u5EA6\u90FD\u53EF\u8C03",
-    cardHint: "\u590D\u7528 Surface \u5916\u6846 + 6px \u5DE6\u7F18\u8272\u6761",
-    stripHint: "\u540C\u8272\u7CFB\u6D45\u5E95 + 4px \u5DE6\u7F18\u8272\u6761",
+    cardHint: "\u590D\u7528 Surface \u5916\u6846 + 6px \u5DE6\u7F18\u8272\u6761 \xB7 \u5E26\u5E95 / \u900F\u660E\u56DB\u6863 \xB7 hover \u5F00\u542F\u5E26\u624B\u52BF",
+    stripHint: "\u540C\u8272\u7CFB\u6D45\u5E95 + 4px \u5DE6\u7F18\u8272\u6761 \xB7 \u5E26\u5E95 / \u900F\u660E\u56DB\u6863 \xB7 hover \u5F00\u542F\u5E26\u624B\u52BF",
     sectionHeadTitle: "SectionHead \u5206\u533A\u6807\u9898",
     chipHint: "tone \u8BED\u4E49\u8272 \xD7 size \u4E24\u8F74",
     chipWidthTitle: "\u5BBD\u5EA6\uFF08\u56FA\u5B9A\u5BBD / \u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\uFF09",
@@ -62441,8 +62443,8 @@ var DICT2 = {
     demoBarTitle: "Rail side: top / right / bottom / left",
     surfaceHint: "A surface: fill, border, radius, padding",
     barHint: "Bar side, inset, gap and length",
-    cardHint: "Surface frame plus a 6px accent bar",
-    stripHint: "Tinted fill with a 4px accent bar",
+    cardHint: "Surface frame + 6px rail \xB7 filled / transparent / hover + pointer",
+    stripHint: "Tinted fill + 4px rail \xB7 filled / transparent / hover + pointer",
     sectionHeadTitle: "SectionHead",
     chipHint: "tone and size, two axes",
     chipWidthTitle: "Width (fixed / min / max)",
@@ -64917,6 +64919,10 @@ var docData = {
       {
         "zh": "\u5934\u90E8\u6574\u4F53\u5782\u76F4\u5C45\u4E2D\uFF0C`action` \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\u5373\u5C45\u4E2D\u3002\u989C\u8272\u5168\u8D70 token\uFF0C\u660E\u6697\u8DDF\u968F\u5BBF\u4E3B\u3002",
         "en": "The header centers vertically as a whole; drop a bare element into `action` and it centers. Colors come from tokens, so light/dark follows the host."
+      },
+      {
+        "zh": "`hoverable` \u5F00\u542F\u540E**\u6574\u5361**\u60AC\u505C\u53D8\u8272\u3001\u540C\u65F6\u628A\u5149\u6807\u6539\u6210 `pointer`\uFF0C\u7EDF\u4E00\u5403 `--dshpc-card-hover`\uFF08\u4EAE 7% \u84DD / \u6697 13% \u84DD\uFF09\uFF0C\u9ED8\u8BA4\u5173\uFF1B`filled` \u5207\u5E95\u8272\uFF0C\u9ED8\u8BA4\u6709\u5E95\uFF08Card = surface-1\uFF0CStripCard = accent \u6D45\u5E95\uFF09\uFF0C`false` \u65F6\u5E95\u900F\u660E\u4F46\u8FB9\u6846\u4ECD\u5728\u3002\u4E24\u6839\u8F74\u90FD\u53EA\u6539 `--surface-bg`\uFF0C\u63D2\u4EF6\u4E0D\u7528\u518D\u81EA\u5DF1\u5199 `:hover` \u89C4\u5219\uFF1B\u900F\u660E\u5E95 + hover \u4E5F\u7167\u5E38\u53D8\u8272\u3002",
+        "en": "`hoverable` (default off) changes the **whole card** on hover and switches the cursor to `pointer`, using `--dshpc-card-hover` (7% blue light / 13% blue dark). `filled` (default on) controls the background \u2014 Card uses surface-1, StripCard the accent tint; `false` makes it transparent but keeps the border. Both axes only rewrite `--surface-bg`, so plugins no longer need their own `:hover` rules; a transparent card still changes color on hover."
       }
     ],
     "api": [
@@ -64987,6 +64993,24 @@ var docData = {
             }
           },
           {
+            "name": "hoverable",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "\u6574\u5361 hover \u53D8\u8272 + \u5149\u6807\u53D8 pointer\uFF0C\u7EDF\u4E00 --dshpc-card-hover\uFF1B\u9ED8\u8BA4\u5173",
+              "en": "Whole-card hover plus a pointer cursor, using --dshpc-card-hover; default off"
+            }
+          },
+          {
+            "name": "filled",
+            "type": "boolean",
+            "def": "'true'",
+            "desc": {
+              "zh": "\u662F\u5426\u5E26\u5E95\u8272\uFF1Bfalse \u65F6\u5E95\u900F\u660E\u3001\u8FB9\u6846\u4ECD\u5728\u3002\u9ED8\u8BA4\u6709\u5E95\uFF08Card = surface-1 / StripCard = accent \u6D45\u5E95\uFF09",
+              "en": "Background fill; false makes it transparent while keeping the border. Default on (Card = surface-1 / StripCard = accent tint)"
+            }
+          },
+          {
             "name": "className / style",
             "type": "\u2014",
             "def": "\u2014",
@@ -65002,7 +65026,7 @@ var docData = {
       {
         "id": "ui-card-example",
         "lang": "tsx",
-        "src": "import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'\n\nh(Card, {\n  accent: 'warning',\n  bar: { side: 'left', inset: 12, gap: 12 },   // \u8272\u6761\u53EF\u653E left / right / top / bottom\n  action: h(Button, { size: 'sm', variant: 'ghost' }, '\u8DF3\u8FC7'),\n},\n  h('div', null, '\u6807\u9898'),\n  h(Chip, null, '#npm'),\n)\n\nh(StripCard, {\n  accent: 'success',\n  expanded: open, onToggle: () => setOpen(!open),\n  panel: h('div', null, '\u5C55\u5F00\u8BE6\u60C5'),\n}, h('div', null, '\u6807\u9898 + \u5143\u4FE1\u606F'))"
+        "src": "import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'\n\nh(Card, {\n  accent: 'warning',\n  bar: { side: 'left', inset: 12, gap: 12 },   // \u8272\u6761\u53EF\u653E left / right / top / bottom\n  hoverable: true,                             // \u6574\u5361 hover \u53D8\u8272\uFF08\u9ED8\u8BA4\u5173\uFF09\n  action: h(Button, { size: 'sm', variant: 'ghost' }, '\u8DF3\u8FC7'),\n},\n  h('div', null, '\u6807\u9898'),\n  h(Chip, null, '#npm'),\n)\n\nh(StripCard, {\n  accent: 'success',\n  hoverable: true, filled: false,              // \u5E95\u8272\u5173\u6389 = \u900F\u660E\uFF08\u9ED8\u8BA4\u6709\u5E95\uFF09\n  expanded: open, onToggle: () => setOpen(!open),\n  panel: h('div', null, '\u5C55\u5F00\u8BE6\u60C5'),\n}, h('div', null, '\u6807\u9898 + \u5143\u4FE1\u606F'))"
       }
     ]
   },
@@ -68586,6 +68610,45 @@ function CardPage() {
           (0, import_react92.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
           (0, import_react92.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
         ),
+        // 外观轴四档：带底（默认）/ 透明 / 整卡 hover / 透明 + 整卡 hover
+        // 外层垫一层 sunken 底，白面与透明面的差别才看得出来
+        (0, import_react92.createElement)(
+          "div",
+          {
+            style: {
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "8px",
+              padding: "8px",
+              background: "var(--dshpc-surface-sunken)",
+              borderRadius: "var(--dshpc-radius-md)"
+            }
+          },
+          (0, import_react92.createElement)(
+            Card,
+            { accent: "business", filled: true },
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "filled: true\uFF08\u5E26\u5E95\u8272\uFF09"),
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u9ED8\u8BA4\u6863 \xB7 surface-1")
+          ),
+          (0, import_react92.createElement)(
+            Card,
+            { accent: "business", filled: false },
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "filled: false"),
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u5E95\u8272\u900F\u660E \xB7 \u8FB9\u6846\u4ECD\u5728")
+          ),
+          (0, import_react92.createElement)(
+            Card,
+            { accent: "business", hoverable: true },
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "hoverable: true"),
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u6574\u5361\u53D8\u8272 + \u624B\u52BF \xB7 --dshpc-card-hover")
+          ),
+          (0, import_react92.createElement)(
+            Card,
+            { accent: "business", hoverable: true, filled: false },
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "hoverable + filled: false"),
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u900F\u660E\u5E95\u79FB\u4E0A\u53BB\u4E5F\u53D8\u8272 + \u624B\u52BF")
+          )
+        ),
         // accent 速览：单行紧凑卡，只看色条档位
         (0, import_react92.createElement)(
           "div",
@@ -68649,6 +68712,45 @@ function CardPage() {
           },
           (0, import_react92.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
           (0, import_react92.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
+        ),
+        // 外观轴四档：带浅底（默认）/ 透明 / 整卡 hover / 透明 + 整卡 hover
+        // 浅底同样走 --surface-bg，hover / 透明档才盖得住
+        (0, import_react92.createElement)(
+          "div",
+          {
+            style: {
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "8px",
+              padding: "8px",
+              background: "var(--dshpc-surface-sunken)",
+              borderRadius: "var(--dshpc-radius-md)"
+            }
+          },
+          (0, import_react92.createElement)(
+            StripCard,
+            { accent: "business", filled: true },
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "filled: true\uFF08\u5E26\u6D45\u5E95\uFF09"),
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u9ED8\u8BA4\u6863 \xB7 accent soft")
+          ),
+          (0, import_react92.createElement)(
+            StripCard,
+            { accent: "business", filled: false },
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "filled: false"),
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u5E95\u8272\u900F\u660E \xB7 \u8272\u6761\u4E0E\u8FB9\u6846\u4ECD\u5728")
+          ),
+          (0, import_react92.createElement)(
+            StripCard,
+            { accent: "business", hoverable: true },
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "hoverable: true"),
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u6574\u5361\u53D8\u8272 + \u624B\u52BF \xB7 --dshpc-card-hover")
+          ),
+          (0, import_react92.createElement)(
+            StripCard,
+            { accent: "business", hoverable: true, filled: false },
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "hoverable + filled: false"),
+            (0, import_react92.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u900F\u660E\u5E95\u79FB\u4E0A\u53BB\u4E5F\u53D8\u8272 + \u624B\u52BF")
+          )
         ),
         // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
         (0, import_react92.createElement)(
@@ -70832,9 +70934,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.3"}`],
-            [t3("buildDemo"), `v${"0.35.3"}`],
-            [t3("buildStamp"), "261107-191143-900"]
+            [t3("buildCore"), `v${"0.35.4"}`],
+            [t3("buildDemo"), `v${"0.35.4"}`],
+            [t3("buildStamp"), "261107-212724-975"]
           ].map(
             ([label, value]) => (0, import_react98.createElement)(
               "tr",
@@ -71150,9 +71252,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react100.createElement)("span", null, `core v${"0.35.3"}`),
-          (0, import_react100.createElement)("span", null, `demo v${"0.35.3"}`),
-          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261107-191143-900")
+          (0, import_react100.createElement)("span", null, `core v${"0.35.4"}`),
+          (0, import_react100.createElement)("span", null, `demo v${"0.35.4"}`),
+          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261107-212724-975")
         )
       )
     ),

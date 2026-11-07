@@ -64,7 +64,9 @@
 .dshpc-card.dshpc-card--strip{
   --card-bar-size:4px;--card-bar-inset:0;
   padding:12px 12px 12px 20px;
-  background:var(--card-accent-soft,transparent);
+  /* 底色改走 Surface 的 --surface-bg 变量（surface.css:7-8 契约）：不能写 background 属性，
+     否则 hover / 透明档要覆盖时会被属性层打架（兄弟项目曾用 background-image 渐变绕过）。 */
+  --surface-bg:var(--card-accent-soft,transparent);
 }
 /* 左内边距 20px = 16 留白 + 4 条宽 ⇒ 内容从色条右缘起算；色条绝对定位通高，跟着内容高度自适应。
    特异性 0,3,0：压过上面 .dshpc-card--bar-left .dshpc-card__bar 的宽度规则，与注入顺序无关。 */
@@ -77,6 +79,15 @@
 .dshpc-card.dshpc-card--bordered.dshpc-card--bar-right{padding-right:var(--card-bar-inset)}
 .dshpc-card.dshpc-card--bordered.dshpc-card--bar-top{padding-top:var(--card-bar-inset)}
 .dshpc-card.dshpc-card--bordered.dshpc-card--bar-bottom{padding-bottom:var(--card-bar-inset)}
+
+/* ── 外观轴（2026-11-07）：整卡 hover + 底色开关 ───────────────────────────
+   只改 --surface-bg 一个变量，Surface 基类的 background:var(--surface-bg) 自动吃到；
+   不写 background / background-image，免得跟浅底属性打架。
+   顺序即优先级：strip 浅底(0,2,0) → no-fill 透明(0,2,0，靠后胜) → hoverable:hover(0,3,0，最高)。 */
+.dshpc-card.dshpc-card--no-fill{--surface-bg:transparent}
+/* 开关打开即声明「整卡可交互」：光标跟着一起变，别只换背景不改手势。 */
+.dshpc-card.dshpc-card--hoverable{cursor:pointer}
+.dshpc-card.dshpc-card--hoverable:hover{--surface-bg:var(--dshpc-card-hover)}
 
 .dshpc-card__toggle{
   display:inline-flex;align-items:center;justify-content:center;

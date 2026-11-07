@@ -1422,6 +1422,31 @@ export function CardPage(): ReturnType<typeof h> {
           h('div', { style: { fontWeight: 600, fontSize: 'var(--dshpc-font-md)' } }, 'DAY:1 - Docker 镜像版本检查器'),
           h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', marginTop: '4px' } }, 'NAS-Docker · 计划 02:00 · 实际 02:00 · 时长 04:02'),
         ),
+        // 外观轴四档：带底（默认）/ 透明 / 整卡 hover / 透明 + 整卡 hover
+        // 外层垫一层 sunken 底，白面与透明面的差别才看得出来
+        h('div', {
+          style: {
+            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', padding: '8px',
+            background: 'var(--dshpc-surface-sunken)', borderRadius: 'var(--dshpc-radius-md)',
+          },
+        },
+          h(Card, { accent: 'business', filled: true },
+            h('div', { style: { fontSize: 'var(--dshpc-font-md)' } }, 'filled: true（带底色）'),
+            h('div', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', marginTop: '4px' } }, '默认档 · surface-1'),
+          ),
+          h(Card, { accent: 'business', filled: false },
+            h('div', { style: { fontSize: 'var(--dshpc-font-md)' } }, 'filled: false'),
+            h('div', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', marginTop: '4px' } }, '底色透明 · 边框仍在'),
+          ),
+          h(Card, { accent: 'business', hoverable: true },
+            h('div', { style: { fontSize: 'var(--dshpc-font-md)' } }, 'hoverable: true'),
+            h('div', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', marginTop: '4px' } }, '整卡变色 + 手势 · --dshpc-card-hover'),
+          ),
+          h(Card, { accent: 'business', hoverable: true, filled: false },
+            h('div', { style: { fontSize: 'var(--dshpc-font-md)' } }, 'hoverable + filled: false'),
+            h('div', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', marginTop: '4px' } }, '透明底移上去也变色 + 手势'),
+          ),
+        ),
         // accent 速览：单行紧凑卡，只看色条档位
         h(
           'div',
@@ -1472,6 +1497,31 @@ export function CardPage(): ReturnType<typeof h> {
         },
           h('div', { style: { fontWeight: 600, fontSize: 'var(--dshpc-font-md)' } }, '执行成功'),
           h('div', { style: { color: 'var(--dshpc-fg-3)', fontSize: 'var(--dshpc-font-xs)', marginTop: '4px' } }, '耗时 12s · 3 个文件变更'),
+        ),
+        // 外观轴四档：带浅底（默认）/ 透明 / 整卡 hover / 透明 + 整卡 hover
+        // 浅底同样走 --surface-bg，hover / 透明档才盖得住
+        h('div', {
+          style: {
+            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', padding: '8px',
+            background: 'var(--dshpc-surface-sunken)', borderRadius: 'var(--dshpc-radius-md)',
+          },
+        },
+          h(StripCard, { accent: 'business', filled: true },
+            h('div', { style: { fontSize: 'var(--dshpc-font-md)' } }, 'filled: true（带浅底）'),
+            h('div', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', marginTop: '4px' } }, '默认档 · accent soft'),
+          ),
+          h(StripCard, { accent: 'business', filled: false },
+            h('div', { style: { fontSize: 'var(--dshpc-font-md)' } }, 'filled: false'),
+            h('div', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', marginTop: '4px' } }, '底色透明 · 色条与边框仍在'),
+          ),
+          h(StripCard, { accent: 'business', hoverable: true },
+            h('div', { style: { fontSize: 'var(--dshpc-font-md)' } }, 'hoverable: true'),
+            h('div', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', marginTop: '4px' } }, '整卡变色 + 手势 · --dshpc-card-hover'),
+          ),
+          h(StripCard, { accent: 'business', hoverable: true, filled: false },
+            h('div', { style: { fontSize: 'var(--dshpc-font-md)' } }, 'hoverable + filled: false'),
+            h('div', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', marginTop: '4px' } }, '透明底移上去也变色 + 手势'),
+          ),
         ),
         // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
         h(

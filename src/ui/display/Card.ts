@@ -45,6 +45,10 @@ export interface CardSharedProps {
   className?: string
   style?: CSSProperties
   translate?: Translate
+  /** 整卡 hover 变色：统一走 --dshpc-card-hover。默认 false，纯新增、不改现有外观。 */
+  hoverable?: boolean
+  /** 是否带底色：默认 true（Card = surface-1，StripCard = accent 浅底）；false 时底透明、边框仍在。 */
+  filled?: boolean
 }
 
 /** 数字按 px 写进 CSS 变量，字符串原样透传。 */
@@ -81,6 +85,8 @@ function CardShell(
     kind === 'strip' ? 'dshpc-card--strip' : 'dshpc-card--bordered',
     `dshpc-card--bar-${side}`,
     isPreset ? `dshpc-card--${accent}` : '',
+    props.hoverable === true ? 'dshpc-card--hoverable' : '',
+    props.filled === false ? 'dshpc-card--no-fill' : '',
     props.className ?? '',
   ]
     .filter((s) => s !== '')

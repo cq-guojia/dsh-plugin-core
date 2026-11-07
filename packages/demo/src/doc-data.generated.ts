@@ -2260,6 +2260,10 @@ export const docData = {
       {
         "zh": "头部整体垂直居中，`action` 里裸放一个元素即居中。颜色全走 token，明暗跟随宿主。",
         "en": "The header centers vertically as a whole; drop a bare element into `action` and it centers. Colors come from tokens, so light/dark follows the host."
+      },
+      {
+        "zh": "`hoverable` 开启后**整卡**悬停变色、同时把光标改成 `pointer`，统一吃 `--dshpc-card-hover`（亮 7% 蓝 / 暗 13% 蓝），默认关；`filled` 切底色，默认有底（Card = surface-1，StripCard = accent 浅底），`false` 时底透明但边框仍在。两根轴都只改 `--surface-bg`，插件不用再自己写 `:hover` 规则；透明底 + hover 也照常变色。",
+        "en": "`hoverable` (default off) changes the **whole card** on hover and switches the cursor to `pointer`, using `--dshpc-card-hover` (7% blue light / 13% blue dark). `filled` (default on) controls the background — Card uses surface-1, StripCard the accent tint; `false` makes it transparent but keeps the border. Both axes only rewrite `--surface-bg`, so plugins no longer need their own `:hover` rules; a transparent card still changes color on hover."
       }
     ],
     "api": [
@@ -2330,6 +2334,24 @@ export const docData = {
             }
           },
           {
+            "name": "hoverable",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "整卡 hover 变色 + 光标变 pointer，统一 --dshpc-card-hover；默认关",
+              "en": "Whole-card hover plus a pointer cursor, using --dshpc-card-hover; default off"
+            }
+          },
+          {
+            "name": "filled",
+            "type": "boolean",
+            "def": "'true'",
+            "desc": {
+              "zh": "是否带底色；false 时底透明、边框仍在。默认有底（Card = surface-1 / StripCard = accent 浅底）",
+              "en": "Background fill; false makes it transparent while keeping the border. Default on (Card = surface-1 / StripCard = accent tint)"
+            }
+          },
+          {
             "name": "className / style",
             "type": "—",
             "def": "—",
@@ -2345,7 +2367,7 @@ export const docData = {
       {
         "id": "ui-card-example",
         "lang": "tsx",
-        "src": "import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'\n\nh(Card, {\n  accent: 'warning',\n  bar: { side: 'left', inset: 12, gap: 12 },   // 色条可放 left / right / top / bottom\n  action: h(Button, { size: 'sm', variant: 'ghost' }, '跳过'),\n},\n  h('div', null, '标题'),\n  h(Chip, null, '#npm'),\n)\n\nh(StripCard, {\n  accent: 'success',\n  expanded: open, onToggle: () => setOpen(!open),\n  panel: h('div', null, '展开详情'),\n}, h('div', null, '标题 + 元信息'))"
+        "src": "import { Card, Chip, StripCard } from 'dsh-plugin-core/ui'\n\nh(Card, {\n  accent: 'warning',\n  bar: { side: 'left', inset: 12, gap: 12 },   // 色条可放 left / right / top / bottom\n  hoverable: true,                             // 整卡 hover 变色（默认关）\n  action: h(Button, { size: 'sm', variant: 'ghost' }, '跳过'),\n},\n  h('div', null, '标题'),\n  h(Chip, null, '#npm'),\n)\n\nh(StripCard, {\n  accent: 'success',\n  hoverable: true, filled: false,              // 底色关掉 = 透明（默认有底）\n  expanded: open, onToggle: () => setOpen(!open),\n  panel: h('div', null, '展开详情'),\n}, h('div', null, '标题 + 元信息'))"
       }
     ]
   },
