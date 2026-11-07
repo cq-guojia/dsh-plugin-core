@@ -40,6 +40,8 @@ export interface ButtonProps {
     onBusyChange?: (busy: boolean) => void;
     /** 撑满父宽。 */
     block?: boolean;
+    /** 紧凑图标档：高度不变，图标放大、内距收紧（给描边细的文档 / 语言图标用）。 */
+    dense?: boolean;
     /**
      * 固定宽（px 或任意 CSS 宽度值）。与 `minWidth` / `maxWidth` 互斥：一旦设定，后两者自动失效。
      */
@@ -64,6 +66,8 @@ export interface IconButtonProps {
     variant?: 'plain' | 'outline' | 'danger';
     /** 高度档（默认 lg）。 */
     size?: ButtonSize;
+    /** 紧凑图标档：宽高不变，图标放大、四周留白变小（与 Button.dense 同名同义）。 */
+    dense?: boolean;
     /** 图标（必填）。 */
     icon: ReactNode;
     /** 无障碍名（必填；同时作为默认 title）。 */

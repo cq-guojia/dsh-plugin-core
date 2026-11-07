@@ -237,6 +237,61 @@ const CODE_BTN_WIDTH = `// 固定宽：写死宽度
 // 三者同设 ⇒ 固定宽优先，最小宽 / 最大宽自动失效
 <Button variant="outline" width={120} minWidth={200} maxWidth={160}>固定宽优先</Button>`
 
+/** 图标按钮「尺寸 × 底色 × 图标档」一溜展示：右边代码与左边渲染逐条一致。 */
+const CODE_ICON_BTN_MATRIX = `// 纯图标：无底（plain） / 有底（background），size 三档同样适用
+<IconButton size="sm" icon={<IconPlusOutlineRegular size={12} />} label="add" />
+<IconButton size="sm" background="var(--dshpc-business)" color="var(--dshpc-on-signal)"
+  icon={<IconPlusOutlineRegular size={12} />} label="add" />
+
+// 图标 + 文字：无底（ghost） / 有底（info），size 三档同样适用
+<Button size="sm" variant="ghost" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>
+<Button size="sm" variant="info" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>
+
+// dense：size 与高度不变，图标放大、内距收紧（描边细的文档 / 语言图标用）
+<IconButton size="sm" dense icon={<IconPlusOutlineRegular size={12} />} label="add" />
+<Button size="sm" dense variant="info" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>`
+
+/** 图标按钮表格的列：行标签 + sm/md/lg 三档（表头与数据行共用，列才对得齐）。 */
+const ICON_BTN_COLS = '100px repeat(3, minmax(58px,1fr))'
+
+/**
+ * 一档图标按钮 = 4 行数据：纯图标 / 图标+文字 × 无底 / 有底，每行横排 sm/md/lg。
+ * 常规与 dense 各来一档，两档结构完全一样，排出来才可比。
+ */
+function iconBtnTier(title: string, dense: boolean): ReturnType<typeof h>[] {
+  const rowStyle = {
+    display: 'grid', gridTemplateColumns: ICON_BTN_COLS, gap: '8px',
+    alignItems: 'center', justifyItems: 'center',
+  } as const
+  const cell = (withText: boolean, filled: boolean, size: ButtonSize): ReturnType<typeof h> => {
+    const key = `${filled}-${size}`
+    if (withText) {
+      return h(Button, {
+        key, size, dense, variant: filled ? 'info' : 'ghost',
+        icon: iconOf('plus', ICON_SIZE[size]),
+      }, size)
+    }
+    return h(IconButton, {
+      key, size, dense,
+      background: filled ? 'var(--dshpc-business)' : undefined,
+      color: filled ? 'var(--dshpc-on-signal)' : undefined,
+      icon: iconOf('plus', ICON_SIZE[size]),
+      label: `add ${size} ${filled ? 'solid' : 'plain'}`,
+    })
+  }
+  const dataRow = (label: string, withText: boolean, filled: boolean): ReturnType<typeof h> =>
+    h('div', { key: `${title}-${label}`, style: rowStyle },
+      h('span', { style: { fontSize: '12px', color: 'var(--dshpc-fg-2)', justifySelf: 'start', whiteSpace: 'nowrap' } }, label),
+      ...(['sm', 'md', 'lg'] as const).map((size) => cell(withText, filled, size)))
+  return [
+    h('div', { key: `${title}-head`, style: { fontSize: '12px', fontWeight: 600, color: 'var(--dshpc-fg)', marginTop: '10px' } }, title),
+    dataRow('纯图标 · 无底', false, false),
+    dataRow('纯图标 · 有底', false, true),
+    dataRow('图标 + 文字 · 无底', true, false),
+    dataRow('图标 + 文字 · 有底', true, true),
+  ]
+}
+
 
 /** Button 的对外参数（与 src/ui/actions/Button.ts 的 ButtonProps 逐条对齐）。 */
 
@@ -318,6 +373,19 @@ export function ButtonPage(): ReturnType<typeof h> {
         h(Labeled, { label: 'IconButton · loading' },
           h(IconButton, { icon: h(BUTTON_ICONS[0].Icon, { size: 16 }), label: '刷新', onClick: async () => { await demoWait() } }),
           h(IconButton, { variant: 'outline', icon: h(BUTTON_ICONS[0].Icon, { size: 16 }), label: '加载中', loading: true }))),
+    ),
+
+    // 图标按钮：常规 / dense 两组，每组 4 行（纯图标 / 图标+文字 × 无底 / 有底），列是 sm/md/lg
+    h(
+      Example,
+      { title: t('btnIconMatrixTitle'), hint: t('btnIconMatrixHint'), code: CODE_ICON_BTN_MATRIX },
+      h('div', { className: 'dshpc-scroll-thin dshpc-scroll-thin--x', style: { display: 'flex', flexDirection: 'column', gap: '6px', overflowX: 'auto' } },
+        h('div', { style: { display: 'grid', gridTemplateColumns: ICON_BTN_COLS, gap: '8px', justifyItems: 'center' } },
+          h('span', { style: { fontSize: '12px', color: 'var(--dshpc-fg-3)', justifySelf: 'start' } }, '尺寸'),
+          ...(['sm', 'md', 'lg'] as const).map((size) =>
+            h('span', { key: size, style: { fontSize: '12px', color: 'var(--dshpc-fg-3)' } }, size))),
+        ...iconBtnTier('常规', false),
+        ...iconBtnTier('dense', true)),
     ),
 
     // 状态

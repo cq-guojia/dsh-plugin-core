@@ -4,6 +4,7 @@ import { ensureControls, getStyleKit, setStyleKit } from '../dist/ui/infra/css.j
 import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/inputs/segmented-css.generated.js'
 import { FIELD_CSS } from '../dist/ui/inputs/field-css.generated.js'
+import { BUTTON_CSS } from '../dist/ui/infra/controls-css.js'
 import { AlertModal, Button, Chip, ConfirmModal, IconButton, Input, InputGroup, Modal, Segmented, SideSheet, SplitGroup } from '../dist/ui/index.js'
 import { isSuccess, isThenable } from '../dist/ui/infra/thenable.js'
 import { createElement } from 'react'
@@ -165,6 +166,28 @@ test('Button 宽度三轴互斥：固定宽优先，min/max 自动失效', () =>
 
   const maxOnly = renderToStaticMarkup(createElement(Button, { maxWidth: 100 }, '很长的标签文字内容'))
   assert.match(maxOnly, /style="[^"]*max-width:100px/)
+})
+
+test('dense：两个按钮都只加修饰类，尺寸档与高度不变', () => {
+  const icon = createElement('i', null, 'I')
+  const btn = renderToStaticMarkup(createElement(Button, { size: 'sm', dense: true, icon }, '文件'))
+  assert.match(btn, /dshpc-btn--outline dshpc-btn--sm dshpc-btn--dense/, 'dense 是修饰类，不动 size 档')
+  const icb = renderToStaticMarkup(createElement(IconButton, { size: 'sm', dense: true, icon, label: '文件' }))
+  assert.match(icb, /dshpc-iconbtn--plain dshpc-iconbtn--sm dshpc-iconbtn--dense/)
+  assert.ok(!renderToStaticMarkup(createElement(Button, null, '文件')).includes('dense'), '默认不带 dense')
+  assert.match(BUTTON_CSS, /\.dshpc-btn--dense\{--btn-pad:6px/)
+  assert.match(BUTTON_CSS, /\.dshpc-btn--dense \.dshpc-btn__icon,.dshpc-btn--dense \.dshpc-btn__icon-end\{font-size:1\.25em/)
+  assert.match(BUTTON_CSS, /\.dshpc-iconbtn\.dshpc-iconbtn--dense svg\{width:1\.25em;height:1\.25em;\}/)
+  assert.ok(!/dshpc-iconbtn--dense > svg/.test(BUTTON_CSS), '不能用直接子选择器：官方图标外层可能有 wrapper，dense 会漏掉')
+})
+
+test('IconButton 图标不被 flex 压扁：padding:0 + svg flex:none', () => {
+  // 宿主实测：svg 是按钮的直接 flex item，flex-shrink:1 时被默认内距挤成 10px 宽，
+  // height 却照样随 dense 变 15px ⇒ 加号被压成窄条。那是布局收缩，不是层叠优先级，
+  // 所以给 width 加 !important 无效；必须禁止收缩并清掉宿主 button 默认内距。
+  assert.match(BUTTON_CSS, /\.dshpc-iconbtn\{[^}]*padding:0;/, '图标钮必须显式 padding:0')
+  assert.match(BUTTON_CSS, /\.dshpc-iconbtn svg\{[^}]*flex:none;/, 'svg 必须 flex:none，否则 width 会被布局压掉')
+  assert.ok(!/dshpc-iconbtn--dense svg\{[^}]*!important/.test(BUTTON_CSS), 'dense 靠层叠优先级就够，不需要 !important')
 })
 
 test('Button 最大宽 + 纯文字标签：包 MarqueeText 折叠省略号', () => {

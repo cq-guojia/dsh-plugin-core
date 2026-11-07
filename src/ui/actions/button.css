@@ -45,6 +45,10 @@
 .dshpc-btn:active:not(:disabled){background-color:var(--btn-bg-active);transform:translateY(1px);}
 .dshpc-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
 .dshpc-btn:disabled{cursor:default;opacity:.5;}
+/* dense：尺寸档 / 高度一律不变，只把图标放大一档、内距收紧（描边细的文件类型图标用）。
+   只覆盖局部变量与图标字号，不另写一套皮肤；必须写在尺寸档与图标规则之后才压得过默认值。 */
+.dshpc-btn--dense{--btn-pad:6px;}
+.dshpc-btn--dense .dshpc-btn__icon,.dshpc-btn--dense .dshpc-btn__icon-end{font-size:1.25em;}
 
 .dshpc-btn--primary{--btn-bg:var(--dshpc-accent);--btn-fg:var(--dshpc-fg-inverse);
   --btn-bg-hover:var(--dshpc-accent-hover);--btn-bg-active:var(--dshpc-accent-active);}
@@ -93,7 +97,7 @@
 /* 图标钮：纯图标，方形；尺寸档的宽高与同档文字按钮等高、圆角统一吃 md（与 .dshpc-btn 同款，2026-10-28 拍板）
    底色 / 图标色全走局部变量：默认**无底色**，消费方可传 color（图标色）/ background（底色）覆盖（用户 2026-11-02）。 */
 .dshpc-iconbtn{--icb-bg:transparent;--icb-bg-hover:var(--dshpc-hover);--icb-fg:var(--dshpc-fg-2);--icb-fg-hover:var(--dshpc-fg);
-  appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;
+  appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0;
   border:1px solid var(--icb-border,transparent);border-radius:var(--dshpc-radius-md);
   background:var(--icb-bg);color:var(--icb-fg);
   font-family:inherit;cursor:pointer;flex:none;
@@ -101,8 +105,14 @@
 .dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}
 .dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}
 .dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}
-/* 图标与文字按钮同口径：内联 SVG 一律跟随 1em（比 16px 档小一号） */
-.dshpc-iconbtn > svg{display:block;width:1em;height:1em;}
+/* 图标与文字按钮同口径：SVG 一律跟随 1em（比 16px 档小一号）。
+   ⚠️ flex:none 是硬约束：svg 是按钮的直接 flex item，默认 flex-shrink:1 会被按钮内距
+   挤成 10px 窄条；那是布局收缩，不是层叠优先级 —— 改 width、加 !important 都救不回来，
+   而 height 在交叉轴不受影响，于是图标被压扁变形。后代选择器兼容官方图标外的 wrapper。 */
+.dshpc-iconbtn svg{display:block;width:1em;height:1em;flex:none;}
+/* dense：只放大图标的 em 值，正方形宽高与高度档都不动；
+   1.25em 相对按钮字号 12/13 ⇒ 15/16.25px，与 .dshpc-btn--dense 一致。 */
+.dshpc-iconbtn.dshpc-iconbtn--dense svg{width:1.25em;height:1.25em;}
 .dshpc-iconbtn--outline{--icb-bg:var(--dshpc-surface-1);--icb-border:var(--dshpc-border);}
 .dshpc-iconbtn--danger{--icb-fg:var(--dshpc-danger);--icb-bg-hover:var(--dshpc-danger-soft);--icb-fg-hover:var(--dshpc-danger);}
 .dshpc-iconbtn:hover:not(:disabled){background:var(--icb-bg-hover);color:var(--icb-fg-hover);}

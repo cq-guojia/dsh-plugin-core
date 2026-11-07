@@ -77,6 +77,8 @@ export type DemoMessageKey =
   | 'btnColorHint'
   | 'btnWidthTitle'
   | 'btnWidthHint'
+  | 'btnIconMatrixTitle'
+  | 'btnIconMatrixHint'
   | 'btnLabelSave'
   | 'btnLabelCancel'
   | 'btnLabelDelete'
@@ -392,6 +394,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnColorHint: 'color 传任意 CSS 色值，hover 自动混色',
     btnWidthTitle: '宽度（固定宽 / 最小宽 / 最大宽）',
     btnWidthHint: 'width / minWidth / maxWidth 三轴互斥',
+    btnIconMatrixTitle: '图标按钮 · 尺寸 × 底色',
+    btnIconMatrixHint: 'sm 24 / md 28 / lg 32；纯图标与图标+文字各有/无底色两组；dense 档图标更大、内距更小（高度不变）',
 
 
 
@@ -701,6 +705,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     btnColorHint: 'color takes any CSS color; hover blends it',
     btnWidthTitle: 'Width (fixed / min / max)',
     btnWidthHint: 'width / minWidth / maxWidth are exclusive',
+    btnIconMatrixTitle: 'Icon buttons · size × background',
+    btnIconMatrixHint: 'sm 24 / md 28 / lg 32; icon-only and icon+label, each with / without fill; dense grows the icon and tightens padding at the same height',
 
 
 

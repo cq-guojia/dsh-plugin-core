@@ -10,6 +10,7 @@
  *  - `size`：`sm`(24) / `md`(28) / `lg`(32) —— 高度一律吃 `--dshpc-control-h-*`，
  *    **有边 / 无边同高**（边框在内部补回）
  *  - `block`：撑满父宽
+ *  - `dense`：图标放大一档、内距收紧（高度不变），Button / IconButton 同名同义
  *
  * 内容轴：`icon`（前置）/ `iconRight`（后置）/ `loading`（前置小圈并自动禁用）。
  * 颜色轴：任一档都可以再用 `color` 传任意 CSS 色值 —— 只覆盖 `--btn-*` 几个变量，
@@ -97,6 +98,8 @@ export interface ButtonProps {
   onBusyChange?: (busy: boolean) => void
   /** 撑满父宽。 */
   block?: boolean
+  /** 紧凑图标档：高度不变，图标放大、内距收紧（给描边细的文档 / 语言图标用）。 */
+  dense?: boolean
   /**
    * 固定宽（px 或任意 CSS 宽度值）。与 `minWidth` / `maxWidth` 互斥：一旦设定，后两者自动失效。
    */
@@ -122,6 +125,8 @@ export interface IconButtonProps {
   variant?: 'plain' | 'outline' | 'danger'
   /** 高度档（默认 lg）。 */
   size?: ButtonSize
+  /** 紧凑图标档：宽高不变，图标放大、四周留白变小（与 Button.dense 同名同义）。 */
+  dense?: boolean
   /** 图标（必填）。 */
   icon: ReactNode
   /** 无障碍名（必填；同时作为默认 title）。 */
@@ -165,8 +170,9 @@ function colorVars(variant: ButtonVariant, color: string | undefined): CSSProper
 }
 
 /** 组装按钮 class（结构一套 + 轴类）。 */
-function buttonClass(variant: ButtonVariant, size: ButtonSize, block: boolean, hasIcon: boolean, extra?: string): string {
+function buttonClass(variant: ButtonVariant, size: ButtonSize, block: boolean, hasIcon: boolean, dense: boolean, extra?: string): string {
   return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}`
+    + `${dense ? ' dshpc-btn--dense' : ''}`
     + `${block ? ' dshpc-btn--block' : ''}`
     // 前置图标标记：block 时靠它把文字拉回视觉中心（见 controls-css 的 --icon-start 规则）
     + `${hasIcon ? ' dshpc-btn--icon-start' : ''}`
@@ -215,7 +221,7 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
   const {
     variant = 'outline', size = 'lg', icon, iconRight, color, loading: loadingProp = false,
     loadingText = true,
-    block = false, width, minWidth, maxWidth, className, style, children,
+    block = false, dense = false, width, minWidth, maxWidth, className, style, children,
     onClick, onBusyChange, ...rest
   } = props
   const btnRef = useRef<HTMLButtonElement | null>(null)
@@ -280,7 +286,7 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
     'aria-busy': loading || undefined,
     ...(autoLabel !== undefined && rest['aria-label'] === undefined ? { 'aria-label': autoLabel } : {}),
     onClick: asyncClick.click,
-    className: buttonClass(variant, size, block, icon !== undefined && icon !== null && !loading, className),
+    className: buttonClass(variant, size, block, icon !== undefined && icon !== null && !loading, dense, className),
     style: { ...colorVars(variant, color), ...widthStyle, ...style },
   }
   return h('button', attrs as never,
@@ -312,7 +318,7 @@ export function IconButton(props: IconButtonProps): ReturnType<typeof h> {
   ensureComponentStyles('button', BUTTON_CSS)
   const {
     variant = 'plain', size = 'lg', icon, label, color, background, loading: loadingProp = false,
-    className, style, onClick, onBusyChange, ...rest
+    dense = false, className, style, onClick, onBusyChange, ...rest
   } = props
   const asyncClick = useAsyncClick(onClick, onBusyChange)
   const loading = loadingProp || asyncClick.busy
@@ -337,7 +343,7 @@ export function IconButton(props: IconButtonProps): ReturnType<typeof h> {
     'aria-busy': loading || undefined,
     disabled: rest.disabled === true || loading || locked,
     onClick: asyncClick.click,
-    className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
+    className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size}${dense ? ' dshpc-iconbtn--dense' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
     style: { ...accent, ...style } as CSSProperties,
   }
   return h('button', attrs as never, loading ? h(Loader, { size: 'xs' }) : icon)

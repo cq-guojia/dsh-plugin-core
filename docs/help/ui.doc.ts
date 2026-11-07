@@ -322,6 +322,10 @@ const doc: DocTopic = {
           en: 'IconButton: variant plain|outline|danger (default plain, **no background**), size (default lg), icon (required), label (required, doubles as a11y name and title), color (icon colour), background (fill; omitted = no fill).',
         },
         {
+          zh: '`dense` 是两者共用的紧凑图标档：`size` / 高度一律不变，图标放大一档、内距收紧（Button 的 `--btn-pad` 从 10/12/14 收到 6，图标容器从 0.875em 到 1.25em；IconButton 把图标 `<svg>` 的 `width/height` 从 1em 提到 1.25em，正方形宽高不变、四周留白变小）。两者 dense 下图标都是 sm 15px / md·lg 16.25px。IconButton 的按钮显式 `padding:0`、图标 `flex:none`：svg 是 flex item，不禁止收缩会被内距压成窄条，此时改 `width` 或加 `!important` 都无效。给描边细、缩到 sm 看不清的图标用（如文件类型 / 语言图标）；默认 false，原有按钮外观不变。',
+          en: '`dense` is a shared compact-icon tier for both: `size` and height stay put while the icon grows one step and padding tightens (Button: `--btn-pad` 10/12/14 → 6, icon container 0.875em → 1.25em; IconButton: the icon `<svg>` goes from `width/height:1em` to `1.25em`, same square box, less breathing room). Both give sm 15px / md·lg 16.25px icons. An IconButton sets `padding:0` on itself and `flex:none` on the icon: the svg is a flex item, and without disabling shrinking the padding squeezes it into a narrow strip — changing `width` or adding `!important` cannot fix that. Use it for thin-stroke icons that vanish at `sm` (file-type / language glyphs). Defaults to false, so existing buttons are unchanged.',
+        },
+        {
           zh: '两者的 loading 语义一致：`onClick` 返回 Promise 就转圈（纯图标钮把图标位换成小圈，`aria-label` 不变、补 `aria-busy`），`onBusyChange` 把「在跑」报出去；受控 `loading` 与它取或 —— 别处刷新也能点亮同一颗按钮。转圈期间按钮自己的图标位（`icon` / `iconRight`）全部让位，只留转圈 + 文字。',
           en: 'Both share one loading semantics: a Promise-returning `onClick` spins (an icon button swaps its icon for the spinner, keeps `aria-label` and adds `aria-busy`), `onBusyChange` reports "running", and the controlled `loading` prop is OR-ed in — an external refresh lights the same button too. While spinning, the button’s own icon slots (`icon` / `iconRight`) all step aside: spinner plus label only.',
         },
@@ -340,6 +344,7 @@ const doc: DocTopic = {
           rows: [
             { name: 'variant', type: "上表 18 档（primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link + 扩展 purple/pink/cyan/teal/orange/indigo/rose/slate）", def: "'outline'", desc: { zh: '外观档', en: 'Appearance tier' } },
             { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'lg'", desc: { zh: '高度档（24 / 28 / 32，有边无边同高）', en: 'Height tier (24 / 28 / 32, same height with or without border)' } },
+            { name: 'dense', type: 'boolean', def: 'false', desc: { zh: '紧凑图标档：高度不变，图标放大、内距收紧（Button / IconButton 同名同义）', en: 'Compact-icon tier: same height, larger icon and tighter padding (same prop on Button and IconButton)' } },
             { name: 'icon', type: 'ReactNode', def: '—', desc: { zh: '前置图标（官方图标组件 / 字符串均可）', en: 'Leading icon (official icon component or string)' } },
             { name: 'iconRight', type: 'ReactNode', def: '—', desc: { zh: '后置图标（展开箭头、外链）', en: 'Trailing icon (expand arrow, external link)' } },
             { name: 'color', type: 'string', def: '—', desc: { zh: '自定义主色：实心档作底色，线框 / 无底档作主色', en: 'Custom main color: background for solid tiers, main color for outline/bare' } },
