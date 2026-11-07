@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261107-1215-821b-card-stripcard-补齐整卡-hover-与底色开关": {"category": "控件增强", "created": "2026-11-07 12:15:45", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-07 12:15:45", "status": "doing", "tags": ["卡片", "悬停变色", "底色"], "title": "Card / StripCard 补齐整卡 hover 与底色开关", "updated": "2026-11-07 12:15:45", "worklog": "worklog/202611/07-1215-821b-card-stripcard-补齐整卡-hover-与底色开关.md"}
+    "20261107-1215-821b-card-stripcard-补齐整卡-hover-与底色开关": {"category": "控件增强", "created": "2026-11-07 12:15:45", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-07 12:15:45", "status": "doing", "tags": ["卡片", "悬停变色", "底色"], "title": "Card / StripCard 补齐整卡 hover 与底色开关", "updated": "2026-11-07 12:17:20", "worklog": "worklog/202611/07-1215-821b-card-stripcard-补齐整卡-hover-与底色开关.md"}
   },
   "version": "20261022000000"
 }
