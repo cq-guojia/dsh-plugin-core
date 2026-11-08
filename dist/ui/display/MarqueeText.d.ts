@@ -12,7 +12,6 @@ import { type CSSProperties, type ReactElement } from 'react';
 export declare function MarqueeText(props: {
     text: string;
     style?: CSSProperties;
-    title?: string;
     /**
      * 追加在外层上的类名（**在 `.dshpc-mq` 之后**，用于调用方自带字体 / 字号 / 字色等皮肤）。
      * 皮肤写在调用方自己的样式域里，本组件只管滚动；字体类挂外层即可（内层继承）。

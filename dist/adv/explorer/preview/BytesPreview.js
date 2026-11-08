@@ -55,6 +55,6 @@ export function BytesPreview(props) {
     if (props.kind === 'image') {
         return h('img', { className: 'dshpc-fb__image', src: url, alt: props.path });
     }
-    return h('div', { className: 'dshpc-fb__fill' }, h('iframe', { className: 'dshpc-fb__frame', src: url, title: props.path }));
+    return h('div', { className: 'dshpc-fb__fill' }, h('iframe', { className: 'dshpc-fb__frame', src: url }));
 }
 //# sourceMappingURL=BytesPreview.js.map

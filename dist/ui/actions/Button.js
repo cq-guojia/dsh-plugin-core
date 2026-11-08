@@ -169,6 +169,8 @@ export function Button(props) {
     const autoLabel = hideText && typeof children === 'string' ? children : undefined;
     const attrs = {
         ...rest,
+        // 核心全站不渲染原生 title：显式压掉，调用方即使经 rest 传也不会冒出 tooltip。
+        title: undefined,
         ref: btnRef,
         type: rest.type ?? 'button',
         disabled: rest.disabled === true || loading || locked,
@@ -221,7 +223,8 @@ export function IconButton(props) {
     const attrs = {
         ...rest,
         type: rest.type ?? 'button',
-        title: rest.title ?? label,
+        // 核心全站不渲染原生 title：显式压掉，调用方即使经 rest 传也不会冒出 tooltip。
+        title: undefined,
         'aria-label': rest['aria-label'] ?? label,
         // 无障碍名不变（仍是 label），只声明「正在忙」，读屏不会把圈读成内容
         'aria-busy': loading || undefined,

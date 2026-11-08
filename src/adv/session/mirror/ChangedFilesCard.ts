@@ -135,7 +135,6 @@ export function ChangedFilesCard(props: {
     : h('button', {
         type: 'button',
         className: C('header'),
-        title: headerLocator.display,
         onClick: () => { onOpenReview(headerLocator) },
       }, headerBody)
 
@@ -151,11 +150,10 @@ export function ChangedFilesCard(props: {
     // 官方行点击 = openReview(index)：带改动身份出去，调用方开审阅。无 onOpenReview 则不可点。
     const locator: ChangedFileReviewLocator = { sessionId, seq, index, display: file.display }
     const row = onOpenReview === undefined
-      ? h('div', { className: C('row'), title: file.path }, body)
+      ? h('div', { className: C('row') }, body)
       : h('button', {
           type: 'button',
           className: C('row'),
-          title: file.path,
           onClick: () => { onOpenReview(locator) },
         }, body)
     return h(HoverCard, {

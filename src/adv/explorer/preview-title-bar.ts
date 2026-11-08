@@ -43,7 +43,6 @@ export function PreviewTitleBar(props: PreviewTitleBarProps): ReactNode {
     { className: 'dshpc-fb__title' },
     h(MarqueeText, {
       text: baseNameOfPath(path),
-      title: path,
       className: 'dshpc-fb__title-inner',
       style: { flex: '1 1 auto', minWidth: 0 },
     }),

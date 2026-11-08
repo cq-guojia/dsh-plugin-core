@@ -113,7 +113,6 @@ function DeliveredFileCard(props) {
     h('button', {
         type: 'button',
         className: officialClass('Deliverables', 'cardPreview') ?? '',
-        title: file.path,
         'aria-label': t('deliverPreviewCard', { name: file.path }),
         onClick: (event) => {
             event.stopPropagation();

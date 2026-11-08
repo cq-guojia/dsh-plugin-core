@@ -64,6 +64,34 @@ function lengthOf(value: number | string): string {
 }
 
 /**
+ * 把 CSS padding 简写摊成上 / 右 / 下 / 左四根轴（`--card-pad-*` 的唯一真源）。
+ * 1 值四边同值、2 值上下 / 左右、3 值上 / 左右 / 下、4 值各占一边；
+ * 括号里的空格属于 calc() / var() 等函数，不能当分隔符。
+ */
+function paddingAxes(value: number | string): [string, string, string, string] {
+  if (typeof value === 'number') {
+    const px = `${value}px`
+    return [px, px, px, px]
+  }
+  const parts: string[] = []
+  let depth = 0
+  let cur = ''
+  for (const ch of value.trim()) {
+    if (ch === '(') depth++
+    if (ch === ')') depth--
+    if (/\s/.test(ch) && depth === 0) {
+      if (cur !== '') parts.push(cur)
+      cur = ''
+    } else {
+      cur += ch
+    }
+  }
+  if (cur !== '') parts.push(cur)
+  const [t = '0', r = t, b = t, l = r] = parts
+  return [t, r, b, l]
+}
+
+/**
  * 内部共享壳：两个公开组件（`Card` / `StripCard`）只是 `kind` 不同——
  * 一个组件一种外观，import 即表明用的是哪种。
  *
@@ -108,9 +136,16 @@ function CardShell(
   if (bar.gap !== undefined) vars['--card-bar-gap'] = lengthOf(bar.gap)
   if (bar.length !== undefined) vars['--card-bar-length'] = lengthOf(bar.length)
   // 消费端内联的 padding 不能落在根节点：根节点必须保持 0 内距，__body 才是边到边的头部区。
-  // 转成 --card-pad-all 变量交给 __body 的 padding 消费，其余 style 照旧挂根节点。
+  // 摊成四根 --card-pad-* 轴：__body 与 __panel 读同一组轴，左右 / 上下才不会一边跟、一边不跟。
+  // --card-pad-all 由这四根轴在 CSS 里派生，JS 不直接覆盖。其余 style 照旧挂根节点。
   const { padding: padOverride, ...restStyle } = (props.style ?? {}) as CSSProperties
-  if (padOverride !== undefined) vars['--card-pad-all'] = lengthOf(padOverride as number | string)
+  if (padOverride !== undefined) {
+    const [t, r, b, l] = paddingAxes(padOverride as number | string)
+    vars['--card-pad-t'] = t
+    vars['--card-pad-r'] = r
+    vars['--card-pad-b'] = b
+    vars['--card-pad-l'] = l
+  }
   const style = { ...restStyle, ...vars } as CSSProperties
 
   return h(

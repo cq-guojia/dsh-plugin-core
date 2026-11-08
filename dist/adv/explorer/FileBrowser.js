@@ -417,7 +417,6 @@ export function FileBrowser(props) {
                 className: `dshpc-fb__row${picker ? ' dshpc-fb__row--pick' : ''}`,
                 role: 'button',
                 tabIndex: 0,
-                title: picker ? tt('explorerPickFile') : childPath,
                 onClick: pick,
                 onKeyDown: (event) => {
                     if (event.key === 'Enter' || event.key === ' ')
@@ -461,7 +460,6 @@ export function FileBrowser(props) {
             className: 'dshpc-fb__row',
             role: 'button',
             tabIndex: 0,
-            title: childPath,
             onClick: rowAction,
             onKeyDown: (event) => {
                 if (event.key === 'Enter' || event.key === ' ')

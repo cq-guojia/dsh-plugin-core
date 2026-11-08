@@ -342,11 +342,15 @@ EN: Enabling `hoverable` also sets `cursor:pointer`. Cards without the axis keep
 `__body` 是「上面那一整块」，独立承担四边内距，是 head 作用域下唯一的 hover 目标；`__panel` 是它的
 兄弟节点，不铺任何背景、不参与 hover，自己承担左右 / 底部内距。**展开态不改 `__body` 内距**：
 上下两圈留白始终对称，色条上下才不会一长一短；两块之间的间隔就是 `__body` 的 `padding-bottom`，
-属于头部区、跟着一起变色，`__panel` 的 `margin-top` 归 0、紧接其后，中间不留不变色的带子。
+属于头部区、跟着一起变色；`__panel` 的 `margin-top` 与 `padding-top` 双双归 0，紧接其后，
+中间不夹任何不变色的带子，消费端自绘的线因此贴得住头部区下沿的 hover 色。
 **核心不画任何分隔线**：展开区只负责把内容放到头部区下面；需要线时由消费端在 `panel` 内容里自绘
 （有时要、有时不要，消费端自己决定，2026-11-08 用户拍板）。曾经 `__panel` 自带 `border-top`，
-既和消费端自绘的线重复成「一实一虚两条」，又因位置耦合 `--card-pad-l/r` 而在色条内距为 0 的卡片上
-左贴边、右留白。
+和消费端自绘的线重复成「一实一虚两条」。
+2026-11-08 又拍掉两条残留：`__panel` 曾垫 `padding-top:8px`，把自绘线顶离 hover 色块；
+消费端 `style.padding` 曾只转成 `--card-pad-all` 交给 `__body`，`__panel` 仍读四根轴 ⇒
+`bar.inset:0` 的卡片左轴被方位类归零、右轴还是默认 14px，线左贴边、右留白。
+现在四根 `--card-pad-t/r/b/l` 是唯一真源，`--card-pad-all` 只由它们派生。
 `__body` 不许写 `border-radius` 裸值（圆角契约只认 Surface 一处），圆角由根节点裁切保证。
 
 `StripCard` 的 4px 色条相对根节点绝对定位（`top:0` / `bottom:0`），展开后仍通高贯穿整卡、
@@ -359,8 +363,9 @@ EN: Enabling `hoverable` also sets `cursor:pointer`. Cards without the axis keep
 | `'head'`（默认） | `__body` 整块边到边变色（含内距圈、圆角） | `__body:hover` 不成立 ⇒ 整卡完全不触发 | `cursor:auto` |
 | `'card'`（消费端显式选） | 根节点改 `--surface-bg`，整卡含展开区一起变色 | 照常触发 | `cursor:pointer` |
 
-内距走 `--card-pad-t/r/b/l` 四根变量（strip / 四方位各自覆盖）；消费端 `style.padding` 由
-`Card.ts` 转成 `--card-pad-all` 交给 `__body`，根节点永远零内距。
+**四根 `--card-pad-t/r/b/l` 是内距唯一真源**（strip / 四方位各自覆盖其中一根）；
+`--card-pad-all` 只是它们的组合值，由 CSS 派生、JS 不直接写。消费端 `style.padding`
+（1/2/3/4 值简写）由 `Card.ts` 摊成四根轴，`__body` 与 `__panel` 因此同步对齐；根节点永远零内距。
 
 **契约**：消费端必须把展开内容放进 `panel`（`children` 属于头部区），核心才有分区信号；
 `__panel` 是 `__body` 的兄弟节点，由 `test/card.test.mjs` 盯着。
@@ -369,9 +374,12 @@ EN: The root keeps `padding:0` and paints one resting fill. `__body` is the head
 paddings, inherits the root radius, and is the only hover target under `hoverScope: 'head'`. `__panel` is its
 sibling: no background at all, never hovered, with its own horizontal / bottom padding. Expanding never
 rewrites the header padding: top and bottom stay symmetric, and the gap between the blocks is the header's
-own `padding-bottom`, so it changes color together with the header. `__panel` follows immediately with
-`margin-top:0` and draws no divider — the core only places the expanded content; callers who need a line
-draw it inside `panel` themselves. The StripCard rail is absolutely positioned against the root
+own `padding-bottom`, so it changes color together with the header. `__panel` follows immediately with both
+`margin-top:0` and `padding-top:0`, and draws no divider — the core only places the expanded content; callers
+who need a line draw it inside `panel` themselves, and it sits flush against the header's hover fill with no
+uncoloured strip in between. The four `--card-pad-t/r/b/l` axes are the single source of padding truth;
+`--card-pad-all` is derived from them, and `style.padding` expands into all four so the header and expanded
+area stay symmetric. The StripCard rail is absolutely positioned against the root
 (`top:0` / `bottom:0`), so it stays full-height across the expanded area too. `:has()` and "paint a resting-fill snapshot over the
 expanded area" are forbidden — semi-transparent tokens stacked twice render darker. Callers must put
 expandable content in `panel`; `children` belongs to the header block.

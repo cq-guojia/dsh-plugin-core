@@ -129,7 +129,7 @@ export interface IconButtonProps {
   dense?: boolean
   /** 图标（必填）。 */
   icon: ReactNode
-  /** 无障碍名（必填；同时作为默认 title）。 */
+  /** 无障碍名（必填）。 */
   label: string
   /** 图标色（任意 CSS 色值）；hover 按它混出浅底。 */
   color?: string
@@ -279,6 +279,8 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
   const autoLabel = hideText && typeof children === 'string' ? children : undefined
   const attrs = {
     ...rest,
+    // 核心全站不渲染原生 title：显式压掉，调用方即使经 rest 传也不会冒出 tooltip。
+    title: undefined,
     ref: btnRef,
     type: (rest.type as string | undefined) ?? 'button',
     disabled: rest.disabled === true || loading || locked,
@@ -337,7 +339,8 @@ export function IconButton(props: IconButtonProps): ReturnType<typeof h> {
   const attrs = {
     ...rest,
     type: (rest.type as string | undefined) ?? 'button',
-    title: rest.title ?? label,
+    // 核心全站不渲染原生 title：显式压掉，调用方即使经 rest 传也不会冒出 tooltip。
+    title: undefined,
     'aria-label': rest['aria-label'] ?? label,
     // 无障碍名不变（仍是 label），只声明「正在忙」，读屏不会把圈读成内容
     'aria-busy': loading || undefined,

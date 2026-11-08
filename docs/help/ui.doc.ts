@@ -341,8 +341,8 @@ const doc: DocTopic = {
           en: 'Button offers 18 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity). The eight extended tiers (purple/pink/cyan/teal/orange/indigo/rose/slate) are solid faces, same source as Chip/Card.',
         },
         {
-          zh: 'IconButton：variant: plain|outline|danger（默认 plain，**无底色**）、size（默认 lg）、icon（必填）、label（必填，无障碍名兼 title）、color（图标色）、background（底色，不传即无底色）。',
-          en: 'IconButton: variant plain|outline|danger (default plain, **no background**), size (default lg), icon (required), label (required, doubles as a11y name and title), color (icon colour), background (fill; omitted = no fill).',
+          zh: 'IconButton：variant: plain|outline|danger（默认 plain，**无底色**）、size（默认 lg）、icon（必填）、label（必填，无障碍名）、color（图标色）、background（底色，不传即无底色）。',
+          en: 'IconButton: variant plain|outline|danger (default plain, **no background**), size (default lg), icon (required), label (required, accessible name), color (icon colour), background (fill; omitted = no fill).',
         },
         {
           zh: '`dense` 是两者共用的紧凑图标档：`size` / 高度一律不变，图标放大一档、内距收紧（Button 的 `--btn-pad` 从 10/12/14 收到 6，图标容器从 0.875em 到 1.25em；IconButton 把图标 `<svg>` 的 `width/height` 从 1em 提到 1.25em，正方形宽高不变、四周留白变小）。两者 dense 下图标都是 sm 15px / md·lg 16.25px。IconButton 的按钮显式 `padding:0`、图标 `flex:none`：svg 是 flex item，不禁止收缩会被内距压成窄条，此时改 `width` 或加 `!important` 都无效。给描边细、缩到 sm 看不清的图标用（如文件类型 / 语言图标）；默认 false，原有按钮外观不变。',
@@ -384,7 +384,7 @@ const doc: DocTopic = {
             { name: 'minWidth', type: 'number | string', def: '—', desc: { zh: '最小宽：width 未设时生效，内容不足此宽时以它为准', en: 'Minimum width: applies only when width is unset; content shorter than this still takes this width' } },
             { name: 'maxWidth', type: 'number | string', def: '—', desc: { zh: '最大宽：width 未设时生效，文字超出折叠成省略号，hover 以跑马灯展开全名', en: 'Maximum width: applies only when width is unset; overflowing text collapses to an ellipsis and marquees on hover' } },
             { name: 'children', type: 'ReactNode', def: '—', desc: { zh: '文案（由调用方按语言给：中文出中文、英文出英文，中英混排也支持）', en: 'Label (caller supplies per locale: zh shows zh, en shows en, mixed is supported)' } },
-            { name: '…rest', type: '原生 button 属性', def: '—', desc: { zh: 'type / disabled / title / aria-* 等原样透传（onClick 见上面那行）', en: 'type / disabled / title / aria-* and friends pass through (onClick is documented above)' } },
+            { name: '…rest', type: '原生 button 属性', def: '—', desc: { zh: 'type / disabled / aria-* 等原样透传（onClick 见上面那行）；核心不渲染原生 title', en: 'type / disabled / aria-* and friends pass through (onClick is documented above); the core never renders a native title' } },
           ],
         },
       ],
@@ -396,7 +396,7 @@ const doc: DocTopic = {
         {
           id: 'ui-input',
           rows: [
-            { name: 'Input', type: 'value onChange(v) size(默认 sm) error disabled type icon placeholder inputRef onKeyDown onBlur aria-label title hint', def: '—', desc: { zh: '基础输入框；error 描红；hint 给字符串即自动挂标准问号提示；icon 是左侧图标槽（不吃点击，尺寸取 fieldMetricsOf(size).icon）；type=search 时聚焦且有内容才在右侧出清空钮', en: 'Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint; icon is the leading icon slot (does not swallow clicks; size from fieldMetricsOf(size).icon); with type=search a clear button appears on the right only while focused and non-empty' } },
+            { name: 'Input', type: 'value onChange(v) size(默认 sm) error disabled type icon placeholder inputRef onKeyDown onBlur aria-label hint', def: '—', desc: { zh: '基础输入框；error 描红；hint 给字符串即自动挂标准问号提示；icon 是左侧图标槽（不吃点击，尺寸取 fieldMetricsOf(size).icon）；type=search 时聚焦且有内容才在右侧出清空钮', en: 'Basic input; error turns it red; passing hint as a string auto-attaches a standard question-mark hint; icon is the leading icon slot (does not swallow clicks; size from fieldMetricsOf(size).icon); with type=search a clear button appears on the right only while focused and non-empty' } },
             { name: 'PrefixedInput', type: '同 Input + prefix: string', def: '—', desc: { zh: '前置文案（https:// / C:\\）', en: 'Leading text (https:// / C:\\)' } },
             { name: 'NumberInput', type: 'value: number onChange(v) min max step(默认 1) inputWidth suffix label decreaseLabel increaseLabel hint', def: '—', desc: { zh: '已 clamp；失焦回弹草稿', en: 'Already clamped; reverts to draft on blur' } },
             { name: 'Textarea', type: 'value onChange(v) placeholder error disabled rows spellCheck(默认关) aria-label hint', def: '—', desc: { zh: 'hint 的问号钉在右下角（单行控件则在行尾垂直居中）', en: 'hint’s question mark pins to the bottom-right (for single-line controls it centers at the row end)' } },
@@ -643,8 +643,8 @@ const doc: DocTopic = {
           en: '`hoverable` (default off) changes the fill on hover and switches the cursor to `pointer`, using `--dshpc-card-hover` (7% blue light / 13% blue dark). `filled` (default on) controls the background — Card uses surface-1, StripCard the accent tint; `false` makes it transparent but keeps the border. Both axes only rewrite `--surface-bg`, so plugins no longer need their own `:hover` rules.',
         },
         {
-          zh: '展开的卡片用 `hoverScope` 选作用域，默认 `\'head\'`：根节点零内距并统一裁圆角，`__body` 作为「上面那一整块」独立承担内距、边到边变色；展开态不改内距，上下两圈留白对称，两块之间的间隔也属于头部区、跟着一起变色；`__panel` 是它的兄弟节点，不铺背景、不画分隔线、不参与 hover，鼠标在展开区里操作时整卡都不触发；需要分隔线时由调用方在 `panel` 内容里自绘。StripCard 的通高色条相对根节点定位，展开后仍贯穿整卡（包括展开区）。想要整卡含展开区一起变色，才显式传 `\'card\'`。**展开内容必须放进 `panel`**（`children` 属于头部区），核心才有分区信号。',
-          en: 'For expandable cards, `hoverScope` selects the scope. The default `\'head\'` gives the root zero padding and clips the radius, while `__body` — the header block owning all padding — changes color edge to edge; expanding keeps its top and bottom padding symmetric, so the gap between the two blocks changes color too. `__panel` is a sibling with no background, no divider and no hover, so operating inside the expanded area triggers nothing; draw a divider inside `panel` content yourself when you need one. The StripCard rail is positioned against the root and stays full-height across the expanded area. Pass `\'card\'` explicitly to include it. **Expandable content must go into `panel`**; `children` belongs to the header block.',
+          zh: '展开的卡片用 `hoverScope` 选作用域，默认 `\'head\'`：根节点零内距并统一裁圆角，`__body` 作为「上面那一整块」独立承担内距、边到边变色；展开态不改内距，上下两圈留白对称，两块之间的间隔也属于头部区、跟着一起变色；`__panel` 是它的兄弟节点，不铺背景、不画分隔线、不参与 hover，鼠标在展开区里操作时整卡都不触发；需要分隔线时由调用方在 `panel` 内容里自绘。展开区的 `margin-top` 与 `padding-top` 都是 0，自绘线紧贴头部区下沿、中间不夹不变色的带子；四根 `--card-pad-t/r/b/l` 是内距唯一真源，`style.padding` 会摊成这四根轴，头部区与展开区左右始终对称。StripCard 的通高色条相对根节点定位，展开后仍贯穿整卡（包括展开区）。想要整卡含展开区一起变色，才显式传 `\'card\'`。**展开内容必须放进 `panel`**（`children` 属于头部区），核心才有分区信号。',
+          en: 'For expandable cards, `hoverScope` selects the scope. The default `\'head\'` gives the root zero padding and clips the radius, while `__body` — the header block owning all padding — changes color edge to edge; expanding keeps its top and bottom padding symmetric, so the gap between the two blocks changes color too. `__panel` is a sibling with no background, no divider and no hover, so operating inside the expanded area triggers nothing; draw a divider inside `panel` content yourself when you need one. Both `margin-top` and `padding-top` on the expanded area are 0, so a caller-drawn line sits flush against the header with no uncoloured strip between them. The four `--card-pad-t/r/b/l` axes are the single source of padding truth: `style.padding` expands into them, keeping the header and expanded area symmetric. The StripCard rail is positioned against the root and stays full-height across the expanded area. Pass `\'card\'` explicitly to include it. **Expandable content must go into `panel`**; `children` belongs to the header block.',
         },
       ],
       api: [
@@ -661,7 +661,7 @@ const doc: DocTopic = {
             { name: 'hoverable', type: 'boolean', def: "'false'", desc: { zh: '悬停变色 + 光标变 pointer，统一 --dshpc-card-hover；默认关', en: 'Hover color plus a pointer cursor, using --dshpc-card-hover; default off' } },
             { name: 'hoverScope', type: "'head' | 'card'", def: "'head'", desc: { zh: "'head'（默认）只让上面头部区整块边到边变色、展开区不受影响；'card' 整卡含展开区一起变色。仅 hoverable 为 true 时生效", en: "'head' (default) changes only the header block and leaves the expanded area untouched; 'card' includes it. Applies only when hoverable is true" } },
             { name: 'filled', type: 'boolean', def: "'true'", desc: { zh: '是否带底色；false 时底透明、边框仍在。默认有底（Card = surface-1 / StripCard = accent 浅底）', en: 'Background fill; false makes it transparent while keeping the border. Default on (Card = surface-1 / StripCard = accent tint)' } },
-            { name: 'className / style', type: '—', def: '—', desc: { zh: '追加类 / 样式', en: 'Append class / style' } },
+            { name: 'className / style', type: '—', def: '—', desc: { zh: '追加类 / 样式；`style.padding` 摊成四根内距轴，同步头部区与展开区', en: 'Append class / style; `style.padding` expands into the four padding axes so the header and expanded area stay aligned' } },
           ],
         },
       ],
@@ -936,7 +936,7 @@ const doc: DocTopic = {
             { name: 'Loading({ anchorId? })', type: '', def: '', desc: { zh: '贴到主内容容器右下角的加载指示；anchorId 默认 dshpc-main', en: 'Loading indicator pinned to the main container’s bottom-right; anchorId defaults to dshpc-main' } },
             { name: 'RunningBlocks()', type: '', def: '', desc: { zh: '运行中的占位块', en: 'Placeholder blocks while running' } },
             { name: 'SectionHead({ icon?, title, right?, accent?, flush? })', type: '', def: '', desc: { zh: '分区标题：标签（可选，画出来的短竖线）/ icon + 标题 + 右侧控件。accent = 标签颜色（内置色名 / 任意色值 / default / false 不画）；flush = 去底边距', en: 'Section heading: optional drawn bar / icon + title + right controls. accent = bar colour (built-in name / raw value / default / false for none); flush = no bottom margin' } },
-            { name: 'MarqueeText({ text, style?, title?, className? })', type: '', def: '', desc: { zh: '超长省略、hover 滚动', en: 'Ellipsis on overflow, scroll on hover' } },
+            { name: 'MarqueeText({ text, style?, className? })', type: '', def: '', desc: { zh: '超长省略、hover 滚动', en: 'Ellipsis on overflow, scroll on hover' } },
             { name: 'LiveText({ render, style? })', type: '', def: '', desc: { zh: '定时重渲染（相对时间这类）', en: 'Periodic re-render (for relative time etc.)' } },
             { name: 'useLocale()', type: '', def: '', desc: { zh: '当前语言，并在宿主切语言（`<html lang>` 变化）时重渲；内置文案本来就跟随宿主，这个 hook 只补「切完刷新」', en: 'Current locale, re-rendering when the host switches language (`<html lang>` change); built-in copy already follows the host, this hook only adds the post-switch refresh' } },
             { name: 'startResizeLayoutWidth(opts)', type: '', def: '', desc: { zh: '拖拽调整布局宽度（root 不传则回落 #dshpc-root）', en: 'Drag to resize layout width (falls back to #dshpc-root if root omitted)' } },
@@ -1150,7 +1150,7 @@ const doc: DocTopic = {
           rows: [
             { name: 'id', type: 'string', def: '—', required: '必填', desc: { zh: '唯一标识，onAction 原样回传', en: 'Unique id, echoed back by onAction' } },
             { name: 'icon', type: 'ReactNode', def: '—', required: '必填', desc: { zh: '按钮图标', en: 'Button icon' } },
-            { name: 'label', type: 'string', def: '—', required: '必填', desc: { zh: '无障碍名，兼 title', en: 'Accessible name, doubles as title' } },
+            { name: 'label', type: 'string', def: '—', required: '必填', desc: { zh: '无障碍名', en: 'Accessible name' } },
             { name: 'onClick', type: '() => void', def: '—', desc: { zh: '单项点击回调', en: 'Per-item click handler' } },
             { name: 'visible', type: 'boolean', def: 'true', desc: { zh: 'false = 永久隐藏', en: 'false hides it permanently' } },
             { name: 'when', type: '\'always\' | \'scroll\'', def: '\'always\'', desc: { zh: 'scroll = 滚过阈值才出现', en: 'scroll shows it only past the threshold' } },

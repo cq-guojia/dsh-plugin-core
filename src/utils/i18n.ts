@@ -525,7 +525,6 @@ export type UtilMessageKey =
   | 'deliverExpandAria'
   | 'deliverCollapseAria'
   | 'composerPlaceholder'
-  | 'composerHint'
   // ── 日期时间选择器（DateTimePicker）──
   | 'dtPlaceholder'
   | 'dtStart'
@@ -549,7 +548,6 @@ export type UtilMessageKey =
   | 'inputAction'
   /** 会话里的图片块占位（非 vision 渲染处）。 */
   | 'sessionImage'
-  | 'sessionImageView'
   | 'sessionImageOpenNamed'
   | 'sessionImageLoading'
   | 'sessionImageLoadFailed'
@@ -1077,7 +1075,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     deliverExpandAria: '展开全部 {count} 个交付文件',
     deliverCollapseAria: '收起交付文件列表',
     composerPlaceholder: '继续说点什么…',
-    composerHint: '点「确定」后基于本会话开分支，并在官方会话中开始这轮对话',
     dtPlaceholder: '请选择日期时间',
     dtStart: '开始',
     dtEnd: '结束',
@@ -1098,7 +1095,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     inputUndo: '撤销',
     inputAction: '操作',
     sessionImage: '[图片]',
-    sessionImageView: '查看原图',
     sessionImageOpenNamed: '{label}，点击查看原图',
     sessionImageLoading: '图片加载中…',
     sessionImageLoadFailed: '图片加载失败，点击重试',
@@ -1620,7 +1616,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     deliverExpandAria: 'Expand all {count} delivered files',
     deliverCollapseAria: 'Collapse the delivered-files list',
     composerPlaceholder: 'Say something to continue…',
-    composerHint: 'Confirm forks a branch from this session and starts this turn in the official chat',
     dtPlaceholder: 'Date & time',
     dtStart: 'Start',
     dtEnd: 'End',
@@ -1641,7 +1636,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     inputUndo: 'Undo',
     inputAction: 'Action',
     sessionImage: '[Image]',
-    sessionImageView: 'View original',
     sessionImageOpenNamed: '{label}, click to view original',
     sessionImageLoading: 'Loading image…',
     sessionImageLoadFailed: 'Image failed to load; click to retry',

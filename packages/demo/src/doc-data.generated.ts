@@ -1274,8 +1274,8 @@ export const docData = {
         "en": "Button offers 18 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity). The eight extended tiers (purple/pink/cyan/teal/orange/indigo/rose/slate) are solid faces, same source as Chip/Card."
       },
       {
-        "zh": "IconButton：variant: plain|outline|danger（默认 plain，**无底色**）、size（默认 lg）、icon（必填）、label（必填，无障碍名兼 title）、color（图标色）、background（底色，不传即无底色）。",
-        "en": "IconButton: variant plain|outline|danger (default plain, **no background**), size (default lg), icon (required), label (required, doubles as a11y name and title), color (icon colour), background (fill; omitted = no fill)."
+        "zh": "IconButton：variant: plain|outline|danger（默认 plain，**无底色**）、size（默认 lg）、icon（必填）、label（必填，无障碍名）、color（图标色）、background（底色，不传即无底色）。",
+        "en": "IconButton: variant plain|outline|danger (default plain, **no background**), size (default lg), icon (required), label (required, accessible name), color (icon colour), background (fill; omitted = no fill)."
       },
       {
         "zh": "`dense` 是两者共用的紧凑图标档：`size` / 高度一律不变，图标放大一档、内距收紧（Button 的 `--btn-pad` 从 10/12/14 收到 6，图标容器从 0.875em 到 1.25em；IconButton 把图标 `<svg>` 的 `width/height` 从 1em 提到 1.25em，正方形宽高不变、四周留白变小）。两者 dense 下图标都是 sm 15px / md·lg 16.25px。IconButton 的按钮显式 `padding:0`、图标 `flex:none`：svg 是 flex item，不禁止收缩会被内距压成窄条，此时改 `width` 或加 `!important` 都无效。给描边细、缩到 sm 看不清的图标用（如文件类型 / 语言图标）；默认 false，原有按钮外观不变。",
@@ -1442,8 +1442,8 @@ export const docData = {
             "type": "原生 button 属性",
             "def": "—",
             "desc": {
-              "zh": "type / disabled / title / aria-* 等原样透传（onClick 见上面那行）",
-              "en": "type / disabled / title / aria-* and friends pass through (onClick is documented above)"
+              "zh": "type / disabled / aria-* 等原样透传（onClick 见上面那行）；核心不渲染原生 title",
+              "en": "type / disabled / aria-* and friends pass through (onClick is documented above); the core never renders a native title"
             }
           }
         ]
@@ -1462,7 +1462,7 @@ export const docData = {
         "rows": [
           {
             "name": "Input",
-            "type": "value onChange(v) size(默认 sm) error disabled type icon placeholder inputRef onKeyDown onBlur aria-label title hint",
+            "type": "value onChange(v) size(默认 sm) error disabled type icon placeholder inputRef onKeyDown onBlur aria-label hint",
             "def": "—",
             "desc": {
               "zh": "基础输入框；error 描红；hint 给字符串即自动挂标准问号提示；icon 是左侧图标槽（不吃点击，尺寸取 fieldMetricsOf(size).icon）；type=search 时聚焦且有内容才在右侧出清空钮",
@@ -2270,8 +2270,8 @@ export const docData = {
         "en": "`hoverable` (default off) changes the fill on hover and switches the cursor to `pointer`, using `--dshpc-card-hover` (7% blue light / 13% blue dark). `filled` (default on) controls the background — Card uses surface-1, StripCard the accent tint; `false` makes it transparent but keeps the border. Both axes only rewrite `--surface-bg`, so plugins no longer need their own `:hover` rules."
       },
       {
-        "zh": "展开的卡片用 `hoverScope` 选作用域，默认 `'head'`：根节点零内距并统一裁圆角，`__body` 作为「上面那一整块」独立承担内距、边到边变色；展开态不改内距，上下两圈留白对称，两块之间的间隔也属于头部区、跟着一起变色；`__panel` 是它的兄弟节点，不铺背景、不画分隔线、不参与 hover，鼠标在展开区里操作时整卡都不触发；需要分隔线时由调用方在 `panel` 内容里自绘。StripCard 的通高色条相对根节点定位，展开后仍贯穿整卡（包括展开区）。想要整卡含展开区一起变色，才显式传 `'card'`。**展开内容必须放进 `panel`**（`children` 属于头部区），核心才有分区信号。",
-        "en": "For expandable cards, `hoverScope` selects the scope. The default `'head'` gives the root zero padding and clips the radius, while `__body` — the header block owning all padding — changes color edge to edge; expanding keeps its top and bottom padding symmetric, so the gap between the two blocks changes color too. `__panel` is a sibling with no background, no divider and no hover, so operating inside the expanded area triggers nothing; draw a divider inside `panel` content yourself when you need one. The StripCard rail is positioned against the root and stays full-height across the expanded area. Pass `'card'` explicitly to include it. **Expandable content must go into `panel`**; `children` belongs to the header block."
+        "zh": "展开的卡片用 `hoverScope` 选作用域，默认 `'head'`：根节点零内距并统一裁圆角，`__body` 作为「上面那一整块」独立承担内距、边到边变色；展开态不改内距，上下两圈留白对称，两块之间的间隔也属于头部区、跟着一起变色；`__panel` 是它的兄弟节点，不铺背景、不画分隔线、不参与 hover，鼠标在展开区里操作时整卡都不触发；需要分隔线时由调用方在 `panel` 内容里自绘。展开区的 `margin-top` 与 `padding-top` 都是 0，自绘线紧贴头部区下沿、中间不夹不变色的带子；四根 `--card-pad-t/r/b/l` 是内距唯一真源，`style.padding` 会摊成这四根轴，头部区与展开区左右始终对称。StripCard 的通高色条相对根节点定位，展开后仍贯穿整卡（包括展开区）。想要整卡含展开区一起变色，才显式传 `'card'`。**展开内容必须放进 `panel`**（`children` 属于头部区），核心才有分区信号。",
+        "en": "For expandable cards, `hoverScope` selects the scope. The default `'head'` gives the root zero padding and clips the radius, while `__body` — the header block owning all padding — changes color edge to edge; expanding keeps its top and bottom padding symmetric, so the gap between the two blocks changes color too. `__panel` is a sibling with no background, no divider and no hover, so operating inside the expanded area triggers nothing; draw a divider inside `panel` content yourself when you need one. Both `margin-top` and `padding-top` on the expanded area are 0, so a caller-drawn line sits flush against the header with no uncoloured strip between them. The four `--card-pad-t/r/b/l` axes are the single source of padding truth: `style.padding` expands into them, keeping the header and expanded area symmetric. The StripCard rail is positioned against the root and stays full-height across the expanded area. Pass `'card'` explicitly to include it. **Expandable content must go into `panel`**; `children` belongs to the header block."
       }
     ],
     "api": [
@@ -2373,8 +2373,8 @@ export const docData = {
             "type": "—",
             "def": "—",
             "desc": {
-              "zh": "追加类 / 样式",
-              "en": "Append class / style"
+              "zh": "追加类 / 样式；`style.padding` 摊成四根内距轴，同步头部区与展开区",
+              "en": "Append class / style; `style.padding` expands into the four padding axes so the header and expanded area stay aligned"
             }
           }
         ]
@@ -3207,7 +3207,7 @@ export const docData = {
             }
           },
           {
-            "name": "MarqueeText({ text, style?, title?, className? })",
+            "name": "MarqueeText({ text, style?, className? })",
             "type": "",
             "def": "",
             "desc": {
@@ -4137,8 +4137,8 @@ export const docData = {
             "def": "—",
             "required": "必填",
             "desc": {
-              "zh": "无障碍名，兼 title",
-              "en": "Accessible name, doubles as title"
+              "zh": "无障碍名",
+              "en": "Accessible name"
             }
           },
           {

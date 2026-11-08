@@ -70,7 +70,6 @@ export function PlainNav(props) {
     const { translate: tt, path, pickNow, onClose } = props;
     return h('nav', { className: 'dshpc-fb__bar', 'aria-label': tt('explorerCrumbsAria') }, h(MarqueeText, {
         text: path,
-        title: path,
         className: 'dshpc-fb__bar-plain',
         style: { flex: '1 1 auto', minWidth: 0 },
     }), actions(pickNow, tt, onClose));

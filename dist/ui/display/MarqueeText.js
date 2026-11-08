@@ -39,7 +39,6 @@ export function MarqueeText(props) {
     return h('span', {
         ref: outerRef,
         className: (run ? 'dshpc-mq dshpc-mq-run' : 'dshpc-mq') + (props.className === undefined ? '' : ` ${props.className}`),
-        title: props.title,
         style: props.style,
     }, h('span', {
         ref: innerRef,

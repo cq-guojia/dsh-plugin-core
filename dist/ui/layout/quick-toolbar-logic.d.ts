@@ -13,7 +13,7 @@ export interface QuickToolbarItem {
     id: string;
     /** 图标（自绘或调用方自己的图标组件渲染结果）。 */
     icon: ReactNode;
-    /** 无障碍名，同时作为 title。 */
+    /** 无障碍名。 */
     label: string;
     /** 单项点击回调（与 `onAction` 都会触发）。 */
     onClick?: () => void;

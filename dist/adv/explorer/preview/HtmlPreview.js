@@ -108,6 +108,6 @@ export function HtmlPreview(props) {
         return h('div', { className: 'dshpc-fb__note' }, tt(failed.key, failed.params));
     if (doc === null)
         return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'));
-    return h('div', { className: 'dshpc-fb__fill' }, h('iframe', { className: 'dshpc-fb__frame', sandbox: '', srcDoc: doc, title: props.path }));
+    return h('div', { className: 'dshpc-fb__fill' }, h('iframe', { className: 'dshpc-fb__frame', sandbox: '', srcDoc: doc }));
 }
 //# sourceMappingURL=HtmlPreview.js.map

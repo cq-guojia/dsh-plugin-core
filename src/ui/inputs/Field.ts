@@ -51,8 +51,6 @@ export interface InputProps {
   icon?: ReactNode
   /** 无障碍名。 */
   'aria-label'?: string
-  /** 悬停提示。 */
-  title?: string
   /** 追加 class。 */
   className?: string
   /** 追加样式（只允许补布局）。 */
@@ -86,7 +84,6 @@ export function Input(props: InputProps): ReturnType<typeof h> {
     placeholder,
     disabled: off,
     'aria-label': props['aria-label'],
-    title: props.title,
     className: `dshpc-input dshpc-input${sizeClass(size)}${error === true ? ' dshpc-input--error' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
     style,
     onChange: (event: { target: { value: string } }) => { onChange(event.target.value) },
@@ -137,7 +134,6 @@ export function PrefixedInput(props: PrefixedInputProps): ReturnType<typeof h> {
       placeholder,
       disabled: off,
       'aria-label': props['aria-label'],
-      title: props.title,
       className: 'dshpc-pfx__input',
       onChange: (event: { target: { value: string } }) => { onChange(event.target.value) },
     } as never))

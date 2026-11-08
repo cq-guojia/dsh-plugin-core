@@ -133,7 +133,7 @@ function InstructionsBody(props: { content: unknown; source: unknown; t: Transla
   const baseline = asRecord(props.source)?.baseline === true
   return h('span', null,
     h('ul', { className: C('files'), 'data-context-files': true },
-      changes.map((change) => h('li', { key: change.path, className: C('file'), title: change.digest },
+      changes.map((change) => h('li', { key: change.path, className: C('file') },
         h('span', { className: C('filePath') }, change.path),
         h('span', { className: C('fileAction') }, props.t(instructionAction(change.action, baseline)))))),
     modelFacingContent(props.content, props.t))

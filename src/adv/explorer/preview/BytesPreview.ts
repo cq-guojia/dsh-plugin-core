@@ -65,6 +65,6 @@ export function BytesPreview(props: BytesPreviewProps): ReturnType<typeof h> {
   return h(
     'div',
     { className: 'dshpc-fb__fill' },
-    h('iframe', { className: 'dshpc-fb__frame', src: url, title: props.path }),
+    h('iframe', { className: 'dshpc-fb__frame', src: url }),
   )
 }

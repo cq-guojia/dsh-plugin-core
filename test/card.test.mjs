@@ -113,6 +113,20 @@ test('Card CSS：根节点零内距 + 头部区独立容器承载 hover', () => 
     /\.dshpc-card__panel\{[^}]*margin:0 var\(--card-pad-r\) 0 var\(--card-pad-l\)/,
     '展开区紧跟头部区，两块之间的间隔归头部区、跟着一起变色',
   )
+  assert.match(
+    css,
+    /\.dshpc-card__panel\{[^}]*padding:0 0 var\(--card-pad-b\)/,
+    '展开区顶部内距归零：自绘线贴住头部区下沿，中间不夹不变色的带子',
+  )
+  assert.ok(
+    !css.includes('padding:8px 0 var(--card-pad-b)'),
+    '不许再给展开区垫 8px 顶部内距',
+  )
+  assert.match(
+    css,
+    /--card-pad-all:var\(--card-pad-t\) var\(--card-pad-r\) var\(--card-pad-b\) var\(--card-pad-l\)/,
+    '组合值只由四根轴派生，JS 不直接覆盖 ⇒ 头部区与展开区同源',
+  )
   assert.ok(
     !/\.dshpc-card__panel\{[^}]*border/.test(css),
     '核心不许画展开区分隔线：有时要有时不要，线归消费端自绘',
@@ -145,16 +159,42 @@ test('hoverScope 默认 head，显式 card；hoverable 关掉时作用域类不�
   assert.ok(!off.includes('dshpc-card--hover-'), '没开 hoverable 时作用域类也不能挂')
 })
 
-test('展开态挂 --expanded 类，消费端 style.padding 下沉到头部区', () => {
+test('展开态挂 --expanded 类，消费端 style.padding 摊成四根轴（头部区与展开区同源）', () => {
   const expanded = renderToStaticMarkup(
     createElement(Card, { expanded: true, panel: '展开内容' }, '头部'),
   )
   assert.match(expanded, /dshpc-card--expanded/)
+
+  // 2 值简写：上下 8px、左右 12px；四根轴一起覆盖，__panel 的左右 margin 才不会一边跟一边不跟。
   const padded = renderToStaticMarkup(
     createElement(Card, { style: { padding: '8px 12px' } }, '内容'),
   )
-  assert.match(padded, /--card-pad-all:8px 12px/, '内联内距转成头部区变量')
+  assert.match(padded, /--card-pad-t:8px/, '上轴')
+  assert.match(padded, /--card-pad-r:12px/, '右轴')
+  assert.match(padded, /--card-pad-b:8px/, '下轴')
+  assert.match(padded, /--card-pad-l:12px/, '左轴')
+  assert.ok(!padded.includes('--card-pad-all:'), '组合值只由 CSS 派生，不由 JS 直接写')
   assert.ok(!/style="[^"]*padding:/.test(padded), '根节点不许再出现内联 padding')
+
+  // 1 值数字 0：消费端 bar.inset:0 的用法，四轴必须全 0（左边不再被方位类单独归零）。
+  const zero = renderToStaticMarkup(createElement(Card, { style: { padding: 0 } }, '内容'))
+  for (const axis of ['t', 'r', 'b', 'l']) {
+    assert.match(zero, new RegExp(`--card-pad-${axis}:0px`), `padding:0 覆盖 ${axis} 轴`)
+  }
+
+  // 4 值按 CSS 规则逐边展开；含 calc() 的空格不当分隔符。
+  const four = renderToStaticMarkup(
+    createElement(Card, { style: { padding: '1px 2px 3px 4px' } }, '内容'),
+  )
+  assert.match(four, /--card-pad-t:1px/)
+  assert.match(four, /--card-pad-r:2px/)
+  assert.match(four, /--card-pad-b:3px/)
+  assert.match(four, /--card-pad-l:4px/)
+  const calc = renderToStaticMarkup(
+    createElement(Card, { style: { padding: 'calc(10px - 2px) 4px' } }, '内容'),
+  )
+  assert.match(calc, /--card-pad-t:calc\(10px - 2px\)/)
+  assert.match(calc, /--card-pad-l:4px/)
 })
 
 test('展开区 panel 是头部区 __body 的兄弟节点（核心的分区信号）', () => {

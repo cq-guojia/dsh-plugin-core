@@ -352,7 +352,7 @@ test('会话预览文案中英齐全（镜像官方词典的新增键）', () =>
     'clockDate', 'turnUsageTitle', 'turnUsageCount', 'numberThousand', 'stepProcessDoneRead',
     'stepProcessJoinTwo', 'toolTitleRead', 'toolTitleGeneric', 'toolInputLabel', 'rowRunning',
     'readWindow', 'terminalExitCode', 'diffWrapLabel', 'deliverRowTitle', 'deliverAll',
-    'branchLabel', 'composerPlaceholder', 'composerHint', 'forkFailed',
+    'branchLabel', 'composerPlaceholder', 'forkFailed',
     'changesSingle', 'changesMulti', 'changesBinary', 'changesOversized',
     'diffLoading', 'diffMissing', 'diffError', 'diffBinary', 'diffOversized',
     'diffCreated', 'diffDeleted', 'diffUnchanged', 'diffCoarse', 'diffTruncated',

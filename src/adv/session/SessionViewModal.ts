@@ -1217,7 +1217,7 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   // 自定义标题区时归档徽标挪到动作区最前 —— 归档是数据事实，不能因为自定义标题就消失。
   const customHeader = props.header !== undefined
   const archivedBadge = isArchived
-    ? h('span', { className: 'dshpc-sv-archived', title: tt('sessionArchived') },
+    ? h('span', { className: 'dshpc-sv-archived' },
         h(IconArchiveOutlineRegular, { size: 12 }),
         tt('sessionArchived'),
       )
@@ -1228,7 +1228,6 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
         variant: 'outline',
         size: 'sm',
         disabled: forking,
-        title: tt('continueBranch'),
         icon: isArchived
           ? h(IconBranchOutlineRegular, { size: 14 })
           : h(IconNewChatOutlineRegular, { size: 14 }),
@@ -1286,7 +1285,7 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
           disabled: sending || draft.trim() === '',
           onClick: onSend,
         }, sending ? tt('forkWorking') : tt('confirm')),
-        h('span', { className: 'dshpc-sv-composer-hint', title: tt('composerHint') }, '⌘/Ctrl + ↵'),
+        h('span', { className: 'dshpc-sv-composer-hint' }, '⌘/Ctrl + ↵'),
         sendErr !== null ? h('div', { className: 'dshpc-sv-forkerr' }, sendErr) : null,
       ),
     },

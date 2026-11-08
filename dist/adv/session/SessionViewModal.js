@@ -1157,7 +1157,7 @@ export function SessionViewModal(props) {
     // 自定义标题区时归档徽标挪到动作区最前 —— 归档是数据事实，不能因为自定义标题就消失。
     const customHeader = props.header !== undefined;
     const archivedBadge = isArchived
-        ? h('span', { className: 'dshpc-sv-archived', title: tt('sessionArchived') }, h(IconArchiveOutlineRegular, { size: 12 }), tt('sessionArchived'))
+        ? h('span', { className: 'dshpc-sv-archived' }, h(IconArchiveOutlineRegular, { size: 12 }), tt('sessionArchived'))
         : undefined;
     // 「继续对话」：已归档 = 开分支图标 + 确认框；未归档 = 会话图标直跳官方会话页。
     const continueAction = showContinue
@@ -1165,7 +1165,6 @@ export function SessionViewModal(props) {
             variant: 'outline',
             size: 'sm',
             disabled: forking,
-            title: tt('continueBranch'),
             icon: isArchived
                 ? h(IconBranchOutlineRegular, { size: 14 })
                 : h(IconNewChatOutlineRegular, { size: 14 }),
@@ -1225,7 +1224,7 @@ export function SessionViewModal(props) {
             size: 'sm',
             disabled: sending || draft.trim() === '',
             onClick: onSend,
-        }, sending ? tt('forkWorking') : tt('confirm')), h('span', { className: 'dshpc-sv-composer-hint', title: tt('composerHint') }, '⌘/Ctrl + ↵'), sendErr !== null ? h('div', { className: 'dshpc-sv-forkerr' }, sendErr) : null),
+        }, sending ? tt('forkWorking') : tt('confirm')), h('span', { className: 'dshpc-sv-composer-hint' }, '⌘/Ctrl + ↵'), sendErr !== null ? h('div', { className: 'dshpc-sv-forkerr' }, sendErr) : null),
     }, h('div', { className: 'dshpc-sv', ref: flowRef }, 
     // markdown 导航委托：挂上 openFile 后，正文里的本地文件链接才渲成官方
     // `fileMention fileLink` 按钮（不挂 ⇒ 官方自己退回纯文本）。

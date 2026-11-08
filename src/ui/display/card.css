@@ -20,9 +20,9 @@
   --card-bar-inset:12px;
   --card-bar-gap:12px;
   --card-bar-length:100%;
-  /* 头部区内距四根轴：根节点自己不留 padding，内距全由 __body / __panel 各自承担。
+  /* 内距四根轴是唯一真源：根节点自己不留 padding，__body 与 __panel 都只读这四根轴。
      这样 __body 就是「上面那一整块」，hover 铺色边到边，连原本那圈外圈一起变。
-     --card-pad-all 是四轴的组合值，消费端可用 style.padding 覆盖（Card.ts 转成同名变量）。 */
+     --card-pad-all 只是四轴的组合值，消费端 style.padding 由 Card.ts 摊成四根轴后自动派生。 */
   --card-pad-t:14px;--card-pad-r:14px;--card-pad-b:14px;--card-pad-l:14px;
   --card-pad-all:var(--card-pad-t) var(--card-pad-r) var(--card-pad-b) var(--card-pad-l);
   padding:0;
@@ -47,7 +47,7 @@
 
 /* body = 色条 + 头部，也是「上面那一整块」：它自己承担内距并铺满根节点内容盒，
    是 head 作用域下唯一的 hover 目标。圆角由根节点 overflow 裁切 ⇒ hover 色不露方角。
-   --card-pad-all 供消费端 style.padding 覆盖（Card.ts 把内联 padding 转成这个变量）。
+   --card-pad-all 由四根轴派生；消费端 style.padding 覆盖四轴后，头部区与展开区同步对齐。
    方向跟着条子贴的边切 ⇒ 四个方位只是「换一个方向的 flex 项」，不用各写一套定位。 */
 .dshpc-card__body{
   display:flex;gap:var(--card-bar-gap);min-width:0;
@@ -127,9 +127,11 @@
 .dshpc-card__caret{display:inline-flex;transition:transform .15s ease}
 .dshpc-card__caret.is-open{transform:rotate(180deg)}
 /* 展开区只负责「把展开内容放在头部区下面」：自己承担左右 / 底部内距，补上卡片底部留白。
-   margin-top 归 0 ⇒ 两块之间的间隔是 __body 的 padding-bottom，属于头部区、跟着 hover 一起变色。
+   margin-top 与 padding-top 双双归 0 ⇒ 两块之间的间隔只有 __body 的 padding-bottom，
+   属于头部区、跟着 hover 一起变色；消费端自绘的线因此能贴住这块色的下沿，中间不夹不变色的带子。
+   左右 / 底部内距读同一组四轴变量 ⇒ 与头部区同源，不会左贴边、右留白。
    核心不画任何分隔线：需要线由消费端在 panel 内容里自绘（有时要、有时不要，消费端自己决定）。 */
 .dshpc-card__panel{
   margin:0 var(--card-pad-r) 0 var(--card-pad-l);
-  padding:8px 0 var(--card-pad-b);
+  padding:0 0 var(--card-pad-b);
 }

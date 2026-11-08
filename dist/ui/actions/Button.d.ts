@@ -70,7 +70,7 @@ export interface IconButtonProps {
     dense?: boolean;
     /** 图标（必填）。 */
     icon: ReactNode;
-    /** 无障碍名（必填；同时作为默认 title）。 */
+    /** 无障碍名（必填）。 */
     label: string;
     /** 图标色（任意 CSS 色值）；hover 按它混出浅底。 */
     color?: string;

@@ -651,7 +651,6 @@ var DICT = {
     deliverExpandAria: "\u5C55\u5F00\u5168\u90E8 {count} \u4E2A\u4EA4\u4ED8\u6587\u4EF6",
     deliverCollapseAria: "\u6536\u8D77\u4EA4\u4ED8\u6587\u4EF6\u5217\u8868",
     composerPlaceholder: "\u7EE7\u7EED\u8BF4\u70B9\u4EC0\u4E48\u2026",
-    composerHint: "\u70B9\u300C\u786E\u5B9A\u300D\u540E\u57FA\u4E8E\u672C\u4F1A\u8BDD\u5F00\u5206\u652F\uFF0C\u5E76\u5728\u5B98\u65B9\u4F1A\u8BDD\u4E2D\u5F00\u59CB\u8FD9\u8F6E\u5BF9\u8BDD",
     dtPlaceholder: "\u8BF7\u9009\u62E9\u65E5\u671F\u65F6\u95F4",
     dtStart: "\u5F00\u59CB",
     dtEnd: "\u7ED3\u675F",
@@ -672,7 +671,6 @@ var DICT = {
     inputUndo: "\u64A4\u9500",
     inputAction: "\u64CD\u4F5C",
     sessionImage: "[\u56FE\u7247]",
-    sessionImageView: "\u67E5\u770B\u539F\u56FE",
     sessionImageOpenNamed: "{label}\uFF0C\u70B9\u51FB\u67E5\u770B\u539F\u56FE",
     sessionImageLoading: "\u56FE\u7247\u52A0\u8F7D\u4E2D\u2026",
     sessionImageLoadFailed: "\u56FE\u7247\u52A0\u8F7D\u5931\u8D25\uFF0C\u70B9\u51FB\u91CD\u8BD5",
@@ -1194,7 +1192,6 @@ var DICT = {
     deliverExpandAria: "Expand all {count} delivered files",
     deliverCollapseAria: "Collapse the delivered-files list",
     composerPlaceholder: "Say something to continue\u2026",
-    composerHint: "Confirm forks a branch from this session and starts this turn in the official chat",
     dtPlaceholder: "Date & time",
     dtStart: "Start",
     dtEnd: "End",
@@ -1215,7 +1212,6 @@ var DICT = {
     inputUndo: "Undo",
     inputAction: "Action",
     sessionImage: "[Image]",
-    sessionImageView: "View original",
     sessionImageOpenNamed: "{label}, click to view original",
     sessionImageLoading: "Loading image\u2026",
     sessionImageLoadFailed: "Image failed to load; click to retry",
@@ -4163,7 +4159,6 @@ function MarqueeText(props) {
   return (0, import_react6.createElement)("span", {
     ref: outerRef,
     className: (run ? "dshpc-mq dshpc-mq-run" : "dshpc-mq") + (props.className === void 0 ? "" : ` ${props.className}`),
-    title: props.title,
     style: props.style
   }, (0, import_react6.createElement)("span", {
     ref: innerRef,
@@ -4726,6 +4721,8 @@ function Button(props) {
   const autoLabel = hideText && typeof children === "string" ? children : void 0;
   const attrs2 = {
     ...rest,
+    // 核心全站不渲染原生 title：显式压掉，调用方即使经 rest 传也不会冒出 tooltip。
+    title: void 0,
     ref: btnRef,
     type: rest.type ?? "button",
     disabled: rest.disabled === true || loading || locked,
@@ -4764,7 +4761,8 @@ function IconButton(props) {
   const attrs2 = {
     ...rest,
     type: rest.type ?? "button",
-    title: rest.title ?? label,
+    // 核心全站不渲染原生 title：显式压掉，调用方即使经 rest 传也不会冒出 tooltip。
+    title: void 0,
     "aria-label": rest["aria-label"] ?? label,
     // 无障碍名不变（仍是 label），只声明「正在忙」，读屏不会把圈读成内容
     "aria-busy": loading || void 0,
@@ -6267,7 +6265,7 @@ function alertModal(opts) {
 var import_react25 = require("react");
 
 // dist/ui/display/card-css.generated.js
-var CARD_CSS = "\n/* \u2500\u2500 Card / StripCard\uFF1ASurface \u5916\u6846 + \u5934\u90E8\u5951\u7EA6 + \u8272\u6761 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u6846\uFF08\u5E95 / \u8FB9\u6846 / \u5706\u89D2\uFF09\u6765\u81EA .dshpc-surface\uFF08src/ui/surface.css\uFF09\uFF1A\n   \u672C\u6587\u4EF6**\u4E0D\u518D\u5199 border / border-radius**\uFF0C\u5706\u89D2\u5951\u7EA6\u56E0\u6B64\u53EA\u6709\u4E00\u4E2A\u5B9A\u4E49\u70B9\uFF08\u5BB9\u5668\u6863 = 12\uFF09\u3002\n   \u5185\u8DDD\u4E0D\u5728\u6839\u8282\u70B9\uFF1A\u6839\u8282\u70B9 padding:0\uFF0C__body\uFF08\u5934\u90E8\u533A\uFF09\u4E0E __panel\uFF08\u5C55\u5F00\u533A\uFF09\u5404\u81EA\u627F\u62C5 \u2014\u2014\n   \u4E24\u5757\u533A\u57DF\u56E0\u6B64\u5F7C\u6B64\u72EC\u7ACB\uFF0Chover \u53EA\u53EF\u80FD\u843D\u5728\u5934\u90E8\u533A\uFF0C\u5C55\u5F00\u533A\u4E0D\u4F1A\u88AB\u6CE2\u53CA\u3002\n   \u8FD9\u91CC\u53EA\u7BA1\u4E09\u4EF6 Surface \u4E0D\u8BE5\u77E5\u9053\u7684\u4E8B\uFF1A\u8272\u6761\u51E0\u4F55\u3001\u5934\u90E8\u5E03\u5C40\u3001\u4E24\u5757\u533A\u57DF\u7684\u5185\u8DDD\u3002\n\n   \u8272\u6761\u51E0\u4F55\u9ED8\u8BA4\u503C\u90FD\u53EF\u88AB props \u8986\u76D6\uFF08Card.ts \u5199\u5BF9\u5E94\u7684 CSS \u53D8\u91CF\uFF09\uFF1A\n     --card-bar-size   \u6761\u5B50\u7C97\u7EC6\n     --card-bar-inset  \u6761\u5B50\u8DDD\u5361\u7247\u8FB9\u7F18\u7684\u8DDD\u79BB\uFF08= \u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD\uFF09\n     --card-bar-gap    \u6761\u5B50\u8DDD\u5185\u5BB9\u7684\u8DDD\u79BB\uFF08= body \u7684 gap\uFF09\n     --card-bar-length \u4E0A\u4E0B\u65B9\u4F4D\u65F6\u7684\u6761\u957F\uFF08100% = \u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\n   \u8FD9\u4E9B\u53D8\u91CF\u53EA\u5728\u672C\u6587\u4EF6\u6D88\u8D39\uFF083 \u4EFD\u6587\u4EF6\u4E00\u8D77\u5F15\u65F6\uFF0C\u8DE8\u6587\u4EF6\u5F15\u7528\u522B\u5904\u7684\u53D8\u91CF\u4F1A\u9759\u9ED8\u5931\u6548\uFF09\uFF0C\n   \u6240\u4EE5\u9ED8\u8BA4\u503C\u5FC5\u987B\u5199\u5728\u8FD9\u91CC\uFF0C\u800C\u4E0D\u662F\u4EE4\u724C\u6216\u522B\u7684\u76AE\u80A4\u91CC\u3002 */\n.dshpc-card{\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n  --card-bar-size:6px;\n  --card-bar-inset:12px;\n  --card-bar-gap:12px;\n  --card-bar-length:100%;\n  /* \u5934\u90E8\u533A\u5185\u8DDD\u56DB\u6839\u8F74\uFF1A\u6839\u8282\u70B9\u81EA\u5DF1\u4E0D\u7559 padding\uFF0C\u5185\u8DDD\u5168\u7531 __body / __panel \u5404\u81EA\u627F\u62C5\u3002\n     \u8FD9\u6837 __body \u5C31\u662F\u300C\u4E0A\u9762\u90A3\u4E00\u6574\u5757\u300D\uFF0Chover \u94FA\u8272\u8FB9\u5230\u8FB9\uFF0C\u8FDE\u539F\u672C\u90A3\u5708\u5916\u5708\u4E00\u8D77\u53D8\u3002\n     --card-pad-all \u662F\u56DB\u8F74\u7684\u7EC4\u5408\u503C\uFF0C\u6D88\u8D39\u7AEF\u53EF\u7528 style.padding \u8986\u76D6\uFF08Card.ts \u8F6C\u6210\u540C\u540D\u53D8\u91CF\uFF09\u3002 */\n  --card-pad-t:14px;--card-pad-r:14px;--card-pad-b:14px;--card-pad-l:14px;\n  --card-pad-all:var(--card-pad-t) var(--card-pad-r) var(--card-pad-b) var(--card-pad-l);\n  padding:0;\n  /* \u5934\u90E8\u533A\u80CC\u666F\u94FA\u6EE1\u6839\u8282\u70B9\u5185\u5BB9\u76D2\uFF0C\u7531\u6839\u8282\u70B9\u7EDF\u4E00\u88C1\u6210\u5916\u6846\u5706\u89D2\uFF1B__body \u81EA\u5DF1\u4E0D\u5199\u5706\u89D2\u88F8\u503C\u3002 */\n  overflow:hidden;\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n/* \u6269\u5C55\u516B\u8272\uFF082026-10-29\uFF09\uFF1A\u8272\u6761 + \u6D45\u5E95\u540C\u6E90\uFF0C\u8F6F\u5E95\u8D70\u5404\u81EA -soft\u3002 */\n.dshpc-card--purple{--card-accent:var(--dshpc-purple);--card-accent-soft:var(--dshpc-purple-soft)}\n.dshpc-card--pink{--card-accent:var(--dshpc-pink);--card-accent-soft:var(--dshpc-pink-soft)}\n.dshpc-card--cyan{--card-accent:var(--dshpc-cyan);--card-accent-soft:var(--dshpc-cyan-soft)}\n.dshpc-card--teal{--card-accent:var(--dshpc-teal);--card-accent-soft:var(--dshpc-teal-soft)}\n.dshpc-card--orange{--card-accent:var(--dshpc-orange);--card-accent-soft:var(--dshpc-orange-soft)}\n.dshpc-card--indigo{--card-accent:var(--dshpc-indigo);--card-accent-soft:var(--dshpc-indigo-soft)}\n.dshpc-card--rose{--card-accent:var(--dshpc-rose);--card-accent-soft:var(--dshpc-rose-soft)}\n.dshpc-card--slate{--card-accent:var(--dshpc-slate);--card-accent-soft:var(--dshpc-slate-soft)}\n\n/* body = \u8272\u6761 + \u5934\u90E8\uFF0C\u4E5F\u662F\u300C\u4E0A\u9762\u90A3\u4E00\u6574\u5757\u300D\uFF1A\u5B83\u81EA\u5DF1\u627F\u62C5\u5185\u8DDD\u5E76\u94FA\u6EE1\u6839\u8282\u70B9\u5185\u5BB9\u76D2\uFF0C\n   \u662F head \u4F5C\u7528\u57DF\u4E0B\u552F\u4E00\u7684 hover \u76EE\u6807\u3002\u5706\u89D2\u7531\u6839\u8282\u70B9 overflow \u88C1\u5207 \u21D2 hover \u8272\u4E0D\u9732\u65B9\u89D2\u3002\n   --card-pad-all \u4F9B\u6D88\u8D39\u7AEF style.padding \u8986\u76D6\uFF08Card.ts \u628A\u5185\u8054 padding \u8F6C\u6210\u8FD9\u4E2A\u53D8\u91CF\uFF09\u3002\n   \u65B9\u5411\u8DDF\u7740\u6761\u5B50\u8D34\u7684\u8FB9\u5207 \u21D2 \u56DB\u4E2A\u65B9\u4F4D\u53EA\u662F\u300C\u6362\u4E00\u4E2A\u65B9\u5411\u7684 flex \u9879\u300D\uFF0C\u4E0D\u7528\u5404\u5199\u4E00\u5957\u5B9A\u4F4D\u3002 */\n.dshpc-card__body{\n  display:flex;gap:var(--card-bar-gap);min-width:0;\n  padding:var(--card-pad-all);\n  background:transparent;\n}\n.dshpc-card--bar-top .dshpc-card__body,\n.dshpc-card--bar-bottom .dshpc-card__body{flex-direction:column}\n/* \u5C55\u5F00\u6001\u4E0D\u7279\u6B8A\u5904\u7406\u5185\u8DDD\uFF1A\u5934\u90E8\u533A\u4E0A\u4E0B\u7559\u767D\u59CB\u7EC8\u5BF9\u79F0\uFF0C\u8272\u6761\u4E0A\u4E0B\u624D\u4E0D\u4F1A\u4E00\u957F\u4E00\u77ED\u3002\n   \u4E24\u5757\u4E4B\u95F4\u7684\u95F4\u9694\u5C31\u662F __body \u7684 padding-bottom\uFF0C\u5C5E\u4E8E\u5934\u90E8\u533A\u3001\u8DDF\u7740\u4E00\u8D77\u53D8\u8272\uFF1B\n   __panel \u7D27\u63A5\u5176\u540E\uFF0C\u4E0D\u5728\u4E2D\u95F4\u7559\u4E00\u6761\u4E0D\u53D8\u8272\u7684\u5E26\u5B50\uFF0C\u4E5F\u4E0D\u753B\u5206\u9694\u7EBF\u3002 */\n\n/* \u5934\u90E8\u4E00\u884C = \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card--bar-left .dshpc-card__head,\n.dshpc-card--bar-right .dshpc-card__head{flex:1 1 auto}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u8272\u6761\uFF1A\u5DE6/\u53F3 = \u7AD6\u5411\u6761\uFF08\u9AD8\u5EA6\u8DDF\u5185\u5BB9\uFF0C\u6700\u5C0F\u4E00\u884C\uFF09\uFF1B\u4E0A/\u4E0B = \u6A2A\u5411\u6761\uFF08\u957F\u5EA6\u9ED8\u8BA4\u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\u3002\n   \u53F3/\u4E0B\u65B9\u4F4D\u9760 order \u6392\u5230\u5934\u90E8\u4E4B\u540E\uFF0CDOM \u987A\u5E8F\u59CB\u7EC8\u4E0D\u53D8\u3002 */\n.dshpc-card__bar{flex:none;background:var(--card-accent);border-radius:var(--dshpc-radius-xs)}\n.dshpc-card--bar-left .dshpc-card__bar,\n.dshpc-card--bar-right .dshpc-card__bar{width:var(--card-bar-size);align-self:stretch;min-height:var(--dshpc-line-md)}\n.dshpc-card--bar-top .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{width:var(--card-bar-length);height:var(--card-bar-size);align-self:flex-start}\n.dshpc-card--bar-right .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{order:1}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500\n   \u5E95\u8272 / \u65B9\u89D2 / \u5360\u4F4D\u8FB9\u6846\u7531 Surface \u7684\u4E09\u6761\u4FEE\u9970\u7C7B\u63D0\u4F9B\uFF08Card.ts \u6309 kind \u4F20\uFF09\uFF0C\u6B64\u5904\u53EA\u7BA1\u5185\u8DDD\u4E0E\u6761\u5B50\u3002 */\n.dshpc-card.dshpc-card--strip{\n  --card-bar-size:4px;--card-bar-inset:0;\n  --card-pad-t:12px;--card-pad-r:12px;--card-pad-b:12px;--card-pad-l:20px;\n  /* \u5E95\u8272\u6539\u8D70 Surface \u7684 --surface-bg \u53D8\u91CF\uFF08surface.css:7-8 \u5951\u7EA6\uFF09\uFF1A\u4E0D\u80FD\u5199 background \u5C5E\u6027\uFF0C\n     \u5426\u5219\u900F\u660E\u6863\u8981\u8986\u76D6\u65F6\u4F1A\u88AB\u5C5E\u6027\u5C42\u6253\u67B6\uFF08\u5144\u5F1F\u9879\u76EE\u66FE\u7528 background-image \u6E10\u53D8\u7ED5\u8FC7\uFF09\u3002 */\n  --surface-bg:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 20px = 16 \u7559\u767D + 4 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002\n   \u5B9A\u4F4D\u57FA\u51C6\u662F\u6839\u8282\u70B9\u7684 position:relative\uFF08Surface \u63D0\u4F9B\uFF09\uFF0Ctop:0 / bottom:0 \u56E0\u6B64\u662F\u6574\u5361\u901A\u9AD8\uFF1A\n   \u5C55\u5F00\u540E\u8272\u6761\u4ECD\u4E00\u8DEF\u8D2F\u7A7F\u5230\u5C55\u5F00\u533A\u5E95\u90E8\uFF0C\u4E0D\u968F head \u5206\u533A\u88AB\u88C1\u77ED\uFF082026-11-08 \u62CD\u677F\uFF09\u3002\n   \u7279\u5F02\u6027 0,3,0\uFF1A\u538B\u8FC7\u4E0A\u9762 .dshpc-card--bar-left .dshpc-card__bar \u7684\u5BBD\u5EA6\u89C4\u5219\uFF0C\u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u3002 */\n.dshpc-card.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;align-self:auto}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1A\u8272\u6761\u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD = \u6761\u5B50\u8DDD\u8FB9\u7F18\u7684\u8DDD\u79BB \u2500\u2500\n   \u56DB\u65B9\u4F4D\u53EA\u6539\u5BF9\u5E94\u90A3\u6839 --card-pad-* \u53D8\u91CF\uFF0C__body \u4E0E __panel \u540C\u65F6\u8DDF\u7740\u5BF9\u9F50\u3002 */\n.dshpc-card--bar-left{--card-pad-l:var(--card-bar-inset)}\n.dshpc-card--bar-right{--card-pad-r:var(--card-bar-inset)}\n.dshpc-card--bar-top{--card-pad-t:var(--card-bar-inset)}\n.dshpc-card--bar-bottom{--card-pad-b:var(--card-bar-inset)}\n\n/* \u2500\u2500 \u5916\u89C2\u8F74\uFF082026-11-07\uFF09\uFF1A\u5E95\u8272\u5F00\u5173 + hover \u4F5C\u7528\u57DF \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E24\u5757\u533A\u57DF\u5404\u81EA\u72EC\u7ACB\uFF1A\u6839\u8282\u70B9\u53EA\u94FA\u4E00\u5C42\u5E38\u6001\u5E95\uFF08--surface-bg\uFF09\uFF1B__body \u662F\u300C\u4E0A\u9762\u90A3\u4E00\u6574\u5757\u300D\uFF0C\n   __panel \u662F\u5B83\u7684\u5144\u5F1F\u8282\u70B9\uFF0C\u4E0D\u94FA\u4EFB\u4F55\u80CC\u666F\u3001\u4E0D\u53C2\u4E0E hover\u3002\n   hoverScope\uFF08\u9ED8\u8BA4 head\uFF09\uFF1A\n     head \u2014\u2014 \u53EA\u6709 __body \u94FA --dshpc-card-hover\uFF0C\u8FB9\u5230\u8FB9\uFF08\u5185\u8DDD\u5708 + \u5706\u89D2\u90FD\u5728\u8FD9\u4E00\u5757\u4E0A\uFF09\uFF1B\n             \u5C55\u5F00\u6001\u4E5F\u4E0D\u6539\u5185\u8DDD\uFF0C\u4E0A\u4E0B\u4E24\u5708\u7559\u767D\u540C\u5C5E\u8FD9\u4E00\u5757\u3001\u4E00\u8D77\u53D8\u8272\uFF0C\u8272\u6761\u4E0A\u4E0B\u624D\u5BF9\u79F0\uFF1B\n             \u9F20\u6807\u843D\u5728 __panel \u65F6 :hover \u6839\u672C\u4E0D\u6210\u7ACB \u21D2 \u6574\u5361\u4E0D\u89E6\u53D1\uFF0C\u4E0B\u9762\u6C38\u8FDC\u662F\u5E38\u6001\u3002\n     card \u2014\u2014 \u6839\u8282\u70B9\u6539 --surface-bg\uFF0C\u6574\u5361\u542B\u5C55\u5F00\u533A\u4E00\u8D77\u53D8\u8272\uFF0C\u7531\u6D88\u8D39\u7AEF\u663E\u5F0F\u9009\u3002\n   \u26A0\uFE0F \u7EDD\u4E0D\u7528\u300C\u7ED9\u5C55\u5F00\u533A\u94FA\u4E00\u5C42\u5E95\u8272\u53BB\u76D6\u4F4F\u6839\u8282\u70B9\u300D\uFF1A\u534A\u900F\u660E token \u53E0\u4E24\u5C42\u4F1A\u66F4\u6DF1\uFF08\u771F\u8E29\u8FC7\uFF09\u3002 */\n.dshpc-card.dshpc-card--no-fill{--surface-bg:transparent}\n/* \u5F00\u5173\u6253\u5F00\u5373\u58F0\u660E\u300C\u4E0A\u9762\u90A3\u4E00\u5757\u53EF\u4EA4\u4E92\u300D\uFF1A\u624B\u52BF\u8DDF\u7740\u53D8\uFF0C\u5C55\u5F00\u533A\u8FD8\u539F\u6210\u9ED8\u8BA4\u5149\u6807\u3002 */\n.dshpc-card.dshpc-card--hoverable{cursor:pointer}\n.dshpc-card.dshpc-card--hover-head .dshpc-card__panel{cursor:auto}\n/* \u987A\u5E8F\u5373\u4F18\u5148\u7EA7\uFF1Astrip \u6D45\u5E95 / no-fill \u900F\u660E(0,2,0) \u2192 card:hover(0,3,0\uFF0C\u6700\u9AD8)\u3002 */\n.dshpc-card.dshpc-card--hover-head .dshpc-card__body:hover{background:var(--dshpc-card-hover)}\n.dshpc-card.dshpc-card--hover-card:hover{--surface-bg:var(--dshpc-card-hover)}\n\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n/* \u7BAD\u5934\u662F svg\uFF08Chevron\uFF09\uFF0C\u4E0D\u662F\u5B57\u5F62 \u21D2 \u4E0D\u8981 font-size\uFF1Binline-flex \u514D\u6389 svg \u7684\u57FA\u7EBF\u7559\u767D\u3002 */\n.dshpc-card__caret{display:inline-flex;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n/* \u5C55\u5F00\u533A\u53EA\u8D1F\u8D23\u300C\u628A\u5C55\u5F00\u5185\u5BB9\u653E\u5728\u5934\u90E8\u533A\u4E0B\u9762\u300D\uFF1A\u81EA\u5DF1\u627F\u62C5\u5DE6\u53F3 / \u5E95\u90E8\u5185\u8DDD\uFF0C\u8865\u4E0A\u5361\u7247\u5E95\u90E8\u7559\u767D\u3002\n   margin-top \u5F52 0 \u21D2 \u4E24\u5757\u4E4B\u95F4\u7684\u95F4\u9694\u662F __body \u7684 padding-bottom\uFF0C\u5C5E\u4E8E\u5934\u90E8\u533A\u3001\u8DDF\u7740 hover \u4E00\u8D77\u53D8\u8272\u3002\n   \u6838\u5FC3\u4E0D\u753B\u4EFB\u4F55\u5206\u9694\u7EBF\uFF1A\u9700\u8981\u7EBF\u7531\u6D88\u8D39\u7AEF\u5728 panel \u5185\u5BB9\u91CC\u81EA\u7ED8\uFF08\u6709\u65F6\u8981\u3001\u6709\u65F6\u4E0D\u8981\uFF0C\u6D88\u8D39\u7AEF\u81EA\u5DF1\u51B3\u5B9A\uFF09\u3002 */\n.dshpc-card__panel{\n  margin:0 var(--card-pad-r) 0 var(--card-pad-l);\n  padding:8px 0 var(--card-pad-b);\n}\n";
+var CARD_CSS = "\n/* \u2500\u2500 Card / StripCard\uFF1ASurface \u5916\u6846 + \u5934\u90E8\u5951\u7EA6 + \u8272\u6761 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u6846\uFF08\u5E95 / \u8FB9\u6846 / \u5706\u89D2\uFF09\u6765\u81EA .dshpc-surface\uFF08src/ui/surface.css\uFF09\uFF1A\n   \u672C\u6587\u4EF6**\u4E0D\u518D\u5199 border / border-radius**\uFF0C\u5706\u89D2\u5951\u7EA6\u56E0\u6B64\u53EA\u6709\u4E00\u4E2A\u5B9A\u4E49\u70B9\uFF08\u5BB9\u5668\u6863 = 12\uFF09\u3002\n   \u5185\u8DDD\u4E0D\u5728\u6839\u8282\u70B9\uFF1A\u6839\u8282\u70B9 padding:0\uFF0C__body\uFF08\u5934\u90E8\u533A\uFF09\u4E0E __panel\uFF08\u5C55\u5F00\u533A\uFF09\u5404\u81EA\u627F\u62C5 \u2014\u2014\n   \u4E24\u5757\u533A\u57DF\u56E0\u6B64\u5F7C\u6B64\u72EC\u7ACB\uFF0Chover \u53EA\u53EF\u80FD\u843D\u5728\u5934\u90E8\u533A\uFF0C\u5C55\u5F00\u533A\u4E0D\u4F1A\u88AB\u6CE2\u53CA\u3002\n   \u8FD9\u91CC\u53EA\u7BA1\u4E09\u4EF6 Surface \u4E0D\u8BE5\u77E5\u9053\u7684\u4E8B\uFF1A\u8272\u6761\u51E0\u4F55\u3001\u5934\u90E8\u5E03\u5C40\u3001\u4E24\u5757\u533A\u57DF\u7684\u5185\u8DDD\u3002\n\n   \u8272\u6761\u51E0\u4F55\u9ED8\u8BA4\u503C\u90FD\u53EF\u88AB props \u8986\u76D6\uFF08Card.ts \u5199\u5BF9\u5E94\u7684 CSS \u53D8\u91CF\uFF09\uFF1A\n     --card-bar-size   \u6761\u5B50\u7C97\u7EC6\n     --card-bar-inset  \u6761\u5B50\u8DDD\u5361\u7247\u8FB9\u7F18\u7684\u8DDD\u79BB\uFF08= \u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD\uFF09\n     --card-bar-gap    \u6761\u5B50\u8DDD\u5185\u5BB9\u7684\u8DDD\u79BB\uFF08= body \u7684 gap\uFF09\n     --card-bar-length \u4E0A\u4E0B\u65B9\u4F4D\u65F6\u7684\u6761\u957F\uFF08100% = \u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\n   \u8FD9\u4E9B\u53D8\u91CF\u53EA\u5728\u672C\u6587\u4EF6\u6D88\u8D39\uFF083 \u4EFD\u6587\u4EF6\u4E00\u8D77\u5F15\u65F6\uFF0C\u8DE8\u6587\u4EF6\u5F15\u7528\u522B\u5904\u7684\u53D8\u91CF\u4F1A\u9759\u9ED8\u5931\u6548\uFF09\uFF0C\n   \u6240\u4EE5\u9ED8\u8BA4\u503C\u5FC5\u987B\u5199\u5728\u8FD9\u91CC\uFF0C\u800C\u4E0D\u662F\u4EE4\u724C\u6216\u522B\u7684\u76AE\u80A4\u91CC\u3002 */\n.dshpc-card{\n  --card-accent:var(--dshpc-business);\n  --card-accent-soft:var(--dshpc-business-soft);\n  --card-bar-size:6px;\n  --card-bar-inset:12px;\n  --card-bar-gap:12px;\n  --card-bar-length:100%;\n  /* \u5185\u8DDD\u56DB\u6839\u8F74\u662F\u552F\u4E00\u771F\u6E90\uFF1A\u6839\u8282\u70B9\u81EA\u5DF1\u4E0D\u7559 padding\uFF0C__body \u4E0E __panel \u90FD\u53EA\u8BFB\u8FD9\u56DB\u6839\u8F74\u3002\n     \u8FD9\u6837 __body \u5C31\u662F\u300C\u4E0A\u9762\u90A3\u4E00\u6574\u5757\u300D\uFF0Chover \u94FA\u8272\u8FB9\u5230\u8FB9\uFF0C\u8FDE\u539F\u672C\u90A3\u5708\u5916\u5708\u4E00\u8D77\u53D8\u3002\n     --card-pad-all \u53EA\u662F\u56DB\u8F74\u7684\u7EC4\u5408\u503C\uFF0C\u6D88\u8D39\u7AEF style.padding \u7531 Card.ts \u644A\u6210\u56DB\u6839\u8F74\u540E\u81EA\u52A8\u6D3E\u751F\u3002 */\n  --card-pad-t:14px;--card-pad-r:14px;--card-pad-b:14px;--card-pad-l:14px;\n  --card-pad-all:var(--card-pad-t) var(--card-pad-r) var(--card-pad-b) var(--card-pad-l);\n  padding:0;\n  /* \u5934\u90E8\u533A\u80CC\u666F\u94FA\u6EE1\u6839\u8282\u70B9\u5185\u5BB9\u76D2\uFF0C\u7531\u6839\u8282\u70B9\u7EDF\u4E00\u88C1\u6210\u5916\u6846\u5706\u89D2\uFF1B__body \u81EA\u5DF1\u4E0D\u5199\u5706\u89D2\u88F8\u503C\u3002 */\n  overflow:hidden;\n}\n/* \u6863\u4F4D \u2192 token\uFF08\u7167 records-timeline \u7684 tone \u6A21\u5F0F\uFF1A\u4E00\u4E2A\u53D8\u91CF\u5207\u6863\uFF0C\u4E0D\u5199 5 \u5957\u89C4\u5219\uFF1B\u6D45\u5E95\u4E0E\u8272\u6761\u540C\u6E90\uFF09\u3002 */\n.dshpc-card--success{--card-accent:var(--dshpc-success);--card-accent-soft:var(--dshpc-success-soft)}\n.dshpc-card--warning{--card-accent:var(--dshpc-warning);--card-accent-soft:var(--dshpc-warning-soft)}\n.dshpc-card--danger{--card-accent:var(--dshpc-danger);--card-accent-soft:var(--dshpc-danger-soft)}\n/* neutral \u6D45\u5E95\u501F chip \u5E95\uFF08\u5144\u5F1F\u9879\u76EE mute \u6863\u540C\u6B3E\uFF1A\u660E\u6697\u90FD\u6210\u7ACB\uFF09\u3002 */\n.dshpc-card--neutral{--card-accent:var(--dshpc-fg-4);--card-accent-soft:var(--dshpc-chip-bg)}\n/* \u6269\u5C55\u516B\u8272\uFF082026-10-29\uFF09\uFF1A\u8272\u6761 + \u6D45\u5E95\u540C\u6E90\uFF0C\u8F6F\u5E95\u8D70\u5404\u81EA -soft\u3002 */\n.dshpc-card--purple{--card-accent:var(--dshpc-purple);--card-accent-soft:var(--dshpc-purple-soft)}\n.dshpc-card--pink{--card-accent:var(--dshpc-pink);--card-accent-soft:var(--dshpc-pink-soft)}\n.dshpc-card--cyan{--card-accent:var(--dshpc-cyan);--card-accent-soft:var(--dshpc-cyan-soft)}\n.dshpc-card--teal{--card-accent:var(--dshpc-teal);--card-accent-soft:var(--dshpc-teal-soft)}\n.dshpc-card--orange{--card-accent:var(--dshpc-orange);--card-accent-soft:var(--dshpc-orange-soft)}\n.dshpc-card--indigo{--card-accent:var(--dshpc-indigo);--card-accent-soft:var(--dshpc-indigo-soft)}\n.dshpc-card--rose{--card-accent:var(--dshpc-rose);--card-accent-soft:var(--dshpc-rose-soft)}\n.dshpc-card--slate{--card-accent:var(--dshpc-slate);--card-accent-soft:var(--dshpc-slate-soft)}\n\n/* body = \u8272\u6761 + \u5934\u90E8\uFF0C\u4E5F\u662F\u300C\u4E0A\u9762\u90A3\u4E00\u6574\u5757\u300D\uFF1A\u5B83\u81EA\u5DF1\u627F\u62C5\u5185\u8DDD\u5E76\u94FA\u6EE1\u6839\u8282\u70B9\u5185\u5BB9\u76D2\uFF0C\n   \u662F head \u4F5C\u7528\u57DF\u4E0B\u552F\u4E00\u7684 hover \u76EE\u6807\u3002\u5706\u89D2\u7531\u6839\u8282\u70B9 overflow \u88C1\u5207 \u21D2 hover \u8272\u4E0D\u9732\u65B9\u89D2\u3002\n   --card-pad-all \u7531\u56DB\u6839\u8F74\u6D3E\u751F\uFF1B\u6D88\u8D39\u7AEF style.padding \u8986\u76D6\u56DB\u8F74\u540E\uFF0C\u5934\u90E8\u533A\u4E0E\u5C55\u5F00\u533A\u540C\u6B65\u5BF9\u9F50\u3002\n   \u65B9\u5411\u8DDF\u7740\u6761\u5B50\u8D34\u7684\u8FB9\u5207 \u21D2 \u56DB\u4E2A\u65B9\u4F4D\u53EA\u662F\u300C\u6362\u4E00\u4E2A\u65B9\u5411\u7684 flex \u9879\u300D\uFF0C\u4E0D\u7528\u5404\u5199\u4E00\u5957\u5B9A\u4F4D\u3002 */\n.dshpc-card__body{\n  display:flex;gap:var(--card-bar-gap);min-width:0;\n  padding:var(--card-pad-all);\n  background:transparent;\n}\n.dshpc-card--bar-top .dshpc-card__body,\n.dshpc-card--bar-bottom .dshpc-card__body{flex-direction:column}\n/* \u5C55\u5F00\u6001\u4E0D\u7279\u6B8A\u5904\u7406\u5185\u8DDD\uFF1A\u5934\u90E8\u533A\u4E0A\u4E0B\u7559\u767D\u59CB\u7EC8\u5BF9\u79F0\uFF0C\u8272\u6761\u4E0A\u4E0B\u624D\u4E0D\u4F1A\u4E00\u957F\u4E00\u77ED\u3002\n   \u4E24\u5757\u4E4B\u95F4\u7684\u95F4\u9694\u5C31\u662F __body \u7684 padding-bottom\uFF0C\u5C5E\u4E8E\u5934\u90E8\u533A\u3001\u8DDF\u7740\u4E00\u8D77\u53D8\u8272\uFF1B\n   __panel \u7D27\u63A5\u5176\u540E\uFF0C\u4E0D\u5728\u4E2D\u95F4\u7559\u4E00\u6761\u4E0D\u53D8\u8272\u7684\u5E26\u5B50\uFF0C\u4E5F\u4E0D\u753B\u5206\u9694\u7EBF\u3002 */\n\n/* \u5934\u90E8\u4E00\u884C = \u4E3B\u5185\u5BB9 + \u53F3\u4FA7\u69FD\uFF0C**\u6574\u4F53\u5782\u76F4\u5C45\u4E2D**\uFF1A\u8C03\u7528\u65B9\u5728 action \u91CC\u88F8\u653E\u4E00\u4E2A\u5143\u7D20\n   \uFF08\u6309\u94AE / \u6587\u5B57 / \u56FE\u6807\uFF09\u4E0D\u7528\u81EA\u5DF1\u5957\u5BB9\u5668\u5C45\u4E2D\uFF1B\u4E00\u884C\u4E24\u884C\u3001\u53F3\u8FB9\u600E\u4E48\u653E\u7531\u8C03\u7528\u65B9\u5728\u6846\u5185\u81EA\u5B9A\u3002 */\n.dshpc-card__head{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-card--bar-left .dshpc-card__head,\n.dshpc-card--bar-right .dshpc-card__head{flex:1 1 auto}\n.dshpc-card__main{flex:1;min-width:0}\n.dshpc-card__side{display:flex;align-items:center;gap:6px;flex:none}\n\n/* \u8272\u6761\uFF1A\u5DE6/\u53F3 = \u7AD6\u5411\u6761\uFF08\u9AD8\u5EA6\u8DDF\u5185\u5BB9\uFF0C\u6700\u5C0F\u4E00\u884C\uFF09\uFF1B\u4E0A/\u4E0B = \u6A2A\u5411\u6761\uFF08\u957F\u5EA6\u9ED8\u8BA4\u8DDF\u5185\u5BB9\u540C\u5BBD\uFF09\u3002\n   \u53F3/\u4E0B\u65B9\u4F4D\u9760 order \u6392\u5230\u5934\u90E8\u4E4B\u540E\uFF0CDOM \u987A\u5E8F\u59CB\u7EC8\u4E0D\u53D8\u3002 */\n.dshpc-card__bar{flex:none;background:var(--card-accent);border-radius:var(--dshpc-radius-xs)}\n.dshpc-card--bar-left .dshpc-card__bar,\n.dshpc-card--bar-right .dshpc-card__bar{width:var(--card-bar-size);align-self:stretch;min-height:var(--dshpc-line-md)}\n.dshpc-card--bar-top .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{width:var(--card-bar-length);height:var(--card-bar-size);align-self:flex-start}\n.dshpc-card--bar-right .dshpc-card__bar,\n.dshpc-card--bar-bottom .dshpc-card__bar{order:1}\n\n/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 StripCard\uFF1A\u540C\u8272\u7CFB\u6D45\u5E95 + 1px \u4E0D\u53EF\u89C1\u5360\u4F4D\u8FB9\u6846 + \u65B9\u89D2 + 4px \u901A\u9AD8\u65B9\u89D2\u8272\u6761\u8D34\u5DE6\u7F18 \u2500\u2500\n   \u5E95\u8272 / \u65B9\u89D2 / \u5360\u4F4D\u8FB9\u6846\u7531 Surface \u7684\u4E09\u6761\u4FEE\u9970\u7C7B\u63D0\u4F9B\uFF08Card.ts \u6309 kind \u4F20\uFF09\uFF0C\u6B64\u5904\u53EA\u7BA1\u5185\u8DDD\u4E0E\u6761\u5B50\u3002 */\n.dshpc-card.dshpc-card--strip{\n  --card-bar-size:4px;--card-bar-inset:0;\n  --card-pad-t:12px;--card-pad-r:12px;--card-pad-b:12px;--card-pad-l:20px;\n  /* \u5E95\u8272\u6539\u8D70 Surface \u7684 --surface-bg \u53D8\u91CF\uFF08surface.css:7-8 \u5951\u7EA6\uFF09\uFF1A\u4E0D\u80FD\u5199 background \u5C5E\u6027\uFF0C\n     \u5426\u5219\u900F\u660E\u6863\u8981\u8986\u76D6\u65F6\u4F1A\u88AB\u5C5E\u6027\u5C42\u6253\u67B6\uFF08\u5144\u5F1F\u9879\u76EE\u66FE\u7528 background-image \u6E10\u53D8\u7ED5\u8FC7\uFF09\u3002 */\n  --surface-bg:var(--card-accent-soft,transparent);\n}\n/* \u5DE6\u5185\u8FB9\u8DDD 20px = 16 \u7559\u767D + 4 \u6761\u5BBD \u21D2 \u5185\u5BB9\u4ECE\u8272\u6761\u53F3\u7F18\u8D77\u7B97\uFF1B\u8272\u6761\u7EDD\u5BF9\u5B9A\u4F4D\u901A\u9AD8\uFF0C\u8DDF\u7740\u5185\u5BB9\u9AD8\u5EA6\u81EA\u9002\u5E94\u3002\n   \u5B9A\u4F4D\u57FA\u51C6\u662F\u6839\u8282\u70B9\u7684 position:relative\uFF08Surface \u63D0\u4F9B\uFF09\uFF0Ctop:0 / bottom:0 \u56E0\u6B64\u662F\u6574\u5361\u901A\u9AD8\uFF1A\n   \u5C55\u5F00\u540E\u8272\u6761\u4ECD\u4E00\u8DEF\u8D2F\u7A7F\u5230\u5C55\u5F00\u533A\u5E95\u90E8\uFF0C\u4E0D\u968F head \u5206\u533A\u88AB\u88C1\u77ED\uFF082026-11-08 \u62CD\u677F\uFF09\u3002\n   \u7279\u5F02\u6027 0,3,0\uFF1A\u538B\u8FC7\u4E0A\u9762 .dshpc-card--bar-left .dshpc-card__bar \u7684\u5BBD\u5EA6\u89C4\u5219\uFF0C\u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u3002 */\n.dshpc-card.dshpc-card--strip .dshpc-card__bar{position:absolute;left:0;top:0;bottom:0;width:4px;align-self:auto}\n\n/* \u2500\u2500 \u5916\u89C2\u4E8C \xB7 Card\uFF1A\u8272\u6761\u8D34\u8FB9\u90A3\u4E00\u4FA7\u7684\u5185\u8DDD = \u6761\u5B50\u8DDD\u8FB9\u7F18\u7684\u8DDD\u79BB \u2500\u2500\n   \u56DB\u65B9\u4F4D\u53EA\u6539\u5BF9\u5E94\u90A3\u6839 --card-pad-* \u53D8\u91CF\uFF0C__body \u4E0E __panel \u540C\u65F6\u8DDF\u7740\u5BF9\u9F50\u3002 */\n.dshpc-card--bar-left{--card-pad-l:var(--card-bar-inset)}\n.dshpc-card--bar-right{--card-pad-r:var(--card-bar-inset)}\n.dshpc-card--bar-top{--card-pad-t:var(--card-bar-inset)}\n.dshpc-card--bar-bottom{--card-pad-b:var(--card-bar-inset)}\n\n/* \u2500\u2500 \u5916\u89C2\u8F74\uFF082026-11-07\uFF09\uFF1A\u5E95\u8272\u5F00\u5173 + hover \u4F5C\u7528\u57DF \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E24\u5757\u533A\u57DF\u5404\u81EA\u72EC\u7ACB\uFF1A\u6839\u8282\u70B9\u53EA\u94FA\u4E00\u5C42\u5E38\u6001\u5E95\uFF08--surface-bg\uFF09\uFF1B__body \u662F\u300C\u4E0A\u9762\u90A3\u4E00\u6574\u5757\u300D\uFF0C\n   __panel \u662F\u5B83\u7684\u5144\u5F1F\u8282\u70B9\uFF0C\u4E0D\u94FA\u4EFB\u4F55\u80CC\u666F\u3001\u4E0D\u53C2\u4E0E hover\u3002\n   hoverScope\uFF08\u9ED8\u8BA4 head\uFF09\uFF1A\n     head \u2014\u2014 \u53EA\u6709 __body \u94FA --dshpc-card-hover\uFF0C\u8FB9\u5230\u8FB9\uFF08\u5185\u8DDD\u5708 + \u5706\u89D2\u90FD\u5728\u8FD9\u4E00\u5757\u4E0A\uFF09\uFF1B\n             \u5C55\u5F00\u6001\u4E5F\u4E0D\u6539\u5185\u8DDD\uFF0C\u4E0A\u4E0B\u4E24\u5708\u7559\u767D\u540C\u5C5E\u8FD9\u4E00\u5757\u3001\u4E00\u8D77\u53D8\u8272\uFF0C\u8272\u6761\u4E0A\u4E0B\u624D\u5BF9\u79F0\uFF1B\n             \u9F20\u6807\u843D\u5728 __panel \u65F6 :hover \u6839\u672C\u4E0D\u6210\u7ACB \u21D2 \u6574\u5361\u4E0D\u89E6\u53D1\uFF0C\u4E0B\u9762\u6C38\u8FDC\u662F\u5E38\u6001\u3002\n     card \u2014\u2014 \u6839\u8282\u70B9\u6539 --surface-bg\uFF0C\u6574\u5361\u542B\u5C55\u5F00\u533A\u4E00\u8D77\u53D8\u8272\uFF0C\u7531\u6D88\u8D39\u7AEF\u663E\u5F0F\u9009\u3002\n   \u26A0\uFE0F \u7EDD\u4E0D\u7528\u300C\u7ED9\u5C55\u5F00\u533A\u94FA\u4E00\u5C42\u5E95\u8272\u53BB\u76D6\u4F4F\u6839\u8282\u70B9\u300D\uFF1A\u534A\u900F\u660E token \u53E0\u4E24\u5C42\u4F1A\u66F4\u6DF1\uFF08\u771F\u8E29\u8FC7\uFF09\u3002 */\n.dshpc-card.dshpc-card--no-fill{--surface-bg:transparent}\n/* \u5F00\u5173\u6253\u5F00\u5373\u58F0\u660E\u300C\u4E0A\u9762\u90A3\u4E00\u5757\u53EF\u4EA4\u4E92\u300D\uFF1A\u624B\u52BF\u8DDF\u7740\u53D8\uFF0C\u5C55\u5F00\u533A\u8FD8\u539F\u6210\u9ED8\u8BA4\u5149\u6807\u3002 */\n.dshpc-card.dshpc-card--hoverable{cursor:pointer}\n.dshpc-card.dshpc-card--hover-head .dshpc-card__panel{cursor:auto}\n/* \u987A\u5E8F\u5373\u4F18\u5148\u7EA7\uFF1Astrip \u6D45\u5E95 / no-fill \u900F\u660E(0,2,0) \u2192 card:hover(0,3,0\uFF0C\u6700\u9AD8)\u3002 */\n.dshpc-card.dshpc-card--hover-head .dshpc-card__body:hover{background:var(--dshpc-card-hover)}\n.dshpc-card.dshpc-card--hover-card:hover{--surface-bg:var(--dshpc-card-hover)}\n\n.dshpc-card__toggle{\n  display:inline-flex;align-items:center;justify-content:center;\n  width:24px;height:24px;padding:0;background:none;border:none;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-3);cursor:pointer;\n}\n.dshpc-card__toggle:hover{background:var(--dshpc-surface-sunken);color:var(--dshpc-fg)}\n/* \u7BAD\u5934\u662F svg\uFF08Chevron\uFF09\uFF0C\u4E0D\u662F\u5B57\u5F62 \u21D2 \u4E0D\u8981 font-size\uFF1Binline-flex \u514D\u6389 svg \u7684\u57FA\u7EBF\u7559\u767D\u3002 */\n.dshpc-card__caret{display:inline-flex;transition:transform .15s ease}\n.dshpc-card__caret.is-open{transform:rotate(180deg)}\n/* \u5C55\u5F00\u533A\u53EA\u8D1F\u8D23\u300C\u628A\u5C55\u5F00\u5185\u5BB9\u653E\u5728\u5934\u90E8\u533A\u4E0B\u9762\u300D\uFF1A\u81EA\u5DF1\u627F\u62C5\u5DE6\u53F3 / \u5E95\u90E8\u5185\u8DDD\uFF0C\u8865\u4E0A\u5361\u7247\u5E95\u90E8\u7559\u767D\u3002\n   margin-top \u4E0E padding-top \u53CC\u53CC\u5F52 0 \u21D2 \u4E24\u5757\u4E4B\u95F4\u7684\u95F4\u9694\u53EA\u6709 __body \u7684 padding-bottom\uFF0C\n   \u5C5E\u4E8E\u5934\u90E8\u533A\u3001\u8DDF\u7740 hover \u4E00\u8D77\u53D8\u8272\uFF1B\u6D88\u8D39\u7AEF\u81EA\u7ED8\u7684\u7EBF\u56E0\u6B64\u80FD\u8D34\u4F4F\u8FD9\u5757\u8272\u7684\u4E0B\u6CBF\uFF0C\u4E2D\u95F4\u4E0D\u5939\u4E0D\u53D8\u8272\u7684\u5E26\u5B50\u3002\n   \u5DE6\u53F3 / \u5E95\u90E8\u5185\u8DDD\u8BFB\u540C\u4E00\u7EC4\u56DB\u8F74\u53D8\u91CF \u21D2 \u4E0E\u5934\u90E8\u533A\u540C\u6E90\uFF0C\u4E0D\u4F1A\u5DE6\u8D34\u8FB9\u3001\u53F3\u7559\u767D\u3002\n   \u6838\u5FC3\u4E0D\u753B\u4EFB\u4F55\u5206\u9694\u7EBF\uFF1A\u9700\u8981\u7EBF\u7531\u6D88\u8D39\u7AEF\u5728 panel \u5185\u5BB9\u91CC\u81EA\u7ED8\uFF08\u6709\u65F6\u8981\u3001\u6709\u65F6\u4E0D\u8981\uFF0C\u6D88\u8D39\u7AEF\u81EA\u5DF1\u51B3\u5B9A\uFF09\u3002 */\n.dshpc-card__panel{\n  margin:0 var(--card-pad-r) 0 var(--card-pad-l);\n  padding:0 0 var(--card-pad-b);\n}\n";
 
 // dist/ui/display/surface-css.generated.js
 var SURFACE_CSS = "\n/* \u2500\u2500 Surface \xB7 \u7EAF\u6846\u5BB9\u5668 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u53EA\u56DE\u7B54\u300C\u4E00\u5757\u9762\u957F\u4EC0\u4E48\u6837\u300D\uFF1A\u5E95 / \u8FB9 / \u5706\u89D2 / \u5185\u8DDD\uFF0C\u56DB\u6839\u8F74\uFF0C\u96F6\u4E1A\u52A1\u8BED\u4E49\u3002\n   \u5B83\u662F**\u5706\u89D2\u5951\u7EA6\u7684\u552F\u4E00\u771F\u6E90**\uFF1A\u5BB9\u5668\u6863 = --dshpc-radius-md(12)\uFF0C\u4E0E Button / Input \u540C\u6863\uFF0C\n   \u5916\u6846\u6C38\u8FDC\u4E0D\u5C0F\u4E8E\u91CC\u9762\u7684\u63A7\u4EF6 \u2014\u2014 \u675C\u7EDD\u300C\u5361\u7247 8 < \u6309\u94AE 12\u300D\u8FD9\u7C7B\u5012\u6302\uFF082026-11-01\uFF09\u3002\n\n   \u6240\u6709\u8F74\u90FD\u7528**\u53D8\u91CF**\u8868\u8FBE\uFF0C\u4FEE\u9970\u7C7B\u53EA\u6539\u8FD9\u4E9B\u53D8\u91CF\u3001\u4E0D\u6539\u5C5E\u6027\uFF1A\n   \u6D88\u8D39\u65B9\uFF08Card\u3001\u4E0B\u6E38\u63D2\u4EF6\uFF09\u81EA\u5DF1\u5199\u89C4\u5219\u65F6\uFF0C\u65E0\u8BBA\u4E24\u4EFD CSS \u8C01\u5148\u6CE8\u5165\uFF0C\u80DC\u8D1F\u90FD\u4E0D\u4F9D\u8D56\u987A\u5E8F\u3002\n\n     tone    plain(\u9ED8\u8BA4 surface-1) / raised / sunken / subtle\n     border  \u9ED8\u8BA4 1px \u5B9E\u7EBF\uFF1Bfaint \u66F4\u6DE1\uFF1Bnone \u900F\u660E\uFF08\u4FDD\u7559 1px \u5360\u4F4D\uFF0C\u4E0D\u8DF3\u9AD8\uFF09\uFF1B\n             dashed \u865A\u7EBF\uFF08\u5360\u4F4D\u6846\u7528\uFF0C\u7EBF\u8272\u4ECD\u662F border token\uFF09\n     radius  \u9ED8\u8BA4 md\uFF1Bnone / sm / lg\n     padding \u9ED8\u8BA4\u7531\u8C03\u7528\u65B9\u9009\u6863\uFF1Bnone / sm(8) / md(12) / lg(16)\n   \u57FA\u7C7B\u4E0D\u5E26\u5185\u8DDD\uFF1A\u5BB9\u5668\u8981\u81EA\u5DF1\u7B97\u56DB\u8FB9\u5185\u8DDD\u65F6\uFF08\u5982 Card \u7684\u8272\u6761\u8D34\u8FB9\uFF09\uFF0C\u4E0D\u4F20 pad \u6863\u5373\u53EF\uFF0C\u4E0D\u9700\u8981\u8986\u76D6\u3002 */\n.dshpc-surface{\n  position:relative;box-sizing:border-box;color:var(--dshpc-fg);font:inherit;text-align:left;\n  --surface-bg:var(--dshpc-surface-1);\n  --surface-border:var(--dshpc-border);\n  --surface-border-style:solid;\n  --surface-radius:var(--dshpc-radius-md);\n  --surface-pad:0;\n  border:1px var(--surface-border-style) var(--surface-border);\n  border-radius:var(--surface-radius);\n  background:var(--surface-bg);\n  padding:var(--surface-pad);\n}\n.dshpc-surface--tone-raised{--surface-bg:var(--dshpc-surface-raised)}\n.dshpc-surface--tone-sunken{--surface-bg:var(--dshpc-surface-sunken)}\n.dshpc-surface--tone-subtle{--surface-bg:var(--dshpc-chip-bg)}\n.dshpc-surface--border-faint{--surface-border:var(--dshpc-border-faint)}\n.dshpc-surface--border-none{--surface-border:transparent}\n.dshpc-surface--border-dashed{--surface-border-style:dashed}\n.dshpc-surface--radius-none{--surface-radius:0}\n.dshpc-surface--radius-sm{--surface-radius:var(--dshpc-radius-sm)}\n.dshpc-surface--radius-lg{--surface-radius:var(--dshpc-radius-lg)}\n.dshpc-surface--pad-none{--surface-pad:0}\n.dshpc-surface--pad-sm{--surface-pad:var(--dshpc-space-2)}\n.dshpc-surface--pad-md{--surface-pad:var(--dshpc-space-3)}\n.dshpc-surface--pad-lg{--surface-pad:var(--dshpc-space-4)}\n";
@@ -6314,6 +6312,32 @@ var CARD_ACCENTS = [
 function lengthOf(value) {
   return typeof value === "number" ? `${value}px` : value;
 }
+function paddingAxes(value) {
+  if (typeof value === "number") {
+    const px = `${value}px`;
+    return [px, px, px, px];
+  }
+  const parts = [];
+  let depth = 0;
+  let cur2 = "";
+  for (const ch2 of value.trim()) {
+    if (ch2 === "(")
+      depth++;
+    if (ch2 === ")")
+      depth--;
+    if (/\s/.test(ch2) && depth === 0) {
+      if (cur2 !== "")
+        parts.push(cur2);
+      cur2 = "";
+    } else {
+      cur2 += ch2;
+    }
+  }
+  if (cur2 !== "")
+    parts.push(cur2);
+  const [t4 = "0", r2 = t4, b = t4, l = r2] = parts;
+  return [t4, r2, b, l];
+}
 function CardShell(kind, props) {
   ensureComponentStyles("surface", SURFACE_CSS);
   ensureComponentStyles("card", CARD_CSS);
@@ -6347,8 +6371,13 @@ function CardShell(kind, props) {
   if (bar.length !== void 0)
     vars["--card-bar-length"] = lengthOf(bar.length);
   const { padding: padOverride, ...restStyle } = props.style ?? {};
-  if (padOverride !== void 0)
-    vars["--card-pad-all"] = lengthOf(padOverride);
+  if (padOverride !== void 0) {
+    const [t4, r2, b, l] = paddingAxes(padOverride);
+    vars["--card-pad-t"] = t4;
+    vars["--card-pad-r"] = r2;
+    vars["--card-pad-b"] = b;
+    vars["--card-pad-l"] = l;
+  }
   const style2 = { ...restStyle, ...vars };
   return (0, import_react25.createElement)("div", { className: classes, style: style2 }, (0, import_react25.createElement)(
     "div",
@@ -8390,7 +8419,6 @@ function Input(props) {
     placeholder: placeholder2,
     disabled: off,
     "aria-label": props["aria-label"],
-    title: props.title,
     className: `dshpc-input dshpc-input${sizeClass(size4)}${error === true ? " dshpc-input--error" : ""}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: style2,
     onChange: (event) => {
@@ -9053,7 +9081,6 @@ function QuickToolbar(props) {
         className: `dshpc-quick-toolbar__item dshpc-quick-toolbar__backtop${leaveClass}`,
         style: { width: size4, height: size4 },
         "aria-label": label,
-        title: label,
         onClick: () => scrollToTop(resolveScrollTarget(props.scrollContainer, ref.current))
       }, (0, import_react44.createElement)(Chevron, { dir: "up", size: 18 }));
     }
@@ -9075,7 +9102,6 @@ function QuickToolbar(props) {
       className: `dshpc-quick-toolbar__item${leaveClass}`,
       style: buttonStyle,
       "aria-label": item.label,
-      title: item.label,
       onClick
     }, item.icon);
   };
@@ -9464,7 +9490,7 @@ function PanelDock(props) {
         key: id3,
         type: "button",
         className: "dshpc-dock__ear",
-        // 不放 title：原生 tooltip 会把面板标题弹出来，用户明确「不要显示任何标题」。
+        // 核心全站不写原生 title：tooltip 会把面板标题弹出来，用户明确「不要显示任何标题」。
         "aria-label": `${label} \xB7 ${tt("dockExpand")}`,
         onClick: () => props.dock.expand(id3)
       },
@@ -9908,7 +9934,7 @@ function BytesPreview(props) {
   if (props.kind === "image") {
     return (0, import_react47.createElement)("img", { className: "dshpc-fb__image", src: url, alt: props.path });
   }
-  return (0, import_react47.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react47.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path }));
+  return (0, import_react47.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react47.createElement)("iframe", { className: "dshpc-fb__frame", src: url }));
 }
 
 // dist/adv/explorer/preview/HtmlPreview.js
@@ -55127,7 +55153,7 @@ function HtmlPreview(props) {
     return (0, import_react52.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (doc2 === null)
     return (0, import_react52.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
-  return (0, import_react52.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react52.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc2, title: props.path }));
+  return (0, import_react52.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react52.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc2 }));
 }
 
 // dist/adv/explorer/preview/OfficePreview.js
@@ -55179,7 +55205,7 @@ function OfficePreview(props) {
     return (0, import_react53.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (url === null)
     return (0, import_react53.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
-  return (0, import_react53.createElement)("iframe", { className: "dshpc-fb__frame", src: url, title: props.path });
+  return (0, import_react53.createElement)("iframe", { className: "dshpc-fb__frame", src: url });
 }
 
 // dist/adv/explorer/preview/index.js
@@ -55239,7 +55265,6 @@ function crumbsMenuEntries(params) {
       role: "menuitem",
       className: "dshpc-fb__menu-item",
       style: { paddingLeft: 8, display: "flex", alignItems: "center", gap: "6px" },
-      title: root.path,
       onClick: () => onLoadDir?.(root.path)
     }, (0, import_react55.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: "var(--dshpc-fg-2)" } }, (0, import_react55.createElement)(official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react55.createElement)("span", { className: "dshpc-fb__menu-label" }, root.label)));
   }
@@ -55249,7 +55274,6 @@ function crumbsMenuEntries(params) {
     role: "menuitem",
     className: "dshpc-fb__menu-item",
     style: { paddingLeft: 8, display: "flex", alignItems: "center", gap: "6px" },
-    title: ws,
     // 点当前工作区 = 回到该工作区根目录（浏览深处时唯一的「回根」入口，兄弟 2026-10-10）；
     // 点其他工作区才走 onPickWorkspace（换会话）。
     onClick: () => {
@@ -55265,7 +55289,6 @@ function crumbsMenuEntries(params) {
     role: "menuitem",
     className: "dshpc-fb__menu-item",
     style: { paddingLeft: 8 },
-    title: crumb.path,
     onClick: () => {
       onLoadDir?.(crumb.path);
     }
@@ -55351,7 +55374,6 @@ function PlainNav(props) {
   const { translate: tt, path, pickNow, onClose } = props;
   return (0, import_react56.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react56.createElement)(MarqueeText, {
     text: path,
-    title: path,
     className: "dshpc-fb__bar-plain",
     style: { flex: "1 1 auto", minWidth: 0 }
   }), actions(pickNow, tt, onClose));
@@ -55399,7 +55421,6 @@ function PreviewTitleBar(props) {
   const { translate: tt, path, switchable, isMarkdown, sourceView, onSourceViewChange, copied, onCopyPath, onReload } = props;
   return (0, import_react58.createElement)("div", { className: "dshpc-fb__title" }, (0, import_react58.createElement)(MarqueeText, {
     text: baseNameOfPath(path),
-    title: path,
     className: "dshpc-fb__title-inner",
     style: { flex: "1 1 auto", minWidth: 0 }
   }), (0, import_react58.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react58.createElement)(Segmented, {
@@ -55723,7 +55744,6 @@ function FileBrowser(props) {
           className: `dshpc-fb__row${picker ? " dshpc-fb__row--pick" : ""}`,
           role: "button",
           tabIndex: 0,
-          title: picker ? tt("explorerPickFile") : childPath,
           onClick: pick2,
           onKeyDown: (event) => {
             if (event.key === "Enter" || event.key === " ")
@@ -55766,7 +55786,6 @@ function FileBrowser(props) {
         className: "dshpc-fb__row",
         role: "button",
         tabIndex: 0,
-        title: childPath,
         onClick: rowAction,
         onKeyDown: (event) => {
           if (event.key === "Enter" || event.key === " ")
@@ -56947,7 +56966,6 @@ function MessageImageMirror(props) {
       type: "button",
       className: officialClass("MessageImage", "error") ?? "",
       "data-variant": variant,
-      title: t4("sessionImageLoadFailed"),
       onClick: () => {
         setAttempt((current3) => current3 + 1);
       }
@@ -56959,7 +56977,6 @@ function MessageImageMirror(props) {
     className: officialClass("MessageImage", "frame") ?? "",
     "data-variant": variant,
     style: fit === void 0 ? void 0 : { width: fit.width, height: fit.height },
-    title: loaded === null ? t4("sessionImageLoading") : t4("sessionImageView"),
     "aria-label": loaded === null ? t4("sessionImageLoading") : t4("sessionImageOpenNamed", { label }),
     "aria-busy": loaded === null || void 0,
     onClick: () => {
@@ -59158,8 +59175,7 @@ function UserMessage(props) {
       "data-message-attachments": true
     }, gallery, chips.map((file, index3) => (0, import_react71.createElement)("span", {
       key: `${file.name}:${index3}`,
-      className: officialClass("MessageItem", "fileCard") ?? "",
-      title: file.name
+      className: officialClass("MessageItem", "fileCard") ?? ""
     }, (0, import_react71.createElement)(official_exports.FileTypeIcon, {
       path: file.name,
       className: officialClass("MessageItem", "fileIcon") ?? ""
@@ -59540,7 +59556,7 @@ function InstructionsBody(props) {
   if (changes === null)
     return (0, import_react74.createElement)(OpaqueBody, { content: props.content, source: props.source, t: props.t });
   const baseline = asRecord(props.source)?.baseline === true;
-  return (0, import_react74.createElement)("span", null, (0, import_react74.createElement)("ul", { className: C2("files"), "data-context-files": true }, changes.map((change) => (0, import_react74.createElement)("li", { key: change.path, className: C2("file"), title: change.digest }, (0, import_react74.createElement)("span", { className: C2("filePath") }, change.path), (0, import_react74.createElement)("span", { className: C2("fileAction") }, props.t(instructionAction(change.action, baseline)))))), modelFacingContent(props.content, props.t));
+  return (0, import_react74.createElement)("span", null, (0, import_react74.createElement)("ul", { className: C2("files"), "data-context-files": true }, changes.map((change) => (0, import_react74.createElement)("li", { key: change.path, className: C2("file") }, (0, import_react74.createElement)("span", { className: C2("filePath") }, change.path), (0, import_react74.createElement)("span", { className: C2("fileAction") }, props.t(instructionAction(change.action, baseline)))))), modelFacingContent(props.content, props.t));
 }
 function catalogEntries(source) {
   const list = asRecord(source)?.entries;
@@ -60212,7 +60228,6 @@ function DeliveredFileCard(props) {
     (0, import_react83.createElement)("button", {
       type: "button",
       className: officialClass("Deliverables", "cardPreview") ?? "",
-      title: file.path,
       "aria-label": t4("deliverPreviewCard", { name: file.path }),
       onClick: (event) => {
         event.stopPropagation();
@@ -60598,7 +60613,6 @@ function ChangedFilesCard(props) {
   const headerNode = onOpenReview === void 0 ? (0, import_react85.createElement)("div", { className: C4("header") }, headerBody) : (0, import_react85.createElement)("button", {
     type: "button",
     className: C4("header"),
-    title: headerLocator.display,
     onClick: () => {
       onOpenReview(headerLocator);
     }
@@ -60607,10 +60621,9 @@ function ChangedFilesCard(props) {
   const rowOf = (file, index3) => {
     const body = (0, import_react85.createElement)(import_react85.Fragment, null, (0, import_react85.createElement)("span", { className: C4("path") }, file.display), (0, import_react85.createElement)("span", { className: C4("counts") }, countsOf(file, t4)));
     const locator = { sessionId, seq, index: index3, display: file.display };
-    const row = onOpenReview === void 0 ? (0, import_react85.createElement)("div", { className: C4("row"), title: file.path }, body) : (0, import_react85.createElement)("button", {
+    const row = onOpenReview === void 0 ? (0, import_react85.createElement)("div", { className: C4("row") }, body) : (0, import_react85.createElement)("button", {
       type: "button",
       className: C4("row"),
-      title: file.path,
       onClick: () => {
         onOpenReview(locator);
       }
@@ -61725,12 +61738,11 @@ function SessionViewModal(props) {
   ];
   const flowChildren = Array.isArray(body) ? body : [body];
   const customHeader = props.header !== void 0;
-  const archivedBadge = isArchived ? (0, import_react86.createElement)("span", { className: "dshpc-sv-archived", title: tt("sessionArchived") }, (0, import_react86.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : void 0;
+  const archivedBadge = isArchived ? (0, import_react86.createElement)("span", { className: "dshpc-sv-archived" }, (0, import_react86.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : void 0;
   const continueAction = showContinue ? (0, import_react86.createElement)(Button, {
     variant: "outline",
     size: "sm",
     disabled: forking,
-    title: tt("continueBranch"),
     icon: isArchived ? (0, import_react86.createElement)(official_exports.IconBranchOutlineRegular, { size: 14 }) : (0, import_react86.createElement)(official_exports.IconNewChatOutlineRegular, { size: 14 }),
     onClick: () => {
       if (archivedNow()) {
@@ -61783,7 +61795,7 @@ function SessionViewModal(props) {
         size: "sm",
         disabled: sending || draft.trim() === "",
         onClick: onSend
-      }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react86.createElement)("span", { className: "dshpc-sv-composer-hint", title: tt("composerHint") }, "\u2318/Ctrl + \u21B5"), sendErr !== null ? (0, import_react86.createElement)("div", { className: "dshpc-sv-forkerr" }, sendErr) : null)
+      }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react86.createElement)("span", { className: "dshpc-sv-composer-hint" }, "\u2318/Ctrl + \u21B5"), sendErr !== null ? (0, import_react86.createElement)("div", { className: "dshpc-sv-forkerr" }, sendErr) : null)
     }, (0, import_react86.createElement)(
       "div",
       { className: "dshpc-sv", ref: flowRef },
@@ -63944,8 +63956,8 @@ var docData = {
         "en": "Button offers 18 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity). The eight extended tiers (purple/pink/cyan/teal/orange/indigo/rose/slate) are solid faces, same source as Chip/Card."
       },
       {
-        "zh": "IconButton\uFF1Avariant: plain|outline|danger\uFF08\u9ED8\u8BA4 plain\uFF0C**\u65E0\u5E95\u8272**\uFF09\u3001size\uFF08\u9ED8\u8BA4 lg\uFF09\u3001icon\uFF08\u5FC5\u586B\uFF09\u3001label\uFF08\u5FC5\u586B\uFF0C\u65E0\u969C\u788D\u540D\u517C title\uFF09\u3001color\uFF08\u56FE\u6807\u8272\uFF09\u3001background\uFF08\u5E95\u8272\uFF0C\u4E0D\u4F20\u5373\u65E0\u5E95\u8272\uFF09\u3002",
-        "en": "IconButton: variant plain|outline|danger (default plain, **no background**), size (default lg), icon (required), label (required, doubles as a11y name and title), color (icon colour), background (fill; omitted = no fill)."
+        "zh": "IconButton\uFF1Avariant: plain|outline|danger\uFF08\u9ED8\u8BA4 plain\uFF0C**\u65E0\u5E95\u8272**\uFF09\u3001size\uFF08\u9ED8\u8BA4 lg\uFF09\u3001icon\uFF08\u5FC5\u586B\uFF09\u3001label\uFF08\u5FC5\u586B\uFF0C\u65E0\u969C\u788D\u540D\uFF09\u3001color\uFF08\u56FE\u6807\u8272\uFF09\u3001background\uFF08\u5E95\u8272\uFF0C\u4E0D\u4F20\u5373\u65E0\u5E95\u8272\uFF09\u3002",
+        "en": "IconButton: variant plain|outline|danger (default plain, **no background**), size (default lg), icon (required), label (required, accessible name), color (icon colour), background (fill; omitted = no fill)."
       },
       {
         "zh": "`dense` \u662F\u4E24\u8005\u5171\u7528\u7684\u7D27\u51D1\u56FE\u6807\u6863\uFF1A`size` / \u9AD8\u5EA6\u4E00\u5F8B\u4E0D\u53D8\uFF0C\u56FE\u6807\u653E\u5927\u4E00\u6863\u3001\u5185\u8DDD\u6536\u7D27\uFF08Button \u7684 `--btn-pad` \u4ECE 10/12/14 \u6536\u5230 6\uFF0C\u56FE\u6807\u5BB9\u5668\u4ECE 0.875em \u5230 1.25em\uFF1BIconButton \u628A\u56FE\u6807 `<svg>` \u7684 `width/height` \u4ECE 1em \u63D0\u5230 1.25em\uFF0C\u6B63\u65B9\u5F62\u5BBD\u9AD8\u4E0D\u53D8\u3001\u56DB\u5468\u7559\u767D\u53D8\u5C0F\uFF09\u3002\u4E24\u8005 dense \u4E0B\u56FE\u6807\u90FD\u662F sm 15px / md\xB7lg 16.25px\u3002IconButton \u7684\u6309\u94AE\u663E\u5F0F `padding:0`\u3001\u56FE\u6807 `flex:none`\uFF1Asvg \u662F flex item\uFF0C\u4E0D\u7981\u6B62\u6536\u7F29\u4F1A\u88AB\u5185\u8DDD\u538B\u6210\u7A84\u6761\uFF0C\u6B64\u65F6\u6539 `width` \u6216\u52A0 `!important` \u90FD\u65E0\u6548\u3002\u7ED9\u63CF\u8FB9\u7EC6\u3001\u7F29\u5230 sm \u770B\u4E0D\u6E05\u7684\u56FE\u6807\u7528\uFF08\u5982\u6587\u4EF6\u7C7B\u578B / \u8BED\u8A00\u56FE\u6807\uFF09\uFF1B\u9ED8\u8BA4 false\uFF0C\u539F\u6709\u6309\u94AE\u5916\u89C2\u4E0D\u53D8\u3002",
@@ -64112,8 +64124,8 @@ var docData = {
             "type": "\u539F\u751F button \u5C5E\u6027",
             "def": "\u2014",
             "desc": {
-              "zh": "type / disabled / title / aria-* \u7B49\u539F\u6837\u900F\u4F20\uFF08onClick \u89C1\u4E0A\u9762\u90A3\u884C\uFF09",
-              "en": "type / disabled / title / aria-* and friends pass through (onClick is documented above)"
+              "zh": "type / disabled / aria-* \u7B49\u539F\u6837\u900F\u4F20\uFF08onClick \u89C1\u4E0A\u9762\u90A3\u884C\uFF09\uFF1B\u6838\u5FC3\u4E0D\u6E32\u67D3\u539F\u751F title",
+              "en": "type / disabled / aria-* and friends pass through (onClick is documented above); the core never renders a native title"
             }
           }
         ]
@@ -64132,7 +64144,7 @@ var docData = {
         "rows": [
           {
             "name": "Input",
-            "type": "value onChange(v) size(\u9ED8\u8BA4 sm) error disabled type icon placeholder inputRef onKeyDown onBlur aria-label title hint",
+            "type": "value onChange(v) size(\u9ED8\u8BA4 sm) error disabled type icon placeholder inputRef onKeyDown onBlur aria-label hint",
             "def": "\u2014",
             "desc": {
               "zh": "\u57FA\u7840\u8F93\u5165\u6846\uFF1Berror \u63CF\u7EA2\uFF1Bhint \u7ED9\u5B57\u7B26\u4E32\u5373\u81EA\u52A8\u6302\u6807\u51C6\u95EE\u53F7\u63D0\u793A\uFF1Bicon \u662F\u5DE6\u4FA7\u56FE\u6807\u69FD\uFF08\u4E0D\u5403\u70B9\u51FB\uFF0C\u5C3A\u5BF8\u53D6 fieldMetricsOf(size).icon\uFF09\uFF1Btype=search \u65F6\u805A\u7126\u4E14\u6709\u5185\u5BB9\u624D\u5728\u53F3\u4FA7\u51FA\u6E05\u7A7A\u94AE",
@@ -64940,8 +64952,8 @@ var docData = {
         "en": "`hoverable` (default off) changes the fill on hover and switches the cursor to `pointer`, using `--dshpc-card-hover` (7% blue light / 13% blue dark). `filled` (default on) controls the background \u2014 Card uses surface-1, StripCard the accent tint; `false` makes it transparent but keeps the border. Both axes only rewrite `--surface-bg`, so plugins no longer need their own `:hover` rules."
       },
       {
-        "zh": "\u5C55\u5F00\u7684\u5361\u7247\u7528 `hoverScope` \u9009\u4F5C\u7528\u57DF\uFF0C\u9ED8\u8BA4 `'head'`\uFF1A\u6839\u8282\u70B9\u96F6\u5185\u8DDD\u5E76\u7EDF\u4E00\u88C1\u5706\u89D2\uFF0C`__body` \u4F5C\u4E3A\u300C\u4E0A\u9762\u90A3\u4E00\u6574\u5757\u300D\u72EC\u7ACB\u627F\u62C5\u5185\u8DDD\u3001\u8FB9\u5230\u8FB9\u53D8\u8272\uFF1B\u5C55\u5F00\u6001\u4E0D\u6539\u5185\u8DDD\uFF0C\u4E0A\u4E0B\u4E24\u5708\u7559\u767D\u5BF9\u79F0\uFF0C\u4E24\u5757\u4E4B\u95F4\u7684\u95F4\u9694\u4E5F\u5C5E\u4E8E\u5934\u90E8\u533A\u3001\u8DDF\u7740\u4E00\u8D77\u53D8\u8272\uFF1B`__panel` \u662F\u5B83\u7684\u5144\u5F1F\u8282\u70B9\uFF0C\u4E0D\u94FA\u80CC\u666F\u3001\u4E0D\u753B\u5206\u9694\u7EBF\u3001\u4E0D\u53C2\u4E0E hover\uFF0C\u9F20\u6807\u5728\u5C55\u5F00\u533A\u91CC\u64CD\u4F5C\u65F6\u6574\u5361\u90FD\u4E0D\u89E6\u53D1\uFF1B\u9700\u8981\u5206\u9694\u7EBF\u65F6\u7531\u8C03\u7528\u65B9\u5728 `panel` \u5185\u5BB9\u91CC\u81EA\u7ED8\u3002StripCard \u7684\u901A\u9AD8\u8272\u6761\u76F8\u5BF9\u6839\u8282\u70B9\u5B9A\u4F4D\uFF0C\u5C55\u5F00\u540E\u4ECD\u8D2F\u7A7F\u6574\u5361\uFF08\u5305\u62EC\u5C55\u5F00\u533A\uFF09\u3002\u60F3\u8981\u6574\u5361\u542B\u5C55\u5F00\u533A\u4E00\u8D77\u53D8\u8272\uFF0C\u624D\u663E\u5F0F\u4F20 `'card'`\u3002**\u5C55\u5F00\u5185\u5BB9\u5FC5\u987B\u653E\u8FDB `panel`**\uFF08`children` \u5C5E\u4E8E\u5934\u90E8\u533A\uFF09\uFF0C\u6838\u5FC3\u624D\u6709\u5206\u533A\u4FE1\u53F7\u3002",
-        "en": "For expandable cards, `hoverScope` selects the scope. The default `'head'` gives the root zero padding and clips the radius, while `__body` \u2014 the header block owning all padding \u2014 changes color edge to edge; expanding keeps its top and bottom padding symmetric, so the gap between the two blocks changes color too. `__panel` is a sibling with no background, no divider and no hover, so operating inside the expanded area triggers nothing; draw a divider inside `panel` content yourself when you need one. The StripCard rail is positioned against the root and stays full-height across the expanded area. Pass `'card'` explicitly to include it. **Expandable content must go into `panel`**; `children` belongs to the header block."
+        "zh": "\u5C55\u5F00\u7684\u5361\u7247\u7528 `hoverScope` \u9009\u4F5C\u7528\u57DF\uFF0C\u9ED8\u8BA4 `'head'`\uFF1A\u6839\u8282\u70B9\u96F6\u5185\u8DDD\u5E76\u7EDF\u4E00\u88C1\u5706\u89D2\uFF0C`__body` \u4F5C\u4E3A\u300C\u4E0A\u9762\u90A3\u4E00\u6574\u5757\u300D\u72EC\u7ACB\u627F\u62C5\u5185\u8DDD\u3001\u8FB9\u5230\u8FB9\u53D8\u8272\uFF1B\u5C55\u5F00\u6001\u4E0D\u6539\u5185\u8DDD\uFF0C\u4E0A\u4E0B\u4E24\u5708\u7559\u767D\u5BF9\u79F0\uFF0C\u4E24\u5757\u4E4B\u95F4\u7684\u95F4\u9694\u4E5F\u5C5E\u4E8E\u5934\u90E8\u533A\u3001\u8DDF\u7740\u4E00\u8D77\u53D8\u8272\uFF1B`__panel` \u662F\u5B83\u7684\u5144\u5F1F\u8282\u70B9\uFF0C\u4E0D\u94FA\u80CC\u666F\u3001\u4E0D\u753B\u5206\u9694\u7EBF\u3001\u4E0D\u53C2\u4E0E hover\uFF0C\u9F20\u6807\u5728\u5C55\u5F00\u533A\u91CC\u64CD\u4F5C\u65F6\u6574\u5361\u90FD\u4E0D\u89E6\u53D1\uFF1B\u9700\u8981\u5206\u9694\u7EBF\u65F6\u7531\u8C03\u7528\u65B9\u5728 `panel` \u5185\u5BB9\u91CC\u81EA\u7ED8\u3002\u5C55\u5F00\u533A\u7684 `margin-top` \u4E0E `padding-top` \u90FD\u662F 0\uFF0C\u81EA\u7ED8\u7EBF\u7D27\u8D34\u5934\u90E8\u533A\u4E0B\u6CBF\u3001\u4E2D\u95F4\u4E0D\u5939\u4E0D\u53D8\u8272\u7684\u5E26\u5B50\uFF1B\u56DB\u6839 `--card-pad-t/r/b/l` \u662F\u5185\u8DDD\u552F\u4E00\u771F\u6E90\uFF0C`style.padding` \u4F1A\u644A\u6210\u8FD9\u56DB\u6839\u8F74\uFF0C\u5934\u90E8\u533A\u4E0E\u5C55\u5F00\u533A\u5DE6\u53F3\u59CB\u7EC8\u5BF9\u79F0\u3002StripCard \u7684\u901A\u9AD8\u8272\u6761\u76F8\u5BF9\u6839\u8282\u70B9\u5B9A\u4F4D\uFF0C\u5C55\u5F00\u540E\u4ECD\u8D2F\u7A7F\u6574\u5361\uFF08\u5305\u62EC\u5C55\u5F00\u533A\uFF09\u3002\u60F3\u8981\u6574\u5361\u542B\u5C55\u5F00\u533A\u4E00\u8D77\u53D8\u8272\uFF0C\u624D\u663E\u5F0F\u4F20 `'card'`\u3002**\u5C55\u5F00\u5185\u5BB9\u5FC5\u987B\u653E\u8FDB `panel`**\uFF08`children` \u5C5E\u4E8E\u5934\u90E8\u533A\uFF09\uFF0C\u6838\u5FC3\u624D\u6709\u5206\u533A\u4FE1\u53F7\u3002",
+        "en": "For expandable cards, `hoverScope` selects the scope. The default `'head'` gives the root zero padding and clips the radius, while `__body` \u2014 the header block owning all padding \u2014 changes color edge to edge; expanding keeps its top and bottom padding symmetric, so the gap between the two blocks changes color too. `__panel` is a sibling with no background, no divider and no hover, so operating inside the expanded area triggers nothing; draw a divider inside `panel` content yourself when you need one. Both `margin-top` and `padding-top` on the expanded area are 0, so a caller-drawn line sits flush against the header with no uncoloured strip between them. The four `--card-pad-t/r/b/l` axes are the single source of padding truth: `style.padding` expands into them, keeping the header and expanded area symmetric. The StripCard rail is positioned against the root and stays full-height across the expanded area. Pass `'card'` explicitly to include it. **Expandable content must go into `panel`**; `children` belongs to the header block."
       }
     ],
     "api": [
@@ -65043,8 +65055,8 @@ var docData = {
             "type": "\u2014",
             "def": "\u2014",
             "desc": {
-              "zh": "\u8FFD\u52A0\u7C7B / \u6837\u5F0F",
-              "en": "Append class / style"
+              "zh": "\u8FFD\u52A0\u7C7B / \u6837\u5F0F\uFF1B`style.padding` \u644A\u6210\u56DB\u6839\u5185\u8DDD\u8F74\uFF0C\u540C\u6B65\u5934\u90E8\u533A\u4E0E\u5C55\u5F00\u533A",
+              "en": "Append class / style; `style.padding` expands into the four padding axes so the header and expanded area stay aligned"
             }
           }
         ]
@@ -65877,7 +65889,7 @@ var docData = {
             }
           },
           {
-            "name": "MarqueeText({ text, style?, title?, className? })",
+            "name": "MarqueeText({ text, style?, className? })",
             "type": "",
             "def": "",
             "desc": {
@@ -66818,8 +66830,8 @@ h(SideSheet, {
             "def": "\u2014",
             "required": "\u5FC5\u586B",
             "desc": {
-              "zh": "\u65E0\u969C\u788D\u540D\uFF0C\u517C title",
-              "en": "Accessible name, doubles as title"
+              "zh": "\u65E0\u969C\u788D\u540D",
+              "en": "Accessible name"
             }
           },
           {
@@ -71059,9 +71071,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.7"}`],
-            [t3("buildDemo"), `v${"0.35.7"}`],
-            [t3("buildStamp"), "261108-020723-430"]
+            [t3("buildCore"), `v${"0.35.8"}`],
+            [t3("buildDemo"), `v${"0.35.8"}`],
+            [t3("buildStamp"), "261108-120344-937"]
           ].map(
             ([label, value]) => (0, import_react98.createElement)(
               "tr",
@@ -71377,9 +71389,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react100.createElement)("span", null, `core v${"0.35.7"}`),
-          (0, import_react100.createElement)("span", null, `demo v${"0.35.7"}`),
-          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261108-020723-430")
+          (0, import_react100.createElement)("span", null, `core v${"0.35.8"}`),
+          (0, import_react100.createElement)("span", null, `demo v${"0.35.8"}`),
+          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261108-120344-937")
         )
       )
     ),

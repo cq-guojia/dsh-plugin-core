@@ -216,7 +216,6 @@ export function QuickToolbar(props) {
                 className: `dshpc-quick-toolbar__item dshpc-quick-toolbar__backtop${leaveClass}`,
                 style: { width: size, height: size },
                 'aria-label': label,
-                title: label,
                 onClick: () => scrollToTop(resolveScrollTarget(props.scrollContainer, ref.current)),
             }, h(Chevron, { dir: 'up', size: 18 }));
         }
@@ -239,7 +238,6 @@ export function QuickToolbar(props) {
             className: `dshpc-quick-toolbar__item${leaveClass}`,
             style: buttonStyle,
             'aria-label': item.label,
-            title: item.label,
             onClick,
         }, item.icon);
     };

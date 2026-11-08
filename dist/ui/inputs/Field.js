@@ -46,7 +46,6 @@ export function Input(props) {
         placeholder,
         disabled: off,
         'aria-label': props['aria-label'],
-        title: props.title,
         className: `dshpc-input dshpc-input${sizeClass(size)}${error === true ? ' dshpc-input--error' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
         style,
         onChange: (event) => { onChange(event.target.value); },
@@ -84,7 +83,6 @@ export function PrefixedInput(props) {
         placeholder,
         disabled: off,
         'aria-label': props['aria-label'],
-        title: props.title,
         className: 'dshpc-pfx__input',
         onChange: (event) => { onChange(event.target.value); },
     }));

@@ -159,7 +159,6 @@ export function PlainNav(props: PlainNavProps): ReactNode {
     { className: 'dshpc-fb__bar', 'aria-label': tt('explorerCrumbsAria') },
     h(MarqueeText, {
       text: path,
-      title: path,
       className: 'dshpc-fb__bar-plain',
       style: { flex: '1 1 auto', minWidth: 0 },
     }),

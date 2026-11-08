@@ -63,5 +63,5 @@ export function OfficePreview(props: OfficePreviewProps): ReturnType<typeof h> {
   }
   if (failed !== null) return h('div', { className: 'dshpc-fb__note' }, tt(failed.key, failed.params))
   if (url === null) return h('div', { className: 'dshpc-fb__note' }, tt('explorerLoading'))
-  return h('iframe', { className: 'dshpc-fb__frame', src: url, title: props.path })
+  return h('iframe', { className: 'dshpc-fb__frame', src: url })
 }

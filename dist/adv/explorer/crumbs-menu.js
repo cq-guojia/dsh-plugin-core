@@ -34,7 +34,6 @@ export function crumbsMenuEntries(params) {
             role: 'menuitem',
             className: 'dshpc-fb__menu-item',
             style: { paddingLeft: 8, display: 'flex', alignItems: 'center', gap: '6px' },
-            title: root.path,
             onClick: () => onLoadDir?.(root.path),
         }, h('span', { className: 'dshpc-fb__menu-icon', style: { color: 'var(--dshpc-fg-2)' } }, h(IconFolderCloseRegular, { size: 13 })), h('span', { className: 'dshpc-fb__menu-label' }, root.label)));
     }
@@ -45,7 +44,6 @@ export function crumbsMenuEntries(params) {
         role: 'menuitem',
         className: 'dshpc-fb__menu-item',
         style: { paddingLeft: 8, display: 'flex', alignItems: 'center', gap: '6px' },
-        title: ws,
         // 点当前工作区 = 回到该工作区根目录（浏览深处时唯一的「回根」入口，兄弟 2026-10-10）；
         // 点其他工作区才走 onPickWorkspace（换会话）。
         onClick: () => {
@@ -61,7 +59,6 @@ export function crumbsMenuEntries(params) {
         role: 'menuitem',
         className: 'dshpc-fb__menu-item',
         style: { paddingLeft: 8 },
-        title: crumb.path,
         onClick: () => {
             onLoadDir?.(crumb.path);
         },

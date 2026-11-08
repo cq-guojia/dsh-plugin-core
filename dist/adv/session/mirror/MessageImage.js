@@ -55,7 +55,6 @@ export function MessageImageMirror(props) {
             type: 'button',
             className: officialClass('MessageImage', 'error') ?? '',
             'data-variant': variant,
-            title: t('sessionImageLoadFailed'),
             onClick: () => { setAttempt(current => current + 1); },
         }, t('sessionImageLoadFailed'));
     }
@@ -65,7 +64,6 @@ export function MessageImageMirror(props) {
         className: officialClass('MessageImage', 'frame') ?? '',
         'data-variant': variant,
         style: fit === undefined ? undefined : { width: fit.width, height: fit.height },
-        title: loaded === null ? t('sessionImageLoading') : t('sessionImageView'),
         'aria-label': loaded === null
             ? t('sessionImageLoading')
             : t('sessionImageOpenNamed', { label }),

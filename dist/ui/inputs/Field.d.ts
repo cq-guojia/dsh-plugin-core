@@ -35,8 +35,6 @@ export interface InputProps {
     icon?: ReactNode;
     /** 无障碍名。 */
     'aria-label'?: string;
-    /** 悬停提示。 */
-    title?: string;
     /** 追加 class。 */
     className?: string;
     /** 追加样式（只允许补布局）。 */

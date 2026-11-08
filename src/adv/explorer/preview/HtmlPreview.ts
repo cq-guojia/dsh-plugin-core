@@ -115,6 +115,6 @@ export function HtmlPreview(props: HtmlPreviewProps): ReturnType<typeof h> {
   return h(
     'div',
     { className: 'dshpc-fb__fill' },
-    h('iframe', { className: 'dshpc-fb__frame', sandbox: '', srcDoc: doc, title: props.path }),
+    h('iframe', { className: 'dshpc-fb__frame', sandbox: '', srcDoc: doc }),
   )
 }

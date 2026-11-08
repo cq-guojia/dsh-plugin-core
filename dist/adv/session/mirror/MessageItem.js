@@ -65,7 +65,6 @@ export function UserMessage(props) {
         }, gallery, chips.map((file, index) => h('span', {
             key: `${file.name}:${index}`,
             className: officialClass('MessageItem', 'fileCard') ?? '',
-            title: file.name,
         }, h(FileTypeIcon, {
             path: file.name,
             className: officialClass('MessageItem', 'fileIcon') ?? '',

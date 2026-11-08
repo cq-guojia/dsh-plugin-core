@@ -364,7 +364,7 @@ export function PanelDock(props) {
             key: id,
             type: 'button',
             className: 'dshpc-dock__ear',
-            // 不放 title：原生 tooltip 会把面板标题弹出来，用户明确「不要显示任何标题」。
+            // 核心全站不写原生 title：tooltip 会把面板标题弹出来，用户明确「不要显示任何标题」。
             'aria-label': `${label} · ${tt('dockExpand')}`,
             onClick: () => props.dock.expand(id),
         }, 
