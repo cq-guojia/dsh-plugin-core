@@ -5,7 +5,8 @@
  * 为什么不再写字形：'▾' / '↑' 这类字符在各系统字体下粗细、角度、基线都不一样，
  * 同一套界面里会出现两种箭头 —— 2026-10-26 用户点名 ▾ 太丑 ⇒ 一律换成这颗 chevron。
  *
- * 用法：`h(Chevron, { dir: 'up', size: 18 })`；要动画就在外层套一个带 transform 的类
+ * 用法：`h(Chevron, { dir: 'up' })`（默认 12px；要放大用核心 dense 档，别在这里写死大尺寸）；
+ * 要动画就在外层套一个带 transform 的类
  * （如卡片折叠的 `.dshpc-card__caret.is-open`），不要给每个方向另画一条路径。
  */
 import { createElement as h, type CSSProperties } from 'react'

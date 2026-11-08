@@ -118,7 +118,7 @@ function DeliveredFileCard(props) {
             event.stopPropagation();
             onPreview?.();
         },
-    }), h('span', { className: officialClass('Deliverables', 'fileIcon') ?? '' }, h(FileTypeIcon, { path: file.path, size: 20 })), h('div', { className: officialClass('Deliverables', 'fileBody') ?? '' }, h('div', { className: officialClass('Deliverables', 'details') ?? '' }, h('span', { className: officialClass('Deliverables', 'fileName') ?? '' }, name), h('span', { className: officialClass('Deliverables', 'description') ?? '', 'data-presented-description': true }, h('span', { className: officialClass('Deliverables', 'secondaryText') ?? '' }, cardDescription(file.description, metadata)), h('span', { className: officialClass('Deliverables', 'previewHint') ?? '' }, t('deliverPreviewHint')))), onReveal === undefined
+    }), h('span', { className: officialClass('Deliverables', 'fileIcon') ?? '' }, h(FileTypeIcon, { path: file.path })), h('div', { className: officialClass('Deliverables', 'fileBody') ?? '' }, h('div', { className: officialClass('Deliverables', 'details') ?? '' }, h('span', { className: officialClass('Deliverables', 'fileName') ?? '' }, name), h('span', { className: officialClass('Deliverables', 'description') ?? '', 'data-presented-description': true }, h('span', { className: officialClass('Deliverables', 'secondaryText') ?? '' }, cardDescription(file.description, metadata)), h('span', { className: officialClass('Deliverables', 'previewHint') ?? '' }, t('deliverPreviewHint')))), onReveal === undefined
         ? null
         : h('div', { className: officialClass('Deliverables', 'actions') ?? '' }, h(IconButton, {
             size: 'sm',

@@ -91,11 +91,11 @@ export function ToolbarPage(): ReturnType<typeof h> {
       anchorId: mode === 'box' ? ANCHOR_ID : undefined,
       onAction: (id) => setLast(id),
       items: [
-        { id: 'search', icon: h(IconSearchOutlineRegular, { size: 18 }), label: '搜索' },
-        { id: 'copy', icon: h(IconCopyOutlineRegular, { size: 18 }), label: '复制' },
+        { id: 'search', icon: h(IconSearchOutlineRegular, null), label: '搜索' },
+        { id: 'copy', icon: h(IconCopyOutlineRegular, null), label: '复制' },
         {
           id: 'sparkle',
-          icon: h(IconSparkleRegular, { size: 18 }),
+          icon: h(IconSparkleRegular, null),
           label: 'AI 助手',
           color: 'var(--dshpc-business)',
           fgColor: '#fff',

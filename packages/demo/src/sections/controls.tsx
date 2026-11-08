@@ -80,23 +80,20 @@ const BUTTON_ICONS: readonly { name: string; Icon: ComponentType<{ size?: number
   { name: 'chevron', Icon: IconChevronDownOutlineRegular },
 ]
 
-/** 按名字取一颗图标（找不到返回 null，不抛）。 */
-function iconOf(name: string, size = 14): ReturnType<typeof h> | null {
+/** 按名字取一颗图标（找不到返回 null，不抛）。尺寸由核心 button.css 的 1em 接管，不传 size。 */
+function iconOf(name: string): ReturnType<typeof h> | null {
   const found = BUTTON_ICONS.find((item) => item.name === name)
-  return found === undefined ? null : h(found.Icon, { size })
+  return found === undefined ? null : h(found.Icon, null)
 }
 
 /** 自绘 SVG：演示 icon 参数不认「名字」——这里直接传一个普通的 React 元素进去。 */
 function StarSvg(): ReturnType<typeof h> {
-  return h('svg', { width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', 'aria-hidden': true },
+  return h('svg', { width: '1em', height: '1em', viewBox: '0 0 16 16', fill: 'none', 'aria-hidden': true },
     h('path', {
       d: 'M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z',
       stroke: 'currentColor', strokeWidth: 1.2, strokeLinejoin: 'round',
     }))
 }
-
-/** 图标尺寸随按钮档位走（24 高配 12 / 28 配 14 / 32 配 16）。 */
-const ICON_SIZE: Record<ButtonSize, number> = { sm: 12, md: 14, lg: 16 }
 
 /** 18 档外观各配一颗语义图标，一眼看出「图标在前、文字在后」。 */
 const VARIANT_ICON: Record<ButtonVariant, string> = {
@@ -163,52 +160,52 @@ function Labeled(props: { label: string; children?: ReturnType<typeof h>[] | Ret
 // ── 按钮 ────────────────────────────────────────────────────────────────
 
 // 示例右侧的代码：与左边渲染的一点不差，复制出去就能跑（改样式时必须两边一起改）。
-const CODE_BTN_TEXT = `<Button variant="primary" icon={<IconCheckOutlineRegular size={16} />}>保存</Button>
+const CODE_BTN_TEXT = `<Button variant="primary" icon={<IconCheckOutlineRegular />}>保存</Button>
 <Button variant="outline">取消</Button>
-<Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>删除</Button>`
+<Button variant="danger" icon={<IconCloseOutlineRegular />}>删除</Button>`
 
 const CODE_BTN_VARIANT = `// 主行动
-<Button variant="primary" icon={<IconCheckOutlineRegular size={16} />}>primary</Button>
-<Button variant="secondary" icon={<IconCopyOutlineRegular size={16} />}>secondary</Button>
+<Button variant="primary" icon={<IconCheckOutlineRegular />}>primary</Button>
+<Button variant="secondary" icon={<IconCopyOutlineRegular />}>secondary</Button>
 
 // 中性
-<Button variant="outline" icon={<IconEditOutlineRegular size={16} />}>outline</Button>
-<Button variant="ghost" icon={<IconRefreshOutlineRegular size={16} />}>ghost</Button>
+<Button variant="outline" icon={<IconEditOutlineRegular />}>outline</Button>
+<Button variant="ghost" icon={<IconRefreshOutlineRegular />}>ghost</Button>
 
 // 语义色
-<Button variant="danger" icon={<IconCloseOutlineRegular size={16} />}>danger</Button>
-<Button variant="success" icon={<IconPlayOutlineRegular size={16} />}>success</Button>
-<Button variant="warning" icon={<IconClockOutlineRegular size={16} />}>warning</Button>
-<Button variant="info" icon={<IconPaperPlaneOutlineRegular size={16} />}>info</Button>
+<Button variant="danger" icon={<IconCloseOutlineRegular />}>danger</Button>
+<Button variant="success" icon={<IconPlayOutlineRegular />}>success</Button>
+<Button variant="warning" icon={<IconClockOutlineRegular />}>warning</Button>
+<Button variant="info" icon={<IconPaperPlaneOutlineRegular />}>info</Button>
 
 // 弱化 / 行内
-<Button variant="danger-outline" icon={<IconCloseOutlineRegular size={16} />}>danger-outline</Button>
-<Button variant="link" icon={<IconSearchOutlineRegular size={16} />}>link</Button>
+<Button variant="danger-outline" icon={<IconCloseOutlineRegular />}>danger-outline</Button>
+<Button variant="link" icon={<IconSearchOutlineRegular />}>link</Button>
 
 // 任意一档都能再给 size（这里 sm 24 高）
-<Button variant="danger" size="sm" icon={<IconCloseOutlineRegular size={12} />}>danger</Button>`
+<Button variant="danger" size="sm" icon={<IconCloseOutlineRegular />}>danger</Button>`
 
-const CODE_BTN_SIZE = `<Button size="sm" variant="outline" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>
+const CODE_BTN_SIZE = `<Button size="sm" variant="outline" icon={<IconPlusOutlineRegular />}>sm</Button>
 <Button size="md" variant="outline">md</Button>
 <Button size="lg" variant="outline">lg</Button>
 
 // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种都能进
-<Button variant="primary" icon={<IconSendOutlineRegular size={16} />}>官方图标</Button>
+<Button variant="primary" icon={<IconSendOutlineRegular />}>官方图标</Button>
 <Button variant="outline" icon={<StarSvg />}>自绘 SVG</Button>
 <Button variant="ghost" icon="+">一个字符</Button>
 
 // iconRight 后置；block 撑满父宽（有前置图标时文字仍在视觉中心）
-<Button variant="outline" iconRight={<IconChevronDownOutlineRegular size={16} />}>更多</Button>
-<Button variant="primary" block icon={<IconCheckOutlineRegular size={16} />}>撑满父宽</Button>
+<Button variant="outline" iconRight={<IconChevronDownOutlineRegular />}>更多</Button>
+<Button variant="primary" block icon={<IconCheckOutlineRegular />}>撑满父宽</Button>
 
 // 纯图标钮：label 是必填的无障碍名（同时作 title）
-<IconButton icon={<IconPlusOutlineRegular size={16} />} label="plus" />`
+<IconButton icon={<IconPlusOutlineRegular />} label="plus" />`
 
 const CODE_BTN_STATE = `<Button variant="primary">默认</Button>
 <Button variant="primary" disabled>禁用</Button>
-<Button variant="danger" disabled icon={<IconCloseOutlineRegular size={16} />}>禁用</Button>
+<Button variant="danger" disabled icon={<IconCloseOutlineRegular />}>禁用</Button>
 <Button variant="outline" loading>加载中</Button>
-<Button variant="primary" loading icon={<IconRefreshOutlineRegular size={16} />}>提交中</Button>
+<Button variant="primary" loading icon={<IconRefreshOutlineRegular />}>提交中</Button>
 
 // 异步：onClick 返回 Promise ⇒ 自己转圈 + 禁用，settle 后恢复（reject 也恢复）
 <Button variant="primary" onClick={async () => { await save() }}>保存</Button>
@@ -240,17 +237,17 @@ const CODE_BTN_WIDTH = `// 固定宽：写死宽度
 
 /** 图标按钮「尺寸 × 底色 × 图标档」一溜展示：右边代码与左边渲染逐条一致。 */
 const CODE_ICON_BTN_MATRIX = `// 纯图标：无底（plain） / 有底（background），size 三档同样适用
-<IconButton size="sm" icon={<IconPlusOutlineRegular size={12} />} label="add" />
+<IconButton size="sm" icon={<IconPlusOutlineRegular />} label="add" />
 <IconButton size="sm" background="var(--dshpc-business)" color="var(--dshpc-on-signal)"
-  icon={<IconPlusOutlineRegular size={12} />} label="add" />
+  icon={<IconPlusOutlineRegular />} label="add" />
 
 // 图标 + 文字：无底（ghost） / 有底（info），size 三档同样适用
-<Button size="sm" variant="ghost" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>
-<Button size="sm" variant="info" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>
+<Button size="sm" variant="ghost" icon={<IconPlusOutlineRegular />}>sm</Button>
+<Button size="sm" variant="info" icon={<IconPlusOutlineRegular />}>sm</Button>
 
-// dense：size 与高度不变，图标放大、内距收紧（描边细的文档 / 语言图标用）
-<IconButton size="sm" dense icon={<IconPlusOutlineRegular size={12} />} label="add" />
-<Button size="sm" dense variant="info" icon={<IconPlusOutlineRegular size={12} />}>sm</Button>`
+// dense：全站唯一的放大档（1.25em），size 与高度不变、内距收紧；别给图标传 size 来放大
+<IconButton size="sm" dense icon={<IconPlusOutlineRegular />} label="add" />
+<Button size="sm" dense variant="info" icon={<IconPlusOutlineRegular />}>sm</Button>`
 
 /** 图标按钮表格的列：行标签 + sm/md/lg 三档（表头与数据行共用，列才对得齐）。 */
 const ICON_BTN_COLS = '100px repeat(3, minmax(58px,1fr))'
@@ -269,14 +266,14 @@ function iconBtnTier(title: string, dense: boolean): ReturnType<typeof h>[] {
     if (withText) {
       return h(Button, {
         key, size, dense, variant: filled ? 'info' : 'ghost',
-        icon: iconOf('plus', ICON_SIZE[size]),
+        icon: iconOf('plus'),
       }, size)
     }
     return h(IconButton, {
       key, size, dense,
       background: filled ? 'var(--dshpc-business)' : undefined,
       color: filled ? 'var(--dshpc-on-signal)' : undefined,
-      icon: iconOf('plus', ICON_SIZE[size]),
+      icon: iconOf('plus'),
       label: `add ${size} ${filled ? 'solid' : 'plain'}`,
     })
   }
@@ -309,9 +306,9 @@ export function ButtonPage(): ReturnType<typeof h> {
       { title: t('btnTextTitle'), hint: t('btnTextHint'), code: CODE_BTN_TEXT },
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
         h(Labeled, { label: 'locale' },
-          h(Button, { variant: 'primary', icon: iconOf('check', ICON_SIZE.lg) }, t('btnLabelSave')),
+          h(Button, { variant: 'primary', icon: iconOf('check') }, t('btnLabelSave')),
           h(Button, { variant: 'outline' }, t('btnLabelCancel')),
-          h(Button, { variant: 'danger', icon: iconOf('close', ICON_SIZE.lg) }, t('btnLabelDelete'))),
+          h(Button, { variant: 'danger', icon: iconOf('close') }, t('btnLabelDelete'))),
         h(Labeled, { label: 'en' },
           h(Button, { variant: 'primary' }, 'Save'),
           h(Button, { variant: 'outline' }, 'Cancel'),
@@ -321,7 +318,7 @@ export function ButtonPage(): ReturnType<typeof h> {
           h(Button, { variant: 'outline' }, '取消'),
           h(Button, { variant: 'ghost' }, '了解更多')),
         h(Labeled, { label: 'zh + en' },
-          h(Button, { variant: 'primary', icon: iconOf('sparkle', ICON_SIZE.lg) }, t('btnLabelMixed')),
+          h(Button, { variant: 'primary', icon: iconOf('sparkle') }, t('btnLabelMixed')),
           h(Button, { variant: 'outline' }, '复制 Copy'),
           h(Button, { variant: 'secondary' }, '重试 Retry'))),
     ),
@@ -335,9 +332,9 @@ export function ButtonPage(): ReturnType<typeof h> {
           h(Labeled, { key: group.label, label: group.label },
             h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' } },
               h(Row, null, group.items.map((variant) =>
-                h(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.lg) }, variant))),
+                h(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant]) }, variant))),
               h(Row, null, group.items.map((variant) =>
-                h(Button, { key: variant, variant, size: 'sm', icon: iconOf(VARIANT_ICON[variant], ICON_SIZE.sm) }, variant))))))),
+                h(Button, { key: variant, variant, size: 'sm', icon: iconOf(VARIANT_ICON[variant]) }, variant))))))),
     ),
 
     // 尺寸 / 图标位置 / block
@@ -347,33 +344,33 @@ export function ButtonPage(): ReturnType<typeof h> {
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
         h(Labeled, { label: 'size' },
           (['sm', 'md', 'lg'] as const).map((size) =>
-            h(Button, { key: size, size, variant: 'outline', icon: iconOf('plus', ICON_SIZE[size]) }, size))),
+            h(Button, { key: size, size, variant: 'outline', icon: iconOf('plus') }, size))),
         // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
         h(Labeled, { label: 'icon' },
-          h(Button, { variant: 'primary', icon: iconOf('send', ICON_SIZE.lg) }, '官方图标'),
+          h(Button, { variant: 'primary', icon: iconOf('send') }, '官方图标'),
           h(Button, { variant: 'outline', icon: h(StarSvg, null) }, '自绘 SVG'),
           h(Button, { variant: 'ghost', icon: '+' }, '一个字符')),
         h(Labeled, { label: 'iconRight' },
-          h(Button, { variant: 'outline', iconRight: iconOf('chevron', ICON_SIZE.lg) }, '更多'),
+          h(Button, { variant: 'outline', iconRight: iconOf('chevron') }, '更多'),
           h(Button, { variant: 'primary' }, '下一步')),
         // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
         h(Labeled, { label: 'block' },
           h('div', { style: { width: '260px' } },
-            h(Button, { variant: 'primary', block: true, icon: iconOf('check', ICON_SIZE.lg) }, '撑满父宽'),
+            h(Button, { variant: 'primary', block: true, icon: iconOf('check') }, '撑满父宽'),
             h('div', { style: { height: '8px' } }),
             h(Button, { variant: 'outline', block: true }, '无图标对照'))),
         h(Labeled, { label: t('btnIconOnly') },
           BUTTON_ICONS.slice(0, 6).map((item) =>
-            h(IconButton, { key: item.name, icon: h(item.Icon, { size: 16 }), label: item.name }))),
+            h(IconButton, { key: item.name, icon: h(item.Icon, null), label: item.name }))),
         // 纯图标钮的配色轴：默认无底色；color 改图标色，background 给底色（用户 2026-11-02）
         h(Labeled, { label: 'IconButton · color / background' },
-          h(IconButton, { icon: h(BUTTON_ICONS[0].Icon, { size: 16 }), label: '默认无底色' }),
-          h(IconButton, { icon: h(BUTTON_ICONS[1].Icon, { size: 16 }), label: '自定义图标色', color: '#7c3aed' }),
-          h(IconButton, { icon: h(BUTTON_ICONS[2].Icon, { size: 16 }), label: '自定义底色', color: '#fff', background: '#7c3aed' })),
+          h(IconButton, { icon: h(BUTTON_ICONS[0].Icon, null), label: '默认无底色' }),
+          h(IconButton, { icon: h(BUTTON_ICONS[1].Icon, null), label: '自定义图标色', color: '#7c3aed' }),
+          h(IconButton, { icon: h(BUTTON_ICONS[2].Icon, null), label: '自定义底色', color: '#fff', background: '#7c3aed' })),
         // 纯图标钮也吃同一套 loading：图标位换成小圈，文字本来就没有
         h(Labeled, { label: 'IconButton · loading' },
-          h(IconButton, { icon: h(BUTTON_ICONS[0].Icon, { size: 16 }), label: '刷新', onClick: async () => { await demoWait() } }),
-          h(IconButton, { variant: 'outline', icon: h(BUTTON_ICONS[0].Icon, { size: 16 }), label: '加载中', loading: true }))),
+          h(IconButton, { icon: h(BUTTON_ICONS[0].Icon, null), label: '刷新', onClick: async () => { await demoWait() } }),
+          h(IconButton, { variant: 'outline', icon: h(BUTTON_ICONS[0].Icon, null), label: '加载中', loading: true }))),
     ),
 
     // 图标按钮：常规 / dense 两组，每组 4 行（纯图标 / 图标+文字 × 无底 / 有底），列是 sm/md/lg
@@ -397,10 +394,10 @@ export function ButtonPage(): ReturnType<typeof h> {
         h(Labeled, { label: '禁用' },
           h(Button, { variant: 'primary' }, '默认'),
           h(Button, { variant: 'primary', disabled: true }, '禁用'),
-          h(Button, { variant: 'danger', disabled: true, icon: iconOf('close', ICON_SIZE.lg) }, '禁用')),
+          h(Button, { variant: 'danger', disabled: true, icon: iconOf('close') }, '禁用')),
         h(Labeled, { label: 'loading' },
           h(Button, { variant: 'outline', loading: true }, '加载中'),
-          h(Button, { variant: 'primary', loading: true, icon: iconOf('refresh', ICON_SIZE.lg) }, '提交中')),
+          h(Button, { variant: 'primary', loading: true, icon: iconOf('refresh') }, '提交中')),
         // 异步：onClick 返回 Promise 就自己转圈；外部 loading 与它取或（别处刷新也能点亮同一颗按钮）
         h(Labeled, { label: '异步 / 外部 loading' },
           h(Button, { variant: 'primary', onClick: async () => { await demoWait() } }, '点了自己转圈（1.4s）'),
@@ -420,7 +417,7 @@ export function ButtonPage(): ReturnType<typeof h> {
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } },
         h(Labeled, { label: '实心' },
           h(Row, null, CUSTOM_COLORS.map((color) =>
-            h(Button, { key: color, variant: 'primary', color, icon: iconOf('sparkle', ICON_SIZE.lg) }, color)))),
+            h(Button, { key: color, variant: 'primary', color, icon: iconOf('sparkle') }, color)))),
         h(Labeled, { label: '描边' },
           h(Row, null, CUSTOM_COLORS.map((color) =>
             h(Button, { key: color, variant: 'outline', color }, color))))),
@@ -460,7 +457,7 @@ const [kw, setKw] = useState('')
 <Input value={text} onChange={setText} placeholder="请输入用户名" hint="用户名只能包含字母、数字与连字符。" />
 // 搜索框：type="search" ⇒ 聚焦且有内容时右侧才出清空钮（数字框加减号同款的 plain IconButton，原生那枚已隐掉）
 // icon 是左侧图标槽（不吃点击，点在图标上照样聚焦）；图标尺寸按档取 fieldMetricsOf(size).icon
-<Input type="search" icon={<IconSearchOutlineRegular size={16} />} value={kw} onChange={setKw} placeholder="搜索" />
+<Input type="search" icon={<IconSearchOutlineRegular />} value={kw} onChange={setKw} placeholder="搜索" />
 // 校验失败态：描红
 <Input value={text} onChange={setText} error placeholder="校验失败态" />
 // 数字框：超出 min / max 自动收回到边界
@@ -613,7 +610,7 @@ export function InputPage(): ReturnType<typeof h> {
           { style: { display: 'flex', alignItems: 'center', gap: '6px' } },
           h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px', flex: 'none' } }, '搜索'),
           // 左侧图标槽（icon）+ 聚焦且有内容才出的清空钮（type="search"）
-          h(Input, { type: 'search', icon: h(IconSearchOutlineRegular, { size: 16 }), value: kw, onChange: setKw, placeholder: '搜索' }),
+          h(Input, { type: 'search', icon: h(IconSearchOutlineRegular, null), value: kw, onChange: setKw, placeholder: '搜索' }),
         ),
         h(Input, { value: 'bad value', onChange: () => {}, error: true, placeholder: '校验失败态' }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
@@ -1328,7 +1325,7 @@ const CODE_STRIP_CARD = `// StripCard：同色系浅底 + 方角 + 左缘 4px �
 const CODE_SECTION_HEAD = `// 分区标题：标签（可选，画出来的短竖线）+ icon + 标题 + 右侧操作区
 <SectionHead
   accent="success"        // 固定标签颜色：内置色名 / 任意色值；default = 主题默认；false = 不画
-  icon={<IconSparkleRegular size={16} />}
+  icon={<IconSparkleRegular />}
   title={<span>全部待办 <span style={{ fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)' }}>22</span></span>}
   right={[
     <Segmented items={[{ value: 'all', label: '全部', count: 22 }]} value={seg} onChange={setSeg} />,
@@ -1614,7 +1611,7 @@ export function CardPage(): ReturnType<typeof h> {
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } },
         // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
         h(SectionHead, {
-          icon: h(IconSparkleRegular, { size: 16 }),
+          icon: h(IconSparkleRegular, null),
           title: h('span', { style: { display: 'inline-flex', alignItems: 'baseline', gap: '6px' } },
             '全部待办',
             h('span', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', fontWeight: 400 } }, '22'),
@@ -1636,7 +1633,7 @@ export function CardPage(): ReturnType<typeof h> {
         }),
         // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
         h(SectionHead, {
-          icon: h(IconClockOutlineRegular, { size: 16 }),
+          icon: h(IconClockOutlineRegular, null),
           title: h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } },
             '我的待办',
             h(Chip, { tone: 'success', size: 'xs' }, '最新'),
@@ -1645,7 +1642,7 @@ export function CardPage(): ReturnType<typeof h> {
         }),
         // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
         h(SectionHead, {
-          icon: h(IconRefreshOutlineRegular, { size: 16 }),
+          icon: h(IconRefreshOutlineRegular, null),
           title: h('span', { style: { display: 'inline-flex', alignItems: 'baseline', gap: '6px' } },
             '已归档',
             h('span', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', fontWeight: 400 } }, '共 8 条'),
@@ -2280,7 +2277,7 @@ export function FeedbackPage(): ReturnType<typeof h> {
                   title: '会话记录',
                   headerActions: h(
                     Button,
-                    { variant: 'outline', size: 'sm', icon: iconOf('chevron', 14) },
+                    { variant: 'outline', size: 'sm', icon: iconOf('chevron') },
                     '更多',
                   ),
                   onClose: () => setLargeOpen(false),

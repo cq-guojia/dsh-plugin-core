@@ -3,11 +3,11 @@
 /* flex:1 1 auto + min-width:0：调用方常把它放进 display:flex 的容器里（TextPreview），
    不写会在主轴按内容宽排 —— 短文本时 __copy（absolute 相对本层）落在文字右端而不是面板右缘。 */
 .dshpc-cv{position:relative;display:flex;flex-direction:column;flex:1 1 auto;min-width:0;height:100%;min-height:0;}
-/* 复制钮复用核心 IconButton（variant=outline / size=md）：盒型、描边、圆角（已统一 md）、底色、hover 全由核心提供；
-   这里只管「绝对定位 + 默认隐藏、hover/聚焦才显」（overlay 浮在编辑器右上角）。 */
+/* 复制钮复用核心 IconButton（variant=outline / size=md）：盒型、描边、圆角（已统一 md）、底色、hover
+   与图标尺寸全由核心提供 —— 图标跟随 .dshpc-iconbtn svg 的 1em，这里不再单独放大（写死 16px 曾让它显大）。
+   本文件只管「绝对定位 + 默认隐藏、hover/聚焦才显」（overlay 浮在编辑器右上角）。 */
 .dshpc-cv__copy{position:absolute;top:6px;right:6px;z-index:5;opacity:0;}
 .dshpc-cv:hover .dshpc-cv__copy,.dshpc-cv__copy:focus-visible{opacity:1;}
-.dshpc-cv__copy svg{width:16px;height:16px;}
 /* 外层只把 .dshpc-scroll-thin 传给官方生成的 .cm-scroller（线宽 + 右让位都由 tokens.css
    的后代规则给），自己 overflow:hidden 不滚 ⇒ 关掉自身让位，否则两层各 1px 会叠成 2px。
    scroller 只让右不让底：给底会改 scroller 高度，CodeMirror 的测量循环会多算一条横滚条。 */

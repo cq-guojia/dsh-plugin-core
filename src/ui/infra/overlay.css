@@ -40,7 +40,9 @@
 .dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}
 /* 调用方整块自定义的标题区：占满左侧可用宽度、可换行（不是标题文字，别套标题字号）。 */
 .dshpc-overlay-head__heading--custom{flex:1 1 auto;flex-wrap:wrap}
-.dshpc-overlay-head__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+/* 图标尺寸只认核心 1em 基线（button.css:112）：这里不写死 16px 放大，调用方传的 size 也一并接管。 */
+.dshpc-overlay-head__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:var(--dshpc-font-lg);line-height:1}
+.dshpc-overlay-head__lead svg{display:block;width:1em;height:1em;flex:none;}
 /* 标题组：第一行 = 标题 + 右侧小块（徽标紧跟标题），第二行 = 副标题。 */
 .dshpc-overlay-head__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}
 .dshpc-overlay-head__titlerow{display:flex;align-items:center;gap:8px;min-width:0}

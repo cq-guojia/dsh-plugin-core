@@ -114,7 +114,9 @@
 }
 .dshpc-fb__row:hover{background:var(--dshpc-hover)}
 .dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}
-.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2)}
+.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2);font-size:var(--dshpc-font-lg)}
+/* 文件行图标走核心 1em 基线（button.css:112）：不再由调用方 size={18} 说了算。 */
+.dshpc-fb__row-icon svg{display:block;width:1em;height:1em;flex:none;}
 .dshpc-fb__row-name{
   flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;

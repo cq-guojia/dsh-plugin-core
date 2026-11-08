@@ -160,7 +160,7 @@ function DeliveredFileCard(props: {
       },
     }),
     h('span', { className: officialClass('Deliverables', 'fileIcon') ?? '' },
-      h(FileTypeIcon, { path: file.path, size: 20 })),
+      h(FileTypeIcon, { path: file.path })),
     h('div', { className: officialClass('Deliverables', 'fileBody') ?? '' },
       h('div', { className: officialClass('Deliverables', 'details') ?? '' },
         h('span', { className: officialClass('Deliverables', 'fileName') ?? '' }, name),

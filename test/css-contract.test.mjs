@@ -492,3 +492,33 @@ test('CodeViewer 在 flex 容器里撑满主轴（复制钮贴面板右缘）', 
   assert.match(CODE_VIEWER_CSS, /\.dshpc-cv\{[^}]*flex:1 1 auto/)
   assert.match(CODE_VIEWER_CSS, /\.dshpc-cv\{[^}]*min-width:0/)
 })
+
+// 2026-11-08 真机反馈：__copy 曾写死 svg 16px，比核心 IconButton 的 1em 大一档。
+// 复制钮复用 IconButton ⇒ 图标尺寸只能由 button.css 的 .dshpc-iconbtn svg 决定。
+test('CodeViewer 复制钮不单独放大图标（跟随核心 IconButton 的 1em）', () => {
+  assert.ok(
+    !/\.dshpc-cv__copy svg\{[^}]*(width|height):/.test(CODE_VIEWER_CSS),
+    'code-viewer.css 不许覆盖复制钮 svg 尺寸：图标大小只认核心 1em',
+  )
+})
+
+// 2026-11-08 用户拍板：图标尺寸只有 button.css 的 1em 基线 + dense 的 1.25em 两档。
+// 组件局部 CSS 再写死 px（svg{width:16px} / 图标容器 font-size:16px）就是另立一套尺寸。
+test('图标尺寸只有核心 1em 基线 + dense 放大档，组件 CSS 不许写死 px', () => {
+  const offenders = []
+  for (const [name, css] of Object.entries(CONSTANTS)) {
+    if (typeof css !== 'string') continue
+    const body = css.replace(/\/\*[\s\S]*?\*\//g, '')
+    for (const rule of body.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+      const selector = rule[1].trim()
+      const decl = rule[2]
+      if (/svg$/.test(selector) && /\b(width|height):\s*\d+(\.\d+)?px/.test(decl)) {
+        offenders.push(`${name} ${selector}{${decl}}`)
+      }
+      if (/(icon|arrow|lead|glyph|caret)/i.test(selector) && /font-size:\s*\d+px/.test(decl)) {
+        offenders.push(`${name} ${selector}{${decl}}`)
+      }
+    }
+  }
+  assert.deepEqual(offenders, [], `组件 CSS 不得写死图标尺寸：\n${offenders.join('\n')}`)
+})

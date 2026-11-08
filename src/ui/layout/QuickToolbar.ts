@@ -258,7 +258,7 @@ export function QuickToolbar(props: QuickToolbarProps): ReturnType<typeof h> {
           'aria-label': label,
           onClick: () => scrollToTop(resolveScrollTarget(props.scrollContainer, ref.current)),
         },
-        h(Chevron, { dir: 'up', size: 18 }),
+        h(Chevron, { dir: 'up' }),
       )
     }
     const item = entry.item

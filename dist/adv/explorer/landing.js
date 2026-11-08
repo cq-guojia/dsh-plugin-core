@@ -22,7 +22,7 @@ export function LandingBody(props) {
             if (event.key === 'Enter' || event.key === ' ')
                 onOpen(target);
         },
-    }, h('span', { className: 'dshpc-fb__row-icon' }, h(IconFolderCloseRegular, { size: 18 })), h('span', { className: 'dshpc-fb__row-name' }, label), 
+    }, h('span', { className: 'dshpc-fb__row-icon' }, h(IconFolderCloseRegular, null)), h('span', { className: 'dshpc-fb__row-name' }, label), 
     // 行 = 展开进去；行尾钮 = 直接选这个目录（根目录 / 盘符 / 工作区根本身都能选）。
     pickable
         ? h(Button, {

@@ -422,7 +422,7 @@ export function FileBrowser(props) {
                     if (event.key === 'Enter' || event.key === ' ')
                         pick();
                 },
-            }, h('span', { className: 'dshpc-fb__row-icon' }, h(FileTypeIcon, { path: childPath, size: 18 })), h('span', { className: 'dshpc-fb__row-name' }, entry.name), 
+            }, h('span', { className: 'dshpc-fb__row-icon' }, h(FileTypeIcon, { path: childPath })), h('span', { className: 'dshpc-fb__row-name' }, entry.name), 
             // 选择器里文件行也给一枚「选择」钮，与目录行的操作位对齐（目录没有时它仍在，
             // 「点行 = 选中」的旧默契保持不变，外显入口不再缺）。
             picker && props.onPick !== undefined
@@ -471,7 +471,7 @@ export function FileBrowser(props) {
             variant: 'plain',
             size: 'sm',
             className: `dshpc-fb__row-toggle${isOpen ? ' dshpc-fb__row-toggle--open' : ''}`,
-            icon: h(IconChevronRightOutlineRegular, { size: 16 }),
+            icon: h(IconChevronRightOutlineRegular, null),
             label: isOpen ? tt('explorerCollapse') : tt('explorerExpand'),
             'aria-expanded': isOpen,
             onClick: (event) => {

@@ -1325,8 +1325,8 @@ export const docData = {
             "type": "boolean",
             "def": "false",
             "desc": {
-              "zh": "紧凑图标档：高度不变，图标放大、内距收紧（Button / IconButton 同名同义）",
-              "en": "Compact-icon tier: same height, larger icon and tighter padding (same prop on Button and IconButton)"
+              "zh": "**唯一放大档**：高度不变，图标放大、内距收紧（Button / IconButton 同名同义）；不要改成给图标传 size",
+              "en": "**Only enlargement tier**: same height, larger icon and tighter padding (same prop on Button and IconButton); do not pass size to the icon instead"
             }
           },
           {
@@ -1334,8 +1334,8 @@ export const docData = {
             "type": "ReactNode",
             "def": "—",
             "desc": {
-              "zh": "前置图标（官方图标组件 / 字符串均可）",
-              "en": "Leading icon (official icon component or string)"
+              "zh": "前置图标（官方图标组件 / 字符串均可）；尺寸由核心 CSS 的 1em 接管，不要传 size，要放大用 dense",
+              "en": "Leading icon (official icon component or string); size is owned by the core 1em rule — do not pass size, use dense to enlarge"
             }
           },
           {
@@ -2038,7 +2038,7 @@ export const docData = {
       {
         "id": "ui-inputgroup-example",
         "lang": "tsx",
-        "src": "import { InputGroup } from 'dsh-plugin-core/ui'\n\n// 输入框 + 按钮组焊成一体；label 是前置标题，undoable 在最前面加撤销钮\nh(InputGroup, {\n  label: '任务名',\n  value: name, onChange: setName,\n  undoable: true,\n  onSubmit: save,                       // Enter 提交（提交点也会进撤销栈）\n  actions: [\n    { label: '返回', variant: 'ghost', onClick: back },\n    { label: '确定', variant: 'success', onClick: save },   // 语义色直接传档，不自己调色\n  ],\n})\n\n// 按钮三形：纯图标（正方形，ariaLabel 给读屏）/ 图标 + 文字 / 纯文字；size 三档\nh(InputGroup, {\n  size: 'md', value: kw, onChange: setKw,\n  actions: [\n    { icon: h(IconRefreshOutlineRegular, { size: 14 }), ariaLabel: '重置', onClick: reset },\n    { icon: h(IconSearchOutlineRegular, { size: 14 }), label: '搜索', onClick: search },\n  ],\n})\n\n// 高度自定义：height 直接给 px，压过 size 档（内件跟着撑满）\nh(InputGroup, {\n  value: kw, onChange: setKw, height: 44,\n  actions: [{ label: '确定', onClick: save }],\n})"
+        "src": "import { InputGroup } from 'dsh-plugin-core/ui'\n\n// 输入框 + 按钮组焊成一体；label 是前置标题，undoable 在最前面加撤销钮\nh(InputGroup, {\n  label: '任务名',\n  value: name, onChange: setName,\n  undoable: true,\n  onSubmit: save,                       // Enter 提交（提交点也会进撤销栈）\n  actions: [\n    { label: '返回', variant: 'ghost', onClick: back },\n    { label: '确定', variant: 'success', onClick: save },   // 语义色直接传档，不自己调色\n  ],\n})\n\n// 按钮三形：纯图标（正方形，ariaLabel 给读屏）/ 图标 + 文字 / 纯文字；size 三档\nh(InputGroup, {\n  size: 'md', value: kw, onChange: setKw,\n  actions: [\n    { icon: h(IconRefreshOutlineRegular, null), ariaLabel: '重置', onClick: reset },\n    { icon: h(IconSearchOutlineRegular, null), label: '搜索', onClick: search },\n  ],\n})\n\n// 高度自定义：height 直接给 px，压过 size 档（内件跟着撑满）\nh(InputGroup, {\n  value: kw, onChange: setKw, height: 44,\n  actions: [{ label: '确定', onClick: save }],\n})"
       }
     ]
   },

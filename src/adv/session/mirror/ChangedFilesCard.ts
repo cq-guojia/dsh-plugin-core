@@ -97,8 +97,8 @@ export function ChangedFilesCard(props: {
   const single = summary.total === 1 ? summary.files[0] : undefined
   // 图标：单文件 = FileTypeIcon(path)；多文件 = FileTypeIcon(kind:'code')（官方渲染「文件带尖括号」）。
   const icon = single !== undefined
-    ? h(FileTypeIcon, { path: single.path, size: 20 })
-    : h(FileTypeIcon, { kind: 'code', size: 20 })
+    ? h(FileTypeIcon, { path: single.path })
+    : h(FileTypeIcon, { kind: 'code' })
   const title = single === undefined
     ? t('changesMulti', { count: String(summary.total) })
     : t('changesSingle', { name: baseNameOf(single.path) })

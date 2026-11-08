@@ -128,7 +128,7 @@ function MoreMenuRow(props: { onDismiss: () => void }): ReturnType<typeof h> {
   return h(
     MenuItemButton,
     {
-      icon: h(PanelIcon, { size: 16 }),
+      icon: h(PanelIcon, null),
       onSelect: () => { props.onDismiss(); jump(PANEL_ID) },
     },
     t('pluginTitle'),
@@ -376,14 +376,14 @@ function ConfigPanel(props: ConfigPanelProps): ReturnType<typeof h> {
       { style: { display: 'flex', gap: '8px' } },
       h(
         Button,
-        { size: 'md', variant: 'primary', icon: h(IconPlayOutlineRegular, { size: 16 }), onClick: props.openDemo },
+        { size: 'md', variant: 'primary', icon: h(IconPlayOutlineRegular, null), onClick: props.openDemo },
         t('settingsOpenDemo'),
       ),
       h(
         Button,
         {
           size: 'md', variant: 'outline',
-          icon: h(IconLinkOutlineRegular, { size: 16 }),
+          icon: h(IconLinkOutlineRegular, null),
           onClick: () => { window.open('https://github.com/cq-guojia/dsh-plugin-core', '_blank', 'noopener') },
         },
         t('settingsGithub'),

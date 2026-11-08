@@ -123,7 +123,7 @@ function personCell(person: Person): ReturnType<typeof h> {
 
 function rowsOf(): TableRow[] {
   const actions = h(IconButton, {
-    icon: h(IconChevronDownOutlineRegular, { size: 16 }),
+    icon: h(IconChevronDownOutlineRegular, null),
     label: 'Open study',
   })
   return PEOPLE.map((person) => ({

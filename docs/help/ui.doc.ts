@@ -151,8 +151,8 @@ h(InputGroup, {
 h(InputGroup, {
   size: 'md', value: kw, onChange: setKw,
   actions: [
-    { icon: h(IconRefreshOutlineRegular, { size: 14 }), ariaLabel: '重置', onClick: reset },
-    { icon: h(IconSearchOutlineRegular, { size: 14 }), label: '搜索', onClick: search },
+    { icon: h(IconRefreshOutlineRegular, null), ariaLabel: '重置', onClick: reset },
+    { icon: h(IconSearchOutlineRegular, null), label: '搜索', onClick: search },
   ],
 })
 
@@ -371,8 +371,8 @@ const doc: DocTopic = {
           rows: [
             { name: 'variant', type: "上表 18 档（primary/secondary/danger/success/warning/info/outline/danger-outline/ghost/link + 扩展 purple/pink/cyan/teal/orange/indigo/rose/slate）", def: "'outline'", desc: { zh: '外观档', en: 'Appearance tier' } },
             { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'lg'", desc: { zh: '高度档（24 / 28 / 32，有边无边同高）', en: 'Height tier (24 / 28 / 32, same height with or without border)' } },
-            { name: 'dense', type: 'boolean', def: 'false', desc: { zh: '紧凑图标档：高度不变，图标放大、内距收紧（Button / IconButton 同名同义）', en: 'Compact-icon tier: same height, larger icon and tighter padding (same prop on Button and IconButton)' } },
-            { name: 'icon', type: 'ReactNode', def: '—', desc: { zh: '前置图标（官方图标组件 / 字符串均可）', en: 'Leading icon (official icon component or string)' } },
+            { name: 'dense', type: 'boolean', def: 'false', desc: { zh: '**唯一放大档**：高度不变，图标放大、内距收紧（Button / IconButton 同名同义）；不要改成给图标传 size', en: '**Only enlargement tier**: same height, larger icon and tighter padding (same prop on Button and IconButton); do not pass size to the icon instead' } },
+            { name: 'icon', type: 'ReactNode', def: '—', desc: { zh: '前置图标（官方图标组件 / 字符串均可）；尺寸由核心 CSS 的 1em 接管，不要传 size，要放大用 dense', en: 'Leading icon (official icon component or string); size is owned by the core 1em rule — do not pass size, use dense to enlarge' } },
             { name: 'iconRight', type: 'ReactNode', def: '—', desc: { zh: '后置图标（展开箭头、外链）', en: 'Trailing icon (expand arrow, external link)' } },
             { name: 'color', type: 'string', def: '—', desc: { zh: '自定义主色：实心档作底色，线框 / 无底档作主色', en: 'Custom main color: background for solid tiers, main color for outline/bare' } },
             { name: 'loading', type: 'boolean', def: "'false'", desc: { zh: '受控 loading：文案前显示同色小圈并自动 disabled（别处刷新也能点亮它）；与「点击自动 loading」取或', en: 'Controlled loading: same-color spinner before the label plus auto-disable (an external refresh can light it up too); OR-ed with automatic click loading' } },

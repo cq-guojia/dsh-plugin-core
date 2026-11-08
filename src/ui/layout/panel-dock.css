@@ -49,7 +49,7 @@
   border-left:none;
   border-radius:0 var(--dshpc-radius-sm) var(--dshpc-radius-sm) 0;
   background:var(--dshpc-plate);color:var(--dshpc-fg-3);
-  font-family:inherit;font-size:16px;line-height:1;cursor:pointer;
+  font-family:inherit;font-size:var(--dshpc-font-lg);line-height:1;cursor:pointer;
   transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);
 }
 .dshpc-dock__collapse:hover{background:var(--dshpc-plate-hover);color:var(--dshpc-fg)}
@@ -88,8 +88,9 @@
 @keyframes dshpc-ear-in{from{opacity:0;transform:translateX(14px)}}
 .dshpc-dock__ear:hover{background:var(--dshpc-plate-hover);color:var(--dshpc-fg)}
 .dshpc-dock__ear:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
-/* 与收起钮的箭头同一字号（16px）：收进去前后箭头一模一样大（用户 2026-10-28）。 */
-.dshpc-dock__ear-arrow{font-size:16px;color:var(--dshpc-fg-3)}
+/* 与收起钮的箭头同一个 token（--dshpc-font-lg）：收进去前后箭头一模一样大（用户 2026-10-28）。
+   不再写死 16px —— 箭头 / 图标尺寸一律跟核心字号档。 */
+.dshpc-dock__ear-arrow{font-size:var(--dshpc-font-lg);color:var(--dshpc-fg-3)}
 .dshpc-dock__ear:hover .dshpc-dock__ear-arrow{color:var(--dshpc-fg)}
 /* 动效礼貌：系统声明减少动效时全部关掉，收起退化为瞬时、功能不受影响。 */
 @media (prefers-reduced-motion:reduce){
