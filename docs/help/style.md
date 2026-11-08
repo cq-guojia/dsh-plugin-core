@@ -113,3 +113,7 @@ optional.
 EN: (1) Never namespace-import or `require` the barrel − it defeats tree-shaking (62.3 KB difference); use named
 imports. (2) Do not concatenate several CSS constants into one domain − that rebuilds full injection. (3) Never
 rely on injection order; override with higher specificity. (4) Never go back to `import './x.css'`.
+
+## 更新日志
+
+- 2026-11-08 23:34:50：按文档库规范建立版本元数据与统一目录索引

@@ -402,3 +402,7 @@ area stay symmetric. The StripCard rail is absolutely positioned against the roo
 (`top:0` / `bottom:0`), so it stays full-height across the expanded area too. `:has()` and "paint a resting-fill snapshot over the
 expanded area" are forbidden — semi-transparent tokens stacked twice render darker. Callers must put
 expandable content in `panel`; `children` belongs to the header block.
+
+## 更新日志
+
+- 2026-11-08 23:34:50：按文档库规范建立版本元数据与统一目录索引

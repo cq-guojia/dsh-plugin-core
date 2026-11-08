@@ -16,7 +16,9 @@
 
 | 槽位 | 落位 | 说明 |
 |---|---|---|
-| 文档规范 | `docs/README.md`（本文件，路径固定） | 槽位表 + 阅读顺序 |
+| 文档规范 | `docs/README.md`（本文件，路径固定） | 槽位表 + 阅读顺序 + 目录树（统一索引） |
+| 文档库元数据 | `docs/.docwriter.json` | 版本闸门与初始化时间，由文档工具维护，不手改 |
+| 目录树 | `docs/README.md` 的 `## 目录` 节 | 由文档工具按磁盘生成；连接符 / 顺序 / 对齐不手改，只补每行 `#` 后的一句话说明 |
 | 项目门面（英 + 简中，随包发布） | 根 `README.md` / `README.zh-CN.md`；`packages/demo/README.md` / `packages/demo/README.zh-CN.md` | 两个 npm 包的对外说明：功能总览、适配范围、安装与截图；中文版是英文版的翻译，正文只此一份 |
 | **帮助文档区（追加槽位）** | **`docs/help/`** | **给引用方 / Agent，随包发布；`.doc.ts` 真源 + `.md` 投影同目录** |
 | 帮助索引（入口） | `docs/help/index.md`（← `index.doc.ts`） | 引用方与 Agent 的唯一入口：按任务挑一份 |
@@ -44,3 +46,30 @@
 - **真源在别处就不抄第二份**：props 以 TypeScript 声明为准，本文档是索引与导读；
   真源若在宿主源码（`docs/design/external/`）也标明来源，不复制正文。
 - **命名不表时间**：纯 ASCII 小写 kebab-case，版本历史交给 git。
+
+## 目录
+
+```text
+docs/                                               # 项目文档库入口与唯一索引
+├── design/                                         # 本仓内部的设计与工程规范，不随包给引用方读
+│   ├── external/                                   # 宿主与官方包等仓库外事实，带来源与复核口径
+│   │   └── dsh-host.md                             # DSH 宿主 API、官方 primitives 与产物形态的已核实行为
+│   ├── architecture.md                             # 五子包分层、依赖方向、样式注入机制与不变量
+│   ├── copywriting.md                              # 帮助文档文案标准：读者定性、双语对等、格式冻结
+│   ├── doc-format.md                               # .doc.ts 真源与 md / demo 双投影的 schema 及生成闸
+│   ├── features.md                                 # 功能总索引槽位说明：职责已交帮助索引，保留占位
+│   ├── methods.md                                  # 往 utils 里新增方法时要过的 checklist
+│   ├── structure.md                                # 代码分层树与 demo 展示分区的结构规范
+│   └── style.md                                    # 本仓改动样式的 why、派生色口径与三条硬规矩
+├── help/                                           # 随包发布的帮助文档区，.doc.ts 真源与同名 .md 投影同目录
+│   ├── design.md                                   # design 子包使用帮助：token、createStyleKit、明暗判据
+│   ├── explorer.md                                 # 工作区浏览与文件预览的接入方式与 API
+│   ├── index.md                                    # 帮助索引：按你要做的事挑一份文档
+│   ├── integration.md                              # 从零接入一个插件的步骤
+│   ├── methods.md                                  # utils 方法统一口径与返回值约定，手写无 demo 页
+│   ├── session.md                                  # 会话只读预览的接入方式与 API
+│   ├── style.md                                    # 样式使用侧：token、换肤、前缀规则，手写无 demo 页
+│   ├── ui.md                                       # 控件清单与全部 props 参考
+│   └── utils.md                                    # utils 子包方法参考
+└── requirements.md                                 # 需求范围与尚未归属的拍板结论
+```

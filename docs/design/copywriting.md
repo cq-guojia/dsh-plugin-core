@@ -116,3 +116,7 @@ pnpm gen:docs && pnpm typecheck:docs
 ③ 任一 section 的 prose 段数 ≤ 4；④ 抽 3 条 desc，确认「一句话说得清」。
 EN: After editing run `pnpm gen:docs && pnpm typecheck:docs`. Review checklist: zero date hits, zero process-word hits,
 ≤ 4 prose paragraphs per section, three sampled `desc` values readable in one breath.
+
+## 更新日志
+
+- 2026-11-08 23:34:49：按文档库规范建立版本元数据与统一目录索引

@@ -78,3 +78,7 @@ export type DocTopic = {
   `node_modules/dsh-plugin-core/docs/help/index.md`（按任务挑一份，不必全读）。
 - 插件产物不含文档：bundler 不吃 `.md`/`.ts` 文档（无 md/text loader），文档不进 bundle。
 - 消费方指引句（抄进各插件项目 `AGENTS.md`）见本仓 `docs/README.md` 阶段5 行。
+
+## 更新日志
+
+- 2026-11-08 23:34:49：按文档库规范建立版本元数据与统一目录索引

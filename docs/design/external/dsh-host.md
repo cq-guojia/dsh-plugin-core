@@ -283,7 +283,7 @@
 
 | 项 | 值 |
 |---|---|
-| 端点 | `GET <path>?op=list\|read\|readBytes\|roots&path=<绝对路径>&offset&limit` |
+| 端点 | `GET {path}?op=list\|read\|readBytes\|roots&path=<绝对路径>&offset&limit` |
 | 只读 | 只有这 4 个 op，没有任何写/删/改入口 |
 | 鉴权 | 不加 token：宿主 HTTP 面本来就能调 `remote.workspaceFiles.read`（允许工作区外绝对路径），本路由不引入新暴露面；静态 token 写在同一个 bundle 里是装饰 |
 | 每层上限 | 500 条（`FS_PAGE_LIMIT`），服务端先按名排序再切片，翻页不重复/不漏 |
@@ -404,3 +404,7 @@
 `official-classes.ts` 的前缀表补 `@deepseek-ai/dsh-client-ui-attachment/`；
 用户消息与助手内联图片都改为真图，loader 缺席时才退回「[图片]」文本占位。
 未接：`tool.call.images`（`read_image` 工具卡内的图片区，官方 = `imageBody` + 槽 + `imageMeta` 路径/尺寸）。
+
+## 更新日志
+
+- 2026-11-08 23:34:50：按文档库规范建立版本元数据与统一目录索引

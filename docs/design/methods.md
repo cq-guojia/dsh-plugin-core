@@ -20,3 +20,7 @@ only what you must honour when **adding a helper to `utils`**.
 EN: Failure path has a clear, overridable fallback; edge cases (empty / 0 / negative / NaN) covered by tests;
 exported from `src/utils/index.ts`; text goes through `t()` + `translate`; registered as a row in the
 matching parameter table under `docs/help/`.
+
+## 更新日志
+
+- 2026-11-08 23:34:49：按文档库规范建立版本元数据与统一目录索引

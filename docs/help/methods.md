@@ -56,3 +56,7 @@ negatives. HTTP: 10s timeout, `AbortError` on timeout, `HttpError` with `status`
 
 EN: Built-in prompts ship with zh/en (`setLocale` to switch); any API that renders text takes
 `translate: Translate` to override; your plugin’s own UI copy is yours to manage.
+
+## 更新日志
+
+- 2026-11-08 23:34:50：按文档库规范建立版本元数据与统一目录索引
