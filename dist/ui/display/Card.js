@@ -1,4 +1,4 @@
-import { createElement as h } from 'react';
+import { createElement as h, } from 'react';
 import { Chevron } from '../infra/chevron.js';
 import { t } from '../../utils/i18n.js';
 import { ensureComponentStyles } from '../infra/css.js';
@@ -63,6 +63,10 @@ function CardShell(kind, props) {
     const accent = props.accent ?? 'business';
     const isPreset = CARD_ACCENTS.includes(accent);
     const bar = props.bar ?? {};
+    const interactive = props.onClick !== undefined;
+    const hover = props.hoverable ?? interactive;
+    const scope = props.hoverScope ?? 'head';
+    const onCardScope = scope === 'card';
     // StripCard 固定贴左；Card 默认左侧，可换任意一边。
     const side = kind === 'strip' ? 'left' : bar.side ?? 'left';
     const classes = [
@@ -72,8 +76,8 @@ function CardShell(kind, props) {
         kind === 'strip' ? 'dshpc-card--strip' : 'dshpc-card--bordered',
         `dshpc-card--bar-${side}`,
         isPreset ? `dshpc-card--${accent}` : '',
-        props.hoverable === true ? 'dshpc-card--hoverable' : '',
-        props.hoverable === true ? `dshpc-card--hover-${props.hoverScope ?? 'head'}` : '',
+        hover ? 'dshpc-card--hoverable' : '',
+        hover ? `dshpc-card--hover-${scope}` : '',
         props.filled === false ? 'dshpc-card--no-fill' : '',
         props.expanded === true ? 'dshpc-card--expanded' : '',
         props.className ?? '',
@@ -104,11 +108,39 @@ function CardShell(kind, props) {
         vars['--card-pad-l'] = l;
     }
     const style = { ...restStyle, ...vars };
-    return h('div', { className: classes, style }, h('div', { className: 'dshpc-card__body' }, 
+    // 点击层与 hover 同层：head = __body（内距圈就在这一层），card = 根节点。
+    // __panel 是 __body 的兄弟节点，只绑 __body 时天然点不到展开区，不必靠私有类名排除。
+    const onKeyDown = (event) => {
+        // 槽里按钮 / 折叠箭头的 Enter·Space 会冒泡；只认点击层自己为事件源。
+        if (event.target !== event.currentTarget)
+            return;
+        if (event.key !== 'Enter' && event.key !== ' ')
+            return;
+        event.preventDefault();
+        props.onClick?.();
+    };
+    const hit = interactive
+        ? { role: 'button', tabIndex: 0, onClick: props.onClick, onKeyDown }
+        : {};
+    return h('div', {
+        className: onCardScope && interactive ? `${classes} dshpc-card__hit` : classes,
+        style,
+        ...(onCardScope ? hit : {}),
+    }, h('div', {
+        className: !onCardScope && interactive ? 'dshpc-card__body dshpc-card__hit' : 'dshpc-card__body',
+        ...(onCardScope ? {} : hit),
+    }, 
     // 色条是 body 的第一个子元素：DOM 顺序恒定，左/上 = 天然在前，右/下靠 order 排到头部之后。
     h('span', { className: 'dshpc-card__bar', 'aria-hidden': true }), h('div', { className: 'dshpc-card__head' }, h('div', { className: 'dshpc-card__main' }, props.children ?? null), props.action === undefined && props.onToggle === undefined
         ? null
-        : h('div', { className: 'dshpc-card__side' }, props.action ?? null, props.onToggle === undefined
+        : h('div', {
+            className: 'dshpc-card__side',
+            // action 与折叠箭头同槽：一层挡住冒泡，点右上角不连带触发整卡。
+            // 只在可点时才挡，避免改变不传 onClick 时的冒泡行为。
+            onClick: interactive
+                ? (event) => { event.stopPropagation(); }
+                : undefined,
+        }, props.action ?? null, props.onToggle === undefined
             ? null
             : h('button', {
                 type: 'button',

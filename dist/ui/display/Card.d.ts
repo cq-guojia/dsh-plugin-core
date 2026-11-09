@@ -25,6 +25,14 @@ export interface CardSharedProps {
     expanded?: boolean;
     /** 传了才显示右侧折叠箭头（全站唯一的 Chevron）；由调用方管展开状态。 */
     onToggle?: () => void;
+    /**
+     * 整卡点击回调：传了才让卡片可点，`Card` 与 `StripCard` 同享。
+     * 命中范围跟 `hoverScope` 走：'head'（默认）只有头部区 `__body`（含内距圈）可点，
+     * 'card' 才含展开区。点击层拿 role="button" / tabIndex / Enter·Space，
+     * 与 `ListRow` 同一套契约；刻意不渲染成 `<button>`（调用方要在里面放按钮）。
+     * `action` 与折叠箭头不会连带触发。不传则外观与行为完全不变。
+     */
+    onClick?: () => void;
     /** 右上角操作区（如「跳过」「查看会话」）。 */
     action?: ReactNode;
     /** 主内容：想写几行、左边右边随你。 */
@@ -34,12 +42,12 @@ export interface CardSharedProps {
     className?: string;
     style?: CSSProperties;
     translate?: Translate;
-    /** 悬停变色开关：统一走 --dshpc-card-hover。默认 false，纯新增、不改现有外观。 */
+    /** 悬停变色开关：统一走 --dshpc-card-hover。默认跟随 `onClick`（可点即开），可显式关。 */
     hoverable?: boolean;
     /**
-     * 悬停作用域（仅 hoverable 为 true 时生效）：
-     *  - 'head'（默认）：只有头部区这一整块边到边变色并带手势，展开区 `panel` 完全不受影响；
-     *  - 'card'：整卡含展开区一起变色，由消费端显式选。
+     * 交互作用域：'head'（默认）只有头部区变色并可点，展开区 `panel` 完全不受影响；
+     * 'card' 整卡含展开区一起变色、一起可点，由消费端显式选。
+     * 变色只在 hover 开时生效；点击层始终按它选。
      * 展开内容必须放进 `panel`（`children` 归头部区），否则核心无从区分两块区域。
      */
     hoverScope?: 'head' | 'card';

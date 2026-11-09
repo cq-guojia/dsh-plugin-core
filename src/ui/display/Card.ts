@@ -1,4 +1,7 @@
-import { createElement as h, type CSSProperties, type ReactNode } from 'react'
+import {
+  createElement as h,
+  type CSSProperties, type HTMLAttributes, type KeyboardEvent, type MouseEvent, type ReactNode,
+} from 'react'
 import { Chevron } from '../infra/chevron.js'
 import { t, type Translate } from '../../utils/i18n.js'
 import { ensureComponentStyles } from '../infra/css.js'
@@ -36,6 +39,14 @@ export interface CardSharedProps {
   expanded?: boolean
   /** 传了才显示右侧折叠箭头（全站唯一的 Chevron）；由调用方管展开状态。 */
   onToggle?: () => void
+  /**
+   * 整卡点击回调：传了才让卡片可点，`Card` 与 `StripCard` 同享。
+   * 命中范围跟 `hoverScope` 走：'head'（默认）只有头部区 `__body`（含内距圈）可点，
+   * 'card' 才含展开区。点击层拿 role="button" / tabIndex / Enter·Space，
+   * 与 `ListRow` 同一套契约；刻意不渲染成 `<button>`（调用方要在里面放按钮）。
+   * `action` 与折叠箭头不会连带触发。不传则外观与行为完全不变。
+   */
+  onClick?: () => void
   /** 右上角操作区（如「跳过」「查看会话」）。 */
   action?: ReactNode
   /** 主内容：想写几行、左边右边随你。 */
@@ -45,12 +56,12 @@ export interface CardSharedProps {
   className?: string
   style?: CSSProperties
   translate?: Translate
-  /** 悬停变色开关：统一走 --dshpc-card-hover。默认 false，纯新增、不改现有外观。 */
+  /** 悬停变色开关：统一走 --dshpc-card-hover。默认跟随 `onClick`（可点即开），可显式关。 */
   hoverable?: boolean
   /**
-   * 悬停作用域（仅 hoverable 为 true 时生效）：
-   *  - 'head'（默认）：只有头部区这一整块边到边变色并带手势，展开区 `panel` 完全不受影响；
-   *  - 'card'：整卡含展开区一起变色，由消费端显式选。
+   * 交互作用域：'head'（默认）只有头部区变色并可点，展开区 `panel` 完全不受影响；
+   * 'card' 整卡含展开区一起变色、一起可点，由消费端显式选。
+   * 变色只在 hover 开时生效；点击层始终按它选。
    * 展开内容必须放进 `panel`（`children` 归头部区），否则核心无从区分两块区域。
    */
   hoverScope?: 'head' | 'card'
@@ -111,6 +122,10 @@ function CardShell(
   const accent = props.accent ?? 'business'
   const isPreset = (CARD_ACCENTS as readonly string[]).includes(accent)
   const bar = props.bar ?? {}
+  const interactive = props.onClick !== undefined
+  const hover = props.hoverable ?? interactive
+  const scope = props.hoverScope ?? 'head'
+  const onCardScope = scope === 'card'
   // StripCard 固定贴左；Card 默认左侧，可换任意一边。
   const side = kind === 'strip' ? 'left' : bar.side ?? 'left'
   const classes = [
@@ -120,8 +135,8 @@ function CardShell(
     kind === 'strip' ? 'dshpc-card--strip' : 'dshpc-card--bordered',
     `dshpc-card--bar-${side}`,
     isPreset ? `dshpc-card--${accent}` : '',
-    props.hoverable === true ? 'dshpc-card--hoverable' : '',
-    props.hoverable === true ? `dshpc-card--hover-${props.hoverScope ?? 'head'}` : '',
+    hover ? 'dshpc-card--hoverable' : '',
+    hover ? `dshpc-card--hover-${scope}` : '',
     props.filled === false ? 'dshpc-card--no-fill' : '',
     props.expanded === true ? 'dshpc-card--expanded' : '',
     props.className ?? '',
@@ -148,12 +163,32 @@ function CardShell(
   }
   const style = { ...restStyle, ...vars } as CSSProperties
 
+  // 点击层与 hover 同层：head = __body（内距圈就在这一层），card = 根节点。
+  // __panel 是 __body 的兄弟节点，只绑 __body 时天然点不到展开区，不必靠私有类名排除。
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
+    // 槽里按钮 / 折叠箭头的 Enter·Space 会冒泡；只认点击层自己为事件源。
+    if (event.target !== event.currentTarget) return
+    if (event.key !== 'Enter' && event.key !== ' ') return
+    event.preventDefault()
+    props.onClick?.()
+  }
+  const hit: HTMLAttributes<HTMLDivElement> = interactive
+    ? { role: 'button', tabIndex: 0, onClick: props.onClick, onKeyDown }
+    : {}
+
   return h(
     'div',
-    { className: classes, style },
+    {
+      className: onCardScope && interactive ? `${classes} dshpc-card__hit` : classes,
+      style,
+      ...(onCardScope ? hit : {}),
+    },
     h(
       'div',
-      { className: 'dshpc-card__body' },
+      {
+        className: !onCardScope && interactive ? 'dshpc-card__body dshpc-card__hit' : 'dshpc-card__body',
+        ...(onCardScope ? {} : hit),
+      },
       // 色条是 body 的第一个子元素：DOM 顺序恒定，左/上 = 天然在前，右/下靠 order 排到头部之后。
       h('span', { className: 'dshpc-card__bar', 'aria-hidden': true }),
       h(
@@ -164,7 +199,14 @@ function CardShell(
           ? null
           : h(
               'div',
-              { className: 'dshpc-card__side' },
+              {
+                className: 'dshpc-card__side',
+                // action 与折叠箭头同槽：一层挡住冒泡，点右上角不连带触发整卡。
+                // 只在可点时才挡，避免改变不传 onClick 时的冒泡行为。
+                onClick: interactive
+                  ? (event: MouseEvent<HTMLDivElement>): void => { event.stopPropagation() }
+                  : undefined,
+              },
               props.action ?? null,
               props.onToggle === undefined
                 ? null

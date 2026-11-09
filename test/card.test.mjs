@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { CARD_ACCENTS, Card, StripCard, Surface, surfaceClass } from '../dist/ui/index.js'
 import { CARD_CSS } from '../dist/ui/display/card-css.js'
 import { setLocale, t } from '../dist/utils/index.js'
@@ -209,4 +210,124 @@ test('展开区 panel 是头部区 __body 的兄弟节点（核心的分区信�
     createElement(Card, { expanded: false, panel: '展开内容' }, '头部内容'),
   )
   assert.ok(!collapsed.includes('dshpc-card__panel'), '收起时不渲染 panel')
+})
+
+// 2026-11-09：hoverable / hoverScope 只补了视觉与手势，点击契约要同源补到「变色那一层」。
+// __panel 是 __body 的兄弟节点，所以 head 只绑 __body、card 才上提根节点。
+test('不传 onClick 时 DOM 与纯展示卡完全一致（零回归）', () => {
+  for (const Comp of [Card, StripCard]) {
+    const html = renderToStaticMarkup(
+      createElement(Comp, { expanded: true, panel: '展开内容', action: '跳过', onToggle: () => {} }, '头部'),
+    )
+    assert.ok(!html.includes('role="button"'))
+    assert.ok(!html.includes('tabindex'))
+    assert.ok(!html.includes('dshpc-card__hit'))
+    assert.ok(!html.includes('dshpc-card--hoverable'))
+    assert.match(html, /class="dshpc-card__body"/, '__body 类名不许多出修饰')
+    assert.match(html, /class="dshpc-card__side"/, '右侧槽不许多出属性')
+  }
+})
+
+test('onClick 默认 head：点击层就是 __body（内距圈同层），panel 完全不挂事件', () => {
+  for (const Comp of [Card, StripCard]) {
+    const html = renderToStaticMarkup(
+      createElement(Comp, { onClick: () => {}, expanded: true, panel: '展开内容' }, '头部'),
+    )
+    const hit = html.match(/<[^>]*role="button"[^>]*>/)
+    assert.ok(hit, '必须有 role=button 的点击层')
+    assert.match(hit[0], /class="dshpc-card__body dshpc-card__hit"/)
+    assert.match(hit[0], /tabindex="0"/)
+    const root = html.match(/^<div[^>]*>/)[0]
+    assert.ok(!root.includes('role="button"'), 'head 不许绑根节点')
+    assert.match(html, /dshpc-card--hoverable/, 'hover 默认跟随可点性')
+    assert.match(html, /dshpc-card--hover-head/)
+    const panel = html.match(/<div class="dshpc-card__panel"[^>]*>/)
+    assert.ok(panel)
+    assert.ok(!panel[0].includes('role=') && !panel[0].includes('tabindex'), 'panel 不挂任何交互属性')
+    assert.match(html, /<\/div><div class="dshpc-card__panel"/, 'panel 在 __body 之外，冒泡到不了点击层')
+  }
+})
+
+test("hoverScope:'card'：点击层上提根节点，整卡含 panel 都在命中范围", () => {
+  const html = renderToStaticMarkup(
+    createElement(Card, { onClick: () => {}, hoverScope: 'card', expanded: true, panel: '展开内容' }, '头部'),
+  )
+  const root = html.match(/^<div[^>]*>/)[0]
+  assert.match(root, /role="button"/)
+  assert.match(root, /tabindex="0"/)
+  assert.match(root, /dshpc-card__hit/)
+  const body = html.match(/<div class="dshpc-card__body"[^>]*>/)
+  assert.ok(body, '__body 不许重复挂点击层，否则一次点击会触发两遍')
+  assert.ok(!body[0].includes('role='))
+  assert.match(html, /dshpc-card--hover-card/)
+})
+
+test('hoverable 可显式关；关掉时不挂作用域类，点击层仍按 hoverScope 选', () => {
+  const html = renderToStaticMarkup(createElement(Card, { onClick: () => {}, hoverable: false }, '内容'))
+  assert.ok(!html.includes('dshpc-card--hoverable'))
+  assert.ok(!html.includes('dshpc-card--hover-'))
+  assert.match(html, /role="button"/)
+})
+
+test('点击层复用 ListRow 键盘契约；action / 折叠箭头同槽挡冒泡', () => {
+  const src = readFileSync(new URL('../dist/ui/display/Card.js', import.meta.url), 'utf8')
+  assert.match(src, /target !== event.currentTarget/, '键盘只认点击层自己为事件源')
+  assert.match(src, /key !==/, '要判 Enter / Space')
+  assert.match(src, /preventDefault/, 'Space 别滚页面')
+  assert.match(src, /stopPropagation/, '右侧槽挡住 action 与折叠箭头的冒泡')
+  const html = renderToStaticMarkup(
+    createElement(Card, { onClick: () => {}, action: '跳过', onToggle: () => {} }, '内容'),
+  )
+  assert.match(html, /class="dshpc-card__side"/)
+  assert.equal((html.match(/role="button"/g) ?? []).length, 1, '整卡只有一个点击层')
+})
+
+test('Card CSS：点击层有键盘焦点环，且内缩避免被根节点 overflow 裁掉', () => {
+  assert.match(
+    CARD_CSS,
+    /\.dshpc-card__hit:focus-visible\{outline:2px solid var\(--dshpc-focus\);outline-offset:-2px\}/,
+  )
+})
+
+// 静态标记只能证明「属性挂上了」，证明不了「点哪里会触发」。直接调函数组件拿 element tree，
+// 逐层看 onClick / onKeyDown 落在哪一层（React 函数组件就是函数，无需 DOM）。
+test('点击契约行为自检：head 只 __body 触发、card 上提根节点，键盘与右侧槽同契约', () => {
+  const calls = []
+  const fireKey = (el, key, self = true) => {
+    let prevented = 0
+    el.props.onKeyDown({
+      key, target: self ? el : {}, currentTarget: el,
+      preventDefault: () => { prevented++ },
+    })
+    return prevented
+  }
+
+  const head = Card(
+    { onClick: () => calls.push('head'), expanded: true, panel: '展开内容', action: '跳过', onToggle: () => {} },
+    '头部',
+  )
+  const [body, panel] = head.props.children
+  assert.equal(head.props.onClick, undefined, 'head 时根节点不挂回调 ⇒ 点 panel 冒泡不到任何点击层')
+  assert.equal(typeof body.props.onClick, 'function', '内距圈所在的 __body 才是点击层')
+  assert.equal(panel.props.onClick, undefined, 'panel 自己不挂回调')
+  body.props.onClick()
+  assert.equal(fireKey(body, 'Enter'), 1)
+  assert.equal(fireKey(body, ' '), 1)
+  assert.equal(fireKey(body, 'a'), 0, '别的键不触发')
+  assert.equal(fireKey(body, 'Enter', false), 0, '子元素的按键不连带触发')
+  const side = body.props.children[1].props.children[1]
+  let stopped = false
+  side.props.onClick({ stopPropagation: () => { stopped = true } })
+  assert.ok(stopped, 'action / 折叠箭头同槽挡冒泡')
+  assert.deepEqual(calls, ['head', 'head', 'head'])
+
+  const card = Card({ onClick: () => calls.push('card'), hoverScope: 'card', expanded: true, panel: '展开内容' }, '头部')
+  assert.equal(typeof card.props.onClick, 'function', 'card 时根节点挂回调，panel 冒泡得到')
+  assert.equal(card.props.children[0].props.onClick, undefined, '__body 不重复挂，否则一次点击触发两遍')
+  card.props.onClick()
+  assert.deepEqual(calls, ['head', 'head', 'head', 'card'])
+
+  const visualOnly = Card({ hoverable: true, hoverScope: 'card', expanded: true, panel: '展开内容' }, '头部')
+  assert.equal(visualOnly.props.onClick, undefined, '纯视觉 hover 不产生点击层')
+  assert.equal(visualOnly.props.children[0].props.onClick, undefined)
 })

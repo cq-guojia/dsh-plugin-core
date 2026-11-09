@@ -113,6 +113,9 @@
 /* 开关打开即声明「上面那一块可交互」：手势跟着变，展开区还原成默认光标。 */
 .dshpc-card.dshpc-card--hoverable{cursor:pointer}
 .dshpc-card.dshpc-card--hover-head .dshpc-card__panel{cursor:auto}
+/* 可点卡片的键盘焦点环：点击层 head = __body、card = 根节点，两者共用这一条。
+   outline 画在盒内（offset 负值）：根节点 overflow:hidden 会裁掉 __body 外侧那一圈。 */
+.dshpc-card__hit:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}
 /* 顺序即优先级：strip 浅底 / no-fill 透明(0,2,0) → card:hover(0,3,0，最高)。 */
 .dshpc-card.dshpc-card--hover-head .dshpc-card__body:hover{background:var(--dshpc-card-hover)}
 .dshpc-card.dshpc-card--hover-card:hover{--surface-bg:var(--dshpc-card-hover)}
