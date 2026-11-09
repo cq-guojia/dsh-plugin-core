@@ -1,8 +1,9 @@
 # 20261109-0801-e2f7-card-stripcard-补齐整行可点点击契约: Card/StripCard 补齐整行可点点击契约
 
 - **Tags**: Card, 点击契约, 可访问性
-- **Status**: doing · 2026-11-09 08:31:50 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: done · 2026-11-09 08:32:03 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-09 08:01:49 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-09 08:32:03 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -45,3 +46,4 @@
 - 2026-11-09 08:01:49 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-11-09 08:09:58 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已交付待验收：Card.ts:42-49 新增 onClick、179-191 点击层随 hoverScope 选；pnpm build/test(352 全绿)/typecheck/codelint 全过，dist 与帮助文档已同步
 - 2026-11-09 08:31:50 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 复核完成：修掉 ui.doc.ts 中英两处「整卡都不触发」绝对化表述；补不依赖 DOM 的行为自检（逐层 onClick/键盘判据/stopPropagation/纯视觉零点击层）；build/test(353 全绿)/typecheck/codelint 全过
+- 2026-11-09 08:32:03 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed: Card/StripCard onClick 点击契约落地：head 绑 __body、card 上提根节点，hover 默认跟随可点性，__side 挡冒泡，补焦点环与帮助文档；复核修掉中英两处绝对化表述并补行为自检；build/test 353 全绿/typecheck/codelint 全过，dist 与投影已同步；真机验收与消费方迁移列为移交项
