@@ -1360,9 +1360,11 @@ function resolveTriggerSizing(opts) {
 function resolveMenuSizing(referenceWidth, availableWidth, searchSizing) {
   const floor2 = searchSizing?.width ?? searchSizing?.minWidth;
   const cssLen = (v) => typeof v === "number" ? `${v}px` : v;
+  const upper = Math.min(480, availableWidth ?? 480);
+  const desired = floor2 === void 0 ? `${referenceWidth}px` : `max(${referenceWidth}px, calc(${cssLen(floor2)} + 8px))`;
   return {
-    minWidth: floor2 === void 0 ? `${referenceWidth}px` : `max(${referenceWidth}px, calc(${cssLen(floor2)} + 8px))`,
-    maxWidth: `${Math.min(480, availableWidth ?? 480)}px`
+    minWidth: `min(${desired}, ${upper}px)`,
+    maxWidth: `${upper}px`
   };
 }
 
@@ -4300,6 +4302,9 @@ var PICKER_CSS = `
    \u542B\u767E\u5206\u6BD4\u7684 clamp \u5728\u56FA\u6709\u5C3A\u5BF8\u9636\u6BB5\u53C8\u89E3\u4E0D\u51FA\u6765 \u21D2 \u957F\u6A21\u578B\u540D\u8BA9\u63A7\u4EF6\u53F3\u4FA7\u7559\u767D\u3001\u540C\u6392\u63A7\u4EF6\u88AB\u6324\uFF082026-11-10 \u771F\u673A\uFF09\u3002
    \u6839\u76D2\u5B9A\u5BBD\u540E\u767E\u5206\u6BD4\u76F8\u5BF9\u7236 flex \u884C\u89E3\u6790\uFF0C\u8D85\u957F\u6587\u5B57\u53EA\u7531 __label \u7684\u7701\u7565\u53F7\u63A5\u4F4F\uFF0C\u63A7\u4EF6\u4E0D\u518D\u8DDF\u7740\u5185\u5BB9\u8DF3\u3002 */
 .dshpc-picker{position:relative;display:inline-block;max-width:100%;min-width:0;font-size:13px;line-height:20px}
+/* cascade \u5916\u5C42\u884C\u4E4B\u524D\u6CA1\u6709\u5E03\u5C40\uFF1A\u4E24\u4E2A inline-block \u6309\u57FA\u7EBF\u6392 \u21D2 \u4F9B\u5E94\u5546\u6846\u4E0B\u6C89\u3001\u4E24\u6846\u4E4B\u95F4\u53EA\u5269 HTML \u7A7A\u767D\u770B\u7740\u8FDE\u4F53\u3002
+   \u8FD9\u91CC\u53EA\u7ED9\u9ED8\u8BA4\u503C\uFF0C:where() \u7279\u5F02\u6027 0\uFF0C\u6D88\u8D39\u65B9 rowClassName \u7684\u4EFB\u610F\u89C4\u5219\u90FD\u80FD\u76D6\u56DE\u6765\u3002 */
+:where(.dshpc-picker__cascade){display:flex;align-items:center;gap:8px}
 /* \u89E6\u53D1\u5668\u94FA\u6EE1\u6839\u76D2\uFF1Bhint \u6001\u591A\u4E00\u5C42 fieldwrap\uFF0C\u90A3\u5C42\u4E5F\u94FA\u6EE1\u3001\u6309\u94AE\u5403\u5269\u4F59\u5BBD\u5EA6\u7ED9\u95EE\u53F7\u8BA9\u4F4D\u3002 */
 .dshpc-picker > .dshpc-picker__trigger{width:100%;box-sizing:border-box}
 .dshpc-picker > .dshpc-fieldwrap{display:flex;width:100%;box-sizing:border-box}
@@ -4438,8 +4443,8 @@ function Picker(props) {
     middleware: [
       offset3(4),
       flip3(),
-      // 左右各留 12：菜单比触发器宽是常态，贴到视口边上会显得在「硬挤」（2026-11-10 用户）。
-      shift3({ padding: { top: 8, bottom: 8, left: 12, right: 12 } }),
+      // size 必须排在 shift 之前：菜单宽度是本中间件 apply 里才设的，size 后置会让
+      // availableWidth 退化成整个视口宽（maxWidth 恒 480），靠右的触发器菜单必然右溢（2026-11-10 真机）。
       size3({
         apply({ elements, rects, availableWidth, availableHeight }) {
           const menu = resolveMenuSizing(rects.reference.width, availableWidth, props.searchSizing);
@@ -4449,7 +4454,10 @@ function Picker(props) {
             maxHeight: `${Math.max(80, Math.min(280, (availableHeight ?? 320) - 8))}px`
           });
         }
-      })
+      }),
+      // 左右各留 12：菜单比触发器宽是常态，贴到视口边上会显得在「硬挤」（2026-11-10 用户）。
+      // 此时 size 已定好尺寸，shift 的水平 clamp 才能基于最终宽度把菜单推回视口内。
+      shift3({ padding: { top: 8, bottom: 8, left: 12, right: 12 } })
     ],
     whileElementsMounted: autoUpdate,
     strategy: "fixed"
@@ -5887,7 +5895,7 @@ function ModelPicker(props) {
   }
   const group = groups.find((g) => g.value === provider);
   const options = group === void 0 ? [] : flattenOptions([group]);
-  const rowClass = ["dshpc-picker__row", props.className, props.rowClassName].filter((part) => part !== void 0 && part !== "").join(" ");
+  const rowClass = ["dshpc-picker__row", "dshpc-picker__cascade", props.className, props.rowClassName].filter((part) => part !== void 0 && part !== "").join(" ");
   return (0, import_react16.createElement)("div", { className: rowClass }, (0, import_react16.createElement)(Picker, {
     options: groups.map((g) => ({ value: g.value, label: g.label })),
     value: provider === "" ? void 0 : provider,
@@ -64452,8 +64460,8 @@ var docData = {
     },
     "prose": [
       {
-        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`\u3002`width` / `minWidth` / `maxWidth` \u7EA6\u675F\u6574\u4E2A\u63A7\u4EF6\u7684\u5360\u4F4D\u5BBD\u5EA6\uFF08\u843D\u5728\u6839\u76D2\u3001\u89E6\u53D1\u5668\u81EA\u52A8\u94FA\u6EE1\uFF09\uFF1A\u5B9A\u5BBD\u5FFD\u7565\u53E6\u4E24\u8005\uFF1B\u9009\u4E2D\u6587\u5B57\u518D\u957F\u63A7\u4EF6\u4F4D\u7F6E\u4E5F\u4E0D\u52A8\uFF0C\u8D85\u957F\u53EA\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\u3002\u4E0B\u62C9\u5185\u641C\u7D22\u6846\u53E6\u8D70 `searchSizing`\uFF08\u540C\u4E00\u5957\u5BBD\u5EA6\u4E09\u8F74\uFF09\uFF0C\u4E0D\u4F20\u5C31\u6CBF\u7528 CSS \u7684 100% \u94FA\u6EE1\uFF1B\u83DC\u5355\u4F1A\u968F `searchSizing` \u7684\u4E0B\u9650\u81EA\u52A8\u52A0\u5BBD\uFF0C\u4E0D\u4F1A\u88AB\u83DC\u5355\u7684 overflow:hidden \u88C1\u6389\u3002\u83DC\u5355\u91CC\u7684\u9009\u9879\u8D85\u957F\u540C\u6837\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF0C\u4E0D\u4F1A\u628A\u83DC\u5355\u6491\u51FA\u6A2A\u5411\u6EDA\u52A8\u6761\u3002",
-        "en": "Picker: single/multiple selection, cap, search, grouping, empty state \u2014 self-drawn. Keyboard: Esc closes, \u2191\u2193 move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`. `width`/`minWidth`/`maxWidth` size the control box (the root; the trigger fills it), so a long label never shifts the control. The search box takes its own `searchSizing` (the same width/minWidth/maxWidth triple) and fills 100% by default; the menu widens with the search box lower bound so it is never clipped by overflow:hidden."
+        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`\u3002`width` / `minWidth` / `maxWidth` \u7EA6\u675F\u6574\u4E2A\u63A7\u4EF6\u7684\u5360\u4F4D\u5BBD\u5EA6\uFF08\u843D\u5728\u6839\u76D2\u3001\u89E6\u53D1\u5668\u81EA\u52A8\u94FA\u6EE1\uFF09\uFF1A\u5B9A\u5BBD\u5FFD\u7565\u53E6\u4E24\u8005\uFF1B\u9009\u4E2D\u6587\u5B57\u518D\u957F\u63A7\u4EF6\u4F4D\u7F6E\u4E5F\u4E0D\u52A8\uFF0C\u8D85\u957F\u53EA\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\u3002\u83DC\u5355\u9760\u89C6\u53E3\u8FB9\u7F18\u4F1A\u81EA\u52A8\u6536\u7A84\u5E76\u5185\u6536\uFF08\u5DE6\u53F3\u5404\u7559 12px\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u5FC5\u5904\u7406\u8D34\u8FB9\u3002\u4E0B\u62C9\u5185\u641C\u7D22\u6846\u53E6\u8D70 `searchSizing`\uFF08\u540C\u4E00\u5957\u5BBD\u5EA6\u4E09\u8F74\uFF09\uFF0C\u4E0D\u4F20\u5C31\u6CBF\u7528 CSS \u7684 100% \u94FA\u6EE1\uFF1B\u83DC\u5355\u4F1A\u968F `searchSizing` \u7684\u4E0B\u9650\u81EA\u52A8\u52A0\u5BBD\uFF0C\u4E0D\u4F1A\u88AB\u83DC\u5355\u7684 overflow:hidden \u88C1\u6389\u3002\u83DC\u5355\u91CC\u7684\u9009\u9879\u8D85\u957F\u540C\u6837\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF0C\u4E0D\u4F1A\u628A\u83DC\u5355\u6491\u51FA\u6A2A\u5411\u6EDA\u52A8\u6761\u3002",
+        "en": "Picker: single/multiple selection, cap, search, grouping, empty state \u2014 self-drawn. Keyboard: Esc closes, \u2191\u2193 move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`. `width`/`minWidth`/`maxWidth` size the control box (the root; the trigger fills it), so a long label never shifts the control. Near a viewport edge the dropdown narrows and shifts back inside (12px on each side), so callers need no edge handling. The search box takes its own `searchSizing` (the same width/minWidth/maxWidth triple) and fills 100% by default; the menu widens with the search box lower bound so it is never clipped by overflow:hidden."
       },
       {
         "zh": "\u9996\u5C4F\u5206\u9875\uFF1A`limit` \u6309**\u9009\u9879\u6761\u6570**\u8DE8\u7EC4\u5207\u7247\uFF0C\u5217\u8868\u672B\u5C3E\u300C\u663E\u793A\u66F4\u591A\u300D\uFF08\u8DDF\u5728\u6700\u540E\u4E00\u6761\u540E\uFF0C\u50CF\u591A\u4E00\u6761\u9009\u9879\uFF09\u6BCF\u70B9\u4E00\u6B21\u518D\u8FFD\u52A0 `limit` \u6761\uFF1B\u641C\u7D22\u7ED3\u679C\u8D70\u540C\u4E00\u5957\u5206\u9875\uFF0C\u6362\u641C\u7D22\u8BCD\u6216\u91CD\u65B0\u5C55\u5F00\u90FD\u56DE\u5230\u9996\u5C4F\u3002\u4E0D\u4F20 `limit` \u5C31\u662F\u5168\u91CF\u6E32\u67D3\u3002`PickerOption.keywords` \u662F\u53EF\u9009\u7684\u5355\u4E2A\u5B57\u7B26\u4E32\uFF08\u8C03\u7528\u65B9\u81EA\u5DF1\u62FC\uFF09\uFF0C\u53EA\u548C `label` \u62FC\u8D77\u6765\u53C2\u4E0E\u5927\u5C0F\u5199\u4E0D\u654F\u611F\u5B50\u4E32\u5339\u914D\uFF0C**\u7EDD\u4E0D\u6E32\u67D3**\u2014\u2014\u9002\u5408\u4EFB\u52A1 UUID \u8FD9\u79CD\u300C\u7528\u6237\u80FD\u8D34\u3001\u4F46\u4E0D\u8BE5\u663E\u793A\u300D\u7684\u641C\u7D22\u8BCD\u3002\u7EAF\u903B\u8F91\u53E6\u53EF\u5355\u7528 `sliceGroups`\u3002",
@@ -71453,9 +71461,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.18"}`],
-            [t3("buildDemo"), `v${"0.35.18"}`],
-            [t3("buildStamp"), "261110-210845-924"]
+            [t3("buildCore"), `v${"0.35.19"}`],
+            [t3("buildDemo"), `v${"0.35.19"}`],
+            [t3("buildStamp"), "261110-214132-804"]
           ].map(
             ([label, value]) => (0, import_react98.createElement)(
               "tr",
@@ -71771,9 +71779,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react100.createElement)("span", null, `core v${"0.35.18"}`),
-          (0, import_react100.createElement)("span", null, `demo v${"0.35.18"}`),
-          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-210845-924")
+          (0, import_react100.createElement)("span", null, `core v${"0.35.19"}`),
+          (0, import_react100.createElement)("span", null, `demo v${"0.35.19"}`),
+          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-214132-804")
         )
       )
     ),

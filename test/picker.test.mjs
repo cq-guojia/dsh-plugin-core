@@ -14,6 +14,7 @@ import {
   toggleValue,
 } from '../dist/ui/index.js'
 import { setLocale, t } from '../dist/utils/index.js'
+import { transform } from 'lightningcss'
 
 const GROUPS = [
   { value: 'openai', label: 'OpenAI', options: [{ value: 'openai/gpt-4', label: 'GPT-4' }, { value: 'openai/gpt-3', label: 'GPT-3' }] },
@@ -121,23 +122,49 @@ test('搜索框与触发器共用同一套宽度解析（min/max 各自生效）
 })
 
 test('菜单宽度：无 searchSizing 时至少与触发器同宽，封顶 480 / 可用宽', () => {
-  assert.deepEqual(resolveMenuSizing(180, undefined), { minWidth: '180px', maxWidth: '480px' })
-  assert.deepEqual(resolveMenuSizing(180, 320), { minWidth: '180px', maxWidth: '320px' })
+  assert.deepEqual(resolveMenuSizing(180, undefined), { minWidth: 'min(180px, 480px)', maxWidth: '480px' })
+  assert.deepEqual(resolveMenuSizing(180, 320), { minWidth: 'min(180px, 320px)', maxWidth: '320px' })
 })
 
 test('菜单宽度：搜索框设了下限就跟着加宽，不会被 overflow:hidden 裁掉', () => {
   assert.deepEqual(resolveMenuSizing(180, undefined, { width: 300 }), {
-    minWidth: 'max(180px, calc(300px + 8px))',
+    minWidth: 'min(max(180px, calc(300px + 8px)), 480px)',
     maxWidth: '480px',
   })
-  assert.equal(resolveMenuSizing(180, undefined, { minWidth: '12rem' }).minWidth, 'max(180px, calc(12rem + 8px))')
-  assert.equal(resolveMenuSizing(180, undefined, { maxWidth: 200 }).minWidth, '180px') // 只给上限不需要撑宽菜单
+  assert.equal(resolveMenuSizing(180, undefined, { minWidth: '12rem' }).minWidth, 'min(max(180px, calc(12rem + 8px)), 480px)')
+  assert.equal(resolveMenuSizing(180, undefined, { maxWidth: 200 }).minWidth, 'min(180px, 480px)') // 只给上限不需要撑宽菜单
 })
 
 test('8px 补偿与 head 内距一致（改 CSS 要同步改 resolveMenuSizing）', () => {
   const css = readFileSync(new URL('../src/ui/inputs/picker.css', import.meta.url), 'utf8')
   assert.match(css, /\.dshpc-picker__head\{[^}]*padding:4px 4px 0\}/)
   assert.match(resolveMenuSizing(180, undefined, { width: 300 }).minWidth, /calc\(300px \+ 8px\)/)
+})
+
+test('几何闸：菜单 min-width 恒 ≤ max-width，靠右触发器不会被撑出视口', () => {
+  const cases = [
+    resolveMenuSizing(180, undefined),
+    resolveMenuSizing(180, 120),
+    resolveMenuSizing(180, 120, { width: 300 }),
+    resolveMenuSizing(180, 200, { minWidth: '12rem' }),
+  ]
+  for (const { minWidth, maxWidth } of cases) {
+    assert.ok(minWidth.startsWith('min('), 'min-width 必须自带上限')
+    assert.ok(minWidth.endsWith(`, ${maxWidth})`), 'min-width 的上限必须等于 max-width')
+    assert.doesNotThrow(
+      () => transform({ filename: 'picker.css', code: Buffer.from(`a{min-width:${minWidth};max-width:${maxWidth}}`) }),
+      '生成的宽度表达式必须是浏览器能解析的合法 CSS',
+    )
+  }
+})
+
+test('贴边契约：size 必须排在 shift 之前，且 shift 保留左右留白', () => {
+  const source = readFileSync(new URL('../src/ui/inputs/Picker.ts', import.meta.url), 'utf8')
+  const sizeAt = source.indexOf('floatingSize({')
+  const shiftAt = source.indexOf('shift({')
+  assert.ok(sizeAt !== -1 && shiftAt !== -1 && sizeAt < shiftAt,
+    'size 后置会让 availableWidth 退化成整个视口宽，菜单靠右必然溢出')
+  assert.match(source, /shift\(\{[^}]*right:\s*12/, '左右留白不能丢')
 })
 
 test('retainSelectedValue：旧值按真实值保留，命中候选时原目录不动', () => {
@@ -186,4 +213,12 @@ test('宽度三轴落在控件根盒：触发器与 hint 态 fieldwrap 都铺满
   const source = readFileSync(new URL('../dist/ui/inputs/Picker.js', import.meta.url), 'utf8')
   assert.match(source, /style: controlStyle/, '根盒吃宽度三轴')
   assert.doesNotMatch(source, /style: triggerStyle/, '触发器不再吃宽度三轴')
+})
+
+test('cascade 两框有默认行布局：垂直对齐且留缝，规则进运行时 CSS', () => {
+  const css = readFileSync(new URL('../src/ui/inputs/picker.css', import.meta.url), 'utf8')
+  // 外层行没布局时两个 inline-block 按基线排：供应商框下沉、两框只剩 HTML 空白（2026-11-10 demo 截图）。
+  assert.match(css, /:where\(\.dshpc-picker__cascade\)\{[^}]*display:flex[^}]*align-items:center[^}]*gap:8px\}/)
+  const runtime = readFileSync(new URL('../dist/ui/inputs/picker-css.generated.js', import.meta.url), 'utf8')
+  assert.match(runtime, /dshpc-picker__cascade/, '规则必须进运行时注入的 CSS 常量')
 })

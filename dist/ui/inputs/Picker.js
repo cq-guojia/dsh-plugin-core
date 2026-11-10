@@ -64,12 +64,12 @@ export function Picker(props) {
         middleware: [
             offset(4),
             flip(),
-            // 左右各留 12：菜单比触发器宽是常态，贴到视口边上会显得在「硬挤」（2026-11-10 用户）。
-            shift({ padding: { top: 8, bottom: 8, left: 12, right: 12 } }),
+            // size 必须排在 shift 之前：菜单宽度是本中间件 apply 里才设的，size 后置会让
+            // availableWidth 退化成整个视口宽（maxWidth 恒 480），靠右的触发器菜单必然右溢（2026-11-10 真机）。
             floatingSize({
                 apply({ elements, rects, availableWidth, availableHeight }) {
                     // 触发器可以限宽，菜单不能跟着限：至少与触发器同宽，随内容变宽，封顶 480 免得太夸张；
-                    // 搜索框显式设了下限时菜单还要让出它的宽度，否则 100% 宽的搜索框会被裁掉。
+                    // 搜索框显式设了下限时菜单还要让出它的宽度，但整体仍受可用宽度约束（见 resolveMenuSizing）。
                     const menu = resolveMenuSizing(rects.reference.width, availableWidth, props.searchSizing);
                     Object.assign(elements.floating.style, {
                         minWidth: menu.minWidth,
@@ -78,6 +78,9 @@ export function Picker(props) {
                     });
                 },
             }),
+            // 左右各留 12：菜单比触发器宽是常态，贴到视口边上会显得在「硬挤」（2026-11-10 用户）。
+            // 此时 size 已定好尺寸，shift 的水平 clamp 才能基于最终宽度把菜单推回视口内。
+            shift({ padding: { top: 8, bottom: 8, left: 12, right: 12 } }),
         ],
         whileElementsMounted: autoUpdate,
         strategy: 'fixed',

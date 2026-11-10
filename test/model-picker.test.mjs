@@ -94,7 +94,7 @@ test('cascade：className 落在根 row，row / 厂商框 / 模型框三条类�
     providerClassName: 'PROV',
     modelClassName: 'MODEL',
   })
-  assert.match(html, /^<div class="dshpc-picker__row ROOT ROW">/)
+  assert.match(html, /^<div class="dshpc-picker__row dshpc-picker__cascade ROOT ROW">/)
   assert.match(html, /class="dshpc-picker PROV"/)
   assert.match(html, /class="dshpc-picker MODEL"/)
 })

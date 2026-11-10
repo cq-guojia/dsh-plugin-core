@@ -110,7 +110,7 @@ export function ModelPicker(props) {
     const options = group === undefined ? [] : flattenOptions([group]);
     // 根元素统一吃 className（其它形态根就是 Picker），row 另留一条独立定制轴；
     // 两个框各自的类名也交出去，消费方才能分别控制布局。
-    const rowClass = ['dshpc-picker__row', props.className, props.rowClassName]
+    const rowClass = ['dshpc-picker__row', 'dshpc-picker__cascade', props.className, props.rowClassName]
         .filter((part) => part !== undefined && part !== '')
         .join(' ');
     return h('div', { className: rowClass }, h(Picker, {

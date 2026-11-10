@@ -55,7 +55,8 @@ export declare function resolveTriggerSizing(opts: PickerSizing): CSSProperties;
 /** 菜单宽度：至少与触发器同宽；搜索框设了下限时菜单跟着加宽，
  * 否则 100% 宽的搜索框会被菜单的 overflow:hidden 裁掉。
  * 8px = .dshpc-picker__head 左右各 4px 内距（改该 CSS 时同步改这里，有自检盯着）。
- * min-width 大于 max-width 时浏览器以 min-width 为准，所以显式设宽不会被 480 上限卡住。 */
+ * min-width 必须自己带上可用宽度上限：CSS 里 min-width 大于 max-width 时浏览器取 min-width，
+ * 靠右的触发器会因此被撑出视口，不能靠 max-width 兜底（2026-11-10 真机）。 */
 export declare function resolveMenuSizing(referenceWidth: number, availableWidth: number | undefined, searchSizing?: PickerSizing): {
     minWidth: string;
     maxWidth: string;
