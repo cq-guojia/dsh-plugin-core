@@ -9,12 +9,15 @@ export {
   flattenOptions,
   groupOf,
   labelsOf,
+  resolveMenuSizing,
   resolveTriggerSizing,
   sliceGroups,
+  toFlatOptions,
   toGroups,
   toggleValue,
   type PickerGroup,
   type PickerOption,
+  type PickerSizing,
 } from './inputs/picker-logic.js'
 export { Picker, type PickerProps, type PickerSize } from './inputs/Picker.js'
 export {

@@ -11,6 +11,13 @@ export function flattenOptions(groups) {
         out.push(...g.options);
     return out;
 }
+/** 分组目录平铺成「厂商-模型」选项：value 原样不动，只给 label 加组名前缀。 */
+export function toFlatOptions(groups) {
+    return groups.flatMap((g) => g.options.map((o) => ({
+        value: o.value,
+        label: g.label === '' ? o.label : `${g.label}-${o.label}`,
+    })));
+}
 /** 按关键词过滤（大小写不敏感，匹配 label 与 keywords 拼起来的串；整组无命中则整组去掉）。 */
 export function filterGroups(groups, query) {
     const q = query.trim().toLowerCase();
@@ -78,5 +85,19 @@ export function resolveTriggerSizing(opts) {
     if (opts.maxWidth !== undefined)
         style.maxWidth = px(opts.maxWidth);
     return style;
+}
+/** 菜单宽度：至少与触发器同宽；搜索框设了下限时菜单跟着加宽，
+ * 否则 100% 宽的搜索框会被菜单的 overflow:hidden 裁掉。
+ * 8px = .dshpc-picker__head 左右各 4px 内距（改该 CSS 时同步改这里，有自检盯着）。
+ * min-width 大于 max-width 时浏览器以 min-width 为准，所以显式设宽不会被 480 上限卡住。 */
+export function resolveMenuSizing(referenceWidth, availableWidth, searchSizing) {
+    const floor = searchSizing?.width ?? searchSizing?.minWidth;
+    const cssLen = (v) => (typeof v === 'number' ? `${v}px` : v);
+    return {
+        minWidth: floor === undefined
+            ? `${referenceWidth}px`
+            : `max(${referenceWidth}px, calc(${cssLen(floor)} + 8px))`,
+        maxWidth: `${Math.min(480, availableWidth ?? 480)}px`,
+    };
 }
 //# sourceMappingURL=picker-logic.js.map

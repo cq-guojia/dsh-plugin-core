@@ -906,11 +906,18 @@ const CODE_PICKER = `// 单选：icon + 可搜索 / 可清除
 // hint 挂在触发器后面，不用再手动拼 FieldHint
 <Picker options={options} value={v} onChange={setV} hint="挂在触发器后面的问号提示" />`
 
-const CODE_MODEL_PICKER = `// 数据来自宿主模型目录（宿主侧 connectHost(ctx, { modelsPath }) 注入），不能凭空造
-// 分组形态：一个下拉，供应商做组头
+const CODE_MODEL_PICKER = `// 数据来自宿主模型目录（connectHost(ctx, { modelsPath }) 注入），不能凭空造
+// ① 分组：一个下拉，供应商做组头
 <ModelPicker value={model} onChange={setModel} variant="grouped" />
-// 联动形态：两个下拉，先选供应商、模型列表跟着筛
-<ModelPicker value={model} onChange={setModel} variant="cascade" placeholder="选择模型" />`
+// ② 平铺：一个下拉，全部模型列成「厂商-模型」，带搜索
+<ModelPicker value={model} onChange={setModel} variant="flat" />
+// ③ 联动：两个下拉，先选供应商再选模型，两个框都带搜索
+<ModelPicker value={model} onChange={setModel} variant="cascade" />
+// 宽度：触发器与搜索框各自可定宽 / 定最小最大宽；联动态两个框分别设
+<ModelPicker variant="cascade" width={180}
+  providerSizing={{ minWidth: 120, maxWidth: 200 }}
+  modelSizing={{ minWidth: 160, maxWidth: 320 }}
+  searchSizing={{ minWidth: 200, maxWidth: 480 }} />`
 
 const CODE_WORKSPACE_PICKER = `// 默认即「工作区」文案与文件夹图标；clearable / searchable 是可选能力
 <WorkspacePicker value={ws} onChange={setWs} clearable searchable />`
@@ -980,6 +987,7 @@ export function PickerPage(): ReturnType<typeof h> {
   const [model, setModel] = useState('')
   // 两种形态各用各的值：演示里互不影响（共用一份 state 会误以为它们是联动的）
   const [model2, setModel2] = useState('')
+  const [model3, setModel3] = useState('')
   const [ws, setWs] = useState<string | undefined>(undefined)
   // 组合选择框：外壳不持状态，联动全写在这些 state 的切换里
   const [period, setPeriod] = useState('formal')
@@ -1064,12 +1072,17 @@ export function PickerPage(): ReturnType<typeof h> {
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap' } },
         // ① 分组形态：一个下拉、完全独立，供应商做组头（带「默认模型」选项）
         h(ModelPicker, { value: model, onChange: setModel, variant: 'grouped' }),
-        // ② 联动形态：两个下拉联动，先选供应商、模型列表跟着筛
+        // ② 平铺形态：一个下拉，「厂商-模型」全部列出来，带搜索
+        h(ModelPicker, { value: model3, onChange: setModel3, variant: 'flat' }),
+        // ③ 联动形态：两个下拉联动，都带搜索；两个框分别设宽，搜索框另设宽
         h(ModelPicker, {
           value: model2,
           onChange: setModel2,
           variant: 'cascade',
           placeholder: '选择模型',
+          providerSizing: { minWidth: 120, maxWidth: 180 },
+          modelSizing: { minWidth: 160, maxWidth: 260 },
+          searchSizing: { minWidth: 220, maxWidth: 420 },
         }),
       ),
     ),

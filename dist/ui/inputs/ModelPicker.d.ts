@@ -1,20 +1,22 @@
 import { createElement as h, type ReactNode } from 'react';
 import { type Translate } from '../../utils/i18n.js';
 import { type PickerSize } from './Picker.js';
-import { type PickerGroup } from './picker-logic.js';
+import { type PickerGroup, type PickerSizing } from './picker-logic.js';
 /**
- * 模型选择器的两种形态（消费者自选）：
- * - `grouped`（分组，默认）：**一个下拉、完全独立**，供应商做组头、模型列在下面，不与任何东西联动。
- * - `cascade`（联动）：**两个下拉、彼此联动** —— 先选供应商，后面模型列表跟着筛；
- *   换供应商会清空已选模型（旧模型不属于新供应商）。
+ * 选择模型的三种形态（消费者自选）：
+ * - `grouped`（分组，默认）：一个下拉，供应商做组头、模型列在下面。
+ * - `flat`（平铺）：一个下拉，所有模型平铺成「厂商-模型」，不分组，搜厂商名即可筛。
+ * - `cascade`（联动）：两个下拉，先选供应商、模型列表跟着筛；两个框都带搜索。
  *
  * **返回口径一致**：`onChange` 一律发最终模型值（`${provider}/${id}`）；级联态换供应商先发 `''`。
  * 选「默认模型」也发 `''` —— 表示没选，调用方自己处理。
  *
  * **数据自带**：不传 `groups` 就读 `connectHost(ctx, { modelsPath })` 喂进的真实目录。
+ * **宽度**：`width` / `minWidth` / `maxWidth` 管触发器（三种形态通用）；
+ * `searchSizing` 管所有搜索框；cascade 的两个框另可分别用 `providerSizing` / `modelSizing` 覆盖。
  */
-export type ModelPickerVariant = 'grouped' | 'cascade';
-export interface ModelPickerProps {
+export type ModelPickerVariant = 'grouped' | 'flat' | 'cascade';
+export interface ModelPickerProps extends PickerSizing {
     /** 覆盖内置目录（一般不用；测试或特殊数据源时才传）。 */
     groups?: PickerGroup[];
     variant?: ModelPickerVariant;
@@ -37,11 +39,17 @@ export interface ModelPickerProps {
     degraded?: boolean;
     disabled?: boolean;
     clearable?: boolean;
-    /** 下拉内搜索框（默认开；要关传 false）。 */
+    /** 下拉内搜索框（默认开；要关传 false）。三种形态、cascade 两个框一起生效。 */
     searchable?: boolean;
     size?: PickerSize;
     placement?: 'down' | 'up';
     className?: string;
+    /** 下拉内搜索框的宽度三轴（所有形态共用）；不传沿用 CSS 的 100% 铺满。 */
+    searchSizing?: PickerSizing;
+    /** cascade：厂商框单独宽度；不传跟随 width / minWidth / maxWidth。 */
+    providerSizing?: PickerSizing;
+    /** cascade：模型框单独宽度；不传跟随 width / minWidth / maxWidth。 */
+    modelSizing?: PickerSizing;
     translate?: Translate;
 }
 export declare function ModelPicker(props: ModelPickerProps): ReturnType<typeof h>;

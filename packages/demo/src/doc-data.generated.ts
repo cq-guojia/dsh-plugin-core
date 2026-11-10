@@ -1526,20 +1526,20 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑可单用：`toGroups` / `filterGroups` / `toggleValue`。触发器支持 width / minWidth / maxWidth 约束宽度：定宽忽略另两者；内容超长则省略号 + hover 跑马灯。菜单里的选项超长同样省略 + hover 跑马灯，不会把菜单撑出横向滚动条。",
-        "en": "Picker: single/multiple selection, cap, search, grouping, empty state — self-drawn. Keyboard: Esc closes, ↑↓ move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue`."
+        "zh": "Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑可单用：`toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`。触发器支持 width / minWidth / maxWidth 约束宽度：定宽忽略另两者；内容超长则省略号 + hover 跑马灯。下拉内搜索框另走 `searchSizing`（同一套宽度三轴），不传就沿用 CSS 的 100% 铺满；菜单会随 `searchSizing` 的下限自动加宽，不会被菜单的 overflow:hidden 裁掉。菜单里的选项超长同样省略 + hover 跑马灯，不会把菜单撑出横向滚动条。",
+        "en": "Picker: single/multiple selection, cap, search, grouping, empty state — self-drawn. Keyboard: Esc closes, ↑↓ move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`. The search box takes its own `searchSizing` (the same width/minWidth/maxWidth triple) and fills 100% by default; the menu widens with the search box lower bound so it is never clipped by overflow:hidden."
       },
       {
         "zh": "首屏分页：`limit` 按**选项条数**跨组切片，列表末尾「显示更多」（跟在最后一条后，像多一条选项）每点一次再追加 `limit` 条；搜索结果走同一套分页，换搜索词或重新展开都回到首屏。不传 `limit` 就是全量渲染。`PickerOption.keywords` 是可选的单个字符串（调用方自己拼），只和 `label` 拼起来参与大小写不敏感子串匹配，**绝不渲染**——适合任务 UUID 这种「用户能贴、但不该显示」的搜索词。纯逻辑另可单用 `sliceGroups`。",
         "en": "First-page paging: `limit` slices by **option count** across groups; \"Show more\" rendered as the last row of the list appends another `limit` each click. Search results use the same paging and reset to the first page on a new query or reopen. No `limit` means render everything. `PickerOption.keywords` is an optional single string (joined by the caller) that participates in case-insensitive substring matching together with `label` but is **never rendered** — for search terms like a task UUID that users paste but should not see. `sliceGroups` is also exported as pure logic."
       },
       {
-        "zh": "WorkspacePicker：数据自带的领域选择器。在插件 apply 里调一次 `connectHost(ctx)`，组件即订阅官方 `workspaces` 快照。未接线 = 空态，不编造数据。",
-        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data."
+        "zh": "WorkspacePicker：数据自带的领域选择器。在插件 apply 里调一次 `connectHost(ctx)`，组件即订阅官方 `workspaces` 快照。未接线 = 空态，不编造数据。触发器与搜索框的宽度三轴（`width` / `minWidth` / `maxWidth` / `searchSizing`）与 Picker 同口径；`translate` 覆盖组件与下拉内的全部内置文案。",
+        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Trigger and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown."
       },
       {
-        "zh": "ModelPicker：数据自带，`variant` 为 `grouped`（默认）/ `cascade`；`onChange` 一律发 `provider/id` 形式的模型 value。目录来自宿主 `serveModelCatalog`。",
-        "en": "ModelPicker: brings its own data; `variant` is `grouped` (default) or `cascade`; `onChange` always emits the model value as `provider/id`. Catalog comes from the host `serveModelCatalog`."
+        "zh": "ModelPicker：选择模型的完整封装，三种形态共用同一份宿主目录（`serveModelCatalog`），`onChange` 一律发 `provider/id`：`grouped`（默认）= 一个下拉、供应商做组头；`flat` = 一个下拉、全部模型平铺成「厂商-模型」并带搜索，搜厂商名即可筛；`cascade` = 两个下拉联动，厂商框与模型框都带搜索，换厂商清空模型。`width` / `minWidth` / `maxWidth` 管触发器，`searchSizing` 管所有搜索框，`providerSizing` / `modelSizing` 让联动态两个框分别设宽。",
+        "en": "ModelPicker: the complete model selector. Three variants share one host catalog (`serveModelCatalog`) and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). `width`/`minWidth`/`maxWidth` size triggers, `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately."
       }
     ],
     "api": [
@@ -1745,6 +1745,15 @@ export const docData = {
             }
           },
           {
+            "name": "searchSizing",
+            "type": "PickerSizing",
+            "def": "—",
+            "desc": {
+              "zh": "下拉内搜索框宽度三轴 `{ width?, minWidth?, maxWidth? }`；不传铺满菜单宽度。菜单随设定下限自动加宽，不会被裁（纯逻辑 `resolveMenuSizing`）",
+              "en": "Search-box sizing `{ width?, minWidth?, maxWidth? }`; omitted fills the menu. The menu widens with its lower bound so it is never clipped (`resolveMenuSizing`)"
+            }
+          },
+          {
             "name": "ariaLabel",
             "type": "string",
             "def": "—",
@@ -1811,6 +1820,33 @@ export const docData = {
               "zh": "触发器前置图标：不传 = 默认文件夹；null = 不显示；传元素 = 自定义",
               "en": "Leading trigger icon: omitted = default folder; null = hidden; element = custom"
             }
+          },
+          {
+            "name": "width / minWidth / maxWidth",
+            "type": "number | string",
+            "def": "—",
+            "desc": {
+              "zh": "触发器宽度三轴（与 Picker 同名同义）",
+              "en": "Trigger sizing, same as Picker"
+            }
+          },
+          {
+            "name": "searchSizing",
+            "type": "PickerSizing",
+            "def": "—",
+            "desc": {
+              "zh": "下拉内搜索框宽度三轴；菜单会跟着自动加宽",
+              "en": "Search-box sizing; the menu widens with it"
+            }
+          },
+          {
+            "name": "translate",
+            "type": "Translate",
+            "def": "内置",
+            "desc": {
+              "zh": "覆盖组件与下拉内的全部内置文案",
+              "en": "Overrides all built-in copy in the component and its dropdown"
+            }
           }
         ]
       },
@@ -1819,11 +1855,38 @@ export const docData = {
         "rows": [
           {
             "name": "variant",
-            "type": "'grouped' | 'cascade'",
+            "type": "'grouped' | 'flat' | 'cascade'",
             "def": "'grouped'",
             "desc": {
-              "zh": "grouped = 一个下拉完全独立；cascade = 两个下拉联动（先选供应商，模型列表跟着筛；换供应商清空已选）",
-              "en": "grouped = one standalone dropdown; cascade = two linked dropdowns (pick provider first, model list filters; switching provider clears selection)"
+              "zh": "grouped = 一个下拉按供应商分组；flat = 一个下拉把全部模型平铺成「厂商-模型」并带搜索；cascade = 两个下拉联动、都带搜索（换供应商清空已选）",
+              "en": "grouped = one grouped dropdown; flat = one dropdown listing every model as vendor-model with search; cascade = two linked searchable dropdowns (switching provider clears selection)"
+            }
+          },
+          {
+            "name": "width / minWidth / maxWidth",
+            "type": "number | string",
+            "def": "—",
+            "desc": {
+              "zh": "触发器宽度三轴（与 Picker 同名同义）；cascade 的模型框也用它，除非给了 modelSizing",
+              "en": "Trigger sizing, same as Picker; also sizes the cascade model box unless modelSizing is given"
+            }
+          },
+          {
+            "name": "searchSizing",
+            "type": "PickerSizing",
+            "def": "—",
+            "desc": {
+              "zh": "所有搜索框的宽度三轴；三种形态、cascade 两个框统一生效",
+              "en": "Sizing for every search box in all three variants, including both cascade boxes"
+            }
+          },
+          {
+            "name": "providerSizing / modelSizing",
+            "type": "PickerSizing",
+            "def": "跟随 width / minWidth / maxWidth",
+            "desc": {
+              "zh": "cascade 的厂商框 / 模型框分别设宽；不传就跟随通用宽度",
+              "en": "Separate sizing for the cascade provider / model box; omitted follows the common width"
             }
           },
           {

@@ -18,6 +18,13 @@ export interface PickerGroup {
   options: PickerOption[]
 }
 
+/** 宽度三轴（触发器和搜索框共用）：定宽优先，给了 width 就忽略 min/max。 */
+export interface PickerSizing {
+  width?: number | string
+  minWidth?: number | string
+  maxWidth?: number | string
+}
+
 /** 两种输入归一成 groups：给了 `options` 就当成一个无标题的组。 */
 export function toGroups(
   groups: PickerGroup[] | undefined,
@@ -32,6 +39,16 @@ export function flattenOptions(groups: PickerGroup[]): PickerOption[] {
   const out: PickerOption[] = []
   for (const g of groups) out.push(...g.options)
   return out
+}
+
+/** 分组目录平铺成「厂商-模型」选项：value 原样不动，只给 label 加组名前缀。 */
+export function toFlatOptions(groups: PickerGroup[]): PickerOption[] {
+  return groups.flatMap((g) =>
+    g.options.map((o) => ({
+      value: o.value,
+      label: g.label === '' ? o.label : `${g.label}-${o.label}`,
+    })),
+  )
 }
 
 /** 按关键词过滤（大小写不敏感，匹配 label 与 keywords 拼起来的串；整组无命中则整组去掉）。 */
@@ -86,11 +103,7 @@ export function groupOf(groups: PickerGroup[], value: string): PickerGroup | und
 /** 触发器宽度解析：把 width / minWidth / maxWidth 译成内联样式。
  * 定宽（width）忽略 min/max 并锁定三值；否则各自生效，缺省沿用 CSS 默认（min 120px、max 100%）。
  * 数值按 px 处理，字符串原样透传。 */
-export function resolveTriggerSizing(opts: {
-  width?: number | string
-  minWidth?: number | string
-  maxWidth?: number | string
-}): CSSProperties {
+export function resolveTriggerSizing(opts: PickerSizing): CSSProperties {
   const px = (v: number | string): string => (typeof v === 'number' ? `${v}px` : v)
   if (opts.width !== undefined) {
     const w = px(opts.width)
@@ -100,4 +113,23 @@ export function resolveTriggerSizing(opts: {
   if (opts.minWidth !== undefined) style.minWidth = px(opts.minWidth)
   if (opts.maxWidth !== undefined) style.maxWidth = px(opts.maxWidth)
   return style
+}
+
+/** 菜单宽度：至少与触发器同宽；搜索框设了下限时菜单跟着加宽，
+ * 否则 100% 宽的搜索框会被菜单的 overflow:hidden 裁掉。
+ * 8px = .dshpc-picker__head 左右各 4px 内距（改该 CSS 时同步改这里，有自检盯着）。
+ * min-width 大于 max-width 时浏览器以 min-width 为准，所以显式设宽不会被 480 上限卡住。 */
+export function resolveMenuSizing(
+  referenceWidth: number,
+  availableWidth: number | undefined,
+  searchSizing?: PickerSizing,
+): { minWidth: string; maxWidth: string } {
+  const floor = searchSizing?.width ?? searchSizing?.minWidth
+  const cssLen = (v: number | string): string => (typeof v === 'number' ? `${v}px` : v)
+  return {
+    minWidth: floor === undefined
+      ? `${referenceWidth}px`
+      : `max(${referenceWidth}px, calc(${cssLen(floor)} + 8px))`,
+    maxWidth: `${Math.min(480, availableWidth ?? 480)}px`,
+  }
 }

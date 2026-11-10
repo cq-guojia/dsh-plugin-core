@@ -4,7 +4,7 @@ import { Chevron } from '../infra/chevron.js';
 import { t } from '../../utils/i18n.js';
 import { FieldHint } from '../display/FieldHint.js';
 import { MarqueeText } from '../display/MarqueeText.js';
-import { filterGroups, flattenOptions, labelsOf, resolveTriggerSizing, sliceGroups, toGroups, toggleValue, } from './picker-logic.js';
+import { filterGroups, flattenOptions, labelsOf, resolveMenuSizing, resolveTriggerSizing, sliceGroups, toGroups, toggleValue, } from './picker-logic.js';
 import { ensureComponentStyles } from '../infra/css.js';
 import { useOverlayLocked } from '../infra/overlay.js';
 import { PANEL_CSS } from '../infra/panel-css.js';
@@ -58,10 +58,12 @@ export function Picker(props) {
             shift({ padding: 8 }),
             floatingSize({
                 apply({ elements, rects, availableWidth, availableHeight }) {
+                    // 触发器可以限宽，菜单不能跟着限：至少与触发器同宽，随内容变宽，封顶 480 免得太夸张；
+                    // 搜索框显式设了下限时菜单还要让出它的宽度，否则 100% 宽的搜索框会被裁掉。
+                    const menu = resolveMenuSizing(rects.reference.width, availableWidth, props.searchSizing);
                     Object.assign(elements.floating.style, {
-                        // 触发器可以限宽，菜单不能跟着限：至少与触发器同宽，随内容变宽，封顶 480 免得太夸张
-                        minWidth: `${rects.reference.width}px`,
-                        maxWidth: `${Math.min(480, availableWidth ?? 480)}px`,
+                        minWidth: menu.minWidth,
+                        maxWidth: menu.maxWidth,
                         maxHeight: `${Math.max(80, Math.min(280, (availableHeight ?? 320) - 8))}px`,
                     });
                 },
@@ -195,6 +197,7 @@ export function Picker(props) {
             ? h('input', {
                 ref: setSearchRef,
                 className: 'dshpc-picker__search',
+                style: resolveTriggerSizing(props.searchSizing ?? {}),
                 placeholder: tt('pickerSearch'),
                 value: query,
                 onChange: (e) => {

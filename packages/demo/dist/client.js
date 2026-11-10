@@ -1270,6 +1270,12 @@ function flattenOptions(groups) {
     out.push(...g.options);
   return out;
 }
+function toFlatOptions(groups) {
+  return groups.flatMap((g) => g.options.map((o) => ({
+    value: o.value,
+    label: g.label === "" ? o.label : `${g.label}-${o.label}`
+  })));
+}
 function filterGroups(groups, query) {
   const q = query.trim().toLowerCase();
   if (q === "")
@@ -1330,6 +1336,14 @@ function resolveTriggerSizing(opts) {
   if (opts.maxWidth !== void 0)
     style2.maxWidth = px(opts.maxWidth);
   return style2;
+}
+function resolveMenuSizing(referenceWidth, availableWidth, searchSizing) {
+  const floor2 = searchSizing?.width ?? searchSizing?.minWidth;
+  const cssLen = (v) => typeof v === "number" ? `${v}px` : v;
+  return {
+    minWidth: floor2 === void 0 ? `${referenceWidth}px` : `max(${referenceWidth}px, calc(${cssLen(floor2)} + 8px))`,
+    maxWidth: `${Math.min(480, availableWidth ?? 480)}px`
+  };
 }
 
 // dist/ui/inputs/Picker.js
@@ -4370,10 +4384,10 @@ function Picker(props) {
       shift3({ padding: 8 }),
       size3({
         apply({ elements, rects, availableWidth, availableHeight }) {
+          const menu = resolveMenuSizing(rects.reference.width, availableWidth, props.searchSizing);
           Object.assign(elements.floating.style, {
-            // 触发器可以限宽，菜单不能跟着限：至少与触发器同宽，随内容变宽，封顶 480 免得太夸张
-            minWidth: `${rects.reference.width}px`,
-            maxWidth: `${Math.min(480, availableWidth ?? 480)}px`,
+            minWidth: menu.minWidth,
+            maxWidth: menu.maxWidth,
             maxHeight: `${Math.max(80, Math.min(280, (availableHeight ?? 320) - 8))}px`
           });
         }
@@ -4493,6 +4507,7 @@ function Picker(props) {
     (0, import_react9.createElement)("div", { className: "dshpc-picker__head" }, props.degraded === true ? (0, import_react9.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerDegraded")) : null, atMax ? (0, import_react9.createElement)("div", { className: "dshpc-picker__degraded" }, tt("pickerMaxReached", { n: props.max ?? 0 })) : null, props.searchable === true ? (0, import_react9.createElement)("input", {
       ref: setSearchRef,
       className: "dshpc-picker__search",
+      style: resolveTriggerSizing(props.searchSizing ?? {}),
       placeholder: tt("pickerSearch"),
       value: query,
       onChange: (e) => {
@@ -5671,7 +5686,7 @@ function ModelPicker(props) {
   const variant = props.variant ?? "grouped";
   const searchable = props.searchable ?? true;
   const defaultOption = props.allowDefault === false ? void 0 : { value: "", label: props.defaultLabel ?? tt("modelDefault") };
-  const catalog = (0, import_react16.useSyncExternalStore)(modelCatalog.subscribe, modelCatalog.getSnapshot);
+  const catalog = (0, import_react16.useSyncExternalStore)(modelCatalog.subscribe, modelCatalog.getSnapshot, modelCatalog.getSnapshot);
   const groups = props.groups ?? (catalog.status === "ready" ? catalog.routes.map((route) => ({
     value: route.provider,
     label: route.displayName,
@@ -5685,6 +5700,7 @@ function ModelPicker(props) {
   const emitModel = (v) => {
     props.onChange?.(typeof v === "string" ? v : v[0] ?? "");
   };
+  const sizing = { width: props.width, minWidth: props.minWidth, maxWidth: props.maxWidth };
   const [pickedProvider, setPickedProvider] = (0, import_react16.useState)("");
   const curGroup = groupOf(groups, value ?? "");
   const provider = pickedProvider !== "" && groups.some((g) => g.value === pickedProvider) ? pickedProvider : curGroup?.value ?? "";
@@ -5692,12 +5708,14 @@ function ModelPicker(props) {
     if (value !== void 0 && value !== "")
       setPickedProvider("");
   }, [value]);
-  if (variant === "grouped") {
+  if (variant === "flat") {
+    const options2 = toFlatOptions(groups);
     return (0, import_react16.createElement)(Picker, {
-      // 「默认模型」放最上面：空 label 的组，Picker 只渲染选项不渲染组头
-      groups: defaultOption === void 0 ? groups : [{ value: "", label: "", options: [defaultOption] }, ...groups],
+      options: defaultOption === void 0 ? options2 : [defaultOption, ...options2],
       value,
       defaultValue: props.defaultValue,
+      ...sizing,
+      searchSizing: props.searchSizing,
       icon: icon2,
       placeholder: props.placeholder ?? tt("modelModel"),
       degraded,
@@ -5708,6 +5726,29 @@ function ModelPicker(props) {
       size: props.size,
       placement: props.placement,
       className: props.className,
+      translate: props.translate,
+      onChange: emitModel
+    });
+  }
+  if (variant === "grouped") {
+    return (0, import_react16.createElement)(Picker, {
+      // 「默认模型」放最上面：空 label 的组，Picker 只渲染选项不渲染组头
+      groups: defaultOption === void 0 ? groups : [{ value: "", label: "", options: [defaultOption] }, ...groups],
+      value,
+      defaultValue: props.defaultValue,
+      ...sizing,
+      searchSizing: props.searchSizing,
+      icon: icon2,
+      placeholder: props.placeholder ?? tt("modelModel"),
+      degraded,
+      disabled: props.disabled,
+      clearable: props.clearable,
+      searchable,
+      hint: props.hint,
+      size: props.size,
+      placement: props.placement,
+      className: props.className,
+      translate: props.translate,
       onChange: emitModel
     });
   }
@@ -5719,8 +5760,11 @@ function ModelPicker(props) {
     placeholder: tt("modelProvider"),
     degraded,
     disabled: props.disabled,
-    searchable: false,
+    ...props.providerSizing ?? sizing,
+    searchSizing: props.searchSizing,
+    searchable,
     size: props.size,
+    translate: props.translate,
     onChange: (v) => {
       setPickedProvider(typeof v === "string" ? v : v[0] ?? "");
       props.onChange?.("");
@@ -5729,6 +5773,8 @@ function ModelPicker(props) {
     options: defaultOption === void 0 ? options : [defaultOption, ...options],
     value,
     defaultValue: props.defaultValue,
+    ...props.modelSizing ?? sizing,
+    searchSizing: props.searchSizing,
     icon: icon2,
     placeholder: props.placeholder ?? tt("modelModel"),
     degraded,
@@ -5739,6 +5785,7 @@ function ModelPicker(props) {
     size: props.size,
     placement: props.placement,
     className: props.className,
+    translate: props.translate,
     onChange: emitModel
   }));
 }
@@ -5748,7 +5795,7 @@ var import_react17 = require("react");
 function WorkspacePicker(props) {
   ensureControls();
   const tt = props.translate ?? t;
-  const items = (0, import_react17.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const items = (0, import_react17.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot, workspaceList.getSnapshot);
   const options = items.map((w) => ({ value: w.workspaceId, label: w.title }));
   const allOption = props.allowDefault !== false && props.mode !== "multiple" ? { value: "", label: props.defaultLabel ?? tt("workspaceAll") } : void 0;
   return (0, import_react17.createElement)(Picker, {
@@ -5760,13 +5807,18 @@ function WorkspacePicker(props) {
     onChange: props.onChange,
     clearable: props.clearable,
     searchable: props.searchable,
+    width: props.width,
+    minWidth: props.minWidth,
+    maxWidth: props.maxWidth,
+    searchSizing: props.searchSizing,
     hint: props.hint,
     icon: props.icon === void 0 ? folderIcon() : props.icon ?? void 0,
     placeholder: props.placeholder ?? tt("explorerRoot"),
     disabled: props.disabled,
     size: props.size,
     placement: props.placement,
-    className: props.className
+    className: props.className,
+    translate: props.translate
   });
 }
 
@@ -62205,7 +62257,7 @@ var DICT2 = {
     segToneHint: "\u4E0D\u4F20\u8D70\u4E3B\u9898\u4EAE\u7247\uFF1B\u4E5F\u53EF\u4F20\u8272\u540D\u6216 bg / fg",
     pickerHint: "\u5355\u9009 / \u591A\u9009 / \u641C\u7D22 / \u5206\u7EC4 / \u7A7A\u6001",
     dateTimePickerHint: "single / range \xD7 \u56DB\u79CD\u7CBE\u5EA6\uFF0C\u6D6E\u5C42\u65E0\u906E\u7F69",
-    modelPickerHint: "\u5206\u7EC4\u4E0E\u8054\u52A8\u4E24\u79CD\u5F62\u6001\uFF0C\u76EE\u5F55\u6765\u81EA\u5BBF\u4E3B",
+    modelPickerHint: "\u5206\u7EC4 / \u5E73\u94FA / \u8054\u52A8\u4E09\u79CD\u5F62\u6001\uFF0C\u76EE\u5F55\u6765\u81EA\u5BBF\u4E3B",
     workspacePickerHint: "\u5217\u8868\u6765\u81EA\u5BBF\u4E3B\u5FEB\u7167\uFF0C\u503C\u4E3A workspaceId",
     splitGroupHint: "\u628A\u4E24\u4E2A\u63A7\u4EF6\u710A\u6210\u4E00\u4F53\uFF0C\u5916\u58F3\u753B\u6846\u4E0E\u5206\u9694",
     tooltipTitle: "Tooltip\uFF08\u9F20\u6807\u60AC\u505C\u63D0\u793A\uFF09",
@@ -62473,7 +62525,7 @@ var DICT2 = {
     segToneHint: "Default themed; or pass a color name or bg/fg",
     pickerHint: "Single, multi, search, groups, empty",
     dateTimePickerHint: "single or range at four precisions, no mask",
-    modelPickerHint: "Grouped or cascaded; catalog from host",
+    modelPickerHint: "Grouped, flat or cascaded; catalog from host",
     workspacePickerHint: "List from host snapshot; value is workspaceId",
     splitGroupHint: "Welds two controls; the shell draws the frame",
     tooltipTitle: "Tooltip (hover hint)",
@@ -64235,20 +64287,20 @@ var docData = {
     },
     "prose": [
       {
-        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue`\u3002\u89E6\u53D1\u5668\u652F\u6301 width / minWidth / maxWidth \u7EA6\u675F\u5BBD\u5EA6\uFF1A\u5B9A\u5BBD\u5FFD\u7565\u53E6\u4E24\u8005\uFF1B\u5185\u5BB9\u8D85\u957F\u5219\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\u3002\u83DC\u5355\u91CC\u7684\u9009\u9879\u8D85\u957F\u540C\u6837\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF0C\u4E0D\u4F1A\u628A\u83DC\u5355\u6491\u51FA\u6A2A\u5411\u6EDA\u52A8\u6761\u3002",
-        "en": "Picker: single/multiple selection, cap, search, grouping, empty state \u2014 self-drawn. Keyboard: Esc closes, \u2191\u2193 move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue`."
+        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`\u3002\u89E6\u53D1\u5668\u652F\u6301 width / minWidth / maxWidth \u7EA6\u675F\u5BBD\u5EA6\uFF1A\u5B9A\u5BBD\u5FFD\u7565\u53E6\u4E24\u8005\uFF1B\u5185\u5BB9\u8D85\u957F\u5219\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\u3002\u4E0B\u62C9\u5185\u641C\u7D22\u6846\u53E6\u8D70 `searchSizing`\uFF08\u540C\u4E00\u5957\u5BBD\u5EA6\u4E09\u8F74\uFF09\uFF0C\u4E0D\u4F20\u5C31\u6CBF\u7528 CSS \u7684 100% \u94FA\u6EE1\uFF1B\u83DC\u5355\u4F1A\u968F `searchSizing` \u7684\u4E0B\u9650\u81EA\u52A8\u52A0\u5BBD\uFF0C\u4E0D\u4F1A\u88AB\u83DC\u5355\u7684 overflow:hidden \u88C1\u6389\u3002\u83DC\u5355\u91CC\u7684\u9009\u9879\u8D85\u957F\u540C\u6837\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF0C\u4E0D\u4F1A\u628A\u83DC\u5355\u6491\u51FA\u6A2A\u5411\u6EDA\u52A8\u6761\u3002",
+        "en": "Picker: single/multiple selection, cap, search, grouping, empty state \u2014 self-drawn. Keyboard: Esc closes, \u2191\u2193 move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`. The search box takes its own `searchSizing` (the same width/minWidth/maxWidth triple) and fills 100% by default; the menu widens with the search box lower bound so it is never clipped by overflow:hidden."
       },
       {
         "zh": "\u9996\u5C4F\u5206\u9875\uFF1A`limit` \u6309**\u9009\u9879\u6761\u6570**\u8DE8\u7EC4\u5207\u7247\uFF0C\u5217\u8868\u672B\u5C3E\u300C\u663E\u793A\u66F4\u591A\u300D\uFF08\u8DDF\u5728\u6700\u540E\u4E00\u6761\u540E\uFF0C\u50CF\u591A\u4E00\u6761\u9009\u9879\uFF09\u6BCF\u70B9\u4E00\u6B21\u518D\u8FFD\u52A0 `limit` \u6761\uFF1B\u641C\u7D22\u7ED3\u679C\u8D70\u540C\u4E00\u5957\u5206\u9875\uFF0C\u6362\u641C\u7D22\u8BCD\u6216\u91CD\u65B0\u5C55\u5F00\u90FD\u56DE\u5230\u9996\u5C4F\u3002\u4E0D\u4F20 `limit` \u5C31\u662F\u5168\u91CF\u6E32\u67D3\u3002`PickerOption.keywords` \u662F\u53EF\u9009\u7684\u5355\u4E2A\u5B57\u7B26\u4E32\uFF08\u8C03\u7528\u65B9\u81EA\u5DF1\u62FC\uFF09\uFF0C\u53EA\u548C `label` \u62FC\u8D77\u6765\u53C2\u4E0E\u5927\u5C0F\u5199\u4E0D\u654F\u611F\u5B50\u4E32\u5339\u914D\uFF0C**\u7EDD\u4E0D\u6E32\u67D3**\u2014\u2014\u9002\u5408\u4EFB\u52A1 UUID \u8FD9\u79CD\u300C\u7528\u6237\u80FD\u8D34\u3001\u4F46\u4E0D\u8BE5\u663E\u793A\u300D\u7684\u641C\u7D22\u8BCD\u3002\u7EAF\u903B\u8F91\u53E6\u53EF\u5355\u7528 `sliceGroups`\u3002",
         "en": 'First-page paging: `limit` slices by **option count** across groups; "Show more" rendered as the last row of the list appends another `limit` each click. Search results use the same paging and reset to the first page on a new query or reopen. No `limit` means render everything. `PickerOption.keywords` is an optional single string (joined by the caller) that participates in case-insensitive substring matching together with `label` but is **never rendered** \u2014 for search terms like a task UUID that users paste but should not see. `sliceGroups` is also exported as pure logic.'
       },
       {
-        "zh": "WorkspacePicker\uFF1A\u6570\u636E\u81EA\u5E26\u7684\u9886\u57DF\u9009\u62E9\u5668\u3002\u5728\u63D2\u4EF6 apply \u91CC\u8C03\u4E00\u6B21 `connectHost(ctx)`\uFF0C\u7EC4\u4EF6\u5373\u8BA2\u9605\u5B98\u65B9 `workspaces` \u5FEB\u7167\u3002\u672A\u63A5\u7EBF = \u7A7A\u6001\uFF0C\u4E0D\u7F16\u9020\u6570\u636E\u3002",
-        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data."
+        "zh": "WorkspacePicker\uFF1A\u6570\u636E\u81EA\u5E26\u7684\u9886\u57DF\u9009\u62E9\u5668\u3002\u5728\u63D2\u4EF6 apply \u91CC\u8C03\u4E00\u6B21 `connectHost(ctx)`\uFF0C\u7EC4\u4EF6\u5373\u8BA2\u9605\u5B98\u65B9 `workspaces` \u5FEB\u7167\u3002\u672A\u63A5\u7EBF = \u7A7A\u6001\uFF0C\u4E0D\u7F16\u9020\u6570\u636E\u3002\u89E6\u53D1\u5668\u4E0E\u641C\u7D22\u6846\u7684\u5BBD\u5EA6\u4E09\u8F74\uFF08`width` / `minWidth` / `maxWidth` / `searchSizing`\uFF09\u4E0E Picker \u540C\u53E3\u5F84\uFF1B`translate` \u8986\u76D6\u7EC4\u4EF6\u4E0E\u4E0B\u62C9\u5185\u7684\u5168\u90E8\u5185\u7F6E\u6587\u6848\u3002",
+        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Trigger and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown."
       },
       {
-        "zh": "ModelPicker\uFF1A\u6570\u636E\u81EA\u5E26\uFF0C`variant` \u4E3A `grouped`\uFF08\u9ED8\u8BA4\uFF09/ `cascade`\uFF1B`onChange` \u4E00\u5F8B\u53D1 `provider/id` \u5F62\u5F0F\u7684\u6A21\u578B value\u3002\u76EE\u5F55\u6765\u81EA\u5BBF\u4E3B `serveModelCatalog`\u3002",
-        "en": "ModelPicker: brings its own data; `variant` is `grouped` (default) or `cascade`; `onChange` always emits the model value as `provider/id`. Catalog comes from the host `serveModelCatalog`."
+        "zh": "ModelPicker\uFF1A\u9009\u62E9\u6A21\u578B\u7684\u5B8C\u6574\u5C01\u88C5\uFF0C\u4E09\u79CD\u5F62\u6001\u5171\u7528\u540C\u4E00\u4EFD\u5BBF\u4E3B\u76EE\u5F55\uFF08`serveModelCatalog`\uFF09\uFF0C`onChange` \u4E00\u5F8B\u53D1 `provider/id`\uFF1A`grouped`\uFF08\u9ED8\u8BA4\uFF09= \u4E00\u4E2A\u4E0B\u62C9\u3001\u4F9B\u5E94\u5546\u505A\u7EC4\u5934\uFF1B`flat` = \u4E00\u4E2A\u4E0B\u62C9\u3001\u5168\u90E8\u6A21\u578B\u5E73\u94FA\u6210\u300C\u5382\u5546-\u6A21\u578B\u300D\u5E76\u5E26\u641C\u7D22\uFF0C\u641C\u5382\u5546\u540D\u5373\u53EF\u7B5B\uFF1B`cascade` = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF0C\u5382\u5546\u6846\u4E0E\u6A21\u578B\u6846\u90FD\u5E26\u641C\u7D22\uFF0C\u6362\u5382\u5546\u6E05\u7A7A\u6A21\u578B\u3002`width` / `minWidth` / `maxWidth` \u7BA1\u89E6\u53D1\u5668\uFF0C`searchSizing` \u7BA1\u6240\u6709\u641C\u7D22\u6846\uFF0C`providerSizing` / `modelSizing` \u8BA9\u8054\u52A8\u6001\u4E24\u4E2A\u6846\u5206\u522B\u8BBE\u5BBD\u3002",
+        "en": "ModelPicker: the complete model selector. Three variants share one host catalog (`serveModelCatalog`) and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). `width`/`minWidth`/`maxWidth` size triggers, `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately."
       }
     ],
     "api": [
@@ -64454,6 +64506,15 @@ var docData = {
             }
           },
           {
+            "name": "searchSizing",
+            "type": "PickerSizing",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4E0B\u62C9\u5185\u641C\u7D22\u6846\u5BBD\u5EA6\u4E09\u8F74 `{ width?, minWidth?, maxWidth? }`\uFF1B\u4E0D\u4F20\u94FA\u6EE1\u83DC\u5355\u5BBD\u5EA6\u3002\u83DC\u5355\u968F\u8BBE\u5B9A\u4E0B\u9650\u81EA\u52A8\u52A0\u5BBD\uFF0C\u4E0D\u4F1A\u88AB\u88C1\uFF08\u7EAF\u903B\u8F91 `resolveMenuSizing`\uFF09",
+              "en": "Search-box sizing `{ width?, minWidth?, maxWidth? }`; omitted fills the menu. The menu widens with its lower bound so it is never clipped (`resolveMenuSizing`)"
+            }
+          },
+          {
             "name": "ariaLabel",
             "type": "string",
             "def": "\u2014",
@@ -64520,6 +64581,33 @@ var docData = {
               "zh": "\u89E6\u53D1\u5668\u524D\u7F6E\u56FE\u6807\uFF1A\u4E0D\u4F20 = \u9ED8\u8BA4\u6587\u4EF6\u5939\uFF1Bnull = \u4E0D\u663E\u793A\uFF1B\u4F20\u5143\u7D20 = \u81EA\u5B9A\u4E49",
               "en": "Leading trigger icon: omitted = default folder; null = hidden; element = custom"
             }
+          },
+          {
+            "name": "width / minWidth / maxWidth",
+            "type": "number | string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u89E6\u53D1\u5668\u5BBD\u5EA6\u4E09\u8F74\uFF08\u4E0E Picker \u540C\u540D\u540C\u4E49\uFF09",
+              "en": "Trigger sizing, same as Picker"
+            }
+          },
+          {
+            "name": "searchSizing",
+            "type": "PickerSizing",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4E0B\u62C9\u5185\u641C\u7D22\u6846\u5BBD\u5EA6\u4E09\u8F74\uFF1B\u83DC\u5355\u4F1A\u8DDF\u7740\u81EA\u52A8\u52A0\u5BBD",
+              "en": "Search-box sizing; the menu widens with it"
+            }
+          },
+          {
+            "name": "translate",
+            "type": "Translate",
+            "def": "\u5185\u7F6E",
+            "desc": {
+              "zh": "\u8986\u76D6\u7EC4\u4EF6\u4E0E\u4E0B\u62C9\u5185\u7684\u5168\u90E8\u5185\u7F6E\u6587\u6848",
+              "en": "Overrides all built-in copy in the component and its dropdown"
+            }
           }
         ]
       },
@@ -64528,11 +64616,38 @@ var docData = {
         "rows": [
           {
             "name": "variant",
-            "type": "'grouped' | 'cascade'",
+            "type": "'grouped' | 'flat' | 'cascade'",
             "def": "'grouped'",
             "desc": {
-              "zh": "grouped = \u4E00\u4E2A\u4E0B\u62C9\u5B8C\u5168\u72EC\u7ACB\uFF1Bcascade = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF08\u5148\u9009\u4F9B\u5E94\u5546\uFF0C\u6A21\u578B\u5217\u8868\u8DDF\u7740\u7B5B\uFF1B\u6362\u4F9B\u5E94\u5546\u6E05\u7A7A\u5DF2\u9009\uFF09",
-              "en": "grouped = one standalone dropdown; cascade = two linked dropdowns (pick provider first, model list filters; switching provider clears selection)"
+              "zh": "grouped = \u4E00\u4E2A\u4E0B\u62C9\u6309\u4F9B\u5E94\u5546\u5206\u7EC4\uFF1Bflat = \u4E00\u4E2A\u4E0B\u62C9\u628A\u5168\u90E8\u6A21\u578B\u5E73\u94FA\u6210\u300C\u5382\u5546-\u6A21\u578B\u300D\u5E76\u5E26\u641C\u7D22\uFF1Bcascade = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\u3001\u90FD\u5E26\u641C\u7D22\uFF08\u6362\u4F9B\u5E94\u5546\u6E05\u7A7A\u5DF2\u9009\uFF09",
+              "en": "grouped = one grouped dropdown; flat = one dropdown listing every model as vendor-model with search; cascade = two linked searchable dropdowns (switching provider clears selection)"
+            }
+          },
+          {
+            "name": "width / minWidth / maxWidth",
+            "type": "number | string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u89E6\u53D1\u5668\u5BBD\u5EA6\u4E09\u8F74\uFF08\u4E0E Picker \u540C\u540D\u540C\u4E49\uFF09\uFF1Bcascade \u7684\u6A21\u578B\u6846\u4E5F\u7528\u5B83\uFF0C\u9664\u975E\u7ED9\u4E86 modelSizing",
+              "en": "Trigger sizing, same as Picker; also sizes the cascade model box unless modelSizing is given"
+            }
+          },
+          {
+            "name": "searchSizing",
+            "type": "PickerSizing",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6240\u6709\u641C\u7D22\u6846\u7684\u5BBD\u5EA6\u4E09\u8F74\uFF1B\u4E09\u79CD\u5F62\u6001\u3001cascade \u4E24\u4E2A\u6846\u7EDF\u4E00\u751F\u6548",
+              "en": "Sizing for every search box in all three variants, including both cascade boxes"
+            }
+          },
+          {
+            "name": "providerSizing / modelSizing",
+            "type": "PickerSizing",
+            "def": "\u8DDF\u968F width / minWidth / maxWidth",
+            "desc": {
+              "zh": "cascade \u7684\u5382\u5546\u6846 / \u6A21\u578B\u6846\u5206\u522B\u8BBE\u5BBD\uFF1B\u4E0D\u4F20\u5C31\u8DDF\u968F\u901A\u7528\u5BBD\u5EA6",
+              "en": "Separate sizing for the cascade provider / model box; omitted follows the common width"
             }
           },
           {
@@ -68168,11 +68283,18 @@ var CODE_PICKER = `// \u5355\u9009\uFF1Aicon + \u53EF\u641C\u7D22 / \u53EF\u6E05
 />
 // hint \u6302\u5728\u89E6\u53D1\u5668\u540E\u9762\uFF0C\u4E0D\u7528\u518D\u624B\u52A8\u62FC FieldHint
 <Picker options={options} value={v} onChange={setV} hint="\u6302\u5728\u89E6\u53D1\u5668\u540E\u9762\u7684\u95EE\u53F7\u63D0\u793A" />`;
-var CODE_MODEL_PICKER = `// \u6570\u636E\u6765\u81EA\u5BBF\u4E3B\u6A21\u578B\u76EE\u5F55\uFF08\u5BBF\u4E3B\u4FA7 connectHost(ctx, { modelsPath }) \u6CE8\u5165\uFF09\uFF0C\u4E0D\u80FD\u51ED\u7A7A\u9020
-// \u5206\u7EC4\u5F62\u6001\uFF1A\u4E00\u4E2A\u4E0B\u62C9\uFF0C\u4F9B\u5E94\u5546\u505A\u7EC4\u5934
+var CODE_MODEL_PICKER = `// \u6570\u636E\u6765\u81EA\u5BBF\u4E3B\u6A21\u578B\u76EE\u5F55\uFF08connectHost(ctx, { modelsPath }) \u6CE8\u5165\uFF09\uFF0C\u4E0D\u80FD\u51ED\u7A7A\u9020
+// \u2460 \u5206\u7EC4\uFF1A\u4E00\u4E2A\u4E0B\u62C9\uFF0C\u4F9B\u5E94\u5546\u505A\u7EC4\u5934
 <ModelPicker value={model} onChange={setModel} variant="grouped" />
-// \u8054\u52A8\u5F62\u6001\uFF1A\u4E24\u4E2A\u4E0B\u62C9\uFF0C\u5148\u9009\u4F9B\u5E94\u5546\u3001\u6A21\u578B\u5217\u8868\u8DDF\u7740\u7B5B
-<ModelPicker value={model} onChange={setModel} variant="cascade" placeholder="\u9009\u62E9\u6A21\u578B" />`;
+// \u2461 \u5E73\u94FA\uFF1A\u4E00\u4E2A\u4E0B\u62C9\uFF0C\u5168\u90E8\u6A21\u578B\u5217\u6210\u300C\u5382\u5546-\u6A21\u578B\u300D\uFF0C\u5E26\u641C\u7D22
+<ModelPicker value={model} onChange={setModel} variant="flat" />
+// \u2462 \u8054\u52A8\uFF1A\u4E24\u4E2A\u4E0B\u62C9\uFF0C\u5148\u9009\u4F9B\u5E94\u5546\u518D\u9009\u6A21\u578B\uFF0C\u4E24\u4E2A\u6846\u90FD\u5E26\u641C\u7D22
+<ModelPicker value={model} onChange={setModel} variant="cascade" />
+// \u5BBD\u5EA6\uFF1A\u89E6\u53D1\u5668\u4E0E\u641C\u7D22\u6846\u5404\u81EA\u53EF\u5B9A\u5BBD / \u5B9A\u6700\u5C0F\u6700\u5927\u5BBD\uFF1B\u8054\u52A8\u6001\u4E24\u4E2A\u6846\u5206\u522B\u8BBE
+<ModelPicker variant="cascade" width={180}
+  providerSizing={{ minWidth: 120, maxWidth: 200 }}
+  modelSizing={{ minWidth: 160, maxWidth: 320 }}
+  searchSizing={{ minWidth: 200, maxWidth: 480 }} />`;
 var CODE_WORKSPACE_PICKER = `// \u9ED8\u8BA4\u5373\u300C\u5DE5\u4F5C\u533A\u300D\u6587\u6848\u4E0E\u6587\u4EF6\u5939\u56FE\u6807\uFF1Bclearable / searchable \u662F\u53EF\u9009\u80FD\u529B
 <WorkspacePicker value={ws} onChange={setWs} clearable searchable />`;
 var CODE_SPLIT_GROUP = `// \u5916\u58F3\u53EA\u7BA1\u300C\u710A\u5728\u4E00\u8D77\u300D\uFF1A\u4E0D\u6301\u72B6\u6001\u3001\u4E0D\u51FA\u8054\u52A8\u56DE\u8C03\uFF0C\u4E24\u683C\u5404\u81EA\u8FD8\u662F\u539F\u6765\u7684\u63A7\u4EF6
@@ -68226,6 +68348,7 @@ function PickerPage() {
   const [multi, setMulti] = (0, import_react92.useState)([]);
   const [model, setModel] = (0, import_react92.useState)("");
   const [model2, setModel2] = (0, import_react92.useState)("");
+  const [model3, setModel3] = (0, import_react92.useState)("");
   const [ws, setWs] = (0, import_react92.useState)(void 0);
   const [period2, setPeriod] = (0, import_react92.useState)("formal");
   const [bucket, setBucket] = (0, import_react92.useState)("");
@@ -68308,12 +68431,17 @@ function PickerPage() {
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // ① 分组形态：一个下拉、完全独立，供应商做组头（带「默认模型」选项）
         (0, import_react92.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
-        // ② 联动形态：两个下拉联动，先选供应商、模型列表跟着筛
+        // ② 平铺形态：一个下拉，「厂商-模型」全部列出来，带搜索
+        (0, import_react92.createElement)(ModelPicker, { value: model3, onChange: setModel3, variant: "flat" }),
+        // ③ 联动形态：两个下拉联动，都带搜索；两个框分别设宽，搜索框另设宽
         (0, import_react92.createElement)(ModelPicker, {
           value: model2,
           onChange: setModel2,
           variant: "cascade",
-          placeholder: "\u9009\u62E9\u6A21\u578B"
+          placeholder: "\u9009\u62E9\u6A21\u578B",
+          providerSizing: { minWidth: 120, maxWidth: 180 },
+          modelSizing: { minWidth: 160, maxWidth: 260 },
+          searchSizing: { minWidth: 220, maxWidth: 420 }
         })
       )
     ),
@@ -71110,9 +71238,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.10"}`],
-            [t3("buildDemo"), `v${"0.35.10"}`],
-            [t3("buildStamp"), "261109-163810-427"]
+            [t3("buildCore"), `v${"0.35.11"}`],
+            [t3("buildDemo"), `v${"0.35.11"}`],
+            [t3("buildStamp"), "261110-132737-678"]
           ].map(
             ([label, value]) => (0, import_react98.createElement)(
               "tr",
@@ -71428,9 +71556,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react100.createElement)("span", null, `core v${"0.35.10"}`),
-          (0, import_react100.createElement)("span", null, `demo v${"0.35.10"}`),
-          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261109-163810-427")
+          (0, import_react100.createElement)("span", null, `core v${"0.35.11"}`),
+          (0, import_react100.createElement)("span", null, `demo v${"0.35.11"}`),
+          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-132737-678")
         )
       )
     ),

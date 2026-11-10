@@ -5,11 +5,12 @@
 import { createElement as h, useSyncExternalStore, type ReactNode } from 'react'
 import { ensureControls } from '../infra/css.js'
 import { Picker, type PickerSize } from './Picker.js'
+import { type PickerSizing } from './picker-logic.js'
 import { t, type Translate } from '../../utils/i18n.js'
 import { workspaceList } from '../infra/host-data.js'
 import { folderIcon } from './picker-icons.js'
 
-export interface WorkspacePickerProps {
+export interface WorkspacePickerProps extends PickerSizing {
   value?: string | string[]
   defaultValue?: string | string[]
   mode?: 'single' | 'multiple'
@@ -30,6 +31,8 @@ export interface WorkspacePickerProps {
   size?: PickerSize
   placement?: 'down' | 'up'
   className?: string
+  /** 下拉内搜索框的宽度三轴（与 Picker 同口径）；不传铺满菜单宽度。 */
+  searchSizing?: PickerSizing
   /** 未选时的文字（默认「工作区」；想叫「选择工作区」就传它）。 */
   placeholder?: string
   /** 触发器前置图标：不传 = 默认文件夹；传 `null` = 不显示；传元素 = 自定义。 */
@@ -43,7 +46,7 @@ export interface WorkspacePickerProps {
 export function WorkspacePicker(props: WorkspacePickerProps): ReturnType<typeof h> {
   ensureControls()
   const tt = props.translate ?? t
-  const items = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot)
+  const items = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot, workspaceList.getSnapshot)
   const options = items.map((w) => ({ value: w.workspaceId, label: w.title }))
   // 「所有工作区」放最上面（单选才有意义）；选中发 '' —— 空串表示不筛
   const allOption =
@@ -59,6 +62,10 @@ export function WorkspacePicker(props: WorkspacePickerProps): ReturnType<typeof 
     onChange: props.onChange,
     clearable: props.clearable,
     searchable: props.searchable,
+    width: props.width,
+    minWidth: props.minWidth,
+    maxWidth: props.maxWidth,
+    searchSizing: props.searchSizing,
     hint: props.hint,
     icon: props.icon === undefined ? folderIcon() : props.icon ?? undefined,
     placeholder: props.placeholder ?? tt('explorerRoot'),
@@ -66,5 +73,6 @@ export function WorkspacePicker(props: WorkspacePickerProps): ReturnType<typeof 
     size: props.size,
     placement: props.placement,
     className: props.className,
+    translate: props.translate,
   })
 }

@@ -434,7 +434,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     pickerHint: '单选 / 多选 / 搜索 / 分组 / 空态',
     dateTimePickerHint: 'single / range × 四种精度，浮层无遮罩',
-    modelPickerHint: '分组与联动两种形态，目录来自宿主',
+    modelPickerHint: '分组 / 平铺 / 联动三种形态，目录来自宿主',
     workspacePickerHint: '列表来自宿主快照，值为 workspaceId',
     splitGroupHint: '把两个控件焊成一体，外壳画框与分隔',
 
@@ -748,7 +748,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     pickerHint: 'Single, multi, search, groups, empty',
     dateTimePickerHint: 'single or range at four precisions, no mask',
-    modelPickerHint: 'Grouped or cascaded; catalog from host',
+    modelPickerHint: 'Grouped, flat or cascaded; catalog from host',
     workspacePickerHint: 'List from host snapshot; value is workspaceId',
     splitGroupHint: 'Welds two controls; the shell draws the frame',
 

@@ -12,7 +12,7 @@ import { folderIcon } from './picker-icons.js';
 export function WorkspacePicker(props) {
     ensureControls();
     const tt = props.translate ?? t;
-    const items = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot);
+    const items = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot, workspaceList.getSnapshot);
     const options = items.map((w) => ({ value: w.workspaceId, label: w.title }));
     // 「所有工作区」放最上面（单选才有意义）；选中发 '' —— 空串表示不筛
     const allOption = props.allowDefault !== false && props.mode !== 'multiple'
@@ -27,6 +27,10 @@ export function WorkspacePicker(props) {
         onChange: props.onChange,
         clearable: props.clearable,
         searchable: props.searchable,
+        width: props.width,
+        minWidth: props.minWidth,
+        maxWidth: props.maxWidth,
+        searchSizing: props.searchSizing,
         hint: props.hint,
         icon: props.icon === undefined ? folderIcon() : props.icon ?? undefined,
         placeholder: props.placeholder ?? tt('explorerRoot'),
@@ -34,6 +38,7 @@ export function WorkspacePicker(props) {
         size: props.size,
         placement: props.placement,
         className: props.className,
+        translate: props.translate,
     });
 }
 //# sourceMappingURL=WorkspacePicker.js.map

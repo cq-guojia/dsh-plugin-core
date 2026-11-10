@@ -1,6 +1,6 @@
 export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './infra/css.js';
 export { useLocale } from './infra/locale.js';
-export { filterGroups, flattenOptions, groupOf, labelsOf, resolveTriggerSizing, sliceGroups, toGroups, toggleValue, type PickerGroup, type PickerOption, } from './inputs/picker-logic.js';
+export { filterGroups, flattenOptions, groupOf, labelsOf, resolveMenuSizing, resolveTriggerSizing, sliceGroups, toFlatOptions, toGroups, toggleValue, type PickerGroup, type PickerOption, type PickerSizing, } from './inputs/picker-logic.js';
 export { Picker, type PickerProps, type PickerSize } from './inputs/Picker.js';
 export { DateTimePicker, type DateTimeOutput, type DateTimePickerProps, type DateTimeSize, } from './inputs/DateTimePicker.js';
 export { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, msToParts, nowParts, nowTimeFor, parseDateTime, partsOf, partsToMs, rangeIsValid, resolvePresetExpr, sameLocalDay, stepMax, stepUnit, toEndDraft, weekdayLabels, type DateTimeParts, type DateTimePrecision, type DateTimePreset, type DayCell, type DayRef, type EndDraft, type StepUnit, type TimeParts, } from './inputs/datetime-logic.js';

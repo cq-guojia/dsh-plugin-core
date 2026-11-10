@@ -1,7 +1,8 @@
 import { createElement as h, type ReactNode } from 'react';
 import { type PickerSize } from './Picker.js';
+import { type PickerSizing } from './picker-logic.js';
 import { type Translate } from '../../utils/i18n.js';
-export interface WorkspacePickerProps {
+export interface WorkspacePickerProps extends PickerSizing {
     value?: string | string[];
     defaultValue?: string | string[];
     mode?: 'single' | 'multiple';
@@ -22,6 +23,8 @@ export interface WorkspacePickerProps {
     size?: PickerSize;
     placement?: 'down' | 'up';
     className?: string;
+    /** 下拉内搜索框的宽度三轴（与 Picker 同口径）；不传铺满菜单宽度。 */
+    searchSizing?: PickerSizing;
     /** 未选时的文字（默认「工作区」；想叫「选择工作区」就传它）。 */
     placeholder?: string;
     /** 触发器前置图标：不传 = 默认文件夹；传 `null` = 不显示；传元素 = 自定义。 */

@@ -1,7 +1,7 @@
 import { createElement as h, useEffect, useState, useSyncExternalStore } from 'react';
 import { t } from '../../utils/i18n.js';
 import { Picker } from './Picker.js';
-import { flattenOptions, groupOf } from './picker-logic.js';
+import { flattenOptions, groupOf, toFlatOptions } from './picker-logic.js';
 import { modelCatalog } from '../infra/host-data.js';
 import { sparkleIcon } from './picker-icons.js';
 import { ensureComponentStyles } from '../infra/css.js';
@@ -16,7 +16,7 @@ export function ModelPicker(props) {
         ? undefined
         : { value: '', label: props.defaultLabel ?? tt('modelDefault') };
     // 目录状态：外部没喂目录（Node 自检 / 宿主缺服务）⇒ 空 + 如实降级，不编数据。
-    const catalog = useSyncExternalStore(modelCatalog.subscribe, modelCatalog.getSnapshot);
+    const catalog = useSyncExternalStore(modelCatalog.subscribe, modelCatalog.getSnapshot, modelCatalog.getSnapshot);
     const groups = props.groups ??
         (catalog.status === 'ready'
             ? catalog.routes.map((route) => ({
@@ -34,6 +34,7 @@ export function ModelPicker(props) {
     const emitModel = (v) => {
         props.onChange?.(typeof v === 'string' ? v : v[0] ?? '');
     };
+    const sizing = { width: props.width, minWidth: props.minWidth, maxWidth: props.maxWidth };
     // 联动态的厂商选择必须组件自己记 —— 值是从模型值反推的，换厂商会把模型清成 ''
     // （拍板口径），反推就再也找不到刚点的厂商（2026-10-20 真机：选完厂商后面仍是黑的）。
     const [pickedProvider, setPickedProvider] = useState('');
@@ -46,14 +47,14 @@ export function ModelPicker(props) {
         if (value !== undefined && value !== '')
             setPickedProvider('');
     }, [value]);
-    if (variant === 'grouped') {
+    if (variant === 'flat') {
+        const options = toFlatOptions(groups);
         return h(Picker, {
-            // 「默认模型」放最上面：空 label 的组，Picker 只渲染选项不渲染组头
-            groups: defaultOption === undefined
-                ? groups
-                : [{ value: '', label: '', options: [defaultOption] }, ...groups],
+            options: defaultOption === undefined ? options : [defaultOption, ...options],
             value,
             defaultValue: props.defaultValue,
+            ...sizing,
+            searchSizing: props.searchSizing,
             icon,
             placeholder: props.placeholder ?? tt('modelModel'),
             degraded,
@@ -64,6 +65,31 @@ export function ModelPicker(props) {
             size: props.size,
             placement: props.placement,
             className: props.className,
+            translate: props.translate,
+            onChange: emitModel,
+        });
+    }
+    if (variant === 'grouped') {
+        return h(Picker, {
+            // 「默认模型」放最上面：空 label 的组，Picker 只渲染选项不渲染组头
+            groups: defaultOption === undefined
+                ? groups
+                : [{ value: '', label: '', options: [defaultOption] }, ...groups],
+            value,
+            defaultValue: props.defaultValue,
+            ...sizing,
+            searchSizing: props.searchSizing,
+            icon,
+            placeholder: props.placeholder ?? tt('modelModel'),
+            degraded,
+            disabled: props.disabled,
+            clearable: props.clearable,
+            searchable,
+            hint: props.hint,
+            size: props.size,
+            placement: props.placement,
+            className: props.className,
+            translate: props.translate,
             onChange: emitModel,
         });
     }
@@ -76,8 +102,11 @@ export function ModelPicker(props) {
         placeholder: tt('modelProvider'),
         degraded,
         disabled: props.disabled,
-        searchable: false,
+        ...(props.providerSizing ?? sizing),
+        searchSizing: props.searchSizing,
+        searchable,
         size: props.size,
+        translate: props.translate,
         onChange: (v) => {
             setPickedProvider(typeof v === 'string' ? v : v[0] ?? '');
             props.onChange?.('');
@@ -86,6 +115,8 @@ export function ModelPicker(props) {
         options: defaultOption === undefined ? options : [defaultOption, ...options],
         value,
         defaultValue: props.defaultValue,
+        ...(props.modelSizing ?? sizing),
+        searchSizing: props.searchSizing,
         icon,
         placeholder: props.placeholder ?? tt('modelModel'),
         degraded,
@@ -96,6 +127,7 @@ export function ModelPicker(props) {
         size: props.size,
         placement: props.placement,
         className: props.className,
+        translate: props.translate,
         onChange: emitModel,
     }));
 }

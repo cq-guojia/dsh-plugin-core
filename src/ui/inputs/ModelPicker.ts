@@ -1,26 +1,28 @@
 import { createElement as h, useEffect, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
 import { Picker, type PickerSize } from './Picker.js'
-import { flattenOptions, groupOf, type PickerGroup } from './picker-logic.js'
+import { flattenOptions, groupOf, toFlatOptions, type PickerGroup, type PickerSizing } from './picker-logic.js'
 import { modelCatalog } from '../infra/host-data.js'
 import { sparkleIcon } from './picker-icons.js'
 import { ensureComponentStyles } from '../infra/css.js'
 import { PICKER_CSS } from './picker-css.js'
 
 /**
- * 模型选择器的两种形态（消费者自选）：
- * - `grouped`（分组，默认）：**一个下拉、完全独立**，供应商做组头、模型列在下面，不与任何东西联动。
- * - `cascade`（联动）：**两个下拉、彼此联动** —— 先选供应商，后面模型列表跟着筛；
- *   换供应商会清空已选模型（旧模型不属于新供应商）。
+ * 选择模型的三种形态（消费者自选）：
+ * - `grouped`（分组，默认）：一个下拉，供应商做组头、模型列在下面。
+ * - `flat`（平铺）：一个下拉，所有模型平铺成「厂商-模型」，不分组，搜厂商名即可筛。
+ * - `cascade`（联动）：两个下拉，先选供应商、模型列表跟着筛；两个框都带搜索。
  *
  * **返回口径一致**：`onChange` 一律发最终模型值（`${provider}/${id}`）；级联态换供应商先发 `''`。
  * 选「默认模型」也发 `''` —— 表示没选，调用方自己处理。
  *
  * **数据自带**：不传 `groups` 就读 `connectHost(ctx, { modelsPath })` 喂进的真实目录。
+ * **宽度**：`width` / `minWidth` / `maxWidth` 管触发器（三种形态通用）；
+ * `searchSizing` 管所有搜索框；cascade 的两个框另可分别用 `providerSizing` / `modelSizing` 覆盖。
  */
-export type ModelPickerVariant = 'grouped' | 'cascade'
+export type ModelPickerVariant = 'grouped' | 'flat' | 'cascade'
 
-export interface ModelPickerProps {
+export interface ModelPickerProps extends PickerSizing {
   /** 覆盖内置目录（一般不用；测试或特殊数据源时才传）。 */
   groups?: PickerGroup[]
   variant?: ModelPickerVariant
@@ -43,11 +45,17 @@ export interface ModelPickerProps {
   degraded?: boolean
   disabled?: boolean
   clearable?: boolean
-  /** 下拉内搜索框（默认开；要关传 false）。 */
+  /** 下拉内搜索框（默认开；要关传 false）。三种形态、cascade 两个框一起生效。 */
   searchable?: boolean
   size?: PickerSize
   placement?: 'down' | 'up'
   className?: string
+  /** 下拉内搜索框的宽度三轴（所有形态共用）；不传沿用 CSS 的 100% 铺满。 */
+  searchSizing?: PickerSizing
+  /** cascade：厂商框单独宽度；不传跟随 width / minWidth / maxWidth。 */
+  providerSizing?: PickerSizing
+  /** cascade：模型框单独宽度；不传跟随 width / minWidth / maxWidth。 */
+  modelSizing?: PickerSizing
   translate?: Translate
 }
 
@@ -62,7 +70,7 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
     : { value: '', label: props.defaultLabel ?? tt('modelDefault') }
 
   // 目录状态：外部没喂目录（Node 自检 / 宿主缺服务）⇒ 空 + 如实降级，不编数据。
-  const catalog = useSyncExternalStore(modelCatalog.subscribe, modelCatalog.getSnapshot)
+  const catalog = useSyncExternalStore(modelCatalog.subscribe, modelCatalog.getSnapshot, modelCatalog.getSnapshot)
   const groups =
     props.groups ??
     (catalog.status === 'ready'
@@ -81,6 +89,7 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
   const emitModel = (v: string | string[]): void => {
     props.onChange?.(typeof v === 'string' ? v : v[0] ?? '')
   }
+  const sizing: PickerSizing = { width: props.width, minWidth: props.minWidth, maxWidth: props.maxWidth }
 
   // 联动态的厂商选择必须组件自己记 —— 值是从模型值反推的，换厂商会把模型清成 ''
   // （拍板口径），反推就再也找不到刚点的厂商（2026-10-20 真机：选完厂商后面仍是黑的）。
@@ -95,14 +104,14 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
     if (value !== undefined && value !== '') setPickedProvider('')
   }, [value])
 
-  if (variant === 'grouped') {
+  if (variant === 'flat') {
+    const options = toFlatOptions(groups)
     return h(Picker, {
-      // 「默认模型」放最上面：空 label 的组，Picker 只渲染选项不渲染组头
-      groups: defaultOption === undefined
-        ? groups
-        : [{ value: '', label: '', options: [defaultOption] }, ...groups],
+      options: defaultOption === undefined ? options : [defaultOption, ...options],
       value,
       defaultValue: props.defaultValue,
+      ...sizing,
+      searchSizing: props.searchSizing,
       icon,
       placeholder: props.placeholder ?? tt('modelModel'),
       degraded,
@@ -113,6 +122,32 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
       size: props.size,
       placement: props.placement,
       className: props.className,
+      translate: props.translate,
+      onChange: emitModel,
+    })
+  }
+
+  if (variant === 'grouped') {
+    return h(Picker, {
+      // 「默认模型」放最上面：空 label 的组，Picker 只渲染选项不渲染组头
+      groups: defaultOption === undefined
+        ? groups
+        : [{ value: '', label: '', options: [defaultOption] }, ...groups],
+      value,
+      defaultValue: props.defaultValue,
+      ...sizing,
+      searchSizing: props.searchSizing,
+      icon,
+      placeholder: props.placeholder ?? tt('modelModel'),
+      degraded,
+      disabled: props.disabled,
+      clearable: props.clearable,
+      searchable,
+      hint: props.hint,
+      size: props.size,
+      placement: props.placement,
+      className: props.className,
+      translate: props.translate,
       onChange: emitModel,
     })
   }
@@ -129,8 +164,11 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
       placeholder: tt('modelProvider'),
       degraded,
       disabled: props.disabled,
-      searchable: false,
+      ...(props.providerSizing ?? sizing),
+      searchSizing: props.searchSizing,
+      searchable,
       size: props.size,
+      translate: props.translate,
       onChange: (v) => {
         setPickedProvider(typeof v === 'string' ? v : v[0] ?? '')
         props.onChange?.('')
@@ -140,6 +178,8 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
       options: defaultOption === undefined ? options : [defaultOption, ...options],
       value,
       defaultValue: props.defaultValue,
+      ...(props.modelSizing ?? sizing),
+      searchSizing: props.searchSizing,
       icon,
       placeholder: props.placeholder ?? tt('modelModel'),
       degraded,
@@ -150,6 +190,7 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
       size: props.size,
       placement: props.placement,
       className: props.className,
+      translate: props.translate,
       onChange: emitModel,
     }),
   )
