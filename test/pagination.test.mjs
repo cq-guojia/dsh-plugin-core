@@ -101,3 +101,13 @@ test('Pagination 渲染：可选项按需生效', () => {
   // showTotal ⇒ 出现总数文案
   assert.match(html({ page: 1, pageSize: 10, total: 86, showTotal: true, onChange() {} }), /第 1-10 条，共 86 条/)
 })
+
+test('Pagination 每页条数下拉：尺寸档位由消费方选（sm/md/lg）', () => {
+  const base = { page: 1, pageSize: 10, total: 86, pageSizeOptions: [10, 20], onChange() {} }
+  assert.match(html({ ...base, size: 'sm' }), /dshpc-picker__trigger--sm/)
+  assert.match(html({ ...base, size: 'lg' }), /dshpc-picker__trigger--lg/)
+  // 不传 ⇒ Picker 默认 md，且尺寸真的落在下拉触发器上而不是页码按钮上
+  const defaultMarkup = html(base)
+  assert.doesNotMatch(defaultMarkup, /dshpc-picker__trigger--sm/)
+  assert.doesNotMatch(defaultMarkup, /dshpc-picker__trigger--lg/)
+})

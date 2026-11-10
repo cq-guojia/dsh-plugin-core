@@ -1,5 +1,6 @@
 import { type CSSProperties, type ReactNode } from 'react';
 import { type Translate } from '../../utils/i18n.js';
+import { type PickerSize } from '../inputs/Picker.js';
 import { type PageTotalRenderer, type PaginationAlign } from './pagination-logic.js';
 /**
  * 分页控件 props。
@@ -24,6 +25,8 @@ export interface PaginationProps {
     boundaryCount?: number;
     /** 传了才出现「每页条数」下拉（如 `[10, 20, 50]`）。 */
     pageSizeOptions?: readonly number[];
+    /** 「每页条数」下拉的尺寸档位（`sm` / `md` / `lg`，默认 `md`）；页码按钮固定 `md`。 */
+    size?: PickerSize;
     /** 总数文案：`true` 走内置字典，也可给函数自定义（收到总条数、起始行、结束行）。 */
     showTotal?: boolean | PageTotalRenderer;
     /** 只有一页时整条不渲染。 */

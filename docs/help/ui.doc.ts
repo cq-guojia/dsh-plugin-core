@@ -239,6 +239,7 @@ h(Pagination, {
   onChange: (nextPage, nextSize) => { setPage(nextPage); setPageSize(nextSize) },
   align: 'right',                 // left / center / right（默认 right）
   pageSizeOptions: [10, 20, 50],  // 传了才出现「每页条数」下拉
+  size: 'sm',                     // 该下拉的尺寸：sm / md / lg（默认 md）
   showTotal: true,                // 传了才出现「第 1-10 条，共 86 条」
   siblingCount: 1,                // 当前页两侧留几页（默认 1）
   boundaryCount: 1,               // 首尾各固定几页（默认 1；1/1 合计最多 7 个位置）
@@ -875,6 +876,7 @@ const doc: DocTopic = {
             { name: 'align', type: "'left' | 'center' | 'right'", def: "'right'", desc: { zh: '分页条位置（默认放右边）', en: 'Pager placement (right by default)' } },
             { name: 'siblingCount / boundaryCount', type: 'number / number', def: '1 / 1', desc: { zh: '当前页两侧页数 / 首尾固定页数；1/1 合计最多 7 个位置', en: 'Pages beside the current one / pages pinned at each end; 1/1 gives at most 7 slots' } },
             { name: 'pageSizeOptions', type: 'number[]', def: '—', desc: { zh: '传了才出现「每页条数」下拉', en: 'Only then does the rows-per-page select appear' } },
+            { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'md'", desc: { zh: '「每页条数」下拉的尺寸档位；页码按钮固定 md', en: 'Size of the rows-per-page select; page buttons stay md' } },
             { name: 'showTotal', type: 'boolean | (total, from, to) => ReactNode', def: '—', desc: { zh: '总数文案：不传 = 不显示（默认关），传 true 走内置字典，传函数可自定义', en: 'Total copy: omitted = hidden (off by default), true uses the dictionary, a renderer customises it' } },
             { name: 'hideOnSinglePage', type: 'boolean', def: 'false', desc: { zh: '只有一页时整条不渲染', en: 'Render nothing when there is a single page' } },
             { name: 'simple', type: 'boolean', def: 'false', desc: { zh: '简洁模式：只留「‹ 2 / 36 ›」', en: 'Simple mode: only “‹ 2 / 36 ›”' } },

@@ -89,6 +89,7 @@ export function Pagination(props) {
             className: 'dshpc-pagination__size',
             minWidth: 'auto',
             mode: 'single',
+            size: props.size,
             options: options.map((size) => ({
                 value: String(size),
                 label: tt('paginationPageSizeOption', { n: size }),

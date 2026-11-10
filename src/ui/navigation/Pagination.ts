@@ -2,7 +2,7 @@ import { createElement as h, type CSSProperties, type ReactNode } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
 import { ensureComponentStyles } from '../infra/css.js'
 import { PAGINATION_CSS } from '../infra/controls-css.js'
-import { Picker } from '../inputs/Picker.js'
+import { Picker, type PickerSize } from '../inputs/Picker.js'
 import { Button } from '../actions/Button.js'
 import { Chevron } from '../infra/chevron.js'
 import { useOverlayLocked } from '../infra/overlay.js'
@@ -38,6 +38,8 @@ export interface PaginationProps {
   boundaryCount?: number
   /** 传了才出现「每页条数」下拉（如 `[10, 20, 50]`）。 */
   pageSizeOptions?: readonly number[]
+  /** 「每页条数」下拉的尺寸档位（`sm` / `md` / `lg`，默认 `md`）；页码按钮固定 `md`。 */
+  size?: PickerSize
   /** 总数文案：`true` 走内置字典，也可给函数自定义（收到总条数、起始行、结束行）。 */
   showTotal?: boolean | PageTotalRenderer
   /** 只有一页时整条不渲染。 */
@@ -168,6 +170,7 @@ export function Pagination(props: PaginationProps): ReactNode {
           className: 'dshpc-pagination__size',
           minWidth: 'auto',
           mode: 'single',
+          size: props.size,
           options: options.map((size) => ({
             value: String(size),
             label: tt('paginationPageSizeOption', { n: size }),

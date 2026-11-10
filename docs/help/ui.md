@@ -700,6 +700,7 @@ h(Table, {
 | `align` | `'left' \| 'center' \| 'right'` | — | 'right' | 分页条位置（默认放右边） | Pager placement (right by default) |
 | `siblingCount / boundaryCount` | `number / number` | — | 1 / 1 | 当前页两侧页数 / 首尾固定页数；1/1 合计最多 7 个位置 | Pages beside the current one / pages pinned at each end; 1/1 gives at most 7 slots |
 | `pageSizeOptions` | `number[]` | — | — | 传了才出现「每页条数」下拉 | Only then does the rows-per-page select appear |
+| `size` | `'sm' \| 'md' \| 'lg'` | — | 'md' | 「每页条数」下拉的尺寸档位；页码按钮固定 md | Size of the rows-per-page select; page buttons stay md |
 | `showTotal` | `boolean \| (total, from, to) => ReactNode` | — | — | 总数文案：不传 = 不显示（默认关），传 true 走内置字典，传函数可自定义 | Total copy: omitted = hidden (off by default), true uses the dictionary, a renderer customises it |
 | `hideOnSinglePage` | `boolean` | — | false | 只有一页时整条不渲染 | Render nothing when there is a single page |
 | `simple` | `boolean` | — | false | 简洁模式：只留「‹ 2 / 36 ›」 | Simple mode: only “‹ 2 / 36 ›” |
@@ -716,6 +717,7 @@ h(Pagination, {
   onChange: (nextPage, nextSize) => { setPage(nextPage); setPageSize(nextSize) },
   align: 'right',                 // left / center / right（默认 right）
   pageSizeOptions: [10, 20, 50],  // 传了才出现「每页条数」下拉
+  size: 'sm',                     // 该下拉的尺寸：sm / md / lg（默认 md）
   showTotal: true,                // 传了才出现「第 1-10 条，共 86 条」
   siblingCount: 1,                // 当前页两侧留几页（默认 1）
   boundaryCount: 1,               // 首尾各固定几页（默认 1；1/1 合计最多 7 个位置）

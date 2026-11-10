@@ -3072,6 +3072,15 @@ export const docData = {
             }
           },
           {
+            "name": "size",
+            "type": "'sm' | 'md' | 'lg'",
+            "def": "'md'",
+            "desc": {
+              "zh": "「每页条数」下拉的尺寸档位；页码按钮固定 md",
+              "en": "Size of the rows-per-page select; page buttons stay md"
+            }
+          },
+          {
             "name": "showTotal",
             "type": "boolean | (total, from, to) => ReactNode",
             "def": "—",
@@ -3123,7 +3132,7 @@ export const docData = {
       {
         "id": "ui-pagination-example",
         "lang": "tsx",
-        "src": "import { Pagination, Table } from 'dsh-plugin-core/ui'\n\n// 独立控件：只给当前页 / 每页条数 / 总条数 —— 总页数与省略窗口由控件算，\n// 消费方永远不自己算页数、也不自己渲染页码\nh(Pagination, {\n  page, pageSize, total: 86,\n  onChange: (nextPage, nextSize) => { setPage(nextPage); setPageSize(nextSize) },\n  align: 'right',                 // left / center / right（默认 right）\n  pageSizeOptions: [10, 20, 50],  // 传了才出现「每页条数」下拉\n  showTotal: true,                // 传了才出现「第 1-10 条，共 86 条」\n  siblingCount: 1,                // 当前页两侧留几页（默认 1）\n  boundaryCount: 1,               // 首尾各固定几页（默认 1；1/1 合计最多 7 个位置）\n  hideOnSinglePage: true,         // 只有一页时整条不渲染\n})\n\n// 简洁模式：只留上一页 / 下一页与「2 / 36」\nh(Pagination, { page, pageSize, total: 86, simple: true, onChange })\n\n// Table 内建：不传 total = 本地分页（rows 是全量，表格自己按当前页切片，页码排在表下）\nh(Table, {\n  columns, rows,\n  pagination: { page, pageSize, showTotal: true, onChange },\n})\n\n// 服务端分页：给了 total 就不切片（rows 只放当前页那几条），表格只负责摆页码\nh(Table, {\n  columns, rows: currentPageRows,\n  pagination: { page, pageSize, total: 86, onChange },\n})\n\n// 加载态（滚动加载，与分页二选一）：onLoadMore 本身就是开关 —— 传了就监听底部\nh(Table, {\n  columns, rows: [],\n  loading: true,                  // 首屏一条数据都没有：整表高占位（默认 160px）\n  loadingHeight: 160,\n})\n\nh(Table, {\n  columns, rows,\n  loadingMore: true,              // 正在取下一页：底部一行小转圈\n  hasMore: true,                  // false ⇒ 底部「没有更多数据」；noMoreText: false 可关\n  onLoadMore: () => fetchNextPage(),   // 滚到接近底部自动触发一次\n})"
+        "src": "import { Pagination, Table } from 'dsh-plugin-core/ui'\n\n// 独立控件：只给当前页 / 每页条数 / 总条数 —— 总页数与省略窗口由控件算，\n// 消费方永远不自己算页数、也不自己渲染页码\nh(Pagination, {\n  page, pageSize, total: 86,\n  onChange: (nextPage, nextSize) => { setPage(nextPage); setPageSize(nextSize) },\n  align: 'right',                 // left / center / right（默认 right）\n  pageSizeOptions: [10, 20, 50],  // 传了才出现「每页条数」下拉\n  size: 'sm',                     // 该下拉的尺寸：sm / md / lg（默认 md）\n  showTotal: true,                // 传了才出现「第 1-10 条，共 86 条」\n  siblingCount: 1,                // 当前页两侧留几页（默认 1）\n  boundaryCount: 1,               // 首尾各固定几页（默认 1；1/1 合计最多 7 个位置）\n  hideOnSinglePage: true,         // 只有一页时整条不渲染\n})\n\n// 简洁模式：只留上一页 / 下一页与「2 / 36」\nh(Pagination, { page, pageSize, total: 86, simple: true, onChange })\n\n// Table 内建：不传 total = 本地分页（rows 是全量，表格自己按当前页切片，页码排在表下）\nh(Table, {\n  columns, rows,\n  pagination: { page, pageSize, showTotal: true, onChange },\n})\n\n// 服务端分页：给了 total 就不切片（rows 只放当前页那几条），表格只负责摆页码\nh(Table, {\n  columns, rows: currentPageRows,\n  pagination: { page, pageSize, total: 86, onChange },\n})\n\n// 加载态（滚动加载，与分页二选一）：onLoadMore 本身就是开关 —— 传了就监听底部\nh(Table, {\n  columns, rows: [],\n  loading: true,                  // 首屏一条数据都没有：整表高占位（默认 160px）\n  loadingHeight: 160,\n})\n\nh(Table, {\n  columns, rows,\n  loadingMore: true,              // 正在取下一页：底部一行小转圈\n  hasMore: true,                  // false ⇒ 底部「没有更多数据」；noMoreText: false 可关\n  onLoadMore: () => fetchNextPage(),   // 滚到接近底部自动触发一次\n})"
       }
     ]
   },

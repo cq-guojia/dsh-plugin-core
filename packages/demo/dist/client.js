@@ -6682,6 +6682,7 @@ function Pagination(props) {
     className: "dshpc-pagination__size",
     minWidth: "auto",
     mode: "single",
+    size: props.size,
     options: options.map((size4) => ({
       value: String(size4),
       label: tt("paginationPageSizeOption", { n: size4 })
@@ -65833,6 +65834,15 @@ var docData = {
             }
           },
           {
+            "name": "size",
+            "type": "'sm' | 'md' | 'lg'",
+            "def": "'md'",
+            "desc": {
+              "zh": "\u300C\u6BCF\u9875\u6761\u6570\u300D\u4E0B\u62C9\u7684\u5C3A\u5BF8\u6863\u4F4D\uFF1B\u9875\u7801\u6309\u94AE\u56FA\u5B9A md",
+              "en": "Size of the rows-per-page select; page buttons stay md"
+            }
+          },
+          {
             "name": "showTotal",
             "type": "boolean | (total, from, to) => ReactNode",
             "def": "\u2014",
@@ -65884,7 +65894,7 @@ var docData = {
       {
         "id": "ui-pagination-example",
         "lang": "tsx",
-        "src": "import { Pagination, Table } from 'dsh-plugin-core/ui'\n\n// \u72EC\u7ACB\u63A7\u4EF6\uFF1A\u53EA\u7ED9\u5F53\u524D\u9875 / \u6BCF\u9875\u6761\u6570 / \u603B\u6761\u6570 \u2014\u2014 \u603B\u9875\u6570\u4E0E\u7701\u7565\u7A97\u53E3\u7531\u63A7\u4EF6\u7B97\uFF0C\n// \u6D88\u8D39\u65B9\u6C38\u8FDC\u4E0D\u81EA\u5DF1\u7B97\u9875\u6570\u3001\u4E5F\u4E0D\u81EA\u5DF1\u6E32\u67D3\u9875\u7801\nh(Pagination, {\n  page, pageSize, total: 86,\n  onChange: (nextPage, nextSize) => { setPage(nextPage); setPageSize(nextSize) },\n  align: 'right',                 // left / center / right\uFF08\u9ED8\u8BA4 right\uFF09\n  pageSizeOptions: [10, 20, 50],  // \u4F20\u4E86\u624D\u51FA\u73B0\u300C\u6BCF\u9875\u6761\u6570\u300D\u4E0B\u62C9\n  showTotal: true,                // \u4F20\u4E86\u624D\u51FA\u73B0\u300C\u7B2C 1-10 \u6761\uFF0C\u5171 86 \u6761\u300D\n  siblingCount: 1,                // \u5F53\u524D\u9875\u4E24\u4FA7\u7559\u51E0\u9875\uFF08\u9ED8\u8BA4 1\uFF09\n  boundaryCount: 1,               // \u9996\u5C3E\u5404\u56FA\u5B9A\u51E0\u9875\uFF08\u9ED8\u8BA4 1\uFF1B1/1 \u5408\u8BA1\u6700\u591A 7 \u4E2A\u4F4D\u7F6E\uFF09\n  hideOnSinglePage: true,         // \u53EA\u6709\u4E00\u9875\u65F6\u6574\u6761\u4E0D\u6E32\u67D3\n})\n\n// \u7B80\u6D01\u6A21\u5F0F\uFF1A\u53EA\u7559\u4E0A\u4E00\u9875 / \u4E0B\u4E00\u9875\u4E0E\u300C2 / 36\u300D\nh(Pagination, { page, pageSize, total: 86, simple: true, onChange })\n\n// Table \u5185\u5EFA\uFF1A\u4E0D\u4F20 total = \u672C\u5730\u5206\u9875\uFF08rows \u662F\u5168\u91CF\uFF0C\u8868\u683C\u81EA\u5DF1\u6309\u5F53\u524D\u9875\u5207\u7247\uFF0C\u9875\u7801\u6392\u5728\u8868\u4E0B\uFF09\nh(Table, {\n  columns, rows,\n  pagination: { page, pageSize, showTotal: true, onChange },\n})\n\n// \u670D\u52A1\u7AEF\u5206\u9875\uFF1A\u7ED9\u4E86 total \u5C31\u4E0D\u5207\u7247\uFF08rows \u53EA\u653E\u5F53\u524D\u9875\u90A3\u51E0\u6761\uFF09\uFF0C\u8868\u683C\u53EA\u8D1F\u8D23\u6446\u9875\u7801\nh(Table, {\n  columns, rows: currentPageRows,\n  pagination: { page, pageSize, total: 86, onChange },\n})\n\n// \u52A0\u8F7D\u6001\uFF08\u6EDA\u52A8\u52A0\u8F7D\uFF0C\u4E0E\u5206\u9875\u4E8C\u9009\u4E00\uFF09\uFF1AonLoadMore \u672C\u8EAB\u5C31\u662F\u5F00\u5173 \u2014\u2014 \u4F20\u4E86\u5C31\u76D1\u542C\u5E95\u90E8\nh(Table, {\n  columns, rows: [],\n  loading: true,                  // \u9996\u5C4F\u4E00\u6761\u6570\u636E\u90FD\u6CA1\u6709\uFF1A\u6574\u8868\u9AD8\u5360\u4F4D\uFF08\u9ED8\u8BA4 160px\uFF09\n  loadingHeight: 160,\n})\n\nh(Table, {\n  columns, rows,\n  loadingMore: true,              // \u6B63\u5728\u53D6\u4E0B\u4E00\u9875\uFF1A\u5E95\u90E8\u4E00\u884C\u5C0F\u8F6C\u5708\n  hasMore: true,                  // false \u21D2 \u5E95\u90E8\u300C\u6CA1\u6709\u66F4\u591A\u6570\u636E\u300D\uFF1BnoMoreText: false \u53EF\u5173\n  onLoadMore: () => fetchNextPage(),   // \u6EDA\u5230\u63A5\u8FD1\u5E95\u90E8\u81EA\u52A8\u89E6\u53D1\u4E00\u6B21\n})"
+        "src": "import { Pagination, Table } from 'dsh-plugin-core/ui'\n\n// \u72EC\u7ACB\u63A7\u4EF6\uFF1A\u53EA\u7ED9\u5F53\u524D\u9875 / \u6BCF\u9875\u6761\u6570 / \u603B\u6761\u6570 \u2014\u2014 \u603B\u9875\u6570\u4E0E\u7701\u7565\u7A97\u53E3\u7531\u63A7\u4EF6\u7B97\uFF0C\n// \u6D88\u8D39\u65B9\u6C38\u8FDC\u4E0D\u81EA\u5DF1\u7B97\u9875\u6570\u3001\u4E5F\u4E0D\u81EA\u5DF1\u6E32\u67D3\u9875\u7801\nh(Pagination, {\n  page, pageSize, total: 86,\n  onChange: (nextPage, nextSize) => { setPage(nextPage); setPageSize(nextSize) },\n  align: 'right',                 // left / center / right\uFF08\u9ED8\u8BA4 right\uFF09\n  pageSizeOptions: [10, 20, 50],  // \u4F20\u4E86\u624D\u51FA\u73B0\u300C\u6BCF\u9875\u6761\u6570\u300D\u4E0B\u62C9\n  size: 'sm',                     // \u8BE5\u4E0B\u62C9\u7684\u5C3A\u5BF8\uFF1Asm / md / lg\uFF08\u9ED8\u8BA4 md\uFF09\n  showTotal: true,                // \u4F20\u4E86\u624D\u51FA\u73B0\u300C\u7B2C 1-10 \u6761\uFF0C\u5171 86 \u6761\u300D\n  siblingCount: 1,                // \u5F53\u524D\u9875\u4E24\u4FA7\u7559\u51E0\u9875\uFF08\u9ED8\u8BA4 1\uFF09\n  boundaryCount: 1,               // \u9996\u5C3E\u5404\u56FA\u5B9A\u51E0\u9875\uFF08\u9ED8\u8BA4 1\uFF1B1/1 \u5408\u8BA1\u6700\u591A 7 \u4E2A\u4F4D\u7F6E\uFF09\n  hideOnSinglePage: true,         // \u53EA\u6709\u4E00\u9875\u65F6\u6574\u6761\u4E0D\u6E32\u67D3\n})\n\n// \u7B80\u6D01\u6A21\u5F0F\uFF1A\u53EA\u7559\u4E0A\u4E00\u9875 / \u4E0B\u4E00\u9875\u4E0E\u300C2 / 36\u300D\nh(Pagination, { page, pageSize, total: 86, simple: true, onChange })\n\n// Table \u5185\u5EFA\uFF1A\u4E0D\u4F20 total = \u672C\u5730\u5206\u9875\uFF08rows \u662F\u5168\u91CF\uFF0C\u8868\u683C\u81EA\u5DF1\u6309\u5F53\u524D\u9875\u5207\u7247\uFF0C\u9875\u7801\u6392\u5728\u8868\u4E0B\uFF09\nh(Table, {\n  columns, rows,\n  pagination: { page, pageSize, showTotal: true, onChange },\n})\n\n// \u670D\u52A1\u7AEF\u5206\u9875\uFF1A\u7ED9\u4E86 total \u5C31\u4E0D\u5207\u7247\uFF08rows \u53EA\u653E\u5F53\u524D\u9875\u90A3\u51E0\u6761\uFF09\uFF0C\u8868\u683C\u53EA\u8D1F\u8D23\u6446\u9875\u7801\nh(Table, {\n  columns, rows: currentPageRows,\n  pagination: { page, pageSize, total: 86, onChange },\n})\n\n// \u52A0\u8F7D\u6001\uFF08\u6EDA\u52A8\u52A0\u8F7D\uFF0C\u4E0E\u5206\u9875\u4E8C\u9009\u4E00\uFF09\uFF1AonLoadMore \u672C\u8EAB\u5C31\u662F\u5F00\u5173 \u2014\u2014 \u4F20\u4E86\u5C31\u76D1\u542C\u5E95\u90E8\nh(Table, {\n  columns, rows: [],\n  loading: true,                  // \u9996\u5C4F\u4E00\u6761\u6570\u636E\u90FD\u6CA1\u6709\uFF1A\u6574\u8868\u9AD8\u5360\u4F4D\uFF08\u9ED8\u8BA4 160px\uFF09\n  loadingHeight: 160,\n})\n\nh(Table, {\n  columns, rows,\n  loadingMore: true,              // \u6B63\u5728\u53D6\u4E0B\u4E00\u9875\uFF1A\u5E95\u90E8\u4E00\u884C\u5C0F\u8F6C\u5708\n  hasMore: true,                  // false \u21D2 \u5E95\u90E8\u300C\u6CA1\u6709\u66F4\u591A\u6570\u636E\u300D\uFF1BnoMoreText: false \u53EF\u5173\n  onLoadMore: () => fetchNextPage(),   // \u6EDA\u5230\u63A5\u8FD1\u5E95\u90E8\u81EA\u52A8\u89E6\u53D1\u4E00\u6B21\n})"
       }
     ]
   },
@@ -71238,9 +71248,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.11"}`],
-            [t3("buildDemo"), `v${"0.35.11"}`],
-            [t3("buildStamp"), "261110-132737-678"]
+            [t3("buildCore"), `v${"0.35.12"}`],
+            [t3("buildDemo"), `v${"0.35.12"}`],
+            [t3("buildStamp"), "261110-134421-481"]
           ].map(
             ([label, value]) => (0, import_react98.createElement)(
               "tr",
@@ -71556,9 +71566,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react100.createElement)("span", null, `core v${"0.35.11"}`),
-          (0, import_react100.createElement)("span", null, `demo v${"0.35.11"}`),
-          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-132737-678")
+          (0, import_react100.createElement)("span", null, `core v${"0.35.12"}`),
+          (0, import_react100.createElement)("span", null, `demo v${"0.35.12"}`),
+          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-134421-481")
         )
       )
     ),
