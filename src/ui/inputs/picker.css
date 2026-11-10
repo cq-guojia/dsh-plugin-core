@@ -34,16 +34,24 @@
 /* 尺寸档（与 Field 的 sm/md/lg 对应）。 */
 .dshpc-picker__trigger--sm{height:24px;font-size:12px}
 .dshpc-picker__trigger--lg{height:32px}
+/* ── 菜单内部：全部收进 .dshpc-picker__menu 作用域（不要退回裸单类）─────────────
+   每个消费插件都把 core 内联进自己的产物，同一页上可能同时挂着**旧版 core** 的同一批
+   dshpc-* 规则（v0.35.15 的选项是 4px 圆角、提示条是通栏 0 圆角）。旧规则与本文件同为
+   单类选择器（0,1,0），谁后挂载谁赢 —— 2026-11-10 用户真机：选中行 / 悬停行 / 黄色提示块
+   三处圆角全退回旧值，而搜索框（旧版碰巧同值）看着正常。
+   收进菜单祖先（0,2,0）后，无论新旧 CSS 谁先注入，当前版本都赢。
+   根治是类名跨版本隔离（已知未完成项）；在那之前，这层作用域不是可选修饰。 */
+
 /* 键盘游标所在项（无 hover 也要看得见）。 */
-.dshpc-picker__option[data-active='true']{background:var(--dshpc-surface-sunken);outline:1px solid var(--dshpc-border)}
-.dshpc-picker__option--clear{color:var(--dshpc-fg-3)}
-.dshpc-picker__search{
+.dshpc-picker__menu .dshpc-picker__option[data-active='true']{background:var(--dshpc-surface-sunken);outline:1px solid var(--dshpc-border)}
+.dshpc-picker__menu .dshpc-picker__option--clear{color:var(--dshpc-fg-3)}
+.dshpc-picker__menu .dshpc-picker__search{
   width:100%;height:28px;margin-bottom:4px;padding:0 8px;box-sizing:border-box;
   color:var(--dshpc-fg);background:var(--dshpc-surface-sunken);
   border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);outline:none;
 }
-.dshpc-picker__search::placeholder{color:var(--dshpc-fg-3)}
-.dshpc-picker__group-label{
+.dshpc-picker__menu .dshpc-picker__search::placeholder{color:var(--dshpc-fg-3)}
+.dshpc-picker__menu .dshpc-picker__group-label{
   padding:6px 8px 2px;color:var(--dshpc-fg-3);font-size:11px;
 }
 /* 圆角只跟全站「框 / 行」那一档走：--dshpc-radius-md。
@@ -51,38 +59,38 @@
    圆角也是从 Surface 继承的 —— 所以这里不能自己挑 xs/sm 之类更小的档。2026-11-10 用户真机截图：
    搜索框（md）与被选中的蓝行（xs）圆角明显不齐，同在一个面板里像两套控件。
    大圆角仍然只归外层菜单（panel.css 的 menu 档 + overflow:hidden）。 */
-.dshpc-picker__option{
+.dshpc-picker__menu .dshpc-picker__option{
   display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--dshpc-radius-md);cursor:pointer;
   color:var(--dshpc-fg);white-space:nowrap;
 }
-/* 行与行之间留一档间距（4px）：md 圆角的两行底色直接相接会连成一根胶囊，多选连选两项时
-   看不出是两条（2026-11-10 用户截图）。只用间距四拍里最小档，不写魔法数。 */
-.dshpc-picker__option + .dshpc-picker__option{margin-top:var(--dshpc-space-1)}
+/* 行与行之间隔 1px（用户 2026-11-10 指名：只要 1px，不要间距四拍里的 4px —— 四档是排版用的，
+   这种「把两条底色分开一点」的细分缝是用户点名的值，按原样写）。 */
+.dshpc-picker__menu .dshpc-picker__option + .dshpc-picker__option{margin-top:1px}
 /* hover / 选中直接借 ListRow 的两条 token —— 同一个「行」语义，与列表条目对齐。
    选中不染文字色：蓝字是「链接」语义，行选中只换底（list-row.css:44-47 的口径）。
    2026-11-10 用户：原来蓝底蓝字 + 亮一点的灰，和 ListRow 完全不是一套。 */
-.dshpc-picker__option:hover{background:var(--dshpc-listrow-hover-bg)}
-.dshpc-picker__option--active{background:var(--dshpc-listrow-selected-bg);color:var(--dshpc-fg)}
-.dshpc-picker__option--disabled{color:var(--dshpc-fg-dim);cursor:not-allowed}
+.dshpc-picker__menu .dshpc-picker__option:hover{background:var(--dshpc-listrow-hover-bg)}
+.dshpc-picker__menu .dshpc-picker__option--active{background:var(--dshpc-listrow-selected-bg);color:var(--dshpc-fg)}
+.dshpc-picker__menu .dshpc-picker__option--disabled{color:var(--dshpc-fg-dim);cursor:not-allowed}
 /* 选项文字吃掉剩余宽度：超长省略号（配合 MarqueeText hover 跑马灯），不撑宽菜单。 */
-.dshpc-picker__option-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dshpc-picker__tick{width:12px;color:var(--dshpc-business)}
-.dshpc-picker__empty{padding:8px;color:var(--dshpc-fg-3);text-align:center}
+.dshpc-picker__menu .dshpc-picker__option-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dshpc-picker__menu .dshpc-picker__tick{width:12px;color:var(--dshpc-business)}
+.dshpc-picker__menu .dshpc-picker__empty{padding:8px;color:var(--dshpc-fg-3);text-align:center}
 /* 提示条（候选不完整 / 已到上限）与列表行同一套「块」：md 圆角 + 行内距，左右对齐搜索框与选项
    （不再靠负 margin 伸到菜单内壁），只是配色换成提示黄。2026-11-10 用户：那条通栏太难看了，
    要做成下面选中行那种框、用提示色。 */
-.dshpc-picker__degraded{
+.dshpc-picker__menu .dshpc-picker__degraded{
   padding:6px 8px;margin:0 0 4px;border-radius:var(--dshpc-radius-md);
   color:var(--dshpc-warning-label);background:color-mix(in srgb,var(--dshpc-warning) 12%,transparent);
   font-size:11px;
 }
-.dshpc-picker__row{display:flex;align-items:center;gap:8px}
+.dshpc-picker__menu .dshpc-picker__row{display:flex;align-items:center;gap:8px}
 /* 「显示更多」跟在最后一条后面、长得像多一条选项（2026-11-06 用户：翻到底发现不全才会找它）。
    圆角同样走 md：它视觉上就是列表里多出来的一行，档位与选项一致，别再单独挑一个。 */
-.dshpc-picker__more{
-  display:block;width:100%;margin-top:var(--dshpc-space-1);padding:6px 8px;
+.dshpc-picker__menu .dshpc-picker__more{
+  display:block;width:100%;margin-top:1px;padding:6px 8px;
   color:var(--dshpc-business);background:none;
   border:0;border-radius:var(--dshpc-radius-md);cursor:pointer;
   font-size:12px;line-height:20px;text-align:center;
 }
-.dshpc-picker__more:hover{background:var(--dshpc-surface-sunken)}
+.dshpc-picker__menu .dshpc-picker__more:hover{background:var(--dshpc-surface-sunken)}
