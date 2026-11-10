@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261110-0446-d250-封装选择模型功能": {"category": "建设", "created": "2026-11-10 04:46:03", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-10 04:46:03", "status": "doing", "tags": ["ModelPicker", "选择器", "宽度轴", "ui"], "title": "封装选择模型功能", "updated": "2026-11-10 04:57:07", "worklog": "worklog/202611/10-0446-d250-封装选择模型功能.md"}
+    "20261110-0446-d250-封装选择模型功能": {"category": "建设", "created": "2026-11-10 04:46:03", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-10 04:46:03", "status": "doing", "tags": ["ModelPicker", "选择器", "宽度轴", "ui"], "title": "封装选择模型功能", "updated": "2026-11-10 05:29:33", "worklog": "worklog/202611/10-0446-d250-封装选择模型功能.md"}
   },
   "version": "20261022000000"
 }
