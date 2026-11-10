@@ -12,7 +12,7 @@ import { type PickerGroup, type PickerSizing } from './picker-logic.js';
  * 选「默认模型」也发 `''` —— 表示没选，调用方自己处理。
  *
  * **数据自带**：不传 `groups` 就读 `connectHost(ctx, { modelsPath })` 喂进的真实目录。
- * **宽度**：`width` / `minWidth` / `maxWidth` 管触发器（三种形态通用）；
+ * **宽度**：`width` / `minWidth` / `maxWidth` 管整个控件的占位宽度（三种形态通用，触发器自动铺满）；
  * `searchSizing` 管所有搜索框；cascade 的两个框另可分别用 `providerSizing` / `modelSizing` 覆盖。
  */
 export type ModelPickerVariant = 'grouped' | 'flat' | 'cascade';

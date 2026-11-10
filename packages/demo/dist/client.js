@@ -4295,10 +4295,15 @@ function OverlayHead(props) {
 
 // dist/ui/inputs/picker-css.generated.js
 var PICKER_CSS = `
-/* min-width:0 \u662F\u7ED9\u300C\u4F5C\u4E3A flex item\u300D\u51C6\u5907\u7684\uFF1A\u9ED8\u8BA4 min-width:auto \u4F1A\u88AB\u9009\u4E2D\u6587\u672C\u7684 min-content
-   \u6491\u4F4F\uFF0C\u957F\u6A21\u578B\u540D\u5C31\u628A\u540C\u4E00\u884C\u7684\u5176\u5B83\u63A7\u4EF6\u5F80\u5DE6\u9876\uFF082026-11-10 \u7528\u6237\u771F\u673A\u622A\u56FE\uFF1A\u4E09\u4E2A\u8F93\u5165\u6846\u6574\u4F53\u5DE6\u79FB\uFF09\u3002
-   \u7ED9 0 \u540E\u53EF\u6536\u7F29\uFF0C\u6587\u5B57\u7531 __label \u7684\u7701\u7565\u53F7\u63A5\u4F4F\u3002 */
+/* \u63A7\u4EF6\u5360\u4F4D\u5BBD\u5EA6\u7531\u6839\u76D2\u5403\uFF1Awidth / minWidth / maxWidth \u5185\u8054\u5728 .dshpc-picker \u4E0A\u3002
+   \u6839\u76D2\u662F inline-block\uFF0C\u53EA\u7ED9\u5B9A\u5185\u5C42\u89E6\u53D1\u5668\u65F6 shrink-to-fit \u4F1A\u6309\u9009\u4E2D\u6587\u5B57\u7684 max-content \u6491\u5BBD\u6839\u76D2\uFF0C
+   \u542B\u767E\u5206\u6BD4\u7684 clamp \u5728\u56FA\u6709\u5C3A\u5BF8\u9636\u6BB5\u53C8\u89E3\u4E0D\u51FA\u6765 \u21D2 \u957F\u6A21\u578B\u540D\u8BA9\u63A7\u4EF6\u53F3\u4FA7\u7559\u767D\u3001\u540C\u6392\u63A7\u4EF6\u88AB\u6324\uFF082026-11-10 \u771F\u673A\uFF09\u3002
+   \u6839\u76D2\u5B9A\u5BBD\u540E\u767E\u5206\u6BD4\u76F8\u5BF9\u7236 flex \u884C\u89E3\u6790\uFF0C\u8D85\u957F\u6587\u5B57\u53EA\u7531 __label \u7684\u7701\u7565\u53F7\u63A5\u4F4F\uFF0C\u63A7\u4EF6\u4E0D\u518D\u8DDF\u7740\u5185\u5BB9\u8DF3\u3002 */
 .dshpc-picker{position:relative;display:inline-block;max-width:100%;min-width:0;font-size:13px;line-height:20px}
+/* \u89E6\u53D1\u5668\u94FA\u6EE1\u6839\u76D2\uFF1Bhint \u6001\u591A\u4E00\u5C42 fieldwrap\uFF0C\u90A3\u5C42\u4E5F\u94FA\u6EE1\u3001\u6309\u94AE\u5403\u5269\u4F59\u5BBD\u5EA6\u7ED9\u95EE\u53F7\u8BA9\u4F4D\u3002 */
+.dshpc-picker > .dshpc-picker__trigger{width:100%;box-sizing:border-box}
+.dshpc-picker > .dshpc-fieldwrap{display:flex;width:100%;box-sizing:border-box}
+.dshpc-picker .dshpc-fieldwrap > .dshpc-picker__trigger{flex:1 1 auto;width:auto;min-width:0}
 .dshpc-picker__trigger{
   display:inline-flex;align-items:center;justify-content:space-between;gap:6px;
   min-width:120px;max-width:100%;height:28px;padding:0 8px;
@@ -4403,7 +4408,7 @@ function Picker(props) {
   const placement = props.placement ?? "down";
   const clearable = props.clearable === true;
   const showLabels = props.showLabels !== false;
-  const triggerStyle = resolveTriggerSizing(props);
+  const controlStyle = resolveTriggerSizing(props);
   const groups = (0, import_react9.useMemo)(() => toGroups(props.groups, props.options), [props.groups, props.options]);
   const controlled = props.value !== void 0;
   const [inner, setInner] = (0, import_react9.useState)(() => toArray(props.defaultValue));
@@ -4532,7 +4537,6 @@ function Picker(props) {
       "aria-expanded": open,
       ref: refs.setReference,
       className: `dshpc-picker__trigger dshpc-picker__trigger--${size4}${props.align === "center" ? " dshpc-picker__trigger--center" : ""}`,
-      style: triggerStyle,
       disabled: off,
       onClick: () => {
         if (!off)
@@ -4547,6 +4551,7 @@ function Picker(props) {
   const triggerRow = props.hint === void 0 ? trigger : (0, import_react9.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react9.createElement)(FieldHint, { text: props.hint }));
   return (0, import_react9.createElement)("div", {
     className: `dshpc-picker${props.className === void 0 ? "" : ` ${props.className}`}`,
+    style: controlStyle,
     ref: rootRef,
     onKeyDown
   }, triggerRow, open ? (0, import_react9.createElement)(FloatingPortal, null, (0, import_react9.createElement)(
@@ -64447,20 +64452,20 @@ var docData = {
     },
     "prose": [
       {
-        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`\u3002\u89E6\u53D1\u5668\u652F\u6301 width / minWidth / maxWidth \u7EA6\u675F\u5BBD\u5EA6\uFF1A\u5B9A\u5BBD\u5FFD\u7565\u53E6\u4E24\u8005\uFF1B\u5185\u5BB9\u8D85\u957F\u5219\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\u3002\u4E0B\u62C9\u5185\u641C\u7D22\u6846\u53E6\u8D70 `searchSizing`\uFF08\u540C\u4E00\u5957\u5BBD\u5EA6\u4E09\u8F74\uFF09\uFF0C\u4E0D\u4F20\u5C31\u6CBF\u7528 CSS \u7684 100% \u94FA\u6EE1\uFF1B\u83DC\u5355\u4F1A\u968F `searchSizing` \u7684\u4E0B\u9650\u81EA\u52A8\u52A0\u5BBD\uFF0C\u4E0D\u4F1A\u88AB\u83DC\u5355\u7684 overflow:hidden \u88C1\u6389\u3002\u83DC\u5355\u91CC\u7684\u9009\u9879\u8D85\u957F\u540C\u6837\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF0C\u4E0D\u4F1A\u628A\u83DC\u5355\u6491\u51FA\u6A2A\u5411\u6EDA\u52A8\u6761\u3002",
-        "en": "Picker: single/multiple selection, cap, search, grouping, empty state \u2014 self-drawn. Keyboard: Esc closes, \u2191\u2193 move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`. The search box takes its own `searchSizing` (the same width/minWidth/maxWidth triple) and fills 100% by default; the menu widens with the search box lower bound so it is never clipped by overflow:hidden."
+        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`\u3002`width` / `minWidth` / `maxWidth` \u7EA6\u675F\u6574\u4E2A\u63A7\u4EF6\u7684\u5360\u4F4D\u5BBD\u5EA6\uFF08\u843D\u5728\u6839\u76D2\u3001\u89E6\u53D1\u5668\u81EA\u52A8\u94FA\u6EE1\uFF09\uFF1A\u5B9A\u5BBD\u5FFD\u7565\u53E6\u4E24\u8005\uFF1B\u9009\u4E2D\u6587\u5B57\u518D\u957F\u63A7\u4EF6\u4F4D\u7F6E\u4E5F\u4E0D\u52A8\uFF0C\u8D85\u957F\u53EA\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\u3002\u4E0B\u62C9\u5185\u641C\u7D22\u6846\u53E6\u8D70 `searchSizing`\uFF08\u540C\u4E00\u5957\u5BBD\u5EA6\u4E09\u8F74\uFF09\uFF0C\u4E0D\u4F20\u5C31\u6CBF\u7528 CSS \u7684 100% \u94FA\u6EE1\uFF1B\u83DC\u5355\u4F1A\u968F `searchSizing` \u7684\u4E0B\u9650\u81EA\u52A8\u52A0\u5BBD\uFF0C\u4E0D\u4F1A\u88AB\u83DC\u5355\u7684 overflow:hidden \u88C1\u6389\u3002\u83DC\u5355\u91CC\u7684\u9009\u9879\u8D85\u957F\u540C\u6837\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF0C\u4E0D\u4F1A\u628A\u83DC\u5355\u6491\u51FA\u6A2A\u5411\u6EDA\u52A8\u6761\u3002",
+        "en": "Picker: single/multiple selection, cap, search, grouping, empty state \u2014 self-drawn. Keyboard: Esc closes, \u2191\u2193 move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`. `width`/`minWidth`/`maxWidth` size the control box (the root; the trigger fills it), so a long label never shifts the control. The search box takes its own `searchSizing` (the same width/minWidth/maxWidth triple) and fills 100% by default; the menu widens with the search box lower bound so it is never clipped by overflow:hidden."
       },
       {
         "zh": "\u9996\u5C4F\u5206\u9875\uFF1A`limit` \u6309**\u9009\u9879\u6761\u6570**\u8DE8\u7EC4\u5207\u7247\uFF0C\u5217\u8868\u672B\u5C3E\u300C\u663E\u793A\u66F4\u591A\u300D\uFF08\u8DDF\u5728\u6700\u540E\u4E00\u6761\u540E\uFF0C\u50CF\u591A\u4E00\u6761\u9009\u9879\uFF09\u6BCF\u70B9\u4E00\u6B21\u518D\u8FFD\u52A0 `limit` \u6761\uFF1B\u641C\u7D22\u7ED3\u679C\u8D70\u540C\u4E00\u5957\u5206\u9875\uFF0C\u6362\u641C\u7D22\u8BCD\u6216\u91CD\u65B0\u5C55\u5F00\u90FD\u56DE\u5230\u9996\u5C4F\u3002\u4E0D\u4F20 `limit` \u5C31\u662F\u5168\u91CF\u6E32\u67D3\u3002`PickerOption.keywords` \u662F\u53EF\u9009\u7684\u5355\u4E2A\u5B57\u7B26\u4E32\uFF08\u8C03\u7528\u65B9\u81EA\u5DF1\u62FC\uFF09\uFF0C\u53EA\u548C `label` \u62FC\u8D77\u6765\u53C2\u4E0E\u5927\u5C0F\u5199\u4E0D\u654F\u611F\u5B50\u4E32\u5339\u914D\uFF0C**\u7EDD\u4E0D\u6E32\u67D3**\u2014\u2014\u9002\u5408\u4EFB\u52A1 UUID \u8FD9\u79CD\u300C\u7528\u6237\u80FD\u8D34\u3001\u4F46\u4E0D\u8BE5\u663E\u793A\u300D\u7684\u641C\u7D22\u8BCD\u3002\u7EAF\u903B\u8F91\u53E6\u53EF\u5355\u7528 `sliceGroups`\u3002",
         "en": 'First-page paging: `limit` slices by **option count** across groups; "Show more" rendered as the last row of the list appends another `limit` each click. Search results use the same paging and reset to the first page on a new query or reopen. No `limit` means render everything. `PickerOption.keywords` is an optional single string (joined by the caller) that participates in case-insensitive substring matching together with `label` but is **never rendered** \u2014 for search terms like a task UUID that users paste but should not see. `sliceGroups` is also exported as pure logic.'
       },
       {
-        "zh": "WorkspacePicker\uFF1A\u6570\u636E\u81EA\u5E26\u7684\u9886\u57DF\u9009\u62E9\u5668\u3002\u5728\u63D2\u4EF6 apply \u91CC\u8C03\u4E00\u6B21 `connectHost(ctx)`\uFF0C\u7EC4\u4EF6\u5373\u8BA2\u9605\u5B98\u65B9 `workspaces` \u5FEB\u7167\u3002\u672A\u63A5\u7EBF = \u7A7A\u6001\uFF0C\u4E0D\u7F16\u9020\u6570\u636E\u3002\u89E6\u53D1\u5668\u4E0E\u641C\u7D22\u6846\u7684\u5BBD\u5EA6\u4E09\u8F74\uFF08`width` / `minWidth` / `maxWidth` / `searchSizing`\uFF09\u4E0E Picker \u540C\u53E3\u5F84\uFF1B`translate` \u8986\u76D6\u7EC4\u4EF6\u4E0E\u4E0B\u62C9\u5185\u7684\u5168\u90E8\u5185\u7F6E\u6587\u6848\u3002",
-        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Trigger and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown."
+        "zh": "WorkspacePicker\uFF1A\u6570\u636E\u81EA\u5E26\u7684\u9886\u57DF\u9009\u62E9\u5668\u3002\u5728\u63D2\u4EF6 apply \u91CC\u8C03\u4E00\u6B21 `connectHost(ctx)`\uFF0C\u7EC4\u4EF6\u5373\u8BA2\u9605\u5B98\u65B9 `workspaces` \u5FEB\u7167\u3002\u672A\u63A5\u7EBF = \u7A7A\u6001\uFF0C\u4E0D\u7F16\u9020\u6570\u636E\u3002\u63A7\u4EF6\u4E0E\u641C\u7D22\u6846\u7684\u5BBD\u5EA6\u4E09\u8F74\uFF08`width` / `minWidth` / `maxWidth` / `searchSizing`\uFF09\u4E0E Picker \u540C\u53E3\u5F84\uFF1B`translate` \u8986\u76D6\u7EC4\u4EF6\u4E0E\u4E0B\u62C9\u5185\u7684\u5168\u90E8\u5185\u7F6E\u6587\u6848\u3002",
+        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Control and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown."
       },
       {
-        "zh": "ModelPicker\uFF1A\u9009\u62E9\u6A21\u578B\u7684\u5B8C\u6574\u5C01\u88C5\uFF0C\u4E09\u79CD\u5F62\u6001\u5171\u7528\u540C\u4E00\u4EFD\u5BBF\u4E3B\u76EE\u5F55\uFF0C`onChange` \u4E00\u5F8B\u53D1 `provider/id`\uFF1A`grouped`\uFF08\u9ED8\u8BA4\uFF09= \u4E00\u4E2A\u4E0B\u62C9\u3001\u4F9B\u5E94\u5546\u505A\u7EC4\u5934\uFF1B`flat` = \u4E00\u4E2A\u4E0B\u62C9\u3001\u5168\u90E8\u6A21\u578B\u5E73\u94FA\u6210\u300C\u5382\u5546-\u6A21\u578B\u300D\u5E76\u5E26\u641C\u7D22\uFF0C\u641C\u5382\u5546\u540D\u5373\u53EF\u7B5B\uFF1B`cascade` = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF0C\u5382\u5546\u6846\u4E0E\u6A21\u578B\u6846\u90FD\u5E26\u641C\u7D22\uFF0C\u6362\u5382\u5546\u6E05\u7A7A\u6A21\u578B\u3002**\u63A5\u7EBF\u662F\u4E24\u6BB5\u5F0F**\uFF1A\u5BBF\u4E3B `serveModelCatalog(ctx, { path })` + client `connectHost(ctx, { modelsPath: path })` \u7528\u540C\u4E00\u4E2A path \u5E38\u91CF\uFF0C\u6F0F\u4E86 `modelsPath` \u76EE\u5F55\u6C38\u8FDC\u505C\u5728 loading\uFF1B\u4F9B\u5E94\u5546 / \u6A21\u578B\u6709\u589E\u51CF\u65F6 `await refreshModelCatalog()` \u91CD\u62C9\u3002`width` / `minWidth` / `maxWidth` \u7BA1\u89E6\u53D1\u5668\uFF0C`searchSizing` \u7BA1\u6240\u6709\u641C\u7D22\u6846\uFF0C`providerSizing` / `modelSizing` \u8BA9\u8054\u52A8\u6001\u4E24\u4E2A\u6846\u5206\u522B\u8BBE\u5BBD\u3002\u65E7\u503C\u5DF2\u4E0D\u5728\u76EE\u5F55\u91CC\u65F6\u6309\u771F\u5B9E\u503C\u4FDD\u7559\u4E00\u9879\u5E76\u5982\u5B9E\u63D0\u793A\u300C\u5019\u9009\u53EF\u80FD\u4E0D\u5B8C\u6574\u300D\uFF0C\u4E0D\u9759\u9ED8\u4E22\u5F03\u3002\u5BBF\u4E3B\u4FA7 `serveModelCatalog` \u7684 `getLlm` \u53EA\u662F\u53EF\u9009\u53D6\u503C\u8986\u76D6\uFF0C\u4E0D\u4F20\u65F6\u6838\u5FC3\u81EA\u884C\u6536\u53E3\uFF08ctx \u5931\u6D3B\u6309\u4E0D\u53EF\u7528\u56DE 503\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u5FC5\u5404\u81EA\u9632\u3002\u9996\u62C9\u5931\u8D25\u6838\u5FC3\u4F1A\u9000\u907F\u91CD\u8BD5 3 \u6B21\uFF085xx / 429 / \u7F51\u7EDC\u9519\u8BEF\uFF1B403\u3001404 \u4E0D\u91CD\u8BD5\uFF09\uFF0C\u4E09\u6B21\u90FD\u5931\u8D25\u5C31\u505C\u5728\u964D\u7EA7\u6001\uFF1B\u6253\u5F00\u9009\u62E9\u5668 / \u5207\u56DE\u9875\u9762\u65F6\u6309 30s \u8282\u6D41\u81EA\u52A8\u8865\u62C9\uFF0C\u4E0D\u9700\u8981\u81EA\u5DF1\u8F6E\u8BE2\u3002",
-        "en": 'ModelPicker: the complete model selector. Three variants share one host catalog and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). **Wiring is two-sided**: `serveModelCatalog(ctx, { path })` on the host and `connectHost(ctx, { modelsPath: path })` on the client with the same path constant \u2014 without `modelsPath` the catalog stays `loading` forever; `await refreshModelCatalog()` re-pulls it when providers change. `width`/`minWidth`/`maxWidth` size triggers, `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately. A controlled value no longer present in the catalog is retained as-is with an honest "candidates may be incomplete" hint instead of being silently dropped. The host-side `getLlm` on `serveModelCatalog` is only an optional override \u2014 the core handles a disposed ctx itself and answers 503, so consumers need not guard it. The first load retries up to 3 times with backoff (5xx / 429 / network only; 403 and 404 stop immediately) and then stays degraded; opening the picker or returning to the page re-pulls at most once per 30s, so no polling is needed.'
+        "zh": "ModelPicker\uFF1A\u9009\u62E9\u6A21\u578B\u7684\u5B8C\u6574\u5C01\u88C5\uFF0C\u4E09\u79CD\u5F62\u6001\u5171\u7528\u540C\u4E00\u4EFD\u5BBF\u4E3B\u76EE\u5F55\uFF0C`onChange` \u4E00\u5F8B\u53D1 `provider/id`\uFF1A`grouped`\uFF08\u9ED8\u8BA4\uFF09= \u4E00\u4E2A\u4E0B\u62C9\u3001\u4F9B\u5E94\u5546\u505A\u7EC4\u5934\uFF1B`flat` = \u4E00\u4E2A\u4E0B\u62C9\u3001\u5168\u90E8\u6A21\u578B\u5E73\u94FA\u6210\u300C\u5382\u5546-\u6A21\u578B\u300D\u5E76\u5E26\u641C\u7D22\uFF0C\u641C\u5382\u5546\u540D\u5373\u53EF\u7B5B\uFF1B`cascade` = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF0C\u5382\u5546\u6846\u4E0E\u6A21\u578B\u6846\u90FD\u5E26\u641C\u7D22\uFF0C\u6362\u5382\u5546\u6E05\u7A7A\u6A21\u578B\u3002**\u63A5\u7EBF\u662F\u4E24\u6BB5\u5F0F**\uFF1A\u5BBF\u4E3B `serveModelCatalog(ctx, { path })` + client `connectHost(ctx, { modelsPath: path })` \u7528\u540C\u4E00\u4E2A path \u5E38\u91CF\uFF0C\u6F0F\u4E86 `modelsPath` \u76EE\u5F55\u6C38\u8FDC\u505C\u5728 loading\uFF1B\u4F9B\u5E94\u5546 / \u6A21\u578B\u6709\u589E\u51CF\u65F6 `await refreshModelCatalog()` \u91CD\u62C9\u3002`width` / `minWidth` / `maxWidth` \u7BA1\u63A7\u4EF6\u5360\u4F4D\u5BBD\u5EA6\uFF08\u6839\u76D2\uFF1B\u89E6\u53D1\u5668\u94FA\u6EE1\uFF09\uFF0C`searchSizing` \u7BA1\u6240\u6709\u641C\u7D22\u6846\uFF0C`providerSizing` / `modelSizing` \u8BA9\u8054\u52A8\u6001\u4E24\u4E2A\u6846\u5206\u522B\u8BBE\u5BBD\u3002\u65E7\u503C\u5DF2\u4E0D\u5728\u76EE\u5F55\u91CC\u65F6\u6309\u771F\u5B9E\u503C\u4FDD\u7559\u4E00\u9879\u5E76\u5982\u5B9E\u63D0\u793A\u300C\u5019\u9009\u53EF\u80FD\u4E0D\u5B8C\u6574\u300D\uFF0C\u4E0D\u9759\u9ED8\u4E22\u5F03\u3002\u5BBF\u4E3B\u4FA7 `serveModelCatalog` \u7684 `getLlm` \u53EA\u662F\u53EF\u9009\u53D6\u503C\u8986\u76D6\uFF0C\u4E0D\u4F20\u65F6\u6838\u5FC3\u81EA\u884C\u6536\u53E3\uFF08ctx \u5931\u6D3B\u6309\u4E0D\u53EF\u7528\u56DE 503\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u5FC5\u5404\u81EA\u9632\u3002\u9996\u62C9\u5931\u8D25\u6838\u5FC3\u4F1A\u9000\u907F\u91CD\u8BD5 3 \u6B21\uFF085xx / 429 / \u7F51\u7EDC\u9519\u8BEF\uFF1B403\u3001404 \u4E0D\u91CD\u8BD5\uFF09\uFF0C\u4E09\u6B21\u90FD\u5931\u8D25\u5C31\u505C\u5728\u964D\u7EA7\u6001\uFF1B\u6253\u5F00\u9009\u62E9\u5668 / \u5207\u56DE\u9875\u9762\u65F6\u6309 30s \u8282\u6D41\u81EA\u52A8\u8865\u62C9\uFF0C\u4E0D\u9700\u8981\u81EA\u5DF1\u8F6E\u8BE2\u3002",
+        "en": 'ModelPicker: the complete model selector. Three variants share one host catalog and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). **Wiring is two-sided**: `serveModelCatalog(ctx, { path })` on the host and `connectHost(ctx, { modelsPath: path })` on the client with the same path constant \u2014 without `modelsPath` the catalog stays `loading` forever; `await refreshModelCatalog()` re-pulls it when providers change. `width`/`minWidth`/`maxWidth` size the control box (root; trigger fills it), `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately. A controlled value no longer present in the catalog is retained as-is with an honest "candidates may be incomplete" hint instead of being silently dropped. The host-side `getLlm` on `serveModelCatalog` is only an optional override \u2014 the core handles a disposed ctx itself and answers 503, so consumers need not guard it. The first load retries up to 3 times with backoff (5xx / 429 / network only; 403 and 404 stop immediately) and then stays degraded; opening the picker or returning to the page re-pulls at most once per 30s, so no polling is needed.'
       }
     ],
     "api": [
@@ -64634,8 +64639,8 @@ var docData = {
             "type": "string",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5B9A\u5236\u5BBD\u5EA6 / \u5916\u8FB9\u8DDD",
-              "en": "Custom width / margin"
+              "zh": "\u5B9A\u5236\u5916\u8FB9\u8DDD / \u5E03\u5C40\uFF08\u5BBD\u5EA6\u8D70 width \u4E09\u8F74\uFF09",
+              "en": "Custom margin / layout (use the width axes for sizing)"
             }
           },
           {
@@ -64643,8 +64648,8 @@ var docData = {
             "type": "number | string",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5B9A\u5BBD\uFF08px \u6216\u4EFB\u610F CSS \u957F\u5EA6\uFF09\uFF1B\u7ED9\u4E86\u5373\u5FFD\u7565 minWidth / maxWidth\uFF0C\u89E6\u53D1\u5668\u9501\u5B9A\u6B64\u5BBD\uFF1B\u5185\u5BB9\u8D85\u957F\u5219\u7701\u7565 + hover \u8DD1\u9A6C\u706F",
-              "en": "Fixed width (px or any CSS length); overrides minWidth/maxWidth and locks the trigger; overflow elides + hover marquee"
+              "zh": "\u5B9A\u5BBD\uFF08px \u6216\u4EFB\u610F CSS \u957F\u5EA6\uFF0C\u542B\u767E\u5206\u6BD4 clamp\uFF09\uFF1B\u7ED9\u4E86\u5373\u5FFD\u7565 minWidth / maxWidth\uFF0C\u63A7\u4EF6\u6839\u76D2\u9501\u5B9A\u6B64\u5BBD\u3001\u89E6\u53D1\u5668\u94FA\u6EE1\uFF1B\u9009\u4E2D\u6587\u5B57\u518D\u957F\u63A7\u4EF6\u4E5F\u4E0D\u52A8\uFF0C\u8D85\u957F\u53EA\u7701\u7565 + hover \u8DD1\u9A6C\u706F",
+              "en": "Fixed width (px or any CSS length, including percentage clamp); overrides minWidth/maxWidth and locks the control box; the trigger fills it and long labels never shift the control (overflow elides + hover marquee)"
             }
           },
           {
@@ -64652,8 +64657,8 @@ var docData = {
             "type": "number | string",
             "def": "120px\uFF08CSS \u9ED8\u8BA4\uFF09",
             "desc": {
-              "zh": "\u6700\u5C0F\u5BBD\uFF1B\u5185\u5BB9\u4E0D\u5230\u6B64\u5BBD\u89E6\u53D1\u5668\u4E5F\u4E0D\u66F4\u7A84",
-              "en": "Minimum width; trigger never narrower than this"
+              "zh": "\u6700\u5C0F\u5BBD\uFF1B\u5185\u5BB9\u4E0D\u5230\u6B64\u5BBD\u63A7\u4EF6\u4E5F\u4E0D\u66F4\u7A84",
+              "en": "Minimum width; control never narrower than this"
             }
           },
           {
@@ -64747,8 +64752,8 @@ var docData = {
             "type": "number | string",
             "def": "\u2014",
             "desc": {
-              "zh": "\u89E6\u53D1\u5668\u5BBD\u5EA6\u4E09\u8F74\uFF08\u4E0E Picker \u540C\u540D\u540C\u4E49\uFF09",
-              "en": "Trigger sizing, same as Picker"
+              "zh": "\u63A7\u4EF6\u5BBD\u5EA6\u4E09\u8F74\uFF08\u4E0E Picker \u540C\u540D\u540C\u4E49\uFF09",
+              "en": "Control sizing, same as Picker"
             }
           },
           {
@@ -64788,8 +64793,8 @@ var docData = {
             "type": "number | string",
             "def": "\u2014",
             "desc": {
-              "zh": "\u89E6\u53D1\u5668\u5BBD\u5EA6\u4E09\u8F74\uFF08\u4E0E Picker \u540C\u540D\u540C\u4E49\uFF09\uFF1Bcascade \u7684\u6A21\u578B\u6846\u4E5F\u7528\u5B83\uFF0C\u9664\u975E\u7ED9\u4E86 modelSizing",
-              "en": "Trigger sizing, same as Picker; also sizes the cascade model box unless modelSizing is given"
+              "zh": "\u63A7\u4EF6\u5BBD\u5EA6\u4E09\u8F74\uFF08\u4E0E Picker \u540C\u540D\u540C\u4E49\uFF09\uFF1Bcascade \u7684\u6A21\u578B\u6846\u4E5F\u7528\u5B83\uFF0C\u9664\u975E\u7ED9\u4E86 modelSizing",
+              "en": "Control sizing, same as Picker; also sizes the cascade model box unless modelSizing is given"
             }
           },
           {
@@ -71448,9 +71453,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.17"}`],
-            [t3("buildDemo"), `v${"0.35.17"}`],
-            [t3("buildStamp"), "261110-173515-163"]
+            [t3("buildCore"), `v${"0.35.18"}`],
+            [t3("buildDemo"), `v${"0.35.18"}`],
+            [t3("buildStamp"), "261110-210845-924"]
           ].map(
             ([label, value]) => (0, import_react98.createElement)(
               "tr",
@@ -71766,9 +71771,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react100.createElement)("span", null, `core v${"0.35.17"}`),
-          (0, import_react100.createElement)("span", null, `demo v${"0.35.17"}`),
-          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-173515-163")
+          (0, import_react100.createElement)("span", null, `core v${"0.35.18"}`),
+          (0, import_react100.createElement)("span", null, `demo v${"0.35.18"}`),
+          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-210845-924")
         )
       )
     ),

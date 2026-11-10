@@ -27,10 +27,11 @@ test('flat：触发器显示「厂商-模型」平铺文案，分组形态不带
   assert.match(grouped, /deepseek-chat/)
 })
 
-test('通用宽度落到触发器；cascade 两个框可分别设宽', () => {
+test('通用宽度落到控件根盒；触发器不再内联宽度；cascade 两个框可分别设宽', () => {
   const grouped = render({ variant: 'grouped', minWidth: 200, maxWidth: 320 })
-  assert.match(grouped, /min-width:200px/)
+  assert.match(grouped, /<div class="dshpc-picker" style="[^"]*min-width:200px/)
   assert.match(grouped, /max-width:320px/)
+  assert.doesNotMatch(grouped, /<button[^>]*style=/, '宽度不该内联到触发器')
 
   const cascade = render({
     variant: 'cascade',
@@ -39,6 +40,12 @@ test('通用宽度落到触发器；cascade 两个框可分别设宽', () => {
   })
   assert.match(cascade, /width:140px;min-width:140px;max-width:140px/)
   assert.match(cascade, /width:260px;min-width:260px;max-width:260px/)
+})
+
+test('含百分比的 clamp 宽度也落在根盒，控件不随选中文字跳宽', () => {
+  const html = render({ variant: 'grouped', width: 'clamp(140px,18%,260px)', value: 'deepseek/chat' })
+  assert.match(html, /<div class="dshpc-picker" style="width:clamp\(140px,18%,260px\);min-width:clamp\(140px,18%,260px\);max-width:clamp\(140px,18%,260px\)"/)
+  assert.doesNotMatch(html, /<button[^>]*style=/)
 })
 
 test('cascade 不分别设宽时，两个框都跟随通用宽度', () => {

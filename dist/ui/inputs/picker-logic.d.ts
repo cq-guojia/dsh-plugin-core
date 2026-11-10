@@ -48,9 +48,9 @@ export declare function retainSelectedValue(groups: PickerGroup[], value: string
     groups: PickerGroup[];
     retained: boolean;
 };
-/** 触发器宽度解析：把 width / minWidth / maxWidth 译成内联样式。
+/** 控件宽度解析：把 width / minWidth / maxWidth 译成内联样式（Picker 根盒与下拉搜索框共用）。
  * 定宽（width）忽略 min/max 并锁定三值；否则各自生效，缺省沿用 CSS 默认（min 120px、max 100%）。
- * 数值按 px 处理，字符串原样透传。 */
+ * 数值按 px 处理，字符串原样透传（含百分比的 clamp 也照传，由根盒按父宽解析）。 */
 export declare function resolveTriggerSizing(opts: PickerSizing): CSSProperties;
 /** 菜单宽度：至少与触发器同宽；搜索框设了下限时菜单跟着加宽，
  * 否则 100% 宽的搜索框会被菜单的 overflow:hidden 裁掉。

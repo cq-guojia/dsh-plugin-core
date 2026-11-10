@@ -1544,20 +1544,20 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑可单用：`toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`。触发器支持 width / minWidth / maxWidth 约束宽度：定宽忽略另两者；内容超长则省略号 + hover 跑马灯。下拉内搜索框另走 `searchSizing`（同一套宽度三轴），不传就沿用 CSS 的 100% 铺满；菜单会随 `searchSizing` 的下限自动加宽，不会被菜单的 overflow:hidden 裁掉。菜单里的选项超长同样省略 + hover 跑马灯，不会把菜单撑出横向滚动条。",
-        "en": "Picker: single/multiple selection, cap, search, grouping, empty state — self-drawn. Keyboard: Esc closes, ↑↓ move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`. The search box takes its own `searchSizing` (the same width/minWidth/maxWidth triple) and fills 100% by default; the menu widens with the search box lower bound so it is never clipped by overflow:hidden."
+        "zh": "Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Esc 关、↑↓ 移游标、Enter 选。纯逻辑可单用：`toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`。`width` / `minWidth` / `maxWidth` 约束整个控件的占位宽度（落在根盒、触发器自动铺满）：定宽忽略另两者；选中文字再长控件位置也不动，超长只省略号 + hover 跑马灯。下拉内搜索框另走 `searchSizing`（同一套宽度三轴），不传就沿用 CSS 的 100% 铺满；菜单会随 `searchSizing` 的下限自动加宽，不会被菜单的 overflow:hidden 裁掉。菜单里的选项超长同样省略 + hover 跑马灯，不会把菜单撑出横向滚动条。",
+        "en": "Picker: single/multiple selection, cap, search, grouping, empty state — self-drawn. Keyboard: Esc closes, ↑↓ move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`. `width`/`minWidth`/`maxWidth` size the control box (the root; the trigger fills it), so a long label never shifts the control. The search box takes its own `searchSizing` (the same width/minWidth/maxWidth triple) and fills 100% by default; the menu widens with the search box lower bound so it is never clipped by overflow:hidden."
       },
       {
         "zh": "首屏分页：`limit` 按**选项条数**跨组切片，列表末尾「显示更多」（跟在最后一条后，像多一条选项）每点一次再追加 `limit` 条；搜索结果走同一套分页，换搜索词或重新展开都回到首屏。不传 `limit` 就是全量渲染。`PickerOption.keywords` 是可选的单个字符串（调用方自己拼），只和 `label` 拼起来参与大小写不敏感子串匹配，**绝不渲染**——适合任务 UUID 这种「用户能贴、但不该显示」的搜索词。纯逻辑另可单用 `sliceGroups`。",
         "en": "First-page paging: `limit` slices by **option count** across groups; \"Show more\" rendered as the last row of the list appends another `limit` each click. Search results use the same paging and reset to the first page on a new query or reopen. No `limit` means render everything. `PickerOption.keywords` is an optional single string (joined by the caller) that participates in case-insensitive substring matching together with `label` but is **never rendered** — for search terms like a task UUID that users paste but should not see. `sliceGroups` is also exported as pure logic."
       },
       {
-        "zh": "WorkspacePicker：数据自带的领域选择器。在插件 apply 里调一次 `connectHost(ctx)`，组件即订阅官方 `workspaces` 快照。未接线 = 空态，不编造数据。触发器与搜索框的宽度三轴（`width` / `minWidth` / `maxWidth` / `searchSizing`）与 Picker 同口径；`translate` 覆盖组件与下拉内的全部内置文案。",
-        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Trigger and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown."
+        "zh": "WorkspacePicker：数据自带的领域选择器。在插件 apply 里调一次 `connectHost(ctx)`，组件即订阅官方 `workspaces` 快照。未接线 = 空态，不编造数据。控件与搜索框的宽度三轴（`width` / `minWidth` / `maxWidth` / `searchSizing`）与 Picker 同口径；`translate` 覆盖组件与下拉内的全部内置文案。",
+        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Control and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown."
       },
       {
-        "zh": "ModelPicker：选择模型的完整封装，三种形态共用同一份宿主目录，`onChange` 一律发 `provider/id`：`grouped`（默认）= 一个下拉、供应商做组头；`flat` = 一个下拉、全部模型平铺成「厂商-模型」并带搜索，搜厂商名即可筛；`cascade` = 两个下拉联动，厂商框与模型框都带搜索，换厂商清空模型。**接线是两段式**：宿主 `serveModelCatalog(ctx, { path })` + client `connectHost(ctx, { modelsPath: path })` 用同一个 path 常量，漏了 `modelsPath` 目录永远停在 loading；供应商 / 模型有增减时 `await refreshModelCatalog()` 重拉。`width` / `minWidth` / `maxWidth` 管触发器，`searchSizing` 管所有搜索框，`providerSizing` / `modelSizing` 让联动态两个框分别设宽。旧值已不在目录里时按真实值保留一项并如实提示「候选可能不完整」，不静默丢弃。宿主侧 `serveModelCatalog` 的 `getLlm` 只是可选取值覆盖，不传时核心自行收口（ctx 失活按不可用回 503），消费方不必各自防。首拉失败核心会退避重试 3 次（5xx / 429 / 网络错误；403、404 不重试），三次都失败就停在降级态；打开选择器 / 切回页面时按 30s 节流自动补拉，不需要自己轮询。",
-        "en": "ModelPicker: the complete model selector. Three variants share one host catalog and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). **Wiring is two-sided**: `serveModelCatalog(ctx, { path })` on the host and `connectHost(ctx, { modelsPath: path })` on the client with the same path constant — without `modelsPath` the catalog stays `loading` forever; `await refreshModelCatalog()` re-pulls it when providers change. `width`/`minWidth`/`maxWidth` size triggers, `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately. A controlled value no longer present in the catalog is retained as-is with an honest \"candidates may be incomplete\" hint instead of being silently dropped. The host-side `getLlm` on `serveModelCatalog` is only an optional override — the core handles a disposed ctx itself and answers 503, so consumers need not guard it. The first load retries up to 3 times with backoff (5xx / 429 / network only; 403 and 404 stop immediately) and then stays degraded; opening the picker or returning to the page re-pulls at most once per 30s, so no polling is needed."
+        "zh": "ModelPicker：选择模型的完整封装，三种形态共用同一份宿主目录，`onChange` 一律发 `provider/id`：`grouped`（默认）= 一个下拉、供应商做组头；`flat` = 一个下拉、全部模型平铺成「厂商-模型」并带搜索，搜厂商名即可筛；`cascade` = 两个下拉联动，厂商框与模型框都带搜索，换厂商清空模型。**接线是两段式**：宿主 `serveModelCatalog(ctx, { path })` + client `connectHost(ctx, { modelsPath: path })` 用同一个 path 常量，漏了 `modelsPath` 目录永远停在 loading；供应商 / 模型有增减时 `await refreshModelCatalog()` 重拉。`width` / `minWidth` / `maxWidth` 管控件占位宽度（根盒；触发器铺满），`searchSizing` 管所有搜索框，`providerSizing` / `modelSizing` 让联动态两个框分别设宽。旧值已不在目录里时按真实值保留一项并如实提示「候选可能不完整」，不静默丢弃。宿主侧 `serveModelCatalog` 的 `getLlm` 只是可选取值覆盖，不传时核心自行收口（ctx 失活按不可用回 503），消费方不必各自防。首拉失败核心会退避重试 3 次（5xx / 429 / 网络错误；403、404 不重试），三次都失败就停在降级态；打开选择器 / 切回页面时按 30s 节流自动补拉，不需要自己轮询。",
+        "en": "ModelPicker: the complete model selector. Three variants share one host catalog and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). **Wiring is two-sided**: `serveModelCatalog(ctx, { path })` on the host and `connectHost(ctx, { modelsPath: path })` on the client with the same path constant — without `modelsPath` the catalog stays `loading` forever; `await refreshModelCatalog()` re-pulls it when providers change. `width`/`minWidth`/`maxWidth` size the control box (root; trigger fills it), `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately. A controlled value no longer present in the catalog is retained as-is with an honest \"candidates may be incomplete\" hint instead of being silently dropped. The host-side `getLlm` on `serveModelCatalog` is only an optional override — the core handles a disposed ctx itself and answers 503, so consumers need not guard it. The first load retries up to 3 times with backoff (5xx / 429 / network only; 403 and 404 stop immediately) and then stays degraded; opening the picker or returning to the page re-pulls at most once per 30s, so no polling is needed."
       }
     ],
     "api": [
@@ -1731,8 +1731,8 @@ export const docData = {
             "type": "string",
             "def": "—",
             "desc": {
-              "zh": "定制宽度 / 外边距",
-              "en": "Custom width / margin"
+              "zh": "定制外边距 / 布局（宽度走 width 三轴）",
+              "en": "Custom margin / layout (use the width axes for sizing)"
             }
           },
           {
@@ -1740,8 +1740,8 @@ export const docData = {
             "type": "number | string",
             "def": "—",
             "desc": {
-              "zh": "定宽（px 或任意 CSS 长度）；给了即忽略 minWidth / maxWidth，触发器锁定此宽；内容超长则省略 + hover 跑马灯",
-              "en": "Fixed width (px or any CSS length); overrides minWidth/maxWidth and locks the trigger; overflow elides + hover marquee"
+              "zh": "定宽（px 或任意 CSS 长度，含百分比 clamp）；给了即忽略 minWidth / maxWidth，控件根盒锁定此宽、触发器铺满；选中文字再长控件也不动，超长只省略 + hover 跑马灯",
+              "en": "Fixed width (px or any CSS length, including percentage clamp); overrides minWidth/maxWidth and locks the control box; the trigger fills it and long labels never shift the control (overflow elides + hover marquee)"
             }
           },
           {
@@ -1749,8 +1749,8 @@ export const docData = {
             "type": "number | string",
             "def": "120px（CSS 默认）",
             "desc": {
-              "zh": "最小宽；内容不到此宽触发器也不更窄",
-              "en": "Minimum width; trigger never narrower than this"
+              "zh": "最小宽；内容不到此宽控件也不更窄",
+              "en": "Minimum width; control never narrower than this"
             }
           },
           {
@@ -1844,8 +1844,8 @@ export const docData = {
             "type": "number | string",
             "def": "—",
             "desc": {
-              "zh": "触发器宽度三轴（与 Picker 同名同义）",
-              "en": "Trigger sizing, same as Picker"
+              "zh": "控件宽度三轴（与 Picker 同名同义）",
+              "en": "Control sizing, same as Picker"
             }
           },
           {
@@ -1885,8 +1885,8 @@ export const docData = {
             "type": "number | string",
             "def": "—",
             "desc": {
-              "zh": "触发器宽度三轴（与 Picker 同名同义）；cascade 的模型框也用它，除非给了 modelSizing",
-              "en": "Trigger sizing, same as Picker; also sizes the cascade model box unless modelSizing is given"
+              "zh": "控件宽度三轴（与 Picker 同名同义）；cascade 的模型框也用它，除非给了 modelSizing",
+              "en": "Control sizing, same as Picker; also sizes the cascade model box unless modelSizing is given"
             }
           },
           {

@@ -1,8 +1,13 @@
 
-/* min-width:0 是给「作为 flex item」准备的：默认 min-width:auto 会被选中文本的 min-content
-   撑住，长模型名就把同一行的其它控件往左顶（2026-11-10 用户真机截图：三个输入框整体左移）。
-   给 0 后可收缩，文字由 __label 的省略号接住。 */
+/* 控件占位宽度由根盒吃：width / minWidth / maxWidth 内联在 .dshpc-picker 上。
+   根盒是 inline-block，只给定内层触发器时 shrink-to-fit 会按选中文字的 max-content 撑宽根盒，
+   含百分比的 clamp 在固有尺寸阶段又解不出来 ⇒ 长模型名让控件右侧留白、同排控件被挤（2026-11-10 真机）。
+   根盒定宽后百分比相对父 flex 行解析，超长文字只由 __label 的省略号接住，控件不再跟着内容跳。 */
 .dshpc-picker{position:relative;display:inline-block;max-width:100%;min-width:0;font-size:13px;line-height:20px}
+/* 触发器铺满根盒；hint 态多一层 fieldwrap，那层也铺满、按钮吃剩余宽度给问号让位。 */
+.dshpc-picker > .dshpc-picker__trigger{width:100%;box-sizing:border-box}
+.dshpc-picker > .dshpc-fieldwrap{display:flex;width:100%;box-sizing:border-box}
+.dshpc-picker .dshpc-fieldwrap > .dshpc-picker__trigger{flex:1 1 auto;width:auto;min-width:0}
 .dshpc-picker__trigger{
   display:inline-flex;align-items:center;justify-content:space-between;gap:6px;
   min-width:120px;max-width:100%;height:28px;padding:0 8px;

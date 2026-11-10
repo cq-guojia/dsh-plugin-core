@@ -176,3 +176,14 @@ test('面板内所有「框 / 行」同一套：圆角都走 radius-md、相邻�
   // 页面上可能同时挂着旧版 core 的同名单类规则（0,1,0），后挂载者赢 ⇒ 菜单内规则必须带祖先，不能退回单类。
   assert.doesNotMatch(css, /^\.dshpc-picker__(option|search|degraded|more|empty|group-label|tick|row)[,{: ]/m, '菜单内规则不得退回裸单类（会被旧版 core 覆盖）')
 })
+
+test('宽度三轴落在控件根盒：触发器与 hint 态 fieldwrap 都铺满', () => {
+  const css = readFileSync(new URL('../src/ui/inputs/picker.css', import.meta.url), 'utf8')
+  // 只定内层触发器时，inline-block 根盒按选中文字的 max-content 撑宽（含百分比 clamp 尤其明显），
+  // 长模型名会让控件右侧留白、同排控件被挤（2026-11-10 真机）。
+  assert.match(css, /\.dshpc-picker > \.dshpc-picker__trigger\{[^}]*width:100%/)
+  assert.match(css, /\.dshpc-picker > \.dshpc-fieldwrap\{[^}]*width:100%/)
+  const source = readFileSync(new URL('../dist/ui/inputs/Picker.js', import.meta.url), 'utf8')
+  assert.match(source, /style: controlStyle/, '根盒吃宽度三轴')
+  assert.doesNotMatch(source, /style: triggerStyle/, '触发器不再吃宽度三轴')
+})

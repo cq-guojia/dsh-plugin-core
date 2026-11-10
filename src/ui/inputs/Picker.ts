@@ -88,7 +88,8 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
   const placement = props.placement ?? 'down'
   const clearable = props.clearable === true
   const showLabels = props.showLabels !== false
-  const triggerStyle = resolveTriggerSizing(props)
+  // 宽度三轴落在控件根盒而非触发器：根盒定宽后，长模型名不会再把控件与同排控件挤走（2026-11-10 真机）。
+  const controlStyle = resolveTriggerSizing(props)
   const groups = useMemo(
     () => toGroups(props.groups, props.options),
     [props.groups, props.options],
@@ -244,7 +245,6 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
       'aria-expanded': open,
       ref: refs.setReference,
       className: `dshpc-picker__trigger dshpc-picker__trigger--${size}${props.align === 'center' ? ' dshpc-picker__trigger--center' : ''}`,
-      style: triggerStyle,
       disabled: off,
       onClick: () => {
         if (!off) setOpen(!open)
@@ -272,6 +272,7 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
     'div',
     {
       className: `dshpc-picker${props.className === undefined ? '' : ` ${props.className}`}`,
+      style: controlStyle,
       ref: rootRef,
       onKeyDown,
     },
