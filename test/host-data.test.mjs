@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { buildModelRoutes, serveModelCatalog } from '../dist/host/index.js'
-import { connectHost, getWorkspaceFiles, modelCatalog, refreshModelCatalog, workspaceList } from '../dist/ui/index.js'
+import { connectHost, getWorkspaceFiles, modelCatalog, refreshModelCatalog, revalidateModelCatalog, workspaceList } from '../dist/ui/index.js'
 
 /** 最小 llm face：按脚本返回 provider 与各自模型。 */
 function llmFace(providers, models) {
@@ -186,6 +186,44 @@ test('connectHost / refreshModelCatalog：不接线不取目录；刷新重拉�
     assert.equal(state.status, 'ready')
     assert.equal(state.routes[0].provider, 'openai')
     assert.equal(calls.length, 2, '刷新是第二次真实请求')
+  } finally {
+    globalThis.fetch = saved
+  }
+})
+
+test('模型目录首拉 503 会退避重试，不需要消费方手动刷新', async () => {
+  const calls = []
+  const saved = globalThis.fetch
+  globalThis.fetch = () => {
+    calls.push(1)
+    if (calls.length === 1) return Promise.resolve({ ok: false, status: 503, json: () => Promise.resolve({}) })
+    return Promise.resolve({ ok: true, json: () => Promise.resolve({ routes: [{ provider: 'p', displayName: 'P', models: [{ id: 'm' }] }] }) })
+  }
+  try {
+    connectHost({ inject: () => {} }, { modelsPath: '/api/retry/models' })
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    assert.equal(modelCatalog.getSnapshot().status, 'unavailable', '首拉 503 先如实降级')
+    await new Promise((resolve) => setTimeout(resolve, 1200))
+    assert.equal(calls.length, 2, '退避 1s 后自动重试一次')
+    assert.equal(modelCatalog.getSnapshot().status, 'ready', '重试成功即恢复，不用手动刷新')
+  } finally {
+    globalThis.fetch = saved
+  }
+})
+
+test('revalidateModelCatalog：30s 节流内不重复发请求', async () => {
+  const calls = []
+  const saved = globalThis.fetch
+  globalThis.fetch = () => {
+    calls.push(1)
+    return Promise.resolve({ ok: true, json: () => Promise.resolve({ routes: [] }) })
+  }
+  try {
+    revalidateModelCatalog()
+    assert.equal(calls.length, 0, '刚拉过 ⇒ 节流期内什么都不做')
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    revalidateModelCatalog()
+    assert.equal(calls.length, 0, '连续调用也只合并成零次新请求')
   } finally {
     globalThis.fetch = saved
   }

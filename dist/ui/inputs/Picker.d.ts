@@ -39,6 +39,8 @@ export interface PickerProps extends PickerSizing {
     /** 问号提示文字：给了就在触发器后面挂标准 FieldHint（排版收进组件，调用方不再手动拼）。 */
     hint?: string;
     className?: string;
+    /** 展开 / 收起回调（领域选择器借它做「打开即补拉目录」这类事）。 */
+    onOpenChange?: (open: boolean) => void;
     /** 下拉内搜索框的宽度三轴（与触发器同口径：定宽锁三值）；不传沿用 CSS 的 100% 铺满。 */
     searchSizing?: PickerSizing;
     ariaLabel?: string;

@@ -6,7 +6,7 @@ export { DateTimePicker, type DateTimeOutput, type DateTimePickerProps, type Dat
 export { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, msToParts, nowParts, nowTimeFor, parseDateTime, partsOf, partsToMs, rangeIsValid, resolvePresetExpr, sameLocalDay, stepMax, stepUnit, toEndDraft, weekdayLabels, type DateTimeParts, type DateTimePrecision, type DateTimePreset, type DayCell, type DayRef, type EndDraft, type StepUnit, type TimeParts, } from './inputs/datetime-logic.js';
 export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './inputs/ModelPicker.js';
 export { WorkspacePicker, type WorkspacePickerProps } from './inputs/WorkspacePicker.js';
-export { connectHost, getWorkspaceFiles, modelCatalog, refreshModelCatalog, workspaceList, type ConnectHostOptions, type HostClientContext, type HostWorkspaceItem, type HostWorkspaceSource, type ModelCatalogState, type ModelRoute, } from './infra/host-data.js';
+export { connectHost, getWorkspaceFiles, modelCatalog, refreshModelCatalog, revalidateModelCatalog, workspaceList, type ConnectHostOptions, type HostClientContext, type HostWorkspaceItem, type HostWorkspaceSource, type ModelCatalogState, type ModelRoute, } from './infra/host-data.js';
 export { Modal, type ModalProps, type ModalSize } from './feedback/Modal.js';
 export { SideSheet, type SideSheetProps, type SideSheetSide } from './feedback/SideSheet.js';
 export { AlertModal, type AlertModalProps, type AlertSeverity, } from './feedback/AlertModal.js';

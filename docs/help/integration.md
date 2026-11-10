@@ -24,9 +24,9 @@
 
 > EN: §2 Use a control: a generic `Picker` takes its options from the caller (`priorities` in the example, not a model catalog).
 
-§2 附：选模型不要手搓数组 —— 宿主 `serveModelCatalog(ctx, { path })` 注册只读目录路由，client `connectHost(ctx, { modelsPath: path })` 用同一个 path 常量接上，再渲染 `ModelPicker`；供应商 / 模型有增减调 `await refreshModelCatalog()` 重拉。漏了 `modelsPath` 就是空目录，且不会有报错。
+§2 附：选模型不要手搓数组 —— 宿主 `serveModelCatalog(ctx, { path })` 注册只读目录路由，client `connectHost(ctx, { modelsPath: path })` 用同一个 path 常量接上，再渲染 `ModelPicker`；首拉失败核心会退避重试 3 次，供应商 / 模型有增减时打开选择器或切回页面会自动补拉（30s 节流），要立刻刷新再调 `await refreshModelCatalog()`。漏了 `modelsPath` 就是空目录，且不会有报错。
 
-> EN: §2a Model selection: never hand-roll a models array. Register `serveModelCatalog(ctx, { path })` on the host, call `connectHost(ctx, { modelsPath: path })` on the client with the same path constant, then render `ModelPicker`. `await refreshModelCatalog()` re-pulls the catalog when providers change. Omitting `modelsPath` leaves the catalog empty, silently.
+> EN: §2a Model selection: never hand-roll a models array. Register `serveModelCatalog(ctx, { path })` on the host, call `connectHost(ctx, { modelsPath: path })` on the client with the same path constant, then render `ModelPicker`. The first load retries 3 times with backoff; opening the picker or returning to the page re-pulls when providers change (throttled to once per 30s), and `await refreshModelCatalog()` forces an immediate refresh. Omitting `modelsPath` leaves the catalog empty, silently.
 
 §3 用通用方法
 

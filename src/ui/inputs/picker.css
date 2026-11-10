@@ -1,5 +1,8 @@
 
-.dshpc-picker{position:relative;display:inline-block;max-width:100%;font-size:13px;line-height:20px}
+/* min-width:0 是给「作为 flex item」准备的：默认 min-width:auto 会被选中文本的 min-content
+   撑住，长模型名就把同一行的其它控件往左顶（2026-11-10 用户真机截图：三个输入框整体左移）。
+   给 0 后可收缩，文字由 __label 的省略号接住。 */
+.dshpc-picker{position:relative;display:inline-block;max-width:100%;min-width:0;font-size:13px;line-height:20px}
 .dshpc-picker__trigger{
   display:inline-flex;align-items:center;justify-content:space-between;gap:6px;
   min-width:120px;max-width:100%;height:28px;padding:0 8px;
@@ -43,19 +46,26 @@
 .dshpc-picker__group-label{
   padding:6px 8px 2px;color:var(--dshpc-fg-3);font-size:11px;
 }
+/* 选项是「行」不是「卡片」：圆角收到 xs 档，与 ListRow 的行口径一致 —— 大圆角只归外层菜单
+   （panel.css 的 menu 档 + overflow:hidden）。2026-11-10 用户：每项各自一圈 8px 圆角，像一叠小卡片。 */
 .dshpc-picker__option{
-  display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--dshpc-radius-sm);cursor:pointer;
+  display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--dshpc-radius-xs);cursor:pointer;
   color:var(--dshpc-fg);white-space:nowrap;
 }
-.dshpc-picker__option:hover{background:var(--dshpc-surface-sunken)}
-.dshpc-picker__option--active{background:var(--dshpc-open-bg);color:var(--dshpc-business)}
+/* hover / 选中直接借 ListRow 的两条 token —— 同一个「行」语义，与列表条目对齐。
+   选中不染文字色：蓝字是「链接」语义，行选中只换底（list-row.css:44-47 的口径）。
+   2026-11-10 用户：原来蓝底蓝字 + 亮一点的灰，和 ListRow 完全不是一套。 */
+.dshpc-picker__option:hover{background:var(--dshpc-listrow-hover-bg)}
+.dshpc-picker__option--active{background:var(--dshpc-listrow-selected-bg);color:var(--dshpc-fg)}
 .dshpc-picker__option--disabled{color:var(--dshpc-fg-dim);cursor:not-allowed}
 /* 选项文字吃掉剩余宽度：超长省略号（配合 MarqueeText hover 跑马灯），不撑宽菜单。 */
 .dshpc-picker__option-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dshpc-picker__tick{width:12px;color:var(--dshpc-business)}
 .dshpc-picker__empty{padding:8px;color:var(--dshpc-fg-3);text-align:center}
+/* 提示条通栏：负 margin 抵掉 __head 的左右 4px 内距（head padding:4px 4px 0），0 圆角，
+   靠菜单的 overflow:hidden 收边 —— 与选项同为「行」，不再是一块独立圆角卡片。 */
 .dshpc-picker__degraded{
-  padding:6px 8px;margin-bottom:4px;border-radius:var(--dshpc-radius-sm);
+  padding:8px;margin:0 -4px 4px;border-radius:0;
   color:var(--dshpc-warning-label);background:color-mix(in srgb,var(--dshpc-warning) 12%,transparent);
   font-size:11px;
 }

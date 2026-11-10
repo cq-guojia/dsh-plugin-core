@@ -10,7 +10,7 @@ export { DateTimePicker, } from './inputs/DateTimePicker.js';
 export { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, msToParts, nowParts, nowTimeFor, parseDateTime, partsOf, partsToMs, rangeIsValid, resolvePresetExpr, sameLocalDay, stepMax, stepUnit, toEndDraft, weekdayLabels, } from './inputs/datetime-logic.js';
 export { ModelPicker } from './inputs/ModelPicker.js';
 export { WorkspacePicker } from './inputs/WorkspacePicker.js';
-export { connectHost, getWorkspaceFiles, modelCatalog, refreshModelCatalog, workspaceList, } from './infra/host-data.js';
+export { connectHost, getWorkspaceFiles, modelCatalog, refreshModelCatalog, revalidateModelCatalog, workspaceList, } from './infra/host-data.js';
 export { Modal } from './feedback/Modal.js';
 export { SideSheet } from './feedback/SideSheet.js';
 export { AlertModal, } from './feedback/AlertModal.js';

@@ -113,9 +113,18 @@ export interface ConnectHostOptions {
  *
  * 宿主路由每次请求现查，这里显式 `cache: 'no-store'`，避免浏览器把上次的目录缓存回来。
  * 不传 path 就用 `connectHost(ctx, { modelsPath })` 记下的那个；还没接线则 reject。
+ * 手动刷新不叠加退避重试（避免与首拉那条重试链互相打架），失败就如实停在降级态。
  * 返回 Promise：await 之后 `modelCatalog.getSnapshot()` 即本次结果。
  */
 export declare function refreshModelCatalog(path?: string): Promise<ModelCatalogState>;
+/**
+ * 事件驱动的补拉（切回页面 / 重新打开选择器时调）。
+ *
+ * 不轮询：距上次尝试不足 30s 就什么都不做，因此快速开关下拉不会连发请求。
+ * 成功态也补 —— 供应商 / 模型增减不会主动推送，这是「不轮询」前提下唯一的感知入口。
+ * 正在请求中直接跳过（`catalogInFlight` 已经是合并后的那一个）。
+ */
+export declare function revalidateModelCatalog(): void;
 /**
  * 把宿主数据面接进核心（插件 client `apply` 里调**一次**）。
  *

@@ -64,6 +64,7 @@ export {
   getWorkspaceFiles,
   modelCatalog,
   refreshModelCatalog,
+  revalidateModelCatalog,
   workspaceList,
   type ConnectHostOptions,
   type HostClientContext,

@@ -2,7 +2,7 @@ import { createElement as h, useEffect, useState, useSyncExternalStore, type Rea
 import { t, type Translate } from '../../utils/i18n.js'
 import { Picker, type PickerSize } from './Picker.js'
 import { flattenOptions, groupOf, retainSelectedValue, toFlatOptions, type PickerGroup, type PickerSizing } from './picker-logic.js'
-import { modelCatalog } from '../infra/host-data.js'
+import { modelCatalog, revalidateModelCatalog } from '../infra/host-data.js'
 import { sparkleIcon } from './picker-icons.js'
 import { ensureComponentStyles } from '../infra/css.js'
 import { PICKER_CSS } from './picker-css.js'
@@ -137,6 +137,8 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
       size: props.size,
       placement: props.placement,
       className: props.className,
+      // 打开下拉就补拉目录（核心内部 30s 节流，快速开关不会连发）：供应商 / 模型增减靠它感知。
+      onOpenChange: (open: boolean) => { if (open) revalidateModelCatalog() },
       translate: props.translate,
       onChange: emitModel,
     })
@@ -162,6 +164,8 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
       size: props.size,
       placement: props.placement,
       className: props.className,
+      // 打开下拉就补拉目录（核心内部 30s 节流，快速开关不会连发）：供应商 / 模型增减靠它感知。
+      onOpenChange: (open: boolean) => { if (open) revalidateModelCatalog() },
       translate: props.translate,
       onChange: emitModel,
     })
@@ -190,6 +194,8 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
       size: props.size,
       placement: props.placement,
       className: props.providerClassName,
+      // 打开下拉就补拉目录（核心内部 30s 节流，快速开关不会连发）：供应商 / 模型增减靠它感知。
+      onOpenChange: (open: boolean) => { if (open) revalidateModelCatalog() },
       translate: props.translate,
       onChange: (v) => {
         setPickedProvider(typeof v === 'string' ? v : v[0] ?? '')
@@ -212,6 +218,8 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
       size: props.size,
       placement: props.placement,
       className: props.modelClassName,
+      // 打开下拉就补拉目录（核心内部 30s 节流，快速开关不会连发）：供应商 / 模型增减靠它感知。
+      onOpenChange: (open: boolean) => { if (open) revalidateModelCatalog() },
       translate: props.translate,
       onChange: emitModel,
     }),

@@ -159,3 +159,9 @@ test('retainSelectedValue：旧值按真实值保留，命中候选时原目录�
   assert.equal(unknownProvider.groups[2].value, 'ghost')
   assert.equal(groupOf(unknownProvider.groups, 'ghost/m').value, 'ghost', '级联态能反推出 provider')
 })
+
+test('下拉项按「行」而不是「卡片」：选项小圆角、提示条通栏无圆角', () => {
+  const css = readFileSync(new URL('../src/ui/inputs/picker.css', import.meta.url), 'utf8')
+  assert.match(css, /\.dshpc-picker__option\{[^}]*border-radius:var\(--dshpc-radius-xs\)/, '选项圆角收到 xs 档')
+  assert.match(css, /\.dshpc-picker__degraded\{[^}]*margin:0 -4px 4px;border-radius:0/, '提示条通栏、无独立圆角')
+})

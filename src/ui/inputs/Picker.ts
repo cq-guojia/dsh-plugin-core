@@ -63,6 +63,8 @@ export interface PickerProps extends PickerSizing {
   /** 问号提示文字：给了就在触发器后面挂标准 FieldHint（排版收进组件，调用方不再手动拼）。 */
   hint?: string
   className?: string
+  /** 展开 / 收起回调（领域选择器借它做「打开即补拉目录」这类事）。 */
+  onOpenChange?: (open: boolean) => void
   /** 下拉内搜索框的宽度三轴（与触发器同口径：定宽锁三值）；不传沿用 CSS 的 100% 铺满。 */
   searchSizing?: PickerSizing
   ariaLabel?: string
@@ -105,7 +107,15 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
   }
 
   const limit = props.limit ?? 0
-  const [open, setOpen] = useState(false)
+  const [open, setOpenState] = useState(false)
+  // 对外通知展开 / 收起：内部所有 setOpen 都走这一层，领域选择器据此做「打开即补拉目录」。
+  // 回调放 ref 里，避免父级每次渲染换函数导致 setOpen 变引用、把依赖它的 effect 全部重跑。
+  const onOpenChangeRef = useRef(props.onOpenChange)
+  onOpenChangeRef.current = props.onOpenChange
+  const setOpen = useCallback((next: boolean): void => {
+    setOpenState(next)
+    onOpenChangeRef.current?.(next)
+  }, [])
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(-1)
   const [visible, setVisible] = useState(limit)
@@ -121,7 +131,8 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
     middleware: [
       offset(4),
       flip(),
-      shift({ padding: 8 }),
+      // 左右各留 12：菜单比触发器宽是常态，贴到视口边上会显得在「硬挤」（2026-11-10 用户）。
+      shift({ padding: { top: 8, bottom: 8, left: 12, right: 12 } }),
       floatingSize({
         apply({ elements, rects, availableWidth, availableHeight }) {
           // 触发器可以限宽，菜单不能跟着限：至少与触发器同宽，随内容变宽，封顶 480 免得太夸张；
