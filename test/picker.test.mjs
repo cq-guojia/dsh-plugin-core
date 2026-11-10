@@ -160,8 +160,17 @@ test('retainSelectedValue：旧值按真实值保留，命中候选时原目录�
   assert.equal(groupOf(unknownProvider.groups, 'ghost/m').value, 'ghost', '级联态能反推出 provider')
 })
 
-test('下拉项按「行」而不是「卡片」：选项小圆角、提示条通栏无圆角', () => {
+test('面板内所有「框 / 行」同一套：圆角都走 radius-md、相邻行留间距、提示条也是行', () => {
   const css = readFileSync(new URL('../src/ui/inputs/picker.css', import.meta.url), 'utf8')
-  assert.match(css, /\.dshpc-picker__option\{[^}]*border-radius:var\(--dshpc-radius-xs\)/, '选项圆角收到 xs 档')
-  assert.match(css, /\.dshpc-picker__degraded\{[^}]*margin:0 -4px 4px;border-radius:0/, '提示条通栏、无独立圆角')
+  // 同一面板里搜索框与列表行各自挑一档，真机上就是两套控件（2026-11-10 用户截图）。
+  // 依据是 Surface 定的圆角契约：容器 / 行一律 --dshpc-radius-md，不许组件自己挑更小的档。
+  assert.match(css, /\.dshpc-picker__search\{[^}]*border-radius:var\(--dshpc-radius-md\)/, '搜索框走 md 档')
+  assert.match(css, /\.dshpc-picker__option\{[^}]*border-radius:var\(--dshpc-radius-md\)/, '选项与搜索框同档')
+  assert.match(css, /\.dshpc-picker__more\{[^}]*border-radius:var\(--dshpc-radius-md\)/, '「显示更多」是一行，同档')
+  assert.doesNotMatch(css, /radius-(xs|sm)\)/, '不得在面板内自挑更小的圆角档')
+  // 相邻两行底色直接相接会连成一根胶囊，多选连选两项就分不出来（2026-11-10 用户）。
+  assert.match(css, /\.dshpc-picker__option \+ \.dshpc-picker__option\{[^}]*margin-top:var\(--dshpc-space-1\)/, '相邻行之间留一档间距')
+  // 提示条跟行同一套块（md 圆角、不再靠负 margin 通栏），只换配色。
+  assert.match(css, /\.dshpc-picker__degraded\{[^}]*border-radius:var\(--dshpc-radius-md\)/, '提示条与行同款圆角')
+  assert.doesNotMatch(css, /\.dshpc-picker__degraded\{[^}]*margin:0 -4px/, '提示条不再负 margin 通栏')
 })

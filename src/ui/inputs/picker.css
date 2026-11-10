@@ -46,12 +46,18 @@
 .dshpc-picker__group-label{
   padding:6px 8px 2px;color:var(--dshpc-fg-3);font-size:11px;
 }
-/* 选项是「行」不是「卡片」：圆角收到 xs 档，与 ListRow 的行口径一致 —— 大圆角只归外层菜单
-   （panel.css 的 menu 档 + overflow:hidden）。2026-11-10 用户：每项各自一圈 8px 圆角，像一叠小卡片。 */
+/* 圆角只跟全站「框 / 行」那一档走：--dshpc-radius-md。
+   真源是 Surface（surface.css:4-5「容器档 = --dshpc-radius-md，与 Button / Input 同档」），ListRow 的行
+   圆角也是从 Surface 继承的 —— 所以这里不能自己挑 xs/sm 之类更小的档。2026-11-10 用户真机截图：
+   搜索框（md）与被选中的蓝行（xs）圆角明显不齐，同在一个面板里像两套控件。
+   大圆角仍然只归外层菜单（panel.css 的 menu 档 + overflow:hidden）。 */
 .dshpc-picker__option{
-  display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--dshpc-radius-xs);cursor:pointer;
+  display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--dshpc-radius-md);cursor:pointer;
   color:var(--dshpc-fg);white-space:nowrap;
 }
+/* 行与行之间留一档间距（4px）：md 圆角的两行底色直接相接会连成一根胶囊，多选连选两项时
+   看不出是两条（2026-11-10 用户截图）。只用间距四拍里最小档，不写魔法数。 */
+.dshpc-picker__option + .dshpc-picker__option{margin-top:var(--dshpc-space-1)}
 /* hover / 选中直接借 ListRow 的两条 token —— 同一个「行」语义，与列表条目对齐。
    选中不染文字色：蓝字是「链接」语义，行选中只换底（list-row.css:44-47 的口径）。
    2026-11-10 用户：原来蓝底蓝字 + 亮一点的灰，和 ListRow 完全不是一套。 */
@@ -62,19 +68,21 @@
 .dshpc-picker__option-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dshpc-picker__tick{width:12px;color:var(--dshpc-business)}
 .dshpc-picker__empty{padding:8px;color:var(--dshpc-fg-3);text-align:center}
-/* 提示条通栏：负 margin 抵掉 __head 的左右 4px 内距（head padding:4px 4px 0），0 圆角，
-   靠菜单的 overflow:hidden 收边 —— 与选项同为「行」，不再是一块独立圆角卡片。 */
+/* 提示条（候选不完整 / 已到上限）与列表行同一套「块」：md 圆角 + 行内距，左右对齐搜索框与选项
+   （不再靠负 margin 伸到菜单内壁），只是配色换成提示黄。2026-11-10 用户：那条通栏太难看了，
+   要做成下面选中行那种框、用提示色。 */
 .dshpc-picker__degraded{
-  padding:8px;margin:0 -4px 4px;border-radius:0;
+  padding:6px 8px;margin:0 0 4px;border-radius:var(--dshpc-radius-md);
   color:var(--dshpc-warning-label);background:color-mix(in srgb,var(--dshpc-warning) 12%,transparent);
   font-size:11px;
 }
 .dshpc-picker__row{display:flex;align-items:center;gap:8px}
-/* 「显示更多」跟在最后一条后面、长得像多一条选项（2026-11-06 用户：翻到底发现不全才会找它）。 */
+/* 「显示更多」跟在最后一条后面、长得像多一条选项（2026-11-06 用户：翻到底发现不全才会找它）。
+   圆角同样走 md：它视觉上就是列表里多出来的一行，档位与选项一致，别再单独挑一个。 */
 .dshpc-picker__more{
-  display:block;width:100%;margin-top:2px;padding:6px 8px;
+  display:block;width:100%;margin-top:var(--dshpc-space-1);padding:6px 8px;
   color:var(--dshpc-business);background:none;
-  border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;
+  border:0;border-radius:var(--dshpc-radius-md);cursor:pointer;
   font-size:12px;line-height:20px;text-align:center;
 }
 .dshpc-picker__more:hover{background:var(--dshpc-surface-sunken)}

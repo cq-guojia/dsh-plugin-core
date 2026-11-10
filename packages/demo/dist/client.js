@@ -4342,12 +4342,18 @@ var PICKER_CSS = `
 .dshpc-picker__group-label{
   padding:6px 8px 2px;color:var(--dshpc-fg-3);font-size:11px;
 }
-/* \u9009\u9879\u662F\u300C\u884C\u300D\u4E0D\u662F\u300C\u5361\u7247\u300D\uFF1A\u5706\u89D2\u6536\u5230 xs \u6863\uFF0C\u4E0E ListRow \u7684\u884C\u53E3\u5F84\u4E00\u81F4 \u2014\u2014 \u5927\u5706\u89D2\u53EA\u5F52\u5916\u5C42\u83DC\u5355
-   \uFF08panel.css \u7684 menu \u6863 + overflow:hidden\uFF09\u30022026-11-10 \u7528\u6237\uFF1A\u6BCF\u9879\u5404\u81EA\u4E00\u5708 8px \u5706\u89D2\uFF0C\u50CF\u4E00\u53E0\u5C0F\u5361\u7247\u3002 */
+/* \u5706\u89D2\u53EA\u8DDF\u5168\u7AD9\u300C\u6846 / \u884C\u300D\u90A3\u4E00\u6863\u8D70\uFF1A--dshpc-radius-md\u3002
+   \u771F\u6E90\u662F Surface\uFF08surface.css:4-5\u300C\u5BB9\u5668\u6863 = --dshpc-radius-md\uFF0C\u4E0E Button / Input \u540C\u6863\u300D\uFF09\uFF0CListRow \u7684\u884C
+   \u5706\u89D2\u4E5F\u662F\u4ECE Surface \u7EE7\u627F\u7684 \u2014\u2014 \u6240\u4EE5\u8FD9\u91CC\u4E0D\u80FD\u81EA\u5DF1\u6311 xs/sm \u4E4B\u7C7B\u66F4\u5C0F\u7684\u6863\u30022026-11-10 \u7528\u6237\u771F\u673A\u622A\u56FE\uFF1A
+   \u641C\u7D22\u6846\uFF08md\uFF09\u4E0E\u88AB\u9009\u4E2D\u7684\u84DD\u884C\uFF08xs\uFF09\u5706\u89D2\u660E\u663E\u4E0D\u9F50\uFF0C\u540C\u5728\u4E00\u4E2A\u9762\u677F\u91CC\u50CF\u4E24\u5957\u63A7\u4EF6\u3002
+   \u5927\u5706\u89D2\u4ECD\u7136\u53EA\u5F52\u5916\u5C42\u83DC\u5355\uFF08panel.css \u7684 menu \u6863 + overflow:hidden\uFF09\u3002 */
 .dshpc-picker__option{
-  display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--dshpc-radius-xs);cursor:pointer;
+  display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--dshpc-radius-md);cursor:pointer;
   color:var(--dshpc-fg);white-space:nowrap;
 }
+/* \u884C\u4E0E\u884C\u4E4B\u95F4\u7559\u4E00\u6863\u95F4\u8DDD\uFF084px\uFF09\uFF1Amd \u5706\u89D2\u7684\u4E24\u884C\u5E95\u8272\u76F4\u63A5\u76F8\u63A5\u4F1A\u8FDE\u6210\u4E00\u6839\u80F6\u56CA\uFF0C\u591A\u9009\u8FDE\u9009\u4E24\u9879\u65F6
+   \u770B\u4E0D\u51FA\u662F\u4E24\u6761\uFF082026-11-10 \u7528\u6237\u622A\u56FE\uFF09\u3002\u53EA\u7528\u95F4\u8DDD\u56DB\u62CD\u91CC\u6700\u5C0F\u6863\uFF0C\u4E0D\u5199\u9B54\u6CD5\u6570\u3002 */
+.dshpc-picker__option + .dshpc-picker__option{margin-top:var(--dshpc-space-1)}
 /* hover / \u9009\u4E2D\u76F4\u63A5\u501F ListRow \u7684\u4E24\u6761 token \u2014\u2014 \u540C\u4E00\u4E2A\u300C\u884C\u300D\u8BED\u4E49\uFF0C\u4E0E\u5217\u8868\u6761\u76EE\u5BF9\u9F50\u3002
    \u9009\u4E2D\u4E0D\u67D3\u6587\u5B57\u8272\uFF1A\u84DD\u5B57\u662F\u300C\u94FE\u63A5\u300D\u8BED\u4E49\uFF0C\u884C\u9009\u4E2D\u53EA\u6362\u5E95\uFF08list-row.css:44-47 \u7684\u53E3\u5F84\uFF09\u3002
    2026-11-10 \u7528\u6237\uFF1A\u539F\u6765\u84DD\u5E95\u84DD\u5B57 + \u4EAE\u4E00\u70B9\u7684\u7070\uFF0C\u548C ListRow \u5B8C\u5168\u4E0D\u662F\u4E00\u5957\u3002 */
@@ -4358,19 +4364,21 @@ var PICKER_CSS = `
 .dshpc-picker__option-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dshpc-picker__tick{width:12px;color:var(--dshpc-business)}
 .dshpc-picker__empty{padding:8px;color:var(--dshpc-fg-3);text-align:center}
-/* \u63D0\u793A\u6761\u901A\u680F\uFF1A\u8D1F margin \u62B5\u6389 __head \u7684\u5DE6\u53F3 4px \u5185\u8DDD\uFF08head padding:4px 4px 0\uFF09\uFF0C0 \u5706\u89D2\uFF0C
-   \u9760\u83DC\u5355\u7684 overflow:hidden \u6536\u8FB9 \u2014\u2014 \u4E0E\u9009\u9879\u540C\u4E3A\u300C\u884C\u300D\uFF0C\u4E0D\u518D\u662F\u4E00\u5757\u72EC\u7ACB\u5706\u89D2\u5361\u7247\u3002 */
+/* \u63D0\u793A\u6761\uFF08\u5019\u9009\u4E0D\u5B8C\u6574 / \u5DF2\u5230\u4E0A\u9650\uFF09\u4E0E\u5217\u8868\u884C\u540C\u4E00\u5957\u300C\u5757\u300D\uFF1Amd \u5706\u89D2 + \u884C\u5185\u8DDD\uFF0C\u5DE6\u53F3\u5BF9\u9F50\u641C\u7D22\u6846\u4E0E\u9009\u9879
+   \uFF08\u4E0D\u518D\u9760\u8D1F margin \u4F38\u5230\u83DC\u5355\u5185\u58C1\uFF09\uFF0C\u53EA\u662F\u914D\u8272\u6362\u6210\u63D0\u793A\u9EC4\u30022026-11-10 \u7528\u6237\uFF1A\u90A3\u6761\u901A\u680F\u592A\u96BE\u770B\u4E86\uFF0C
+   \u8981\u505A\u6210\u4E0B\u9762\u9009\u4E2D\u884C\u90A3\u79CD\u6846\u3001\u7528\u63D0\u793A\u8272\u3002 */
 .dshpc-picker__degraded{
-  padding:8px;margin:0 -4px 4px;border-radius:0;
+  padding:6px 8px;margin:0 0 4px;border-radius:var(--dshpc-radius-md);
   color:var(--dshpc-warning-label);background:color-mix(in srgb,var(--dshpc-warning) 12%,transparent);
   font-size:11px;
 }
 .dshpc-picker__row{display:flex;align-items:center;gap:8px}
-/* \u300C\u663E\u793A\u66F4\u591A\u300D\u8DDF\u5728\u6700\u540E\u4E00\u6761\u540E\u9762\u3001\u957F\u5F97\u50CF\u591A\u4E00\u6761\u9009\u9879\uFF082026-11-06 \u7528\u6237\uFF1A\u7FFB\u5230\u5E95\u53D1\u73B0\u4E0D\u5168\u624D\u4F1A\u627E\u5B83\uFF09\u3002 */
+/* \u300C\u663E\u793A\u66F4\u591A\u300D\u8DDF\u5728\u6700\u540E\u4E00\u6761\u540E\u9762\u3001\u957F\u5F97\u50CF\u591A\u4E00\u6761\u9009\u9879\uFF082026-11-06 \u7528\u6237\uFF1A\u7FFB\u5230\u5E95\u53D1\u73B0\u4E0D\u5168\u624D\u4F1A\u627E\u5B83\uFF09\u3002
+   \u5706\u89D2\u540C\u6837\u8D70 md\uFF1A\u5B83\u89C6\u89C9\u4E0A\u5C31\u662F\u5217\u8868\u91CC\u591A\u51FA\u6765\u7684\u4E00\u884C\uFF0C\u6863\u4F4D\u4E0E\u9009\u9879\u4E00\u81F4\uFF0C\u522B\u518D\u5355\u72EC\u6311\u4E00\u4E2A\u3002 */
 .dshpc-picker__more{
-  display:block;width:100%;margin-top:2px;padding:6px 8px;
+  display:block;width:100%;margin-top:var(--dshpc-space-1);padding:6px 8px;
   color:var(--dshpc-business);background:none;
-  border:0;border-radius:var(--dshpc-radius-sm);cursor:pointer;
+  border:0;border-radius:var(--dshpc-radius-md);cursor:pointer;
   font-size:12px;line-height:20px;text-align:center;
 }
 .dshpc-picker__more:hover{background:var(--dshpc-surface-sunken)}
@@ -71432,9 +71440,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.15"}`],
-            [t3("buildDemo"), `v${"0.35.15"}`],
-            [t3("buildStamp"), "261110-170214-755"]
+            [t3("buildCore"), `v${"0.35.16"}`],
+            [t3("buildDemo"), `v${"0.35.16"}`],
+            [t3("buildStamp"), "261110-171651-437"]
           ].map(
             ([label, value]) => (0, import_react98.createElement)(
               "tr",
@@ -71750,9 +71758,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react100.createElement)("span", null, `core v${"0.35.15"}`),
-          (0, import_react100.createElement)("span", null, `demo v${"0.35.15"}`),
-          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-170214-755")
+          (0, import_react100.createElement)("span", null, `core v${"0.35.16"}`),
+          (0, import_react100.createElement)("span", null, `demo v${"0.35.16"}`),
+          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-171651-437")
         )
       )
     ),
