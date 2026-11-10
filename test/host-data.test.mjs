@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { buildModelRoutes } from '../dist/host/index.js'
-import { connectHost, getWorkspaceFiles, modelCatalog, workspaceList } from '../dist/ui/index.js'
+import { buildModelRoutes, serveModelCatalog } from '../dist/host/index.js'
+import { connectHost, getWorkspaceFiles, modelCatalog, refreshModelCatalog, workspaceList } from '../dist/ui/index.js'
 
 /** 最小 llm face：按脚本返回 provider 与各自模型。 */
 function llmFace(providers, models) {
@@ -100,4 +100,77 @@ test('workspaceList：归档集合镜像官方快照，推新集合即时跟随'
   assert.deepEqual(workspaceList.getArchiveSnapshot(), []) // 字段缺席按未归档，不编造
   assert.equal(workspaceList.isSessionArchived('s1'), false)
   off()
+})
+
+test('serveModelCatalog：只声明 webServer；llm 请求时惰性现取，缺失 / 异常都自己收口', async () => {
+  const llm = {
+    listProviders: () => [{ id: 'openai', name: 'OpenAI' }],
+    listModels: async () => [{ id: 'gpt-4' }],
+  }
+  const registered = []
+  const ctx = {
+    inject: (deps, cb) => {
+      assert.deepEqual(deps, ['webServer'], 'llm 不能进 inject 依赖')
+      cb({ webServer: { register: (route) => registered.push(route) } })
+    },
+    get: (name) => (name === 'llm' ? llm : undefined),
+  }
+  serveModelCatalog(ctx, { path: '/api/x/models' })
+  assert.equal(registered.length, 1)
+  const reply = () => ({
+    status: 0, body: '',
+    writeHead(status) { this.status = status },
+    end(body) { this.body = body },
+  })
+
+  const ok = reply()
+  await registered[0].handler({ url: '/api/x/models', headers: {} }, ok)
+  assert.equal(ok.status, 200)
+  assert.equal(JSON.parse(ok.body).routes[0].provider, 'openai')
+
+  const forbidden = reply()
+  const guarded = []
+  serveModelCatalog({
+    inject: (_deps, cb) => cb({ webServer: { register: (route) => guarded.push(route) } }),
+    get: () => llm,
+  }, { path: '/api/x/models', authorize: (req) => req.headers?.['x-trusted'] === 'yes' })
+  await guarded[0].handler({ headers: {} }, forbidden)
+  assert.equal(forbidden.status, 403, '守卫拒绝 ⇒ 403，不查模型')
+
+  const missing = reply()
+  serveModelCatalog({ inject: (_deps, cb) => cb({ webServer: { register: (route) => registered.push(route) } }), get: () => undefined }, { path: '/api/x/models' })
+  await registered[1].handler({ headers: {} }, missing)
+  assert.equal(missing.status, 503, 'llm 晚挂载 / 缺席 ⇒ 503，而不是路由不注册')
+
+  const broken = reply()
+  serveModelCatalog({
+    inject: (_deps, cb) => cb({ webServer: { register: (route) => registered.push(route) } }),
+    get: () => ({ listProviders: () => { throw new Error('boom') }, listModels: async () => [] }),
+  }, { path: '/api/x/models' })
+  await registered[2].handler({ headers: {} }, broken)
+  assert.equal(broken.status, 500, 'listProviders 抛错也要自己收口，不让宿主 destroy 连接')
+})
+
+test('connectHost / refreshModelCatalog：不接线不取目录；刷新重拉且禁用缓存', async () => {
+  const calls = []
+  const saved = globalThis.fetch
+  globalThis.fetch = (path, init) => {
+    calls.push([path, init?.cache])
+    return Promise.resolve({ ok: true, json: () => Promise.resolve({ routes: [{ provider: 'openai', displayName: 'OpenAI', models: [{ id: 'gpt-4' }] }] }) })
+  }
+  try {
+    await assert.rejects(refreshModelCatalog(), /模型目录未接线/)
+    connectHost({ inject: () => {} })
+    assert.equal(calls.length, 0, '不传 modelsPath 完全不取模型目录')
+    connectHost({ inject: () => {} }, { modelsPath: '/api/x/models' })
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    assert.equal(calls.length, 1)
+    assert.equal(calls[0][1], 'no-store', '目录必须现查，不能吃浏览器缓存')
+    const state = await refreshModelCatalog()
+    assert.equal(state.status, 'ready')
+    assert.equal(state.routes[0].provider, 'openai')
+    assert.equal(calls.length, 2, '刷新是第二次真实请求')
+  } finally {
+    globalThis.fetch = saved
+  }
 })

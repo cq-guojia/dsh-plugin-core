@@ -119,7 +119,8 @@ Everything is built from tokens, takes its data through props, and follows the h
 - `Input`, `PrefixedInput`, `NumberInput`, `Textarea` — one shared field metric (`fieldMetricsOf`) so every control lines up; error state, leading icon slot, search clear button, and a question-mark hint that uses the host's tooltip.
 - `Checkbox`, and the official `Switch` for on/off semantics.
 - `Picker` — single or multiple, search, groups, selection cap, clearable, empty state; keyboard driven (Esc / arrows / Enter). Its logic (`toGroups`, `filterGroups`, `toggleValue`) is exported separately.
-- `WorkspacePicker` / `ModelPicker` — pickers that bring their own data once `connectHost(ctx)` has been called; unwired they show an empty state rather than inventing entries.
+- `WorkspacePicker` — a domain picker that brings its own data: call `connectHost(ctx)` once in the plugin `apply` and it subscribes to the official `workspaces` snapshot.
+- `ModelPicker` — a domain picker for the host model catalog, wired on both sides: in the host `apply` register `serveModelCatalog(ctx, { path })` from `dsh-plugin-core/host`, then in the client `apply` call `connectHost(ctx, { modelsPath: path })` with the **same** path constant; `refreshModelCatalog()` re-pulls the catalog when providers or models change. Unwired pickers show an empty state rather than inventing entries.
 - `DateTimePicker` — one control for a single instant or a range, precision `day` / `hour` / `minute` / `second`, two independent calendars, keyboard support, start floored and end ceiled.
 - `InputGroup` — input with attached actions.
 

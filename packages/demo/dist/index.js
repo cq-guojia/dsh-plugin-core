@@ -1107,19 +1107,35 @@ async function buildModelRoutes(llm) {
   routes.sort((left, right) => left.displayName.localeCompare(right.displayName));
   return routes;
 }
+var JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
 function serveModelCatalog(ctx, options) {
-  ctx.inject(["llm", "webServer"], (services) => {
-    const llm = services.llm;
+  ctx.inject(["webServer"], (services) => {
     const webServer = services.webServer;
-    if (llm === void 0 || webServer === void 0)
+    if (webServer === void 0)
       return;
     webServer.register({
       kind: "exact",
       path: options.path,
-      handler: async (_req, res) => {
-        const routes = await buildModelRoutes(llm);
-        res.writeHead(200, { "content-type": "application/json; charset=utf-8" });
-        res.end(JSON.stringify({ routes }));
+      handler: async (req, res) => {
+        if (options.authorize !== void 0 && !await options.authorize(req)) {
+          res.writeHead(403, JSON_HEADERS);
+          res.end(JSON.stringify({ error: "forbidden" }));
+          return;
+        }
+        const llm = options.getLlm?.() ?? ctx.get?.("llm");
+        if (llm === void 0) {
+          res.writeHead(503, JSON_HEADERS);
+          res.end(JSON.stringify({ routes: [], error: "llm-unavailable" }));
+          return;
+        }
+        try {
+          const routes = await buildModelRoutes(llm);
+          res.writeHead(200, JSON_HEADERS);
+          res.end(JSON.stringify({ routes }));
+        } catch (error) {
+          res.writeHead(500, JSON_HEADERS);
+          res.end(JSON.stringify({ routes: [], error: String(error) }));
+        }
       }
     });
   });

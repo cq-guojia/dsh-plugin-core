@@ -8,6 +8,7 @@ import {
   labelsOf,
   resolveMenuSizing,
   resolveTriggerSizing,
+  retainSelectedValue,
   sliceGroups,
   toFlatOptions,
   toggleValue,
@@ -137,4 +138,24 @@ test('8px 补偿与 head 内距一致（改 CSS 要同步改 resolveMenuSizing�
   const css = readFileSync(new URL('../src/ui/inputs/picker.css', import.meta.url), 'utf8')
   assert.match(css, /\.dshpc-picker__head\{[^}]*padding:4px 4px 0\}/)
   assert.match(resolveMenuSizing(180, undefined, { width: 300 }).minWidth, /calc\(300px \+ 8px\)/)
+})
+
+test('retainSelectedValue：旧值按真实值保留，命中候选时原目录不动', () => {
+  const hit = retainSelectedValue(GROUPS, 'openai/gpt-4')
+  assert.equal(hit.retained, false)
+  assert.equal(hit.groups, GROUPS, '命中时不复制目录')
+  assert.deepEqual(retainSelectedValue(GROUPS, ''), { groups: GROUPS, retained: false })
+  assert.deepEqual(retainSelectedValue(GROUPS, undefined), { groups: GROUPS, retained: false })
+
+  const sameProvider = retainSelectedValue(GROUPS, 'openai/retired')
+  assert.equal(sameProvider.retained, true)
+  assert.equal(sameProvider.groups.length, 2)
+  assert.deepEqual(sameProvider.groups[0].options[0], { value: 'openai/retired', label: 'openai/retired' })
+  assert.equal(sameProvider.groups[0].options.length, 3)
+
+  const unknownProvider = retainSelectedValue(GROUPS, 'ghost/m')
+  assert.equal(unknownProvider.retained, true)
+  assert.equal(unknownProvider.groups.length, 3)
+  assert.equal(unknownProvider.groups[2].value, 'ghost')
+  assert.equal(groupOf(unknownProvider.groups, 'ghost/m').value, 'ghost', '级联态能反推出 provider')
 })

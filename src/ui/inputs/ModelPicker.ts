@@ -1,7 +1,7 @@
 import { createElement as h, useEffect, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
 import { Picker, type PickerSize } from './Picker.js'
-import { flattenOptions, groupOf, toFlatOptions, type PickerGroup, type PickerSizing } from './picker-logic.js'
+import { flattenOptions, groupOf, retainSelectedValue, toFlatOptions, type PickerGroup, type PickerSizing } from './picker-logic.js'
 import { modelCatalog } from '../infra/host-data.js'
 import { sparkleIcon } from './picker-icons.js'
 import { ensureComponentStyles } from '../infra/css.js'
@@ -49,7 +49,14 @@ export interface ModelPickerProps extends PickerSizing {
   searchable?: boolean
   size?: PickerSize
   placement?: 'down' | 'up'
+  /** 组件根元素的类名：grouped / flat 落在 Picker 根，cascade 落在两框外层 row。 */
   className?: string
+  /** cascade 外层 row 的附加类名（与 className 叠加，单独定制布局用）。 */
+  rowClassName?: string
+  /** cascade 厂商框的类名。 */
+  providerClassName?: string
+  /** cascade 模型框的类名。 */
+  modelClassName?: string
   /** 下拉内搜索框的宽度三轴（所有形态共用）；不传沿用 CSS 的 100% 铺满。 */
   searchSizing?: PickerSizing
   /** cascade：厂商框单独宽度；不传跟随 width / minWidth / maxWidth。 */
@@ -71,7 +78,7 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
 
   // 目录状态：外部没喂目录（Node 自检 / 宿主缺服务）⇒ 空 + 如实降级，不编数据。
   const catalog = useSyncExternalStore(modelCatalog.subscribe, modelCatalog.getSnapshot, modelCatalog.getSnapshot)
-  const groups =
+  const catalogGroups =
     props.groups ??
     (catalog.status === 'ready'
       ? catalog.routes.map((route) => ({
@@ -83,8 +90,16 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
           })),
         }))
       : [])
-  // 目录不可用、或读出来是空的 ⇒ 如实提示「候选可能不完整」，别让空列表看起来像坏了。
-  const degraded = props.degraded ?? (catalog.status === 'unavailable' || (catalog.status === 'ready' && groups.length === 0))
+  // 旧值可能已不在目录里（供应商被摘掉 / 目录刷新）：按真实值补一条保留项，
+  // 让触发器与菜单都显示它、级联态也能反推出 provider，绝不静默丢掉用户的选择。
+  const retained = retainSelectedValue(catalogGroups, props.value)
+  const groups = retained.groups
+  // 目录不可用、空目录、或旧值已失效 ⇒ 如实提示「候选可能不完整」，别让空列表看起来像坏了。
+  const degraded = props.degraded ?? (
+    catalog.status === 'unavailable'
+    || (catalog.status === 'ready' && catalogGroups.length === 0)
+    || retained.retained
+  )
   const icon = props.icon === undefined ? sparkleIcon() : props.icon ?? undefined
   const emitModel = (v: string | string[]): void => {
     props.onChange?.(typeof v === 'string' ? v : v[0] ?? '')
@@ -155,9 +170,14 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
   // cascade：两个下拉联动 —— 供应商筛模型；换供应商清空模型
   const group = groups.find((g) => g.value === provider)
   const options = group === undefined ? [] : flattenOptions([group])
+  // 根元素统一吃 className（其它形态根就是 Picker），row 另留一条独立定制轴；
+  // 两个框各自的类名也交出去，消费方才能分别控制布局。
+  const rowClass = ['dshpc-picker__row', props.className, props.rowClassName]
+    .filter((part) => part !== undefined && part !== '')
+    .join(' ')
   return h(
     'div',
-    { className: 'dshpc-picker__row' },
+    { className: rowClass },
     h(Picker, {
       options: groups.map((g) => ({ value: g.value, label: g.label })),
       value: provider === '' ? undefined : provider,
@@ -168,6 +188,8 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
       searchSizing: props.searchSizing,
       searchable,
       size: props.size,
+      placement: props.placement,
+      className: props.providerClassName,
       translate: props.translate,
       onChange: (v) => {
         setPickedProvider(typeof v === 'string' ? v : v[0] ?? '')
@@ -189,7 +211,7 @@ export function ModelPicker(props: ModelPickerProps): ReturnType<typeof h> {
       hint: props.hint,
       size: props.size,
       placement: props.placement,
-      className: props.className,
+      className: props.modelClassName,
       translate: props.translate,
       onChange: emitModel,
     }),

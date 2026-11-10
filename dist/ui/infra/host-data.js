@@ -77,6 +77,45 @@ let workspaceFiles;
 export function getWorkspaceFiles() {
     return workspaceFiles;
 }
+/** 最近一次接线的模型目录路径（`refreshModelCatalog()` 不带参时用它）。 */
+let boundModelsPath;
+/** 进行中的目录请求：并发刷新合并成一次，避免连点发一串相同请求。 */
+let catalogInFlight;
+function loadModelCatalog(path) {
+    if (catalogInFlight !== undefined)
+        return catalogInFlight;
+    const job = fetch(path, { cache: 'no-store' })
+        .then((response) => (response.ok ? response.json() : Promise.reject(new Error(`HTTP ${response.status}`))))
+        .then((data) => {
+        const routes = data?.routes;
+        if (!Array.isArray(routes))
+            throw new Error('模型目录响应缺少 routes');
+        modelCatalog.setRoutes(routes);
+    })
+        .catch((error) => {
+        modelCatalog.setUnavailable(String(error));
+    })
+        .finally(() => {
+        catalogInFlight = undefined;
+    });
+    catalogInFlight = job;
+    return job;
+}
+/**
+ * 重拉模型目录（供应商 / 模型有增减、或上一次取失败要重试时调）。
+ *
+ * 宿主路由每次请求现查，这里显式 `cache: 'no-store'`，避免浏览器把上次的目录缓存回来。
+ * 不传 path 就用 `connectHost(ctx, { modelsPath })` 记下的那个；还没接线则 reject。
+ * 返回 Promise：await 之后 `modelCatalog.getSnapshot()` 即本次结果。
+ */
+export async function refreshModelCatalog(path) {
+    const target = path ?? boundModelsPath;
+    if (target === undefined) {
+        throw new Error('模型目录未接线：先调 connectHost(ctx, { modelsPath })');
+    }
+    await loadModelCatalog(target);
+    return modelCatalog.getSnapshot();
+}
 function isWorkspaceSource(value) {
     if (value === null || typeof value !== 'object')
         return false;
@@ -107,16 +146,7 @@ export function connectHost(ctx, options = {}) {
     const modelsPath = options.modelsPath;
     if (modelsPath === undefined)
         return;
-    void fetch(modelsPath)
-        .then((response) => (response.ok ? response.json() : Promise.reject(new Error(`HTTP ${response.status}`))))
-        .then((data) => {
-        const routes = data?.routes;
-        if (!Array.isArray(routes))
-            throw new Error('模型目录响应缺少 routes');
-        modelCatalog.setRoutes(routes);
-    })
-        .catch((error) => {
-        modelCatalog.setUnavailable(String(error));
-    });
+    boundModelsPath = modelsPath;
+    void loadModelCatalog(modelsPath);
 }
 //# sourceMappingURL=host-data.js.map

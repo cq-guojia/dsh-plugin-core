@@ -195,6 +195,22 @@
 - 来源：`dsh-task-dispatch-table/src/host.ts:214-232`（`HostLlm` 面）、`src/dispatch.ts:81-88`（listModels 用法）、
   `dsh-task-ledger/packages/plugin/src/host/routes.ts:20-44`（webServer.register + sendJson）。
 
+### 11.1.1 路由请求策略与惰性取服务（2026-11-10 解包核实）
+
+- 事实（`@deepseek-ai/dsh-host-webserver@0.2.0-rc.2`）：`WebRoute.handler` 类型是
+  `(req: IncomingMessage, res: ServerResponse) => void | Promise<void>`（`lib/types/index.d.ts:33-38`），
+  即路由拿到的是**原始 Node 请求**（含 `headers` / `method` / `socket`），不是只有 `url` 的瘦对象。
+- 事实（同包 `README.md:113`）：*"No server-wide TLS, authentication, or origin policy — route owners …
+  enforce their own request policy."* ⇒ 宿主不把关，信任闸门由**路由方**自持；核心库不能假装自己有
+  鉴权，也不能把 `req` 裁到消费方接不上自家守卫。
+- 事实（`@deepseek-ai/cordis`）：`ctx.get(name, strict = true)` 的注释是 *"Read a service from the
+  store without the inject requirement … undefined when not (yet) provided"*（`lib/index.js:763-770`、
+  `lib/types/reflect.d.ts:10-16`）；`ctx.inject(inject, callback)` 是 `plugin({ inject, apply: callback })`
+  （`lib/index.js:1600`）—— 依赖未齐时回调不执行。⇒ 晚到 / 缺席的服务用 `get` 惰性取，
+  绝不写进 `inject` 依赖。
+- 落地：本包 `serveModelCatalog` 只声明 `['webServer']`，每次请求 `ctx.get('llm')` 现取，并开放可选
+  `authorize(req)` 让消费方接自己的守卫（不传则沿用宿主既有边界）。
+
 ### 11.2 归档变更的官方推送链与打开判据（2026-11-04 解包核实）
 
 版本：`@deepseek-ai/dsh-workspace@0.2.1-rc.5`、`@deepseek-ai/dsh-api-workspace-controller@0.2.1-rc.5`、`@deepseek-ai/dsh-client-ui-workspace@0.2.1-rc.5`（§13 记录的宿主当前线；§11 事实 3 的 0.2.0-rc.2 结论在此版本仍成立）。

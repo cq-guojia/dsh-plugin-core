@@ -23,14 +23,26 @@ export interface HostLlmLike {
         name?: string;
     }[]>;
 }
+/**
+ * 宿主 `webServer` 交给 handler 的原始 Node 请求的结构化子集。
+ * 官方 `WebRoute.handler` 收的是 `IncomingMessage`（docs/design/external/dsh-host.md §11.1.1），
+ * 宿主不做 server-wide 鉴权、闸门由路由方自持 ⇒ 这里必须留出 headers / socket，
+ * 否则消费方连自己的同源守卫都接不上。
+ */
+export interface HostHttpRequest {
+    url?: string;
+    method?: string;
+    headers?: Record<string, string | string[] | undefined>;
+    socket?: {
+        remoteAddress?: string;
+    };
+}
 /** 宿主 `webServer` 服务的最小面（WebRoute 形状）。 */
 export interface HostWebServerLike {
     register: (route: {
         kind: 'exact' | 'prefix';
         path: string;
-        handler: (req: {
-            url?: string;
-        }, res: {
+        handler: (req: HostHttpRequest, res: {
             writeHead: (status: number, headers: Record<string, string>) => void;
             end: (body: string) => void;
         }) => void | Promise<void>;
@@ -39,6 +51,8 @@ export interface HostWebServerLike {
 /** 插件宿主 ctx 的最小面。 */
 export interface HostContextLike {
     inject: (deps: string[], cb: (services: Record<string, unknown>) => void) => void;
+    /** cordis `ctx.get(name)`：惰性读服务，未挂载返回 undefined 且不抛；不需要 inject 声明。 */
+    get?: (name: string, strict?: boolean) => unknown;
 }
 /** 一条路由：一个供应商 + 它的模型。 */
 export interface ModelRouteData {
@@ -54,15 +68,24 @@ export interface ModelRouteData {
  * 导出是为了单测与「不用 HTTP 也要这份数据」的宿主场景。
  */
 export declare function buildModelRoutes(llm: HostLlmLike): Promise<ModelRouteData[]>;
+/** `serveModelCatalog` 的可选策略：宿主不做 server-wide 鉴权，闸门由路由方自持。 */
+export interface ModelCatalogOptions {
+    /** 路由路径，客户端要用**同一个常量**去 fetch（如 `/api/x/models`）。 */
+    path: string;
+    /** 请求闸门：返回 false ⇒ 403。不传 = 沿用宿主既有边界，由消费方自行负责。 */
+    authorize?: (req: HostHttpRequest) => boolean | Promise<boolean>;
+    /** 惰性取 `llm` 的覆盖口：默认走 cordis `ctx.get('llm')`。 */
+    getLlm?: () => HostLlmLike | undefined;
+}
 /**
  * 注册模型目录路由（插件宿主 `apply` 里调一次）。
  *
- * @param ctx 插件宿主 ctx（`llm` / `webServer` 两条注入线，缺任一条就不注册）。
- * @param options.path 路由路径，客户端要用**同一个常量**去 fetch（如 `/api/x/models`）。
+ * 只声明 `webServer` 一条注入线：`webServer` 是宿主必启服务，而 `llm` 可能晚挂载、或这份
+ * 组合里根本没有 —— 把它写进 `ctx.inject` 的依赖会让回调永远不触发、路由直接不注册
+ * （cordis `inject` = 声明依赖，齐了才 apply）。`llm` 改为每个请求用 `ctx.get('llm')`
+ * 惰性现取（未挂载返回 undefined、不抛），取不到回 503，客户端据此显示降级提示。
  */
-export declare function serveModelCatalog(ctx: HostContextLike, options: {
-    path: string;
-}): void;
+export declare function serveModelCatalog(ctx: HostContextLike, options: ModelCatalogOptions): void;
 export { serveFsRoute, FS_PAGE_LIMIT, normalizeAbsPath } from './fs-route.js';
 export type { FsRouteEntry, FsRouteListing } from './fs-route.js';
 //# sourceMappingURL=index.d.ts.map

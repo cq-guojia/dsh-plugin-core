@@ -19,18 +19,33 @@ export interface HostLlmLike {
   listModels: (provider: string) => Promise<readonly { id: string; name?: string }[]>
 }
 
+/**
+ * 宿主 `webServer` 交给 handler 的原始 Node 请求的结构化子集。
+ * 官方 `WebRoute.handler` 收的是 `IncomingMessage`（docs/design/external/dsh-host.md §11.1.1），
+ * 宿主不做 server-wide 鉴权、闸门由路由方自持 ⇒ 这里必须留出 headers / socket，
+ * 否则消费方连自己的同源守卫都接不上。
+ */
+export interface HostHttpRequest {
+  url?: string
+  method?: string
+  headers?: Record<string, string | string[] | undefined>
+  socket?: { remoteAddress?: string }
+}
+
 /** 宿主 `webServer` 服务的最小面（WebRoute 形状）。 */
 export interface HostWebServerLike {
   register: (route: {
     kind: 'exact' | 'prefix'
     path: string
-    handler: (req: { url?: string }, res: { writeHead: (status: number, headers: Record<string, string>) => void; end: (body: string) => void }) => void | Promise<void>
+    handler: (req: HostHttpRequest, res: { writeHead: (status: number, headers: Record<string, string>) => void; end: (body: string) => void }) => void | Promise<void>
   }) => unknown
 }
 
 /** 插件宿主 ctx 的最小面。 */
 export interface HostContextLike {
   inject: (deps: string[], cb: (services: Record<string, unknown>) => void) => void
+  /** cordis `ctx.get(name)`：惰性读服务，未挂载返回 undefined 且不抛；不需要 inject 声明。 */
+  get?: (name: string, strict?: boolean) => unknown
 }
 
 /** 一条路由：一个供应商 + 它的模型。 */
@@ -63,24 +78,54 @@ export async function buildModelRoutes(llm: HostLlmLike): Promise<ModelRouteData
   return routes
 }
 
+/** `serveModelCatalog` 的可选策略：宿主不做 server-wide 鉴权，闸门由路由方自持。 */
+export interface ModelCatalogOptions {
+  /** 路由路径，客户端要用**同一个常量**去 fetch（如 `/api/x/models`）。 */
+  path: string
+  /** 请求闸门：返回 false ⇒ 403。不传 = 沿用宿主既有边界，由消费方自行负责。 */
+  authorize?: (req: HostHttpRequest) => boolean | Promise<boolean>
+  /** 惰性取 `llm` 的覆盖口：默认走 cordis `ctx.get('llm')`。 */
+  getLlm?: () => HostLlmLike | undefined
+}
+
+const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' }
+
 /**
  * 注册模型目录路由（插件宿主 `apply` 里调一次）。
  *
- * @param ctx 插件宿主 ctx（`llm` / `webServer` 两条注入线，缺任一条就不注册）。
- * @param options.path 路由路径，客户端要用**同一个常量**去 fetch（如 `/api/x/models`）。
+ * 只声明 `webServer` 一条注入线：`webServer` 是宿主必启服务，而 `llm` 可能晚挂载、或这份
+ * 组合里根本没有 —— 把它写进 `ctx.inject` 的依赖会让回调永远不触发、路由直接不注册
+ * （cordis `inject` = 声明依赖，齐了才 apply）。`llm` 改为每个请求用 `ctx.get('llm')`
+ * 惰性现取（未挂载返回 undefined、不抛），取不到回 503，客户端据此显示降级提示。
  */
-export function serveModelCatalog(ctx: HostContextLike, options: { path: string }): void {
-  ctx.inject(['llm', 'webServer'], (services) => {
-    const llm = services.llm as HostLlmLike | undefined
+export function serveModelCatalog(ctx: HostContextLike, options: ModelCatalogOptions): void {
+  ctx.inject(['webServer'], (services) => {
     const webServer = services.webServer as HostWebServerLike | undefined
-    if (llm === undefined || webServer === undefined) return
+    if (webServer === undefined) return
     webServer.register({
       kind: 'exact',
       path: options.path,
-      handler: async (_req, res) => {
-        const routes = await buildModelRoutes(llm)
-        res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' })
-        res.end(JSON.stringify({ routes }))
+      handler: async (req, res) => {
+        if (options.authorize !== undefined && !(await options.authorize(req))) {
+          res.writeHead(403, JSON_HEADERS)
+          res.end(JSON.stringify({ error: 'forbidden' }))
+          return
+        }
+        const llm = options.getLlm?.() ?? (ctx.get?.('llm') as HostLlmLike | undefined)
+        if (llm === undefined) {
+          res.writeHead(503, JSON_HEADERS)
+          res.end(JSON.stringify({ routes: [], error: 'llm-unavailable' }))
+          return
+        }
+        try {
+          const routes = await buildModelRoutes(llm)
+          res.writeHead(200, JSON_HEADERS)
+          res.end(JSON.stringify({ routes }))
+        } catch (error) {
+          // listProviders 抛错时也要自己收口：宿主对「发头后抛错」会直接 destroy 连接。
+          res.writeHead(500, JSON_HEADERS)
+          res.end(JSON.stringify({ routes: [], error: String(error) }))
+        }
       },
     })
   })

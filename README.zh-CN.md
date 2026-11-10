@@ -108,22 +108,23 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 
 全部由 token 搭出来，数据走 props，配色跟随宿主主题。props 就是定制面——组合 props，不要 fork 源码。每个参数的完整说明见[控件参考](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/ui.md)。
 
-**动作**
+#### 动作
 
 - `Button`——18 档外观（实心 / 线框 / 无底：`primary`、`secondary`、`danger`、`success`、`warning`、`info`、`outline`、`danger-outline`、`ghost`、`link`，加扩展八色），三档高度（24 / 28 / 32），前置与后置图标，固定 / 最小 / 最大宽度（超长跑马灯），自动 loading：`onClick` 返回 Promise 就转圈、禁用、settle 后自恢复，reject 同样恢复。
 - `IconButton`——纯图标版本，无障碍名强制给。
 - `Segmented`——单选 / 多选、可选 1px 外框、段内图标 / 计数 / 角标、`tone` 换选中片配色。
 
-**录入**
+#### 录入
 
 - `Input`、`PrefixedInput`、`NumberInput`、`Textarea`——共用一套字段尺寸（`fieldMetricsOf`），错误态、左侧图标槽、搜索清空键，问号提示直接走宿主 tooltip。
 - `Checkbox`；开关语义用官方 `Switch`。
 - `Picker`——单选 / 多选、搜索、分组、选择上限、可清空、空态；键盘可全操作（Esc / ↑↓ / Enter）。底层逻辑（`toGroups`、`filterGroups`、`toggleValue`）单独导出。
-- `WorkspacePicker` / `ModelPicker`——自带数据的领域选择器：插件 `apply` 里调一次 `connectHost(ctx)` 即订阅宿主快照，没接线就是空态，不编造。
+- `WorkspacePicker`——自带数据的领域选择器：插件 `apply` 里调一次 `connectHost(ctx)` 即订阅官方 `workspaces` 快照。
+- `ModelPicker`——选择模型的领域选择器，两段式接线：宿主 `apply` 调 `dsh-plugin-core/host` 的 `serveModelCatalog(ctx, { path })`，client `apply` 用**同一个 path 常量**调 `connectHost(ctx, { modelsPath: path })`；供应商 / 模型有增减时调 `refreshModelCatalog()` 重拉。没接线就是空态，不编造。
 - `DateTimePicker`——一个控件覆盖「一个时刻」与「时间段」，精度 `day` / `hour` / `minute` / `second`，左右两块独立月历，键盘可用，起始端归零、结束端拉满。
 - `InputGroup`——带附着动作的输入框。
 
-**展示**
+#### 展示
 
 - `Surface`——纯框容器，tone / 边框 / 内距 / 圆角四轴。
 - `Card` / `StripCard`——带强调色的卡片。
@@ -131,14 +132,14 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 - `Table`——多行分组表头、通栏分组（一张表装多个板块）、跨行跨列、行选中、密度 / 斑马纹 / 边框开关、列级对齐与表头语义色、内置空态、加载态与加载更多、可选内置分页。数据驱动：不排序、不取数、不虚拟滚动。
 - `FieldHint`——独立的问号提示，浮层用的是宿主官方 tooltip。
 
-**反馈**
+#### 反馈
 
 - `Modal`、`SideSheet`——定尺寸弹窗与侧边抽屉，都支持 `busy` 锁。
 - `AlertModal`、`ConfirmModal`、`alertModal()`、`confirmModal()`——Promise 形态的确认 / 提示。
 - `showToast`、`notify`——Sonner 底座的 toast，全屏单例、多插件共用。
 - `Loader`、`LoaderBar`、`Loading`、`LoadingBlock`、`LoadingToast`、`RunningBlocks`、`showLoading`——转圈图标、不定进度条、全局单槽加载卡。
 
-**布局与导航**
+#### 布局与导航
 
 - `PanelDock` / `DockPanel` / `createPanelDock`——右侧停靠分栏的通用壳：是布局成员而不是浮层，占宽挤窄主区；支持多栏、拖宽、宽度记忆、收起成右侧耳朵。
 - `QuickToolbar`——随滚动出现的工具栏，带回到顶部与可见性规则。

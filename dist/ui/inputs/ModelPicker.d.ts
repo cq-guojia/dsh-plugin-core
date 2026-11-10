@@ -43,7 +43,14 @@ export interface ModelPickerProps extends PickerSizing {
     searchable?: boolean;
     size?: PickerSize;
     placement?: 'down' | 'up';
+    /** 组件根元素的类名：grouped / flat 落在 Picker 根，cascade 落在两框外层 row。 */
     className?: string;
+    /** cascade 外层 row 的附加类名（与 className 叠加，单独定制布局用）。 */
+    rowClassName?: string;
+    /** cascade 厂商框的类名。 */
+    providerClassName?: string;
+    /** cascade 模型框的类名。 */
+    modelClassName?: string;
     /** 下拉内搜索框的宽度三轴（所有形态共用）；不传沿用 CSS 的 100% 铺满。 */
     searchSizing?: PickerSizing;
     /** cascade：厂商框单独宽度；不传跟随 width / minWidth / maxWidth。 */

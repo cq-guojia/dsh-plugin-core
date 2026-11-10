@@ -1102,8 +1102,12 @@ export const docData = {
         "en": "§1 Initialize styles (once at entry): `id` must be unique within the plugin so co-mounted plugins don’t clobber; vars and classes use the fixed `dshpc` prefix, no parameter."
       },
       {
-        "zh": "§2 用一个控件",
-        "en": "§2 Use a control"
+        "zh": "§2 用一个控件：通用 `Picker` 的选项由调用方给（示例里是 `priorities`，不是模型目录）。",
+        "en": "§2 Use a control: a generic `Picker` takes its options from the caller (`priorities` in the example, not a model catalog)."
+      },
+      {
+        "zh": "§2 附：选模型不要手搓数组 —— 宿主 `serveModelCatalog(ctx, { path })` 注册只读目录路由，client `connectHost(ctx, { modelsPath: path })` 用同一个 path 常量接上，再渲染 `ModelPicker`；供应商 / 模型有增减调 `await refreshModelCatalog()` 重拉。漏了 `modelsPath` 就是空目录，且不会有报错。",
+        "en": "§2a Model selection: never hand-roll a models array. Register `serveModelCatalog(ctx, { path })` on the host, call `connectHost(ctx, { modelsPath: path })` on the client with the same path constant, then render `ModelPicker`. `await refreshModelCatalog()` re-pulls the catalog when providers change. Omitting `modelsPath` leaves the catalog empty, silently."
       },
       {
         "zh": "§3 用通用方法",
@@ -1136,7 +1140,12 @@ export const docData = {
       {
         "id": "integration-use-control",
         "lang": "tsx",
-        "src": "import { Button, Input, Picker, showToast } from 'dsh-plugin-core/ui'\n\nh(Input, { value: name, onChange: setName, placeholder: '任务名', error: nameError })\nh(Button, { variant: 'primary', onClick: save }, '保存')\nh(Picker, {\n  options: models,                 // [{ value, label }]\n  value: current,\n  onChange: (v) => setCurrent(v as string),\n  searchable: true,\n  clearable: true,\n})\nshowToast('已保存', { variant: 'success' })"
+        "src": "import { Button, Input, Picker, showToast } from 'dsh-plugin-core/ui'\n\nh(Input, { value: name, onChange: setName, placeholder: '任务名', error: nameError })\nh(Button, { variant: 'primary', onClick: save }, '保存')\nh(Picker, {\n  options: priorities,             // [{ value, label }]：通用 Picker 的选项由调用方给\n  value: current,\n  onChange: (v) => setCurrent(v as string),\n  searchable: true,\n  clearable: true,\n})\nshowToast('已保存', { variant: 'success' })"
+      },
+      {
+        "id": "integration-use-model-catalog",
+        "lang": "tsx",
+        "src": "// paths.ts —— 宿主与 client 共用同一个常量\nexport const MODELS_PATH = '/api/dsh-task-reminder/models'\n\n// 宿主 apply：注册只读模型目录路由\nimport { serveModelCatalog } from 'dsh-plugin-core/host'\nserveModelCatalog(ctx, { path: MODELS_PATH })\n\n// client apply：接同一个 path\nimport { connectHost, refreshModelCatalog, ModelPicker } from 'dsh-plugin-core/ui'\nconnectHost(ctx, { modelsPath: MODELS_PATH })\n\n// 三种形态共用同一份目录，onChange 一律发 provider/id\nh(ModelPicker, { variant: 'cascade', value: current, onChange: setCurrent })\nawait refreshModelCatalog()   // 供应商 / 模型有增减时重拉（Promise）"
       },
       {
         "id": "integration-use-utils",
@@ -1213,12 +1222,21 @@ export const docData = {
             }
           },
           {
-            "name": "想让组件自己取工作区 / 模型列表",
-            "type": "现象：取不到（通道是插件私有的）",
+            "name": "给通用 Picker 手搓 models 数组",
+            "type": "现象：候选写死 / 空目录",
             "def": "—",
             "desc": {
-              "zh": "数据经 props 给，宿主能力经接口注入",
-              "en": "Data via props, host capability via injected interface"
+              "zh": "选模型走 ModelPicker + 宿主 serveModelCatalog / client connectHost(ctx, { modelsPath }) 两段式接线",
+              "en": "Use ModelPicker with the two-sided serveModelCatalog / connectHost(ctx, { modelsPath }) wiring"
+            }
+          },
+          {
+            "name": "connectHost(ctx) 不带 modelsPath",
+            "type": "现象：模型目录永远停在 loading，不报错",
+            "def": "—",
+            "desc": {
+              "zh": "模型目录不是快照，必须传宿主注册的同一个 path",
+              "en": "The model catalog is an HTTP route, not a snapshot: pass the same path registered on the host"
             }
           },
           {
@@ -1538,8 +1556,8 @@ export const docData = {
         "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Trigger and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown."
       },
       {
-        "zh": "ModelPicker：选择模型的完整封装，三种形态共用同一份宿主目录（`serveModelCatalog`），`onChange` 一律发 `provider/id`：`grouped`（默认）= 一个下拉、供应商做组头；`flat` = 一个下拉、全部模型平铺成「厂商-模型」并带搜索，搜厂商名即可筛；`cascade` = 两个下拉联动，厂商框与模型框都带搜索，换厂商清空模型。`width` / `minWidth` / `maxWidth` 管触发器，`searchSizing` 管所有搜索框，`providerSizing` / `modelSizing` 让联动态两个框分别设宽。",
-        "en": "ModelPicker: the complete model selector. Three variants share one host catalog (`serveModelCatalog`) and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). `width`/`minWidth`/`maxWidth` size triggers, `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately."
+        "zh": "ModelPicker：选择模型的完整封装，三种形态共用同一份宿主目录，`onChange` 一律发 `provider/id`：`grouped`（默认）= 一个下拉、供应商做组头；`flat` = 一个下拉、全部模型平铺成「厂商-模型」并带搜索，搜厂商名即可筛；`cascade` = 两个下拉联动，厂商框与模型框都带搜索，换厂商清空模型。**接线是两段式**：宿主 `serveModelCatalog(ctx, { path })` + client `connectHost(ctx, { modelsPath: path })` 用同一个 path 常量，漏了 `modelsPath` 目录永远停在 loading；供应商 / 模型有增减时 `await refreshModelCatalog()` 重拉。`width` / `minWidth` / `maxWidth` 管触发器，`searchSizing` 管所有搜索框，`providerSizing` / `modelSizing` 让联动态两个框分别设宽。旧值已不在目录里时按真实值保留一项并如实提示「候选可能不完整」，不静默丢弃。",
+        "en": "ModelPicker: the complete model selector. Three variants share one host catalog and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). **Wiring is two-sided**: `serveModelCatalog(ctx, { path })` on the host and `connectHost(ctx, { modelsPath: path })` on the client with the same path constant — without `modelsPath` the catalog stays `loading` forever; `await refreshModelCatalog()` re-pulls it when providers change. `width`/`minWidth`/`maxWidth` size triggers, `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately. A controlled value no longer present in the catalog is retained as-is with an honest \"candidates may be incomplete\" hint instead of being silently dropped."
       }
     ],
     "api": [
@@ -1908,8 +1926,44 @@ export const docData = {
             }
           },
           {
+            "name": "className",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "组件根元素：grouped / flat 落在 Picker 根，cascade 落在两框外层 row",
+              "en": "Root element: the Picker root for grouped/flat, the outer row for cascade"
+            }
+          },
+          {
+            "name": "rowClassName",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "cascade 外层 row 的附加类名（控制两框间距 / 布局）",
+              "en": "Extra class for the cascade outer row (gap / layout)"
+            }
+          },
+          {
+            "name": "providerClassName / modelClassName",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "cascade 厂商框 / 模型框各自的类名",
+              "en": "Class for the cascade provider / model box"
+            }
+          },
+          {
+            "name": "refreshModelCatalog()",
+            "type": "(path?: string) => Promise<ModelCatalogState>",
+            "def": "—",
+            "desc": {
+              "zh": "供应商 / 模型有增减时重拉目录；不传 path 用 connectHost 记下的那个；未接线则 reject",
+              "en": "Re-pull the catalog when providers change; omit path to reuse the wired one; rejects if unwired"
+            }
+          },
+          {
             "name": "透传 Picker",
-            "type": "value / defaultValue / onChange / clearable / searchable / hint / size / placement / className / disabled / degraded / translate",
+            "type": "value / defaultValue / onChange / clearable / searchable / hint / size / placement / disabled / degraded / translate",
             "def": "—",
             "desc": {
               "zh": "同 Picker 同名参数",
@@ -1924,6 +1978,11 @@ export const docData = {
         "id": "ui-workspacepicker-example",
         "lang": "tsx",
         "src": "import { WorkspacePicker, connectHost } from 'dsh-plugin-core/ui'\n\n// apply(ctx) 里：connectHost(ctx)\nh(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })"
+      },
+      {
+        "id": "ui-modelpicker-example",
+        "lang": "tsx",
+        "src": "// paths.ts —— 宿主与 client 共用同一个常量\nexport const MODELS_PATH = '/api/dsh-task-reminder/models'\n\n// 宿主 apply：注册只读模型目录路由\nimport { serveModelCatalog } from 'dsh-plugin-core/host'\nserveModelCatalog(ctx, { path: MODELS_PATH })\n\n// client apply：接同一个 path\nimport { connectHost, refreshModelCatalog, ModelPicker } from 'dsh-plugin-core/ui'\nconnectHost(ctx, { modelsPath: MODELS_PATH })\n\n// 三种形态共用同一份目录，onChange 一律发 provider/id\nh(ModelPicker, { variant: 'cascade', value: current, onChange: setCurrent })\nawait refreshModelCatalog()   // 供应商 / 模型有增减时重拉（Promise）"
       }
     ]
   },

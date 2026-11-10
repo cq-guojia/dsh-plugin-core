@@ -14,13 +14,27 @@ const useControl = `import { Button, Input, Picker, showToast } from 'dsh-plugin
 h(Input, { value: name, onChange: setName, placeholder: '任务名', error: nameError })
 h(Button, { variant: 'primary', onClick: save }, '保存')
 h(Picker, {
-  options: models,                 // [{ value, label }]
+  options: priorities,             // [{ value, label }]：通用 Picker 的选项由调用方给
   value: current,
   onChange: (v) => setCurrent(v as string),
   searchable: true,
   clearable: true,
 })
 showToast('已保存', { variant: 'success' })`
+const useModelCatalog = `// paths.ts —— 宿主与 client 共用同一个常量
+export const MODELS_PATH = '/api/dsh-task-reminder/models'
+
+// 宿主 apply：注册只读模型目录路由
+import { serveModelCatalog } from 'dsh-plugin-core/host'
+serveModelCatalog(ctx, { path: MODELS_PATH })
+
+// client apply：接同一个 path
+import { connectHost, refreshModelCatalog, ModelPicker } from 'dsh-plugin-core/ui'
+connectHost(ctx, { modelsPath: MODELS_PATH })
+
+// 三种形态共用同一份目录，onChange 一律发 provider/id
+h(ModelPicker, { variant: 'cascade', value: current, onChange: setCurrent })
+await refreshModelCatalog()   // 供应商 / 模型有增减时重拉（Promise）`
 const useUtils = `import { formatDateTime, relativeFuture, formatBytes } from 'dsh-plugin-core/utils'
 
 formatDateTime(task.runAt, { seconds: true })   // 2026-10-18 09:30:05
@@ -73,7 +87,11 @@ const doc: DocTopic = {
           zh: '§1 初始化样式（入口一次）：`id` 必须插件内唯一，多插件同页靠它互不覆盖；变量与类名固定 `dshpc` 前缀，不需传参。',
           en: '§1 Initialize styles (once at entry): `id` must be unique within the plugin so co-mounted plugins don’t clobber; vars and classes use the fixed `dshpc` prefix, no parameter.',
         },
-        { zh: '§2 用一个控件', en: '§2 Use a control' },
+        { zh: '§2 用一个控件：通用 `Picker` 的选项由调用方给（示例里是 `priorities`，不是模型目录）。', en: '§2 Use a control: a generic `Picker` takes its options from the caller (`priorities` in the example, not a model catalog).' },
+        {
+          zh: '§2 附：选模型不要手搓数组 —— 宿主 `serveModelCatalog(ctx, { path })` 注册只读目录路由，client `connectHost(ctx, { modelsPath: path })` 用同一个 path 常量接上，再渲染 `ModelPicker`；供应商 / 模型有增减调 `await refreshModelCatalog()` 重拉。漏了 `modelsPath` 就是空目录，且不会有报错。',
+          en: '§2a Model selection: never hand-roll a models array. Register `serveModelCatalog(ctx, { path })` on the host, call `connectHost(ctx, { modelsPath: path })` on the client with the same path constant, then render `ModelPicker`. `await refreshModelCatalog()` re-pulls the catalog when providers change. Omitting `modelsPath` leaves the catalog empty, silently.',
+        },
         { zh: '§3 用通用方法', en: '§3 Use helpers' },
         {
           zh: '§4 接文件浏览：`mount` 必填（预览面板是布局成员，占宽挤窄主区），传页面那层 flex 行——元素或选择器都行，解析不到就放弃、不回落 body；数据面要在宿主 `serveFsRoute` + client `connectFs` 用同一个 path 常量接上，浏览本身不需要会话。',
@@ -89,6 +107,7 @@ const doc: DocTopic = {
         { id: 'integration-install', lang: 'bash', src: install },
         { id: 'integration-init-style', lang: 'ts', src: initStyle },
         { id: 'integration-use-control', lang: 'tsx', src: useControl },
+        { id: 'integration-use-model-catalog', lang: 'tsx', src: useModelCatalog },
         { id: 'integration-use-utils', lang: 'ts', src: useUtils },
         { id: 'integration-use-explorer', lang: 'tsx', src: useExplorer },
         { id: 'integration-use-session', lang: 'tsx', src: useSession },
@@ -109,7 +128,8 @@ const doc: DocTopic = {
             { name: '指望本包帮你引官方 @deepseek-ai/*', type: '现象：Node 下 ERR_MODULE_NOT_FOUND', def: '—', desc: { zh: '本包 ui 零官方依赖；要用官方件请自行处理平台模块', en: 'Our ui has zero official deps; handle platform modules yourself' } },
             { name: '给 read 少传第三参 range', type: "现象：远端拒：expected 3 business argument(s) … got 2", def: '—', desc: { zh: '一律显式传 {}', en: 'Always pass {} explicitly' } },
             { name: '用 relativePast 显示未来时间', type: '现象：「3 分钟后」显示成「刚刚」', def: '—', desc: { zh: '用 relativeFuture', en: 'Use relativeFuture' } },
-            { name: '想让组件自己取工作区 / 模型列表', type: '现象：取不到（通道是插件私有的）', def: '—', desc: { zh: '数据经 props 给，宿主能力经接口注入', en: 'Data via props, host capability via injected interface' } },
+            { name: '给通用 Picker 手搓 models 数组', type: '现象：候选写死 / 空目录', def: '—', desc: { zh: '选模型走 ModelPicker + 宿主 serveModelCatalog / client connectHost(ctx, { modelsPath }) 两段式接线', en: 'Use ModelPicker with the two-sided serveModelCatalog / connectHost(ctx, { modelsPath }) wiring' } },
+            { name: 'connectHost(ctx) 不带 modelsPath', type: '现象：模型目录永远停在 loading，不报错', def: '—', desc: { zh: '模型目录不是快照，必须传宿主注册的同一个 path', en: 'The model catalog is an HTTP route, not a snapshot: pass the same path registered on the host' } },
             { name: '暗色不跟随宿主', type: '现象：插件固守一种明暗', def: '—', desc: { zh: '判据是 body[data-ds-dark-theme]，别用 prefers-color-scheme', en: 'Predicate is body[data-ds-dark-theme], not prefers-color-scheme' } },
           ],
         },

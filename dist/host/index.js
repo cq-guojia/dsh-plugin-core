@@ -34,25 +34,45 @@ export async function buildModelRoutes(llm) {
     routes.sort((left, right) => left.displayName.localeCompare(right.displayName));
     return routes;
 }
+const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
 /**
  * 注册模型目录路由（插件宿主 `apply` 里调一次）。
  *
- * @param ctx 插件宿主 ctx（`llm` / `webServer` 两条注入线，缺任一条就不注册）。
- * @param options.path 路由路径，客户端要用**同一个常量**去 fetch（如 `/api/x/models`）。
+ * 只声明 `webServer` 一条注入线：`webServer` 是宿主必启服务，而 `llm` 可能晚挂载、或这份
+ * 组合里根本没有 —— 把它写进 `ctx.inject` 的依赖会让回调永远不触发、路由直接不注册
+ * （cordis `inject` = 声明依赖，齐了才 apply）。`llm` 改为每个请求用 `ctx.get('llm')`
+ * 惰性现取（未挂载返回 undefined、不抛），取不到回 503，客户端据此显示降级提示。
  */
 export function serveModelCatalog(ctx, options) {
-    ctx.inject(['llm', 'webServer'], (services) => {
-        const llm = services.llm;
+    ctx.inject(['webServer'], (services) => {
         const webServer = services.webServer;
-        if (llm === undefined || webServer === undefined)
+        if (webServer === undefined)
             return;
         webServer.register({
             kind: 'exact',
             path: options.path,
-            handler: async (_req, res) => {
-                const routes = await buildModelRoutes(llm);
-                res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' });
-                res.end(JSON.stringify({ routes }));
+            handler: async (req, res) => {
+                if (options.authorize !== undefined && !(await options.authorize(req))) {
+                    res.writeHead(403, JSON_HEADERS);
+                    res.end(JSON.stringify({ error: 'forbidden' }));
+                    return;
+                }
+                const llm = options.getLlm?.() ?? ctx.get?.('llm');
+                if (llm === undefined) {
+                    res.writeHead(503, JSON_HEADERS);
+                    res.end(JSON.stringify({ routes: [], error: 'llm-unavailable' }));
+                    return;
+                }
+                try {
+                    const routes = await buildModelRoutes(llm);
+                    res.writeHead(200, JSON_HEADERS);
+                    res.end(JSON.stringify({ routes }));
+                }
+                catch (error) {
+                    // listProviders 抛错时也要自己收口：宿主对「发头后抛错」会直接 destroy 连接。
+                    res.writeHead(500, JSON_HEADERS);
+                    res.end(JSON.stringify({ routes: [], error: String(error) }));
+                }
             },
         });
     });

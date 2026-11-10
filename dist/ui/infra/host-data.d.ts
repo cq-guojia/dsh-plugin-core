@@ -109,6 +109,14 @@ export interface ConnectHostOptions {
     modelsPath?: string;
 }
 /**
+ * 重拉模型目录（供应商 / 模型有增减、或上一次取失败要重试时调）。
+ *
+ * 宿主路由每次请求现查，这里显式 `cache: 'no-store'`，避免浏览器把上次的目录缓存回来。
+ * 不传 path 就用 `connectHost(ctx, { modelsPath })` 记下的那个；还没接线则 reject。
+ * 返回 Promise：await 之后 `modelCatalog.getSnapshot()` 即本次结果。
+ */
+export declare function refreshModelCatalog(path?: string): Promise<ModelCatalogState>;
+/**
  * 把宿主数据面接进核心（插件 client `apply` 里调**一次**）。
  *
  * 工作区走本地 client 服务注入；模型目录走宿主路由 fetch。哪条失败只影响那一块，

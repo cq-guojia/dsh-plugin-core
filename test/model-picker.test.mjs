@@ -78,3 +78,25 @@ test('搜索框宽度：与触发器共用解析函数，且内联样式绑在�
   }))
   assert.match(html, /width:180px;min-width:180px;max-width:180px/)
 })
+
+test('cascade：className 落在根 row，row / 厂商框 / 模型框三条类名轴各自可控', () => {
+  const html = render({
+    variant: 'cascade',
+    className: 'ROOT',
+    rowClassName: 'ROW',
+    providerClassName: 'PROV',
+    modelClassName: 'MODEL',
+  })
+  assert.match(html, /^<div class="dshpc-picker__row ROOT ROW">/)
+  assert.match(html, /class="dshpc-picker PROV"/)
+  assert.match(html, /class="dshpc-picker MODEL"/)
+})
+
+test('旧值不在目录里：显示真实旧值，cascade 模型框不再被禁用', () => {
+  const grouped = render({ value: 'gone/model' })
+  assert.match(grouped, /gone\/model/)
+  assert.ok(!grouped.includes('>模型</span>'), '不能退回 placeholder 把旧值藏起来')
+  const cascade = render({ variant: 'cascade', value: 'gone/model' })
+  assert.match(cascade, /gone\/model/)
+  assert.ok(!cascade.includes('disabled=""'), '反推出 provider 后模型框应可用')
+})

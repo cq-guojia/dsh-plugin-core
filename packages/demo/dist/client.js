@@ -1324,6 +1324,26 @@ function groupOf(groups, value) {
     return void 0;
   return groups.find((g) => g.options.some((o) => o.value === value));
 }
+function retainSelectedValue(groups, value) {
+  if (value === void 0 || value === "")
+    return { groups, retained: false };
+  if (flattenOptions(groups).some((o) => o.value === value))
+    return { groups, retained: false };
+  const slash3 = value.indexOf("/");
+  const provider = slash3 > 0 ? value.slice(0, slash3) : "";
+  const option = { value, label: value };
+  const group = groups.find((g) => g.value === provider && g.value !== "");
+  if (group !== void 0) {
+    return {
+      groups: groups.map((g) => g === group ? { value: g.value, label: g.label, options: [option, ...g.options] } : g),
+      retained: true
+    };
+  }
+  return {
+    groups: [...groups, { value: provider, label: provider, options: [option] }],
+    retained: true
+  };
+}
 function resolveTriggerSizing(opts) {
   const px = (v) => typeof v === "number" ? `${v}px` : v;
   if (opts.width !== void 0) {
@@ -5624,6 +5644,24 @@ var WorkspaceListStore = class {
 };
 var workspaceList = new WorkspaceListStore();
 var workspaceFiles;
+var boundModelsPath;
+var catalogInFlight;
+function loadModelCatalog(path) {
+  if (catalogInFlight !== void 0)
+    return catalogInFlight;
+  const job = fetch(path, { cache: "no-store" }).then((response) => response.ok ? response.json() : Promise.reject(new Error(`HTTP ${response.status}`))).then((data2) => {
+    const routes = data2?.routes;
+    if (!Array.isArray(routes))
+      throw new Error("\u6A21\u578B\u76EE\u5F55\u54CD\u5E94\u7F3A\u5C11 routes");
+    modelCatalog.setRoutes(routes);
+  }).catch((error) => {
+    modelCatalog.setUnavailable(String(error));
+  }).finally(() => {
+    catalogInFlight = void 0;
+  });
+  catalogInFlight = job;
+  return job;
+}
 function isWorkspaceSource(value) {
   if (value === null || typeof value !== "object")
     return false;
@@ -5646,14 +5684,8 @@ function connectHost(ctx, options = {}) {
   const modelsPath = options.modelsPath;
   if (modelsPath === void 0)
     return;
-  void fetch(modelsPath).then((response) => response.ok ? response.json() : Promise.reject(new Error(`HTTP ${response.status}`))).then((data2) => {
-    const routes = data2?.routes;
-    if (!Array.isArray(routes))
-      throw new Error("\u6A21\u578B\u76EE\u5F55\u54CD\u5E94\u7F3A\u5C11 routes");
-    modelCatalog.setRoutes(routes);
-  }).catch((error) => {
-    modelCatalog.setUnavailable(String(error));
-  });
+  boundModelsPath = modelsPath;
+  void loadModelCatalog(modelsPath);
 }
 
 // dist/ui/inputs/picker-icons.js
@@ -5687,7 +5719,7 @@ function ModelPicker(props) {
   const searchable = props.searchable ?? true;
   const defaultOption = props.allowDefault === false ? void 0 : { value: "", label: props.defaultLabel ?? tt("modelDefault") };
   const catalog = (0, import_react16.useSyncExternalStore)(modelCatalog.subscribe, modelCatalog.getSnapshot, modelCatalog.getSnapshot);
-  const groups = props.groups ?? (catalog.status === "ready" ? catalog.routes.map((route) => ({
+  const catalogGroups = props.groups ?? (catalog.status === "ready" ? catalog.routes.map((route) => ({
     value: route.provider,
     label: route.displayName,
     options: route.models.map((model) => ({
@@ -5695,7 +5727,9 @@ function ModelPicker(props) {
       label: model.name ?? model.id
     }))
   })) : []);
-  const degraded = props.degraded ?? (catalog.status === "unavailable" || catalog.status === "ready" && groups.length === 0);
+  const retained = retainSelectedValue(catalogGroups, props.value);
+  const groups = retained.groups;
+  const degraded = props.degraded ?? (catalog.status === "unavailable" || catalog.status === "ready" && catalogGroups.length === 0 || retained.retained);
   const icon2 = props.icon === void 0 ? sparkleIcon() : props.icon ?? void 0;
   const emitModel = (v) => {
     props.onChange?.(typeof v === "string" ? v : v[0] ?? "");
@@ -5754,7 +5788,8 @@ function ModelPicker(props) {
   }
   const group = groups.find((g) => g.value === provider);
   const options = group === void 0 ? [] : flattenOptions([group]);
-  return (0, import_react16.createElement)("div", { className: "dshpc-picker__row" }, (0, import_react16.createElement)(Picker, {
+  const rowClass = ["dshpc-picker__row", props.className, props.rowClassName].filter((part) => part !== void 0 && part !== "").join(" ");
+  return (0, import_react16.createElement)("div", { className: rowClass }, (0, import_react16.createElement)(Picker, {
     options: groups.map((g) => ({ value: g.value, label: g.label })),
     value: provider === "" ? void 0 : provider,
     placeholder: tt("modelProvider"),
@@ -5764,6 +5799,8 @@ function ModelPicker(props) {
     searchSizing: props.searchSizing,
     searchable,
     size: props.size,
+    placement: props.placement,
+    className: props.providerClassName,
     translate: props.translate,
     onChange: (v) => {
       setPickedProvider(typeof v === "string" ? v : v[0] ?? "");
@@ -5784,7 +5821,7 @@ function ModelPicker(props) {
     hint: props.hint,
     size: props.size,
     placement: props.placement,
-    className: props.className,
+    className: props.modelClassName,
     translate: props.translate,
     onChange: emitModel
   }));
@@ -63864,8 +63901,12 @@ var docData = {
         "en": "\xA71 Initialize styles (once at entry): `id` must be unique within the plugin so co-mounted plugins don\u2019t clobber; vars and classes use the fixed `dshpc` prefix, no parameter."
       },
       {
-        "zh": "\xA72 \u7528\u4E00\u4E2A\u63A7\u4EF6",
-        "en": "\xA72 Use a control"
+        "zh": "\xA72 \u7528\u4E00\u4E2A\u63A7\u4EF6\uFF1A\u901A\u7528 `Picker` \u7684\u9009\u9879\u7531\u8C03\u7528\u65B9\u7ED9\uFF08\u793A\u4F8B\u91CC\u662F `priorities`\uFF0C\u4E0D\u662F\u6A21\u578B\u76EE\u5F55\uFF09\u3002",
+        "en": "\xA72 Use a control: a generic `Picker` takes its options from the caller (`priorities` in the example, not a model catalog)."
+      },
+      {
+        "zh": "\xA72 \u9644\uFF1A\u9009\u6A21\u578B\u4E0D\u8981\u624B\u6413\u6570\u7EC4 \u2014\u2014 \u5BBF\u4E3B `serveModelCatalog(ctx, { path })` \u6CE8\u518C\u53EA\u8BFB\u76EE\u5F55\u8DEF\u7531\uFF0Cclient `connectHost(ctx, { modelsPath: path })` \u7528\u540C\u4E00\u4E2A path \u5E38\u91CF\u63A5\u4E0A\uFF0C\u518D\u6E32\u67D3 `ModelPicker`\uFF1B\u4F9B\u5E94\u5546 / \u6A21\u578B\u6709\u589E\u51CF\u8C03 `await refreshModelCatalog()` \u91CD\u62C9\u3002\u6F0F\u4E86 `modelsPath` \u5C31\u662F\u7A7A\u76EE\u5F55\uFF0C\u4E14\u4E0D\u4F1A\u6709\u62A5\u9519\u3002",
+        "en": "\xA72a Model selection: never hand-roll a models array. Register `serveModelCatalog(ctx, { path })` on the host, call `connectHost(ctx, { modelsPath: path })` on the client with the same path constant, then render `ModelPicker`. `await refreshModelCatalog()` re-pulls the catalog when providers change. Omitting `modelsPath` leaves the catalog empty, silently."
       },
       {
         "zh": "\xA73 \u7528\u901A\u7528\u65B9\u6CD5",
@@ -63898,7 +63939,12 @@ var docData = {
       {
         "id": "integration-use-control",
         "lang": "tsx",
-        "src": "import { Button, Input, Picker, showToast } from 'dsh-plugin-core/ui'\n\nh(Input, { value: name, onChange: setName, placeholder: '\u4EFB\u52A1\u540D', error: nameError })\nh(Button, { variant: 'primary', onClick: save }, '\u4FDD\u5B58')\nh(Picker, {\n  options: models,                 // [{ value, label }]\n  value: current,\n  onChange: (v) => setCurrent(v as string),\n  searchable: true,\n  clearable: true,\n})\nshowToast('\u5DF2\u4FDD\u5B58', { variant: 'success' })"
+        "src": "import { Button, Input, Picker, showToast } from 'dsh-plugin-core/ui'\n\nh(Input, { value: name, onChange: setName, placeholder: '\u4EFB\u52A1\u540D', error: nameError })\nh(Button, { variant: 'primary', onClick: save }, '\u4FDD\u5B58')\nh(Picker, {\n  options: priorities,             // [{ value, label }]\uFF1A\u901A\u7528 Picker \u7684\u9009\u9879\u7531\u8C03\u7528\u65B9\u7ED9\n  value: current,\n  onChange: (v) => setCurrent(v as string),\n  searchable: true,\n  clearable: true,\n})\nshowToast('\u5DF2\u4FDD\u5B58', { variant: 'success' })"
+      },
+      {
+        "id": "integration-use-model-catalog",
+        "lang": "tsx",
+        "src": "// paths.ts \u2014\u2014 \u5BBF\u4E3B\u4E0E client \u5171\u7528\u540C\u4E00\u4E2A\u5E38\u91CF\nexport const MODELS_PATH = '/api/dsh-task-reminder/models'\n\n// \u5BBF\u4E3B apply\uFF1A\u6CE8\u518C\u53EA\u8BFB\u6A21\u578B\u76EE\u5F55\u8DEF\u7531\nimport { serveModelCatalog } from 'dsh-plugin-core/host'\nserveModelCatalog(ctx, { path: MODELS_PATH })\n\n// client apply\uFF1A\u63A5\u540C\u4E00\u4E2A path\nimport { connectHost, refreshModelCatalog, ModelPicker } from 'dsh-plugin-core/ui'\nconnectHost(ctx, { modelsPath: MODELS_PATH })\n\n// \u4E09\u79CD\u5F62\u6001\u5171\u7528\u540C\u4E00\u4EFD\u76EE\u5F55\uFF0ConChange \u4E00\u5F8B\u53D1 provider/id\nh(ModelPicker, { variant: 'cascade', value: current, onChange: setCurrent })\nawait refreshModelCatalog()   // \u4F9B\u5E94\u5546 / \u6A21\u578B\u6709\u589E\u51CF\u65F6\u91CD\u62C9\uFF08Promise\uFF09"
       },
       {
         "id": "integration-use-utils",
@@ -63975,12 +64021,21 @@ var docData = {
             }
           },
           {
-            "name": "\u60F3\u8BA9\u7EC4\u4EF6\u81EA\u5DF1\u53D6\u5DE5\u4F5C\u533A / \u6A21\u578B\u5217\u8868",
-            "type": "\u73B0\u8C61\uFF1A\u53D6\u4E0D\u5230\uFF08\u901A\u9053\u662F\u63D2\u4EF6\u79C1\u6709\u7684\uFF09",
+            "name": "\u7ED9\u901A\u7528 Picker \u624B\u6413 models \u6570\u7EC4",
+            "type": "\u73B0\u8C61\uFF1A\u5019\u9009\u5199\u6B7B / \u7A7A\u76EE\u5F55",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6570\u636E\u7ECF props \u7ED9\uFF0C\u5BBF\u4E3B\u80FD\u529B\u7ECF\u63A5\u53E3\u6CE8\u5165",
-              "en": "Data via props, host capability via injected interface"
+              "zh": "\u9009\u6A21\u578B\u8D70 ModelPicker + \u5BBF\u4E3B serveModelCatalog / client connectHost(ctx, { modelsPath }) \u4E24\u6BB5\u5F0F\u63A5\u7EBF",
+              "en": "Use ModelPicker with the two-sided serveModelCatalog / connectHost(ctx, { modelsPath }) wiring"
+            }
+          },
+          {
+            "name": "connectHost(ctx) \u4E0D\u5E26 modelsPath",
+            "type": "\u73B0\u8C61\uFF1A\u6A21\u578B\u76EE\u5F55\u6C38\u8FDC\u505C\u5728 loading\uFF0C\u4E0D\u62A5\u9519",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6A21\u578B\u76EE\u5F55\u4E0D\u662F\u5FEB\u7167\uFF0C\u5FC5\u987B\u4F20\u5BBF\u4E3B\u6CE8\u518C\u7684\u540C\u4E00\u4E2A path",
+              "en": "The model catalog is an HTTP route, not a snapshot: pass the same path registered on the host"
             }
           },
           {
@@ -64300,8 +64355,8 @@ var docData = {
         "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Trigger and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown."
       },
       {
-        "zh": "ModelPicker\uFF1A\u9009\u62E9\u6A21\u578B\u7684\u5B8C\u6574\u5C01\u88C5\uFF0C\u4E09\u79CD\u5F62\u6001\u5171\u7528\u540C\u4E00\u4EFD\u5BBF\u4E3B\u76EE\u5F55\uFF08`serveModelCatalog`\uFF09\uFF0C`onChange` \u4E00\u5F8B\u53D1 `provider/id`\uFF1A`grouped`\uFF08\u9ED8\u8BA4\uFF09= \u4E00\u4E2A\u4E0B\u62C9\u3001\u4F9B\u5E94\u5546\u505A\u7EC4\u5934\uFF1B`flat` = \u4E00\u4E2A\u4E0B\u62C9\u3001\u5168\u90E8\u6A21\u578B\u5E73\u94FA\u6210\u300C\u5382\u5546-\u6A21\u578B\u300D\u5E76\u5E26\u641C\u7D22\uFF0C\u641C\u5382\u5546\u540D\u5373\u53EF\u7B5B\uFF1B`cascade` = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF0C\u5382\u5546\u6846\u4E0E\u6A21\u578B\u6846\u90FD\u5E26\u641C\u7D22\uFF0C\u6362\u5382\u5546\u6E05\u7A7A\u6A21\u578B\u3002`width` / `minWidth` / `maxWidth` \u7BA1\u89E6\u53D1\u5668\uFF0C`searchSizing` \u7BA1\u6240\u6709\u641C\u7D22\u6846\uFF0C`providerSizing` / `modelSizing` \u8BA9\u8054\u52A8\u6001\u4E24\u4E2A\u6846\u5206\u522B\u8BBE\u5BBD\u3002",
-        "en": "ModelPicker: the complete model selector. Three variants share one host catalog (`serveModelCatalog`) and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). `width`/`minWidth`/`maxWidth` size triggers, `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately."
+        "zh": "ModelPicker\uFF1A\u9009\u62E9\u6A21\u578B\u7684\u5B8C\u6574\u5C01\u88C5\uFF0C\u4E09\u79CD\u5F62\u6001\u5171\u7528\u540C\u4E00\u4EFD\u5BBF\u4E3B\u76EE\u5F55\uFF0C`onChange` \u4E00\u5F8B\u53D1 `provider/id`\uFF1A`grouped`\uFF08\u9ED8\u8BA4\uFF09= \u4E00\u4E2A\u4E0B\u62C9\u3001\u4F9B\u5E94\u5546\u505A\u7EC4\u5934\uFF1B`flat` = \u4E00\u4E2A\u4E0B\u62C9\u3001\u5168\u90E8\u6A21\u578B\u5E73\u94FA\u6210\u300C\u5382\u5546-\u6A21\u578B\u300D\u5E76\u5E26\u641C\u7D22\uFF0C\u641C\u5382\u5546\u540D\u5373\u53EF\u7B5B\uFF1B`cascade` = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF0C\u5382\u5546\u6846\u4E0E\u6A21\u578B\u6846\u90FD\u5E26\u641C\u7D22\uFF0C\u6362\u5382\u5546\u6E05\u7A7A\u6A21\u578B\u3002**\u63A5\u7EBF\u662F\u4E24\u6BB5\u5F0F**\uFF1A\u5BBF\u4E3B `serveModelCatalog(ctx, { path })` + client `connectHost(ctx, { modelsPath: path })` \u7528\u540C\u4E00\u4E2A path \u5E38\u91CF\uFF0C\u6F0F\u4E86 `modelsPath` \u76EE\u5F55\u6C38\u8FDC\u505C\u5728 loading\uFF1B\u4F9B\u5E94\u5546 / \u6A21\u578B\u6709\u589E\u51CF\u65F6 `await refreshModelCatalog()` \u91CD\u62C9\u3002`width` / `minWidth` / `maxWidth` \u7BA1\u89E6\u53D1\u5668\uFF0C`searchSizing` \u7BA1\u6240\u6709\u641C\u7D22\u6846\uFF0C`providerSizing` / `modelSizing` \u8BA9\u8054\u52A8\u6001\u4E24\u4E2A\u6846\u5206\u522B\u8BBE\u5BBD\u3002\u65E7\u503C\u5DF2\u4E0D\u5728\u76EE\u5F55\u91CC\u65F6\u6309\u771F\u5B9E\u503C\u4FDD\u7559\u4E00\u9879\u5E76\u5982\u5B9E\u63D0\u793A\u300C\u5019\u9009\u53EF\u80FD\u4E0D\u5B8C\u6574\u300D\uFF0C\u4E0D\u9759\u9ED8\u4E22\u5F03\u3002",
+        "en": 'ModelPicker: the complete model selector. Three variants share one host catalog and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). **Wiring is two-sided**: `serveModelCatalog(ctx, { path })` on the host and `connectHost(ctx, { modelsPath: path })` on the client with the same path constant \u2014 without `modelsPath` the catalog stays `loading` forever; `await refreshModelCatalog()` re-pulls it when providers change. `width`/`minWidth`/`maxWidth` size triggers, `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately. A controlled value no longer present in the catalog is retained as-is with an honest "candidates may be incomplete" hint instead of being silently dropped.'
       }
     ],
     "api": [
@@ -64670,8 +64725,44 @@ var docData = {
             }
           },
           {
+            "name": "className",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u7EC4\u4EF6\u6839\u5143\u7D20\uFF1Agrouped / flat \u843D\u5728 Picker \u6839\uFF0Ccascade \u843D\u5728\u4E24\u6846\u5916\u5C42 row",
+              "en": "Root element: the Picker root for grouped/flat, the outer row for cascade"
+            }
+          },
+          {
+            "name": "rowClassName",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "cascade \u5916\u5C42 row \u7684\u9644\u52A0\u7C7B\u540D\uFF08\u63A7\u5236\u4E24\u6846\u95F4\u8DDD / \u5E03\u5C40\uFF09",
+              "en": "Extra class for the cascade outer row (gap / layout)"
+            }
+          },
+          {
+            "name": "providerClassName / modelClassName",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "cascade \u5382\u5546\u6846 / \u6A21\u578B\u6846\u5404\u81EA\u7684\u7C7B\u540D",
+              "en": "Class for the cascade provider / model box"
+            }
+          },
+          {
+            "name": "refreshModelCatalog()",
+            "type": "(path?: string) => Promise<ModelCatalogState>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4F9B\u5E94\u5546 / \u6A21\u578B\u6709\u589E\u51CF\u65F6\u91CD\u62C9\u76EE\u5F55\uFF1B\u4E0D\u4F20 path \u7528 connectHost \u8BB0\u4E0B\u7684\u90A3\u4E2A\uFF1B\u672A\u63A5\u7EBF\u5219 reject",
+              "en": "Re-pull the catalog when providers change; omit path to reuse the wired one; rejects if unwired"
+            }
+          },
+          {
             "name": "\u900F\u4F20 Picker",
-            "type": "value / defaultValue / onChange / clearable / searchable / hint / size / placement / className / disabled / degraded / translate",
+            "type": "value / defaultValue / onChange / clearable / searchable / hint / size / placement / disabled / degraded / translate",
             "def": "\u2014",
             "desc": {
               "zh": "\u540C Picker \u540C\u540D\u53C2\u6570",
@@ -64686,6 +64777,11 @@ var docData = {
         "id": "ui-workspacepicker-example",
         "lang": "tsx",
         "src": "import { WorkspacePicker, connectHost } from 'dsh-plugin-core/ui'\n\n// apply(ctx) \u91CC\uFF1AconnectHost(ctx)\nh(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })"
+      },
+      {
+        "id": "ui-modelpicker-example",
+        "lang": "tsx",
+        "src": "// paths.ts \u2014\u2014 \u5BBF\u4E3B\u4E0E client \u5171\u7528\u540C\u4E00\u4E2A\u5E38\u91CF\nexport const MODELS_PATH = '/api/dsh-task-reminder/models'\n\n// \u5BBF\u4E3B apply\uFF1A\u6CE8\u518C\u53EA\u8BFB\u6A21\u578B\u76EE\u5F55\u8DEF\u7531\nimport { serveModelCatalog } from 'dsh-plugin-core/host'\nserveModelCatalog(ctx, { path: MODELS_PATH })\n\n// client apply\uFF1A\u63A5\u540C\u4E00\u4E2A path\nimport { connectHost, refreshModelCatalog, ModelPicker } from 'dsh-plugin-core/ui'\nconnectHost(ctx, { modelsPath: MODELS_PATH })\n\n// \u4E09\u79CD\u5F62\u6001\u5171\u7528\u540C\u4E00\u4EFD\u76EE\u5F55\uFF0ConChange \u4E00\u5F8B\u53D1 provider/id\nh(ModelPicker, { variant: 'cascade', value: current, onChange: setCurrent })\nawait refreshModelCatalog()   // \u4F9B\u5E94\u5546 / \u6A21\u578B\u6709\u589E\u51CF\u65F6\u91CD\u62C9\uFF08Promise\uFF09"
       }
     ]
   },
@@ -71248,9 +71344,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.12"}`],
-            [t3("buildDemo"), `v${"0.35.12"}`],
-            [t3("buildStamp"), "261110-134421-481"]
+            [t3("buildCore"), `v${"0.35.13"}`],
+            [t3("buildDemo"), `v${"0.35.13"}`],
+            [t3("buildStamp"), "261110-160552-540"]
           ].map(
             ([label, value]) => (0, import_react98.createElement)(
               "tr",
@@ -71566,9 +71662,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react100.createElement)("span", null, `core v${"0.35.12"}`),
-          (0, import_react100.createElement)("span", null, `demo v${"0.35.12"}`),
-          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-134421-481")
+          (0, import_react100.createElement)("span", null, `core v${"0.35.13"}`),
+          (0, import_react100.createElement)("span", null, `demo v${"0.35.13"}`),
+          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-160552-540")
         )
       )
     ),
