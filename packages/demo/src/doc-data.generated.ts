@@ -1270,6 +1270,10 @@ export const docData = {
       {
         "zh": "定制边界：props 就是定制面，要改行为请组合 props，不要 fork 源码；追加 class/style 只允许补布局，皮肤走 token 覆盖；缺控件请先提需求。",
         "en": "Customization: props are the surface — compose them instead of forking source; appended class/style may only patch layout, skins go through token overrides; raise a request before writing a missing control yourself."
+      },
+      {
+        "zh": "代码编辑走独立子路径 `dsh-plugin-core/ui/code-viewer`：`CodeViewer` 只读（文件预览源码态用的也是它），`CodeEditor` 可编辑，两者共用一份 CodeMirror 底座。重依赖只挂在这条子路径上，不进 `ui` 主入口，所以不用编辑器的插件不会背上它。",
+        "en": "Code editing lives on the separate `dsh-plugin-core/ui/code-viewer` subpath: `CodeViewer` is read-only (also used by file preview source mode) and `CodeEditor` is editable; both share one CodeMirror surface. The heavy dependency stays on this subpath, off the main `ui` entry, so plugins that never edit code do not carry it."
       }
     ],
     "code": [
@@ -1277,6 +1281,81 @@ export const docData = {
         "id": "ui-setup",
         "lang": "ts",
         "src": "import { createStyleKit } from 'dsh-plugin-core/design'\nimport { setStyleKit } from 'dsh-plugin-core/ui'\n\nsetStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' }))\n// 控件样式不用你挂：每个控件首次渲染时自注入自己那份 CSS（幂等），\n// 用不到的控件其 CSS 也不会进你的包。"
+      },
+      {
+        "id": "ui-code-editor",
+        "lang": "ts",
+        "src": "import { CodeEditor, CodeViewer } from 'dsh-plugin-core/ui/code-viewer'\n\n// 可编辑：值由调用方存，改一个字就把全文交回来\nh(CodeEditor, {\n  value: draft,\n  onChange: (next) => setDraft(next),\n  path: 'notes.md',\n})\n\n// 只读：原来的查看器（文件预览源码态用的也是它）\nh(CodeViewer, { text: draft, path: 'notes.md', t })"
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-code-editor-api",
+        "rows": [
+          {
+            "name": "value",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "CodeEditor 受控文本；控件自己不存状态",
+              "en": "Controlled text for CodeEditor; the control keeps no state of its own"
+            }
+          },
+          {
+            "name": "onChange",
+            "type": "(value: string) => void",
+            "def": "—",
+            "desc": {
+              "zh": "每次编辑回传全文，由调用方决定怎么保存",
+              "en": "Emits the full text on every edit; the caller decides how to persist it"
+            }
+          },
+          {
+            "name": "path",
+            "type": "string",
+            "def": "''",
+            "desc": {
+              "zh": "按扩展名选语法高亮；不传即纯文本",
+              "en": "Picks a language by extension; omitted means plain text"
+            }
+          },
+          {
+            "name": "height",
+            "type": "string",
+            "def": "'100%'",
+            "desc": {
+              "zh": "编辑器高度；无确定高度上下文传 auto 随内容撑高",
+              "en": "Editor height; pass auto to grow with content when no fixed height exists"
+            }
+          },
+          {
+            "name": "lineNumbers",
+            "type": "boolean",
+            "def": "true",
+            "desc": {
+              "zh": "是否显示行号",
+              "en": "Whether line numbers are shown"
+            }
+          },
+          {
+            "name": "focusLine",
+            "type": "number",
+            "def": "—",
+            "desc": {
+              "zh": "挂载 / 换文本后把这一行滚到视口中部",
+              "en": "Scrolls this line into the centre after mount or a text change"
+            }
+          },
+          {
+            "name": "className / style",
+            "type": "string / CSSProperties",
+            "def": "—",
+            "desc": {
+              "zh": "透传给根 div，只补布局，皮肤走 token",
+              "en": "Passed to the root div; layout only, skins go through tokens"
+            }
+          }
+        ]
       }
     ]
   },

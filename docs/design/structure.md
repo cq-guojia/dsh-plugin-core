@@ -28,10 +28,10 @@
 2. **必须拿到业务对象（工作区 / 会话 / 文件 / 模型）才能工作吗？** → 落 `src/adv/`，不进 `ui`。
 3. **按「用户拿它做什么」选类**：
 
-| 类 | 判据 | 成员（2026-11-05） |
+| 类 | 判据 | 成员（2026-11-11） |
 |---|---|---|
 | **动作** `actions` | 点它触发一次操作，本身不产生值 | Button、IconButton |
-| **录入** `inputs` | 产生或修改一个值 | Input、NumberInput、PrefixedInput、Textarea、Checkbox、Segmented、Picker、DateTimePicker、WorkspacePicker、ModelPicker、InputGroup |
+| **录入** `inputs` | 产生或修改一个值 | Input、NumberInput、PrefixedInput、Textarea、Checkbox、Segmented、Picker、DateTimePicker、WorkspacePicker、ModelPicker、InputGroup、CodeEditor |
 | **展示** `display` | 只呈现内容，不改变状态 | Card、StripCard、Surface、Chip、Table、ListRow、CodeViewer、MarqueeText、FlipText、LiveText、SectionHead、FieldHint |
 | **反馈** `feedback` | 表达「正在进行 / 刚完成 / 出错了」 | Modal、SideSheet、AlertModal、ConfirmModal、alertModal、confirmModal、Toast、host-toast、Loader、LoaderBar、Loading |
 | **布局** `layout` | 只决定内部元素怎么摆、怎么拼 | SplitGroup、PanelDock、QuickToolbar、resizer |
@@ -62,10 +62,10 @@ src/
 │   ├── inputs/                Field（Input/NumberInput/PrefixedInput）· Textarea · Checkbox
 │   │                          Segmented · Picker（+ picker-logic / picker-icons）
 │   │                          DateTimePicker（+ datetime-logic）· InputGroup
-│   │                          WorkspacePicker · ModelPicker
+│   │                          WorkspacePicker · ModelPicker · CodeEditor
 │   ├── display/               Card · StripCard · Surface · Chip · Table · ListRow（+ table-logic / table-shared）
-│   │                          CodeViewer（+ code-viewer-lang / -theme）· MarqueeText · FlipText
-│   │                          LiveText · SectionHead · FieldHint
+│   │                          CodeViewer（+ code-viewer-lang / -theme / 子路径入口 code-viewer）
+│   │                          MarqueeText · FlipText · LiveText · SectionHead · FieldHint
 │   ├── feedback/              Modal · SideSheet · AlertModal · ConfirmModal（+ modal-host）
 │   │                          Toast（+ toast-host）· host-toast · Loader · LoaderBar · Loading
 │   ├── layout/                SplitGroup · PanelDock（+ panel-dock-logic）· QuickToolbar
@@ -73,6 +73,7 @@ src/
 │   ├── navigation/            Pagination（+ pagination-logic）
 │   └── infra/                 css · controls-css · locale · tooltip · host-data
 │                              overlay / panel（跨类共用浮层底座 + 皮肤）· thenable · ticker · chevron
+│                              code-mirror-surface（只读 / 可编辑共用的渲染底座）
 │
 ├── utils/                  ③ 纯方法 —— 零 React / 零 DOM（谁都能用，它不依赖谁）
 │   ├── date                   日期 / 相对时间 / 时间区间
@@ -113,12 +114,14 @@ utils（谁都不依赖，谁都可以用）
 |---|---|---|
 | `dsh-plugin-core/ui` | 全部控件（唯一主入口，扁平导出） | 单入口是业界共识（AntD / MUI 同）；按类开 7 条子路径只增加记忆成本 |
 | `dsh-plugin-core/ui/official` | L1 官方 adapter | `adv/*` 要直接取官方件，属结构性第二入口 |
-| `dsh-plugin-core/ui/code-viewer` | CodeViewer | 直接引 `@uiw/react-codemirror`，重依赖必须可选 |
+| `dsh-plugin-core/ui/code-viewer` | CodeViewer（只读）· CodeEditor（可编辑） | 直接引 `@uiw/react-codemirror`，重依赖必须可选；两个控件共用 `infra/code-mirror-surface`，不另开导出口 |
 | `dsh-plugin-core/ui/host-toast` | 宿主原生 Toast | 入口静态 import 官方件会让 Node 单测崩（旧坑） |
 | `dsh-plugin-core/adv/explorer` | 文件浏览 | 应用模块独立子路径 |
 | `dsh-plugin-core/adv/session` | 会话预览 | 同上 |
 
 **不再新增子路径**：想加，先问「是重依赖，还是只是分类？」—— 分类归目录，不归导出口。
+
+只读 / 可编辑是同一份 CodeMirror 能力的两种用法，属分类不属新依赖，故共用 `ui/code-viewer` 一条子路径：可编辑件归 `inputs`、只读件归 `display`，两个控件都不进主入口（否则重依赖会拖进所有插件的包）。
 
 ## 七、demo 展示分区（两级，17 页）
 

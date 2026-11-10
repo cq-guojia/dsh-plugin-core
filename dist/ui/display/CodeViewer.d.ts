@@ -8,8 +8,9 @@
  * 移植自兄弟项目 dsh-task-dispatch-table（src/client/ui/CodeViewer.tsx），按本仓约定重写：
  * 类名 dshpc-cv*、颜色吃 --dshpc-* token、官方图标 / writeClipboard 经 ui/official.ts 单一入口。
  *
- * 只读但可选中：仅用 <CodeMirror readOnly>（= EditorState.readOnly，挡住一切输入），
+ * 只读但可选中：底座用 <CodeMirror readOnly>（= EditorState.readOnly，挡住一切输入），
  * 不设置 editable=false —— 后者会把内容设为不可编辑并连带禁用鼠标选区，导致无法框选复制。
+ * 需要可编辑请用同一子路径导出的 CodeEditor。
  *
  * 明暗判据（唯一）：body[data-ds-dark-theme]（见 design/style-kit.ts DARK_THEME_SELECTOR），
  * 禁用 prefers-color-scheme。

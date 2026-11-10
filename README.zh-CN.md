@@ -81,7 +81,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 | `dsh-plugin-core/design` | token 变量（明 + 暗）、`createStyleKit` 注入器工厂、明暗判据 | 否 |
 | `dsh-plugin-core/ui` | 全套控件：动作、录入、展示、反馈、布局、导航 | 是 |
 | `dsh-plugin-core/ui/official` | 官方 primitives 的直接再导出（少数确实要用官方原件的场景） | 是 |
-| `dsh-plugin-core/ui/code-viewer` | 代码查看器（行级高亮，文件预览源码态用的也是它） | 是 |
+| `dsh-plugin-core/ui/code-viewer` | 只读 `CodeViewer` + 可编辑 `CodeEditor`，共用一份 CodeMirror 底座（文件预览源码态用查看器） | 是 |
 | `dsh-plugin-core/ui/host` | 宿主自带 toast 的桥接 | 是 |
 | `dsh-plugin-core/utils` | 纯方法：日期、字符串、字节、HTTP，外加内置中英字典 | 否 |
 | `dsh-plugin-core/explorer` | 文件浏览、文件选择、右侧停靠的文件预览 | 是 |
@@ -123,6 +123,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 - `ModelPicker`——选择模型的领域选择器，两段式接线：宿主 `apply` 调 `dsh-plugin-core/host` 的 `serveModelCatalog(ctx, { path })`，client `apply` 用**同一个 path 常量**调 `connectHost(ctx, { modelsPath: path })`；供应商 / 模型有增减时调 `refreshModelCatalog()` 重拉。没接线就是空态，不编造。
 - `DateTimePicker`——一个控件覆盖「一个时刻」与「时间段」，精度 `day` / `hour` / `minute` / `second`，左右两块独立月历，键盘可用，起始端归零、结束端拉满。
 - `InputGroup`——带附着动作的输入框。
+- `CodeEditor`——从 `dsh-plugin-core/ui/code-viewer` 引的受控 CodeMirror 编辑控件：给 `value` + `onChange` 即可，传 `path` 按扩展名高亮，不传即纯文本。重依赖只挂这条子路径、不进 `ui` 主入口；同子路径的 `CodeViewer` 是只读那一半。
 
 #### 展示
 

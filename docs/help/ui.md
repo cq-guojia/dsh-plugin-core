@@ -22,6 +22,20 @@
 
 > EN: Customization: props are the surface — compose them instead of forking source; appended class/style may only patch layout, skins go through token overrides; raise a request before writing a missing control yourself.
 
+代码编辑走独立子路径 `dsh-plugin-core/ui/code-viewer`：`CodeViewer` 只读（文件预览源码态用的也是它），`CodeEditor` 可编辑，两者共用一份 CodeMirror 底座。重依赖只挂在这条子路径上，不进 `ui` 主入口，所以不用编辑器的插件不会背上它。
+
+> EN: Code editing lives on the separate `dsh-plugin-core/ui/code-viewer` subpath: `CodeViewer` is read-only (also used by file preview source mode) and `CodeEditor` is editable; both share one CodeMirror surface. The heavy dependency stays on this subpath, off the main `ui` entry, so plugins that never edit code do not carry it.
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `value` | `string` | — | CodeEditor 受控文本；控件自己不存状态 | Controlled text for CodeEditor; the control keeps no state of its own |
+| `onChange` | `(value: string) => void` | — | 每次编辑回传全文，由调用方决定怎么保存 | Emits the full text on every edit; the caller decides how to persist it |
+| `path` | `string` | '' | 按扩展名选语法高亮；不传即纯文本 | Picks a language by extension; omitted means plain text |
+| `height` | `string` | '100%' | 编辑器高度；无确定高度上下文传 auto 随内容撑高 | Editor height; pass auto to grow with content when no fixed height exists |
+| `lineNumbers` | `boolean` | true | 是否显示行号 | Whether line numbers are shown |
+| `focusLine` | `number` | — | 挂载 / 换文本后把这一行滚到视口中部 | Scrolls this line into the centre after mount or a text change |
+| `className / style` | `string / CSSProperties` | — | 透传给根 div，只补布局，皮肤走 token | Passed to the root div; layout only, skins go through tokens |
+
 ```ts id="ui-setup"
 import { createStyleKit } from 'dsh-plugin-core/design'
 import { setStyleKit } from 'dsh-plugin-core/ui'
@@ -29,6 +43,20 @@ import { setStyleKit } from 'dsh-plugin-core/ui'
 setStyleKit(createStyleKit({ id: 'dsh-task-reminder-ui' }))
 // 控件样式不用你挂：每个控件首次渲染时自注入自己那份 CSS（幂等），
 // 用不到的控件其 CSS 也不会进你的包。
+```
+
+```ts id="ui-code-editor"
+import { CodeEditor, CodeViewer } from 'dsh-plugin-core/ui/code-viewer'
+
+// 可编辑：值由调用方存，改一个字就把全文交回来
+h(CodeEditor, {
+  value: draft,
+  onChange: (next) => setDraft(next),
+  path: 'notes.md',
+})
+
+// 只读：原来的查看器（文件预览源码态用的也是它）
+h(CodeViewer, { text: draft, path: 'notes.md', t })
 ```
 
 ## Button / IconButton / Segmented

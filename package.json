@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-core",
-  "version": "0.35.19",
+  "version": "0.35.20",
   "packageManager": "pnpm@12.3.4",
   "description": "Shared base for DSH plugins: design tokens, UI controls, utils, workspace explorer, session preview",
   "keywords": [
@@ -33,8 +33,8 @@
       "default": "./dist/ui/official.js"
     },
     "./ui/code-viewer": {
-      "types": "./dist/ui/display/CodeViewer.d.ts",
-      "default": "./dist/ui/display/CodeViewer.js"
+      "types": "./dist/ui/display/code-viewer.d.ts",
+      "default": "./dist/ui/display/code-viewer.js"
     },
     "./ui/host-toast": {
       "types": "./dist/ui/feedback/host-toast.d.ts",

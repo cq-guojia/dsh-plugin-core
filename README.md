@@ -81,7 +81,7 @@ Three things worth knowing on day one:
 | `dsh-plugin-core/design` | Token variables (light + dark), `createStyleKit` injector factory, dark-mode predicate | no |
 | `dsh-plugin-core/ui` | The whole control set — actions, inputs, display, feedback, layout, navigation | yes |
 | `dsh-plugin-core/ui/official` | Direct re-exports of the host's official primitives, for the rare case you need one | yes |
-| `dsh-plugin-core/ui/code-viewer` | Code viewer with per-line highlighting (also used by file preview) | yes |
+| `dsh-plugin-core/ui/code-viewer` | Read-only `CodeViewer` + editable `CodeEditor`, sharing one CodeMirror surface (file preview uses the viewer) | yes |
 | `dsh-plugin-core/ui/host-toast` | Bridge to the host's own toast | yes |
 | `dsh-plugin-core/utils` | Pure helpers: date, string, bytes, HTTP, built-in zh/en dictionary | no |
 | `dsh-plugin-core/adv/explorer` | File browser, file picker, docked file preview | yes |
@@ -123,6 +123,7 @@ Everything is built from tokens, takes its data through props, and follows the h
 - `ModelPicker` — a domain picker for the host model catalog, wired on both sides: in the host `apply` register `serveModelCatalog(ctx, { path })` from `dsh-plugin-core/host`, then in the client `apply` call `connectHost(ctx, { modelsPath: path })` with the **same** path constant; `refreshModelCatalog()` re-pulls the catalog when providers or models change. Unwired pickers show an empty state rather than inventing entries.
 - `DateTimePicker` — one control for a single instant or a range, precision `day` / `hour` / `minute` / `second`, two independent calendars, keyboard support, start floored and end ceiled.
 - `InputGroup` — input with attached actions.
+- `CodeEditor` — a controlled CodeMirror editor imported from `dsh-plugin-core/ui/code-viewer`: pass `value` + `onChange`, and optionally `path` to pick a language (omitted = plain text). It stays off the main `ui` entry so its heavy dependency remains optional; `CodeViewer` from the same subpath is the read-only counterpart.
 
 #### Display
 
