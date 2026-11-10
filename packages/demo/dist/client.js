@@ -64355,8 +64355,8 @@ var docData = {
         "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Trigger and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown."
       },
       {
-        "zh": "ModelPicker\uFF1A\u9009\u62E9\u6A21\u578B\u7684\u5B8C\u6574\u5C01\u88C5\uFF0C\u4E09\u79CD\u5F62\u6001\u5171\u7528\u540C\u4E00\u4EFD\u5BBF\u4E3B\u76EE\u5F55\uFF0C`onChange` \u4E00\u5F8B\u53D1 `provider/id`\uFF1A`grouped`\uFF08\u9ED8\u8BA4\uFF09= \u4E00\u4E2A\u4E0B\u62C9\u3001\u4F9B\u5E94\u5546\u505A\u7EC4\u5934\uFF1B`flat` = \u4E00\u4E2A\u4E0B\u62C9\u3001\u5168\u90E8\u6A21\u578B\u5E73\u94FA\u6210\u300C\u5382\u5546-\u6A21\u578B\u300D\u5E76\u5E26\u641C\u7D22\uFF0C\u641C\u5382\u5546\u540D\u5373\u53EF\u7B5B\uFF1B`cascade` = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF0C\u5382\u5546\u6846\u4E0E\u6A21\u578B\u6846\u90FD\u5E26\u641C\u7D22\uFF0C\u6362\u5382\u5546\u6E05\u7A7A\u6A21\u578B\u3002**\u63A5\u7EBF\u662F\u4E24\u6BB5\u5F0F**\uFF1A\u5BBF\u4E3B `serveModelCatalog(ctx, { path })` + client `connectHost(ctx, { modelsPath: path })` \u7528\u540C\u4E00\u4E2A path \u5E38\u91CF\uFF0C\u6F0F\u4E86 `modelsPath` \u76EE\u5F55\u6C38\u8FDC\u505C\u5728 loading\uFF1B\u4F9B\u5E94\u5546 / \u6A21\u578B\u6709\u589E\u51CF\u65F6 `await refreshModelCatalog()` \u91CD\u62C9\u3002`width` / `minWidth` / `maxWidth` \u7BA1\u89E6\u53D1\u5668\uFF0C`searchSizing` \u7BA1\u6240\u6709\u641C\u7D22\u6846\uFF0C`providerSizing` / `modelSizing` \u8BA9\u8054\u52A8\u6001\u4E24\u4E2A\u6846\u5206\u522B\u8BBE\u5BBD\u3002\u65E7\u503C\u5DF2\u4E0D\u5728\u76EE\u5F55\u91CC\u65F6\u6309\u771F\u5B9E\u503C\u4FDD\u7559\u4E00\u9879\u5E76\u5982\u5B9E\u63D0\u793A\u300C\u5019\u9009\u53EF\u80FD\u4E0D\u5B8C\u6574\u300D\uFF0C\u4E0D\u9759\u9ED8\u4E22\u5F03\u3002",
-        "en": 'ModelPicker: the complete model selector. Three variants share one host catalog and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). **Wiring is two-sided**: `serveModelCatalog(ctx, { path })` on the host and `connectHost(ctx, { modelsPath: path })` on the client with the same path constant \u2014 without `modelsPath` the catalog stays `loading` forever; `await refreshModelCatalog()` re-pulls it when providers change. `width`/`minWidth`/`maxWidth` size triggers, `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately. A controlled value no longer present in the catalog is retained as-is with an honest "candidates may be incomplete" hint instead of being silently dropped.'
+        "zh": "ModelPicker\uFF1A\u9009\u62E9\u6A21\u578B\u7684\u5B8C\u6574\u5C01\u88C5\uFF0C\u4E09\u79CD\u5F62\u6001\u5171\u7528\u540C\u4E00\u4EFD\u5BBF\u4E3B\u76EE\u5F55\uFF0C`onChange` \u4E00\u5F8B\u53D1 `provider/id`\uFF1A`grouped`\uFF08\u9ED8\u8BA4\uFF09= \u4E00\u4E2A\u4E0B\u62C9\u3001\u4F9B\u5E94\u5546\u505A\u7EC4\u5934\uFF1B`flat` = \u4E00\u4E2A\u4E0B\u62C9\u3001\u5168\u90E8\u6A21\u578B\u5E73\u94FA\u6210\u300C\u5382\u5546-\u6A21\u578B\u300D\u5E76\u5E26\u641C\u7D22\uFF0C\u641C\u5382\u5546\u540D\u5373\u53EF\u7B5B\uFF1B`cascade` = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF0C\u5382\u5546\u6846\u4E0E\u6A21\u578B\u6846\u90FD\u5E26\u641C\u7D22\uFF0C\u6362\u5382\u5546\u6E05\u7A7A\u6A21\u578B\u3002**\u63A5\u7EBF\u662F\u4E24\u6BB5\u5F0F**\uFF1A\u5BBF\u4E3B `serveModelCatalog(ctx, { path })` + client `connectHost(ctx, { modelsPath: path })` \u7528\u540C\u4E00\u4E2A path \u5E38\u91CF\uFF0C\u6F0F\u4E86 `modelsPath` \u76EE\u5F55\u6C38\u8FDC\u505C\u5728 loading\uFF1B\u4F9B\u5E94\u5546 / \u6A21\u578B\u6709\u589E\u51CF\u65F6 `await refreshModelCatalog()` \u91CD\u62C9\u3002`width` / `minWidth` / `maxWidth` \u7BA1\u89E6\u53D1\u5668\uFF0C`searchSizing` \u7BA1\u6240\u6709\u641C\u7D22\u6846\uFF0C`providerSizing` / `modelSizing` \u8BA9\u8054\u52A8\u6001\u4E24\u4E2A\u6846\u5206\u522B\u8BBE\u5BBD\u3002\u65E7\u503C\u5DF2\u4E0D\u5728\u76EE\u5F55\u91CC\u65F6\u6309\u771F\u5B9E\u503C\u4FDD\u7559\u4E00\u9879\u5E76\u5982\u5B9E\u63D0\u793A\u300C\u5019\u9009\u53EF\u80FD\u4E0D\u5B8C\u6574\u300D\uFF0C\u4E0D\u9759\u9ED8\u4E22\u5F03\u3002\u5BBF\u4E3B\u4FA7 `serveModelCatalog` \u7684 `getLlm` \u53EA\u662F\u53EF\u9009\u53D6\u503C\u8986\u76D6\uFF0C\u4E0D\u4F20\u65F6\u6838\u5FC3\u81EA\u884C\u6536\u53E3\uFF08ctx \u5931\u6D3B\u6309\u4E0D\u53EF\u7528\u56DE 503\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u5FC5\u5404\u81EA\u9632\u3002",
+        "en": 'ModelPicker: the complete model selector. Three variants share one host catalog and always emit `provider/id`: `grouped` (default) groups models under provider headers in one dropdown; `flat` lists every model as `vendor-model` in one searchable dropdown; `cascade` links two searchable dropdowns (provider then model). **Wiring is two-sided**: `serveModelCatalog(ctx, { path })` on the host and `connectHost(ctx, { modelsPath: path })` on the client with the same path constant \u2014 without `modelsPath` the catalog stays `loading` forever; `await refreshModelCatalog()` re-pulls it when providers change. `width`/`minWidth`/`maxWidth` size triggers, `searchSizing` sizes every search box, and `providerSizing`/`modelSizing` size the two cascade boxes separately. A controlled value no longer present in the catalog is retained as-is with an honest "candidates may be incomplete" hint instead of being silently dropped. The host-side `getLlm` on `serveModelCatalog` is only an optional override \u2014 the core handles a disposed ctx itself and answers 503, so consumers need not guard it.'
       }
     ],
     "api": [
@@ -71344,9 +71344,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.13"}`],
-            [t3("buildDemo"), `v${"0.35.13"}`],
-            [t3("buildStamp"), "261110-160552-540"]
+            [t3("buildCore"), `v${"0.35.14"}`],
+            [t3("buildDemo"), `v${"0.35.14"}`],
+            [t3("buildStamp"), "261110-164040-980"]
           ].map(
             ([label, value]) => (0, import_react98.createElement)(
               "tr",
@@ -71662,9 +71662,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react100.createElement)("span", null, `core v${"0.35.13"}`),
-          (0, import_react100.createElement)("span", null, `demo v${"0.35.13"}`),
-          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-160552-540")
+          (0, import_react100.createElement)("span", null, `core v${"0.35.14"}`),
+          (0, import_react100.createElement)("span", null, `demo v${"0.35.14"}`),
+          (0, import_react100.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261110-164040-980")
         )
       )
     ),

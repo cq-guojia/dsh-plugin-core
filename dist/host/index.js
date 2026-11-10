@@ -36,12 +36,31 @@ export async function buildModelRoutes(llm) {
 }
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
 /**
+ * 取 `llm`：先走消费方的覆盖口，再退回 cordis `ctx.get`。
+ *
+ * `ctx.get('llm')` 在 ctx 失活（插件已停 / 作用域已 dispose）时**会抛**，而它恰好在
+ * `getLlm()` 返回 undefined 的正常分支上（未挂载就是 undefined，`??` 会继续求右边），
+ * 所以这里必须自己收口：抛错一律当「不可用」，交给调用方回 503，绝不让异常冒成 handler
+ * 的 rejected promise（宿主对未处理的 handler 拒绝只会挂住连接）。
+ */
+function resolveLlm(ctx, options) {
+    const fromHook = options.getLlm?.();
+    if (fromHook !== undefined)
+        return fromHook;
+    try {
+        return ctx.get?.('llm');
+    }
+    catch {
+        return undefined;
+    }
+}
+/**
  * 注册模型目录路由（插件宿主 `apply` 里调一次）。
  *
  * 只声明 `webServer` 一条注入线：`webServer` 是宿主必启服务，而 `llm` 可能晚挂载、或这份
  * 组合里根本没有 —— 把它写进 `ctx.inject` 的依赖会让回调永远不触发、路由直接不注册
- * （cordis `inject` = 声明依赖，齐了才 apply）。`llm` 改为每个请求用 `ctx.get('llm')`
- * 惰性现取（未挂载返回 undefined、不抛），取不到回 503，客户端据此显示降级提示。
+ * （cordis `inject` = 声明依赖，齐了才 apply）。`llm` 改为每个请求惰性现取：未挂载返回
+ * undefined，ctx 失活抛错由 {@link resolveLlm} 收口，两种都回 503，客户端据此显示降级提示。
  */
 export function serveModelCatalog(ctx, options) {
     ctx.inject(['webServer'], (services) => {
@@ -57,7 +76,7 @@ export function serveModelCatalog(ctx, options) {
                     res.end(JSON.stringify({ error: 'forbidden' }));
                     return;
                 }
-                const llm = options.getLlm?.() ?? ctx.get?.('llm');
+                const llm = resolveLlm(ctx, options);
                 if (llm === undefined) {
                     res.writeHead(503, JSON_HEADERS);
                     res.end(JSON.stringify({ routes: [], error: 'llm-unavailable' }));

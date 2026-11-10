@@ -1108,6 +1108,16 @@ async function buildModelRoutes(llm) {
   return routes;
 }
 var JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
+function resolveLlm(ctx, options) {
+  const fromHook = options.getLlm?.();
+  if (fromHook !== void 0)
+    return fromHook;
+  try {
+    return ctx.get?.("llm");
+  } catch {
+    return void 0;
+  }
+}
 function serveModelCatalog(ctx, options) {
   ctx.inject(["webServer"], (services) => {
     const webServer = services.webServer;
@@ -1122,7 +1132,7 @@ function serveModelCatalog(ctx, options) {
           res.end(JSON.stringify({ error: "forbidden" }));
           return;
         }
-        const llm = options.getLlm?.() ?? ctx.get?.("llm");
+        const llm = resolveLlm(ctx, options);
         if (llm === void 0) {
           res.writeHead(503, JSON_HEADERS);
           res.end(JSON.stringify({ routes: [], error: "llm-unavailable" }));

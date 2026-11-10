@@ -74,7 +74,7 @@ export interface ModelCatalogOptions {
     path: string;
     /** 请求闸门：返回 false ⇒ 403。不传 = 沿用宿主既有边界，由消费方自行负责。 */
     authorize?: (req: HostHttpRequest) => boolean | Promise<boolean>;
-    /** 惰性取 `llm` 的覆盖口：默认走 cordis `ctx.get('llm')`。 */
+    /** 惰性取 `llm` 的覆盖口；不传则退回 cordis `ctx.get('llm')`（核心已收口，ctx 失活按不可用处理）。 */
     getLlm?: () => HostLlmLike | undefined;
 }
 /**
@@ -82,8 +82,8 @@ export interface ModelCatalogOptions {
  *
  * 只声明 `webServer` 一条注入线：`webServer` 是宿主必启服务，而 `llm` 可能晚挂载、或这份
  * 组合里根本没有 —— 把它写进 `ctx.inject` 的依赖会让回调永远不触发、路由直接不注册
- * （cordis `inject` = 声明依赖，齐了才 apply）。`llm` 改为每个请求用 `ctx.get('llm')`
- * 惰性现取（未挂载返回 undefined、不抛），取不到回 503，客户端据此显示降级提示。
+ * （cordis `inject` = 声明依赖，齐了才 apply）。`llm` 改为每个请求惰性现取：未挂载返回
+ * undefined，ctx 失活抛错由 {@link resolveLlm} 收口，两种都回 503，客户端据此显示降级提示。
  */
 export declare function serveModelCatalog(ctx: HostContextLike, options: ModelCatalogOptions): void;
 export { serveFsRoute, FS_PAGE_LIMIT, normalizeAbsPath } from './fs-route.js';

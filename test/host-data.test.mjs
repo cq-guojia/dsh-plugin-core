@@ -149,6 +149,22 @@ test('serveModelCatalog：只声明 webServer；llm 请求时惰性现取，缺�
   }, { path: '/api/x/models' })
   await registered[2].handler({ headers: {} }, broken)
   assert.equal(broken.status, 500, 'listProviders 抛错也要自己收口，不让宿主 destroy 连接')
+
+  const inactive = reply()
+  serveModelCatalog({
+    inject: (_deps, cb) => cb({ webServer: { register: (route) => registered.push(route) } }),
+    get: () => { throw new Error('cannot get required service "llm" in inactive context') },
+  }, { path: '/api/x/models' })
+  await registered[3].handler({ headers: {} }, inactive)
+  assert.equal(inactive.status, 503, 'ctx 失活抛错按不可用处理，不冒成 rejected promise')
+
+  const hookUndefined = reply()
+  serveModelCatalog({
+    inject: (_deps, cb) => cb({ webServer: { register: (route) => registered.push(route) } }),
+    get: () => { throw new Error('inactive') },
+  }, { path: '/api/x/models', getLlm: () => undefined })
+  await registered[4].handler({ headers: {} }, hookUndefined)
+  assert.equal(hookUndefined.status, 503, 'getLlm 返回 undefined 时也不能落到会抛的 ctx.get')
 })
 
 test('connectHost / refreshModelCatalog：不接线不取目录；刷新重拉且禁用缓存', async () => {
