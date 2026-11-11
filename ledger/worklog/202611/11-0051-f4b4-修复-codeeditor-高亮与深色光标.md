@@ -1,7 +1,7 @@
 # 20261111-0051-f4b4-修复-codeeditor-高亮与深色光标: 修复 CodeEditor 高亮与深色光标
 
 - **Tags**: CodeEditor, 语法高亮, 深色光标, 缺陷修复
-- **Status**: doing · 2026-11-11 01:49:55 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-11 01:52:48 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-11 00:51:46 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -25,12 +25,12 @@
 - ~~按规范做法重做：核心退出语法配色，`theme` 交官方 dark / light~~ 已完成
 - ~~重写自检 + build / test / typecheck / codelint~~ 已完成（394 项全绿）
 - ~~发版前规范复核~~ 已完成（无残留自造配色，官方方案完整，无需再改代码）
-- ~~按用户明确指令 bump 两包 + commit + push + 打 `v0.35.21` tag 发版~~ 本轮执行
+- ~~按用户明确指令 bump 两包 + commit + push + 打 `v0.35.21` tag 发版~~ 已完成（commit `e213f34`、tag `v0.35.21` 已推远端，触发 npm 自动发布）
 - 宿主真机验收：暗色官方 one-dark 高亮、亮色官方兜底观感、深色光标可见、只读 `CodeViewer` 无回归
 
 ## Next
 
-等用户在宿主真机装 v0.35.21 后验收：暗色下 `-` / `**` / `#` 与 `# 标题` 呈现官方 one-dark 配色、深色光标浅色可见、编辑器仍是透明底不吃官方面板背景；亮色确认官方 `defaultHighlightStyle` 兜底的观感可接受；只读 `CodeViewer` 同步验收。真机无回归即可结案。
+`v0.35.21` 已发版，下一步由用户在宿主真机装该版本后验收：暗色下 `-` / `**` / `#` 与 `# 标题` 呈现官方 one-dark 配色、深色光标浅色可见、编辑器仍是透明底不吃官方面板背景；亮色确认官方 `defaultHighlightStyle` 兜底的观感可接受；只读 `CodeViewer` 同步验收。真机无回归即可结案。
 
 ## Process
 
@@ -66,3 +66,4 @@
 - 2026-11-11 01:04:59 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 补充落实边界：agent-browser 缺 Chrome 二进制、install 属装组件未获授权故未执行；esbuild 已在 /tmp 打出真实 CodeMirror 页面但无浏览器可跑，临时目录已清理；真 DOM 字重与光标色仍留宿主真机验收
 - 2026-11-11 01:34:56 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按用户拍板重做为官方方案：code-mirror-surface.ts 的 theme 改 dark/light 交给官方主题，code-viewer-theme.ts 删掉 ONE_*/HIGHLIGHTS_* 手抄表只留表面层，零新增依赖；实测核心 StyleModule 排在官方之后可覆盖面板背景，自检改为断言官方 highlighter 与覆盖顺序，pnpm test 394 项全绿、typecheck/codelint 通过，Worklog 已更新，留宿主真机验收
 - 2026-11-11 01:49:55 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版前规范复核通过：src/ 已无 HighlightStyle/HIGHLIGHTS_ 自造配色残留，code-mirror-surface.ts:91 为 theme: dark ? 'dark' : 'light'，Node 实测官方 highlighter 明暗全覆盖且核心表面层后注入（LIGHT coreIdx=3 / DARK officialIdx=2→coreIdx=4）；结论规范无问题、无需再改代码，按用户明确指令 bump 两包至 0.35.21 走 v0.35.21 发版
+- 2026-11-11 01:52:48 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · v0.35.21 已发版：两包版本 0.35.21 一致，pnpm run build / build:demo / pnpm test(394 项全绿) / typecheck / koc-codelint 全过，commit e213f34 已推 main，tag v0.35.21 已推远端且 ls-remote 校验指向 e213f342；结论规范无问题、未再改代码，下一步留宿主真机验收官方主题观感
