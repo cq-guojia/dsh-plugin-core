@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261111-0051-f4b4-修复-codeeditor-高亮与深色光标": {"category": "缺陷修复", "created": "2026-11-11 00:51:46", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-11 00:51:46", "status": "doing", "tags": ["CodeEditor", "语法高亮", "深色光标", "缺陷修复"], "title": "修复 CodeEditor 高亮与深色光标", "updated": "2026-11-11 01:00:51", "worklog": "worklog/202611/11-0051-f4b4-修复-codeeditor-高亮与深色光标.md"}
+    "20261111-0051-f4b4-修复-codeeditor-高亮与深色光标": {"category": "缺陷修复", "created": "2026-11-11 00:51:46", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-11 00:51:46", "status": "doing", "tags": ["CodeEditor", "语法高亮", "深色光标", "缺陷修复"], "title": "修复 CodeEditor 高亮与深色光标", "updated": "2026-11-11 01:04:59", "worklog": "worklog/202611/11-0051-f4b4-修复-codeeditor-高亮与深色光标.md"}
   },
   "version": "20261022000000"
 }

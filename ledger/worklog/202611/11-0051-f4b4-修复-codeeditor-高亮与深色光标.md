@@ -1,7 +1,7 @@
 # 20261111-0051-f4b4-修复-codeeditor-高亮与深色光标: 修复 CodeEditor 高亮与深色光标
 
 - **Tags**: CodeEditor, 语法高亮, 深色光标, 缺陷修复
-- **Status**: doing · 2026-11-11 01:00:51 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-11 01:04:59 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-11 00:51:46 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -33,7 +33,7 @@
 - 落实①（扩展链正常）：Node 实测 `extOf('rules.md')='md'` → `languageForPath` 返回 `LanguageSupport`；`CodeEditor` 实际下发 5 个扩展，含 `LanguageSupport` + `syntaxHighlighting`；真实 `EditorState` 解析出 `StrongEmphasis` / `ListMark` / `ATXHeading1` / `CommentBlock`，`highlightingFor(state,[tags.strong])` 返回 class。故 `path` 传法正确，不是使用错误。
 - 落实②（配色表缺规则）：用核心真实 `HighlightStyle` 对 `- **关键词**：内容` 跑 `highlightTree`，得到 `-`→`ͼ17`、`**`→`ͼ1b ͼ17`、`关键词`→`ͼ1b`、`：内容`→无 class；`ͼ17` 是 `tags.meta` 弱灰，`ͼ1b` 只有 `font-weight:bold` 无颜色。`src/ui/display/code-viewer-theme.ts:111` 的 `tags.strong` 无 `color`，两套表均无 `tags.list` / `tags.processingInstruction` 规则；只有 `tags.heading`（蓝，`:109`）与 `tags.comment`（灰，`:88`）有颜色，所以这段内容必然「整篇同色」。
 - 落实③（光标）：`node_modules/@codemirror/view/dist/index.js:6960-6961` 定义 `.cm-cursor{borderLeft:1.2px solid black}`，只有 `:6968-6969` 的 `&dark .cm-cursor` 改浅色且要求编辑器带 `cm-dark`；核心 `src/ui/infra/code-mirror-surface.ts:88` 传 `theme:'none'`，`node_modules/@uiw/react-codemirror/src/getDefaultExtensions.ts:51-52` 因此不挂官方 light/dark 主题 ⇒ 光标恒黑。且 `basicSetup` 默认开 `drawSelection()`（`@uiw/codemirror-extensions-basic-setup/esm/index.js:80`），它把 `.cm-content` 的 `caretColor` 设成 `transparent !important`（`@codemirror/view/dist/index.js:9700-9701`），核心 `src/ui/display/code-viewer-theme.ts:44-46` 设的 `caretColor` 完全无效。只读查看器没有光标，故 v0.35.20 开放 `CodeEditor` 才暴露。
-- 未完全落实项：`**` 之间「不加粗」在 Node 层只验证到规则存在且 class 确实分配到 `关键词`，浏览器侧是否生效无法离线复现（本机无 jsdom / linkedom，未授权装依赖）。修复后由宿主真机验收确认；不凭猜测写结论。
+- 未完全落实项：`**` 之间「不加粗」在 Node 层只验证到规则存在且 class 确实分配到 `关键词`，浏览器侧是否生效无法离线复现（本机无 jsdom / linkedom；`agent-browser` CLI 在，但缺 Chrome 二进制，`agent-browser install` 属装组件、未获授权故未执行）。已用 esbuild 在 /tmp 打出真实 CodeMirror 页面，因无浏览器未跑成，临时目录已清理。修复后由宿主真机验收确认；不凭猜测写结论。
 - 修复（本轮）：`src/ui/display/code-viewer-theme.ts` 的 `cmSurfaceTint(dark)` 新增 `.cm-cursor, .cm-dropCursor { borderLeftColor: var(--dshpc-fg, <按 dark 兜底>) }`；`cmSurfaceTheme` 的 caretColor 加注释说明它不是光标色来源。HIGHLIGHTS 明暗两套表把 heading 的无效 `fontStyle:'bold'` 改成 `fontWeight:'bold'`，给 `tags.strong` / `tags.emphasis` 补颜色，并在表尾新增 `tags.processingInstruction` 规则（放最后压过前面的 meta 弱灰）。
 - 改前 / 改后实测对照（Node，用核心真实 HighlightStyle 对 `- **关键词**：内容` 跑 highlightTree）：改前 `-`→`ͼ17`（meta 弱灰）、`关键词`→`ͼ1b`（仅 font-weight）、主题 CSS 里没有 borderLeftColor 规则；改后亮色 `-`→`ͼ1g`、`关键词`→`ͼ1b`（`color:#986801; font-weight:bold`），暗色 `-`→`ͼ28`、`关键词`→`ͼ23`（`color:#d19a66; font-weight:bold`），光标 CSS 亮色 `var(--dshpc-fg,#383a42)` / 暗色 `var(--dshpc-fg,#abb2bf)`，且是主题作用域下的后代选择器（可盖过官方单类 `.cm-cursor`）。
 - 自检：`test/code-viewer-theme.test.mjs` 7 项（明暗各 3 项 + 兜底色差异），断言主题真实 CSS 规则、语法树到高亮 class 的映射、不存在无效 `font-style:bold`；`test/code-editor.test.mjs` 补 1 项，验证 CodeEditor / CodeViewer 都把光标色与语法高亮真正下发给 CodeMirror。`pnpm test` 394 项全绿，`pnpm run typecheck` / `koc-codelint` 通过，`pnpm run build` + `pnpm run build:demo` 产物已同步（`dist/ui/display/code-viewer-theme.js:77/104/114/136/143`）。
@@ -51,3 +51,4 @@
 - 2026-11-11 00:51:46 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-11-11 00:53:59 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 落实两处根因并写入 Background/Process：code-viewer-theme.ts:44-46 的 caretColor 被 drawSelection 覆盖、:111 tags.strong 无 color；下一步改 cmSurfaceTint 与 HIGHLIGHTS 两套表
 - 2026-11-11 01:00:51 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 完成修复并验证：code-viewer-theme.ts 的 cmSurfaceTint 新增 .cm-cursor borderLeftColor、HIGHLIGHTS 补 tags.processingInstruction/strong/heading 配色与字重修正；test/code-viewer-theme.test.mjs 7 项 + code-editor.test.mjs 1 项，pnpm test 394 项全绿、typecheck/codelint 通过，dist 已重建，留宿主真机验收
+- 2026-11-11 01:04:59 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 补充落实边界：agent-browser 缺 Chrome 二进制、install 属装组件未获授权故未执行；esbuild 已在 /tmp 打出真实 CodeMirror 页面但无浏览器可跑，临时目录已清理；真 DOM 字重与光标色仍留宿主真机验收
