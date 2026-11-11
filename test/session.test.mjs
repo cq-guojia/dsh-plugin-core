@@ -23,6 +23,8 @@ import {
 } from '../dist/adv/session/changes.js'
 import { durationText, formatRunDuration, formatMessageClock, formatTokens, formatExactCount, formatCacheHitPercent } from '../dist/adv/session/mirror/message-chrome.js'
 import { observedRpcIds, visiblePendingInputs, pendingFiles, waitingUserRows } from '../dist/adv/session/pending-inputs.js'
+import { openPendingApproval } from '../dist/adv/session/pending-approval.js'
+import { openPendingQuestions } from '../dist/adv/session/pending-questions.js'
 import { setLocale, t } from '../dist/utils/index.js'
 
 // ── official-classes：官方 CSS module 类名运行时发现 ──
@@ -353,6 +355,7 @@ test('会话预览文案中英齐全（镜像官方词典的新增键）', () =>
     'stepProcessJoinTwo', 'toolTitleRead', 'toolTitleGeneric', 'toolInputLabel', 'rowRunning',
     'readWindow', 'terminalExitCode', 'diffWrapLabel', 'deliverRowTitle', 'deliverAll',
     'branchLabel', 'composerPlaceholder', 'forkFailed',
+    'approvalWaiting', 'approvalDetailAria', 'approvalEscalation', 'approvalReject', 'approvalAllowOnce',
     'changesSingle', 'changesMulti', 'changesBinary', 'changesOversized',
     'diffLoading', 'diffMissing', 'diffError', 'diffBinary', 'diffOversized',
     'diffCreated', 'diffDeleted', 'diffUnchanged', 'diffCoarse', 'diffTruncated',
@@ -451,4 +454,81 @@ test('waitingUserRows：投影缺席时只画本地回显，不编造消息', ()
   assert.deepEqual(waitingUserRows({}, [{ requestId: 'r1', placement: 'steering', text: '补充一句' }], new Set()), [
     { key: 'r1', text: '补充一句', files: [], pending: true, echo: false },
   ])
+})
+// ── 等待审批 / 选择题卡：宿主公开只读面的派生 ──
+
+test('openPendingApproval：只认 kind=approval 且可作答的域值，会话隔离', () => {
+  const approval = { kind: 'approval', key: 'approval:1', toolName: 'bash', callId: 'c1', answerable: true, answer: async () => {} }
+  let current = new Map([['s1', { pendingInteraction: approval }]])
+  const listeners = new Set()
+  const face = openPendingApproval({
+    sessionStatus: {
+      getSnapshot: () => current,
+      subscribe: (fn) => { listeners.add(fn); return () => { listeners.delete(fn) } },
+    },
+  }, 's1')
+  assert.equal(face.getSnapshot(), approval)
+  const statusOnly = { sessionStatus: { getSnapshot: () => current, subscribe: () => () => {} } }
+  assert.equal(openPendingApproval(statusOnly, 's2').getSnapshot(), undefined)
+  // 别的 pending-interaction 域（题卡等）一律当没有
+  current = new Map([['s1', { pendingInteraction: { kind: 'question', key: 'q1', answer: () => {} } }]])
+  for (const fn of listeners) fn()
+  assert.equal(face.getSnapshot(), undefined)
+  // 答完 / 撤销 ⇒ 官方 publish 后快照变空，弹窗自行收卡
+  current = new Map()
+  for (const fn of listeners) fn()
+  assert.equal(face.getSnapshot(), undefined)
+})
+
+test('openPendingApproval：uiSession 缺席 / 无快照面时返回 null', () => {
+  assert.equal(openPendingApproval(undefined, 's1'), null)
+  assert.equal(openPendingApproval({}, 's1'), null)
+  assert.equal(openPendingApproval({ sessionStatus: { getSnapshot: () => new Map() } }, 's1'), null)
+})
+
+test('openPendingQuestions：取投影里第一组 active，形状不对整体当没有', () => {
+  const row = {
+    callId: 'call-1',
+    state: 'continued',
+    questions: [
+      {
+        id: 'q1',
+        question: '选哪个环境？',
+        header: '部署',
+        detail: '会影响后续命令',
+        options: [{ label: 'staging', description: '预发' }, { label: 'prod' }],
+        multiSelect: true,
+      },
+    ],
+  }
+  let view = { active: [row], settled: [] }
+  const listeners = new Set()
+  const store = {
+    faceOf: (key) => {
+      assert.equal(key, 'userQuestions')
+      return {
+        getSnapshot: () => view,
+        subscribe: (fn) => { listeners.add(fn); return () => { listeners.delete(fn) } },
+      }
+    },
+  }
+  const face = openPendingQuestions(store)
+  // 引用稳定：投影没换 ⇒ 映射结果不换（useSyncExternalStore 不会死循环）
+  assert.equal(face.getSnapshot(), face.getSnapshot())
+  assert.deepEqual(face.getSnapshot().questions[0].options, [{ label: 'staging', description: '预发' }, { label: 'prod' }])
+  assert.equal(face.getSnapshot().state, 'continued')
+  assert.equal(face.getSnapshot().questions[0].multiSelect, true)
+  // 答完 ⇒ active 清空
+  view = { active: [], settled: [{ callId: 'call-1', answers: [] }] }
+  for (const fn of listeners) fn()
+  assert.equal(face.getSnapshot(), null)
+  // 形状不对（缺 questions / state 不认识）⇒ 当没有，不猜
+  view = { active: [{ callId: 'x', state: 'weird', questions: [] }] }
+  for (const fn of listeners) fn()
+  assert.equal(face.getSnapshot(), null)
+})
+
+test('openPendingQuestions：宿主没注册该投影时返回 null', () => {
+  assert.equal(openPendingQuestions(undefined), null)
+  assert.equal(openPendingQuestions({ faceOf: () => undefined }), null)
 })

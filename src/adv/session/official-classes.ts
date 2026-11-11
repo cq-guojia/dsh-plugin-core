@@ -30,7 +30,7 @@
 /** 本仓会话预览当前对齐的宿主版本（单一真源；升级核对工具读这里，散落的版本注释不作真源）。 */
 export const ALIGNED_HOST_VERSION = '0.2.2-rc.1'
 
-/** 官方注入 style 标签的 data-plugin-css 包前缀（chat 主视图 + ui-tool / ui-skill 工具卡 + ui-deliverables）。 */
+/** 官方注入 style 标签的 data-plugin-css 包前缀（chat 主视图 + ui-tool / ui-skill 工具卡 + ui-deliverables + ui-approval 审批卡）。 */
 const CSS_PKG_PREFIXES = [
   '@deepseek-ai/dsh-client-ui-chat/',
   '@deepseek-ai/dsh-client-ui-tool/',
@@ -38,6 +38,9 @@ const CSS_PKG_PREFIXES = [
   '@deepseek-ai/dsh-client-ui-attachment/',
   '@deepseek-ai/dsh-client-ui-deliverables/',
   '@deepseek-ai/dsh-client-ui-sidebar-documentpreview/',
+  // 「等待审批」卡（mirror/ApprovalPanel.ts）；tagId =
+  // `@deepseek-ai/dsh-client-ui-approval/ApprovalPanel.module.css`（ui-approval 0.2.2-rc.1 lib/client.js:12）。
+  '@deepseek-ai/dsh-client-ui-approval/',
 ]
 
 /** 语义名 → 真实（带哈希）类名。 */

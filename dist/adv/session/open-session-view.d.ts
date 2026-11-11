@@ -1,4 +1,6 @@
 import type { ChatViewFace, MessageImageLoader, SessionSnapshotFace, SessionsFace, SnapshotFace, UiConversationFace } from './faces.js';
+import { type PendingApprovalFace, type UiSessionFace } from './pending-approval.js';
+import { type PendingQuestionSet } from './pending-questions.js';
 /** 弹窗数据源：已解析的 target 与向前翻页句柄；解析失败给 null。 */
 export interface SessionViewTarget {
     readonly target: SnapshotFace<ChatViewFace | undefined>;
@@ -12,6 +14,16 @@ export interface SessionViewTarget {
      * 缺席（老宿主没有该方法）= 图片块退回「[图片]」文本占位，不画空框。
      */
     readonly loadImage?: MessageImageLoader;
+    /**
+     * 「等待审批」在线请求面（`uiSession.sessionStatus` 派生；见 pending-approval.ts）。
+     * null = 调用方没给 uiSession / 宿主没这服务 ⇒ 弹窗不画审批卡。只在该会话**此刻真在等审批**时有值。
+     */
+    readonly pendingApproval: SnapshotFace<PendingApprovalFace | undefined> | null;
+    /**
+     * 「选择题卡」（官方 `userQuestions` 投影里的第一组待答问题）。
+     * null = 宿主没注册该投影 ⇒ 不画题卡；有值但 `state === 'open'` 时只渲染不提供作答。
+     */
+    readonly pendingQuestions: SnapshotFace<PendingQuestionSet | null> | null;
     /** 释放 sessions.retain 引用（弹窗关闭时必调；否则会话 scope 永不回收）。 */
     dispose(): void;
 }
@@ -20,5 +32,7 @@ export declare const DEFAULT_RETAIN_SOURCE = "dsh-plugin-core";
 /** 打开只读视图：物化 binding → 探测拉尾页 → 建 chat target。会话不可解析时返回 null。 */
 export declare function openSessionView(sessions: SessionsFace, uiConversation: UiConversationFace, id: string, 
 /** retain 引用记进宿主 retainedBy 的键；默认 'dsh-plugin-core'。 */
-retainSource?: string): SessionViewTarget | null;
+retainSource?: string, 
+/** 宿主 `uiSession` 服务：给了才会接「等待审批」那条链（缺席 = 不渲染审批卡）。 */
+uiSession?: UiSessionFace): SessionViewTarget | null;
 //# sourceMappingURL=open-session-view.d.ts.map

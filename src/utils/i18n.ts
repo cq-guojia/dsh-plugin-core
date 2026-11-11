@@ -525,6 +525,12 @@ export type UtilMessageKey =
   | 'deliverExpandAria'
   | 'deliverCollapseAria'
   | 'composerPlaceholder'
+  // ── 会话预览：等待审批（官方 ui-approval 的审批卡）──
+  | 'approvalWaiting'
+  | 'approvalDetailAria'
+  | 'approvalEscalation'
+  | 'approvalReject'
+  | 'approvalAllowOnce'
   // ── 日期时间选择器（DateTimePicker）──
   | 'dtPlaceholder'
   | 'dtStart'
@@ -1075,6 +1081,11 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     deliverExpandAria: '展开全部 {count} 个交付文件',
     deliverCollapseAria: '收起交付文件列表',
     composerPlaceholder: '继续说点什么…',
+    approvalWaiting: '等待审批',
+    approvalDetailAria: '审批详情',
+    approvalEscalation: '工具 {toolName} 请求越权执行',
+    approvalReject: '拒绝',
+    approvalAllowOnce: '允许一次',
     dtPlaceholder: '请选择日期时间',
     dtStart: '开始',
     dtEnd: '结束',
@@ -1616,6 +1627,11 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     deliverExpandAria: 'Expand all {count} delivered files',
     deliverCollapseAria: 'Collapse the delivered-files list',
     composerPlaceholder: 'Say something to continue…',
+    approvalWaiting: 'Waiting for approval',
+    approvalDetailAria: 'Approval details',
+    approvalEscalation: 'Tool {toolName} requests privileged execution',
+    approvalReject: 'Reject',
+    approvalAllowOnce: 'Allow once',
     dtPlaceholder: 'Date & time',
     dtStart: 'Start',
     dtEnd: 'End',

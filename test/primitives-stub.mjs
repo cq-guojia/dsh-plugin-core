@@ -43,6 +43,9 @@ exported.Tag = ({ tone = 'outline', className, children }) =>
   createElement('span', { className, 'data-tone': tone }, children)
 // UserTextRun 是逐字纯文本：自检要看到 ## / ** 原样保留，故返回真实文本。
 exported.UserTextRun = ({ text }) => createElement('span', null, text)
+// Button 是真按钮：审批卡自检要看到「拒绝 / 允许一次」两个可点按钮（官方 variant 记进 data-variant）。
+exported.Button = ({ variant = 'ghost', size, icon, children, ...rest }) =>
+  createElement('button', { ...rest, 'data-variant': variant }, children)
 // CommandText 是命令滚动槽：自检要看到后台命令原文与 className，故返回真实文本。
 exported.CommandText = ({ text, className }) => createElement('span', { className }, text)
 // ImageLightbox 是 portal：SSR 不支持 createPortal，替身改成普通容器，自检能断言 src 与标签。

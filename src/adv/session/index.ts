@@ -30,6 +30,18 @@ export {
   openSessionView,
   type SessionViewTarget,
 } from './open-session-view.js'
+export {
+  openPendingApproval,
+  type ApprovalDecision,
+  type PendingApprovalFace,
+  type UiSessionFace,
+} from './pending-approval.js'
+export {
+  openPendingQuestions,
+  type PendingQuestionItem,
+  type PendingQuestionOption,
+  type PendingQuestionSet,
+} from './pending-questions.js'
 export type {
   AssistantBlockLike,
   ChatNodeFace,

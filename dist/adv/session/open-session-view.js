@@ -19,6 +19,8 @@
 //    - `retain(source:'mainView')` 切官方视图：会锁死宿主会话导航（真机事故，已回退）；
 //    - 冷读 RPC `$stream('session/follow')`：宿主 remote 只有 $stream/invoke，invoke 报
 //      「无活动通道」⇒ 归档会话一律走上面的 retain 主路，不搞冷读。
+import { openPendingApproval } from './pending-approval.js';
+import { openPendingQuestions } from './pending-questions.js';
 /** 默认 retain source（写进宿主 retainedBy；调用方可覆盖成自己的插件名）。 */
 export const DEFAULT_RETAIN_SOURCE = 'dsh-plugin-core';
 /** 投影面缺席时的稳定空快照：能力缺席按 undefined 呈现，不编造数据。 */
@@ -30,7 +32,9 @@ const EMPTY_INBOX_FACE = {
 /** 打开只读视图：物化 binding → 探测拉尾页 → 建 chat target。会话不可解析时返回 null。 */
 export function openSessionView(sessions, uiConversation, id, 
 /** retain 引用记进宿主 retainedBy 的键；默认 'dsh-plugin-core'。 */
-retainSource = DEFAULT_RETAIN_SOURCE) {
+retainSource = DEFAULT_RETAIN_SOURCE, 
+/** 宿主 `uiSession` 服务：给了才会接「等待审批」那条链（缺席 = 不渲染审批卡）。 */
+uiSession) {
     const log = (level, msg, extra) => {
         if (level === 'warn')
             console.warn(`[dsh-plugin-core:session] ${msg}`, extra ?? '');
@@ -137,6 +141,9 @@ retainSource = DEFAULT_RETAIN_SOURCE) {
         target,
         session,
         inbox,
+        // 两类「等用户表态」的卡最后接：都是只读公开面，缺席不影响上面的预览主路。
+        pendingApproval: openPendingApproval(uiSession, id),
+        pendingQuestions: openPendingQuestions(projections),
         ...(loadImage === undefined ? {} : { loadImage }),
         dispose: releaseRef,
         loadOlder() {

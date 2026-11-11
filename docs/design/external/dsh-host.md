@@ -421,6 +421,39 @@
 用户消息与助手内联图片都改为真图，loader 缺席时才退回「[图片]」文本占位。
 未接：`tool.call.images`（`read_image` 工具卡内的图片区，官方 = `imageBody` + 槽 + `imageMeta` 路径/尺寸）。
 
+## 18. 两类「等用户表态」的卡：审批 + 选择题（2026-11-11 解包核实 `0.2.2-rc.1`）
+
+解包：`@deepseek-ai/dsh-client-ui-approval` / `dsh-client-ui-session` / `dsh-client-ui-chat` /
+`dsh-user-approval` / `dsh-user-questions`（全部 `0.2.2-rc.1`）。
+
+### 18.1 审批（等待审批卡）
+
+| 事实 | 证据 |
+|---|---|
+| 只有**在线**请求，客户端靠 `ctx.remote.$on('approval/request')` 收；宿主瀑布没人应答即落 `'unavailable'` | ui-approval `lib/client.js:475-477`；`dsh-user-approval` `lib/index.js:201` |
+| 审计事件**确实落会话日志**（`approval/asked` + `approval/decided`），但**没有投影出「未决」** —— 投影只有 `{ policy, turnOpen }` | `dsh-user-approval` `lib/index.js:155-171`（写日志）、`:52-70`（投影定义） |
+| 收不收得到取决于本客户端有没有该会话 scope（`scopeOf` 取不到就 `next()`） | ui-approval `:393-402`；`api-session-controller` `scope.js:36`、`service.js:415/472`（任何 `retain` 都物化带 tag 的 scope） |
+| 公开只读面 = `uiSession.sessionStatus`（`Map<sessionId,{running,pendingInteraction,completionUnread}>`），`pendingInteraction` 是 `PendingApproval` 本体；**官方 composer 读的就是它** | ui-session `lib/client.js:782-790/892-909/996-1007`；ui-conversation `lib/client.js:20484` |
+| 能作答的只有 `'allowed-once'` / `'rejected'`；「始终允许」属权限预设 | ui-approval `contract/slots.d.ts:62,93-97`；`lib/client.js:259-265` |
+| 命令文本不在 request 里：按 `callId` 找 `tool-call` 起始节点的 `JSON.parse(argsRaw).command` | ui-chat `lib/client.js:151-172` |
+| 卡片类名 = 自己的 CSS module（`ApprovalPanel.module.css`，`root/card/strip/body/headline/command/actionRow/reject`）；三个布局变量由**会话 body** 给（`--dsh-chat-content-width` / `--dsh-composer-side-clearance` / `--dsh-composer-text-max-height`） | ui-approval `lib/client.js:12-32`；ui-conversation `.body` / `.embeddedBody` |
+
+### 18.2 选择题卡（`ask_user_question`）
+
+| 事实 | 证据 |
+|---|---|
+| 宿主注册会话投影 `userQuestions`，视图 `{ active, settled }`；active 行 = `{ callId, questions:[{id,question,detail?,header?,options?:[{label,description?}],multiSelect?}], state:'open'\|'continued' }` | `dsh-user-questions` `lib/index.js:52-74` |
+| 投影是**公开只读面**，客户端入口与本仓已在用的 `inbox` 同一个（`session.projections.faceOf(key)`） | 同文件 `:268-295`；本仓 `src/adv/session/open-session-view.ts` 的 `faceOf('inbox')` |
+| 实时阻塞（`state:'open'`）走宿主瀑布 `user-questions/request`，作答者是官方题面板（**未随 npm 发布**，宿主外壳内），弹窗不该抢这条瀑布 | `dsh-user-questions` `lib/index.js:709`；ui-tool `contract/slots.d.ts:101-124`（`userQuestionPanels` 由外壳提供） |
+| 只有 `state:'continued'`（定时 / 超时后）能通过 remote `userQuestions/answer(agentId, callId, { answers })` 补答，答案以 user 消息 steer 进会话 | `dsh-user-questions` `typert.remote-client.d.ts:16-18`、`lib/index.js:560-600` |
+| 官方对「不可作答」的题卡呈现 = verdict + 问题清单（`AskQuestionCard` 的 unanswered 分支），本仓 `mirror/AskCard.ts` 已按它镜像 | ui-tool `lib/client.js:2341-2400` |
+
+处置（本仓）：`src/adv/session/pending-approval.ts` 读 `uiSession.sessionStatus`（**不** `$on` 抢瀑布，答走
+`pendingInteraction.answer()`）；`src/adv/session/pending-questions.ts` 读 `userQuestions` 投影第一组 active
+（**只渲染不提供作答**，`open` 态的作答只有官方面板那条路）；`mirror/ApprovalPanel.ts` 按官方 DOM/类名 1:1 画审批卡；
+`SessionViewModal` 在底栏栈里画这两张卡（官方位置 = 输入框接管 / 面板），有卡时关掉底栏分隔线（官方那里没有线）。
+`openSessionView` 第五参给 `uiSession`，不传 ⇒ 不画审批卡（预览保持纯只读）。
+
 ## 更新日志
 
 - 2026-11-08 23:34:50：按文档库规范建立版本元数据与统一目录索引

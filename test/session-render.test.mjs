@@ -258,3 +258,51 @@ test('read_image 卡面：错误 / 未结算 / 别的工具 / 缺 envelope / 缺
   assert.equal(imageCardFace('read_image', args, [content[0]], undefined, false, true), null)
   assert.equal(imageCardFace('read_image', JSON.stringify({}), content, undefined, false, true), null)
 })
+// ── 等待审批卡（官方 ui-approval ApprovalPanel 的弹窗等价物）──
+
+const { ApprovalPanelMirror, approvalCommand } = await import('../dist/adv/session/mirror/ApprovalPanel.js')
+
+test('审批卡：官方结构（data-approval-key / body 组 / 拒绝 + 允许一次）', () => {
+  const html = renderToStaticMarkup(h(ApprovalPanelMirror, {
+    approval: {
+      kind: 'approval', key: 'approval:7', toolName: 'bash', callId: 'c1',
+      answerable: true, answer: async () => {},
+    },
+    command: 'sh /root/x.sh --id 1',
+    t: (key) => key,
+  }))
+  assert.match(html, /data-approval-key="approval:7"/)
+  assert.match(html, /data-approval-scroll=""/)
+  assert.match(html, /role="group"/)
+  // 命令行 = 官方 approval.detail 槽的等价物
+  assert.match(html, /sh \/root\/x\.sh --id 1/)
+  // 无 reason ⇒ 官方 escalation 文案
+  assert.match(html, /approvalEscalation/)
+  assert.match(html, /<button[^>]*data-variant="outline"[^>]*>approvalReject<\/button>/)
+  assert.match(html, /<button[^>]*data-variant="primary"[^>]*>approvalAllowOnce<\/button>/)
+})
+
+test('审批卡：请求方本地化文案优先于 escalation', () => {
+  const html = renderToStaticMarkup(h(ApprovalPanelMirror, {
+    approval: {
+      kind: 'approval', key: 'approval:8', toolName: 'bash',
+      displayReason: { zh: '写入 .git 目录', en: 'Write to .git' },
+      answerable: true, answer: async () => {},
+    },
+    t: (key) => key,
+  }))
+  assert.match(html, /写入 \.git 目录|Write to \.git/)
+  assert.ok(!html.includes('approvalEscalation'))
+})
+
+test('approvalCommand：按 callId 取 tool-call 起始节点的 args.command', () => {
+  const nodes = new Map([
+    ['k1', { kind: 'tool-call', key: 'k1', anchorSeq: 1, data: { root: { callId: 'c2', phase: 'start', argsRaw: '{"command":"ls"}' } } }],
+    ['k2', { kind: 'tool-call', key: 'k2', anchorSeq: 2, data: { root: { callId: 'c1', phase: 'start', argsRaw: '{"command":"sh /root/x.sh"}' } } }],
+    ['k3', { kind: 'assistant-step', key: 'k3', anchorSeq: 3 }],
+  ])
+  const read = (key) => nodes.get(key)
+  assert.equal(approvalCommand(['k1', 'k2', 'k3'], read, 'c1'), 'sh /root/x.sh')
+  assert.equal(approvalCommand(['k1', 'k2', 'k3'], read, 'c9'), undefined)
+  assert.equal(approvalCommand(['k1', 'k2', 'k3'], read, undefined), undefined)
+})

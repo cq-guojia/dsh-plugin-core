@@ -18,7 +18,7 @@
  */
 import type { SessionViewTarget } from '../../../dist/adv/session/index.js'
 import { openSessionView } from '../../../dist/adv/session/index.js'
-import type { SessionsFace, UiConversationFace } from '../../../dist/adv/session/index.js'
+import type { SessionsFace, UiConversationFace, UiSessionFace } from '../../../dist/adv/session/index.js'
 
 // ── 本地结构化消费面（不引官方包类型；官方改契约时改这一处）──
 
@@ -131,6 +131,8 @@ export interface SessionHostContext {
 
 let sessionsService: SessionsServiceLike | null = null
 let uiConversationService: UiConversationLike | null = null
+/** 「等待审批」数据面（官方 uiSession.sessionStatus）；缺席 = 弹窗不画审批卡。 */
+let uiSessionService: UiSessionFace | null = null
 let uiWorkspaceService: UiWorkspaceLike | null = null
 
 /** retain source：写进宿主 retainedBy 的键（插件身份）。 */
@@ -144,6 +146,7 @@ export function openRealSessionView(sessionId: string): SessionViewTarget | null
     uiConversationService as unknown as UiConversationFace,
     sessionId,
     RETAIN_SOURCE,
+    uiSessionService ?? undefined,
   )
 }
 
@@ -180,6 +183,11 @@ export function connectRealSessions(ctx: SessionHostContext): void {
     const pull = (): void => { repullRows() }
     pull()
     list.subscribe(pull)
+  })
+  // 单独 inject：uiSession 缺席（老宿主）时只丢「等待审批」这条链，不影响会话列表与预览主路。
+  ctx.inject(['uiSession'], (sub: unknown) => {
+    const uiSession = (sub as Record<string, unknown>).uiSession
+    if (uiSession !== undefined && uiSession !== null) uiSessionService = uiSession as UiSessionFace
   })
   // 归档集合不在这里注入：核心 connectHost(ctx) 已订阅同一份官方 workspaces 快照，
   // 列表行与会话弹窗都读 workspaceList，避免双订阅 / 双真源。

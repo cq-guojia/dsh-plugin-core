@@ -33,6 +33,10 @@ import { MessageIconActionsMirror } from './mirror/MessageIconActions.js'
 import { AssistantMarkdown, AssistantStoppedBadge, CompactionItemMirror, ModelRetryItemMirror, TurnErrorItemMirror, TurnMaxTokensItemMirror, UserMessage, type CompactionFace, type RetryAttemptFace, type TurnErrorFace } from './mirror/MessageItem.js'
 import { ImageGalleryMirror } from './mirror/MessageImage.js'
 import { BashRowMirror } from './mirror/BashRow.js'
+import { ApprovalPanelMirror, approvalCommand } from './mirror/ApprovalPanel.js'
+import { AskQuestionCardView } from './mirror/AskCard.js'
+import type { PendingApprovalFace } from './pending-approval.js'
+import type { PendingQuestionSet } from './pending-questions.js'
 import { SkillRowMirror } from './mirror/SkillRow.js'
 import { ContextInjectionRowMirror, type ContextFace } from './mirror/ContextInjectionRow.js'
 import { ReasoningRowMirror } from './mirror/ReasoningRow.js'
@@ -60,6 +64,11 @@ const NOT_ARCHIVED = (): boolean => false
 
 /** SSR / 宿主未注册 inbox 投影时按能力缺席，不编造等待期消息。 */
 const NO_INBOX = (): unknown => undefined
+
+/** 两处「等用户表态」卡缺席时的稳定空值：不编造待审批 / 待回答。 */
+const NO_APPROVAL = (): PendingApprovalFace | undefined => undefined
+const NO_QUESTIONS = (): PendingQuestionSet | null => null
+const NO_CARD_SUBSCRIBE = (): (() => void) => () => {}
 
 /** 官方样式缺失告警只打一次（避免每次渲染刷屏）。 */
 let officialWarned = false
@@ -850,6 +859,33 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   const inboxGet = useMemo(() => (): unknown => view.inbox.getSnapshot(), [view])
   const inboxSnap = useSyncExternalStore(inboxSub, inboxGet, NO_INBOX)
 
+  // 「等待审批」+「选择题卡」：官方两处都在输入框位（composer takeover / 面板），弹窗等价位置 = 底栏栈顶部。
+  // 数据面见 pending-approval.ts / pending-questions.ts（都是宿主公开只读面，缺席即不画）。
+  const approvalFace = view.pendingApproval
+  const approvalSub = useMemo(
+    () => approvalFace === null
+      ? NO_CARD_SUBSCRIBE
+      : (onChange: () => void): (() => void) => approvalFace.subscribe(onChange),
+    [approvalFace],
+  )
+  const approvalGet = useMemo(
+    () => approvalFace === null ? NO_APPROVAL : (): PendingApprovalFace | undefined => approvalFace.getSnapshot(),
+    [approvalFace],
+  )
+  const pendingApproval = useSyncExternalStore(approvalSub, approvalGet, NO_APPROVAL)
+  const questionFace = view.pendingQuestions
+  const questionSub = useMemo(
+    () => questionFace === null
+      ? NO_CARD_SUBSCRIBE
+      : (onChange: () => void): (() => void) => questionFace.subscribe(onChange),
+    [questionFace],
+  )
+  const questionGet = useMemo(
+    () => questionFace === null ? NO_QUESTIONS : (): PendingQuestionSet | null => questionFace.getSnapshot(),
+    [questionFace],
+  )
+  const pendingQuestions = useSyncExternalStore(questionSub, questionGet, NO_QUESTIONS)
+
   // 折叠状态：turn → 已展开的 answerStep（官方 store 的 storedTurnProcessEntry，同语义）。
   const [openTurns, setOpenTurns] = useState<ReadonlyMap<number, number>>(() => new Map<number, number>())
   const onSetOpen = useCallback((turn: number, answerStep: number, open: boolean): void => {
@@ -1063,11 +1099,14 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
     }
     return best ?? undefined
   }, [turns])
-  // debug（临时）：诊断变化卡 / 交付卡 / 行内链接的数据链到底缺在哪一环
+  // debug（临时）：诊断变化卡 / 交付卡 / 行内链接 / 两张待办卡的数据链到底缺在哪一环
   const diagChatRef = useRef<unknown>(undefined)
+  const diagCardRef = useRef<unknown>(undefined)
   useEffect(() => {
-    if (diagChatRef.current === chat) return
+    // 待办卡也参与判定：卡出现 / 消失时再打一行（否则刷新后卡不在时看不到任何读数）。
+    if (diagChatRef.current === chat && diagCardRef.current === pendingApproval) return
     diagChatRef.current = chat
+    diagCardRef.current = pendingApproval
     const turnsMap = turns as ReadonlyMap<unknown, unknown> | undefined
     const face = turnsMap === undefined ? undefined : (turnsMap.get(lastTailTurn as never) ?? turnsMap.get(String(lastTailTurn)))
     const deliverables = face === undefined ? undefined : (turnDeliverablesValue(face, 'deliverables') as Record<string, unknown> | undefined)
@@ -1103,9 +1142,14 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
       onOpenFile: onOpenFile !== undefined,
       mentionCount: mentionPaths === undefined ? 'no-fileOpen' : mentionPaths.length,
       mentionSample: mentionPaths === undefined ? [] : mentionPaths.slice(0, 6),
+      // 两张待办卡的接线与当前值：刷新后卡不在时，用它一眼分清「没拿到服务」还是「快照确实空」。
+      approvalWired: view.pendingApproval !== null,
+      approvalNow: pendingApproval === undefined ? 'none' : pendingApproval.key,
+      questionsWired: view.pendingQuestions !== null,
+      questionsNow: pendingQuestions === null ? 'none' : pendingQuestions.callId,
     })
     console.log('[preview] turnsDetail', turnsDetail)
-  }, [chat, order, turns, lastTailTurn, lastTailChangesSeq, deliverFiles, onOpenFile, fileOpen, store])
+  }, [chat, order, turns, lastTailTurn, lastTailChangesSeq, deliverFiles, onOpenFile, fileOpen, store, view, pendingApproval, pendingQuestions])
   // 官方 TurnTailNodeView 的两个判定（操作行常显 / 分支可用）——按 order + 节点仓预计算。
   const tailFacts = useMemo(() => (keyed && store !== undefined
     ? buildTurnTailFacts({ order, store, lastTurn: lastTailTurn })
@@ -1247,6 +1291,29 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   // 外壳 = **核心 Modal**（size lg：min(1120px,100vw-32px) × calc(100%-80px)，兄弟项目大弹窗同值）；
   // 「继续对话」与确认框按钮一律**核心 Button**，不就地自绘（用户 2026-10-22 拍板）。
   // 会话中间部分 = mirror/ 官方 1:1 复刻（ChatViewFrame：官方类优先，缺失回退自绘）。
+  // 选择题卡（官方 ask_user_question 的待答面）：投影里 `state:'open'` 的实时阻塞由官方题面板作答，
+  // 弹窗不抢那条瀑布 ⇒ 只按官方「不可作答」的呈现画（verdict + 问题清单），不出按钮。
+  const questionRow = pendingQuestions === null
+    ? null
+    : h(AskQuestionCardView, {
+      card: {
+        kind: 'unanswered',
+        verdict: tt('askWaiting'),
+        questions: pendingQuestions.questions.map(question => ({ id: question.id, question: question.question })),
+      },
+    })
+  // 审批卡位置 = 官方「输入框接管」（`conversation.composer` 槽）的等价物：底栏栈顶、暂存输入框上方。
+  const approvalRow = pendingApproval === undefined
+    ? null
+    : h('div', { className: 'dshpc-sv-approval' },
+        h(ApprovalPanelMirror, {
+          approval: pendingApproval,
+          command: approvalCommand(order, key => store?.get(key), pendingApproval.callId),
+          t: tt,
+        }),
+      )
+  const hasCard = questionRow !== null || approvalRow !== null
+
   return h(Fragment, null,
     h(Modal, {
       size: 'lg',
@@ -1268,25 +1335,34 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
       headerActions: headActions,
       onClose,
       translate: tt,
-      // 底部暂存输入框走 footer（不随会话区滚动）：打字 → 确定 → onContinue 带话开分支跳官方视图。
-      footer: onContinue === undefined ? undefined : h('div', { className: 'dshpc-sv-composer' },
-        h('textarea', {
-          value: draft,
-          placeholder: tt('composerPlaceholder'),
-          disabled: sending,
-          onChange: (event: { target: { value: string } }) => { setDraft(event.target.value) },
-          onKeyDown: (event: { key: string; ctrlKey: boolean; metaKey: boolean; preventDefault(): void }) => {
-            if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); onSend() }
-          },
-        }),
-        h(Button, {
-          variant: 'primary',
-          size: 'sm',
-          disabled: sending || draft.trim() === '',
-          onClick: onSend,
-        }, sending ? tt('forkWorking') : tt('confirm')),
-        h('span', { className: 'dshpc-sv-composer-hint' }, '⌘/Ctrl + ↵'),
-        sendErr !== null ? h('div', { className: 'dshpc-sv-forkerr' }, sendErr) : null,
+      // 官方那两处卡片周围没有分隔线 ⇒ 有卡时关掉弹窗底栏的顶线（否则卡上方多一条）。
+      footerDivider: !hasCard,
+      // 底栏纵向栈：题卡 / 审批卡（官方输入框接管位）+ 暂存输入框，都不随会话区滚动。
+      footer: onContinue === undefined && !hasCard ? undefined : h('div', { className: 'dshpc-sv-foot' },
+        questionRow,
+        approvalRow,
+        // 暂存输入框：打字 → 确定 → onContinue 带话开分支跳官方视图。
+        // 有待审批时**让位**给审批卡：官方是 composer 接管（ui-approval lib/client.js:470-477 注册到
+        // `conversation.composer` 且不链到默认输入框）⇒ 卡下方不该再垫一个输入框。
+        onContinue === undefined || pendingApproval !== undefined ? null : h('div', { className: 'dshpc-sv-composer' },
+          h('textarea', {
+            value: draft,
+            placeholder: tt('composerPlaceholder'),
+            disabled: sending,
+            onChange: (event: { target: { value: string } }) => { setDraft(event.target.value) },
+            onKeyDown: (event: { key: string; ctrlKey: boolean; metaKey: boolean; preventDefault(): void }) => {
+              if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); onSend() }
+            },
+          }),
+          h(Button, {
+            variant: 'primary',
+            size: 'sm',
+            disabled: sending || draft.trim() === '',
+            onClick: onSend,
+          }, sending ? tt('forkWorking') : tt('confirm')),
+          h('span', { className: 'dshpc-sv-composer-hint' }, '⌘/Ctrl + ↵'),
+          sendErr !== null ? h('div', { className: 'dshpc-sv-forkerr' }, sendErr) : null,
+        ),
       ),
     },
       h('div', { className: 'dshpc-sv', ref: flowRef },
