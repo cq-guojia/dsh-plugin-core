@@ -35,10 +35,12 @@ export function Input(props) {
     const locked = useOverlayLocked();
     const off = disabled === true || locked;
     const [focused, setFocused] = useState(false);
-    // 搜索框的清空钮：只在「有焦点 + 有内容」时出现。原生 ::-webkit-search-cancel-button 由壳的 CSS 隐掉，
-    // 换成与 NumberInput 加减号同款的 plain IconButton（2026-10-28 用户：原生那个不好看）。
+    const [hovered, setHovered] = useState(false);
+    // 搜索框的清空钮：在「有焦点 或 鼠标悬停」且「有内容」时出现（悬停也显，免去先点一下聚焦才能清的麻烦）。
+    // 原生 ::-webkit-search-cancel-button 由壳的 CSS 隐掉，换成与 NumberInput 加减号同款的 plain IconButton
+    // （2026-10-28 用户：原生那个不好看）。
     const search = type === 'search';
-    const showClear = search && value !== '' && focused && !off;
+    const showClear = search && value !== '' && (focused || hovered) && !off;
     const input = h('input', {
         ref: props.inputRef,
         type: type ?? 'text',
@@ -58,7 +60,11 @@ export function Input(props) {
     const hasIcon = icon !== undefined && icon !== null;
     if (!hasIcon && !search)
         return withHint(input, props.hint);
-    return withHint(h('span', { className: `dshpc-iwrap dshpc-iwrap${sizeClass(size)}${showClear ? ' dshpc-iwrap--clear' : ''}` }, hasIcon ? h('span', { className: 'dshpc-iwrap__icon' }, icon) : null, input, 
+    return withHint(h('span', {
+        className: `dshpc-iwrap dshpc-iwrap${sizeClass(size)}${showClear ? ' dshpc-iwrap--clear' : ''}`,
+        onMouseEnter: () => { setHovered(true); },
+        onMouseLeave: () => { setHovered(false); },
+    }, hasIcon ? h('span', { className: 'dshpc-iwrap__icon' }, icon) : null, input, 
     // 只在 mousedown 上拦焦点：不拦的话 input 先 blur ⇒ 按钮被卸掉 ⇒ 随后的 click 落空。
     showClear
         ? h(IconButton, {

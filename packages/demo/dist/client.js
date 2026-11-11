@@ -8649,8 +8649,9 @@ function Input(props) {
   const locked = useOverlayLocked();
   const off = disabled === true || locked;
   const [focused, setFocused] = (0, import_react36.useState)(false);
+  const [hovered, setHovered] = (0, import_react36.useState)(false);
   const search = type3 === "search";
-  const showClear = search && value !== "" && focused && !off;
+  const showClear = search && value !== "" && (focused || hovered) && !off;
   const input = (0, import_react36.createElement)("input", {
     ref: props.inputRef,
     type: type3 ?? "text",
@@ -8678,7 +8679,15 @@ function Input(props) {
     return withHint(input, props.hint);
   return withHint((0, import_react36.createElement)(
     "span",
-    { className: `dshpc-iwrap dshpc-iwrap${sizeClass(size4)}${showClear ? " dshpc-iwrap--clear" : ""}` },
+    {
+      className: `dshpc-iwrap dshpc-iwrap${sizeClass(size4)}${showClear ? " dshpc-iwrap--clear" : ""}`,
+      onMouseEnter: () => {
+        setHovered(true);
+      },
+      onMouseLeave: () => {
+        setHovered(false);
+      }
+    },
     hasIcon ? (0, import_react36.createElement)("span", { className: "dshpc-iwrap__icon" }, icon2) : null,
     input,
     // 只在 mousedown 上拦焦点：不拦的话 input 先 blur ⇒ 按钮被卸掉 ⇒ 随后的 click 落空。
@@ -71490,9 +71499,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.22"}`],
-            [t3("buildDemo"), `v${"0.35.22"}`],
-            [t3("buildStamp"), "261111-135400-209"]
+            [t3("buildCore"), `v${"0.35.23"}`],
+            [t3("buildDemo"), `v${"0.35.23"}`],
+            [t3("buildStamp"), "261111-175054-582"]
           ].map(
             ([label, value]) => (0, import_react99.createElement)(
               "tr",
@@ -71808,9 +71817,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react101.createElement)("span", null, `core v${"0.35.22"}`),
-          (0, import_react101.createElement)("span", null, `demo v${"0.35.22"}`),
-          (0, import_react101.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261111-135400-209")
+          (0, import_react101.createElement)("span", null, `core v${"0.35.23"}`),
+          (0, import_react101.createElement)("span", null, `demo v${"0.35.23"}`),
+          (0, import_react101.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261111-175054-582")
         )
       )
     ),
