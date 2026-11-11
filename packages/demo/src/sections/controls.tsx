@@ -455,7 +455,7 @@ const [kw, setKw] = useState('')
 
 // hint 参数版：问号提示由组件自己挂，不用手动拼 FieldHint
 <Input value={text} onChange={setText} placeholder="请输入用户名" hint="用户名只能包含字母、数字与连字符。" />
-// 搜索框：type="search" ⇒ 聚焦且有内容时右侧才出清空钮（数字框加减号同款的 plain IconButton，原生那枚已隐掉）
+// 搜索框：type="search" ⇒ 有内容时，鼠标移上去或聚焦都会显示右侧清除钮（数字框加减号同款 plain IconButton，原生那枚已隐掉）
 // icon 是左侧图标槽（不吃点击，点在图标上照样聚焦）；图标尺寸按档取 fieldMetricsOf(size).icon
 <Input type="search" icon={<IconSearchOutlineRegular />} value={kw} onChange={setKw} placeholder="搜索" />
 // 校验失败态：描红
@@ -464,6 +464,13 @@ const [kw, setKw] = useState('')
 <NumberInput value={num} onChange={setNum} min={0} max={10} suffix="次" hint="超出范围会自动收回到 min / max。" />
 // 多行输入：问号置右下角
 <Textarea value={text} onChange={setText} placeholder="多行输入" hint="多行输入也支持 hint 参数。" />`
+
+// 搜索框清除钮：与上面 Input 家族里的搜索框同款，单独拎出来讲——有内容时，移上去或聚焦都会出 ×。
+const CODE_SEARCH_CLEAR = `const [kw, setKw] = useState('示例文本')
+
+// type="search" ⇒ 有内容时，鼠标移上去或聚焦都会显示尾部清除钮（×）
+<Input type="search" icon={<IconSearchOutlineRegular />} value={kw} onChange={setKw} placeholder="搜索" />
+// 移上去 / 聚焦 → 右侧 × 出现，点击即清空（不必先点输入框聚焦）`
 
 const CODE_INPUT_GROUP = `// 输入框 + 按钮组焊成一体；label 是前置标题（同格灰底），undoable 在最前面加撤销钮
 <InputGroup
@@ -585,6 +592,7 @@ export function InputPage(): ReturnType<typeof h> {
   const [iconSeg, setIconSeg] = useState('search')
   const [iconSeg2, setIconSeg2] = useState('all')
   const [kw, setKw] = useState('')
+  const [kwClear, setKwClear] = useState('示例文本')
   const [igValue, setIgValue] = useState('')
 
   return h(
@@ -609,7 +617,7 @@ export function InputPage(): ReturnType<typeof h> {
           'div',
           { style: { display: 'flex', alignItems: 'center', gap: '6px' } },
           h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px', flex: 'none' } }, '搜索'),
-          // 左侧图标槽（icon）+ 聚焦且有内容才出的清空钮（type="search"）
+          // 左侧图标槽（icon）+ 有内容时移上去或聚焦即出清除钮（type="search"）
           h(Input, { type: 'search', icon: h(IconSearchOutlineRegular, null), value: kw, onChange: setKw, placeholder: '搜索' }),
         ),
         h(Input, { value: 'bad value', onChange: () => {}, error: true, placeholder: '校验失败态' }),
@@ -617,6 +625,18 @@ export function InputPage(): ReturnType<typeof h> {
         //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
         h(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: '次', style: { alignSelf: 'flex-start' }, hint: '超出范围会自动收回到 min / max。' }),
         h(Textarea, { value: text, onChange: setText, placeholder: '多行输入', hint: '多行输入也支持 hint 参数。' }),
+      ),
+    ),
+
+    // 搜索框清除钮：有内容时，鼠标移上去或聚焦都会显示尾部 ×，点一下即清空（不必先聚焦）
+    h(
+      Example,
+      { title: t('demoSearchClear'), hint: t('demoSearchClearHint'), code: CODE_SEARCH_CLEAR },
+      h(
+        'div',
+        { style: { display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '380px' } },
+        h(Input, { type: 'search', icon: h(IconSearchOutlineRegular, null), value: kwClear, onChange: setKwClear, placeholder: '搜索' }),
+        h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px' } }, '上面已预填内容：鼠标移到框上，尾部 × 即出现，可直接清除。'),
       ),
     ),
 

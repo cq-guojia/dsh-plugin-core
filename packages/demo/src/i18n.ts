@@ -218,6 +218,8 @@ export type DemoMessageKey =
   | 'themeLight'
   | 'themeDark'
   | 'demoInputFamily'
+  | 'demoSearchClear'
+  | 'demoSearchClearHint'
   | 'demoTokenPalette'
   | 'demoStyleInject'
   | 'designInjectNote'
@@ -425,6 +427,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     demoInputFamily: 'Input 家族',
     inputHint: '四种输入件，都支持 error 与行尾问号提示',
+    demoSearchClear: '搜索框清除钮',
+    demoSearchClearHint: 'type="search" 且有内容时，鼠标移上去或聚焦都会显示尾部 ×，点一下即清空——不必先点输入框聚焦。',
     inputGroupTitle: 'InputGroup（组合输入框）',
     inputGroupHint: '输入框 + 后置按钮组焊成一体',
     switchTip: '官方 Switch（启用语义，不是勾选）+ Checkbox + Segmented',
@@ -739,6 +743,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
     demoInputFamily: 'Input family',
     inputHint: 'Four field types, all with error and hint',
+    demoSearchClear: 'Search clear button',
+    demoSearchClearHint: 'A type="search" field with content shows a trailing × on hover or focus; click it to clear — no need to focus the field first.',
     inputGroupTitle: 'InputGroup (input with actions)',
     inputGroupHint: 'Input plus trailing actions as one unit',
     switchTip: 'Official Switch (enable semantics, not a tick) + Checkbox + Segmented',

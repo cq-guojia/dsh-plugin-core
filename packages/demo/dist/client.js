@@ -62363,6 +62363,8 @@ var DICT2 = {
     btnHintHint: "\u72EC\u7ACB\u7EC4\u4EF6\uFF0C\u653E\u54EA\u90FD\u884C\uFF0C\u60AC\u505C\u6216\u805A\u7126\u6D6E\u51FA",
     demoInputFamily: "Input \u5BB6\u65CF",
     inputHint: "\u56DB\u79CD\u8F93\u5165\u4EF6\uFF0C\u90FD\u652F\u6301 error \u4E0E\u884C\u5C3E\u95EE\u53F7\u63D0\u793A",
+    demoSearchClear: "\u641C\u7D22\u6846\u6E05\u9664\u94AE",
+    demoSearchClearHint: 'type="search" \u4E14\u6709\u5185\u5BB9\u65F6\uFF0C\u9F20\u6807\u79FB\u4E0A\u53BB\u6216\u805A\u7126\u90FD\u4F1A\u663E\u793A\u5C3E\u90E8 \xD7\uFF0C\u70B9\u4E00\u4E0B\u5373\u6E05\u7A7A\u2014\u2014\u4E0D\u5FC5\u5148\u70B9\u8F93\u5165\u6846\u805A\u7126\u3002',
     inputGroupTitle: "InputGroup\uFF08\u7EC4\u5408\u8F93\u5165\u6846\uFF09",
     inputGroupHint: "\u8F93\u5165\u6846 + \u540E\u7F6E\u6309\u94AE\u7EC4\u710A\u6210\u4E00\u4F53",
     switchTip: "\u5B98\u65B9 Switch\uFF08\u542F\u7528\u8BED\u4E49\uFF0C\u4E0D\u662F\u52FE\u9009\uFF09+ Checkbox + Segmented",
@@ -62631,6 +62633,8 @@ var DICT2 = {
     btnHintHint: "Standalone; hover or focus to reveal",
     demoInputFamily: "Input family",
     inputHint: "Four field types, all with error and hint",
+    demoSearchClear: "Search clear button",
+    demoSearchClearHint: 'A type="search" field with content shows a trailing \xD7 on hover or focus; click it to clear \u2014 no need to focus the field first.',
     inputGroupTitle: "InputGroup (input with actions)",
     inputGroupHint: "Input plus trailing actions as one unit",
     switchTip: "Official Switch (enable semantics, not a tick) + Checkbox + Segmented",
@@ -68079,7 +68083,7 @@ const [kw, setKw] = useState('')
 
 // hint \u53C2\u6570\u7248\uFF1A\u95EE\u53F7\u63D0\u793A\u7531\u7EC4\u4EF6\u81EA\u5DF1\u6302\uFF0C\u4E0D\u7528\u624B\u52A8\u62FC FieldHint
 <Input value={text} onChange={setText} placeholder="\u8BF7\u8F93\u5165\u7528\u6237\u540D" hint="\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" />
-// \u641C\u7D22\u6846\uFF1Atype="search" \u21D2 \u805A\u7126\u4E14\u6709\u5185\u5BB9\u65F6\u53F3\u4FA7\u624D\u51FA\u6E05\u7A7A\u94AE\uFF08\u6570\u5B57\u6846\u52A0\u51CF\u53F7\u540C\u6B3E\u7684 plain IconButton\uFF0C\u539F\u751F\u90A3\u679A\u5DF2\u9690\u6389\uFF09
+// \u641C\u7D22\u6846\uFF1Atype="search" \u21D2 \u6709\u5185\u5BB9\u65F6\uFF0C\u9F20\u6807\u79FB\u4E0A\u53BB\u6216\u805A\u7126\u90FD\u4F1A\u663E\u793A\u53F3\u4FA7\u6E05\u9664\u94AE\uFF08\u6570\u5B57\u6846\u52A0\u51CF\u53F7\u540C\u6B3E plain IconButton\uFF0C\u539F\u751F\u90A3\u679A\u5DF2\u9690\u6389\uFF09
 // icon \u662F\u5DE6\u4FA7\u56FE\u6807\u69FD\uFF08\u4E0D\u5403\u70B9\u51FB\uFF0C\u70B9\u5728\u56FE\u6807\u4E0A\u7167\u6837\u805A\u7126\uFF09\uFF1B\u56FE\u6807\u5C3A\u5BF8\u6309\u6863\u53D6 fieldMetricsOf(size).icon
 <Input type="search" icon={<IconSearchOutlineRegular />} value={kw} onChange={setKw} placeholder="\u641C\u7D22" />
 // \u6821\u9A8C\u5931\u8D25\u6001\uFF1A\u63CF\u7EA2
@@ -68088,6 +68092,11 @@ const [kw, setKw] = useState('')
 <NumberInput value={num} onChange={setNum} min={0} max={10} suffix="\u6B21" hint="\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" />
 // \u591A\u884C\u8F93\u5165\uFF1A\u95EE\u53F7\u7F6E\u53F3\u4E0B\u89D2
 <Textarea value={text} onChange={setText} placeholder="\u591A\u884C\u8F93\u5165" hint="\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" />`;
+var CODE_SEARCH_CLEAR = `const [kw, setKw] = useState('\u793A\u4F8B\u6587\u672C')
+
+// type="search" \u21D2 \u6709\u5185\u5BB9\u65F6\uFF0C\u9F20\u6807\u79FB\u4E0A\u53BB\u6216\u805A\u7126\u90FD\u4F1A\u663E\u793A\u5C3E\u90E8\u6E05\u9664\u94AE\uFF08\xD7\uFF09
+<Input type="search" icon={<IconSearchOutlineRegular />} value={kw} onChange={setKw} placeholder="\u641C\u7D22" />
+// \u79FB\u4E0A\u53BB / \u805A\u7126 \u2192 \u53F3\u4FA7 \xD7 \u51FA\u73B0\uFF0C\u70B9\u51FB\u5373\u6E05\u7A7A\uFF08\u4E0D\u5FC5\u5148\u70B9\u8F93\u5165\u6846\u805A\u7126\uFF09`;
 var CODE_INPUT_GROUP = `// \u8F93\u5165\u6846 + \u6309\u94AE\u7EC4\u710A\u6210\u4E00\u4F53\uFF1Blabel \u662F\u524D\u7F6E\u6807\u9898\uFF08\u540C\u683C\u7070\u5E95\uFF09\uFF0Cundoable \u5728\u6700\u524D\u9762\u52A0\u64A4\u9500\u94AE
 <InputGroup
   label="\u4EFB\u52A1\u540D"
@@ -68193,6 +68202,7 @@ function InputPage() {
   const [iconSeg, setIconSeg] = (0, import_react93.useState)("search");
   const [iconSeg2, setIconSeg2] = (0, import_react93.useState)("all");
   const [kw, setKw] = (0, import_react93.useState)("");
+  const [kwClear, setKwClear] = (0, import_react93.useState)("\u793A\u4F8B\u6587\u672C");
   const [igValue, setIgValue] = (0, import_react93.useState)("");
   return (0, import_react93.createElement)(
     "div",
@@ -68215,7 +68225,7 @@ function InputPage() {
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
           (0, import_react93.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u641C\u7D22"),
-          // 左侧图标槽（icon）+ 聚焦且有内容才出的清空钮（type="search"）
+          // 左侧图标槽（icon）+ 有内容时移上去或聚焦即出清除钮（type="search"）
           (0, import_react93.createElement)(Input, { type: "search", icon: (0, import_react93.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, null), value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
         ),
         (0, import_react93.createElement)(Input, { value: "bad value", onChange: () => {
@@ -68224,6 +68234,17 @@ function InputPage() {
         //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
         (0, import_react93.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
         (0, import_react93.createElement)(Textarea, { value: text2, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
+      )
+    ),
+    // 搜索框清除钮：有内容时，鼠标移上去或聚焦都会显示尾部 ×，点一下即清空（不必先聚焦）
+    (0, import_react93.createElement)(
+      Example,
+      { title: t3("demoSearchClear"), hint: t3("demoSearchClearHint"), code: CODE_SEARCH_CLEAR },
+      (0, import_react93.createElement)(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
+        (0, import_react93.createElement)(Input, { type: "search", icon: (0, import_react93.createElement)(import_dsh_client_ui_primitives2.IconSearchOutlineRegular, null), value: kwClear, onChange: setKwClear, placeholder: "\u641C\u7D22" }),
+        (0, import_react93.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px" } }, "\u4E0A\u9762\u5DF2\u9884\u586B\u5185\u5BB9\uFF1A\u9F20\u6807\u79FB\u5230\u6846\u4E0A\uFF0C\u5C3E\u90E8 \xD7 \u5373\u51FA\u73B0\uFF0C\u53EF\u76F4\u63A5\u6E05\u9664\u3002")
       )
     ),
     // 组合输入框：输入框 + 按钮组焊成一体（前置标题 / 撤销 / 图标按钮 / 自定义高度）
@@ -71499,9 +71520,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.23"}`],
-            [t3("buildDemo"), `v${"0.35.23"}`],
-            [t3("buildStamp"), "261111-175054-582"]
+            [t3("buildCore"), `v${"0.35.24"}`],
+            [t3("buildDemo"), `v${"0.35.24"}`],
+            [t3("buildStamp"), "261111-195446-599"]
           ].map(
             ([label, value]) => (0, import_react99.createElement)(
               "tr",
@@ -71817,9 +71838,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react101.createElement)("span", null, `core v${"0.35.23"}`),
-          (0, import_react101.createElement)("span", null, `demo v${"0.35.23"}`),
-          (0, import_react101.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261111-175054-582")
+          (0, import_react101.createElement)("span", null, `core v${"0.35.24"}`),
+          (0, import_react101.createElement)("span", null, `demo v${"0.35.24"}`),
+          (0, import_react101.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261111-195446-599")
         )
       )
     ),
