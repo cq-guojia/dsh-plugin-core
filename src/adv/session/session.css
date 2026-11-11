@@ -71,4 +71,5 @@
    缺了官方 padding / max-width 整条声明失效。用户口径「和官方一模一样」= 卡片占满、不额外缩进，
    故 content-width 给 100%（官方 920 上限会把 1120 宽的弹窗夹窄），clearance 取 -16px 抵消官方
    calc(var(--dsh-composer-side-clearance) + 16px) 那 16px —— 弹窗的留白由 Modal footer 自己出。 */
-.dshpc-sv-approval{--dsh-chat-content-width:100%;--dsh-composer-side-clearance:-16px;--dsh-composer-text-max-height:336px;flex:none;display:flex;flex-direction:column;}
+/* 卡片下方只剩官方自己的 12px：弹窗底栏另有 18px 内距，叠加会比官方厚 18px，用负底边距抵消掉。 */
+.dshpc-sv-approval{--dsh-chat-content-width:100%;--dsh-composer-side-clearance:-16px;--dsh-composer-text-max-height:336px;flex:none;display:flex;flex-direction:column;margin-bottom:-18px;}
