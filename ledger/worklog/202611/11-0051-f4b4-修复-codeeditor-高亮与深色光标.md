@@ -1,7 +1,7 @@
 # 20261111-0051-f4b4-修复-codeeditor-高亮与深色光标: 修复 CodeEditor 高亮与深色光标
 
 - **Tags**: CodeEditor, 语法高亮, 深色光标, 缺陷修复
-- **Status**: doing · 2026-11-11 01:34:56 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-11 01:49:55 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-11 00:51:46 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -24,12 +24,13 @@
 - ~~补 Markdown 配色规则~~ **已作废**：用户判定为打补丁方向，改走官方方案后整张手抄表删除
 - ~~按规范做法重做：核心退出语法配色，`theme` 交官方 dark / light~~ 已完成
 - ~~重写自检 + build / test / typecheck / codelint~~ 已完成（394 项全绿）
+- ~~发版前规范复核~~ 已完成（无残留自造配色，官方方案完整，无需再改代码）
+- ~~按用户明确指令 bump 两包 + commit + push + 打 `v0.35.21` tag 发版~~ 本轮执行
 - 宿主真机验收：暗色官方 one-dark 高亮、亮色官方兜底观感、深色光标可见、只读 `CodeViewer` 无回归
-- 本轮用户只说改核心，未授权 commit / push / bump / tag，做完留工作区待验收
 
 ## Next
 
-等用户在宿主真机装最新 `dist/` 后验收：暗色下 `-` / `**` / `#` 与 `# 标题` 呈现官方 one-dark 配色、深色光标浅色可见、编辑器仍是透明底不吃官方面板背景；亮色确认官方 `defaultHighlightStyle` 兜底的观感可接受；只读 `CodeViewer` 同步验收。通过后再按用户明确指令提交或发版。
+等用户在宿主真机装 v0.35.21 后验收：暗色下 `-` / `**` / `#` 与 `# 标题` 呈现官方 one-dark 配色、深色光标浅色可见、编辑器仍是透明底不吃官方面板背景；亮色确认官方 `defaultHighlightStyle` 兜底的观感可接受；只读 `CodeViewer` 同步验收。真机无回归即可结案。
 
 ## Process
 
@@ -45,12 +46,13 @@
 - 规范做法（本轮落地）：`src/ui/infra/code-mirror-surface.ts` 的 `theme` 从 `'none'` 改为 `dark ? 'dark' : 'light'`；`node_modules/@uiw/react-codemirror/src/getDefaultExtensions.ts:44-50` 据此挂官方 `oneDark`（官方主题 + `oneDarkHighlightStyle`）或官方亮色表面，亮色高亮由 `basicSetup` 的 `defaultHighlightStyle` 兜底。`src/ui/display/code-viewer-theme.ts` 删掉 `ONE_DARK` / `ONE_LIGHT` / `HIGHLIGHTS_DARK` / `HIGHLIGHTS_LIGHT` / `HighlightRule` 共 70+ 行，`codeMirrorTheme(dark)` 只返回 `cmSurfaceTheme` + `cmSurfaceTint(dark)` 两层表面，颜色吃 `--dshpc-*`。零新增依赖（`theme` 走已声明的 `@uiw/react-codemirror`），`package.json` 未改。
 - 覆盖顺序实测（Node）：`EditorState.facet(EditorView.styleModule)` 共 11 个模块，官方 oneDark 主题在 index 2、核心 `cmSurfaceTheme` 在 4、`cmSurfaceTint` 在 5 ⇒ 核心后注入，`backgroundColor: transparent` 能盖过官方 `#282c34`，光标 / 选区同理；顺序由 `useCodeMirror.ts:98` 的 `getExtensions.concat(extensions)` 保证。`getDefaultExtensions({theme:'dark'})` 实测 `darkTheme=true`，`theme:'light'` 实测 `darkTheme=false`；两套下 heading / processingInstruction / strong / comment 都拿到官方高亮 class。
 - 自检重写：`test/code-viewer-theme.test.mjs` 改为断言「核心不含 HighlightStyle」「明暗两套官方 highlighter 生效」「官方规则带颜色」「核心表面层排在官方之后」「光标兜底明暗不同」；`test/code-editor.test.mjs` 链路用例改为断言 `theme` 不再是 `'none'`、光标色与语言包仍下发、核心扩展里查不到自有 highlighter。`pnpm test` 394 项全绿，`pnpm run typecheck` / `koc-codelint` 通过，`pnpm run build` + `pnpm run build:demo` 产物已同步。
+- 发版前规范复核（用户 2026-11-11「再确认一下，确认是不是规范没有问题了」）：`src/` 全量搜 `HighlightStyle|syntaxHighlighting|HIGHLIGHTS_|ONE_DARK|ONE_LIGHT|theme:'none'`，只剩 `code-mirror-surface.ts:89` 与 `code-viewer-theme.ts:8-9` 的说明注释，无任何自造配色代码；`codeMirrorTheme(dark)` 只返回 `cmSurfaceTheme` + `cmSurfaceTint(dark)`（`code-viewer-theme.ts:82-84`），`code-mirror-surface.ts:91` 为 `theme: dark ? 'dark' : 'light'`。独立集成验证（Node 真实 `getDefaultExtensions` + `EditorState`）：LIGHT `allTagsHighlighted=true, coreIdx=3, coreCovers=true, coreCursor=true`；DARK `officialIdx=2, coreIdx=4, coreCovers=true, coreCursor=true`，即官方 highlighter 全覆盖、核心表面层后注入能盖面板背景、光标色仍下发。README / docs 无「手抄配色表 / theme none」过时描述。结论：**规范无问题，无需再改代码**。
 
 ## Conclusion
 
 按用户 2026-11-11 拍板重做完毕：核心**彻底退出语法配色**，明暗主题与高亮全部交给 `@uiw/react-codemirror` 的官方实现（暗色 oneDark、亮色 `defaultHighlightStyle` 兜底），零新增依赖；核心只保留表面层 —— 透明底、字体、行号槽、选区、自绘光标，全部吃 `--dshpc-*` token，光标的自定义经用户认可保留。上一轮「在手抄表里补 4 条 tag 规则」的补丁已整体删除，没有留在标准里。
 
-代价（已确认）：官方 `oneDarkHighlightStyle` 对 `tags.strong` 只有 `fontWeight:bold`、不单独着色，亮色 `defaultHighlightStyle` 也较朴素；这是官方标准观感，不再自行补色。改动落 `src/ui/display/code-viewer-theme.ts`、`src/ui/infra/code-mirror-surface.ts` 与两份测试，`dist/` / `packages/demo/dist/client.js` 已重建，未提交、未 bump、未发版。
+代价（已确认）：官方 `oneDarkHighlightStyle` 对 `tags.strong` 只有 `fontWeight:bold`、不单独着色，亮色 `defaultHighlightStyle` 也较朴素；这是官方标准观感，不再自行补色。改动落 `src/ui/display/code-viewer-theme.ts`、`src/ui/infra/code-mirror-surface.ts` 与两份测试，`dist/` / `packages/demo/dist/client.js` 已重建；复核通过后按用户明确指令 bump 两包至 `0.35.21` 并打 `v0.35.21` tag 发版，结果记入执行记录。
 
 留坑：`**` 之间「不加粗」的浏览器侧离线复现仍缺（本机无 Chrome，`agent-browser install` 属装组件未获授权）；官方观感在所有语言、只读与可编辑两端都需在宿主真机整体验收。
 
@@ -63,3 +65,4 @@
 - 2026-11-11 01:00:51 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 完成修复并验证：code-viewer-theme.ts 的 cmSurfaceTint 新增 .cm-cursor borderLeftColor、HIGHLIGHTS 补 tags.processingInstruction/strong/heading 配色与字重修正；test/code-viewer-theme.test.mjs 7 项 + code-editor.test.mjs 1 项，pnpm test 394 项全绿、typecheck/codelint 通过，dist 已重建，留宿主真机验收
 - 2026-11-11 01:04:59 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 补充落实边界：agent-browser 缺 Chrome 二进制、install 属装组件未获授权故未执行；esbuild 已在 /tmp 打出真实 CodeMirror 页面但无浏览器可跑，临时目录已清理；真 DOM 字重与光标色仍留宿主真机验收
 - 2026-11-11 01:34:56 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 按用户拍板重做为官方方案：code-mirror-surface.ts 的 theme 改 dark/light 交给官方主题，code-viewer-theme.ts 删掉 ONE_*/HIGHLIGHTS_* 手抄表只留表面层，零新增依赖；实测核心 StyleModule 排在官方之后可覆盖面板背景，自检改为断言官方 highlighter 与覆盖顺序，pnpm test 394 项全绿、typecheck/codelint 通过，Worklog 已更新，留宿主真机验收
+- 2026-11-11 01:49:55 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版前规范复核通过：src/ 已无 HighlightStyle/HIGHLIGHTS_ 自造配色残留，code-mirror-surface.ts:91 为 theme: dark ? 'dark' : 'light'，Node 实测官方 highlighter 明暗全覆盖且核心表面层后注入（LIGHT coreIdx=3 / DARK officialIdx=2→coreIdx=4）；结论规范无问题、无需再改代码，按用户明确指令 bump 两包至 0.35.21 走 v0.35.21 发版
