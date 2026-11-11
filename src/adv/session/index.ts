@@ -37,11 +37,20 @@ export {
   type UiSessionFace,
 } from './pending-approval.js'
 export {
+  openLiveQuestion,
   openPendingQuestions,
+  pendingQuestionsFromNodes,
+  questionPanelWiring,
+  type PendingQuestionAnswerItem,
+  type PendingQuestionCardState,
+  type PendingQuestionFace,
   type PendingQuestionItem,
   type PendingQuestionOption,
   type PendingQuestionSet,
+  type QuestionPanelWiring,
+  type UserQuestionPanelsFace,
 } from './pending-questions.js'
+export { QuestionPanel, type QuestionPanelProps } from './mirror/QuestionPanel.js'
 export type {
   AssistantBlockLike,
   ChatNodeFace,

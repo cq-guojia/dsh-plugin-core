@@ -74,3 +74,8 @@
 /* 卡片四周留白对齐：弹窗底栏内距 18px = 卡片左右留白；下方 = 18 - |margin-bottom| + 官方 root 的 12px，
    取 -12px 时下方同为 18px（与左右等距）。想更贴底部就把 -12px 调大（下限 -18px = 官方那 12px）。 */
 .dshpc-sv-approval{--dsh-chat-content-width:100%;--dsh-composer-side-clearance:-16px;--dsh-composer-text-max-height:336px;flex:none;display:flex;flex-direction:column;margin-bottom:-12px;}
+
+/* 题目面板外壳（官方 ui-user-questions 的 QuestionComposer）：同上，类名全挂官方 module，
+   这里只补会话 body 才有的布局变量。官方 .frame 的 padding 是 6px calc(clearance+16px) 10px ⇒
+   clearance 取 -16px 后左右归零、上下各 6/10px；下方再收回 10px，与左右留白同宽（18px）。 */
+.dshpc-sv-question{--dsh-chat-content-width:100%;--dsh-composer-side-clearance:-16px;flex:none;display:flex;flex-direction:column;margin-bottom:-10px;}

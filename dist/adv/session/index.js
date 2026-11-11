@@ -26,5 +26,6 @@ export { ChangedFileDiff } from './mirror/ChangedFileDiff.js';
 export { openSessionReview } from './open-review.js';
 export { DEFAULT_RETAIN_SOURCE, openSessionView, } from './open-session-view.js';
 export { openPendingApproval, } from './pending-approval.js';
-export { openPendingQuestions, } from './pending-questions.js';
+export { openLiveQuestion, openPendingQuestions, pendingQuestionsFromNodes, questionPanelWiring, } from './pending-questions.js';
+export { QuestionPanel } from './mirror/QuestionPanel.js';
 //# sourceMappingURL=index.js.map

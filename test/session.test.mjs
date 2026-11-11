@@ -24,7 +24,14 @@ import {
 import { durationText, formatRunDuration, formatMessageClock, formatTokens, formatExactCount, formatCacheHitPercent } from '../dist/adv/session/mirror/message-chrome.js'
 import { observedRpcIds, visiblePendingInputs, pendingFiles, waitingUserRows } from '../dist/adv/session/pending-inputs.js'
 import { openPendingApproval } from '../dist/adv/session/pending-approval.js'
-import { openPendingQuestions } from '../dist/adv/session/pending-questions.js'
+import {
+  openLiveQuestion,
+  openPendingQuestions,
+  parseRecommendedLabel,
+  pendingQuestionsFromNodes,
+  questionPanelWiring,
+  recommendedOptions,
+} from '../dist/adv/session/pending-questions.js'
 import { setLocale, t } from '../dist/utils/index.js'
 
 // ── official-classes：官方 CSS module 类名运行时发现 ──
@@ -531,4 +538,141 @@ test('openPendingQuestions：取投影里第一组 active，形状不对整体�
 test('openPendingQuestions：宿主没注册该投影时返回 null', () => {
   assert.equal(openPendingQuestions(undefined), null)
   assert.equal(openPendingQuestions({ faceOf: () => undefined }), null)
+})
+
+test('pendingQuestionsFromNodes：未结算的 ask_user_question 调用 → 题卡（含选项）', () => {
+  const args = JSON.stringify({
+    questions: [{
+      id: 'q1',
+      question: '数据库用哪个？',
+      header: '选择数据库',
+      options: [{ label: 'PostgreSQL', description: '推荐' }, { label: 'MySQL' }],
+      multi_select: false,
+    }],
+  })
+  const nodes = new Map([
+    ['a', { kind: 'tool-call', key: 'a', anchorSeq: 1, data: { root: { name: 'ask_user_question', phase: 'start', callId: 'c1', argsRaw: args } } }],
+    ['b', { kind: 'tool-call', key: 'b', anchorSeq: 2, data: { root: { name: 'bash', phase: 'start', callId: 'c2', argsRaw: '{}' } } }],
+  ])
+  const got = pendingQuestionsFromNodes(['a', 'b'], (key) => nodes.get(key))
+  assert.equal(got.callId, 'c1')
+  assert.equal(got.state, 'open')
+  assert.deepEqual(got.questions[0].options, [{ label: 'PostgreSQL', description: '推荐' }, { label: 'MySQL' }])
+  // 结算后（同 callId 有 end 节点）不再算待答
+  nodes.set('c', { kind: 'tool-call', key: 'c', anchorSeq: 3, data: { root: { callId: 'c1', phase: 'end' } } })
+  assert.equal(pendingQuestionsFromNodes(['a', 'b', 'c'], (key) => nodes.get(key)), null)
+  // 非 ask 工具不算
+  assert.equal(pendingQuestionsFromNodes(['b'], (key) => nodes.get(key)), null)
+})
+
+// ── 题卡活体（官方 PendingQuestion 载体）：弹窗唯一的作答入口 ──
+
+const liveQuestionFixture = (overrides = {}) => ({
+  kind: 'question',
+  key: 'question:s1:c1',
+  questions: [{ id: 'q1', question: '数据库用哪个？', options: [{ label: 'PostgreSQL', description: '推荐' }] }],
+  dismissal: 'hide',
+  snapshot: () => ({ state: 'open' }),
+  subscribe: () => () => {},
+  answer: async () => {},
+  ...overrides,
+})
+
+test('openLiveQuestion：只认 kind=question 的活体载体，会话隔离、答完即空', () => {
+  const carrier = liveQuestionFixture()
+  let current = new Map([['s1', { pendingInteraction: carrier }]])
+  const listeners = new Set()
+  const face = openLiveQuestion({
+    sessionStatus: {
+      getSnapshot: () => current,
+      subscribe: (fn) => { listeners.add(fn); return () => { listeners.delete(fn) } },
+    },
+  }, 's1')
+  assert.equal(face.getSnapshot(), carrier, '拿到的就是官方载体本体（作答/倒计时都在它身上）')
+  assert.equal(openLiveQuestion({ sessionStatus: { getSnapshot: () => current, subscribe: () => () => {} } }, 's2').getSnapshot(), undefined)
+  // 审批域 / 计划审阅域都不是题卡
+  current = new Map([['s1', { pendingInteraction: { kind: 'approval', key: 'a1', toolName: 'bash', answer: () => {} } }]])
+  for (const fn of listeners) fn()
+  assert.equal(face.getSnapshot(), undefined)
+  // 已答 / 撤销 ⇒ 注册表清空，弹窗自行收面板
+  current = new Map()
+  for (const fn of listeners) fn()
+  assert.equal(face.getSnapshot(), undefined)
+})
+
+test('openLiveQuestion：uiSession 缺席 / 无快照面 / 载体不能作答时一律当没有', () => {
+  assert.equal(openLiveQuestion(undefined, 's1'), null)
+  assert.equal(openLiveQuestion({}, 's1'), null)
+  assert.equal(openLiveQuestion({ sessionStatus: { getSnapshot: () => new Map() } }, 's1'), null)
+  const broken = [
+    liveQuestionFixture({ answer: undefined }),
+    liveQuestionFixture({ snapshot: undefined }),
+    liveQuestionFixture({ questions: [] }),
+    liveQuestionFixture({ kind: 'plan-review' }),
+    null,
+  ]
+  for (const carrier of broken) {
+    const face = openLiveQuestion({
+      sessionStatus: { getSnapshot: () => new Map([['s1', { pendingInteraction: carrier }]]), subscribe: () => () => {} },
+    }, 's1')
+    assert.equal(face.getSnapshot(), undefined)
+  }
+})
+
+test('parseRecommendedLabel / recommendedOptions：推荐尾缀拆展示、作答值仍是原标签', () => {
+  assert.deepEqual(parseRecommendedLabel('PostgreSQL(推荐)'), { label: 'PostgreSQL', recommended: true })
+  assert.deepEqual(parseRecommendedLabel('MySQL（recommended）'), { label: 'MySQL', recommended: true })
+  assert.deepEqual(parseRecommendedLabel('SQLite'), { label: 'SQLite', recommended: false })
+  // 单选只认「第一项标了推荐」，多选全部推荐项
+  assert.deepEqual(recommendedOptions({ id: 'q', question: 'q', options: [{ label: 'A(推荐)' }, { label: 'B(推荐)' }] }), ['A(推荐)'])
+  assert.deepEqual(recommendedOptions({ id: 'q', question: 'q', multiSelect: true, options: [{ label: 'A(推荐)' }, { label: 'B(推荐)' }] }), ['A(推荐)', 'B(推荐)'])
+  assert.deepEqual(recommendedOptions({ id: 'q', question: 'q', options: [{ label: 'A' }] }), [])
+})
+
+test('questionPanelWiring：作答与关闭钮解耦 —— cancel 型照样能答、也有关闭钮', () => {
+  assert.deepEqual(questionPanelWiring(undefined), {}, '无载体 = 只读，一个入参都不给')
+  const answered = []
+  const hide = liveQuestionFixture({ dismissal: 'hide', dismiss: () => {}, answer: async (batch) => { answered.push(batch) } })
+  const hideWiring = questionPanelWiring(hide)
+  assert.equal(typeof hideWiring.answer, 'function')
+  assert.equal(typeof hideWiring.dismiss, 'function')
+  assert.equal(typeof hideWiring.readCard, 'function')
+  assert.equal(typeof hideWiring.subscribeCard, 'function')
+  const cancelWiring = questionPanelWiring(liveQuestionFixture({ dismissal: 'cancel', dismiss: () => Promise.resolve() }))
+  assert.equal(typeof cancelWiring.answer, 'function', 'cancel 型（无 callId）也必须有作答通道')
+  assert.equal(cancelWiring.dismissal, 'cancel')
+  assert.equal(typeof cancelWiring.dismiss, 'function', '官方两种 dismissal 都给关闭钮，语义靠 dismissal 区分')
+  return hideWiring.answer([{ id: 'q1', selected: ['PostgreSQL'] }]).then(() => {
+    assert.deepEqual(answered, [{ answers: [{ id: 'q1', selected: ['PostgreSQL'] }] }], '作答透传给官方载体')
+  })
+})
+
+test('openSessionView：题卡活体面只在给了 uiSession 时接线', () => {
+  const host = fakeHost()
+  assert.equal(openSessionView(host.sessions, host.uiConversation, 's1').pendingQuestion, null)
+  const carrier = liveQuestionFixture()
+  const withSession = openSessionView(host.sessions, host.uiConversation, 's1', undefined, {
+    sessionStatus: {
+      getSnapshot: () => new Map([['s1', { pendingInteraction: carrier }]]),
+      subscribe: () => () => {},
+    },
+  })
+  assert.equal(withSession.pendingQuestion.getSnapshot(), carrier)
+})
+
+test('openSessionView：revealPendingQuestion 只在给了 userQuestionPanels 时接线', () => {
+  const host = fakeHost()
+  const calls = []
+  const view = openSessionView(host.sessions, host.uiConversation, 's1', undefined, undefined, {
+    reveal: (sessionId, callId) => { calls.push([sessionId, callId]); return true },
+  })
+  assert.equal(view.revealPendingQuestion('c1'), true)
+  assert.deepEqual(calls, [['s1', 'c1']], '按本会话 id + callId 调官方 reveal')
+  // 官方抛错 ⇒ false，不把异常带进预览
+  const broken = openSessionView(host.sessions, host.uiConversation, 's1', undefined, undefined, {
+    reveal: () => { throw new Error('boom') },
+  })
+  assert.equal(broken.revealPendingQuestion('c1'), false)
+  // 不给服务 ⇒ null（题卡只读，但预览照常）
+  assert.equal(openSessionView(host.sessions, host.uiConversation, 's1').revealPendingQuestion, null)
 })

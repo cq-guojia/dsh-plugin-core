@@ -41,6 +41,11 @@ const CSS_PKG_PREFIXES = [
   // 「等待审批」卡（mirror/ApprovalPanel.ts）；tagId =
   // `@deepseek-ai/dsh-client-ui-approval/ApprovalPanel.module.css`（ui-approval 0.2.2-rc.1 lib/client.js:12）。
   '@deepseek-ai/dsh-client-ui-approval/',
+  // 待答题目面板（mirror/QuestionPanel.ts）；tagId =
+  // `@deepseek-ai/dsh-client-ui-user-questions/QuestionComposer.module.css`。
+  // 该包是**宿主外壳包、未发 npm**（源码在公开仓库 packages/client/ui-user-questions/），
+  // 但样式同样是 data-plugin-css 注入 ⇒ 类名照旧运行时发现，不写死哈希。
+  '@deepseek-ai/dsh-client-ui-user-questions/',
 ]
 
 /** 语义名 → 真实（带哈希）类名。 */

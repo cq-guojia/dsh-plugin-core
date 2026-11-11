@@ -18,7 +18,7 @@
  */
 import type { SessionViewTarget } from '../../../dist/adv/session/index.js'
 import { openSessionView } from '../../../dist/adv/session/index.js'
-import type { SessionsFace, UiConversationFace, UiSessionFace } from '../../../dist/adv/session/index.js'
+import type { SessionsFace, UiConversationFace, UiSessionFace, UserQuestionPanelsFace } from '../../../dist/adv/session/index.js'
 
 // ── 本地结构化消费面（不引官方包类型；官方改契约时改这一处）──
 
@@ -133,6 +133,8 @@ let sessionsService: SessionsServiceLike | null = null
 let uiConversationService: UiConversationLike | null = null
 /** 「等待审批」数据面（官方 uiSession.sessionStatus）；缺席 = 弹窗不画审批卡。 */
 let uiSessionService: UiSessionFace | null = null
+/** 官方题面板的「放回座位」入口（userQuestionPanels.reveal）；缺席 = 题卡只读。 */
+let questionPanelsService: UserQuestionPanelsFace | null = null
 let uiWorkspaceService: UiWorkspaceLike | null = null
 
 /** retain source：写进宿主 retainedBy 的键（插件身份）。 */
@@ -147,6 +149,7 @@ export function openRealSessionView(sessionId: string): SessionViewTarget | null
     sessionId,
     RETAIN_SOURCE,
     uiSessionService ?? undefined,
+    questionPanelsService ?? undefined,
   )
 }
 
@@ -188,6 +191,13 @@ export function connectRealSessions(ctx: SessionHostContext): void {
   ctx.inject(['uiSession'], (sub: unknown) => {
     const uiSession = (sub as Record<string, unknown>).uiSession
     if (uiSession !== undefined && uiSession !== null) uiSessionService = uiSession as UiSessionFace
+  })
+  // 单独 inject：题面板的「放回座位」入口（外壳包提供），缺席时题卡只读，不影响其它。
+  ctx.inject(['userQuestionPanels'], (sub: unknown) => {
+    const panels = (sub as Record<string, unknown>).userQuestionPanels
+    if (panels !== undefined && panels !== null && typeof (panels as { reveal?: unknown }).reveal === 'function') {
+      questionPanelsService = panels as UserQuestionPanelsFace
+    }
   })
   // 归档集合不在这里注入：核心 connectHost(ctx) 已订阅同一份官方 workspaces 快照，
   // 列表行与会话弹窗都读 workspaceList，避免双订阅 / 双真源。

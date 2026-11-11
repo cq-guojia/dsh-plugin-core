@@ -20,7 +20,7 @@
 //    - 冷读 RPC `$stream('session/follow')`：宿主 remote 只有 $stream/invoke，invoke 报
 //      「无活动通道」⇒ 归档会话一律走上面的 retain 主路，不搞冷读。
 import { openPendingApproval } from './pending-approval.js';
-import { openPendingQuestions } from './pending-questions.js';
+import { openLiveQuestion, openPendingQuestions } from './pending-questions.js';
 /** 默认 retain source（写进宿主 retainedBy；调用方可覆盖成自己的插件名）。 */
 export const DEFAULT_RETAIN_SOURCE = 'dsh-plugin-core';
 /** 投影面缺席时的稳定空快照：能力缺席按 undefined 呈现，不编造数据。 */
@@ -34,7 +34,13 @@ export function openSessionView(sessions, uiConversation, id,
 /** retain 引用记进宿主 retainedBy 的键；默认 'dsh-plugin-core'。 */
 retainSource = DEFAULT_RETAIN_SOURCE, 
 /** 宿主 `uiSession` 服务：给了才会接「等待审批」那条链（缺席 = 不渲染审批卡）。 */
-uiSession) {
+uiSession, 
+/**
+ * 宿主 `userQuestionPanels` 服务（外壳包 `ui-user-questions` 提供）。
+ * 只用一个动作：`reveal(sessionId, callId)` —— 官方题面板被收起后，把那张卡重新放回 composer，
+ * 顺便让它重新出现在 `sessionStatus.pendingInteraction` 上（于是预览里的面板就能作答）。
+ */
+questionPanels) {
     const log = (level, msg, extra) => {
         if (level === 'warn')
             console.warn(`[dsh-plugin-core:session] ${msg}`, extra ?? '');
@@ -137,13 +143,35 @@ uiSession) {
     const loadImage = imageUrl === undefined
         ? undefined
         : Object.assign((attachment) => imageUrl.call(uiConversation, id, attachment), { peek: (attachment) => peekImageUrl?.call(uiConversation, id, attachment) });
+    // 两类「等用户表态」的卡最后接：都是只读公开面，缺席不影响上面的预览主路。
+    const pendingApproval = openPendingApproval(uiSession, id);
+    const pendingQuestion = openLiveQuestion(uiSession, id);
+    const pendingQuestions = openPendingQuestions(projections);
+    // 官方题面板被收起后只是「离座」，卡本身还在外壳里（waterfall 也没断）；`reveal` 是官方给的唯一回去的路。
+    const revealPendingQuestion = questionPanels === undefined
+        ? null
+        : (callId) => {
+            try {
+                return questionPanels.reveal(id, callId) === true;
+            }
+            catch (err) {
+                log('warn', `userQuestionPanels.reveal(${id}, ${callId}) 抛错`, err);
+                return false;
+            }
+        };
+    if (pendingQuestions === null) {
+        log('warn', projections === undefined
+            ? `题卡未接线：session.projections 不存在（会话 ${id}）`
+            : `题卡未接线：projections 存在但 faceOf('userQuestions') 不可用（会话 ${id}）`);
+    }
     return {
         target,
         session,
         inbox,
-        // 两类「等用户表态」的卡最后接：都是只读公开面，缺席不影响上面的预览主路。
-        pendingApproval: openPendingApproval(uiSession, id),
-        pendingQuestions: openPendingQuestions(projections),
+        pendingApproval,
+        pendingQuestion,
+        pendingQuestions,
+        revealPendingQuestion,
         ...(loadImage === undefined ? {} : { loadImage }),
         dispose: releaseRef,
         loadOlder() {

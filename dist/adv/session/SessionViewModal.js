@@ -21,7 +21,8 @@ import { AssistantMarkdown, AssistantStoppedBadge, CompactionItemMirror, ModelRe
 import { ImageGalleryMirror } from './mirror/MessageImage.js';
 import { BashRowMirror } from './mirror/BashRow.js';
 import { ApprovalPanelMirror, approvalCommand } from './mirror/ApprovalPanel.js';
-import { AskQuestionCardView } from './mirror/AskCard.js';
+import { pendingQuestionsFromNodes, questionPanelWiring, } from './pending-questions.js';
+import { QuestionPanel } from './mirror/QuestionPanel.js';
 import { SkillRowMirror } from './mirror/SkillRow.js';
 import { ContextInjectionRowMirror } from './mirror/ContextInjectionRow.js';
 import { ReasoningRowMirror } from './mirror/ReasoningRow.js';
@@ -49,9 +50,12 @@ const NO_INBOX = () => undefined;
 /** 两处「等用户表态」卡缺席时的稳定空值：不编造待审批 / 待回答。 */
 const NO_APPROVAL = () => undefined;
 const NO_QUESTIONS = () => null;
+const NO_LIVE_QUESTION = () => undefined;
 const NO_CARD_SUBSCRIBE = () => () => { };
 /** 官方样式缺失告警只打一次（避免每次渲染刷屏）。 */
 let officialWarned = false;
+/** 题面板「只能看不能点」的原因只报一次（否则每次渲染刷屏）。 */
+let questionReadOnlyWarned = false;
 // ─────────────────────────── 纯函数：内容块 → 可读文本 / 文件 ───────────────────────────
 /** JSON 安全序列化（循环引用 / 特殊值不抛）。 */
 function safeJson(value) {
@@ -796,6 +800,15 @@ export function SessionViewModal(props) {
         : (onChange) => questionFace.subscribe(onChange), [questionFace]);
     const questionGet = useMemo(() => questionFace === null ? NO_QUESTIONS : () => questionFace.getSnapshot(), [questionFace]);
     const pendingQuestions = useSyncExternalStore(questionSub, questionGet, NO_QUESTIONS);
+    // 题卡的**活体**（官方 PendingQuestion）：有它才有作答通道与倒计时；缺席时下面退回只读投影。
+    const liveQuestionFace = view.pendingQuestion;
+    const liveSub = useMemo(() => liveQuestionFace === null
+        ? NO_CARD_SUBSCRIBE
+        : (onChange) => liveQuestionFace.subscribe(onChange), [liveQuestionFace]);
+    const liveGet = useMemo(() => liveQuestionFace === null
+        ? NO_LIVE_QUESTION
+        : () => liveQuestionFace.getSnapshot(), [liveQuestionFace]);
+    const liveQuestion = useSyncExternalStore(liveSub, liveGet, NO_LIVE_QUESTION);
     // 折叠状态：turn → 已展开的 answerStep（官方 store 的 storedTurnProcessEntry，同语义）。
     const [openTurns, setOpenTurns] = useState(() => new Map());
     const onSetOpen = useCallback((turn, answerStep, open) => {
@@ -1217,17 +1230,56 @@ export function SessionViewModal(props) {
     // 外壳 = **核心 Modal**（size lg：min(1120px,100vw-32px) × calc(100%-80px)，兄弟项目大弹窗同值）；
     // 「继续对话」与确认框按钮一律**核心 Button**，不就地自绘（用户 2026-10-22 拍板）。
     // 会话中间部分 = mirror/ 官方 1:1 复刻（ChatViewFrame：官方类优先，缺失回退自绘）。
-    // 选择题卡（官方 ask_user_question 的待答面）：投影里 `state:'open'` 的实时阻塞由官方题面板作答，
-    // 弹窗不抢那条瀑布 ⇒ 只按官方「不可作答」的呈现画（verdict + 问题清单），不出按钮。
-    const questionRow = pendingQuestions === null
+    // 待答题目面板（官方 `conversation.composer` 上的 QuestionComposer）：读**活体**载体
+    // （`uiSession.sessionStatus.pendingInteraction`，kind='question'）⇒ 与官方同一份题、同一条作答路径。
+    // 活体缺席（宿主没装题面板外壳包 / 载体已撤）时退回只读来源（投影 → chat 快照里未结算的 ask 调用），
+    // 仍按官方面板形态画（题 + 选项照出），只是不可点、没有底栏动作。
+    const pendingQuestionsView = useMemo(() => pendingQuestions ?? pendingQuestionsFromNodes(order, key => store?.get(key)), [pendingQuestions, order, store]);
+    const questionItems = liveQuestion !== undefined ? liveQuestion.questions : pendingQuestionsView === null ? null : pendingQuestionsView.questions;
+    // 有题但没有活体载体 ⇒ 让官方把那张卡放回 composer 座位（官方给的唯一回去的路，收起只是离座、
+    // waterfall 没断）。放回成功后 `pendingInteraction` 会推上来，面板自己就变成可作答。
+    // 每个 callId 只放回一次：用户自己点关闭后再放回来 = 那个钮等于没用。
+    const revealPendingQuestion = view.revealPendingQuestion;
+    const questionCallId = pendingQuestionsView?.callId;
+    const questionState = pendingQuestionsView?.state;
+    const revealedQuestionRef = useRef(null);
+    const dismissedQuestionRef = useRef(null);
+    useEffect(() => {
+        if (liveQuestion !== undefined || questionCallId === undefined)
+            return;
+        if (dismissedQuestionRef.current === questionCallId || revealedQuestionRef.current === questionCallId)
+            return;
+        revealedQuestionRef.current = questionCallId;
+        if (revealPendingQuestion?.(questionCallId) === true || questionReadOnlyWarned)
+            return;
+        questionReadOnlyWarned = true;
+        console.info(`[dsh-plugin-core:session] 题面板只读（无活体载体）：`
+            + `preview=${pendingQuestions === null ? 'chat 快照' : 'userQuestions 投影'}，state=${questionState ?? '—'}；`
+            + '官方那边这张卡已经不在（refresh / 后台委托 / 宿主动过），任何客户端都没有可作答通道');
+    }, [liveQuestion, revealPendingQuestion, questionCallId, pendingQuestions, questionState]);
+    const questionWiring = liveQuestion === undefined ? null : questionPanelWiring(liveQuestion);
+    // 用户在弹窗里关掉面板 ⇒ 面板整块消失（官方那边也是从 composer 上撤走），不退回只读、也不自动再放回来。
+    const questionDismissed = liveQuestion === undefined
+        && questionCallId !== undefined
+        && dismissedQuestionRef.current === questionCallId;
+    const questionRow = questionItems === null || questionDismissed
         ? null
-        : h(AskQuestionCardView, {
-            card: {
-                kind: 'unanswered',
-                verdict: tt('askWaiting'),
-                questions: pendingQuestions.questions.map(question => ({ id: question.id, question: question.question })),
-            },
-        });
+        : h('div', { className: 'dshpc-sv-question' }, h(QuestionPanel, {
+            panelKey: liveQuestion !== undefined ? liveQuestion.key : questionCallId,
+            questions: questionItems,
+            // 活体：态现读（倒计时会自己跳）；只读兜底：静态快照。
+            ...(questionWiring ?? { card: { state: questionState ?? 'open' } }),
+            ...(questionWiring?.dismiss === undefined || questionCallId === undefined
+                ? {}
+                : {
+                    // 关之前先记账：关掉之后 effect 不能再 reveal 回来。
+                    dismiss: () => {
+                        dismissedQuestionRef.current = questionCallId;
+                        return questionWiring.dismiss?.();
+                    },
+                }),
+            t: tt,
+        }));
     // 审批卡位置 = 官方「输入框接管」（`conversation.composer` 槽）的等价物：底栏栈顶、暂存输入框上方。
     const approvalRow = pendingApproval === undefined
         ? null

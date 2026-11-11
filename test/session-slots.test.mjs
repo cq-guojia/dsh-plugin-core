@@ -31,8 +31,19 @@ const noop = () => {}
 const snapshot = (value) => ({ getSnapshot: () => value, subscribe: () => noop })
 
 /** 假数据链：只要 SnapshotFace 三角色 + loadOlder / dispose（见 open-session-view.ts:36）。 */
-function fakeView(chat, session = {}) {
-  return { target: snapshot(chat), session: snapshot(session), inbox: snapshot(undefined), loadOlder: noop, dispose: noop }
+function fakeView(chat, session = {}, extra = {}) {
+  return {
+    target: snapshot(chat),
+    session: snapshot(session),
+    inbox: snapshot(undefined),
+    pendingApproval: snapshot(undefined),
+    pendingQuestion: snapshot(undefined),
+    pendingQuestions: snapshot(null),
+    revealPendingQuestion: null,
+    loadOlder: noop,
+    dispose: noop,
+    ...extra,
+  }
 }
 
 const USER_NODE = {
@@ -172,3 +183,5 @@ test('末尾没有回复（order 最后不是 turn-tail）时底端槽回落到�
   assert.equal(html.split('底端汇总').length, 2)
   assert.doesNotMatch(html, /data-turn-tail=/)
 })
+
+

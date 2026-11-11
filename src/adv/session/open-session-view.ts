@@ -32,7 +32,7 @@ import type {
   UiConversationFace,
 } from './faces.js'
 import { openPendingApproval, type PendingApprovalFace, type UiSessionFace } from './pending-approval.js'
-import { openPendingQuestions, type PendingQuestionSet } from './pending-questions.js'
+import { openLiveQuestion, openPendingQuestions, type PendingQuestionFace, type PendingQuestionSet, type UserQuestionPanelsFace } from './pending-questions.js'
 
 /** 弹窗数据源：已解析的 target 与向前翻页句柄；解析失败给 null。 */
 export interface SessionViewTarget {
@@ -53,10 +53,21 @@ export interface SessionViewTarget {
    */
   readonly pendingApproval: SnapshotFace<PendingApprovalFace | undefined> | null
   /**
-   * 「选择题卡」（官方 `userQuestions` 投影里的第一组待答问题）。
-   * null = 宿主没注册该投影 ⇒ 不画题卡；有值但 `state === 'open'` 时只渲染不提供作答。
+   * 待答题卡的**活体**（`uiSession.sessionStatus.pendingInteraction`，kind = 'question'）。
+   * 有值时题面板可作答（`answer()` 是官方面板同一条路）；null / 无值 ⇒ 退回下面的只读投影。
+   */
+  readonly pendingQuestion: SnapshotFace<PendingQuestionFace | undefined> | null
+  /**
+   * 「选择题卡」的只读兜底（官方 `userQuestions` 投影里的第一组待答问题）。
+   * null = 宿主没注册该投影；只在活体缺席时用于按官方面板形态只读渲染（有选项、不可点）。
    */
   readonly pendingQuestions: SnapshotFace<PendingQuestionSet | null> | null
+  /**
+   * 把官方题面板放回 composer（官方 `userQuestionPanels.reveal`）：题卡被收起后，载体会从
+   * `pendingInteraction` 上消失，调它一次就能回来，预览里的面板随之可作答。
+   * null = 调用方没给 `userQuestionPanels` 服务。
+   */
+  readonly revealPendingQuestion: ((callId: string) => boolean) | null
   /** 释放 sessions.retain 引用（弹窗关闭时必调；否则会话 scope 永不回收）。 */
   dispose(): void
 }
@@ -80,6 +91,12 @@ export function openSessionView(
   retainSource: string = DEFAULT_RETAIN_SOURCE,
   /** 宿主 `uiSession` 服务：给了才会接「等待审批」那条链（缺席 = 不渲染审批卡）。 */
   uiSession?: UiSessionFace,
+  /**
+   * 宿主 `userQuestionPanels` 服务（外壳包 `ui-user-questions` 提供）。
+   * 只用一个动作：`reveal(sessionId, callId)` —— 官方题面板被收起后，把那张卡重新放回 composer，
+   * 顺便让它重新出现在 `sessionStatus.pendingInteraction` 上（于是预览里的面板就能作答）。
+   */
+  questionPanels?: UserQuestionPanelsFace,
 ): SessionViewTarget | null {
   const log = (level: 'warn' | 'info', msg: string, extra?: unknown): void => {
     if (level === 'warn') console.warn(`[dsh-plugin-core:session] ${msg}`, extra ?? '')
@@ -168,13 +185,34 @@ export function openSessionView(
         (attachment: ImageAttachmentRefLike) => imageUrl.call(uiConversation, id, attachment),
         { peek: (attachment: ImageAttachmentRefLike) => peekImageUrl?.call(uiConversation, id, attachment) },
       )
+  // 两类「等用户表态」的卡最后接：都是只读公开面，缺席不影响上面的预览主路。
+  const pendingApproval = openPendingApproval(uiSession, id)
+  const pendingQuestion = openLiveQuestion(uiSession, id)
+  const pendingQuestions = openPendingQuestions(projections)
+  // 官方题面板被收起后只是「离座」，卡本身还在外壳里（waterfall 也没断）；`reveal` 是官方给的唯一回去的路。
+  const revealPendingQuestion: SessionViewTarget['revealPendingQuestion'] = questionPanels === undefined
+    ? null
+    : (callId: string): boolean => {
+        try {
+          return questionPanels.reveal(id, callId) === true
+        } catch (err) {
+          log('warn', `userQuestionPanels.reveal(${id}, ${callId}) 抛错`, err)
+          return false
+        }
+      }
+  if (pendingQuestions === null) {
+    log('warn', projections === undefined
+      ? `题卡未接线：session.projections 不存在（会话 ${id}）`
+      : `题卡未接线：projections 存在但 faceOf('userQuestions') 不可用（会话 ${id}）`)
+  }
   return {
     target,
     session,
     inbox,
-    // 两类「等用户表态」的卡最后接：都是只读公开面，缺席不影响上面的预览主路。
-    pendingApproval: openPendingApproval(uiSession, id),
-    pendingQuestions: openPendingQuestions(projections),
+    pendingApproval,
+    pendingQuestion,
+    pendingQuestions,
+    revealPendingQuestion,
     ...(loadImage === undefined ? {} : { loadImage }),
     dispose: releaseRef,
     loadOlder(): void {

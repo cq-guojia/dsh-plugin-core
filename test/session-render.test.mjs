@@ -295,6 +295,90 @@ test('审批卡：请求方本地化文案优先于 escalation', () => {
   assert.ok(!html.includes('approvalEscalation'))
 })
 
+// ── 待答题目面板（官方 ui-user-questions QuestionComposer 的弹窗等价物）──
+
+const { QuestionPanel } = await import('../dist/adv/session/mirror/QuestionPanel.js')
+
+const QUESTION_PANEL_CASE = {
+  panelKey: 'question:s1:c1',
+  questions: [
+    {
+      id: 'q1',
+      question: '数据库用哪个？',
+      header: '选择数据库',
+      options: [{ label: 'PostgreSQL(推荐)', description: '生产环境默认' }, { label: 'MySQL' }],
+    },
+  ],
+}
+
+test('题目面板：官方结构（题干 + 选项行 + 序号 + 推荐徽标 + 跳过/提交）', () => {
+  const html = renderToStaticMarkup(h(QuestionPanel, {
+    ...QUESTION_PANEL_CASE,
+    answer: async () => {},
+    t: (key) => key,
+  }))
+  assert.match(html, /data-question-key="question:s1:c1"/)
+  assert.match(html, /data-question-scroll=""/)
+  assert.match(html, /选择数据库/)
+  assert.match(html, /数据库用哪个？/)
+  // 选项：一题一行，单选用 radio + 序号，标签去掉「(推荐)」尾缀、徽标单独出
+  assert.equal(html.match(/data-option-row=""/g).length, 2)
+  assert.match(html, /role="radiogroup"/)
+  assert.match(html, /role="radio"/)
+  assert.match(html, /PostgreSQL</)
+  assert.match(html, /askPanelRecommended/)
+  assert.ok(!html.includes('PostgreSQL(推荐)<'), '展示标签必须剥掉推荐尾缀')
+  assert.match(html, /data-option-description=""/)
+  assert.match(html, /生产环境默认/)
+  // 底栏：分页 + 跳过 + 提交（最后一题）
+  assert.match(html, /1 \/ 1/)
+  assert.match(html, /askPanelSkip/)
+  assert.match(html, /askPanelSubmit/)
+})
+
+test('题目面板：多选是 checkbox 组；只读（无作答通道）时没有底栏动作', () => {
+  const multi = renderToStaticMarkup(h(QuestionPanel, {
+    questions: [{ id: 'q1', question: '装哪些插件？', multiSelect: true, options: [{ label: 'A' }, { label: 'B' }] }],
+    answer: async () => {},
+    t: (key) => key,
+  }))
+  assert.match(multi, /role="group"/)
+  assert.match(multi, /role="checkbox"/)
+  assert.match(multi, /askPanelSkip/, '有作答通道就有跳过/提交')
+  const readOnly = renderToStaticMarkup(h(QuestionPanel, {
+    ...QUESTION_PANEL_CASE,
+    t: (key) => key,
+  }))
+  // 只读也要把题与选项照出来（用户口径：不能只剩一行字）
+  assert.equal(readOnly.match(/data-option-row=""/g).length, 2)
+  assert.match(readOnly, /disabled=""/, '选项不可点')
+  assert.ok(!readOnly.includes('askPanelSkip'))
+  assert.ok(!readOnly.includes('askPanelSubmit'))
+})
+
+test('题目面板：关闭钮两种语义都在（hide=收起 / cancel=放弃整组），只读时不出', () => {
+  const hide = renderToStaticMarkup(h(QuestionPanel, {
+    ...QUESTION_PANEL_CASE, answer: async () => {}, dismiss: () => {}, dismissal: 'hide', t: (key) => key,
+  }))
+  assert.match(hide, /aria-label="askPanelClose"/)
+  const cancel = renderToStaticMarkup(h(QuestionPanel, {
+    ...QUESTION_PANEL_CASE, answer: async () => {}, dismiss: () => {}, dismissal: 'cancel', t: (key) => key,
+  }))
+  assert.match(cancel, /aria-label="askPanelCancel"/)
+  const readOnly = renderToStaticMarkup(h(QuestionPanel, { ...QUESTION_PANEL_CASE, t: (key) => key }))
+  assert.ok(!readOnly.includes('askPanelClose') && !readOnly.includes('askPanelCancel'), '没有 dismiss 通道就不出关闭钮')
+})
+
+test('题目面板：continued 态显示官方「已继续工作，仍可回答」', () => {
+  const html = renderToStaticMarkup(h(QuestionPanel, {
+    ...QUESTION_PANEL_CASE,
+    card: { state: 'continued' },
+    answer: async () => {},
+    t: (key) => key,
+  }))
+  assert.match(html, /askPanelContinued/)
+})
+
 test('approvalCommand：按 callId 取 tool-call 起始节点的 args.command', () => {
   const nodes = new Map([
     ['k1', { kind: 'tool-call', key: 'k1', anchorSeq: 1, data: { root: { callId: 'c2', phase: 'start', argsRaw: '{"command":"ls"}' } } }],

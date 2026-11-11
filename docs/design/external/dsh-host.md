@@ -443,16 +443,26 @@
 | 事实 | 证据 |
 |---|---|
 | 宿主注册会话投影 `userQuestions`，视图 `{ active, settled }`；active 行 = `{ callId, questions:[{id,question,detail?,header?,options?:[{label,description?}],multiSelect?}], state:'open'\|'continued' }` | `dsh-user-questions` `lib/index.js:52-74` |
-| 投影是**公开只读面**，客户端入口与本仓已在用的 `inbox` 同一个（`session.projections.faceOf(key)`） | 同文件 `:268-295`；本仓 `src/adv/session/open-session-view.ts` 的 `faceOf('inbox')` |
-| 实时阻塞（`state:'open'`）走宿主瀑布 `user-questions/request`，作答者是官方题面板（**未随 npm 发布**，宿主外壳内），弹窗不该抢这条瀑布 | `dsh-user-questions` `lib/index.js:709`；ui-tool `contract/slots.d.ts:101-124`（`userQuestionPanels` 由外壳提供） |
-| 只有 `state:'continued'`（定时 / 超时后）能通过 remote `userQuestions/answer(agentId, callId, { answers })` 补答，答案以 user 消息 steer 进会话 | `dsh-user-questions` `typert.remote-client.d.ts:16-18`、`lib/index.js:560-600` |
-| 官方对「不可作答」的题卡呈现 = verdict + 问题清单（`AskQuestionCard` 的 unanswered 分支），本仓 `mirror/AskCard.ts` 已按它镜像 | ui-tool `lib/client.js:2341-2400` |
+| 投影是**公开只读面**，客户端入口与本仓已在用的 `inbox` 同一个（`session.projections.faceOf(key)`），**没有作答通道** | 同文件 `:268-295` |
+| 实时阻塞（`state:'open'`）走宿主瀑布 `user-questions/request`；作答者是宿主外壳包 `@deepseek-ai/dsh-client-ui-user-questions` 里的题面板（**未发 npm**） | `dsh-user-questions` `lib/index.js:709`；ui-tool `contract/slots.d.ts:101-124`（`userQuestionPanels` 由外壳提供） |
+| `state:'continued'`（定时 / 超时后）还能通过 remote `userQuestions/answer(agentId, callId, { answers })` 补答，答案以 user 消息 steer 进会话 | `dsh-user-questions` `typert.remote-client.d.ts:16-18`、`lib/index.js:560-600` |
+| 外壳包源码在公开仓库（`deepseek-ai/deepseek-harness` tag `dsh-v0.2.2-rc.1`）：面板 = `packages/client/ui-user-questions/src/client/QuestionComposer.tsx` + 同目录 `QuestionComposer.module.css` | GitHub raw，2026-11-11 拉取核对 |
+| **题卡也是 pending-interaction 域**：外壳 `apply()` 里 `ctx.uiSession.registerPendingInteraction<PendingQuestion>(…)`（计划审阅权重 2、普通题 1）⇒ 活体就在 `uiSession.sessionStatus.pendingInteraction` 上，`kind='question'` | 同包 `src/client/index.ts:371-374` |
+| 载体 `PendingQuestion` 自带 `questions` / `snapshot()`（state / waitState / countdown / channel）/ `answer({answers})`（内部按 waterfall 或 rpc 择一）/ `dismiss()`；`dismissal='hide'`（有 callId，收起不结束请求）或 `'cancel'`（无 callId，关闭即取消） | 同包 `src/client/contract/slots.ts:226-555` |
+| 面板 DOM/类名 = `QuestionComposer.module.css` 的 `frame/card/header/body/options/optionRow/option/number/checkbox/optionCopy/optionLine/optionLabel/badge/description/customRow/field/footer/pager/progress/footerActions/feedback/iconButton/waitStatus` 等；布局变量同样来自会话 body | 同目录 CSS；注入形态仍是 `data-plugin-css="@deepseek-ai/dsh-client-ui-user-questions/QuestionComposer.module.css"` |
+| ui-tool 的 `AskQuestionCard` unanswered 分支（verdict + 问题清单）**只管会话流里已结算的工具行**，不是待答面板 | ui-tool `lib/client.js:1310-1340` |
+| **`open` 行不会自建载体**：投影对账时只有 `state==='continued'` 才 `cards.ensure(...)` + `attachRpc`，`open` 行只对「已存在的卡」`setState` ⇒ 刷新过 / 被后台委托过之后，open 题在客户端**根本没有载体**，任何客户端都答不了（不是本仓缺实现） | 同包 `src/client/index.ts:286-350`（`publishContinuedQuestions.reconcile`） |
+| 官方题面板「收起」只是 `unpublish`（离座），卡与 waterfall 都还在；回去的唯一入口是 `userQuestionPanels.reveal(sessionId, callId)`（`ctx.reflect.provide` 出来的可选服务，`cards.reveal` 要求卡还在私有表里） | 同包 `src/client/index.ts:376-379`、`:133-136` (`reveal`) |
 
 处置（本仓）：`src/adv/session/pending-approval.ts` 读 `uiSession.sessionStatus`（**不** `$on` 抢瀑布，答走
-`pendingInteraction.answer()`）；`src/adv/session/pending-questions.ts` 读 `userQuestions` 投影第一组 active
-（**只渲染不提供作答**，`open` 态的作答只有官方面板那条路）；`mirror/ApprovalPanel.ts` 按官方 DOM/类名 1:1 画审批卡；
+`pendingInteraction.answer()`）；`src/adv/session/pending-questions.ts` 的 `openLiveQuestion` 取同一入口上的
+`kind='question'` 载体（**能读也能答**，走载体自己的 `answer()`），投影 / chat 快照两条只作兜底；
+`open-session-view.ts` 的第六参收 `userQuestionPanels`，绑成 `SessionViewTarget.revealPendingQuestion`：
+弹窗 detect 到「有题但没有载体」时先调一次 `reveal`（官方收起后的回去路），成功 ⇒ 载体推回来、面板即可作答，
+失败 ⇒ 如实退回只读并只报一次因；
+`mirror/ApprovalPanel.ts` 与 `mirror/QuestionPanel.ts` 各自按官方 DOM/类名 1:1 画卡；
 `SessionViewModal` 在底栏栈里画这两张卡（官方位置 = 输入框接管 / 面板），有卡时关掉底栏分隔线（官方那里没有线）。
-`openSessionView` 第五参给 `uiSession`，不传 ⇒ 不画审批卡（预览保持纯只读）。
+`openSessionView` 第五参给 `uiSession`、第六参给 `userQuestionPanels`，不传 ⇒ 两张卡都没有（预览保持纯只读）。
 
 ## 更新日志
 

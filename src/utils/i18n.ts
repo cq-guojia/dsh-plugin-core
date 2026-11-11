@@ -249,6 +249,25 @@ export type UtilMessageKey =
   | 'askInterrupted'
   | 'askInterruptedDetail'
   | 'askWaiting'
+  | 'askPanelPrev'
+  | 'askPanelNext'
+  | 'askPanelMinimize'
+  | 'askPanelMaximize'
+  | 'askPanelClose'
+  | 'askPanelCancel'
+  | 'askPanelExpand'
+  | 'askPanelCollapse'
+  | 'askPanelRecommended'
+  | 'askPanelCustomPlaceholder'
+  | 'askPanelSkip'
+  | 'askPanelSubmit'
+  | 'askPanelSubmitting'
+  | 'askPanelErrorUnanswered'
+  | 'askPanelErrorIncomplete'
+  | 'askPanelErrorUnavailable'
+  | 'askPanelContinued'
+  | 'askPanelCountdown'
+  | 'askPanelWaitPaused'
   | 'detailState'
   | 'detailGoalEmpty'
   | 'detailGoalDisarmed'
@@ -781,6 +800,26 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     askInterrupted: '已中断',
     askInterruptedDetail: '本轮已中断，未提交回答',
     askWaiting: '等待回答',
+    // 待答题面板（官方 ui-user-questions QuestionComposer 的 zh 词表逐字对齐）
+    askPanelPrev: '上一题',
+    askPanelNext: '下一题',
+    askPanelMinimize: '收起问题卡片',
+    askPanelMaximize: '展开问题卡片',
+    askPanelClose: '收起问题面板，可从工具调用重新打开',
+    askPanelCancel: '放弃整组问题',
+    askPanelExpand: '展开',
+    askPanelCollapse: '收起',
+    askPanelRecommended: '推荐',
+    askPanelCustomPlaceholder: '输入你的答案',
+    askPanelSkip: '跳过',
+    askPanelSubmit: '提交',
+    askPanelSubmitting: '提交中…',
+    askPanelErrorUnanswered: '请选择一个选项或填写自定义答案。',
+    askPanelErrorIncomplete: '请先完成这道问题。',
+    askPanelErrorUnavailable: '当前无法提交，请稍候再试。',
+    askPanelContinued: '已继续工作，仍可回答',
+    askPanelCountdown: '{seconds} 秒后继续工作',
+    askPanelWaitPaused: '已暂停 · 剩余 {seconds} 秒',
     detailState: '状态',
     detailGoalEmpty: '没有目标',
     detailGoalDisarmed: '等待继续',
@@ -1328,6 +1367,25 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     askInterrupted: 'interrupted',
     askInterruptedDetail: 'This question set was interrupted before answers were submitted.',
     askWaiting: 'waiting',
+    askPanelPrev: 'Previous question',
+    askPanelNext: 'Next question',
+    askPanelMinimize: 'Collapse question card',
+    askPanelMaximize: 'Expand question card',
+    askPanelClose: 'Close the panel — reopen it from the tool call',
+    askPanelCancel: 'Dismiss all questions',
+    askPanelExpand: 'Expand',
+    askPanelCollapse: 'Collapse',
+    askPanelRecommended: 'Recommended',
+    askPanelCustomPlaceholder: 'Type your answer',
+    askPanelSkip: 'Skip',
+    askPanelSubmit: 'Submit',
+    askPanelSubmitting: 'Submitting…',
+    askPanelErrorUnanswered: 'Choose an option or type a custom answer.',
+    askPanelErrorIncomplete: 'Finish this question first.',
+    askPanelErrorUnavailable: 'Cannot submit right now; try again shortly.',
+    askPanelContinued: 'continued; still answerable',
+    askPanelCountdown: 'continues in {seconds}s',
+    askPanelWaitPaused: 'paused · {seconds}s left',
     detailState: 'Status',
     detailGoalEmpty: 'No goal',
     detailGoalDisarmed: 'Awaiting continuation',
