@@ -1,6 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
+    "20261110-1121-2e50-选模型超过四个字被挤到左边": {"category": "缺陷修复", "created": "2026-11-10 11:21:38", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-11 03:40:42", "status": "doing", "tags": ["选择器", "宽度轴", "根盒"], "title": "选模型超过四个字被挤到左边", "updated": "2026-11-11 03:40:42", "worklog": "worklog/202611/10-1121-2e50-选模型超过四个字被挤到左边.md"}
   },
   "version": "20261022000000"
 }
