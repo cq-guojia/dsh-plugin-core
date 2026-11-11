@@ -54975,34 +54975,8 @@ function languageForPath(path) {
 }
 
 // dist/ui/display/code-viewer-theme.js
-var ONE_DARK = {
-  black: "#282c34",
-  gray: "#abb2bf",
-  faintGray: "#5c6370",
-  white: "#ffffff",
-  red: "#e06c75",
-  green: "#98c379",
-  yellow: "#e5c07b",
-  blue: "#61afef",
-  magenta: "#c678dd",
-  cyan: "#56b6c2",
-  orange: "#d19a66",
-  link: "#56b6c2"
-};
-var ONE_LIGHT = {
-  black: "#383a42",
-  gray: "#a0a1a7",
-  faintGray: "#4f525e",
-  white: "#ffffff",
-  red: "#e45649",
-  green: "#50a14f",
-  yellow: "#c18401",
-  blue: "#0184bc",
-  magenta: "#a626a4",
-  cyan: "#0997b3",
-  orange: "#986801",
-  link: "#4078f2"
-};
+var CURSOR_FALLBACK_DARK = "#abb2bf";
+var CURSOR_FALLBACK_LIGHT = "#383a42";
 var cmSurfaceTheme = EditorView.theme({
   "&": {
     height: "100%",
@@ -55014,6 +54988,9 @@ var cmSurfaceTheme = EditorView.theme({
     overflow: "auto",
     fontFamily: "var(--dshpc-font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace)"
   },
+  // basicSetup 默认开 drawSelection()，它会把 .cm-content 的 caret-color 置为 transparent：
+  // CodeMirror 6 用自绘 .cm-cursor，不认原生 caret。真正决定光标色的是下面 cmSurfaceTint
+  // 里的 borderLeftColor；这一条只在没开 drawSelection 时兜底。
   ".cm-content": {
     caretColor: "var(--dshpc-fg, #1f2328)"
   },
@@ -55033,78 +55010,19 @@ var SELECTION_DARK = "#3E4451";
 var SELECTION_LIGHT = "#c8d3f0";
 function cmSurfaceTint(dark) {
   return EditorView.theme({
-    // 选择器照抄官方 @codemirror/theme-one-dark（dist/index.js:41）：
-    // 聚焦态选区画在 .cm-selectionLayer 里，未聚焦走 .cm-selectionBackground，
-    // 浏览器原生取 .cm-content ::selection —— 三条都盖住，避免任一路径漏配。
+    // 与官方 oneDarkTheme 的选区选择器一致（dist/index.js:41），本层后注入 ⇒ 覆盖。
     "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": {
       backgroundColor: dark ? SELECTION_DARK : SELECTION_LIGHT
+    },
+    // 官方 oneDarkTheme 也给 .cm-cursor 上色，但亮色没有等价规则；本层统一吃 token，
+    // 且后注入覆盖官方，明暗两套表现一致。
+    ".cm-cursor, .cm-dropCursor": {
+      borderLeftColor: `var(--dshpc-fg, ${dark ? CURSOR_FALLBACK_DARK : CURSOR_FALLBACK_LIGHT})`
     }
   });
 }
-var HIGHLIGHTS_DARK = [
-  { tag: [tags.comment, tags.lineComment, tags.blockComment], color: ONE_DARK.faintGray, fontStyle: "italic" },
-  { tag: [tags.keyword, tags.modifier, tags.controlKeyword, tags.moduleKeyword], color: ONE_DARK.magenta },
-  { tag: [tags.operator, tags.operatorKeyword, tags.compareOperator, tags.logicOperator, tags.bitwiseOperator], color: ONE_DARK.cyan },
-  { tag: [tags.definitionKeyword, tags.atom], color: ONE_DARK.cyan },
-  { tag: [tags.number, tags.bool, tags.null, tags.escape], color: ONE_DARK.orange },
-  { tag: [tags.string, tags.special(tags.string), tags.regexp], color: ONE_DARK.green },
-  { tag: [tags.character, tags.special(tags.character)], color: ONE_DARK.orange },
-  { tag: [tags.propertyName], color: ONE_DARK.yellow },
-  // 变量名取 ivory(#abb2bf) 而非纯白：官方 one-dark 的正文色就是 ivory，纯白在深底上过曝、
-  // 且压在选区上对比度更差（旧值 #ffffff）。
-  { tag: [tags.variableName], color: ONE_DARK.gray },
-  { tag: [tags.function(tags.variableName), tags.function(tags.propertyName), tags.labelName], color: ONE_DARK.blue },
-  { tag: [tags.className, tags.typeName, tags.namespace], color: ONE_DARK.yellow },
-  { tag: [tags.definition(tags.typeName), tags.definition(tags.className), tags.definition(tags.namespace)], color: ONE_DARK.yellow },
-  { tag: [tags.tagName], color: ONE_DARK.red },
-  { tag: [tags.attributeName], color: ONE_DARK.yellow },
-  { tag: [tags.self, tags.standard(tags.variableName), tags.constant(tags.variableName)], color: ONE_DARK.orange },
-  { tag: [tags.punctuation, tags.separator, tags.bracket], color: ONE_DARK.gray },
-  { tag: [tags.squareBracket, tags.paren, tags.brace], color: ONE_DARK.gray },
-  { tag: [tags.meta, tags.documentMeta, tags.annotation], color: ONE_DARK.gray },
-  { tag: [tags.link, tags.url], color: ONE_DARK.link, fontStyle: "underline" },
-  { tag: [tags.heading], color: ONE_DARK.blue, fontStyle: "bold" },
-  { tag: [tags.emphasis], fontStyle: "italic" },
-  { tag: [tags.strong], fontWeight: "bold" },
-  { tag: [tags.strikethrough], textDecoration: "line-through" },
-  { tag: [tags.monospace], color: ONE_DARK.green },
-  { tag: [tags.contentSeparator], color: ONE_DARK.faintGray },
-  { tag: [tags.invalid], color: ONE_DARK.red }
-];
-var HIGHLIGHTS_LIGHT = [
-  { tag: [tags.comment, tags.lineComment, tags.blockComment], color: ONE_LIGHT.faintGray, fontStyle: "italic" },
-  { tag: [tags.keyword, tags.modifier, tags.controlKeyword, tags.moduleKeyword], color: ONE_LIGHT.magenta },
-  { tag: [tags.operator, tags.operatorKeyword, tags.compareOperator, tags.logicOperator, tags.bitwiseOperator], color: ONE_LIGHT.cyan },
-  { tag: [tags.definitionKeyword, tags.atom], color: ONE_LIGHT.cyan },
-  { tag: [tags.number, tags.bool, tags.null, tags.escape], color: ONE_LIGHT.orange },
-  { tag: [tags.string, tags.special(tags.string), tags.regexp], color: ONE_LIGHT.green },
-  { tag: [tags.character, tags.special(tags.character)], color: ONE_LIGHT.orange },
-  { tag: [tags.propertyName], color: ONE_LIGHT.black },
-  { tag: [tags.variableName], color: ONE_LIGHT.black },
-  { tag: [tags.function(tags.variableName), tags.function(tags.propertyName), tags.labelName], color: ONE_LIGHT.blue },
-  { tag: [tags.className, tags.typeName, tags.namespace], color: ONE_LIGHT.yellow },
-  { tag: [tags.definition(tags.typeName), tags.definition(tags.className), tags.definition(tags.namespace)], color: ONE_LIGHT.yellow },
-  { tag: [tags.tagName], color: ONE_LIGHT.red },
-  { tag: [tags.attributeName], color: ONE_LIGHT.yellow },
-  { tag: [tags.self, tags.standard(tags.variableName), tags.constant(tags.variableName)], color: ONE_LIGHT.orange },
-  { tag: [tags.punctuation, tags.separator, tags.bracket], color: ONE_LIGHT.gray },
-  { tag: [tags.squareBracket, tags.paren, tags.brace], color: ONE_LIGHT.gray },
-  { tag: [tags.meta, tags.documentMeta, tags.annotation], color: ONE_LIGHT.gray },
-  { tag: [tags.link, tags.url], color: ONE_LIGHT.link, fontStyle: "underline" },
-  { tag: [tags.heading], color: ONE_LIGHT.blue, fontStyle: "bold" },
-  { tag: [tags.emphasis], fontStyle: "italic" },
-  { tag: [tags.strong], fontWeight: "bold" },
-  { tag: [tags.strikethrough], textDecoration: "line-through" },
-  { tag: [tags.monospace], color: ONE_LIGHT.green },
-  { tag: [tags.contentSeparator], color: ONE_LIGHT.faintGray },
-  { tag: [tags.invalid], color: ONE_LIGHT.red }
-];
 function codeMirrorTheme(dark) {
-  return [
-    cmSurfaceTheme,
-    cmSurfaceTint(dark),
-    syntaxHighlighting(HighlightStyle.define(dark ? HIGHLIGHTS_DARK : HIGHLIGHTS_LIGHT))
-  ];
+  return [cmSurfaceTheme, cmSurfaceTint(dark)];
 }
 
 // dist/ui/infra/code-mirror-surface.js
@@ -55154,7 +55072,10 @@ function CodeMirrorSurface(props) {
   return (0, import_react50.createElement)("div", { className: `dshpc-cv${className2 ? ` ${className2}` : ""}`, style: style2 }, overlay ?? null, (0, import_react50.createElement)(esm_default, {
     value,
     className: "dshpc-cv__editor dshpc-scroll-thin",
-    theme: "none",
+    // 明暗与语法配色交给官方：dark → oneDark（官方主题 + 完整 highlighter），
+    // light → 官方亮色表面 + basicSetup 的 defaultHighlightStyle 兜底。
+    // 核心 cmSurfaceTheme / cmSurfaceTint 在 extensions 里后注入，覆盖官方面板背景。
+    theme: dark ? "dark" : "light",
     extensions,
     readOnly: readOnly2,
     onChange: onChange === void 0 ? void 0 : (next) => {
@@ -71564,9 +71485,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.20"}`],
-            [t3("buildDemo"), `v${"0.35.20"}`],
-            [t3("buildStamp"), "261111-001952-239"]
+            [t3("buildCore"), `v${"0.35.21"}`],
+            [t3("buildDemo"), `v${"0.35.21"}`],
+            [t3("buildStamp"), "261111-095036-873"]
           ].map(
             ([label, value]) => (0, import_react99.createElement)(
               "tr",
@@ -71882,9 +71803,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react101.createElement)("span", null, `core v${"0.35.20"}`),
-          (0, import_react101.createElement)("span", null, `demo v${"0.35.20"}`),
-          (0, import_react101.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261111-001952-239")
+          (0, import_react101.createElement)("span", null, `core v${"0.35.21"}`),
+          (0, import_react101.createElement)("span", null, `demo v${"0.35.21"}`),
+          (0, import_react101.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261111-095036-873")
         )
       )
     ),

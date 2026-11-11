@@ -5,6 +5,9 @@ import assert from 'node:assert/strict'
 import { register } from 'node:module'
 import { createElement as h } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { EditorState } from '@codemirror/state'
+import { highlightingFor } from '@codemirror/language'
+import { tags } from '@lezer/highlight'
 
 register(new URL('./code-mirror-hooks.mjs', import.meta.url))
 const { CodeViewer, CodeEditor } = await import('../dist/ui/display/code-viewer.js')
@@ -58,4 +61,32 @@ test('两个控件共用同一个样式域与编辑器外观', () => {
   assert.equal(lastProps().className, 'dshpc-cv__editor dshpc-scroll-thin')
   renderToStaticMarkup(h(CodeViewer, { text: 'b', path: 'b.ts', t: (k) => k }))
   assert.equal(lastProps().className, 'dshpc-cv__editor dshpc-scroll-thin')
+})
+
+const cssOf = (ext, seen = new Set()) => {
+  if (!ext || typeof ext !== 'object' || seen.has(ext)) return ''
+  seen.add(ext)
+  let css = typeof ext.getRules === 'function' ? `${ext.getRules()}\n` : ''
+  for (const v of Object.values(ext)) css += cssOf(v, seen)
+  return css
+}
+
+test('两个控件都把官方明暗主题、光标色与语言包交给 CodeMirror', () => {
+  const cases = [
+    [CodeEditor, { value: '- **关键词**：内容', onChange() {}, path: 'rules.md' }],
+    [CodeViewer, { text: '- **关键词**：内容', path: 'rules.md', t: (k) => k }],
+  ]
+  for (const [Comp, props] of cases) {
+    renderToStaticMarkup(h(Comp, props))
+    const cm = lastProps()
+    // Node 无 document ⇒ hostDark() 为 false ⇒ 亮色；主题不能再是 none。
+    assert.equal(cm.theme, 'light', '明暗与语法配色必须交给官方 dark/light 主题')
+    const ext = cm.extensions
+    assert.match(cssOf(ext), /border-left-color/, '核心表面层仍下发光标色')
+    assert.ok(ext.some((e) => e?.constructor?.name === 'LanguageSupport'), '语言包仍下发')
+    // 核心不注册 highlighter：单独看它的 extensions 查不到高亮 class，
+    // 由 @uiw/react-codemirror 的官方默认扩展补上（在 code-viewer-theme.test.mjs 里整体验证）。
+    const state = EditorState.create({ doc: '- **关键词**：内容', extensions: ext })
+    assert.equal(highlightingFor(state, [tags.strong]), null)
+  }
 })

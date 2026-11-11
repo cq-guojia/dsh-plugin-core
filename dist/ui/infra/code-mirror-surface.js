@@ -59,7 +59,10 @@ export function CodeMirrorSurface(props) {
     return h('div', { className: `dshpc-cv${className ? ` ${className}` : ''}`, style }, overlay ?? null, h(CodeMirror, {
         value,
         className: 'dshpc-cv__editor dshpc-scroll-thin',
-        theme: 'none',
+        // 明暗与语法配色交给官方：dark → oneDark（官方主题 + 完整 highlighter），
+        // light → 官方亮色表面 + basicSetup 的 defaultHighlightStyle 兜底。
+        // 核心 cmSurfaceTheme / cmSurfaceTint 在 extensions 里后注入，覆盖官方面板背景。
+        theme: dark ? 'dark' : 'light',
         extensions,
         readOnly,
         onChange: onChange === undefined ? undefined : (next) => { onChange(next); },

@@ -1,35 +1,31 @@
 /**
- * CodeMirror 6 主题（DSH 共享底座版）。
+ * CodeMirror 6 的「表面层」——DSH 共享底座只负责编辑器怎么贴合宿主面板，
+ * 语法高亮与明暗主题一律交给 @uiw/react-codemirror 的官方实现。
  *
- * 移植自兄弟项目 dsh-task-dispatch-table（src/client/ui/cm-themes.ts），token 名换成
- * 本仓的 --dshpc-*；语法配色沿用 one-dark / one-light 调色板（已真机验证的观感）。
- * 提供：
- *  - cmSurfaceTheme：透明底 + 13px + 等宽字体 + 行号槽用 --dshpc-fg-3，随宿主滚动；
- *  - codeMirrorTheme(dark)：表面主题 + 选区/激活行微调 + one-dark/one-light 语法色。
+ * 分工（规范做法）：
+ *  - src/ui/infra/code-mirror-surface.ts 按 body[data-ds-dark-theme] 给 <CodeMirror>
+ *    传 theme='dark' | 'light'；
+ *  - 暗色由官方挂 oneDark（oneDarkTheme + syntaxHighlighting(oneDarkHighlightStyle)），
+ *    亮色由 basicSetup 挂官方 defaultHighlightStyle 兜底。官方 highlighter 覆盖含
+ *    tags.processingInstruction 在内的语言全集；
+ *  - 本文件只覆盖表面：透明底、字体、行号槽、选区、自绘光标，颜色吃 --dshpc-* token。
+ *    用户扩展在 useCodeMirror.ts:98 被 concat 在官方扩展之后，故这里的同特异性规则
+ *    能盖过官方主题的面板背景。
  *
- * ⚠️ 选区配色的硬约束：CodeMirror 把选区画成**文字底下的一层背景**，**不会**给选中文字重新上色
- *  ⇒ 选区色必须自己保证与语法色有对比度。旧实现给暗色用 rgba(255,255,255,.22) 半透明白 ⇒ 选区发白、
- *  one-dark 的浅/白字压上去直接隐身。现按官方 @codemirror/theme-one-dark 取**不透明实色**
- *  （暗 #3E4451 / 浅 #c8d3f0）。
+ * 曾经手抄过明暗两张 tag 配色表并注册成正式 highlighter，那会整份顶掉官方兜底
+ * （@codemirror/language 的 getHighlighters：有正式的就不看 fallback），漏一条 tag
+ * 就少一种颜色，是「发现一个补一个」的根因，已删除。
+ *
+ * 明暗判据（唯一）：body[data-ds-dark-theme]，禁用 prefers-color-scheme。
  */
-import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
-import { tags, type Tag } from '@lezer/highlight'
 import { type Extension } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 
-const ONE_DARK = {
-  black: '#282c34', gray: '#abb2bf', faintGray: '#5c6370', white: '#ffffff',
-  red: '#e06c75', green: '#98c379', yellow: '#e5c07b', blue: '#61afef',
-  magenta: '#c678dd', cyan: '#56b6c2', orange: '#d19a66', link: '#56b6c2',
-} as const
+// 光标兜底色：只在 --dshpc-fg 未注入时生效，不是语法配色表。
+const CURSOR_FALLBACK_DARK = '#abb2bf'
+const CURSOR_FALLBACK_LIGHT = '#383a42'
 
-const ONE_LIGHT = {
-  black: '#383a42', gray: '#a0a1a7', faintGray: '#4f525e', white: '#ffffff',
-  red: '#e45649', green: '#50a14f', yellow: '#c18401', blue: '#0184bc',
-  magenta: '#a626a4', cyan: '#0997b3', orange: '#986801', link: '#4078f2',
-} as const
-
-// 表面层：透明底、13px、等宽字体、行号槽取 --dshpc-fg-3；不抢背景，叠在宿主面板上。
+// 表面层：透明底、13px、等宽字体、行号槽取 --dshpc-fg-3；盖过官方主题的面板背景。
 export const cmSurfaceTheme = EditorView.theme({
   '&': {
     height: '100%',
@@ -41,6 +37,9 @@ export const cmSurfaceTheme = EditorView.theme({
     overflow: 'auto',
     fontFamily: 'var(--dshpc-font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace)',
   },
+  // basicSetup 默认开 drawSelection()，它会把 .cm-content 的 caret-color 置为 transparent：
+  // CodeMirror 6 用自绘 .cm-cursor，不认原生 caret。真正决定光标色的是下面 cmSurfaceTint
+  // 里的 borderLeftColor；这一条只在没开 drawSelection 时兜底。
   '.cm-content': {
     caretColor: 'var(--dshpc-fg, #1f2328)',
   },
@@ -67,88 +66,19 @@ const SELECTION_LIGHT = '#c8d3f0'
 
 function cmSurfaceTint(dark: boolean): ReturnType<typeof EditorView.theme> {
   return EditorView.theme({
-    // 选择器照抄官方 @codemirror/theme-one-dark（dist/index.js:41）：
-    // 聚焦态选区画在 .cm-selectionLayer 里，未聚焦走 .cm-selectionBackground，
-    // 浏览器原生取 .cm-content ::selection —— 三条都盖住，避免任一路径漏配。
+    // 与官方 oneDarkTheme 的选区选择器一致（dist/index.js:41），本层后注入 ⇒ 覆盖。
     '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': {
       backgroundColor: dark ? SELECTION_DARK : SELECTION_LIGHT,
+    },
+    // 官方 oneDarkTheme 也给 .cm-cursor 上色，但亮色没有等价规则；本层统一吃 token，
+    // 且后注入覆盖官方，明暗两套表现一致。
+    '.cm-cursor, .cm-dropCursor': {
+      borderLeftColor: `var(--dshpc-fg, ${dark ? CURSOR_FALLBACK_DARK : CURSOR_FALLBACK_LIGHT})`,
     },
   })
 }
 
-interface HighlightRule {
-  tag: Tag | readonly Tag[]
-  color?: string
-  fontStyle?: string
-  fontWeight?: string
-  textDecoration?: string
-}
-
-const HIGHLIGHTS_DARK: HighlightRule[] = [
-  { tag: [tags.comment, tags.lineComment, tags.blockComment], color: ONE_DARK.faintGray, fontStyle: 'italic' },
-  { tag: [tags.keyword, tags.modifier, tags.controlKeyword, tags.moduleKeyword], color: ONE_DARK.magenta },
-  { tag: [tags.operator, tags.operatorKeyword, tags.compareOperator, tags.logicOperator, tags.bitwiseOperator], color: ONE_DARK.cyan },
-  { tag: [tags.definitionKeyword, tags.atom], color: ONE_DARK.cyan },
-  { tag: [tags.number, tags.bool, tags.null, tags.escape], color: ONE_DARK.orange },
-  { tag: [tags.string, tags.special(tags.string), tags.regexp], color: ONE_DARK.green },
-  { tag: [tags.character, tags.special(tags.character)], color: ONE_DARK.orange },
-  { tag: [tags.propertyName], color: ONE_DARK.yellow },
-  // 变量名取 ivory(#abb2bf) 而非纯白：官方 one-dark 的正文色就是 ivory，纯白在深底上过曝、
-  // 且压在选区上对比度更差（旧值 #ffffff）。
-  { tag: [tags.variableName], color: ONE_DARK.gray },
-  { tag: [tags.function(tags.variableName), tags.function(tags.propertyName), tags.labelName], color: ONE_DARK.blue },
-  { tag: [tags.className, tags.typeName, tags.namespace], color: ONE_DARK.yellow },
-  { tag: [tags.definition(tags.typeName), tags.definition(tags.className), tags.definition(tags.namespace)], color: ONE_DARK.yellow },
-  { tag: [tags.tagName], color: ONE_DARK.red },
-  { tag: [tags.attributeName], color: ONE_DARK.yellow },
-  { tag: [tags.self, tags.standard(tags.variableName), tags.constant(tags.variableName)], color: ONE_DARK.orange },
-  { tag: [tags.punctuation, tags.separator, tags.bracket], color: ONE_DARK.gray },
-  { tag: [tags.squareBracket, tags.paren, tags.brace], color: ONE_DARK.gray },
-  { tag: [tags.meta, tags.documentMeta, tags.annotation], color: ONE_DARK.gray },
-  { tag: [tags.link, tags.url], color: ONE_DARK.link, fontStyle: 'underline' },
-  { tag: [tags.heading], color: ONE_DARK.blue, fontStyle: 'bold' },
-  { tag: [tags.emphasis], fontStyle: 'italic' },
-  { tag: [tags.strong], fontWeight: 'bold' },
-  { tag: [tags.strikethrough], textDecoration: 'line-through' },
-  { tag: [tags.monospace], color: ONE_DARK.green },
-  { tag: [tags.contentSeparator], color: ONE_DARK.faintGray },
-  { tag: [tags.invalid], color: ONE_DARK.red },
-]
-
-const HIGHLIGHTS_LIGHT: HighlightRule[] = [
-  { tag: [tags.comment, tags.lineComment, tags.blockComment], color: ONE_LIGHT.faintGray, fontStyle: 'italic' },
-  { tag: [tags.keyword, tags.modifier, tags.controlKeyword, tags.moduleKeyword], color: ONE_LIGHT.magenta },
-  { tag: [tags.operator, tags.operatorKeyword, tags.compareOperator, tags.logicOperator, tags.bitwiseOperator], color: ONE_LIGHT.cyan },
-  { tag: [tags.definitionKeyword, tags.atom], color: ONE_LIGHT.cyan },
-  { tag: [tags.number, tags.bool, tags.null, tags.escape], color: ONE_LIGHT.orange },
-  { tag: [tags.string, tags.special(tags.string), tags.regexp], color: ONE_LIGHT.green },
-  { tag: [tags.character, tags.special(tags.character)], color: ONE_LIGHT.orange },
-  { tag: [tags.propertyName], color: ONE_LIGHT.black },
-  { tag: [tags.variableName], color: ONE_LIGHT.black },
-  { tag: [tags.function(tags.variableName), tags.function(tags.propertyName), tags.labelName], color: ONE_LIGHT.blue },
-  { tag: [tags.className, tags.typeName, tags.namespace], color: ONE_LIGHT.yellow },
-  { tag: [tags.definition(tags.typeName), tags.definition(tags.className), tags.definition(tags.namespace)], color: ONE_LIGHT.yellow },
-  { tag: [tags.tagName], color: ONE_LIGHT.red },
-  { tag: [tags.attributeName], color: ONE_LIGHT.yellow },
-  { tag: [tags.self, tags.standard(tags.variableName), tags.constant(tags.variableName)], color: ONE_LIGHT.orange },
-  { tag: [tags.punctuation, tags.separator, tags.bracket], color: ONE_LIGHT.gray },
-  { tag: [tags.squareBracket, tags.paren, tags.brace], color: ONE_LIGHT.gray },
-  { tag: [tags.meta, tags.documentMeta, tags.annotation], color: ONE_LIGHT.gray },
-  { tag: [tags.link, tags.url], color: ONE_LIGHT.link, fontStyle: 'underline' },
-  { tag: [tags.heading], color: ONE_LIGHT.blue, fontStyle: 'bold' },
-  { tag: [tags.emphasis], fontStyle: 'italic' },
-  { tag: [tags.strong], fontWeight: 'bold' },
-  { tag: [tags.strikethrough], textDecoration: 'line-through' },
-  { tag: [tags.monospace], color: ONE_LIGHT.green },
-  { tag: [tags.contentSeparator], color: ONE_LIGHT.faintGray },
-  { tag: [tags.invalid], color: ONE_LIGHT.red },
-]
-
-/** 返回 CodeMirror 6 主题扩展数组（表面 + 选区微调 + one-dark/one-light 语法色）。 */
+/** 只返回表面层；语法高亮由官方主题负责，核心不再注册 highlighter。 */
 export function codeMirrorTheme(dark: boolean): Extension[] {
-  return [
-    cmSurfaceTheme,
-    cmSurfaceTint(dark),
-    syntaxHighlighting(HighlightStyle.define(dark ? HIGHLIGHTS_DARK : HIGHLIGHTS_LIGHT)),
-  ]
+  return [cmSurfaceTheme, cmSurfaceTint(dark)]
 }
