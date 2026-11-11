@@ -1,3 +1,5 @@
+/** 未显式给下限时控件根盒的默认占位宽度。尺寸只由根盒持有，触发器不自带下限。 */
+export const PICKER_DEFAULT_MIN_WIDTH = 120;
 /** 两种输入归一成 groups：给了 `options` 就当成一个无标题的组。 */
 export function toGroups(groups, options) {
     if (groups !== undefined && groups.length > 0)
@@ -101,7 +103,8 @@ export function retainSelectedValue(groups, value) {
     };
 }
 /** 控件宽度解析：把 width / minWidth / maxWidth 译成内联样式（Picker 根盒与下拉搜索框共用）。
- * 定宽（width）忽略 min/max 并锁定三值；否则各自生效，缺省沿用 CSS 默认（min 120px、max 100%）。
+ * 定宽（width）忽略 min/max 并锁定三值；否则各自生效，缺省下限由 Picker 根盒补
+ * PICKER_DEFAULT_MIN_WIDTH，上限沿用 CSS 根盒的 100%。搜索框不补默认下限（它铺满菜单）。
  * 数值按 px 处理，字符串原样透传（含百分比的 clamp 也照传，由根盒按父宽解析）。 */
 export function resolveTriggerSizing(opts) {
     const px = (v) => (typeof v === 'number' ? `${v}px` : v);

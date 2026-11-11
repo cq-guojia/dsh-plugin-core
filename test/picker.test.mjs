@@ -1,7 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { createElement as h } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 import {
+  Picker,
+  PICKER_DEFAULT_MIN_WIDTH,
   filterGroups,
   flattenOptions,
   groupOf,
@@ -14,6 +18,7 @@ import {
   toggleValue,
 } from '../dist/ui/index.js'
 import { setLocale, t } from '../dist/utils/index.js'
+import { PICKER_CSS } from '../dist/ui/inputs/picker-css.js'
 import { transform } from 'lightningcss'
 
 const GROUPS = [
@@ -221,4 +226,34 @@ test('cascade 两框有默认行布局：垂直对齐且留缝，规则进运行
   assert.match(css, /:where\(\.dshpc-picker__cascade\)\{[^}]*display:flex[^}]*align-items:center[^}]*gap:8px\}/)
   const runtime = readFileSync(new URL('../dist/ui/inputs/picker-css.generated.js', import.meta.url), 'utf8')
   assert.match(runtime, /dshpc-picker__cascade/, '规则必须进运行时注入的 CSS 常量')
+})
+
+// 2026-11-11 用户截图：年份下拉 width:96，触发器基类自带 min-width:120px 把根盒顶破 24px，
+// 向右盖住月份滑轨第一格。根因是 v0.35.18 把三轴迁到根盒时漏迁了触发器自带的默认尺寸。
+test('宽度契约：默认下限在根盒内联层，触发器不持有尺寸，窄定宽不被撑破', () => {
+  assert.equal(PICKER_DEFAULT_MIN_WIDTH, 120)
+  const render = (props) => renderToStaticMarkup(h(Picker, { options: [{ value: 'a', label: 'A' }], ...props }))
+  // 未传三轴：默认下限由根盒给出，外观与迁移前一致（不会缩到文字宽）
+  assert.match(render({}), /<div class="dshpc-picker" style="min-width:120px"/)
+  // 窄定宽：三值锁定且键顺序不变（下游按这个顺序断言）
+  assert.match(render({ width: 96 }), /style="width:96px;min-width:96px;max-width:96px"/)
+  assert.match(render({ minWidth: 80 }), /style="min-width:80px"/)
+  assertTriggerHasNoFloor(readFileSync(new URL('../src/ui/inputs/picker.css', import.meta.url), 'utf8'))
+  // 真源到注入文本还有一跳：真正生效的是 PICKER_CSS，不是 .css 文件。
+  assertTriggerHasNoFloor(PICKER_CSS)
+})
+
+/** 触发器基类的尺寸主张只能是 min-width:0；任何非零下限都说明双尺寸源回潮。 */
+function assertTriggerHasNoFloor(css) {
+  const rule = /^\.dshpc-picker__trigger\{([^}]*)\}/m.exec(css)?.[1]
+  assert.ok(rule !== undefined, '找不到触发器基类规则 —— 闸失效')
+  assert.doesNotMatch(rule, /min-width:(?!0[\s;}])/, '触发器自带非零下限会把根盒定宽顶破')
+  assert.doesNotMatch(rule, /max-width:/, '触发器不持有上限（根盒已有 max-width:100%）')
+}
+
+test('反证：把 min-width:120px 塞回触发器，宽度闸必须红', () => {
+  const css = readFileSync(new URL('../src/ui/inputs/picker.css', import.meta.url), 'utf8')
+  const broken = css.replace('min-width:0;height:28px', 'min-width:120px;height:28px')
+  assert.notEqual(broken, css, '构造事故文本失败：真源里没有 min-width:0;height:28px')
+  assert.throws(() => assertTriggerHasNoFloor(broken), /非零下限/, '触发器带回 120 下限竟然没被闸拦住')
 })

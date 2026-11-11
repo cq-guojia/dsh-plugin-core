@@ -9,6 +9,7 @@ export {
   flattenOptions,
   groupOf,
   labelsOf,
+  PICKER_DEFAULT_MIN_WIDTH,
   resolveMenuSizing,
   resolveTriggerSizing,
   retainSelectedValue,

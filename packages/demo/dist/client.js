@@ -1258,6 +1258,7 @@ function useLocale() {
 }
 
 // dist/ui/inputs/picker-logic.js
+var PICKER_DEFAULT_MIN_WIDTH = 120;
 function toGroups(groups, options) {
   if (groups !== void 0 && groups.length > 0)
     return groups;
@@ -4305,13 +4306,16 @@ var PICKER_CSS = `
 /* cascade \u5916\u5C42\u884C\u4E4B\u524D\u6CA1\u6709\u5E03\u5C40\uFF1A\u4E24\u4E2A inline-block \u6309\u57FA\u7EBF\u6392 \u21D2 \u4F9B\u5E94\u5546\u6846\u4E0B\u6C89\u3001\u4E24\u6846\u4E4B\u95F4\u53EA\u5269 HTML \u7A7A\u767D\u770B\u7740\u8FDE\u4F53\u3002
    \u8FD9\u91CC\u53EA\u7ED9\u9ED8\u8BA4\u503C\uFF0C:where() \u7279\u5F02\u6027 0\uFF0C\u6D88\u8D39\u65B9 rowClassName \u7684\u4EFB\u610F\u89C4\u5219\u90FD\u80FD\u76D6\u56DE\u6765\u3002 */
 :where(.dshpc-picker__cascade){display:flex;align-items:center;gap:8px}
-/* \u89E6\u53D1\u5668\u94FA\u6EE1\u6839\u76D2\uFF1Bhint \u6001\u591A\u4E00\u5C42 fieldwrap\uFF0C\u90A3\u5C42\u4E5F\u94FA\u6EE1\u3001\u6309\u94AE\u5403\u5269\u4F59\u5BBD\u5EA6\u7ED9\u95EE\u53F7\u8BA9\u4F4D\u3002 */
+/* \u89E6\u53D1\u5668\u94FA\u6EE1\u6839\u76D2\uFF1Bhint \u6001\u591A\u4E00\u5C42 fieldwrap\uFF0C\u90A3\u5C42\u4E5F\u94FA\u6EE1\u3001\u6309\u94AE\u5403\u5269\u4F59\u5BBD\u5EA6\u7ED9\u95EE\u53F7\u8BA9\u4F4D\u3002
+   \u5C3A\u5BF8\u53EA\u7531\u6839\u76D2\u6301\u6709\uFF1A\u9ED8\u8BA4\u4E0B\u9650\uFF08PICKER_DEFAULT_MIN_WIDTH\uFF09\u4E0E\u8C03\u7528\u65B9\u4E09\u8F74\u90FD\u5728\u6839\u76D2\u7684\u5185\u8054 style \u91CC\uFF0C
+   trigger \u4E00\u6761 min/max \u90FD\u4E0D\u80FD\u6709 \u2014\u2014 \u5426\u5219 width:96 \u4F1A\u88AB trigger \u7684 120 \u4E0B\u9650\u9876\u5230 120\uFF0C
+   \u5411\u53F3\u6EA2\u51FA\u76D6\u4F4F\u90BB\u683C\uFF082026-11-11 \u7528\u6237\u622A\u56FE\uFF1A\u5E74\u4EFD\u4E0B\u62C9\u6EA2\u51FA 24px \u538B\u5230\u6708\u4EFD\u6ED1\u8F68\uFF09\u3002 */
 .dshpc-picker > .dshpc-picker__trigger{width:100%;box-sizing:border-box}
 .dshpc-picker > .dshpc-fieldwrap{display:flex;width:100%;box-sizing:border-box}
 .dshpc-picker .dshpc-fieldwrap > .dshpc-picker__trigger{flex:1 1 auto;width:auto;min-width:0}
 .dshpc-picker__trigger{
   display:inline-flex;align-items:center;justify-content:space-between;gap:6px;
-  min-width:120px;max-width:100%;height:28px;padding:0 8px;
+  min-width:0;height:28px;padding:0 8px;
   color:var(--dshpc-fg);background:var(--dshpc-surface-1);
   border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);cursor:pointer;
 }
@@ -4413,7 +4417,8 @@ function Picker(props) {
   const placement = props.placement ?? "down";
   const clearable = props.clearable === true;
   const showLabels = props.showLabels !== false;
-  const controlStyle = resolveTriggerSizing(props);
+  const sizing = resolveTriggerSizing(props);
+  const controlStyle = { ...sizing, minWidth: sizing.minWidth ?? PICKER_DEFAULT_MIN_WIDTH };
   const groups = (0, import_react9.useMemo)(() => toGroups(props.groups, props.options), [props.groups, props.options]);
   const controlled = props.value !== void 0;
   const [inner, setInner] = (0, import_react9.useState)(() => toArray(props.defaultValue));
@@ -6833,8 +6838,8 @@ function Pagination(props) {
   const middle2 = props.simple === true ? [(0, import_react28.createElement)("span", { key: "simple", className: "dshpc-pagination__simple" }, `${String(page)} / ${String(count4)}`)] : pageItems(page, count4, props.siblingCount, props.boundaryCount).map((item, index3) => item === "gap" ? (0, import_react28.createElement)("span", { key: `gap-${String(index3)}`, className: "dshpc-pagination__ellipsis", "aria-hidden": "true" }, "\u2026") : pageButton(item));
   const options = props.pageSizeOptions ?? [];
   const sizeNode = options.length === 0 ? null : (0, import_react28.createElement)(Picker, {
+    // 沿用根盒默认下限：旧写法 minWidth:'auto' 压不住触发器的 120，迁移后会把控件缩到文字宽。
     className: "dshpc-pagination__size",
-    minWidth: "auto",
     mode: "single",
     size: props.size,
     options: options.map((size4) => ({
@@ -64484,8 +64489,8 @@ var docData = {
     },
     "prose": [
       {
-        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`\u3002`width` / `minWidth` / `maxWidth` \u7EA6\u675F\u6574\u4E2A\u63A7\u4EF6\u7684\u5360\u4F4D\u5BBD\u5EA6\uFF08\u843D\u5728\u6839\u76D2\u3001\u89E6\u53D1\u5668\u81EA\u52A8\u94FA\u6EE1\uFF09\uFF1A\u5B9A\u5BBD\u5FFD\u7565\u53E6\u4E24\u8005\uFF1B\u9009\u4E2D\u6587\u5B57\u518D\u957F\u63A7\u4EF6\u4F4D\u7F6E\u4E5F\u4E0D\u52A8\uFF0C\u8D85\u957F\u53EA\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\u3002\u83DC\u5355\u9760\u89C6\u53E3\u8FB9\u7F18\u4F1A\u81EA\u52A8\u6536\u7A84\u5E76\u5185\u6536\uFF08\u5DE6\u53F3\u5404\u7559 12px\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u5FC5\u5904\u7406\u8D34\u8FB9\u3002\u4E0B\u62C9\u5185\u641C\u7D22\u6846\u53E6\u8D70 `searchSizing`\uFF08\u540C\u4E00\u5957\u5BBD\u5EA6\u4E09\u8F74\uFF09\uFF0C\u4E0D\u4F20\u5C31\u6CBF\u7528 CSS \u7684 100% \u94FA\u6EE1\uFF1B\u83DC\u5355\u4F1A\u968F `searchSizing` \u7684\u4E0B\u9650\u81EA\u52A8\u52A0\u5BBD\uFF0C\u4E0D\u4F1A\u88AB\u83DC\u5355\u7684 overflow:hidden \u88C1\u6389\u3002\u83DC\u5355\u91CC\u7684\u9009\u9879\u8D85\u957F\u540C\u6837\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF0C\u4E0D\u4F1A\u628A\u83DC\u5355\u6491\u51FA\u6A2A\u5411\u6EDA\u52A8\u6761\u3002",
-        "en": "Picker: single/multiple selection, cap, search, grouping, empty state \u2014 self-drawn. Keyboard: Esc closes, \u2191\u2193 move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`. `width`/`minWidth`/`maxWidth` size the control box (the root; the trigger fills it), so a long label never shifts the control. Near a viewport edge the dropdown narrows and shifts back inside (12px on each side), so callers need no edge handling. The search box takes its own `searchSizing` (the same width/minWidth/maxWidth triple) and fills 100% by default; the menu widens with the search box lower bound so it is never clipped by overflow:hidden."
+        "zh": "Picker\uFF1A\u5355 / \u591A\u9009\u3001\u4E0A\u9650\u3001\u641C\u7D22\u3001\u5206\u7EC4\u3001\u7A7A\u6001\uFF0C\u81EA\u7ED8\u3002\u952E\u76D8\uFF1AEsc \u5173\u3001\u2191\u2193 \u79FB\u6E38\u6807\u3001Enter \u9009\u3002\u7EAF\u903B\u8F91\u53EF\u5355\u7528\uFF1A`toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`\u3002`width` / `minWidth` / `maxWidth` \u7EA6\u675F\u6574\u4E2A\u63A7\u4EF6\u7684\u5360\u4F4D\u5BBD\u5EA6\uFF08\u843D\u5728\u6839\u76D2\u3001\u89E6\u53D1\u5668\u81EA\u52A8\u94FA\u6EE1\uFF09\uFF1A\u5B9A\u5BBD\u5FFD\u7565\u53E6\u4E24\u8005\uFF1B\u5BBD\u5EA6\u4E09\u8F74\u4E0E\u9ED8\u8BA4\u4E0B\u9650\uFF08120px\uFF09\u552F\u4E00\u7531\u6839\u76D2\u6301\u6709\uFF0C\u89E6\u53D1\u5668\u53EA\u94FA\u6EE1\u3001\u4E0D\u81EA\u5E26\u4E0B\u9650\uFF0C\u663E\u5F0F\u7ED9\u7684\u5B9A\u5BBD\u6216\u4E0B\u9650\u5C0F\u4E8E 120px \u4E5F\u6309\u7ED9\u7684\u503C\u751F\u6548\uFF0C\u4E0D\u4F1A\u88AB\u9ED8\u8BA4\u503C\u9876\u7834\uFF1B\u9009\u4E2D\u6587\u5B57\u518D\u957F\u63A7\u4EF6\u4F4D\u7F6E\u4E5F\u4E0D\u52A8\uFF0C\u8D85\u957F\u53EA\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\u3002\u83DC\u5355\u9760\u89C6\u53E3\u8FB9\u7F18\u4F1A\u81EA\u52A8\u6536\u7A84\u5E76\u5185\u6536\uFF08\u5DE6\u53F3\u5404\u7559 12px\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u5FC5\u5904\u7406\u8D34\u8FB9\u3002\u4E0B\u62C9\u5185\u641C\u7D22\u6846\u53E6\u8D70 `searchSizing`\uFF08\u540C\u4E00\u5957\u5BBD\u5EA6\u4E09\u8F74\uFF09\uFF0C\u4E0D\u4F20\u5C31\u6CBF\u7528 CSS \u7684 100% \u94FA\u6EE1\uFF1B\u83DC\u5355\u4F1A\u968F `searchSizing` \u7684\u4E0B\u9650\u81EA\u52A8\u52A0\u5BBD\uFF0C\u4E0D\u4F1A\u88AB\u83DC\u5355\u7684 overflow:hidden \u88C1\u6389\u3002\u83DC\u5355\u91CC\u7684\u9009\u9879\u8D85\u957F\u540C\u6837\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF0C\u4E0D\u4F1A\u628A\u83DC\u5355\u6491\u51FA\u6A2A\u5411\u6EDA\u52A8\u6761\u3002",
+        "en": "Picker: single/multiple selection, cap, search, grouping, empty state \u2014 self-drawn. Keyboard: Esc closes, \u2191\u2193 move the cursor, Enter selects. Logic reusable standalone: `toGroups` / `filterGroups` / `toggleValue` / `toFlatOptions` / `resolveMenuSizing`. `width`/`minWidth`/`maxWidth` size the control box (the root; the trigger fills it): the root alone owns the triple and its 120px default lower bound, the trigger holds no bound of its own, and an explicit width or min below 120px is honoured verbatim, so a long label never shifts the control. Near a viewport edge the dropdown narrows and shifts back inside (12px on each side), so callers need no edge handling. The search box takes its own `searchSizing` (the same width/minWidth/maxWidth triple) and fills 100% by default; the menu widens with the search box lower bound so it is never clipped by overflow:hidden."
       },
       {
         "zh": "\u9996\u5C4F\u5206\u9875\uFF1A`limit` \u6309**\u9009\u9879\u6761\u6570**\u8DE8\u7EC4\u5207\u7247\uFF0C\u5217\u8868\u672B\u5C3E\u300C\u663E\u793A\u66F4\u591A\u300D\uFF08\u8DDF\u5728\u6700\u540E\u4E00\u6761\u540E\uFF0C\u50CF\u591A\u4E00\u6761\u9009\u9879\uFF09\u6BCF\u70B9\u4E00\u6B21\u518D\u8FFD\u52A0 `limit` \u6761\uFF1B\u641C\u7D22\u7ED3\u679C\u8D70\u540C\u4E00\u5957\u5206\u9875\uFF0C\u6362\u641C\u7D22\u8BCD\u6216\u91CD\u65B0\u5C55\u5F00\u90FD\u56DE\u5230\u9996\u5C4F\u3002\u4E0D\u4F20 `limit` \u5C31\u662F\u5168\u91CF\u6E32\u67D3\u3002`PickerOption.keywords` \u662F\u53EF\u9009\u7684\u5355\u4E2A\u5B57\u7B26\u4E32\uFF08\u8C03\u7528\u65B9\u81EA\u5DF1\u62FC\uFF09\uFF0C\u53EA\u548C `label` \u62FC\u8D77\u6765\u53C2\u4E0E\u5927\u5C0F\u5199\u4E0D\u654F\u611F\u5B50\u4E32\u5339\u914D\uFF0C**\u7EDD\u4E0D\u6E32\u67D3**\u2014\u2014\u9002\u5408\u4EFB\u52A1 UUID \u8FD9\u79CD\u300C\u7528\u6237\u80FD\u8D34\u3001\u4F46\u4E0D\u8BE5\u663E\u793A\u300D\u7684\u641C\u7D22\u8BCD\u3002\u7EAF\u903B\u8F91\u53E6\u53EF\u5355\u7528 `sliceGroups`\u3002",
@@ -64687,10 +64692,10 @@ var docData = {
           {
             "name": "minWidth",
             "type": "number | string",
-            "def": "120px\uFF08CSS \u9ED8\u8BA4\uFF09",
+            "def": "120px\uFF08\u63A7\u4EF6\u9ED8\u8BA4\uFF09",
             "desc": {
-              "zh": "\u6700\u5C0F\u5BBD\uFF1B\u5185\u5BB9\u4E0D\u5230\u6B64\u5BBD\u63A7\u4EF6\u4E5F\u4E0D\u66F4\u7A84",
-              "en": "Minimum width; control never narrower than this"
+              "zh": "\u6700\u5C0F\u5BBD\uFF08\u9ED8\u8BA4\u4E0B\u9650\u7531\u6839\u76D2\u6301\u6709\uFF09\uFF1B\u663E\u5F0F\u7ED9\u7684\u503C\u5C0F\u4E8E\u9ED8\u8BA4\u503C\u4E5F\u751F\u6548\uFF0C\u5185\u5BB9\u4E0D\u5230\u6B64\u5BBD\u63A7\u4EF6\u4E0D\u66F4\u7A84",
+              "en": "Minimum width (the root owns the default lower bound); an explicit value below the default is honoured, and the control never gets narrower than the result"
             }
           },
           {
@@ -71485,9 +71490,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.21"}`],
-            [t3("buildDemo"), `v${"0.35.21"}`],
-            [t3("buildStamp"), "261111-095036-873"]
+            [t3("buildCore"), `v${"0.35.22"}`],
+            [t3("buildDemo"), `v${"0.35.22"}`],
+            [t3("buildStamp"), "261111-135400-209"]
           ].map(
             ([label, value]) => (0, import_react99.createElement)(
               "tr",
@@ -71803,9 +71808,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react101.createElement)("span", null, `core v${"0.35.21"}`),
-          (0, import_react101.createElement)("span", null, `demo v${"0.35.21"}`),
-          (0, import_react101.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261111-095036-873")
+          (0, import_react101.createElement)("span", null, `core v${"0.35.22"}`),
+          (0, import_react101.createElement)("span", null, `demo v${"0.35.22"}`),
+          (0, import_react101.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261111-135400-209")
         )
       )
     ),

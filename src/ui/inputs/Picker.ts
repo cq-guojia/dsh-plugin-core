@@ -8,6 +8,7 @@ import {
   filterGroups,
   flattenOptions,
   labelsOf,
+  PICKER_DEFAULT_MIN_WIDTH,
   resolveMenuSizing,
   resolveTriggerSizing,
   sliceGroups,
@@ -88,8 +89,10 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
   const placement = props.placement ?? 'down'
   const clearable = props.clearable === true
   const showLabels = props.showLabels !== false
-  // 宽度三轴落在控件根盒而非触发器：根盒定宽后，长模型名不会再把控件与同排控件挤走（2026-11-10 真机）。
-  const controlStyle = resolveTriggerSizing(props)
+  // 宽度三轴与默认下限都落在控件根盒：根盒定宽后，长模型名不会再把控件与同排控件挤走（2026-11-10 真机）。
+  // 默认下限也放这里（不放 CSS），与调用方三轴在同一层竞争；触发器只铺满、不自带下限。
+  const sizing = resolveTriggerSizing(props)
+  const controlStyle = { ...sizing, minWidth: sizing.minWidth ?? PICKER_DEFAULT_MIN_WIDTH }
   const groups = useMemo(
     () => toGroups(props.groups, props.options),
     [props.groups, props.options],

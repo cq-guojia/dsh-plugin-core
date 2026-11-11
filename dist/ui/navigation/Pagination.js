@@ -86,8 +86,8 @@ export function Pagination(props) {
     const sizeNode = options.length === 0
         ? null
         : h(Picker, {
+            // 沿用根盒默认下限：旧写法 minWidth:'auto' 压不住触发器的 120，迁移后会把控件缩到文字宽。
             className: 'dshpc-pagination__size',
-            minWidth: 'auto',
             mode: 'single',
             size: props.size,
             options: options.map((size) => ({
