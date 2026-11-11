@@ -7,7 +7,28 @@ const INDEPENDENT = new Set([
     'turn-error',
     'turn-max-tokens',
     'turn-tail',
+    // 题卡作答气泡（外壳包 ui-user-questions 注册的 kind）。这份清单和 ChatNodeSeat 那份是**两张表**：
+    // 漏在这一张里会被 buildProcessGroups 折进过程组 ⇒ 组一收起整条就不见了（2026-11-11 就是这个坑：
+    // 只补了 ChatNodeSeat 那张，用户看到的还是「什么都没有」）。
+    'answered-user-question',
+    'question-reply',
 ]);
+/** 宿主默认呈现模式（ui-chat lib/client.js:14814 `DEFAULT_TRANSCRIPT_VIEW_MODE = "detailed"`）。 */
+export const DEFAULT_TRANSCRIPT_VIEW_MODE = 'detailed';
+/**
+ * 官方 `stepGrouping` → 要不要分组（ChatGroupSeat 的 `grouped`）。
+ * compact / standard = `collapsed`（恒分组）；detailed = `history`（轮次开着时不分组、条目平铺）；
+ * verbose = `none`（从不分组）。
+ * @param mode - 呈现模式。
+ * @param live - 该组所属 turn 是否还开着。
+ */
+function groupedOf(mode, live) {
+    if (mode === 'verbose')
+        return false;
+    if (mode === 'detailed')
+        return !live;
+    return true;
+}
 /** 节点所属 turn（官方 turnOf，process-groups.js:10574）。 */
 function turnOfNode(node) {
     const location = node.location;
@@ -104,7 +125,9 @@ function processActivity(nodes) {
  * @param readNode - keyed 节点读取。
  * @param isTurnClosed - turn 是否已闭合（官方 turns.get(turn).status === 'closed'）。
  */
-export function buildProcessGroups(order, readNode, isTurnClosed) {
+export function buildProcessGroups(order, readNode, isTurnClosed, 
+/** 官方 `transcriptView`（宿主默认 detailed）：决定 `stepGrouping`，即要不要分组。 */
+mode = DEFAULT_TRANSCRIPT_VIEW_MODE) {
     const entries = [];
     const groups = new Map();
     let pending = [];
@@ -115,6 +138,7 @@ export function buildProcessGroups(order, readNode, isTurnClosed) {
             return;
         const turn = currentTurn;
         const ended = closed || (turn !== undefined && isTurnClosed(turn));
+        const live = turn !== undefined && !isTurnClosed(turn);
         const members = pending;
         const nodes = members
             .map(member => readNode(member.key))
@@ -124,7 +148,16 @@ export function buildProcessGroups(order, readNode, isTurnClosed) {
         groups.set(groupKey, {
             key: groupKey,
             members,
-            data: { turn: turn ?? -1, closed: ended, summary: { counts: processActivity(nodes) } },
+            data: {
+                turn: turn ?? -1,
+                closed: ended,
+                live: live,
+                // 官方 ChatGroupSeat：`grouped = stepGrouping === 'collapsed'
+                //   || (stepGrouping === 'history' && turn 不是 open && !deferCollapse)`。
+                // 宿主默认 collapseTiming = completion ⇒ deferCollapse 恒 false。
+                grouped: groupedOf(mode, live),
+                summary: { counts: processActivity(nodes) },
+            },
         });
         entries.push({ kind: 'group', key: groupKey });
         pending = [];

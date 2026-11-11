@@ -47,7 +47,10 @@ export function ChatGroupSeatMirror(props) {
         ? location.turn?.end?.data?.reason?.kind
         : undefined;
     // 官方 ChatGroupSeat 的 alwaysOpen（0.2.1-rc.5 chat:4159）：多 turnClosed === false 分支，且含 interrupted。
+    // 官方 live turn 的过程组永远展开（alwaysOpen = liveProcess）；`group.data.live` 是构建组时
+    // 记下的 turn 开关状态，presentation（宿主 store.processSource）拿不到时靠它兜底。
     const alwaysOpen = presentation?.turnClosed === false
+        || group.data.live === true
         || presentation?.hasInterleavedInput === true
         || reason === 'aborted'
         || reason === 'interrupted'

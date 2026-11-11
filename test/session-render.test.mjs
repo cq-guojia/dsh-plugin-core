@@ -379,6 +379,76 @@ test('题目面板：continued 态显示官方「已继续工作，仍可回答�
   assert.match(html, /askPanelContinued/)
 })
 
+// ── 题卡作答气泡（官方 QuestionReplyView）与思考行的流式展开 ──
+
+const { QuestionReplyBubble, replyAnswerValues, replyClipboardText } =
+  await import('../dist/adv/session/mirror/QuestionReply.js')
+const { ReasoningRowMirror } = await import('../dist/adv/session/mirror/ReasoningRow.js')
+
+const REPLY_DATA = {
+  callId: 'c1',
+  outcome: 'answered',
+  time: Date.UTC(2026, 10, 11, 15, 3),
+  questions: [
+    { id: 'q1', header: '数据库选型', question: '数据库用哪个?' },
+    { id: 'q2', question: '要不要缓存?' },
+  ],
+  answers: [
+    { id: 'q1', selected: ['SQLite'] },
+    { id: 'q2', selected: [], custom: '先不做' },
+  ],
+}
+
+test('题卡作答气泡：题在上、答案在下，推荐/跳过/自定义都对', () => {
+  const html = renderToStaticMarkup(h(QuestionReplyBubble, { data: REPLY_DATA, t: (key) => key }))
+  assert.match(html, /data-question-reply="c1"/)
+  assert.match(html, /data-reply-outcome="answered"/)
+  assert.match(html, /数据库选型/)
+  assert.match(html, /数据库用哪个\?/)
+  assert.match(html, /SQLite/)
+  assert.match(html, /先不做/, '自定义答案照样出')
+  assert.match(html, /role="group"/)
+  assert.match(html, />\d{2}:\d{2}</, '带 HH:mm 时间')
+})
+
+test('题卡作答气泡：题面读不出来时退回 payload 原话；跳过显示「已跳过」', () => {
+  const raw = renderToStaticMarkup(h(QuestionReplyBubble, {
+    data: { text: '{"questions":[]}', outcome: 'answered', time: 0 }, t: (key) => key,
+  }))
+  assert.match(raw, /replyLabel/)
+  assert.match(raw, /\{&quot;questions&quot;:\[\]\}/)
+  const skipped = renderToStaticMarkup(h(QuestionReplyBubble, {
+    data: { callId: 'c2', questions: [{ id: 'q1', question: 'q' }], answers: [{ id: 'q1', selected: [] }] },
+    t: (key) => key,
+  }))
+  assert.match(skipped, /replySkipped/)
+})
+
+test('题卡作答数据：选中值 + 非空自定义拼一起；复制文本按题分段', () => {
+  assert.deepEqual(replyAnswerValues(REPLY_DATA, 'q1'), ['SQLite'])
+  assert.deepEqual(replyAnswerValues(REPLY_DATA, 'q2'), ['先不做'])
+  assert.deepEqual(replyAnswerValues(REPLY_DATA, 'q3'), [])
+  assert.equal(
+    replyClipboardText(REPLY_DATA, (key) => key),
+    '数据库选型 — 数据库用哪个?\nreplyAnswerLabelSQLite\n\n要不要缓存?\nreplyAnswerLabel先不做',
+  )
+  assert.equal(replyClipboardText({ text: 'raw' }, (key) => key), 'raw')
+})
+
+test('思考行：流式时正文一直展开，结束后才收成摘要', () => {
+  const running = renderToStaticMarkup(h(ReasoningRowMirror, {
+    text: '第一段思考\n\n第二段还在写', running: true, t: (key) => key,
+  }))
+  assert.match(running, /data-expanded="(true|)"/, 'running 时展开')
+  assert.match(running, /data-state="running"/)
+  assert.doesNotMatch(running, /data-preview/, '展开时不再显示单行预览')
+  const settled = renderToStaticMarkup(h(ReasoningRowMirror, {
+    text: '第一段思考\n\n第二段', t: (key) => key,
+  }))
+  assert.doesNotMatch(settled, /data-expanded/, '结束后收起')
+  assert.match(settled, /data-preview="(true|)"/, '收起后是摘要行')
+})
+
 test('approvalCommand：按 callId 取 tool-call 起始节点的 args.command', () => {
   const nodes = new Map([
     ['k1', { kind: 'tool-call', key: 'k1', anchorSeq: 1, data: { root: { callId: 'c2', phase: 'start', argsRaw: '{"command":"ls"}' } } }],

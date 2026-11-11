@@ -2,8 +2,14 @@ import { createElement as h, type ReactNode } from 'react';
 import { type Translate } from '../../utils/i18n.js';
 import type { SessionViewTarget } from './open-session-view.js';
 import { type ChangedFileReviewLocator } from './mirror/ChangedFilesCard.js';
+import { type TranscriptViewMode } from './mirror/process-groups.js';
 export interface SessionViewModalProps {
     t?: Translate;
+    /**
+     * 官方「对话呈现」模式（决定过程区要不要分组）：`detailed`（宿主默认）在轮次还开着时**不分组**、
+     * 条目平铺；`compact` / `standard` 恒分组；`verbose` 从不分组。缺省 = `detailed`。
+     */
+    presentationMode?: TranscriptViewMode;
     /**
      * 标题行（第一级）：核心画在标题位，下方 sessionId 副标题行与归档徽标不受影响。
      * 想在标题后跟标签 / 按钮 / 自己的一段节点，塞进这里。

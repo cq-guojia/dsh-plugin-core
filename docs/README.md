@@ -19,7 +19,7 @@
 | 文档规范 | `docs/README.md`（本文件，路径固定） | 槽位表 + 阅读顺序 + 目录树（统一索引） |
 | 文档库元数据 | `docs/.docwriter.json` | 版本闸门与初始化时间，由文档工具维护，不手改 |
 | 目录树 | `docs/README.md` 的 `## 目录` 节 | 由文档工具按磁盘生成；连接符 / 顺序 / 对齐不手改，只补每行 `#` 后的一句话说明 |
-| 项目门面（英 + 简中，随包发布） | 根 `README.md` / `README.zh-CN.md`；`packages/demo/README.md` / `packages/demo/README.zh-CN.md` | 两个 npm 包的对外说明：功能总览、适配范围、安装与截图；中文版是英文版的翻译，正文只此一份 |
+| 项目门面（英 + 简中，随包发布） | 根 `README.md` / `README.en.md`；`packages/demo/README.md` / `packages/demo/README.en.md` | 两个 npm 包的对外说明：功能总览、适配范围、安装与截图；中文版是英文版的翻译，正文只此一份 |
 | **帮助文档区（追加槽位）** | **`docs/help/`** | **给引用方 / Agent，随包发布；`.doc.ts` 真源 + `.md` 投影同目录** |
 | 帮助索引（入口） | `docs/help/index.md`（← `index.doc.ts`） | 引用方与 Agent 的唯一入口：按任务挑一份 |
 | 接入样例 | `docs/help/integration.md`（← `integration.doc.ts`） | 从零接入一个插件 |

@@ -62,18 +62,21 @@ function latestCompletedParagraphFirstLine(text) {
 export function ReasoningRowMirror(props) {
     const { text: rawText, running = false, preview: settledPreview = true, t } = props;
     const [open, setOpen] = useState(false);
+    // 官方实测行为（用户 2026-11-11 对照官方会话）：**还在思考时正文是一直展开的**，
+    // 思考结束才收成一行摘要并出现可折叠。所以展开态 = 用户展开 || 正在流式。
+    const expanded = open || running;
     const text = useMemo(() => reasoningText(rawText), [rawText]);
     if (text !== rawText && text.trim() === '')
         return null;
     const summaryText = running ? latestCompletedParagraphFirstLine(text) : firstLine(text);
     // lib 目标是 ES2020（无 String.replaceAll）⇒ split/join 等价去 `**`。
     const summary = summaryText.split('**').join('');
-    const preview = !open && summary !== '' && (running || settledPreview);
+    const preview = !expanded && summary !== '' && (running || settledPreview);
     return h('div', {
         className: officialClass('ReasoningRow', 'root') ?? '',
         'data-variant': 'think',
         'data-state': running ? 'running' : 'ok',
-        'data-expanded': open || undefined,
+        'data-expanded': expanded || undefined,
         'data-preview': preview || undefined,
     }, running
         ? h('span', { className: officialClass('accessibility', 'visuallyHidden') ?? '' }, t('reasoningRunning'))
@@ -81,7 +84,7 @@ export function ReasoningRowMirror(props) {
         icon: h(IconThinkOutlineRegular, { size: 14 }),
         title: t('thinkLabel'),
         running,
-        open,
+        open: expanded,
         expandable: true,
         expandOnRowClick: true,
         onToggle: () => { setOpen(value => !value); },
@@ -98,7 +101,7 @@ export function ReasoningRowMirror(props) {
             className: officialClass('ReasoningRow', 'summary') ?? '',
             'data-streaming': running || undefined,
         }, h('span', { className: officialClass('ReasoningRow', 'summaryText') ?? '' }, h(TextShimmer, null, summary)))),
-        children: open
+        children: expanded
             ? h('div', { className: officialClass('ReasoningRow', 'thinkBody') ?? '' }, h(MarkdownText, {
                 text,
                 streaming: running,

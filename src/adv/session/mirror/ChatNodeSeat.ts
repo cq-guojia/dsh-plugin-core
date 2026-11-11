@@ -43,6 +43,10 @@ export const TURN_PROCESS_INDEPENDENT_KINDS: ReadonlySet<string> = new Set([
   'turn-error',
   'turn-max-tokens',
   'turn-tail',
+  // 题卡作答气泡（外壳包 ui-user-questions 注册的两种节点）：它是一条「用户发言」，
+  // 官方永远当独立条目放在过程区外；漏了这两项就会被折进过程组、默认收起 ⇒ 整条看不见。
+  'answered-user-question',
+  'question-reply',
 ])
 
 /**

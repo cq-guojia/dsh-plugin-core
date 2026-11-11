@@ -43,6 +43,7 @@ import {
   type PendingQuestionSet,
 } from './pending-questions.js'
 import { QuestionPanel } from './mirror/QuestionPanel.js'
+import { QuestionReplyBubble, type QuestionReplyDataFace } from './mirror/QuestionReply.js'
 import { SkillRowMirror } from './mirror/SkillRow.js'
 import { ContextInjectionRowMirror, type ContextFace } from './mirror/ContextInjectionRow.js'
 import { ReasoningRowMirror } from './mirror/ReasoningRow.js'
@@ -53,7 +54,11 @@ import { TurnTriggerNodeViewMirror } from './mirror/TurnTriggerNodeView.js'
 import { DeliverablesGridMirror, PresentRowMirror, type DeliveredFileFace } from './mirror/Deliverables.js'
 import { ChangedFilesCard, type ChangedFileReviewLocator } from './mirror/ChangedFilesCard.js'
 import { turnDeliverablesChangesSeq, turnDeliverablesValue } from './changes.js'
-import { buildProcessGroups } from './mirror/process-groups.js'
+import {
+  buildProcessGroups,
+  DEFAULT_TRANSCRIPT_VIEW_MODE,
+  type TranscriptViewMode,
+} from './mirror/process-groups.js'
 import { observedRpcIds, waitingUserRows } from './pending-inputs.js'
 import { officialClass, officialModuleCount } from './official-classes.js'
 import { t as defaultT } from '../../utils/i18n.js'
@@ -82,6 +87,9 @@ let officialWarned = false
 
 /** 题面板「只能看不能点」的原因只报一次（否则每次渲染刷屏）。 */
 let questionReadOnlyWarned = false
+
+/** 尾部节点读数只报一次：定位「作答气泡没出来 / 思考行不收不展」用，一次讲清现场。 */
+let tailKindsWarned = false
 
 // ─────────────────────────── 纯函数：内容块 → 可读文本 / 文件 ───────────────────────────
 
@@ -275,6 +283,10 @@ function renderKeyedNode(
   footerSlot?: ReactNode,
   /** 该挂到哪个节点的 key 上（最后一条带回复的 turn-tail；undefined = 不挂）。 */
   footerKey?: string,
+  /** 会话是否正在运行（官方 SessionSnapshot.running）：流式尾判定的兜底。 */
+  sessionRunning?: boolean,
+  /** 流末尾节点 key：快照里 status 可能还没变 'running'，用它兜住「正在思考」这一拍。 */
+  liveKey?: string,
 ): ReturnType<typeof h> | null {
   switch (node.kind) {
     case 'turn-trigger':
@@ -323,7 +335,10 @@ function renderKeyedNode(
       //   · groupPart 'reasoning' 只画思考块、'response' 跳过思考块；未分组全画（除工具块）。
       const nodeData = dataOf(node)
       const blocks = blocksOf(nodeData.blocks) ?? []
+      // 官方只有 data.status === 'running'；但弹窗读的快照在流式那一拍可能还是 settled，
+      // 于是用「会话 running + 流末尾这个节点」兜底，否则思考行永远不展开（2026-11-11 真机）。
       const streaming = nodeData.status === 'running'
+        || (sessionRunning === true && liveKey !== undefined && node.key === liveKey)
       const interrupted = nodeData.status === 'interrupted'
       const contentBlocks = blocks.filter(block => block.kind !== 'tool-call')
       // 官方 AssistantMarkdown 提前返回：整步只有 tool-call（且非流式 / 非中断）⇒ 不渲染。
@@ -379,6 +394,13 @@ function renderKeyedNode(
         skillNames: (dataOf(node) as { skillNames?: readonly string[] }).skillNames,
         t,
       })
+    }
+    // 题卡作答气泡（官方外壳包 ui-user-questions 注册的两个节点 kind）：一条「我的回答」，
+    // 官方是右对齐气泡（QuestionReplyView）；不接就会落 default 显示成未知节点。
+    case 'answered-user-question':
+    case 'question-reply': {
+      const data = dataOf(node) as unknown as QuestionReplyDataFace
+      return data === undefined ? null : h(QuestionReplyBubble, { data, t })
     }
     case 'turn-error':
       return h(TurnErrorItemMirror, { node: dataOf(node) as TurnErrorFace, t })
@@ -799,6 +821,11 @@ function makeFileMentions(paths: readonly string[], open: (path: string) => void
 export interface SessionViewModalProps {
   t?: Translate
   /**
+   * 官方「对话呈现」模式（决定过程区要不要分组）：`detailed`（宿主默认）在轮次还开着时**不分组**、
+   * 条目平铺；`compact` / `standard` 恒分组；`verbose` 从不分组。缺省 = `detailed`。
+   */
+  presentationMode?: TranscriptViewMode
+  /**
    * 标题行（第一级）：核心画在标题位，下方 sessionId 副标题行与归档徽标不受影响。
    * 想在标题后跟标签 / 按钮 / 自己的一段节点，塞进这里。
    * 缺省 = `heading`，再缺省 =「会话预览」。
@@ -1202,16 +1229,18 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
     (node, turnProcess, groupPart) => renderKeyedNode(
       node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn,
       lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage,
-      bodyFooterRow, footerAnchorKey,
+      bodyFooterRow, footerAnchorKey, sessionSnap?.running === true, order[order.length - 1],
     ),
-    [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage, bodyFooterRow, footerAnchorKey],
+    [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage, bodyFooterRow, footerAnchorKey, sessionSnap?.running, order],
   )
   // 官方 grouped('chat')：把 keyed 流切成「独立条目 + 过程分组」（二级收折）。
   const isTurnClosed = useCallback((turn: number): boolean =>
     (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== 'open', [turns])
+  // 官方呈现模式决定「过程要不要分组」：宿主默认 detailed ⇒ 轮次开着时条目平铺（官方思考中就是摊开的）。
+  const presentationMode: TranscriptViewMode = props.presentationMode ?? DEFAULT_TRANSCRIPT_VIEW_MODE
   const groupedView = useMemo(
-    () => keyed ? buildProcessGroups(order, key => store?.get(key), isTurnClosed) : undefined,
-    [keyed, order, store, isTurnClosed],
+    () => keyed ? buildProcessGroups(order, key => store?.get(key), isTurnClosed, presentationMode) : undefined,
+    [keyed, order, store, isTurnClosed, presentationMode],
   )
 
   // 官方 RunningStatus（0.2.x）的 startTime：流末尾那个节点所属 turn 处于 open 时的开始时间
@@ -1248,6 +1277,22 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
     if (officialCount === 0) {
       console.warn('[dsh-plugin-core:session] 未发现官方 ui-chat 样式模块 ⇒ 弹窗观感退回自绘样式（功能不受影响）')
     }
+  }
+  // 一次性读数（只读日志，不改行为）：流里到底有哪些 kind、末节点 status 是什么、会话在不在跑。
+  if (keyed && store !== undefined && !tailKindsWarned) {
+    tailKindsWarned = true
+    const counts = new Map<string, number>()
+    for (const key of order) {
+      const kind = store.get(key)?.kind ?? '?'
+      counts.set(kind, (counts.get(kind) ?? 0) + 1)
+    }
+    const tail = order.slice(-4).map((key) => {
+      const node = store.get(key)
+      const data = node?.data as { status?: string } | undefined
+      return node === undefined ? '?' : `${node.kind}${data?.status === undefined ? '' : `(${data.status})`}`
+    })
+    console.info(`[dsh-plugin-core:session] 会话 running=${sessionSnap?.running === true}；`
+      + `末 4 个=${tail.join(' | ')}；全流=${[...counts].map(([kind, count]) => `${kind}×${count}`).join(' ')}`)
   }
   const openState = sessionSnap?.openState
   const showLoadOlder = sessionSnap?.hasMore !== false

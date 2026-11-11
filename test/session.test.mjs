@@ -171,6 +171,54 @@ test('buildProcessGroups：assistant-step 思考入组、回复独立', () => {
   assert.deepEqual(view.entries.map((e) => `${e.kind}:${e.groupPart ?? ''}`), ['group:', 'node:response'])
 })
 
+test('buildProcessGroups：作答气泡（answered-user-question / question-reply）独立成条目，不被折进过程组', () => {
+  const order = ['u1', 'a1', 'reply', 'late']
+  const store = new Map([
+    ['u1', node('u1', 'user', 1)],
+    ['a1', node('a1', 'assistant-step', 1, { data: { blocks: [{ kind: 'reasoning', text: '想' }] } })],
+    ['reply', node('reply', 'answered-user-question', 1, { data: { callId: 'c1', questions: [], answers: [] } })],
+    ['late', node('late', 'question-reply', 1, { data: { callId: 'c2', questions: [], answers: [] } })],
+  ])
+  const view = buildProcessGroups(order, (k) => store.get(k), () => true)
+  // 两张独立清单都要认这两个 kind：漏在 process-groups 这张里 ⇒ 被折进组、组一收起整条不见。
+  assert.deepEqual(view.entries.map((e) => `${e.kind}:${e.key}`), [
+    'node:u1', 'group:["process","a1","reasoning"]', 'node:reply', 'node:late',
+  ])
+})
+
+test('buildProcessGroups：呈现模式决定 grouped —— detailed（宿主默认）活轮不分组、条目平铺', () => {
+  const order = ['u1', 't1']
+  const store = new Map([
+    ['u1', node('u1', 'user', 1)],
+    ['t1', node('t1', 'tool-call', 1, { data: { root: { callId: 'c1', name: 'read', argsRaw: '{}' } } })],
+  ])
+  const read = (k) => store.get(k)
+  const liveDetailed = buildProcessGroups(order, read, () => false, 'detailed')
+  const closedDetailed = buildProcessGroups(order, read, () => true, 'detailed')
+  const closedStandard = buildProcessGroups(order, read, () => true, 'standard')
+  const closedVerbose = buildProcessGroups(order, read, () => true, 'verbose')
+  const groupedOf = (view) => [...view.groups.values()][0].data.grouped
+  // 官方：grouped = collapsed 恒真；history = 轮次不是 open；none = 从不
+  assert.equal(groupedOf(liveDetailed), false, 'detailed + 活轮 ⇒ 不画汇总壳（官方思考中就摊开）')
+  assert.equal(groupedOf(closedDetailed), true, 'detailed + 已闭合 ⇒ 收成一行')
+  assert.equal(groupedOf(closedStandard), true, 'standard ⇒ 恒分组')
+  assert.equal(groupedOf(closedVerbose), false, 'verbose ⇒ 从不分组')
+})
+
+test('buildProcessGroups：活轮（turn 没闭合）的组带 live，收折判据据此强制展开', () => {
+  const order = ['u1', 't1']
+  const store = new Map([
+    ['u1', node('u1', 'user', 1)],
+    ['t1', node('t1', 'tool-call', 1, { data: { root: { callId: 'c1', name: 'read', argsRaw: '{}' } } })],
+  ])
+  const live = buildProcessGroups(order, (k) => store.get(k), () => false)
+  const paused = buildProcessGroups(order, (k) => store.get(k), () => true)
+  const liveGroup = [...live.groups.values()][0]
+  const pausedGroup = [...paused.groups.values()][0]
+  assert.equal(liveGroup.data.live, true, 'turn 开着 ⇒ live')
+  assert.equal(pausedGroup.data.live, false, 'turn 闭合 ⇒ 不 live')
+})
+
 test('toolActivity：官方工具名 → 活动类别映射', () => {
   assert.equal(toolActivity('read'), 'read')
   assert.equal(toolActivity('read_image'), 'readImage')

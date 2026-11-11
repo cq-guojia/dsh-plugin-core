@@ -268,6 +268,9 @@ export type UtilMessageKey =
   | 'askPanelContinued'
   | 'askPanelCountdown'
   | 'askPanelWaitPaused'
+  | 'replyLabel'
+  | 'replySkipped'
+  | 'replyAnswerLabel'
   | 'detailState'
   | 'detailGoalEmpty'
   | 'detailGoalDisarmed'
@@ -820,6 +823,10 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     askPanelContinued: '已继续工作，仍可回答',
     askPanelCountdown: '{seconds} 秒后继续工作',
     askPanelWaitPaused: '已暂停 · 剩余 {seconds} 秒',
+    // 已作答气泡（官方 QuestionReplyView 的 question 词表逐字对齐）
+    replyLabel: '问题与回答',
+    replySkipped: '已跳过',
+    replyAnswerLabel: '回答：',
     detailState: '状态',
     detailGoalEmpty: '没有目标',
     detailGoalDisarmed: '等待继续',
@@ -1386,6 +1393,9 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     askPanelContinued: 'continued; still answerable',
     askPanelCountdown: 'continues in {seconds}s',
     askPanelWaitPaused: 'paused · {seconds}s left',
+    replyLabel: 'Questions and answers',
+    replySkipped: 'Skipped',
+    replyAnswerLabel: 'Answer: ',
     detailState: 'Status',
     detailGoalEmpty: 'No goal',
     detailGoalDisarmed: 'Awaiting continuation',

@@ -453,6 +453,7 @@
 | ui-tool 的 `AskQuestionCard` unanswered 分支（verdict + 问题清单）**只管会话流里已结算的工具行**，不是待答面板 | ui-tool `lib/client.js:1310-1340` |
 | **`open` 行不会自建载体**：投影对账时只有 `state==='continued'` 才 `cards.ensure(...)` + `attachRpc`，`open` 行只对「已存在的卡」`setState` ⇒ 刷新过 / 被后台委托过之后，open 题在客户端**根本没有载体**，任何客户端都答不了（不是本仓缺实现） | 同包 `src/client/index.ts:286-350`（`publishContinuedQuestions.reconcile`） |
 | 官方题面板「收起」只是 `unpublish`（离座），卡与 waterfall 都还在；回去的唯一入口是 `userQuestionPanels.reveal(sessionId, callId)`（`ctx.reflect.provide` 出来的可选服务，`cards.reveal` 要求卡还在私有表里） | 同包 `src/client/index.ts:376-379`、`:133-136` (`reveal`) |
+| 作答结果在会话流里是**两个独立的 chat 节点 kind**：`answered-user-question`（当场作答，配 tool/call + tool/result）与 `question-reply`（超时后补答）。`data = { callId, outcome, questions[], answers[], text, time }`，由 `QuestionReplyView` 画成右对齐气泡（题在上、答案在下 + 时间 + 复制）。**它们不进过程折叠区** | 同包 `src/client/question-reply.ts`（`answeredQuestionDefinition` / `questionReplyDefinition`）、`QuestionReplyView.tsx` |
 
 处置（本仓）：`src/adv/session/pending-approval.ts` 读 `uiSession.sessionStatus`（**不** `$on` 抢瀑布，答走
 `pendingInteraction.answer()`）；`src/adv/session/pending-questions.ts` 的 `openLiveQuestion` 取同一入口上的
@@ -460,7 +461,9 @@
 `open-session-view.ts` 的第六参收 `userQuestionPanels`，绑成 `SessionViewTarget.revealPendingQuestion`：
 弹窗 detect 到「有题但没有载体」时先调一次 `reveal`（官方收起后的回去路），成功 ⇒ 载体推回来、面板即可作答，
 失败 ⇒ 如实退回只读并只报一次因；
-`mirror/ApprovalPanel.ts` 与 `mirror/QuestionPanel.ts` 各自按官方 DOM/类名 1:1 画卡；
+`mirror/ApprovalPanel.ts` 与 `mirror/QuestionPanel.ts` 各自按官方 DOM/类名 1:1 画卡，作答气泡走
+`mirror/QuestionReply.ts`（`QuestionReplyView` 的 1:1 复刻），两个 kind 已登记进
+`mirror/ChatNodeSeat.ts` 的 `TURN_PROCESS_INDEPENDENT_KINDS`（漏了就会被折进过程组、默认收起 = 整条看不见）；
 `SessionViewModal` 在底栏栈里画这两张卡（官方位置 = 输入框接管 / 面板），有卡时关掉底栏分隔线（官方那里没有线）。
 `openSessionView` 第五参给 `uiSession`、第六参给 `userQuestionPanels`，不传 ⇒ 两张卡都没有（预览保持纯只读）。
 

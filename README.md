@@ -1,244 +1,244 @@
 # dsh-plugin-core
 
-**English** · [简体中文](https://github.com/cq-guojia/dsh-plugin-core/blob/main/README.zh-CN.md)
+**简体中文** · [English](https://github.com/cq-guojia/dsh-plugin-core/blob/main/README.en.md)
 
-The shared UI foundation for **DSH (DeepSeek Harness)** plugins: design tokens, a complete React control set, pure helpers, workspace file browsing, and read-only session preview — in one package, imported subpath by subpath.
+**DSH（DeepSeek Harness）** 插件的共享 UI 底座：设计 token、一整套 React 控件、纯方法、工作区文件浏览、只读会话预览——一个包，按子路径引入。
 
-It exists so that every plugin does not re-implement the same button, date picker, toast, file preview and conversation playback. Everything here is built on the host's own tokens and theme switch, so a plugin assembled from these parts looks native without any per-plugin skinning.
+它存在的意义是：写下一个插件时，不必再把按钮、日期选择器、toast、文件预览、会话回放各抄一遍。这里的东西全部长在宿主自己的 token 与明暗开关上，拼出来的插件天然是宿主的样子，不需要每个插件各调一遍皮肤。
 
-- **Follows the host, not the OS.** Light and dark come from the host's `body[data-ds-dark-theme]`; the 12 accent colors are the same ones the host uses.
-- **Nothing here fetches data.** Values, options, workspaces and sessions arrive through props or a small injected interface — the components never reach into the host behind your back.
-- **Runs everywhere the code runs.** The `design`, `ui` and `utils` entries carry zero `@deepseek-ai/*` imports, so they import cleanly in Node and in tests, not just inside the host.
+- **跟宿主走，不跟系统走**：明暗判据是宿主写在 body 上的 `body[data-ds-dark-theme]`，12 个强调色也是宿主那套。
+- **组件不取数**：选项、当前值、工作区、会话，一律由调用方经 props 或一次性注入的接口给进来，组件绝不自己伸手去要。
+- **在哪儿都能 import**：`design`、`ui`、`utils` 三个入口零 `@deepseek-ai/*` 依赖，Node 与单测环境里直接 import 不会炸，不是只能在宿主里活。
 
-## Screenshots
+## 截图
 
-Real rendering inside a DSH host, dark theme:
+以下都是在 DSH 宿主里暗色主题下的真实渲染：
 
-Design tokens, the theme predicate and the style injector:
+设计基础——token 色板、明暗判据、样式注入机制：
 
-![Design tokens and theme predicate](https://cdn.jsdelivr.net/gh/cq-guojia/dsh-plugin-core@main/assets/readme/01-tokens.png)
+![设计基础](https://cdn.jsdelivr.net/gh/cq-guojia/dsh-plugin-core@main/assets/readme/01-tokens.png)
 
-Buttons — 18 appearance tiers, three heights, icons, automatic loading:
+按钮——18 档外观、三档高度、图标、自动 loading：
 
-![Button tiers](https://cdn.jsdelivr.net/gh/cq-guojia/dsh-plugin-core@main/assets/readme/02-buttons.png)
+![按钮](https://cdn.jsdelivr.net/gh/cq-guojia/dsh-plugin-core@main/assets/readme/02-buttons.png)
 
-Inputs — field hints, switches, checkboxes, segmented controls:
+录入——问号提示、Switch、Checkbox、分段选择器：
 
-![Inputs](https://cdn.jsdelivr.net/gh/cq-guojia/dsh-plugin-core@main/assets/readme/03-inputs.png)
+![录入](https://cdn.jsdelivr.net/gh/cq-guojia/dsh-plugin-core@main/assets/readme/03-inputs.png)
 
-Workspace browsing — right-docked file browser and preview, not limited to workspaces:
+工作区浏览——右侧停靠的文件浏览与预览，且不限工作区：
 
-![Workspace explorer](https://cdn.jsdelivr.net/gh/cq-guojia/dsh-plugin-core@main/assets/readme/04-explorer.png)
+![工作区浏览](https://cdn.jsdelivr.net/gh/cq-guojia/dsh-plugin-core@main/assets/readme/04-explorer.png)
 
-Session preview — a read-only dialog that mirrors the official conversation page:
+会话预览——与官方会话页同构的只读弹窗：
 
-![Session preview](https://cdn.jsdelivr.net/gh/cq-guojia/dsh-plugin-core@main/assets/readme/05-session.png)
+![会话预览](https://cdn.jsdelivr.net/gh/cq-guojia/dsh-plugin-core@main/assets/readme/05-session.png)
 
-All five screenshots are taken from [`dsh-plugin-core-demo`](#see-it-running-the-demo-plugin), the preview plugin shipped from the same repository.
+五张截图都来自 [`dsh-plugin-core-demo`](#装上就能看预览插件)，也就是同仓库发布的预览插件。
 
-## Install
+## 安装
 
 ```bash
 pnpm add dsh-plugin-core
-# or
+# 或者
 npm install dsh-plugin-core
 ```
 
-The published package already contains compiled `dist/` output and type declarations — the host never runs build scripts when installing a plugin. `react` / `react-dom` (`>= 18`) are **optional peers**: skip them if you only use `design` or `utils`.
+发布包里带编译好的 `dist/` 与类型声明——宿主安装插件时不跑构建脚本。`react` / `react-dom`（`>= 18`）是**可选 peer**：只用 `design` 或 `utils` 的插件不必装。
 
-## Quick start
+## 快速开始
 
 ```tsx
-// your plugin's client entry
+// 插件 client 入口
 import { createStyleKit } from 'dsh-plugin-core/design'
 import { Button, Input, setStyleKit, showToast } from 'dsh-plugin-core/ui'
 
-const kit = createStyleKit({ id: 'dsh-task-reminder-ui' }) // 1. one kit per plugin
+const kit = createStyleKit({ id: 'dsh-task-reminder-ui' }) // 1. 一个插件一套
 setStyleKit(kit)
 
 export function TaskEditor(props: { name: string; setName: (v: string) => void }) {
   return (
     <div>
-      <Input value={props.name} onChange={props.setName} placeholder="Task name" hint="Shown in the task list" />
-      <Button variant="primary" onClick={async () => { await save(); showToast('Saved', { variant: 'success' }) }}>
-        Save
+      <Input value={props.name} onChange={props.setName} placeholder="任务名" hint="会显示在任务列表里" />
+      <Button variant="primary" onClick={async () => { await save(); showToast('已保存', { variant: 'success' }) }}>
+        保存
       </Button>
     </div>
   )
 }
 ```
 
-Three things worth knowing on day one:
+第一天就该知道的三件事：
 
-1. **Call `setStyleKit` once.** Styles reach the page as a runtime-injected `<style>` string, because a plugin's client bundle is a CJS closure and the kernel never loads `.css` assets. The `id` must be unique per plugin — several plugins share one page, and the id is what keeps their style tags from overwriting each other.
-2. **Import by name.** Each control registers only its own CSS the first time it renders (idempotent), so an unused control costs nothing in your bundle. That only holds with named imports (`import { Button } from 'dsh-plugin-core/ui'`); `import * as core` or a CJS `require` disables tree-shaking and silently gives the saving back.
-3. **Dialogs are promises.** `await confirmModal({...})` resolves to `true` / `false`, `alertModal({...})` resolves when dismissed. There are no callback-style variants.
+1. **`setStyleKit` 只调一次。** 样式只能以字符串在运行时注入 `<style>`——插件 client 产物是 CJS 闭包，内核不加载 `.css` 资源。`id` 必须插件内唯一：多个插件同页时，靠它让自己的 `<style>` 不被别人覆盖。
+2. **具名引入。** 每个控件在首次渲染时才登记自己那份 CSS（幂等），用不到的控件其 CSS 不进你的包。这条收益只在具名引入时成立（`import { Button } from 'dsh-plugin-core/ui'`）；写成 `import * as core` 或 CJS `require`，打包器无法摇树，收益静默归零。
+3. **弹窗是 Promise 形态。** `await confirmModal({...})` 拿 `true` / `false`，`alertModal({...})` 关闭即 resolve。没有回调式写法。
 
-## What's inside
+## 包里有什么
 
-| Import | What you get | React required |
+| 引入路径 | 给你什么 | 需要 React |
 |---|---|---|
-| `dsh-plugin-core/design` | Token variables (light + dark), `createStyleKit` injector factory, dark-mode predicate | no |
-| `dsh-plugin-core/ui` | The whole control set — actions, inputs, display, feedback, layout, navigation | yes |
-| `dsh-plugin-core/ui/official` | Direct re-exports of the host's official primitives, for the rare case you need one | yes |
-| `dsh-plugin-core/ui/code-viewer` | Read-only `CodeViewer` + editable `CodeEditor`, sharing one CodeMirror surface (file preview uses the viewer) | yes |
-| `dsh-plugin-core/ui/host-toast` | Bridge to the host's own toast | yes |
-| `dsh-plugin-core/utils` | Pure helpers: date, string, bytes, HTTP, built-in zh/en dictionary | no |
-| `dsh-plugin-core/adv/explorer` | File browser, file picker, docked file preview | yes |
-| `dsh-plugin-core/adv/explorer/preview` | Preview bodies: image, PDF, Markdown, HTML, Office, text/code | yes |
-| `dsh-plugin-core/adv/session` | Read-only session preview dialog + changed-file diff | yes |
-| `dsh-plugin-core/host` | Host-side routes: read-only FS route, model catalog | no |
+| `dsh-plugin-core/design` | token 变量（明 + 暗）、`createStyleKit` 注入器工厂、明暗判据 | 否 |
+| `dsh-plugin-core/ui` | 全套控件：动作、录入、展示、反馈、布局、导航 | 是 |
+| `dsh-plugin-core/ui/official` | 官方 primitives 的直接再导出（少数确实要用官方原件的场景） | 是 |
+| `dsh-plugin-core/ui/code-viewer` | 只读 `CodeViewer` + 可编辑 `CodeEditor`，共用一份 CodeMirror 底座（文件预览源码态用查看器） | 是 |
+| `dsh-plugin-core/ui/host` | 宿主自带 toast 的桥接 | 是 |
+| `dsh-plugin-core/utils` | 纯方法：日期、字符串、字节、HTTP，外加内置中英字典 | 否 |
+| `dsh-plugin-core/explorer` | 文件浏览、文件选择、右侧停靠的文件预览 | 是 |
+| `dsh-plugin-core/explorer/preview` | 预览体：图片、PDF、Markdown、HTML、Office、文本 / 代码 | 是 |
+| `dsh-plugin-core/session` | 只读会话预览弹窗 + 变更文件 diff | 是 |
+| `dsh-plugin-core/host` | 宿主侧路由：只读 FS 路由、模型目录 | 否 |
 
-Dependency direction is one-way: `design` ← `ui` ← `explorer` / `session`, while `utils` depends on nothing.
+依赖方向单向：`design` ← `ui` ← `explorer` / `session`，`utils` 谁也不依赖。
 
-## Feature tour
+## 功能说明
 
-### design — tokens and style injection
+### design——token 与样式注入
 
-Zero React, no components: it ships values plus the mechanism that puts them on the page.
+零 React、没有组件，装的是「值 + 把值弄上页面的机制」。
 
-- One token table for both themes, covering surfaces (`--dshpc-surface-1/2/sunken`), text (`--dshpc-fg`, `--dshpc-fg-3`, `--dshpc-fg-4`), borders, and twelve accents: `business`, `success`, `warning`, `danger`, `purple`, `pink`, `cyan`, `teal`, `orange`, `indigo`, `rose`, `slate`.
-- `createStyleKit({ id })` returns a kit with `cssVar(name)`, `registerStyle(domain, css)`, `applyStyle(domain, css)` and `ensureStyles()` — one `<style>` tag per plugin, isolated by id.
-- `DARK_THEME_SELECTOR` is exported as a constant (`body[data-ds-dark-theme]`) so your own CSS never guesses the theme from the OS.
-- Prefixes are fixed across the ecosystem (`--dshpc-*` / `dshpc-*`); there is no per-plugin rename. Plugins built on different core versions are kept apart by the style-tag id, not by prefixing.
+- 一张明暗双份的 token 表：表面（`--dshpc-surface-1/2/sunken`）、文字（`--dshpc-fg`、`--dshpc-fg-3`、`--dshpc-fg-4`）、边框，以及十二个强调色：`business`、`success`、`warning`、`danger`、`purple`、`pink`、`cyan`、`teal`、`orange`、`indigo`、`rose`、`slate`。
+- `createStyleKit({ id })` 返回一套工具：`cssVar(name)`、`registerStyle(domain, css)`、`applyStyle(domain, css)`、`ensureStyles()`——一个插件一个 `<style>` 标签，按 id 隔离。
+- `DARK_THEME_SELECTOR` 常量为 `body[data-ds-dark-theme]`，自己的 CSS 不必再猜系统主题。
+- 变量与类名前缀全生态固定为 `--dshpc-*` / `dshpc-*`，不存在按插件改名；不同 core 版本的插件靠 style 标签 id 隔离，不靠前缀。
 
-Use this subpath alone if you want the palette and the theme switch but write your own components.
+只想统一配色与尺寸、但组件自己写：只引这一个子路径就够。
 
-### ui — the control set
+### ui——控件
 
-Everything is built from tokens, takes its data through props, and follows the host's theme. Props are the customization surface — compose them instead of forking a component. See the [control reference](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/ui.md) for every prop.
+全部由 token 搭出来，数据走 props，配色跟随宿主主题。props 就是定制面——组合 props，不要 fork 源码。每个参数的完整说明见[控件参考](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/ui.md)。
 
-#### Actions
+#### 动作
 
-- `Button` — 18 appearance tiers (solid / outline / bare: `primary`, `secondary`, `danger`, `success`, `warning`, `info`, `outline`, `danger-outline`, `ghost`, `link`, plus the eight extended colors), three heights (24 / 28 / 32), leading and trailing icons, fixed / min / max width with marquee overflow, and automatic loading: return a Promise from `onClick` and the button spins, disables and restores itself — including on rejection.
-- `IconButton` — icon-only variant of the same, with the accessible name enforced.
-- `Segmented` — single or multiple selection, optional 1px frame, per-item icon / count / badge, tone-colored selection.
+- `Button`——18 档外观（实心 / 线框 / 无底：`primary`、`secondary`、`danger`、`success`、`warning`、`info`、`outline`、`danger-outline`、`ghost`、`link`，加扩展八色），三档高度（24 / 28 / 32），前置与后置图标，固定 / 最小 / 最大宽度（超长跑马灯），自动 loading：`onClick` 返回 Promise 就转圈、禁用、settle 后自恢复，reject 同样恢复。
+- `IconButton`——纯图标版本，无障碍名强制给。
+- `Segmented`——单选 / 多选、可选 1px 外框、段内图标 / 计数 / 角标、`tone` 换选中片配色。
 
-#### Inputs
+#### 录入
 
-- `Input`, `PrefixedInput`, `NumberInput`, `Textarea` — one shared field metric (`fieldMetricsOf`) so every control lines up; error state, leading icon slot, search clear button, and a question-mark hint that uses the host's tooltip.
-- `Checkbox`, and the official `Switch` for on/off semantics.
-- `Picker` — single or multiple, search, groups, selection cap, clearable, empty state; keyboard driven (Esc / arrows / Enter). Its logic (`toGroups`, `filterGroups`, `toggleValue`) is exported separately.
-- `WorkspacePicker` — a domain picker that brings its own data: call `connectHost(ctx)` once in the plugin `apply` and it subscribes to the official `workspaces` snapshot.
-- `ModelPicker` — a domain picker for the host model catalog, wired on both sides: in the host `apply` register `serveModelCatalog(ctx, { path })` from `dsh-plugin-core/host`, then in the client `apply` call `connectHost(ctx, { modelsPath: path })` with the **same** path constant; `refreshModelCatalog()` re-pulls the catalog when providers or models change. Unwired pickers show an empty state rather than inventing entries.
-- `DateTimePicker` — one control for a single instant or a range, precision `day` / `hour` / `minute` / `second`, two independent calendars, keyboard support, start floored and end ceiled.
-- `InputGroup` — input with attached actions.
-- `CodeEditor` — a controlled CodeMirror editor imported from `dsh-plugin-core/ui/code-viewer`: pass `value` + `onChange`, and optionally `path` to pick a language (omitted = plain text). It stays off the main `ui` entry so its heavy dependency remains optional; `CodeViewer` from the same subpath is the read-only counterpart.
+- `Input`、`PrefixedInput`、`NumberInput`、`Textarea`——共用一套字段尺寸（`fieldMetricsOf`），错误态、左侧图标槽、搜索清空键，问号提示直接走宿主 tooltip。
+- `Checkbox`；开关语义用官方 `Switch`。
+- `Picker`——单选 / 多选、搜索、分组、选择上限、可清空、空态；键盘可全操作（Esc / ↑↓ / Enter）。底层逻辑（`toGroups`、`filterGroups`、`toggleValue`）单独导出。
+- `WorkspacePicker`——自带数据的领域选择器：插件 `apply` 里调一次 `connectHost(ctx)` 即订阅官方 `workspaces` 快照。
+- `ModelPicker`——选择模型的领域选择器，两段式接线：宿主 `apply` 调 `dsh-plugin-core/host` 的 `serveModelCatalog(ctx, { path })`，client `apply` 用**同一个 path 常量**调 `connectHost(ctx, { modelsPath: path })`；供应商 / 模型有增减时调 `refreshModelCatalog()` 重拉。没接线就是空态，不编造。
+- `DateTimePicker`——一个控件覆盖「一个时刻」与「时间段」，精度 `day` / `hour` / `minute` / `second`，左右两块独立月历，键盘可用，起始端归零、结束端拉满。
+- `InputGroup`——带附着动作的输入框。
+- `CodeEditor`——从 `dsh-plugin-core/ui/code-viewer` 引的受控 CodeMirror 编辑控件：给 `value` + `onChange` 即可，传 `path` 按扩展名高亮，不传即纯文本。重依赖只挂这条子路径、不进 `ui` 主入口；同子路径的 `CodeViewer` 是只读那一半。
 
-#### Display
+#### 展示
 
-- `Surface` — the plain framed container, with tone / border / padding / radius axes.
-- `Card` / `StripCard` — cards with an accent system.
-- `Chip`, `SectionHead`, `MarqueeText`, `FlipText`, `LiveText`.
-- `Table` — grouped (multi-row) headers, banner groups so several sections live in one table, row spanning, selection, density / striped / border switches, per-column alignment and header tone, built-in empty state, loading and loading-more states, optional built-in pagination. Data-driven: it never sorts, fetches or virtualizes.
-- `FieldHint` — the standalone question mark that opens the host's tooltip.
+- `Surface`——纯框容器，tone / 边框 / 内距 / 圆角四轴。
+- `Card` / `StripCard`——带强调色的卡片。
+- `Chip`、`SectionHead`、`MarqueeText`、`FlipText`、`LiveText`。
+- `Table`——多行分组表头、通栏分组（一张表装多个板块）、跨行跨列、行选中、密度 / 斑马纹 / 边框开关、列级对齐与表头语义色、内置空态、加载态与加载更多、可选内置分页。数据驱动：不排序、不取数、不虚拟滚动。
+- `FieldHint`——独立的问号提示，浮层用的是宿主官方 tooltip。
 
-#### Feedback
+#### 反馈
 
-- `Modal`, `SideSheet` — sized dialogs; `SideSheet` slides in from either side; both accept a `busy` lock.
-- `AlertModal`, `ConfirmModal`, `alertModal()`, `confirmModal()` — promise-based dialogs.
-- `showToast`, `notify` — Sonner-backed toasts, one host per screen shared across plugins.
-- `Loader`, `LoaderBar`, `Loading`, `LoadingBlock`, `LoadingToast`, `RunningBlocks`, `showLoading` — spinners, an indeterminate bar, and a single-slot global loading card.
+- `Modal`、`SideSheet`——定尺寸弹窗与侧边抽屉，都支持 `busy` 锁。
+- `AlertModal`、`ConfirmModal`、`alertModal()`、`confirmModal()`——Promise 形态的确认 / 提示。
+- `showToast`、`notify`——Sonner 底座的 toast，全屏单例、多插件共用。
+- `Loader`、`LoaderBar`、`Loading`、`LoadingBlock`、`LoadingToast`、`RunningBlocks`、`showLoading`——转圈图标、不定进度条、全局单槽加载卡。
 
-#### Layout and navigation
+#### 布局与导航
 
-- `PanelDock` / `DockPanel` / `createPanelDock` — the right-docked column shell: a real layout member that takes width instead of floating over the page, multiple columns with draggable widths, saved widths, collapse to an edge ear.
-- `QuickToolbar` — a toolbar that follows scrolling with back-to-top and visibility rules.
-- `SplitGroup`, `startResizeLayoutWidth`, `Pagination`.
+- `PanelDock` / `DockPanel` / `createPanelDock`——右侧停靠分栏的通用壳：是布局成员而不是浮层，占宽挤窄主区；支持多栏、拖宽、宽度记忆、收起成右侧耳朵。
+- `QuickToolbar`——随滚动出现的工具栏，带回到顶部与可见性规则。
+- `SplitGroup`、`startResizeLayoutWidth`、`Pagination`。
 
-### utils — pure helpers
+### utils——纯方法
 
-Zero React, zero DOM, zero dependency on `design`.
+零 React、零 DOM、零 `design` 依赖。
 
-- **Date / time**: `formatDateTime`, `formatYmd`, `formatClock`, `formatDurationHms`, `formatRange`, `sameCalendarDay`, `relativePast`, `relativeFuture`, `overlaps`, `pad2`. Local timezone; a parse failure falls back instead of throwing, and never invents a time. `relativePast` and `relativeFuture` are duals — use the latter for future timestamps or "in 3 minutes" collapses into "just now".
-- **Strings / bytes / paths**: `baseNameOf`, `safeTrim`, `truncateBytes` (UTF-8 aware, never splits a character), `formatBytes`, `formatCount`, `joinPath`, `parentOf`, `extOf`, `mimeOf`, `crumbsOf`.
-- **HTTP**: `request`, `requestJson`, `HttpError` — one options object, structured failures.
-- **i18n**: `setLocale('zh' | 'en')`, `getLocale()`, `t()` — the built-in dictionary shipped with the library (field placeholders, empty states, loading copy). Your plugin's own copy stays yours.
+- **日期时间**：`formatDateTime`、`formatYmd`、`formatClock`、`formatDurationHms`、`formatRange`、`sameCalendarDay`、`relativePast`、`relativeFuture`、`overlaps`、`pad2`。一律本机时区；解析失败按兜底返回、不抛错，也不编造时间。`relativePast` 与 `relativeFuture` 是对偶的——未来时间必须用后者，否则「3 分钟后」会显示成「刚刚」。
+- **字符串 / 字节 / 路径**：`baseNameOf`、`safeTrim`、`truncateBytes`（按 UTF-8 字节截断，不切半个字）、`formatBytes`、`formatCount`、`joinPath`、`parentOf`、`extOf`、`mimeOf`、`crumbsOf`。
+- **HTTP**：`request`、`requestJson`、`HttpError`——一个 options 对象，失败有结构。
+- **多语言**：`setLocale('zh' | 'en')`、`getLocale()`、`t()`——管的是库自带的固定文案（占位符、空态、加载文案）。插件自己界面的文案仍归插件自己。
 
-### explorer — workspace file browsing
+### explorer——工作区文件浏览
 
-- `openFilePreview({ mount, path })` — opens the right-docked file panel next to your main area. `mount` is the flex row that wraps the main area (element or selector); the dock becomes a layout member and gives the width back when closed.
-- `pickWorkspaceFile({ anchor, filter })` — a Promise-based file picker; resolves to `{ path, isDir }` or `null`.
-- `FileBrowser` — the browse surface on its own, if you would rather host it yourself.
-- `FilePreview` — dispatches by extension to image, PDF, Markdown (rendered or source), HTML (rendered or source), Office (through the host's converter, honest "unavailable" state when it is missing), or text with syntax highlighting and open-at-line.
-- Browsing is **not limited to workspaces**: one tree with workspace nodes plus the real root (`/`, or drive letters on Windows). Wiring takes two lines — `serveFsRoute({ path })` on the host side and `connectFs({ path })` on the client side with the same path constant. Browsing needs no session.
+- `openFilePreview({ mount, path })`——在主区旁边打开右侧停靠的文件面板。`mount` 是包住主区的那个 flex 行（元素或选择器都行），面板作为布局成员占宽，关闭时还原。
+- `pickWorkspaceFile({ anchor, filter })`——Promise 形态的文件选择器，resolve `{ path, isDir }` 或 `null`。
+- `FileBrowser`——单独使用浏览面板本体。
+- `FilePreview`——按扩展名分派到图片、PDF、Markdown（渲染 / 源码）、HTML（渲染 / 源码）、Office（走宿主转换能力，缺了就如实显示「不可用」）、文本（代码高亮、可定位到行）。
+- 浏览**不限工作区**：一棵树里既有工作区节点也有真实根（POSIX 是 `/`，Windows 是盘符）。接线两行——宿主侧 `serveFsRoute({ path })`，client 侧用同一个路径常量 `connectFs({ path })`。浏览本身不需要会话。
 
-### session — read-only session preview
+### session——只读会话预览
 
-- `openSessionView(sessions, uiConversation, sessionId, mountId)` builds the data chain and returns a `view`, or `null` when the session cannot be resolved; hand it to `SessionViewModal` and call `view.dispose()` on close.
-- Renders a dialog that mirrors the official conversation page: user and assistant turns, tool cards, reasoning blocks, changed files, permissions.
-- Archive state is live, not a prop: core subscribes to the official workspace snapshot, so the archived badge and the "Continue" button follow changes while the dialog stays open. Archived sessions stay readable.
-- "Continue" never disappears: an active session jumps to the official conversation, an archived one forks a child session first — with a confirmation dialog you can veto.
-- `openSessionReview({ mount, locator })` opens the changed-file diff; a single file exit (`onOpenFile`) covers tool-card paths, inline mentions and delivered cards.
+- `openSessionView(sessions, uiConversation, sessionId, mountId)` 建数据链拿到 `view`（不可解析返回 `null`），交给 `SessionViewModal`，关闭时记得 `view.dispose()`。
+- 渲染与官方会话页同构：用户 / 助手轮次、工具卡、思考块、变更文件、权限卡。
+- 归档态实时跟随、不用调用方传：核心订阅官方工作区快照，弹窗开着期间归档徽标与「继续对话」会跟着变；归档会话同样可读。
+- 「继续对话」始终保留：未归档直跳官方会话区，已归档先开分支并弹确认框（可以取消）。
+- `openSessionReview({ mount, locator })` 打开变更文件的 diff；文件出口只有一个 `onOpenFile`，工具卡路径、行内引用、交付卡都走它。
 
-## Compatibility
+## 适配范围
 
-| Area | Requirement |
+| 维度 | 要求 |
 |---|---|
-| Host | DSH web client. Plugin client bundles are `window.__ModuleLoader__.load({ id, factory })` CJS closures; styles therefore arrive as runtime-injected strings. |
-| Node.js | `>= 22.5` (build and install time only). |
-| React / React DOM | `>= 18`, optional peers. Only `design` and `utils` work without React. |
-| Theme | Follows the host: `body[data-ds-dark-theme]`. Never `prefers-color-scheme`. Tokens fall back to built-in values when the host does not provide them. |
-| Naming | Variables `--dshpc-*`, class names `dshpc-*` — fixed, shared by the whole ecosystem. Nothing touches the host's own `--dsw-*` / `--dsh-*`. |
-| Official primitives | Reachable only through `dsh-plugin-core/ui/official`, and only inside the host. The main entries stay free of `@deepseek-ai/*`, so importing `ui` in Node or in a test does not explode. |
-| Bundling | ESM with `sideEffects: false` and per-control CSS domains — named imports keep unused controls (and their CSS) out of your bundle. |
-| Data | Never fetched by a component. Workspaces, models, files and sessions come from the caller or from an interface you inject once. |
+| 宿主 | DSH web client。插件 client 产物是 `window.__ModuleLoader__.load({ id, factory })` 的 CJS 闭包，所以样式只能运行时注入。 |
+| Node.js | `>= 22.5`（只影响构建与安装阶段）。 |
+| React / React DOM | `>= 18`，可选 peer。只有 `design` 与 `utils` 可以完全不用 React。 |
+| 主题 | 跟随宿主 `body[data-ds-dark-theme]`，绝不使用 `prefers-color-scheme`。宿主没给 token 时回落到内置值。 |
+| 命名 | 变量 `--dshpc-*`、类名 `dshpc-*`，全生态固定；不碰宿主的 `--dsw-*` / `--dsh-*`。 |
+| 官方 primitives | 只从 `dsh-plugin-core/ui/official` 走，且只在宿主内可解析。主入口零 `@deepseek-ai/*`，因此在 Node / 单测里 import `ui` 不会失败。 |
+| 打包 | ESM、`sideEffects: false`、控件各带自己的 CSS 域——具名引入可让用不到的控件连同其 CSS 都不进包。 |
+| 数据 | 组件从不取数。工作区、模型、文件、会话由调用方给，或来自一次性注入的接口。 |
 
-This is a **library, not a plugin**: no `main`, no `dsh` field. Whoever wants to *see* it running installs the demo plugin below.
+这是一个**库，不是插件**：没有 `main`、没有 `dsh` 字段。想看它跑起来，装下面的预览插件。
 
-## See it running: the demo plugin
+## 装上就能看：预览插件
 
-`dsh-plugin-core-demo` ("Blue Whale Component Library") is an installable DSH plugin from the same repository. It renders every control and every composed module with real host data — the same code paths your plugin would use, not a static gallery.
+`dsh-plugin-core-demo`（蓝鲸组件库）是同仓库发布的、可安装的 DSH 插件。它用宿主真实数据把每个控件、每个组合模块跑一遍——走的是你的插件将来会走的同一条代码路径，不是静态画廊。
 
-Install it into your DSH host with the DSH CLI:
+用 DSH 命令装进宿主：
 
 ```bash
 dsh plugin --profile web add dsh-plugin-core-demo
 ```
 
-Or install the npm package itself:
+或用 npm 装这个包本身：
 
 ```bash
 npm install dsh-plugin-core-demo
 ```
 
-After installing, open the plugin in DSH: the plugin page carries a **Component preview** entry that opens the full-page preview, and the sidebar entry can be placed first-level, under "More", or turned off entirely in the plugin settings.
+装好后在 DSH 里打开本插件：插件详情页有「组件预览」入口，点开即整页预览；侧栏入口的位置（第一级 / 收入「更多」/ 关闭）在插件设置里选。
 
-What it covers: design foundation (tokens, dark-mode predicate, injection), actions, inputs, display, feedback, layout and scrolling, navigation, workspace browsing, session preview, the utility helpers with live input/output, and every built-in i18n string in both languages.
+覆盖内容：设计基础（token、明暗判据、注入机制）、动作、录入、展示、反馈、布局与滚动、导航、工作区浏览、会话预览、工具方法的输入输出实测，以及内置中英双语文案。
 
-Its `dist/` is committed to the repository and it bundles core's build output into itself, so it always previews the current code — you do not need to publish core first.
+它的 `dist/` 随仓库入库，并把 core 的构建产物打进自己 bundle，所以预览的永远是当前这份代码——不需要先把 core 发到 npm。
 
-## Documentation
+## 文档
 
-| I want to… | Read |
+| 我想… | 看哪 |
 |---|---|
-| Integrate the package into a plugin | [Integration guide](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/integration.md) |
-| Look up a control and its props | [Control reference](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/ui.md) |
-| Use `createStyleKit`, override tokens, isolate plugins | [design](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/design.md) |
-| Use tokens, colors or a custom skin | [Style guide](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/style.md) |
-| Handle dates, strings, bytes, HTTP | [utils](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/utils.md) — and the shared [method conventions](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/methods.md) |
-| Add workspace browsing and file preview | [explorer](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/explorer.md) |
-| Render a session as a read-only preview | [session](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/session.md) |
-| Understand the architecture | [Architecture](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/design/architecture.md) |
-| See why a decision was made | [Requirements and decisions](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/requirements.md) |
+| 把包接进插件 | [接入指引](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/integration.md) |
+| 查控件与全部 props | [控件参考](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/ui.md) |
+| 建 style kit、覆盖 token、多插件隔离 | [design](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/design.md) |
+| 用 token、配色或定制皮肤 | [样式说明](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/style.md) |
+| 处理日期、字符串、字节、HTTP | [utils](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/utils.md)，以及[方法统一口径](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/methods.md) |
+| 加工作区文件浏览与预览 | [explorer](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/explorer.md) |
+| 把会话渲染成只读预览 | [session](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/session.md) |
+| 理解整体架构 | [架构](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/design/architecture.md) |
+| 查某个决定为什么这么定 | [需求与决策](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/requirements.md) |
 
-The help documents are bilingual (Chinese prose, English abstract under each section).
+帮助文档为中英双语（正文中文，每节附英文摘要）。
 
-## Releasing
+## 发布
 
-Core and the demo share one version number, and one git tag publishes both packages:
+核心与预览插件共用同一个版本号，一个 tag 同时发布两个包：
 
 ```bash
-# 1. set the same version in the root package.json and packages/demo/package.json
-# 2. build, commit (dist/ must be committed) and push
+# 1. 根 package.json 与 packages/demo/package.json 的 version 改成同一个号
+# 2. 构建、提交（dist/ 必须入库）、推送
 pnpm run build && pnpm run build:demo
-git add -A && git commit -m "Release X.Y.Z" && git push
-# 3. the tag triggers GitHub Actions, which publishes to npm
+git add -A && git commit -m "发布 X.Y.Z" && git push
+# 3. 打 tag 触发 GitHub Actions 自动发 npm
 git tag vX.Y.Z && git push origin vX.Y.Z
 ```
 
-`tag vX.Y.Z` must equal both `version` fields; there is no separate `demo-v*` tag.
+`tag vX.Y.Z` 必须等于两个 `version` 字段；没有 `demo-v*` 这种独立 tag。
 
-## License
+## 许可证
 
 MIT

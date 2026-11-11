@@ -33,6 +33,10 @@ export const TURN_PROCESS_INDEPENDENT_KINDS = new Set([
     'turn-error',
     'turn-max-tokens',
     'turn-tail',
+    // 题卡作答气泡（外壳包 ui-user-questions 注册的两种节点）：它是一条「用户发言」，
+    // 官方永远当独立条目放在过程区外；漏了这两项就会被折进过程组、默认收起 ⇒ 整条看不见。
+    'answered-user-question',
+    'question-reply',
 ]);
 /**
  * 读过程席位快照。宿主 API 形态变了也只降级成「不折叠」，不让整个弹窗白屏。

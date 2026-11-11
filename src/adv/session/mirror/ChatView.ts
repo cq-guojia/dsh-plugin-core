@@ -82,7 +82,8 @@ export function ChatNodeListMirror(props: {
         rows.push(h(ChatGroupSeatMirror, {
           key: entry.key,
           group,
-          grouped: true,
+          // 官方 `grouped` 由呈现模式决定（detailed 默认：轮次还开着就不分组、条目平铺）。
+          grouped: group.data.grouped ?? true,
           store,
           openState,
           onSetOpen,

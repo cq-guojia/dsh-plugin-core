@@ -27,6 +27,17 @@ export type ProcessActivity =
 export interface ProcessGroupDataFace {
   turn: number
   closed: boolean
+  /**
+   * 所属 turn 在构建这一刻是否还开着（官方 liveProcess 的等价物）。
+   * 组行据此强制展开：官方「思考中」的过程是摊开的，结束才收成一行。
+   */
+  live?: boolean
+  /**
+   * 官方 `grouped`：这一组要不要画「已读取文件…」那行汇总壳。
+   * 由呈现模式决定（`stepGrouping`）——**detailed（宿主默认）在轮次还开着时不分组**，
+   * 条目直接平铺；写死 true 就会出现「官方摊开、我们收起」。
+   */
+  grouped?: boolean
   summary: { counts: ReadonlyArray<{ kind: ProcessActivity; count: number }> }
 }
 
@@ -56,7 +67,34 @@ const INDEPENDENT: ReadonlySet<string> = new Set([
   'turn-error',
   'turn-max-tokens',
   'turn-tail',
+  // 题卡作答气泡（外壳包 ui-user-questions 注册的 kind）。这份清单和 ChatNodeSeat 那份是**两张表**：
+  // 漏在这一张里会被 buildProcessGroups 折进过程组 ⇒ 组一收起整条就不见了（2026-11-11 就是这个坑：
+  // 只补了 ChatNodeSeat 那张，用户看到的还是「什么都没有」）。
+  'answered-user-question',
+  'question-reply',
 ])
+
+/**
+ * 官方呈现模式（ui-chat `chat-settings.ts` 的 `TRANSCRIPT_VIEW_MODES`）。
+ * 默认取宿主默认值 `detailed`。
+ */
+export type TranscriptViewMode = 'compact' | 'standard' | 'detailed' | 'verbose'
+
+/** 宿主默认呈现模式（ui-chat lib/client.js:14814 `DEFAULT_TRANSCRIPT_VIEW_MODE = "detailed"`）。 */
+export const DEFAULT_TRANSCRIPT_VIEW_MODE: TranscriptViewMode = 'detailed'
+
+/**
+ * 官方 `stepGrouping` → 要不要分组（ChatGroupSeat 的 `grouped`）。
+ * compact / standard = `collapsed`（恒分组）；detailed = `history`（轮次开着时不分组、条目平铺）；
+ * verbose = `none`（从不分组）。
+ * @param mode - 呈现模式。
+ * @param live - 该组所属 turn 是否还开着。
+ */
+function groupedOf(mode: TranscriptViewMode, live: boolean): boolean {
+  if (mode === 'verbose') return false
+  if (mode === 'detailed') return !live
+  return true
+}
 
 /** 节点所属 turn（官方 turnOf，process-groups.js:10574）。 */
 function turnOfNode(node: ChatNodeFace): number | undefined {
@@ -156,6 +194,8 @@ export function buildProcessGroups(
   order: readonly string[],
   readNode: (key: string) => ChatNodeFace | undefined,
   isTurnClosed: (turn: number) => boolean,
+  /** 官方 `transcriptView`（宿主默认 detailed）：决定 `stepGrouping`，即要不要分组。 */
+  mode: TranscriptViewMode = DEFAULT_TRANSCRIPT_VIEW_MODE,
 ): GroupedView {
   const entries: ChatEntry[] = []
   const groups = new Map<string, ProcessGroupSnapshot>()
@@ -166,6 +206,7 @@ export function buildProcessGroups(
     if (first === undefined) return
     const turn = currentTurn
     const ended = closed || (turn !== undefined && isTurnClosed(turn))
+    const live = turn !== undefined && !isTurnClosed(turn)
     const members = pending
     const nodes = members
       .map(member => readNode(member.key))
@@ -175,7 +216,16 @@ export function buildProcessGroups(
     groups.set(groupKey, {
       key: groupKey,
       members,
-      data: { turn: turn ?? -1, closed: ended, summary: { counts: processActivity(nodes) } },
+      data: {
+        turn: turn ?? -1,
+        closed: ended,
+        live: live,
+        // 官方 ChatGroupSeat：`grouped = stepGrouping === 'collapsed'
+        //   || (stepGrouping === 'history' && turn 不是 open && !deferCollapse)`。
+        // 宿主默认 collapseTiming = completion ⇒ deferCollapse 恒 false。
+        grouped: groupedOf(mode, live),
+        summary: { counts: processActivity(nodes) },
+      },
     })
     entries.push({ kind: 'group', key: groupKey })
     pending = []
