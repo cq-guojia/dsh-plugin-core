@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261111-1002-4f1c-会话预览渲染等待审批卡": {"category": "功能开发", "created": "2026-11-11 10:02:37", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-11 10:02:37", "status": "doing", "tags": ["会话预览", "审批卡", "DSH"], "title": "会话预览渲染等待审批卡", "updated": "2026-11-11 15:53:47", "worklog": "worklog/202611/11-1002-4f1c-会话预览渲染等待审批卡.md"}
+    "20261111-1002-4f1c-会话预览渲染等待审批卡": {"category": "功能开发", "created": "2026-11-11 10:02:37", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-11 10:02:37", "status": "doing", "tags": ["会话预览", "审批卡", "DSH"], "title": "会话预览渲染等待审批卡", "updated": "2026-11-11 15:54:50", "worklog": "worklog/202611/11-1002-4f1c-会话预览渲染等待审批卡.md"}
   },
   "version": "20261022000000"
 }
