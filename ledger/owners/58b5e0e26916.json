@@ -1,6 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
+    "20261111-0545-d03b-修复-picker-窄定宽被触发器撑破": {"category": "缺陷修复", "created": "2026-11-11 05:45:45", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-11 05:45:45", "status": "doing", "tags": ["选择器", "宽度轴", "根盒", "样式契约", "回归自检"], "title": "修复 Picker 窄定宽被触发器撑破", "updated": "2026-11-11 05:45:45", "worklog": "worklog/202611/11-0545-d03b-修复-picker-窄定宽被触发器撑破.md"}
   },
   "version": "20261022000000"
 }
