@@ -123,13 +123,13 @@ utils（谁都不依赖，谁都可以用）
 
 只读 / 可编辑是同一份 CodeMirror 能力的两种用法，属分类不属新依赖，故共用 `ui/code-viewer` 一条子路径：可编辑件归 `inputs`、只读件归 `display`，两个控件都不进主入口（否则重依赖会拖进所有插件的包）。
 
-## 七、demo 展示分区（两级，17 页）
+## 七、demo 展示分区（两级，18 页）
 
 侧栏与右侧共用 `packages/demo/src/sections/index.tsx` 的 `ALL_SECTIONS`（单一事实源）。
 
 ```
 ① 入门        start     帮助索引 / 快速开始 / 参考
-② 设计        design    设计基础（token · 明暗）
+② 基础设施  infra      设计基础（token · 明暗） / 通知任务中心（状态池 · 事件 · 跨页）
 ③ 控件        components
    ├─ 动作    actions       Button · IconButton
    ├─ 录入    inputs        Input · NumberInput · PrefixedInput · Textarea · Checkbox
@@ -152,7 +152,8 @@ utils（谁都不依赖，谁都可以用）
 | 导航项 | 代码 | 文档 |
 |---|---|---|
 | ① 入门 | （无，讲述型） | `docs/help/index.md` + `integration.md` |
-| ② 设计 | `src/design/` | `docs/help/design.md` |
+| ② 基础设施 | `src/design/` | `docs/help/design.md` |
+| ② 基础设施 · 通知任务中心 | `src/ui/infra/task-notifications.ts` | `docs/help/task-notifications.md` |
 | ③ 控件 · 动作 | `src/ui/actions/` | `docs/help/ui.md` |
 | ③ 控件 · 录入 | `src/ui/inputs/` | 同上 |
 | ③ 控件 · 展示 | `src/ui/display/` | 同上 |

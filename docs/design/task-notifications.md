@@ -1,7 +1,7 @@
-# 后台任务池
+# 通知任务中心
 
 弹窗收起到后台后的统一数据面。本文只写**契约口径与不变量**；类型签名与参数以
-`src/ui/infra/background-tasks.ts` 的 TypeScript 声明为准，不在本文复制第二份。
+`src/ui/infra/task-notifications.ts` 的 TypeScript 声明为准，不在本文复制第二份。
 
 ## 定位与边界
 
@@ -22,7 +22,7 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 | 通道 | 形态 | 消费方式 |
 |---|---|---|
 | 状态池 | 任意时刻可读的全量快照 | `getSnapshot` / `getServerSnapshot` / `subscribe`，可直接喂 `useSyncExternalStore` |
-| 事件总线 | 一次性投递、不留存 | `subscribeBackgroundTaskEvents`；core 内部与消费端用同一条 |
+| 事件总线 | 一次性投递、不留存 | `subscribeTaskNotificationEvents`；core 内部与消费端用同一条 |
 
 历史通知不能替代快照：新开的页面没听过任何历史事件，靠 `hello` 换回全量分片补齐。
 反之，快照也不能替代事件：「收起」是一次性事实，读完快照看不出来。
@@ -32,7 +32,7 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 - 快照是 `{ tasks, revision }`，`tasks` 按 `startedAt` 再按 `id` 排序，跨页顺序确定。
 - **引用稳定**：无变化不产生新对象；只有状态真变了才推一次新快照。
   `getServerSnapshot()` 永远是同一个冻结空快照，SSR 不炸。
-- 派生结果有缓存：`selectBackgroundTasks(snapshot, groups)` 对同一快照、同一过滤条件返回同一数组，
+- 派生结果有缓存：`selectTaskNotifications(snapshot, groups)` 对同一快照、同一过滤条件返回同一数组，
   不会每次渲染现算新引用。
 - 过滤三态：不传 / 空数组 = 全站全显示；传一个 = 只看该分组；传多个 = 只看这几个。
 - 分组名由**调用方显式给**。core 拿不到项目名：`createStyleKit({ id })` 的 `id` 是每副本私有的
@@ -54,7 +54,7 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 
 ## 跨页协议
 
-浏览器原生 `BroadcastChannel`，频道名 `BACKGROUND_TASKS_CHANNEL`。每页有唯一 `origin`：
+浏览器原生 `BroadcastChannel`，频道名 `TASK_NOTIFICATIONS_CHANNEL`。每页有唯一 `origin`：
 
 - 每页只维护**自己创建的分片**，任何变化都广播该分片的**全量**内容，并带本页单调 `seq`。
   全量而非增量，就不存在漏一条增量导致状态永久分叉。
@@ -99,6 +99,8 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 | 4 | 真机验收与对外门面文档 | 未开始 |
 | 5 | 统一替换既有零散机制 | 暂缓，等 1–4 稳定后按指令一次性做 |
 
+**任务边界（2026-11-12 用户拍板）**：阶段 2（可收起弹窗：例外控件、隐藏保树、Tab / Esc 联动）与阶段 3（事件查看控件：计数、下拉、还原弹窗、过滤、该控件的 demo 页）**整体不属于「总的订阅通知中心」任务**，由用户后续单独开任务承接。本任务只交付阶段 0 / 1 的数据面，加上本轮的对外使用帮助与 demo 数据面演示页；演示页只演示真实调用池与事件总线，不实现可复用查看控件、不做下拉、不还原弹窗。
+
 阶段 1 的自检覆盖：快照引用稳定、结束幂等、事件四类、跨页即时可见、baseline、
 乱序 / 重复 / 畸形消息、迟到 `bye`、休眠恢复、多副本单例、SSR，以及 CJS 闭包里
 真实注册并结束一条任务（不是只检查产物字符串）。
@@ -106,3 +108,5 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 ## 更新日志
 
 - 2026-11-12 14:57:52：建立后台任务池契约；阶段 0 / 1 落地并通过全链自检
+- 2026-11-12：能力对外定名「通知任务中心 / Task Notification Hub」，内部两条通道为「任务快照池」与「事件总线」；显示层标题、组名同步
+- 2026-11-12：按用户「都改呀」完成统一改名——公共导出、源码、测试、契约与帮助文档、demo、`SectionId`、i18n 前缀 `tn*`、协议键与全部文件路径都换成 `task-notifications`；协议结构未变，`PROTOCOL` 仍为 1，不留旧别名与兼容层

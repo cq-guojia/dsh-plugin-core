@@ -79,7 +79,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 | 引入路径 | 给你什么 | 需要 React |
 |---|---|---|
 | `dsh-plugin-core/design` | token 变量（明 + 暗）、`createStyleKit` 注入器工厂、明暗判据 | 否 |
-| `dsh-plugin-core/ui` | 全套控件：动作、录入、展示、反馈、布局、导航 | 是 |
+| `dsh-plugin-core/ui` | 全套控件：动作、录入、展示、反馈、布局、导航，外加通知任务中心 | 是 |
 | `dsh-plugin-core/ui/official` | 官方 primitives 的直接再导出（少数确实要用官方原件的场景） | 是 |
 | `dsh-plugin-core/ui/code-viewer` | 只读 `CodeViewer` + 可编辑 `CodeEditor`，共用一份 CodeMirror 底座（文件预览源码态用查看器） | 是 |
 | `dsh-plugin-core/ui/host` | 宿主自带 toast 的桥接 | 是 |
@@ -145,6 +145,17 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 - `PanelDock` / `DockPanel` / `createPanelDock`——右侧停靠分栏的通用壳：是布局成员而不是浮层，占宽挤窄主区；支持多栏、拖宽、宽度记忆、收起成右侧耳朵。
 - `QuickToolbar`——随滚动出现的工具栏，带回到顶部与可见性规则。
 - `SplitGroup`、`startResizeLayoutWidth`、`Pagination`。
+
+### ui——通知任务中心
+
+长耗时任务在后台的统一登记与展示底座：状态池 + 事件总线两条通道，跨同源标签页即时可见，不轮询、不落文件、不含模拟数据。
+
+- `taskNotifications`——全局单例状态池：`getSnapshot` / `getServerSnapshot` / `subscribe` 可直接喂 `useSyncExternalStore`；`register()` 返回句柄，`done()` / `fail()` / `track(promise)` 结束，`background()` 只标记收起。
+- `selectTaskNotifications(snapshot, groups)`——过滤三态：不传 = 全站，一个 = 只看该组，多个 = 看这几个；分组名由调用方显式给。
+- `subscribeTaskNotificationEvents`——一次性事件：`registered` / `updated` / `backgrounded` / `settled` / `restored` / `peer-left`，不留存。
+- 跨页只传纯数据，跨页条目能看不能点；数据只在本页与同源标签页内存里，页面或进程关闭即失。
+
+完整契约与用法见[通知任务中心](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/task-notifications.md)。
 
 ### utils——纯方法
 

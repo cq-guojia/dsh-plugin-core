@@ -25,6 +25,7 @@ const MAP = [
   { doc: 'docs/help/utils.doc.ts', md: 'docs/help/utils.md', name: 'utils' },
   { doc: 'docs/help/integration.doc.ts', md: 'docs/help/integration.md', name: 'integration' },
   { doc: 'docs/help/ui.doc.ts', md: 'docs/help/ui.md', name: 'ui' },
+  { doc: 'docs/help/task-notifications.doc.ts', md: 'docs/help/task-notifications.md', name: 'task-notifications' },
 ]
 
 const CHECK = process.argv.includes('--check')

@@ -20,7 +20,7 @@
 
 | 角色 | 落位 | 说明 |
 |---|---|---|
-| 真源（手写） | `docs/help/<主题>.doc.ts` | 一主题一文件（`index` / `integration` / `ui` / `design` / `utils` / `explorer` / `session`）；帮助侧唯一的输入 |
+| 真源（手写） | `docs/help/<主题>.doc.ts` | 一主题一文件（`index` / `integration` / `ui` / `design` / `utils` / `explorer` / `session` / `task-notifications`）；帮助侧唯一的输入 |
 | 生成（引用方 / Agent 读） | `docs/help/<主题>.md` | 由 gen-docs 从 `.doc.ts` 生成，覆盖同名手写文件；**勿手改** |
 | 生成（demo 消费） | `packages/demo/src/doc-data.generated.ts` | 按 `section.id` 扁平聚合；**勿手改** |
 

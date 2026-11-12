@@ -37,7 +37,7 @@ __export(index_exports, {
   apply: () => apply
 });
 module.exports = __toCommonJS(index_exports);
-var import_react104 = require("react");
+var import_react105 = require("react");
 var import_dsh_client_ui_primitives6 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // dist/design/tokens-css.generated.js
@@ -1311,6 +1311,467 @@ function useLocale() {
     };
   }, []);
   return locale2;
+}
+
+// node_modules/.pnpm/zustand@5.1.0_@types+react@18.3.31_react@18.3.1/node_modules/zustand/esm/vanilla.mjs
+var createStoreImpl = (createState) => {
+  let state;
+  const listeners = /* @__PURE__ */ new Set();
+  const setState = (partial, replace2) => {
+    const nextState = typeof partial === "function" ? partial(state) : partial;
+    if (!Object.is(nextState, state)) {
+      const previousState = state;
+      state = (replace2 != null ? replace2 : typeof nextState !== "object" || nextState === null) ? nextState : Object.assign({}, state, nextState);
+      listeners.forEach((listener) => listener(state, previousState));
+    }
+  };
+  const getState = () => state;
+  const getInitialState = () => initialState;
+  const subscribe = (listener) => {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+  };
+  const api = { setState, getState, getInitialState, subscribe };
+  const initialState = state = createState(setState, getState, api);
+  return api;
+};
+var createStore = ((createState) => createState ? createStoreImpl(createState) : createStoreImpl);
+
+// dist/ui/infra/task-notifications.js
+var TASK_NOTIFICATIONS_PROTOCOL = 1;
+var TASK_NOTIFICATIONS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/v1");
+var TASK_NOTIFICATIONS_EVENTS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/events/v1");
+var TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v1";
+var EMPTY_TASKS = Object.freeze([]);
+var EMPTY_SNAPSHOT = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 });
+var SELECT_CACHE = /* @__PURE__ */ new WeakMap();
+function selectTaskNotifications(snapshot, groups) {
+  const key = groups === void 0 || groups.length === 0 ? "*" : [...groups].sort().join("\0");
+  let perSnapshot = SELECT_CACHE.get(snapshot);
+  if (perSnapshot === void 0) {
+    perSnapshot = /* @__PURE__ */ new Map();
+    SELECT_CACHE.set(snapshot, perSnapshot);
+  }
+  const cached = perSnapshot.get(key);
+  if (cached !== void 0)
+    return cached;
+  const result = key === "*" ? snapshot.tasks : Object.freeze(snapshot.tasks.filter((task) => groups.includes(task.group)));
+  perSnapshot.set(key, result);
+  return result;
+}
+function createTaskNotificationEventBus() {
+  const listeners = /* @__PURE__ */ new Set();
+  return {
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+    emit(event) {
+      for (const listener of [...listeners]) {
+        try {
+          listener(event);
+        } catch (error) {
+          console.error("background task event listener failed", error);
+        }
+      }
+    }
+  };
+}
+function claim(key, create, isValid) {
+  const g = globalThis;
+  const existing = g[key];
+  if (existing !== void 0) {
+    if (!isValid(existing)) {
+      throw new Error("Incompatible dsh-plugin-core background task host; reload the page.");
+    }
+    return existing;
+  }
+  const created = create();
+  g[key] = created;
+  return created;
+}
+function claimTaskNotifications(create) {
+  return claim(TASK_NOTIFICATIONS_KEY, create, isPool);
+}
+function claimTaskNotificationEvents(create) {
+  return claim(TASK_NOTIFICATIONS_EVENTS_KEY, create, isEventBus);
+}
+function isPool(value) {
+  return typeof value === "object" && value !== null && value.protocol === TASK_NOTIFICATIONS_PROTOCOL && typeof value.getSnapshot === "function";
+}
+function isEventBus(value) {
+  return typeof value === "object" && value !== null && typeof value.emit === "function" && typeof value.subscribe === "function";
+}
+function isRecord(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+function isTaskRecord(value) {
+  if (!isRecord(value))
+    return false;
+  return typeof value.id === "string" && typeof value.group === "string" && typeof value.title === "string" && (value.status === "running" || value.status === "done" || value.status === "failed") && typeof value.startedAt === "number" && typeof value.updatedAt === "number" && typeof value.origin === "string" && typeof value.backgrounded === "boolean";
+}
+function isNotice(value) {
+  if (!isRecord(value) || !isTaskRecord(value.task))
+    return false;
+  if (value.type === "settled")
+    return value.outcome === "done" || value.outcome === "failed";
+  return value.type === "registered" || value.type === "updated" || value.type === "backgrounded";
+}
+function parseMessage(value) {
+  if (!isRecord(value) || typeof value.origin !== "string")
+    return null;
+  if (value.kind === "hello")
+    return { kind: "hello", origin: value.origin };
+  if (value.kind === "bye") {
+    return typeof value.seq === "number" ? { kind: "bye", origin: value.origin, seq: value.seq } : null;
+  }
+  if (value.kind === "shard") {
+    if (typeof value.seq !== "number" || !Array.isArray(value.tasks))
+      return null;
+    if (!value.tasks.every(isTaskRecord))
+      return null;
+    const tasks = value.tasks;
+    if (value.notice === void 0)
+      return { kind: "shard", origin: value.origin, seq: value.seq, tasks };
+    if (!isNotice(value.notice))
+      return null;
+    return { kind: "shard", origin: value.origin, seq: value.seq, tasks, notice: value.notice };
+  }
+  return null;
+}
+function noticeToEvent(notice, remote) {
+  if (notice.type === "settled") {
+    return {
+      type: "settled",
+      outcome: notice.outcome === "failed" ? "failed" : "done",
+      task: notice.task,
+      remote
+    };
+  }
+  return { type: notice.type, task: notice.task, remote };
+}
+function makeOrigin() {
+  const c4 = globalThis.crypto;
+  if (typeof c4?.randomUUID === "function")
+    return c4.randomUUID();
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+}
+function openChannel(name2) {
+  if (typeof BroadcastChannel === "undefined")
+    return null;
+  try {
+    const channel = new BroadcastChannel(name2);
+    const withUnref = channel;
+    withUnref.unref?.();
+    return channel;
+  } catch {
+    return null;
+  }
+}
+function compareTasks(a, b) {
+  return a.startedAt - b.startedAt || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+}
+function createTaskNotificationPool(options = {}) {
+  const origin = options.origin ?? makeOrigin();
+  const channelName = options.channelName ?? TASK_NOTIFICATIONS_CHANNEL;
+  const offline = options.offline === true;
+  const wantLifecycle = options.lifecycle ?? (typeof window !== "undefined" && typeof document !== "undefined");
+  const bus = () => options.events ?? taskNotificationEvents;
+  const store = createStore(() => EMPTY_SNAPSHOT);
+  const shards = /* @__PURE__ */ new Map();
+  const knownSeq = /* @__PURE__ */ new Map();
+  let seq = 0;
+  let revision = 0;
+  let idSeq2 = 0;
+  let channel = null;
+  let everConnected = false;
+  let everPublished = false;
+  function collect() {
+    const all = [];
+    for (const shard of shards.values())
+      all.push(...shard.tasks);
+    return Object.freeze(all.sort(compareTasks));
+  }
+  function post(message) {
+    if (channel === null)
+      return;
+    channel.postMessage(message);
+  }
+  function localShard() {
+    return shards.get(origin)?.tasks ?? EMPTY_TASKS;
+  }
+  function emit(notice, remote) {
+    bus().emit(noticeToEvent(notice, remote));
+  }
+  function broadcastShard(notice) {
+    const tasks = localShard();
+    const message = { kind: "shard", origin, seq, tasks, ...notice === void 0 ? {} : { notice } };
+    post(message);
+  }
+  function publish(nextTasks, notice) {
+    seq += 1;
+    revision += 1;
+    shards.set(origin, { origin, seq, tasks: Object.freeze([...nextTasks]) });
+    knownSeq.set(origin, seq);
+    everPublished = true;
+    store.setState({ tasks: collect(), revision }, true);
+    emit(notice, false);
+    broadcastShard(notice);
+  }
+  function find2(id3) {
+    return localShard().find((task) => task.id === id3);
+  }
+  function replace2(tasks, record) {
+    return tasks.map((task) => task.id === record.id ? record : task);
+  }
+  function onMessage(raw) {
+    const message = parseMessage(raw);
+    if (message === null || message.origin === origin)
+      return;
+    if (message.kind === "hello") {
+      broadcastShard();
+      return;
+    }
+    if (message.kind === "bye") {
+      if (message.seq < (knownSeq.get(message.origin) ?? 0))
+        return;
+      knownSeq.set(message.origin, message.seq);
+      if (shards.delete(message.origin)) {
+        revision += 1;
+        store.setState({ tasks: collect(), revision }, true);
+        bus().emit({ type: "peer-left", origin: message.origin, remote: true });
+      }
+      return;
+    }
+    const seen = knownSeq.get(message.origin) ?? 0;
+    if (message.seq <= seen)
+      return;
+    knownSeq.set(message.origin, message.seq);
+    shards.set(message.origin, { origin: message.origin, seq: message.seq, tasks: Object.freeze([...message.tasks]) });
+    revision += 1;
+    store.setState({ tasks: collect(), revision }, true);
+    if (message.notice !== void 0)
+      emit(message.notice, true);
+  }
+  function onPageHide() {
+    post({ kind: "bye", origin, seq });
+  }
+  function onPageShow() {
+    connect();
+    seq += 1;
+    knownSeq.set(origin, seq);
+    broadcastShard();
+    refresh();
+  }
+  function onVisibility() {
+    if (document.visibilityState === "visible") {
+      connect();
+      refresh();
+    }
+  }
+  function attachLifecycle() {
+    if (!wantLifecycle)
+      return;
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("pageshow", onPageShow);
+    document.addEventListener("visibilitychange", onVisibility);
+  }
+  function detachLifecycle() {
+    if (!wantLifecycle)
+      return;
+    window.removeEventListener("pagehide", onPageHide);
+    window.removeEventListener("pageshow", onPageShow);
+    document.removeEventListener("visibilitychange", onVisibility);
+  }
+  function connect() {
+    if (offline || channel !== null)
+      return;
+    channel = openChannel(channelName);
+    if (channel === null)
+      return;
+    channel.onmessage = (event) => {
+      onMessage(event.data);
+    };
+    attachLifecycle();
+    const reopened = everConnected;
+    everConnected = true;
+    post({ kind: "hello", origin });
+    if (reopened && everPublished) {
+      seq += 1;
+      knownSeq.set(origin, seq);
+      broadcastShard();
+    }
+  }
+  function refresh() {
+    post({ kind: "hello", origin });
+  }
+  function register(input) {
+    connect();
+    const now = Date.now();
+    const id3 = `${origin}:${String(++idSeq2)}`;
+    const record = {
+      id: id3,
+      group: input.group,
+      groupLabel: input.groupLabel,
+      title: input.title,
+      detail: input.detail,
+      status: "running",
+      startedAt: now,
+      updatedAt: now,
+      origin,
+      backgrounded: false
+    };
+    let isSettled = false;
+    let resolveSettled = () => {
+    };
+    const settled = new Promise((resolve) => {
+      resolveSettled = resolve;
+    });
+    publish([...localShard(), record], { type: "registered", task: record });
+    function finish(outcome, reason) {
+      if (isSettled)
+        return;
+      const current3 = find2(id3);
+      if (current3 === void 0)
+        return;
+      isSettled = true;
+      const final = {
+        ...current3,
+        status: outcome === "done" ? "done" : "failed",
+        reason,
+        updatedAt: Date.now()
+      };
+      publish(localShard().filter((task) => task.id !== id3), { type: "settled", task: final, outcome });
+      resolveSettled({ outcome, reason, task: final });
+    }
+    const handle = {
+      id: id3,
+      get isSettled() {
+        return isSettled;
+      },
+      settled,
+      update(patch) {
+        if (isSettled)
+          return;
+        const current3 = find2(id3);
+        if (current3 === void 0)
+          return;
+        const next = {
+          ...current3,
+          ...patch.title === void 0 ? {} : { title: patch.title },
+          ...patch.detail === void 0 ? {} : { detail: patch.detail },
+          ...patch.group === void 0 ? {} : { group: patch.group },
+          ...patch.groupLabel === void 0 ? {} : { groupLabel: patch.groupLabel },
+          updatedAt: Date.now()
+        };
+        publish(replace2(localShard(), next), { type: "updated", task: next });
+      },
+      background() {
+        if (isSettled)
+          return;
+        const current3 = find2(id3);
+        if (current3 === void 0 || current3.backgrounded)
+          return;
+        const next = { ...current3, backgrounded: true, updatedAt: Date.now() };
+        publish(replace2(localShard(), next), { type: "backgrounded", task: next });
+      },
+      done(detail) {
+        if (detail !== void 0)
+          handle.update({ detail });
+        finish("done");
+      },
+      fail(reason) {
+        finish("failed", reason);
+      },
+      track(promise) {
+        promise.then(() => {
+          finish("done");
+        }, (error) => {
+          finish("failed", error instanceof Error ? error.message : String(error));
+        });
+        return promise;
+      }
+    };
+    return handle;
+  }
+  const pool = {
+    protocol: TASK_NOTIFICATIONS_PROTOCOL,
+    origin,
+    getSnapshot: () => store.getState(),
+    getServerSnapshot: () => EMPTY_SNAPSHOT,
+    subscribe: (listener) => {
+      connect();
+      return store.subscribe(listener);
+    },
+    connect,
+    refresh,
+    select: (groups) => selectTaskNotifications(store.getState(), groups),
+    register,
+    canRestore: (task) => task.origin === origin,
+    requestRestore(taskId) {
+      const record = find2(taskId);
+      if (record === void 0 || record.origin !== origin)
+        return false;
+      bus().emit({ type: "restored", taskId, remote: false });
+      return true;
+    },
+    /** 关通道、摘监听并广播 bye；状态保留，之后 register / subscribe 会自动重连。 */
+    dispose() {
+      onPageHide();
+      detachLifecycle();
+      if (channel !== null) {
+        channel.onmessage = null;
+        channel.close();
+        channel = null;
+      }
+    }
+  };
+  return pool;
+}
+var sharedPool;
+var sharedBus;
+function globalPool() {
+  if (sharedPool === void 0)
+    sharedPool = claimTaskNotifications(() => createTaskNotificationPool());
+  return sharedPool;
+}
+function globalBus() {
+  if (sharedBus === void 0)
+    sharedBus = claimTaskNotificationEvents(createTaskNotificationEventBus);
+  return sharedBus;
+}
+var taskNotifications = {
+  protocol: TASK_NOTIFICATIONS_PROTOCOL,
+  get origin() {
+    return globalPool().origin;
+  },
+  getSnapshot: () => globalPool().getSnapshot(),
+  getServerSnapshot: () => globalPool().getServerSnapshot(),
+  subscribe: (listener) => globalPool().subscribe(listener),
+  connect: () => {
+    globalPool().connect();
+  },
+  refresh: () => {
+    globalPool().refresh();
+  },
+  select: (groups) => globalPool().select(groups),
+  register: (input) => globalPool().register(input),
+  canRestore: (task) => globalPool().canRestore(task),
+  requestRestore: (taskId) => globalPool().requestRestore(taskId),
+  dispose: () => {
+    globalPool().dispose();
+  }
+};
+var taskNotificationEvents = {
+  subscribe: (listener) => globalBus().subscribe(listener),
+  emit: (event) => {
+    globalBus().emit(event);
+  }
+};
+function subscribeTaskNotificationEvents(listener) {
+  return taskNotificationEvents.subscribe(listener);
 }
 
 // dist/ui/inputs/picker-logic.js
@@ -4961,10 +5422,10 @@ function formatDurationHms(ms) {
   if (!Number.isFinite(ms) || ms < 0)
     return "-";
   const totalSec = Math.round(ms / 1e3);
-  const h94 = Math.floor(totalSec / 3600);
+  const h95 = Math.floor(totalSec / 3600);
   const m = Math.floor(totalSec % 3600 / 60);
   const s = totalSec % 60;
-  return h94 > 0 ? `${h94}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  return h95 > 0 ? `${h95}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 function sameCalendarDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -5190,8 +5651,8 @@ function daysInMonth(year, month0) {
 function shiftByUnit(ms, n, unit) {
   const d2 = new Date(ms);
   const Y = d2.getFullYear(), M = d2.getMonth(), D2 = d2.getDate();
-  const h94 = d2.getHours(), mi = d2.getMinutes(), s = d2.getSeconds(), x = d2.getMilliseconds();
-  const at = (y, mo, day, hh = h94, mm = mi, ss = s) => new Date(y, mo, day, hh, mm, ss, x).getTime();
+  const h95 = d2.getHours(), mi = d2.getMinutes(), s = d2.getSeconds(), x = d2.getMilliseconds();
+  const at = (y, mo, day, hh = h95, mm = mi, ss = s) => new Date(y, mo, day, hh, mm, ss, x).getTime();
   switch (unit) {
     case "y":
       return at(Y + n, M, Math.min(D2, daysInMonth(Y + n, M)));
@@ -5206,17 +5667,17 @@ function shiftByUnit(ms, n, unit) {
     case "d":
       return at(Y, M, D2 + n);
     case "h":
-      return at(Y, M, D2, h94 + n);
+      return at(Y, M, D2, h95 + n);
     case "m":
-      return at(Y, M, D2, h94, mi + n);
+      return at(Y, M, D2, h95, mi + n);
     case "s":
-      return at(Y, M, D2, h94, mi, s + n);
+      return at(Y, M, D2, h95, mi, s + n);
   }
 }
 function unitBounds(ms, unit) {
   const d2 = new Date(ms);
   const Y = d2.getFullYear(), M = d2.getMonth(), D2 = d2.getDate();
-  const h94 = d2.getHours(), mi = d2.getMinutes(), s = d2.getSeconds();
+  const h95 = d2.getHours(), mi = d2.getMinutes(), s = d2.getSeconds();
   const at = (y, mo, day, hh = 0, mm = 0, ss = 0) => new Date(y, mo, day, hh, mm, ss).getTime();
   switch (unit) {
     case "y":
@@ -5234,11 +5695,11 @@ function unitBounds(ms, unit) {
     case "d":
       return [at(Y, M, D2), at(Y, M, D2 + 1) - 1];
     case "h":
-      return [at(Y, M, D2, h94), at(Y, M, D2, h94 + 1) - 1];
+      return [at(Y, M, D2, h95), at(Y, M, D2, h95 + 1) - 1];
     case "m":
-      return [at(Y, M, D2, h94, mi), at(Y, M, D2, h94, mi + 1) - 1];
+      return [at(Y, M, D2, h95, mi), at(Y, M, D2, h95, mi + 1) - 1];
     case "s":
-      return [at(Y, M, D2, h94, mi, s), at(Y, M, D2, h94, mi, s + 1) - 1];
+      return [at(Y, M, D2, h95, mi, s), at(Y, M, D2, h95, mi, s + 1) - 1];
   }
 }
 function resolvePresetExpr(expr, precision, now = nowParts()) {
@@ -5580,7 +6041,7 @@ function DateTimePicker(props) {
       (0, import_react13.createElement)("span", { className: `dshpc-dt__end-value${p === null ? " dshpc-dt__end-value--empty" : ""}` }, p === null ? placeholder2 : fmtParts(p, precision))
     );
   };
-  const panel = (side) => {
+  const panel2 = (side) => {
     const view = views[side];
     const end = draft[side];
     const selIso = end.day === null ? null : dayIso(end.day);
@@ -5670,7 +6131,7 @@ function DateTimePicker(props) {
     "div",
     // 皮肤与 pickWorkspaceFile 的选文件弹窗同档（panel.css popover）；这里只管定位、层序与键盘。
     { className: "dshpc-panel dshpc-panel--popover dshpc-dt__pop", ref: refs.setFloating, style: floatingStyles, onKeyDown: onPopKeyDown },
-    (0, import_react13.createElement)("div", { className: "dshpc-dt__layout" }, (0, import_react13.createElement)("div", { className: "dshpc-dt__body" }, rangeMode ? (0, import_react13.createElement)("div", { className: "dshpc-dt__ends" }, endBox("start", tt("dtStart")), endBox("end", tt("dtEnd"))) : null, (0, import_react13.createElement)("div", { className: "dshpc-dt__panels" }, panel("start"), rangeMode ? panel("end") : null)), presetRows.length === 0 ? null : (0, import_react13.createElement)("div", { className: "dshpc-dt__side" }, (0, import_react13.createElement)("div", { className: "dshpc-dt__side-scroll dshpc-scroll-thin" }, presetRows.map((p, i2) => {
+    (0, import_react13.createElement)("div", { className: "dshpc-dt__layout" }, (0, import_react13.createElement)("div", { className: "dshpc-dt__body" }, rangeMode ? (0, import_react13.createElement)("div", { className: "dshpc-dt__ends" }, endBox("start", tt("dtStart")), endBox("end", tt("dtEnd"))) : null, (0, import_react13.createElement)("div", { className: "dshpc-dt__panels" }, panel2("start"), rangeMode ? panel2("end") : null)), presetRows.length === 0 ? null : (0, import_react13.createElement)("div", { className: "dshpc-dt__side" }, (0, import_react13.createElement)("div", { className: "dshpc-dt__side-scroll dshpc-scroll-thin" }, presetRows.map((p, i2) => {
       const active2 = !p.isClear && p.range !== null && draftRange !== null && p.range[0] === draftRange[0] && p.range[1] === draftRange[1];
       return (0, import_react13.createElement)(Button, {
         key: `${i2}-${p.label}`,
@@ -7058,8 +7519,8 @@ function tableShell(skinClass, props, options = {}) {
   }));
   const selectedBlocksOf = (rows) => {
     const blocks = rows.map((_, index3) => ({ start: index3, end: index3 }));
-    rows.forEach((row, index3) => {
-      for (const cell of Object.values(row.cells)) {
+    rows.forEach((row2, index3) => {
+      for (const cell of Object.values(row2.cells)) {
         if (!isTableCellSpec(cell) || cell.rowSpan === void 0 || cell.rowSpan <= 1)
           continue;
         const end = Math.min(index3 + cell.rowSpan - 1, rows.length - 1);
@@ -7074,8 +7535,8 @@ function tableShell(skinClass, props, options = {}) {
     });
     return blocks.map((block2) => {
       for (let line = block2.start; line <= block2.end; line += 1) {
-        const row = rows[line];
-        if (row !== void 0 && selected.has(row.key))
+        const row2 = rows[line];
+        if (row2 !== void 0 && selected.has(row2.key))
           return true;
       }
       return false;
@@ -7083,21 +7544,21 @@ function tableShell(skinClass, props, options = {}) {
   };
   const dataRowsOf = (rows, offset4 = 0) => {
     const selectedBlocks = selectedBlocksOf(rows);
-    return rows.map((row, index3) => (0, import_react30.createElement)("tr", {
-      key: row.key,
+    return rows.map((row2, index3) => (0, import_react30.createElement)("tr", {
+      key: row2.key,
       className: "dshpc-table__row",
       "data-selected": selectedBlocks[index3] === true ? "true" : void 0,
       "data-interactive": onRowClick === void 0 ? void 0 : "true",
       tabIndex: onRowClick === void 0 ? void 0 : 0,
-      onClick: onRowClick === void 0 ? void 0 : () => onRowClick(row, offset4 + index3),
+      onClick: onRowClick === void 0 ? void 0 : () => onRowClick(row2, offset4 + index3),
       onKeyDown: onRowClick === void 0 ? void 0 : (event) => {
         if (event.key !== "Enter" && event.key !== " ")
           return;
         event.preventDefault();
-        onRowClick(row, offset4 + index3);
+        onRowClick(row2, offset4 + index3);
       }
     }, ...leaves.map((column, leafIndex) => {
-      const cell = row.cells[column.key];
+      const cell = row2.cells[column.key];
       if (cell === void 0)
         return null;
       let spec;
@@ -7788,15 +8249,15 @@ var Toast = (props) => {
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
       setInitialHeight(height);
-      setHeights((h94) => [
+      setHeights((h95) => [
         {
           toastId: toast2.id,
           height,
           position: toast2.position
         },
-        ...h94
+        ...h95
       ]);
-      return () => setHeights((h94) => h94.filter((height2) => height2.toastId !== toast2.id));
+      return () => setHeights((h95) => h95.filter((height2) => height2.toastId !== toast2.id));
     }
   }, [
     setHeights,
@@ -7841,7 +8302,7 @@ var Toast = (props) => {
   const deleteToast = import_react32.default.useCallback(() => {
     setRemoved(true);
     setOffsetBeforeRemove(offset4.current);
-    setHeights((h94) => h94.filter((height) => height.toastId !== toast2.id));
+    setHeights((h95) => h95.filter((height) => height.toastId !== toast2.id));
     setTimeout(() => {
       removeToast(toast2);
     }, TIME_BEFORE_UNMOUNT);
@@ -8368,7 +8829,7 @@ var Toaster = /* @__PURE__ */ import_react32.default.forwardRef(function Toaster
           closeButtonAriaLabel: toastOptions == null ? void 0 : toastOptions.closeButtonAriaLabel,
           removeToast,
           toasts: filteredToasts.filter((t4) => t4.position == toast2.position),
-          heights: heights.filter((h94) => h94.position == toast2.position),
+          heights: heights.filter((h95) => h95.position == toast2.position),
           setHeights,
           expandByDefault: expand,
           gap,
@@ -11679,8 +12140,8 @@ var EditorSelection = class _EditorSelection {
   /**
   Extend this selection with an extra range.
   */
-  addRange(range2, main = true) {
-    return _EditorSelection.create([range2].concat(this.ranges), main ? 0 : this.mainIndex + 1);
+  addRange(range2, main2 = true) {
+    return _EditorSelection.create([range2].concat(this.ranges), main2 ? 0 : this.mainIndex + 1);
   }
   /**
   Replace a given range with another range, and then normalize the
@@ -11756,9 +12217,9 @@ var EditorSelection = class _EditorSelection {
   @internal
   */
   static normalized(ranges, mainIndex = 0) {
-    let main = ranges[mainIndex];
+    let main2 = ranges[mainIndex];
     ranges.sort((a, b) => a.from - b.from);
-    mainIndex = ranges.indexOf(main);
+    mainIndex = ranges.indexOf(main2);
     for (let i2 = 1; i2 < ranges.length; i2++) {
       let range2 = ranges[i2], prev = ranges[i2 - 1];
       if (range2.empty ? range2.from <= prev.to : range2.from < prev.to) {
@@ -16873,21 +17334,21 @@ var DocView = class {
       return;
     let force = this.forceSelection;
     this.forceSelection = false;
-    let main = this.view.state.selection.main, anchor, head;
-    if (main.empty) {
-      head = anchor = this.inlineDOMNearPos(main.anchor, main.assoc || 1);
+    let main2 = this.view.state.selection.main, anchor, head;
+    if (main2.empty) {
+      head = anchor = this.inlineDOMNearPos(main2.anchor, main2.assoc || 1);
     } else {
-      head = this.inlineDOMNearPos(main.head, main.head == main.from ? 1 : -1);
-      anchor = this.inlineDOMNearPos(main.anchor, main.anchor == main.from ? 1 : -1);
+      head = this.inlineDOMNearPos(main2.head, main2.head == main2.from ? 1 : -1);
+      anchor = this.inlineDOMNearPos(main2.anchor, main2.anchor == main2.from ? 1 : -1);
     }
-    if (browser.gecko && main.empty && !this.hasComposition && betweenUneditable(anchor)) {
+    if (browser.gecko && main2.empty && !this.hasComposition && betweenUneditable(anchor)) {
       let dummy = document.createTextNode("");
       this.view.observer.ignore(() => anchor.node.insertBefore(dummy, anchor.node.childNodes[anchor.offset] || null));
       anchor = head = new DOMPos(dummy, 0);
       force = true;
     }
     let domSel = this.view.observer.selectionRange;
-    if (force || !domSel.focusNode || (!isEquivalentPosition(anchor.node, anchor.offset, domSel.anchorNode, domSel.anchorOffset) || !isEquivalentPosition(head.node, head.offset, domSel.focusNode, domSel.focusOffset)) && !this.suppressWidgetCursorChange(domSel, main)) {
+    if (force || !domSel.focusNode || (!isEquivalentPosition(anchor.node, anchor.offset, domSel.anchorNode, domSel.anchorOffset) || !isEquivalentPosition(head.node, head.offset, domSel.focusNode, domSel.focusOffset)) && !this.suppressWidgetCursorChange(domSel, main2)) {
       this.view.observer.ignore(() => {
         if (browser.android && browser.chrome && dom.contains(domSel.focusNode) && inUneditable(domSel.focusNode, dom)) {
           dom.blur();
@@ -16895,7 +17356,7 @@ var DocView = class {
         }
         let rawSel = getSelection(this.view.root);
         if (!rawSel) ;
-        else if (main.empty) {
+        else if (main2.empty) {
           if (browser.gecko) {
             let nextTo = nextToUneditable(anchor.node, anchor.offset);
             if (nextTo && nextTo != (1 | 2)) {
@@ -16905,8 +17366,8 @@ var DocView = class {
             }
           }
           rawSel.collapse(anchor.node, anchor.offset);
-          if (main.bidiLevel != null && rawSel.caretBidiLevel !== void 0)
-            rawSel.caretBidiLevel = main.bidiLevel;
+          if (main2.bidiLevel != null && rawSel.caretBidiLevel !== void 0)
+            rawSel.caretBidiLevel = main2.bidiLevel;
         } else if (rawSel.extend) {
           rawSel.collapse(anchor.node, anchor.offset);
           try {
@@ -16915,7 +17376,7 @@ var DocView = class {
           }
         } else {
           let range2 = document.createRange();
-          if (main.anchor > main.head)
+          if (main2.anchor > main2.head)
             [anchor, head] = [head, anchor];
           range2.setEnd(head.node, head.offset);
           range2.setStart(anchor.node, anchor.offset);
@@ -18065,7 +18526,7 @@ function applyDOMChangeInner(view, change, newSel, lastKey = -1) {
     view.inputState.composing++;
   let defaultTr;
   let defaultInsert = () => defaultTr || (defaultTr = applyDefaultInsert(view, change, newSel));
-  if (!view.state.facet(inputHandler).some((h94) => h94(view, change.from, change.to, text2, defaultInsert)))
+  if (!view.state.facet(inputHandler).some((h95) => h95(view, change.from, change.to, text2, defaultInsert)))
     view.dispatch(defaultInsert());
   return true;
 }
@@ -18496,8 +18957,8 @@ function dragMovesSelection(view, event) {
   return facet.length ? facet[0](event) : browser.mac ? !event.altKey : !event.ctrlKey;
 }
 function isInPrimarySelection(view, event) {
-  let { main } = view.state.selection;
-  if (main.empty)
+  let { main: main2 } = view.state.selection;
+  if (main2.empty)
     return false;
   let sel = getSelection(view.root);
   if (!sel || sel.rangeCount == 0)
@@ -18887,8 +19348,8 @@ observers.compositionstart = observers.compositionupdate = (view, event) => {
   if (view.inputState.compositionFirstChange == null)
     view.inputState.compositionFirstChange = true;
   if (view.inputState.composing < 0) {
-    let { main } = view.state.selection;
-    if (!main.empty && view.lineBlockAt(main.from).from != view.lineBlockAt(main.to).from && !view.state.readOnly) {
+    let { main: main2 } = view.state.selection;
+    if (!main2.empty && view.lineBlockAt(main2.from).from != view.lineBlockAt(main2.to).from && !view.state.readOnly) {
       view.dispatch({
         changes: view.state.selection.ranges.filter((r2) => !r2.empty).map((r2) => ({ from: r2.from, to: r2.to })),
         userEvent: "input"
@@ -19003,12 +19464,12 @@ var HeightOracle = class {
   mustRefreshForHeights(lineHeights) {
     let newHeight = false;
     for (let i2 = 0; i2 < lineHeights.length; i2++) {
-      let h94 = lineHeights[i2];
-      if (h94 < 0) {
+      let h95 = lineHeights[i2];
+      if (h95 < 0) {
         i2++;
-      } else if (!this.heightSamples[Math.floor(h94 * 10)]) {
+      } else if (!this.heightSamples[Math.floor(h95 * 10)]) {
         newHeight = true;
-        this.heightSamples[Math.floor(h94 * 10)] = true;
+        this.heightSamples[Math.floor(h95 * 10)] = true;
       }
     }
     return newHeight;
@@ -19024,11 +19485,11 @@ var HeightOracle = class {
     if (changed) {
       this.heightSamples = {};
       for (let i2 = 0; i2 < knownHeights.length; i2++) {
-        let h94 = knownHeights[i2];
-        if (h94 < 0)
+        let h95 = knownHeights[i2];
+        if (h95 < 0)
           i2++;
         else
-          this.heightSamples[Math.floor(h94 * 10)] = true;
+          this.heightSamples[Math.floor(h95 * 10)] = true;
       }
     }
     return changed;
@@ -19232,8 +19693,8 @@ var HeightMapBlock = class extends HeightMap {
     return this.spaceAbove && height < top2 + this.spaceAbove ? new BlockInfo(offset4, 0, top2, this.spaceAbove, SpaceDeco) : this.mainBlock(top2, offset4);
   }
   lineAt(_value, _type, oracle, top2, offset4) {
-    let main = this.mainBlock(top2, offset4);
-    return this.spaceAbove ? this.blockAt(0, oracle, top2, offset4).join(main) : main;
+    let main2 = this.mainBlock(top2, offset4);
+    return this.spaceAbove ? this.blockAt(0, oracle, top2, offset4).join(main2) : main2;
   }
   forEachLine(from2, to, oracle, top2, offset4, f) {
     if (from2 <= offset4 + this.length && to >= offset4)
@@ -19814,9 +20275,9 @@ var ViewState = class {
     this.computeVisibleRanges();
   }
   updateForViewport() {
-    let viewports = [this.viewport], { main } = this.state.selection;
+    let viewports = [this.viewport], { main: main2 } = this.state.selection;
     for (let i2 = 0; i2 <= 1; i2++) {
-      let pos = i2 ? main.head : main.anchor;
+      let pos = i2 ? main2.head : main2.anchor;
       if (!viewports.some(({ from: from2, to }) => pos >= from2 && pos <= to)) {
         let { from: from2, to } = this.lineBlockAt(pos);
         viewports.push(new Viewport(from2, to));
@@ -20332,16 +20793,16 @@ var baseThemeID = /* @__PURE__ */ StyleModule.newName();
 var baseLightID = /* @__PURE__ */ StyleModule.newName();
 var baseDarkID = /* @__PURE__ */ StyleModule.newName();
 var lightDarkIDs = { "&light": "." + baseLightID, "&dark": "." + baseDarkID };
-function buildTheme(main, spec, scopes) {
+function buildTheme(main2, spec, scopes) {
   return new StyleModule(spec, {
     finish(sel) {
       return /&/.test(sel) ? sel.replace(/&\w*/, (m) => {
         if (m == "&")
-          return main;
+          return main2;
         if (!scopes || !scopes[m])
           throw new RangeError(`Unsupported selector: ${m}`);
         return scopes[m];
-      }) : main + " " + sel;
+      }) : main2 + " " + sel;
     }
   });
 }
@@ -21098,7 +21559,7 @@ var EditContextManager = class {
       selectionEnd: this.toContextPos(view.state.selection.main.head)
     });
     this.handlers.textupdate = (e) => {
-      let main = view.state.selection.main, { anchor, head } = main;
+      let main2 = view.state.selection.main, { anchor, head } = main2;
       let from2 = this.toEditorPos(e.updateRangeStart), to = this.toEditorPos(e.updateRangeEnd);
       if (view.inputState.composing >= 0 && !this.composing)
         this.composing = { contextBase: e.updateRangeStart, editorBase: from2, drifted: false };
@@ -21107,10 +21568,10 @@ var EditContextManager = class {
         from2 = anchor;
       else if (to == this.to && anchor > this.to)
         to = anchor;
-      let diff2 = findDiff(view.state.sliceDoc(from2, to), e.text, (deletes ? main.from : main.to) - from2, deletes ? "end" : null);
+      let diff2 = findDiff(view.state.sliceDoc(from2, to), e.text, (deletes ? main2.from : main2.to) - from2, deletes ? "end" : null);
       if (!diff2) {
         let newSel = EditorSelection.single(this.toEditorPos(e.selectionStart), this.toEditorPos(e.selectionEnd));
-        if (!sameSelPos(newSel, main))
+        if (!sameSelPos(newSel, main2))
           view.dispatch({ selection: newSel, userEvent: "select" });
         return;
       }
@@ -21254,9 +21715,9 @@ var EditContextManager = class {
     this.editContext.updateText(this.toContextPos(pending.from), this.toContextPos(pending.from + pending.insert.length), state.doc.sliceString(pending.from, pending.to));
   }
   setSelection(state) {
-    let { main } = state.selection;
-    let start = this.toContextPos(Math.max(this.from, Math.min(this.to, main.anchor)));
-    let end = this.toContextPos(main.head);
+    let { main: main2 } = state.selection;
+    let start = this.toContextPos(Math.max(this.from, Math.min(this.to, main2.anchor)));
+    let end = this.toContextPos(main2.head);
     if (this.editContext.selectionStart != start || this.editContext.selectionEnd != end)
       this.editContext.updateSelection(start, end);
   }
@@ -21452,9 +21913,9 @@ var EditorView = class _EditorView {
         if (scrollTarget)
           scrollTarget = scrollTarget.map(tr.changes);
         if (tr.scrollIntoView) {
-          let { main } = tr.state.selection;
+          let { main: main2 } = tr.state.selection;
           let { x, y } = this.state.facet(_EditorView.cursorScrollMargin);
-          scrollTarget = new ScrollTarget(main.empty ? main : EditorSelection.cursor(main.head, main.head > main.anchor ? -1 : 1), "nearest", "nearest", y, x);
+          scrollTarget = new ScrollTarget(main2.empty ? main2 : EditorSelection.cursor(main2.head, main2.head > main2.anchor ? -1 : 1), "nearest", "nearest", y, x);
         }
         for (let e of tr.effects)
           if (e.is(scrollIntoView))
@@ -22772,16 +23233,16 @@ function setBlinkRate(state, dom) {
 var selectionLayer = /* @__PURE__ */ layer({
   above: false,
   markers(view) {
-    let markers = [], { main, ranges } = view.state.selection;
+    let markers = [], { main: main2, ranges } = view.state.selection;
     for (let r2 of ranges)
-      if (!r2.empty && (drawMainRange || r2 != main)) {
+      if (!r2.empty && (drawMainRange || r2 != main2)) {
         for (let marker of RectangleMarker.forRange(view, "cm-selectionBackground", r2))
           markers.push(marker);
       }
-    if (browser.ios && !main.empty && view.state.facet(selectionConfig).iosSelectionHandles) {
-      for (let piece of RectangleMarker.forRange(view, "cm-selectionHandle cm-selectionHandle-start", EditorSelection.cursor(main.from, 1)))
+    if (browser.ios && !main2.empty && view.state.facet(selectionConfig).iosSelectionHandles) {
+      for (let piece of RectangleMarker.forRange(view, "cm-selectionHandle cm-selectionHandle-start", EditorSelection.cursor(main2.from, 1)))
         markers.push(piece);
-      for (let piece of RectangleMarker.forRange(view, "cm-selectionHandle cm-selectionHandle-end", EditorSelection.cursor(main.to, 1)))
+      for (let piece of RectangleMarker.forRange(view, "cm-selectionHandle cm-selectionHandle-end", EditorSelection.cursor(main2.to, 1)))
         markers.push(piece);
     }
     return markers;
@@ -24056,9 +24517,9 @@ var panelConfig = /* @__PURE__ */ Facet.define({
     return { topContainer, bottomContainer };
   }
 });
-function getPanel(view, panel) {
+function getPanel(view, panel2) {
   let plugin = view.plugin(panelPlugin);
-  let index3 = plugin ? plugin.specs.indexOf(panel) : -1;
+  let index3 = plugin ? plugin.specs.indexOf(panel2) : -1;
   return index3 > -1 ? plugin.panels[index3] : null;
 }
 var panelPlugin = /* @__PURE__ */ ViewPlugin.fromClass(class {
@@ -24094,17 +24555,17 @@ var panelPlugin = /* @__PURE__ */ ViewPlugin.fromClass(class {
       let specs = input.filter((x) => x);
       let panels = [], top2 = [], bottom = [], mount = [];
       for (let spec of specs) {
-        let known = this.specs.indexOf(spec), panel;
+        let known = this.specs.indexOf(spec), panel2;
         if (known < 0) {
-          panel = spec(update.view);
-          mount.push(panel);
+          panel2 = spec(update.view);
+          mount.push(panel2);
         } else {
-          panel = this.panels[known];
-          if (panel.update)
-            panel.update(update);
+          panel2 = this.panels[known];
+          if (panel2.update)
+            panel2.update(update);
         }
-        panels.push(panel);
-        (panel.top ? top2 : bottom).push(panel);
+        panels.push(panel2);
+        (panel2.top ? top2 : bottom).push(panel2);
       }
       this.specs = specs;
       this.panels = panels;
@@ -24163,13 +24624,13 @@ var PanelGroup = class {
       parent.insertBefore(this.dom, this.top ? parent.firstChild : null);
     }
     let curDOM = this.dom.firstChild;
-    for (let panel of this.panels) {
-      if (panel.dom.parentNode == this.dom) {
-        while (curDOM != panel.dom)
+    for (let panel2 of this.panels) {
+      if (panel2.dom.parentNode == this.dom) {
+        while (curDOM != panel2.dom)
           curDOM = rm(curDOM);
         curDOM = curDOM.nextSibling;
       } else {
-        this.dom.insertBefore(panel.dom, curDOM);
+        this.dom.insertBefore(panel2.dom, curDOM);
       }
     }
     while (curDOM)
@@ -24219,9 +24680,9 @@ function showDialog(view, config2) {
 function getDialog(view, className2) {
   let dialogs = view.state.field(dialogField, false) || [];
   for (let open of dialogs) {
-    let panel = getPanel(view, open);
-    if (panel && panel.dom.classList.contains(className2))
-      return panel;
+    let panel2 = getPanel(view, open);
+    if (panel2 && panel2.dom.classList.contains(className2))
+      return panel2;
   }
   return null;
 }
@@ -24276,23 +24737,23 @@ function createDialog(view, config2, result) {
       done(form);
     });
   }
-  let panel = crelt("div", content2, crelt("button", {
+  let panel2 = crelt("div", content2, crelt("button", {
     onclick: () => done(null),
     "aria-label": view.state.phrase("close"),
     class: "cm-dialog-close",
     type: "button"
   }, ["\xD7"]));
   if (config2.class)
-    panel.className = config2.class;
-  panel.classList.add("cm-dialog");
+    panel2.className = config2.class;
+  panel2.classList.add("cm-dialog");
   let focus = typeof config2.focus == "string" ? content2.querySelector(config2.focus) : config2.focus ? content2.querySelector("input") || content2.querySelector("button") : null;
   function done(form) {
-    if (panel.contains(panel.ownerDocument.activeElement))
+    if (panel2.contains(panel2.ownerDocument.activeElement))
       view.focus();
     result(form);
   }
   return {
-    dom: panel,
+    dom: panel2,
     top: config2.top,
     mount: () => {
       if (focus) {
@@ -27075,7 +27536,7 @@ var HighlightBuilder = class {
     if (start >= to || end <= from2)
       return;
     if (type3.isTop)
-      highlighters = this.highlighters.filter((h94) => !h94.scope || h94.scope(type3));
+      highlighters = this.highlighters.filter((h95) => !h95.scope || h95.scope(type3));
     let cls4 = inheritedClass;
     let rule = getStyleTags(cursor2) || Rule.empty;
     let tagCls = highlightTags(highlighters, rule.tags);
@@ -27092,7 +27553,7 @@ var HighlightBuilder = class {
     let mounted = cursor2.tree && cursor2.tree.prop(NodeProp.mounted);
     if (mounted && mounted.overlay) {
       let inner = cursor2.node.enter(mounted.overlay[0].from + start, 1);
-      let innerHighlighters = this.highlighters.filter((h94) => !h94.scope || h94.scope(mounted.tree.type));
+      let innerHighlighters = this.highlighters.filter((h95) => !h95.scope || h95.scope(mounted.tree.type));
       let hasChild2 = cursor2.firstChild();
       for (let i2 = 0, pos = start; ; i2++) {
         let next = i2 < mounted.overlay.length ? mounted.overlay[i2] : null;
@@ -29018,8 +29479,8 @@ var fallbackHighlighter = /* @__PURE__ */ Facet.define({
   }
 });
 function getHighlighters(state) {
-  let main = state.facet(highlighterFacet);
-  return main.length ? main : state.facet(fallbackHighlighter);
+  let main2 = state.facet(highlighterFacet);
+  return main2.length ? main2 : state.facet(fallbackHighlighter);
 }
 function syntaxHighlighting(highlighter, options) {
   let ext = [treeHighlighter], themeType;
@@ -31190,8 +31651,8 @@ var selectWord = ({ state, dispatch }) => {
   return true;
 };
 function findNextOccurrence(state, query) {
-  let { main, ranges } = state.selection;
-  let word2 = state.wordAt(main.head), fullWord = word2 && word2.from == main.from && word2.to == main.to;
+  let { main: main2, ranges } = state.selection;
+  let word2 = state.wordAt(main2.head), fullWord = word2 && word2.from == main2.from && word2.to == main2.to;
   for (let cycled = false, cursor2 = new SearchCursor(state.doc, query, ranges[ranges.length - 1].to); ; ) {
     cursor2.next();
     if (cursor2.done) {
@@ -31464,9 +31925,9 @@ var searchState = /* @__PURE__ */ StateField.define({
   provide: (f) => showPanel.from(f, (val) => val.panel)
 });
 var SearchState = class {
-  constructor(query, panel) {
+  constructor(query, panel2) {
     this.query = query;
-    this.panel = panel;
+    this.panel = panel2;
   }
 };
 var matchMark = /* @__PURE__ */ Decoration.mark({ class: "cm-searchMatch" });
@@ -31481,8 +31942,8 @@ var searchHighlighter = /* @__PURE__ */ ViewPlugin.fromClass(class {
     if (state != update.startState.field(searchState) || update.docChanged || update.selectionSet || update.viewportChanged)
       this.decorations = this.highlight(state);
   }
-  highlight({ query, panel }) {
-    if (!panel || !query.spec.valid)
+  highlight({ query, panel: panel2 }) {
+    if (!panel2 || !query.spec.valid)
       return Decoration.none;
     let { view } = this;
     let builder = new RangeSetBuilder();
@@ -31551,16 +32012,16 @@ var selectSelectionMatches = ({ state, dispatch }) => {
   if (sel.ranges.length > 1 || sel.main.empty)
     return false;
   let { from: from2, to } = sel.main;
-  let ranges = [], main = 0;
+  let ranges = [], main2 = 0;
   for (let cur2 = new SearchCursor(state.doc, state.sliceDoc(from2, to)); !cur2.next().done; ) {
     if (ranges.length > 1e3)
       return false;
     if (cur2.value.from == from2)
-      main = ranges.length;
+      main2 = ranges.length;
     ranges.push(EditorSelection.range(cur2.value.from, cur2.value.to));
   }
   dispatch(state.update({
-    selection: EditorSelection.create(ranges, main),
+    selection: EditorSelection.create(ranges, main2),
     userEvent: "select.search.matches"
   }));
   return true;
@@ -31635,8 +32096,8 @@ function defaultQuery(state, fallback) {
   });
 }
 function getSearchInput(view) {
-  let panel = getPanel(view, createSearchPanel);
-  return panel && panel.dom.querySelector("[main-field]");
+  let panel2 = getPanel(view, createSearchPanel);
+  return panel2 && panel2.dom.querySelector("[main-field]");
 }
 function selectSearchInput(view) {
   let input = getSearchInput(view);
@@ -31666,8 +32127,8 @@ var closeSearchPanel = (view) => {
   let state = view.state.field(searchState, false);
   if (!state || !state.panel)
     return false;
-  let panel = getPanel(view, createSearchPanel);
-  if (panel && panel.dom.contains(view.root.activeElement))
+  let panel2 = getPanel(view, createSearchPanel);
+  if (panel2 && panel2.dom.contains(view.root.activeElement))
     view.focus();
   view.dispatch({ effects: togglePanel.of(false) });
   return true;
@@ -31989,14 +32450,14 @@ function ensureAnchor(expr, start) {
 }
 var pickedCompletion = /* @__PURE__ */ Annotation.define();
 function insertCompletionText(state, text2, from2, to) {
-  let { main } = state.selection, fromOff = from2 - main.from, toOff = to - main.from;
+  let { main: main2 } = state.selection, fromOff = from2 - main2.from, toOff = to - main2.from;
   return {
     ...state.changeByRange((range2) => {
-      if (range2 != main && from2 != to && state.sliceDoc(range2.from + fromOff, range2.from + toOff) != state.sliceDoc(from2, to))
+      if (range2 != main2 && from2 != to && state.sliceDoc(range2.from + fromOff, range2.from + toOff) != state.sliceDoc(from2, to))
         return { range: range2 };
       let lines = state.toText(text2);
       return {
-        changes: { from: range2.from + fromOff, to: to == main.from ? range2.to : range2.from + toOff, insert: lines },
+        changes: { from: range2.from + fromOff, to: to == main2.from ? range2.to : range2.from + toOff, insert: lines },
         range: EditorSelection.cursor(range2.from + fromOff + lines.length)
       };
     }),
@@ -33359,9 +33820,9 @@ function snippet(template) {
   let snippet2 = Snippet.parse(template);
   return (editor, completion, from2, to) => {
     let { text: text2, ranges } = snippet2.instantiate(editor.state, from2);
-    let { main } = editor.state.selection;
+    let { main: main2 } = editor.state.selection;
     let spec = {
-      changes: { from: from2, to: to == main.from ? main.to : to, insert: Text.of(text2) },
+      changes: { from: from2, to: to == main2.from ? main2.to : to, insert: Text.of(text2) },
       scrollIntoView: true,
       annotations: completion ? [pickedCompletion.of(completion), Transaction.userEvent.of("input.complete")] : void 0
     };
@@ -33689,12 +34150,12 @@ var SelectedDiagnostic = class {
   }
 };
 var LintState = class _LintState {
-  constructor(diagnostics, panel, selected) {
+  constructor(diagnostics, panel2, selected) {
     this.diagnostics = diagnostics;
-    this.panel = panel;
+    this.panel = panel2;
     this.selected = selected;
   }
-  static init(diagnostics, panel, state) {
+  static init(diagnostics, panel2, state) {
     let diagnosticFilter = state.facet(lintConfig).markerFilter;
     if (diagnosticFilter)
       diagnostics = diagnosticFilter(diagnostics, state);
@@ -33773,7 +34234,7 @@ var LintState = class _LintState {
           active.splice(i3--, 1);
     }
     let set = deco.finish();
-    return new _LintState(set, panel, findDiagnostic(set));
+    return new _LintState(set, panel2, findDiagnostic(set));
   }
 };
 function findDiagnostic(diagnostics, diagnostic = null, after = 0) {
@@ -33810,19 +34271,19 @@ var lintState = /* @__PURE__ */ StateField.define({
   },
   update(value, tr) {
     if (tr.docChanged && value.diagnostics.size) {
-      let mapped = value.diagnostics.map(tr.changes), selected = null, panel = value.panel;
+      let mapped = value.diagnostics.map(tr.changes), selected = null, panel2 = value.panel;
       if (value.selected) {
         let selPos = tr.changes.mapPos(value.selected.from, 1);
         selected = findDiagnostic(mapped, value.selected.diagnostic, selPos) || findDiagnostic(mapped, null, selPos);
       }
-      if (!mapped.size && panel && tr.state.facet(lintConfig).autoPanel)
-        panel = null;
-      value = new LintState(mapped, panel, selected);
+      if (!mapped.size && panel2 && tr.state.facet(lintConfig).autoPanel)
+        panel2 = null;
+      value = new LintState(mapped, panel2, selected);
     }
     for (let effect of tr.effects) {
       if (effect.is(setDiagnosticsEffect)) {
-        let panel = !tr.state.facet(lintConfig).autoPanel ? value.panel : effect.value.length ? LintPanel.open : null;
-        value = LintState.init(effect.value, panel, tr.state);
+        let panel2 = !tr.state.facet(lintConfig).autoPanel ? value.panel : effect.value.length ? LintPanel.open : null;
+        value = LintState.init(effect.value, panel2, tr.state);
       } else if (effect.is(togglePanel2)) {
         value = new LintState(value.diagnostics, effect.value ? LintPanel.open : null, value.selected);
       } else if (effect.is(movePanelSelection)) {
@@ -33869,9 +34330,9 @@ var openLintPanel = (view) => {
   let field = view.state.field(lintState, false);
   if (!field || !field.panel)
     view.dispatch({ effects: maybeEnableLint(view.state, [togglePanel2.of(true)]) });
-  let panel = getPanel(view, LintPanel.open);
-  if (panel)
-    panel.dom.querySelector(".cm-panel-lint ul").focus();
+  let panel2 = getPanel(view, LintPanel.open);
+  if (panel2)
+    panel2.dom.querySelector(".cm-panel-lint ul").focus();
   return true;
 };
 var closeLintPanel = (view) => {
@@ -34109,12 +34570,12 @@ var LintPanel = class _LintPanel {
       this.view.requestMeasure({
         key: this,
         read: () => ({ sel: newSelectedItem.dom.getBoundingClientRect(), panel: this.list.getBoundingClientRect() }),
-        write: ({ sel, panel }) => {
-          let scaleY = panel.height / this.list.offsetHeight;
-          if (sel.top < panel.top)
-            this.list.scrollTop -= (panel.top - sel.top) / scaleY;
-          else if (sel.bottom > panel.bottom)
-            this.list.scrollTop += (sel.bottom - panel.bottom) / scaleY;
+        write: ({ sel, panel: panel2 }) => {
+          let scaleY = panel2.height / this.list.offsetHeight;
+          if (sel.top < panel2.top)
+            this.list.scrollTop -= (panel2.top - sel.top) / scaleY;
+          else if (sel.bottom > panel2.bottom)
+            this.list.scrollTop += (sel.bottom - panel2.bottom) / scaleY;
         }
       });
     } else if (this.selectedIndex < 0) {
@@ -34280,8 +34741,8 @@ var lintHover = /* @__PURE__ */ hoverTooltip(lintTooltip, { hideOn: hideTooltip 
 var lintExtensions = [
   lintState,
   /* @__PURE__ */ EditorView.decorations.compute([lintState], (state) => {
-    let { selected, panel } = state.field(lintState);
-    return !selected || !panel || selected.from == selected.to ? Decoration.none : Decoration.set([
+    let { selected, panel: panel2 } = state.field(lintState);
+    return !selected || !panel2 || selected.from == selected.to ? Decoration.none : Decoration.set([
       activeMark.range(selected.from, selected.to)
     ]);
   }),
@@ -35896,7 +36357,7 @@ var TokenCache = class {
   }
   getActions(stack2) {
     let actionIndex = 0;
-    let main = null;
+    let main2 = null;
     let { parser: parser9 } = stack2.p, { tokenizers } = parser9;
     let mask = parser9.stateSlot(
       stack2.state,
@@ -35909,7 +36370,7 @@ var TokenCache = class {
       if ((1 << i2 & mask) == 0)
         continue;
       let tokenizer2 = tokenizers[i2], token = this.tokens[i2];
-      if (main && !tokenizer2.fallback)
+      if (main2 && !tokenizer2.fallback)
         continue;
       if (tokenizer2.contextual || token.start != stack2.pos || token.mask != mask || token.context != context) {
         this.updateCachedToken(token, tokenizer2, stack2);
@@ -35924,7 +36385,7 @@ var TokenCache = class {
           actionIndex = this.addActions(stack2, token.extended, token.end, actionIndex);
         actionIndex = this.addActions(stack2, token.value, token.end, actionIndex);
         if (!tokenizer2.extend) {
-          main = token;
+          main2 = token;
           if (actionIndex > startIndex)
             break;
         }
@@ -35934,23 +36395,23 @@ var TokenCache = class {
       this.actions.pop();
     if (lookAhead)
       stack2.setLookAhead(lookAhead);
-    if (!main && stack2.pos == this.stream.end) {
-      main = new CachedToken();
-      main.value = stack2.p.parser.eofTerm;
-      main.start = main.end = stack2.pos;
-      actionIndex = this.addActions(stack2, main.value, main.end, actionIndex);
+    if (!main2 && stack2.pos == this.stream.end) {
+      main2 = new CachedToken();
+      main2.value = stack2.p.parser.eofTerm;
+      main2.start = main2.end = stack2.pos;
+      actionIndex = this.addActions(stack2, main2.value, main2.end, actionIndex);
     }
-    this.mainToken = main;
+    this.mainToken = main2;
     return this.actions;
   }
   getMainToken(stack2) {
     if (this.mainToken)
       return this.mainToken;
-    let main = new CachedToken(), { pos, p } = stack2;
-    main.start = pos;
-    main.end = Math.min(pos + 1, p.stream.end);
-    main.value = pos == p.stream.end ? p.parser.eofTerm : 0;
-    return main;
+    let main2 = new CachedToken(), { pos, p } = stack2;
+    main2.start = pos;
+    main2.end = Math.min(pos + 1, p.stream.end);
+    main2.value = pos == p.stream.end ? p.parser.eofTerm : 0;
+    return main2;
   }
   updateCachedToken(token, tokenizer2, stack2) {
     let start = this.stream.clipPos(stack2.pos);
@@ -36194,8 +36655,8 @@ var Parse2 = class {
       let action = actions2[i2++], term = actions2[i2++], end = actions2[i2++];
       let last2 = i2 == actions2.length || !split;
       let localStack = last2 ? stack2 : stack2.split();
-      let main = this.tokens.mainToken;
-      localStack.apply(action, term, main ? main.start : localStack.pos, end);
+      let main2 = this.tokens.mainToken;
+      localStack.apply(action, term, main2 ? main2.start : localStack.pos, end);
       if (verbose)
         console.log(base3 + this.stackID(localStack) + ` (via ${(action & 65536) == 0 ? "shift" : `reduce of ${parser9.getName(
           action & 65535
@@ -41827,33 +42288,33 @@ var nonPlainText = /code|horizontalrule|html|link|comment|processing|escape|enti
 var pasteURLAsLink = /* @__PURE__ */ EditorView.domEventHandlers({
   paste: (event, view) => {
     var _a2;
-    let { main } = view.state.selection;
-    if (main.empty)
+    let { main: main2 } = view.state.selection;
+    if (main2.empty)
       return false;
     let link = (_a2 = event.clipboardData) === null || _a2 === void 0 ? void 0 : _a2.getData("text/plain");
     if (!link || !/^(https?:\/\/|mailto:|xmpp:|www\.)/.test(link))
       return false;
     if (/^www\./.test(link))
       link = "https://" + link;
-    if (!markdownLanguage.isActiveAt(view.state, main.from, 1))
+    if (!markdownLanguage.isActiveAt(view.state, main2.from, 1))
       return false;
     let tree = syntaxTree(view.state), crossesNode = false;
     tree.iterate({
-      from: main.from,
-      to: main.to,
+      from: main2.from,
+      to: main2.to,
       enter: (node) => {
-        if (node.from > main.from || nonPlainText.test(node.name))
+        if (node.from > main2.from || nonPlainText.test(node.name))
           crossesNode = true;
       },
       leave: (node) => {
-        if (node.to < main.to)
+        if (node.to < main2.to)
           crossesNode = true;
       }
     });
     if (crossesNode)
       return false;
     view.dispatch({
-      changes: [{ from: main.from, insert: "[" }, { from: main.to, insert: `](${link})` }],
+      changes: [{ from: main2.from, insert: "[" }, { from: main2.to, insert: `](${link})` }],
       userEvent: "input.paste",
       scrollIntoView: true
     });
@@ -55633,7 +56094,7 @@ var import_react58 = require("react");
 function LandingBody(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const { translate: tt, roots, anchors, pickable, onOpen, onPickDir } = props;
-  const row = (key, label, target) => (0, import_react58.createElement)(
+  const row2 = (key, label, target) => (0, import_react58.createElement)(
     "div",
     {
       key,
@@ -55660,7 +56121,7 @@ function LandingBody(props) {
       }
     }, tt("explorerPickDir")) : null
   );
-  return (0, import_react58.createElement)("div", { className: "dshpc-fb__tree dshpc-scroll-thin dshpc-scroll-thin--both" }, roots.map((root) => row(`root:${root.path}`, root.label, root.path)), anchors.filter((item) => item.path !== void 0 && item.path !== "").map((item) => row(`ws:${item.title}`, item.title, item.path)));
+  return (0, import_react58.createElement)("div", { className: "dshpc-fb__tree dshpc-scroll-thin dshpc-scroll-thin--both" }, roots.map((root) => row2(`root:${root.path}`, root.label, root.path)), anchors.filter((item) => item.path !== void 0 && item.path !== "").map((item) => row2(`ws:${item.title}`, item.title, item.path)));
 }
 
 // dist/adv/explorer/preview-title-bar.js
@@ -56420,10 +56881,10 @@ function openFilePreview(options) {
   ensureComponentStyles("feedback", FEEDBACK_CSS, getStyleKit());
   let pinnedWidth = null;
   const keepWidth = () => {
-    const panel = container.querySelector(".dshpc-dock__panel");
-    if (panel === null)
+    const panel2 = container.querySelector(".dshpc-dock__panel");
+    if (panel2 === null)
       return;
-    const width = Math.round(panel.getBoundingClientRect().width);
+    const width = Math.round(panel2.getBoundingClientRect().width);
     if (width < (options.minWidth ?? 320))
       return;
     pinnedWidth = width;
@@ -57300,7 +57761,7 @@ function ImageGalleryMirror(props) {
 
 // dist/adv/session/mirror/AskCard.js
 var import_react66 = require("react");
-var isRecord = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
+var isRecord2 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
 function parseJson(text2) {
   try {
     return JSON.parse(text2);
@@ -57310,12 +57771,12 @@ function parseJson(text2) {
 }
 function questionEntries(argsRaw) {
   const parsed = parseJson(argsRaw);
-  if (!isRecord(parsed) || !Array.isArray(parsed.questions) || parsed.questions.length === 0)
+  if (!isRecord2(parsed) || !Array.isArray(parsed.questions) || parsed.questions.length === 0)
     return null;
   const questions = [];
   const ids = /* @__PURE__ */ new Set();
   for (const question3 of parsed.questions) {
-    if (!isRecord(question3) || typeof question3.id !== "string" || typeof question3.question !== "string")
+    if (!isRecord2(question3) || typeof question3.id !== "string" || typeof question3.question !== "string")
       return null;
     if (ids.has(question3.id))
       return null;
@@ -57326,7 +57787,7 @@ function questionEntries(argsRaw) {
 }
 function answerEntries(text2) {
   const parsed = parseJson(text2);
-  if (!isRecord(parsed) || !Array.isArray(parsed.answers) || !parsed.answers.every(isRecord))
+  if (!isRecord2(parsed) || !Array.isArray(parsed.answers) || !parsed.answers.every(isRecord2))
     return null;
   const entries2 = [];
   for (const answer of parsed.answers) {
@@ -57564,7 +58025,7 @@ function detailT(key, t4, params) {
 }
 
 // dist/adv/session/mirror/control-details.js
-var isRecord2 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
+var isRecord3 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
 var arg = (args, key) => typeof args[key] === "string" ? args[key] : "";
 function detailJson(text2) {
   try {
@@ -57685,7 +58146,7 @@ function inspectionItems(value, t4, depth = 0) {
     }
     return items.length === 0 ? [{ description: detailT("detail.empty", t4), fields: [] }] : items;
   }
-  if (!isRecord2(value))
+  if (!isRecord3(value))
     return [{ description: scalar(value, t4), fields: [] }];
   const titleKey = INSPECTION_KEY_ORDER.find((key) => typeof value[key] === "string" && value[key] !== "");
   const descriptionKey = INSPECTION_DETAIL_KEYS.find((key) => typeof value[key] === "string" && value[key] !== "");
@@ -57703,7 +58164,7 @@ function inspectionItems(value, t4, depth = 0) {
       continue;
     if (key === "arguments" && typeof field === "string") {
       const parsed = detailJson(field);
-      if (isRecord2(parsed)) {
+      if (isRecord3(parsed)) {
         groups.push({ label: detailLabel(key, t4), items: inspectionItems(parsed, t4, depth + 1) });
         continue;
       }
@@ -57808,22 +58269,22 @@ function lspDetails(args, text2, t4) {
     const match = /^(.*):(\d+):(\d+)$/u.exec(line);
     if (match === null)
       return null;
-    const [, path, row, column] = match;
-    if (path === void 0 || row === void 0 || column === void 0)
+    const [, path, row2, column] = match;
+    if (path === void 0 || row2 === void 0 || column === void 0)
       return null;
     const isUri = /^[a-z][a-z\d+.-]*:/iu.test(path) && !/^[a-z]:[\\/]/iu.test(path);
     items.push({
       title: path,
-      subtitle: detailT("detail.location", t4, { line: row, column }),
+      subtitle: detailT("detail.location", t4, { line: row2, column }),
       fields: [],
-      ...isUri ? {} : { location: { path, line: Number(row) } }
+      ...isUri ? {} : { location: { path, line: Number(row2) } }
     });
   }
   const found = items.filter((item) => item.title !== void 0).length;
   return detailList(items, `${file} \xB7 ${detailT("detail.locations.count", t4, { count: found })}`, t4);
 }
 function cordisDetails(name2, args, value, t4) {
-  if (!isRecord2(value))
+  if (!isRecord3(value))
     return null;
   if (name2 === "cordis_inspect_list") {
     if (!Array.isArray(value.providers))
@@ -57863,7 +58324,7 @@ function workflowDetails(name2, args, text2, t4) {
   const header = text2.slice(0, split);
   const rounds = /\b(\d+) rounds?\b/u.exec(header)?.[1];
   const report = detailJson(text2.slice(split + 15));
-  if (!isRecord2(report) || typeof report.summary !== "string" || !Array.isArray(report.evidence) || !report.evidence.every((item) => typeof item === "string") || !Array.isArray(report.nextSteps) || !report.nextSteps.every((item) => typeof item === "string") || typeof report.blocker !== "string")
+  if (!isRecord3(report) || typeof report.summary !== "string" || !Array.isArray(report.evidence) || !report.evidence.every((item) => typeof item === "string") || !Array.isArray(report.nextSteps) || !report.nextSteps.every((item) => typeof item === "string") || typeof report.blocker !== "string")
     return null;
   const badge = header.startsWith("Ralph worker reported completion ") ? { label: detailT("detail.ralph.reportedComplete", t4), tone: "success" } : header.startsWith("Ralph worker reported a blocker ") ? { label: detailT("detail.ralph.reportedBlocker", t4), tone: "warning" } : header.startsWith("Ralph reached its ") ? { label: detailT("detail.ralph.limit", t4), tone: "warning" } : void 0;
   if (badge === void 0)
@@ -57954,7 +58415,7 @@ function eventReadDetails(text2, t4) {
   if (match === null || match[1] === void 0 || match[2] === void 0 || match[3] === void 0 || match[4] === void 0)
     return null;
   const event = detailJson(match[4]);
-  if (!isRecord2(event) || typeof event.type !== "string" || !isRecord2(event.data))
+  if (!isRecord3(event) || typeof event.type !== "string" || !isRecord3(event.data))
     return null;
   const fields = [{ label: detailT("detail.field.seq", t4), value: match[3] }];
   if (typeof event.time === "number")
@@ -58022,17 +58483,17 @@ function controlDetails(name2, args, text2, json3, t4) {
     case "lsp":
       return lspDetails(args, text2, t4);
     case "spawn_teammate":
-      if (!isRecord2(json3) || !isRecord2(json3.member))
+      if (!isRecord3(json3) || !isRecord3(json3.member))
         return null;
       return detailList(inspectionItems(json3.member, t4), arg(args, "name"), t4);
     case "team_task_create":
     case "team_task_get":
     case "team_task_update":
-      if (!isRecord2(json3) || typeof json3.subject !== "string")
+      if (!isRecord3(json3) || typeof json3.subject !== "string")
         return null;
       return detailList(inspectionItems(json3, t4), json3.subject, t4);
     case "team_task_list":
-      if (!isRecord2(json3) || !Array.isArray(json3.tasks))
+      if (!isRecord3(json3) || !Array.isArray(json3.tasks))
         return null;
       if (json3.nextCursor !== void 0 && typeof json3.nextCursor !== "number")
         return null;
@@ -58041,21 +58502,21 @@ function controlDetails(name2, args, text2, json3, t4) {
         ...json3.nextCursor === void 0 ? {} : { caption: detailT("detail.tasks.nextPage", t4, { cursor: String(json3.nextCursor) }) }
       };
     case "send_message": {
-      const status = isRecord2(json3) ? json3.status : void 0;
+      const status = isRecord3(json3) ? json3.status : void 0;
       if (status === "accepted" || status === "queued") {
         return receipt(target, { label: detailT(status === "queued" ? "detail.status.queued" : "detail.receipt.delivered", t4), tone: status === "queued" ? "warning" : "success" }, t4, [], arg(args, "message"));
       }
       return text2 === `message delivered to agent ${target}` ? receipt(target, { label: detailT("detail.receipt.delivered", t4), tone: "success" }, t4, [], arg(args, "message")) : null;
     }
     case "interrupt_agent":
-      if (isRecord2(json3) && typeof json3.previousStatus === "string") {
+      if (isRecord3(json3) && typeof json3.previousStatus === "string") {
         return receipt(target, { label: detailT("detail.receipt.interrupt", t4), tone: "warning" }, t4, [{ label: detailT("detail.field.previousStatus", t4), value: detailBadge(json3.previousStatus, t4).label }]);
       }
       return text2 === `interrupt requested for agent ${target}` ? receipt(target, { label: detailT("detail.receipt.interrupt", t4), tone: "warning" }, t4) : null;
     case "wait_agent": {
-      if (!isRecord2(json3) || typeof json3.timedOut !== "boolean")
+      if (!isRecord3(json3) || typeof json3.timedOut !== "boolean")
         return null;
-      if (isRecord2(json3.noProgress) && typeof json3.noProgress.message === "string") {
+      if (isRecord3(json3.noProgress) && typeof json3.noProgress.message === "string") {
         return detailList([{ title: detailT("detail.wait.noProgress", t4), description: json3.noProgress.message, fields: [] }], detailT("detail.wait.noProgress", t4), t4);
       }
       return receipt(detailT("detail.wait.title", t4), { label: detailT(json3.timedOut ? "detail.wait.timeout" : "detail.wait.changed", t4), tone: "neutral" }, t4);
@@ -58144,7 +58605,7 @@ function controlDetails(name2, args, text2, json3, t4) {
 }
 
 // dist/adv/session/mirror/ToolDetails.js
-var isRecord3 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
+var isRecord4 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
 var nonempty = (value) => typeof value === "string" && value.trim() !== "";
 var count3 = (value) => typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 function detailJson2(text2) {
@@ -58170,12 +58631,12 @@ function formatDate(date, fallback) {
   }
 }
 function goalDetail(value, t4) {
-  if (!isRecord3(value))
+  if (!isRecord4(value))
     return null;
   if (value.goal === null)
     return { items: [], empty: t4("detailGoalEmpty") };
   const goal = value.goal;
-  if (!isRecord3(goal) || !nonempty(goal.id) || !nonempty(goal.objective))
+  if (!isRecord4(goal) || !nonempty(goal.id) || !nonempty(goal.objective))
     return null;
   if (!count3(goal.revision) || !count3(goal.roundsStarted) || !count3(goal.maxGoalRounds))
     return null;
@@ -58199,7 +58660,7 @@ function goalDetail(value, t4) {
   ];
   if (goal.blockedReason !== void 0) {
     const reason = goal.blockedReason;
-    if (!isRecord3(reason) || !nonempty(reason.code) || !nonempty(reason.message))
+    if (!isRecord4(reason) || !nonempty(reason.code) || !nonempty(reason.message))
       return null;
     fields.push({ label: t4("detailGoalReason"), value: reason.message });
   }
@@ -58239,7 +58700,7 @@ function weekdayText(days, t4) {
   return labels.join(t4("detailWeekdayJoin"));
 }
 function scheduleItem(value, t4) {
-  if (!isRecord3(value) || !nonempty(value.id) || !nonempty(value.prompt))
+  if (!isRecord4(value) || !nonempty(value.id) || !nonempty(value.prompt))
     return null;
   if (typeof value.scheduledAt !== "string")
     return null;
@@ -58298,7 +58759,7 @@ function detailsCardModel(name2, argsRaw, output, settled, isError, t4) {
   if (!settled || isError || output === "")
     return null;
   const args = detailJson2(argsRaw);
-  if (!isRecord3(args))
+  if (!isRecord4(args))
     return null;
   const value = detailJson2(output);
   const recorded = controlDetails(name2, args, output, value, t4) ?? inspectionDetails(name2, args, output, value, t4);
@@ -58329,7 +58790,7 @@ function detailsCardModel(name2, argsRaw, output, settled, isError, t4) {
       return { items, summary: t4("detailScheduleCount", { count: items.length }), empty: t4("detailScheduleEmpty") };
     }
     case "schedule_delete":
-      if (!isRecord3(value) || !nonempty(value.id) || value.deleted !== true)
+      if (!isRecord4(value) || !nonempty(value.id) || value.deleted !== true)
         return null;
       return { items: [{ title: value.id, fields: [{ label: t4("detailState"), value: t4("detailScheduleDeleted") }] }] };
     default:
@@ -59855,8 +60316,8 @@ function firstActive(view) {
     }
     return null;
   }
-  for (const row of active) {
-    const parsed = questionSet(row);
+  for (const row2 of active) {
+    const parsed = questionSet(row2);
     if (parsed !== null)
       return parsed;
   }
@@ -59910,10 +60371,10 @@ function questionFace(value) {
     return void 0;
   return value;
 }
-function questionSet(row) {
-  if (typeof row !== "object" || row === null)
+function questionSet(row2) {
+  if (typeof row2 !== "object" || row2 === null)
     return null;
-  const record = row;
+  const record = row2;
   if (typeof record.callId !== "string" || record.callId === "")
     return null;
   const state = record.state === "continued" ? "continued" : record.state === "open" ? "open" : void 0;
@@ -61181,16 +61642,16 @@ function baseNameOf(path) {
 function changesSummaryUrl(sessionId, seq) {
   return `api/changes.summary?${new URLSearchParams({ sessionId, seq: String(seq) })}`;
 }
-var isRecord4 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
+var isRecord5 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
 var isInt = (value) => typeof value === "number" && Number.isSafeInteger(value);
 function isChangedFile(value) {
-  if (!isRecord4(value))
+  if (!isRecord5(value))
     return false;
   const { path, display, added, deleted, binary: binary2, oversized } = value;
   return typeof path === "string" && path.length > 0 && typeof display === "string" && display.length > 0 && isInt(added) && isInt(deleted) && (binary2 === void 0 || binary2 === true) && (oversized === void 0 || oversized === true);
 }
 function parseChangesSummary(value) {
-  if (!isRecord4(value))
+  if (!isRecord5(value))
     return null;
   const { turn, files, total, added, deleted } = value;
   if (!isInt(turn) || turn < 1)
@@ -61216,13 +61677,13 @@ function changesDiffUrl(sessionId, seq, index3) {
   return `api/changes.diff?${new URLSearchParams({ sessionId, seq: String(seq), index: String(index3) })}`;
 }
 function isDiffHunk(value) {
-  if (!isRecord4(value))
+  if (!isRecord5(value))
     return false;
   const { oldStart, oldLines, newStart, newLines, lines } = value;
   return [oldStart, oldLines, newStart, newLines].every((field) => isInt(field) && field >= 0) && Array.isArray(lines) && lines.every((line) => typeof line === "string" && /^[+ -]/.test(line));
 }
 function parseChangesDiff(value) {
-  if (!isRecord4(value))
+  if (!isRecord5(value))
     return null;
   const { kind, path, display, before, after, coarse, hunks } = value;
   if (typeof path !== "string" || path.length === 0 || typeof display !== "string" || display.length === 0)
@@ -61278,7 +61739,7 @@ var C3 = (semantic) => officialClass("ChangedFiles", semantic) ?? "";
 var D = (semantic) => officialClass("FileDiff", semantic) ?? "";
 var cache3 = /* @__PURE__ */ new Map();
 function highlightedSide(rows, side, highlighter) {
-  const source = rows.flatMap((row) => row[side] === void 0 ? [] : [{ no: row[side], text: row.text }]);
+  const source = rows.flatMap((row2) => row2[side] === void 0 ? [] : [{ no: row2[side], text: row2.text }]);
   if (source.length === 0)
     return /* @__PURE__ */ new Map();
   const highlighted = highlighter(source.map((line) => line.text).join("\n"));
@@ -61291,10 +61752,10 @@ function DiffText(props) {
   return (0, import_react88.createElement)("span", { className: D("text"), "data-diff-code": spans === void 0 ? void 0 : "" }, spans === void 0 ? text2 : spans.map((span, index3) => (0, import_react88.createElement)("span", { key: index3, style: span.style }, span.text)));
 }
 function DiffLine(props) {
-  const { row } = props;
-  const kindClass = row.kind === "add" ? D("add") : row.kind === "del" ? D("del") : D("context");
-  const spans = row.kind === "del" ? props.oldSpans : props.newSpans;
-  return (0, import_react88.createElement)("div", { className: `${D("line")} ${kindClass}`, "data-diff-line": row.kind }, (0, import_react88.createElement)("span", { className: D("number") }, row.old ?? ""), (0, import_react88.createElement)("span", { className: D("number") }, row.new ?? ""), (0, import_react88.createElement)("span", { className: D("sign") }, row.kind === "add" ? "+" : row.kind === "del" ? "-" : " "), (0, import_react88.createElement)(DiffText, { text: row.text, spans }));
+  const { row: row2 } = props;
+  const kindClass = row2.kind === "add" ? D("add") : row2.kind === "del" ? D("del") : D("context");
+  const spans = row2.kind === "del" ? props.oldSpans : props.newSpans;
+  return (0, import_react88.createElement)("div", { className: `${D("line")} ${kindClass}`, "data-diff-line": row2.kind }, (0, import_react88.createElement)("span", { className: D("number") }, row2.old ?? ""), (0, import_react88.createElement)("span", { className: D("number") }, row2.new ?? ""), (0, import_react88.createElement)("span", { className: D("sign") }, row2.kind === "add" ? "+" : row2.kind === "del" ? "-" : " "), (0, import_react88.createElement)(DiffText, { text: row2.text, spans }));
 }
 function ChangedFileDiff(props) {
   const { sessionId, seq, index: index3, display, t: t4 = t, variant = "preview", onClose } = props;
@@ -61380,11 +61841,11 @@ function ChangedFileDiff(props) {
       const rows = hunkRows(hunk);
       const oldSpans = highlightedSide(rows, "old", highlighter);
       const newSpans = highlightedSide(rows, "new", highlighter);
-      return (0, import_react88.createElement)("section", { key: position, className: D("hunk") }, (0, import_react88.createElement)("div", { className: D("hunkHeader"), "data-diff-hunk-header": true }, hunkHeader(hunk)), rows.map((row, at) => (0, import_react88.createElement)(DiffLine, {
+      return (0, import_react88.createElement)("section", { key: position, className: D("hunk") }, (0, import_react88.createElement)("div", { className: D("hunkHeader"), "data-diff-hunk-header": true }, hunkHeader(hunk)), rows.map((row2, at) => (0, import_react88.createElement)(DiffLine, {
         key: at,
-        row,
-        oldSpans: oldSpans?.get(row.old ?? -1),
-        newSpans: newSpans?.get(row.new ?? -1)
+        row: row2,
+        oldSpans: oldSpans?.get(row2.old ?? -1),
+        newSpans: newSpans?.get(row2.new ?? -1)
       })));
     }));
   }, [state, highlighter, t4, retry, wrap]);
@@ -61500,7 +61961,7 @@ function ChangedFilesCard(props) {
   const rowOf = (file, index3) => {
     const body = (0, import_react89.createElement)(import_react89.Fragment, null, (0, import_react89.createElement)("span", { className: C4("path") }, file.display), (0, import_react89.createElement)("span", { className: C4("counts") }, countsOf(file, t4)));
     const locator = { sessionId, seq, index: index3, display: file.display };
-    const row = onOpenReview === void 0 ? (0, import_react89.createElement)("div", { className: C4("row") }, body) : (0, import_react89.createElement)("button", {
+    const row2 = onOpenReview === void 0 ? (0, import_react89.createElement)("div", { className: C4("row") }, body) : (0, import_react89.createElement)("button", {
       type: "button",
       className: C4("row"),
       onClick: () => {
@@ -61512,7 +61973,7 @@ function ChangedFilesCard(props) {
       variant: "preview",
       widthAnchorRef: cardRef,
       openDelayMs: 500,
-      anchor: row,
+      anchor: row2,
       content: previewOf(index3, file.display)
     });
   };
@@ -61654,10 +62115,10 @@ function waitingUserRows(inbox, pending, observed) {
     });
   }
   for (const item of local.values()) {
-    const row = fromSubmission(item);
-    if (row.text === "" && row.files.length === 0)
+    const row2 = fromSubmission(item);
+    if (row2.text === "" && row2.files.length === 0)
       continue;
-    rows.push(row);
+    rows.push(row2);
   }
   return rows;
 }
@@ -62453,12 +62914,12 @@ function SessionViewModal(props) {
   const turns = chat?.timeline?.turns;
   const observedRpc = (0, import_react90.useMemo)(() => keyed && store !== void 0 ? observedRpcIds(order, (key) => store.get(key)) : /* @__PURE__ */ new Set(), [keyed, order, store]);
   const waitingRows = (0, import_react90.useMemo)(() => waitingUserRows(inboxSnap, sessionSnap?.pendingSubmissions, observedRpc), [inboxSnap, sessionSnap, observedRpc]);
-  const pendingRows = waitingRows.map((row) => (0, import_react90.createElement)(UserMessage, {
-    key: row.key,
-    text: row.text,
-    files: row.files,
-    pending: row.pending,
-    echo: row.echo,
+  const pendingRows = waitingRows.map((row2) => (0, import_react90.createElement)(UserMessage, {
+    key: row2.key,
+    text: row2.text,
+    files: row2.files,
+    pending: row2.pending,
+    echo: row2.echo,
     t: tt
   }));
   const fileOpen = (0, import_react90.useMemo)(() => {
@@ -62617,7 +63078,7 @@ function SessionViewModal(props) {
     renderNode,
     t: tt
   }) : renderLegacyRows(chat?.legacy?.nodes ?? [], tt, fileOpen);
-  const rendered = rows.filter((row) => row !== null && row !== void 0);
+  const rendered = rows.filter((row2) => row2 !== null && row2 !== void 0);
   const officialCount = officialModuleCount();
   if (!officialWarned) {
     officialWarned = true;
@@ -62804,10 +63265,10 @@ function SessionViewModal(props) {
 // dist/adv/session/open-review.js
 var import_react91 = require("react");
 function openSessionReview(options) {
-  const { locator, title, ...panel } = options;
+  const { locator, title, ...panel2 } = options;
   let handle = null;
   handle = openFilePreview({
-    ...panel,
+    ...panel2,
     // 无头面板：标题只用于 aria-label，缺省用改动路径。
     title: title ?? locator.display,
     content: () => (0, import_react91.createElement)(ChangedFileDiff, {
@@ -63016,14 +63477,14 @@ function repullRows() {
   }
   const rows = [];
   for (const id3 of snap.ids) {
-    const row = snap.byId[id3];
-    if (row === void 0 || row.blank) continue;
+    const row2 = snap.byId[id3];
+    if (row2 === void 0 || row2.blank) continue;
     rows.push({
       sessionId: id3,
-      displayTitle: row.displayTitle === "" ? id3 : row.displayTitle,
-      updatedAt: row.updatedAt,
-      running: row.running,
-      blank: row.blank
+      displayTitle: row2.displayTitle === "" ? id3 : row2.displayTitle,
+      updatedAt: row2.updatedAt,
+      running: row2.running,
+      blank: row2.blank
     });
   }
   rows.sort((left, right) => right.updatedAt - left.updatedAt);
@@ -63093,7 +63554,7 @@ var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primit
 var DICT2 = {
   zh: {
     grpStart: "\u5165\u95E8",
-    grpDesign: "\u8BBE\u8BA1",
+    grpInfra: "\u57FA\u7840\u8BBE\u65BD",
     grpComponents: "\u63A7\u4EF6",
     grpBlocks: "\u5E94\u7528\u6A21\u5757",
     grpUtils: "\u5DE5\u5177\u65B9\u6CD5",
@@ -63103,6 +63564,34 @@ var DICT2 = {
     secInstall: "\u5B89\u88C5\u4E0E\u521D\u59CB\u5316",
     secQuickstart: "\u5FEB\u901F\u5F00\u59CB",
     secFoundation: "\u8BBE\u8BA1\u57FA\u7840",
+    secTaskNotifications: "\u901A\u77E5\u4EFB\u52A1\u4E2D\u5FC3",
+    tnNote: "\u672C\u9875\u53EA\u6F14\u793A\u6570\u636E\u9762\uFF1A\u72B6\u6001\u6C60\u3001\u8BA2\u9605\u3001\u4E8B\u4EF6\u603B\u7EBF\u3001\u8DE8\u9875\u540C\u6B65\u4E0E\u7ED3\u675F\u53E5\u67C4\u3002\u4EFB\u52A1\u3001\u6761\u6570\u3001revision\u3001\u65F6\u95F4\u4E0E\u4E8B\u4EF6\u5168\u90E8\u6765\u81EA\u771F\u5B9E API \u8C03\u7528\uFF0C\u6CA1\u6709\u6A21\u62DF\u6570\u636E\u3001\u6CA1\u6709\u5B9A\u65F6\u5668\u3001\u6CA1\u6709\u5360\u4F4D\u884C\u3002\u53EF\u6536\u8D77\u5F39\u7A97\u4E0E\u4E8B\u4EF6\u67E5\u770B\u63A7\u4EF6\u4E0D\u5728\u8FD9\u91CC\uFF0C\u7531\u540E\u7EED\u4EFB\u52A1\u5355\u72EC\u63D0\u4F9B\u3002",
+    tnCrossPage: "\u8DE8\u9875\u6F14\u793A\uFF1A\u5728\u53E6\u4E00\u4E2A\u540C\u6E90\u6807\u7B7E\u9875\u6253\u5F00\u672C\u9875\uFF0C\u4E24\u8FB9\u5404\u81EA\u6CE8\u518C\u6216\u7ED3\u675F\u4EFB\u52A1\uFF0C\u5217\u8868\u4E0E\u4E8B\u4EF6\u4F1A\u5373\u65F6\u540C\u6B65\uFF1B\u5173\u6389\u5176\u4E2D\u4E00\u4E2A\u6807\u7B7E\u9875\u53EF\u770B\u5230 peer-left \u4E8B\u4EF6\u3002\u8DE8\u9875\u6761\u76EE\u80FD\u770B\u4E0D\u80FD\u70B9\u3002",
+    tnOpsTitle: "\u771F\u5B9E\u64CD\u4F5C\u53F0",
+    tnOpsHint: "\u6BCF\u4E2A\u6309\u94AE\u90FD\u8C03\u7528\u771F\u5B9E API\uFF1B\u53F3\u4FA7\u662F\u540C\u4E00\u5957\u8C03\u7528\u7684\u4EE3\u7801",
+    tnRegisterReminder: "\u6CE8\u518C\u5230 dsh-task-reminder",
+    tnRegisterLedger: "\u6CE8\u518C\u5230 dsh-task-ledger",
+    tnUpdate: "\u66F4\u65B0\u8BE6\u60C5",
+    tnBackground: "\u6536\u8D77\uFF08\u4E0D\u7ED3\u7B97\uFF09",
+    tnDone: "\u7ED3\u675F \xB7 done",
+    tnFail: "\u7ED3\u675F \xB7 fail",
+    tnRestore: "\u8BF7\u6C42\u8FD8\u539F\uFF08\u672C\u9875\uFF09",
+    tnRefresh: "\u91CD\u65B0\u540C\u6B65",
+    tnRefreshHint: "\u5E73\u65F6\u4F1A\u81EA\u52A8\u540C\u6B65\uFF0C\u53EA\u6709\u6000\u7591\u72B6\u6001\u4E0D\u540C\u6B65\u65F6\u624D\u70B9",
+    tnFilterAll: "\u4E0D\u8FC7\u6EE4",
+    tnFilterOne: "\u53EA\u770B reminder",
+    tnFilterTwo: "\u770B\u4E24\u4E2A\u7EC4",
+    tnOpsNote: "\u6CE8\u518C\u4E0E\u8FC7\u6EE4\u5728\u8FD9\u91CC\uFF1B\u6BCF\u6761\u4EFB\u52A1\u81EA\u5DF1\u7684\u6536\u8D77 / \u7ED3\u675F / \u8FD8\u539F\u6309\u94AE\u5728\u4E0B\u65B9\u5217\u8868\u7684\u5BF9\u5E94\u884C\u91CC",
+    tnFinishAll: "\u7ED3\u675F\u672C\u9875\u5168\u90E8",
+    tnSnapshotTitle: "\u72B6\u6001\u5FEB\u7167",
+    tnSnapshotHint: "\u4E09\u53C2 useSyncExternalStore\uFF0C\u5F15\u7528\u7A33\u5B9A\uFF1B\u6BCF\u884C\u53F3\u4FA7\u662F\u8FD9\u6761\u4EFB\u52A1\u81EA\u5DF1\u7684\u64CD\u4F5C",
+    tnEventsTitle: "\u4E8B\u4EF6\u603B\u7EBF",
+    tnEventsHint: "\u771F\u5B9E\u4E8B\u4EF6\uFF0C\u53EA\u663E\u793A\u6700\u8FD1 8 \u6761\uFF1B\u5386\u53F2\u4E0D\u7559\u5B58",
+    tnEmptyTasks: "\u6C60\u91CC\u8FD8\u6CA1\u6709\u4EFB\u52A1\uFF1A\u70B9\u4E0A\u9762\u7684\u6309\u94AE\u6CE8\u518C\u4E00\u6761\u771F\u5B9E\u4EFB\u52A1",
+    tnEmptyEvents: "\u8FD8\u6CA1\u6709\u4E8B\u4EF6",
+    tnCountLabel: "\u663E\u793A / \u5168\u6C60",
+    tnBadgeLocal: "\u672C\u9875\u521B\u5EFA \xB7 \u53EF\u8FD8\u539F",
+    tnBadgeRemote: "\u8DE8\u9875\u6761\u76EE \xB7 \u80FD\u770B\u4E0D\u80FD\u70B9",
     secWritePlugin: "\u5199\u4E00\u4E2A\u63D2\u4EF6",
     secReference: "\u53C2\u8003\u4E0E\u7EA6\u5B9A",
     secNaming: "\u547D\u540D\u4E0E\u524D\u7F00\u5951\u7EA6",
@@ -63363,7 +63852,7 @@ var DICT2 = {
   },
   en: {
     grpStart: "Getting started",
-    grpDesign: "Design",
+    grpInfra: "Infrastructure",
     grpComponents: "Components",
     grpBlocks: "App modules",
     grpUtils: "Utilities",
@@ -63373,6 +63862,34 @@ var DICT2 = {
     secInstall: "Install & init",
     secQuickstart: "Quick start",
     secFoundation: "Foundations",
+    secTaskNotifications: "Task Notification Hub",
+    tnNote: "This page demos the data plane only: pool, subscription, event bus, cross-page sync and settlement handles. Rows, counts, revision, timestamps and events all come from real API calls \u2014 no mock data, no timers, no placeholder rows. Collapsible dialogs and the event-viewer control are not here; they arrive in separate tasks.",
+    tnCrossPage: "Cross-page demo: open this page in another same-origin tab. Register or settle a task on either side and both lists and event streams update immediately; close one tab to see a peer-left event. Cross-page rows are view-only.",
+    tnOpsTitle: "Live controls",
+    tnOpsHint: "Every button calls a real API; the code on the right is that same call",
+    tnRegisterReminder: "Register to dsh-task-reminder",
+    tnRegisterLedger: "Register to dsh-task-ledger",
+    tnUpdate: "Update detail",
+    tnBackground: "Collapse (no settle)",
+    tnDone: "Finish \xB7 done",
+    tnFail: "Finish \xB7 fail",
+    tnRestore: "Request restore (local)",
+    tnRefresh: "Resync",
+    tnRefreshHint: "Syncs automatically; click only if you suspect it drifted",
+    tnFilterAll: "No filter",
+    tnFilterOne: "Reminder only",
+    tnFilterTwo: "Both groups",
+    tnOpsNote: "Register and filter here; each row has its own collapse / finish / restore actions",
+    tnFinishAll: "Finish all local tasks",
+    tnSnapshotTitle: "State snapshot",
+    tnSnapshotHint: "Three-argument useSyncExternalStore, stable references; each row owns its actions",
+    tnEventsTitle: "Event bus",
+    tnEventsHint: "Real events, latest 8 only; no history retained",
+    tnEmptyTasks: "No tasks yet: register a real one with a button above",
+    tnEmptyEvents: "No events yet",
+    tnCountLabel: "shown / total",
+    tnBadgeLocal: "Created here \xB7 restorable",
+    tnBadgeRemote: "Cross-page row \xB7 view only",
     secWritePlugin: "Write a plugin",
     secReference: "Reference",
     secNaming: "Naming & prefix contract",
@@ -63711,7 +64228,7 @@ function demoPanels() {
 var pageRow = { element: null };
 
 // packages/demo/src/sections/index.tsx
-var import_react103 = require("react");
+var import_react104 = require("react");
 
 // packages/demo/src/sections/start.tsx
 var import_react94 = require("react");
@@ -63793,6 +64310,15 @@ var docData = {
             "desc": {
               "zh": "\u4F1A\u8BDD\u6570\u636E\u94FE\u4E0E\u5F39\u7A97 props\uFF1B\u5F52\u6863\u4F1A\u8BDD\u540C\u6837\u53EF\u8BFB",
               "en": "The session data chain and dialog props; archived sessions read fine too"
+            }
+          },
+          {
+            "name": "\u8BA9\u957F\u8017\u65F6\u4EFB\u52A1\u767B\u8BB0\u3001\u8BA2\u9605\u5E76\u8DE8\u9875\u53EF\u89C1",
+            "type": "task-notifications.md",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u72B6\u6001\u6C60\u3001\u8BA2\u9605\u3001\u4E8B\u4EF6\u901A\u77E5\u3001\u8DE8\u9875\u540C\u6B65\u4E0E\u7ED3\u675F\u53E5\u67C4\uFF1B\u53EA\u8BB2\u6570\u636E\u9762\uFF0C\u4E0D\u542B\u5F39\u7A97\u4E0E\u67E5\u770B\u63A7\u4EF6",
+              "en": "Pool, subscription, events, cross-page sync and settlement handles \u2014 the data plane only, no dialog or viewer control"
             }
           },
           {
@@ -68209,6 +68735,254 @@ h(SideSheet, {
         "src": "import { QuickToolbar } from 'dsh-plugin-core/ui'\n\n// \u9ED8\u8BA4\uFF1A\u8D34\u5C4F\u5E55\u53F3\u4E0B\u89D2\uFF08\u7EB5\u5411\u6052\u8D34\u5C4F\u5E55\u5E95\u8FB9\u3001\u6A2A\u5411\u8D34\u53F3\u7F18\uFF0C\u5404\u7559 16px\uFF09\nh(QuickToolbar, {\n  onAction: (id) => console.log('\u70B9\u4E86', id),\n  items: [\n    { id: 'search', icon: <SearchIcon />, label: '\u641C\u7D22' },\n    { id: 'settings', icon: <SettingsIcon />, label: '\u8BBE\u7F6E' },\n  ],\n  // backToTop \u9ED8\u8BA4\u5F00\uFF1A\u6EDA\u8FC7 320px \u624D\u51FA\u73B0\uFF1B\u4E0D\u60F3\u8981\u5C31\u4F20 false\n})\n\n// \u8DDF\u968F\u67D0\u4E2A\u63A7\u4EF6\uFF1A\u6A2A\u5411\u8D34\u5B83\u7684\u53F3\u7F18\u5916\u4FA7\uFF1B\u53F3\u4FA7\u653E\u4E0D\u4E0B\u81EA\u52A8\u9000\u56DE\u5C4F\u5E55\u53F3\u7F18\nh(QuickToolbar, {\n  anchorId: 'my-content',\n  items: [...],\n  backToTop: { order: 2 },        // \u56DE\u9876\u90E8\u6392\u5230\u7B2C 3 \u4F4D\uFF1B\u9ED8\u8BA4 0 \u5728\u6700\u4E0A\n})\n\n// \u81EA\u5B9A\u4E49\u9879\uFF1A\u663E\u9690 / \u6392\u5E8F / \u914D\u8272\nh(QuickToolbar, {\n  items: [\n    { id: 'search', icon: <SearchIcon />, label: '\u641C\u7D22', when: 'scroll', threshold: 480 },\n    { id: 'wide', icon: <WideIcon />, label: '\u5BBD\u5C4F', visible: wide },\n    { id: 'brand', icon: <BrandIcon />, label: '\u54C1\u724C', color: '#7c3aed', fgColor: '#fff' },\n  ],\n  scrollContainer: myScrollElement,\n})"
       }
     ]
+  },
+  "task-notifications": {
+    "id": "task-notifications",
+    "heading": {
+      "zh": "\u8BA9\u957F\u8017\u65F6\u4EFB\u52A1\u767B\u8BB0\u3001\u8BA2\u9605\u4E0E\u8DE8\u9875\u53EF\u89C1",
+      "en": "Register, subscribe and observe long-running tasks"
+    },
+    "prose": [
+      {
+        "zh": "\u4E24\u6761\u901A\u9053\u4E0D\u80FD\u4E92\u76F8\u66FF\u4EE3\uFF1A\u72B6\u6001\u6C60\u7ED9\u4EFB\u610F\u65F6\u523B\u53EF\u8BFB\u7684\u5168\u91CF\u5FEB\u7167\uFF0C\u53EF\u76F4\u63A5\u5582 `useSyncExternalStore`\uFF1B\u4E8B\u4EF6\u603B\u7EBF\u53EA\u6295\u9012\u4E00\u6B21\u6027\u4E8B\u5B9E\uFF0C\u4E0D\u7559\u5B58\u3002\u65B0\u5F00\u7684\u9875\u9762\u6CA1\u542C\u8FC7\u5386\u53F2\u4E8B\u4EF6\uFF0C\u9760 `hello` \u6362\u56DE\u5168\u91CF\u5206\u7247\u8865\u9F50\uFF1B\u53CD\u8FC7\u6765\uFF0C\u300C\u6536\u8D77\u300D\u662F\u4E00\u6B21\u6027\u4E8B\u5B9E\uFF0C\u8BFB\u5B8C\u5FEB\u7167\u770B\u4E0D\u51FA\u6765\uFF0C\u5FC5\u987B\u76D1\u542C\u4E8B\u4EF6\u3002",
+        "en": "Two channels that do not replace each other: the pool exposes a queryable full snapshot that feeds `useSyncExternalStore`; the event bus delivers one-off facts and keeps no history. A freshly opened page has heard no past events, so `hello` exchanges a full shard as baseline. Conversely, collapsing is a one-off fact invisible in a snapshot \u2014 listen to events for it."
+      },
+      {
+        "zh": "\u6570\u636E\u53EA\u5728\u5185\u5B58\uFF1A\u672C\u9875\u4E0E\u5404\u540C\u6E90\u6807\u7B7E\u9875\u5404\u6301\u4E00\u4EFD\uFF0C\u8FDB\u7A0B\u6216\u9875\u9762\u5173\u95ED\u5373\u5931\uFF1B\u4E0D\u843D\u6587\u4EF6\u3001\u4E0D\u53D1\u8BF7\u6C42\u3001\u4E0D\u8F6E\u8BE2\u3002\u8DE8\u9875\u6D88\u606F\u53EA\u80FD\u662F\u7ED3\u6784\u5316\u514B\u9686\u53EF\u5F97\u7684\u7EAF\u6570\u636E\uFF0C\u4E0D\u5E26\u51FD\u6570\u3001\u7EC4\u4EF6\u3001`ReactNode` \u6216 Promise\u3002\u6761\u76EE\u4E00\u5F8B\u6765\u81EA\u771F\u5B9E\u6CE8\u518C\u4E0E\u771F\u5B9E\u65F6\u949F\uFF0C\u5E93\u5185\u4E0D\u542B\u6A21\u62DF\u6216\u5360\u4F4D\u6570\u636E\u3002",
+        "en": "Data lives in memory only: one copy per page and per same-origin tab, gone when the process or page closes. No files, no requests, no polling. Cross-page messages are plain structured-cloneable data \u2014 no functions, components, `ReactNode` or promises. Every row comes from a real registration and the real clock; the library ships no mock or placeholder data."
+      },
+      {
+        "zh": "\u5FEB\u7167\u662F `{ tasks, revision }`\uFF0C`tasks` \u6309\u5F00\u59CB\u65F6\u95F4\u518D\u6309 id \u6392\u5E8F\uFF0C\u8DE8\u9875\u987A\u5E8F\u786E\u5B9A\uFF1B\u65E0\u53D8\u5316\u4E0D\u4EA7\u751F\u65B0\u5BF9\u8C61\uFF0C`getServerSnapshot()` \u6C38\u8FDC\u662F\u540C\u4E00\u4E2A\u51BB\u7ED3\u7A7A\u5FEB\u7167\u3002`selectTaskNotifications()` \u5BF9\u540C\u4E00\u5FEB\u7167\u4E0E\u540C\u4E00\u8FC7\u6EE4\u6761\u4EF6\u8FD4\u56DE\u540C\u4E00\u6570\u7EC4\u3002\u5206\u7EC4\u540D\u7531\u8C03\u7528\u65B9\u663E\u5F0F\u7ED9\uFF0C`groupLabel` \u53EA\u8986\u76D6\u663E\u793A\u540D\u3002",
+        "en": "A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter. The caller supplies the group id explicitly; `groupLabel` only overrides the display name."
+      },
+      {
+        "zh": "\u7ED3\u675F\u6743\u5728\u8C03\u7528\u65B9\uFF1A`done()` / `fail()` \u5E42\u7B49\uFF0C`track(promise)` \u8BA9\u6210\u529F\u4E0E reject \u8D70\u540C\u4E00\u6536\u5C3E\u4E14\u8FD4\u56DE\u539F Promise\u3002`settled` \u53EA\u5728\u4EFB\u52A1\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0\u5B83\uFF0C\u800C\u662F\u53D1\u4E00\u4E2A `backgrounded` \u4E8B\u4EF6\u3002\u8FD9\u5C31\u662F\u300CPromise \u4E24\u6001 + \u6536\u8D77\u4F5C\u4E3A\u4E8B\u4EF6\u300D\uFF0C\u8C03\u7528\u65B9 `await` \u7684\u4ECD\u662F\u6B63\u5E38\u4E24\u6001\u3002",
+        "en": 'The caller decides when a task ends: `done()` / `fail()` are idempotent, and `track(promise)` settles on both success and rejection while returning the original promise. `settled` resolves only on a real ending; collapsing emits a `backgrounded` event instead. This is the "two-state promise plus collapse as event" contract \u2014 callers still await ordinary two-state promises.'
+      },
+      {
+        "zh": "\u8DE8\u9875\u8D70\u6D4F\u89C8\u5668\u539F\u751F `BroadcastChannel`\uFF1A\u6BCF\u9875\u5E7F\u64AD\u81EA\u5DF1\u90A3\u4EFD\u5168\u91CF\u5206\u7247\u5E76\u5E26\u5355\u8C03 `seq`\uFF0C\u65E7\u5E8F\u53F7\u3001\u91CD\u590D\u4E0E\u7578\u5F62\u6D88\u606F\u4E00\u5F8B\u4E22\u5F03\uFF1B`pagehide` / `pageshow` \u8986\u76D6\u6807\u7B7E\u9875\u79BB\u5F00\u3001bfcache \u4E0E\u4F11\u7720\u6062\u590D\u3002\u53EA\u8986\u76D6\u540C\u6E90\u6807\u7B7E\u9875\uFF0C\u4E0D\u8986\u76D6\u4E0D\u540C\u6D4F\u89C8\u5668\u3001\u4E0D\u540C profile \u6216\u4E0D\u540C\u673A\u5668\u3002\u8DE8\u9875\u6761\u76EE\u80FD\u770B\u4E0D\u80FD\u70B9\uFF0C\u53EA\u6709\u521B\u5EFA\u5B83\u7684\u90A3\u4E00\u9875\u80FD\u8BF7\u6C42\u8FD8\u539F\u3002",
+        "en": "Cross-page sync uses the native `BroadcastChannel`: each page broadcasts its own full shard with a monotonic `seq`; stale, duplicate and malformed messages are dropped. `pagehide` / `pageshow` cover tab teardown, bfcache and sleep/wake. Only same-origin tabs are covered \u2014 not other browsers, profiles or machines. Cross-page rows are read-only; only the owning page may request a restore."
+      },
+      {
+        "zh": "\u540C\u9875\u591A\u526F\u672C\u6536\u53E3\u5230 `globalThis[Symbol.for(...)]` \u4E0A\u7684\u540C\u4E00\u4E2A\u6C60\u4E0E\u540C\u4E00\u6761\u603B\u7EBF\uFF0C\u6CE8\u518C\u4E0E\u901A\u77E5\u4E0D\u4F1A\u91CD\u590D N \u6B21\uFF1B\u952E\u91CC\u5E26\u534F\u8BAE\u7248\u672C\uFF0C\u5F62\u72B6\u4E0D\u7B26\u76F4\u63A5\u62A5\u9519\u800C\u4E0D\u662F\u9759\u9ED8\u964D\u7EA7\u3002\u672C\u80FD\u529B\u662F\u6570\u636E\u9762\uFF1A\u53EF\u6536\u8D77\u5F39\u7A97\u3001\u4F8B\u5916\u63A7\u4EF6\u4E0E\u4E8B\u4EF6\u67E5\u770B\u63A7\u4EF6\u4E0D\u5C5E\u4E8E\u5B83\uFF0C\u7531\u540E\u7EED\u4EFB\u52A1\u5355\u72EC\u63D0\u4F9B\u3002",
+        "en": "Multiple copies on one page share a single pool and bus on `globalThis[Symbol.for(...)]`, so registration and notification never fire N times. Keys carry a protocol version; a shape mismatch throws instead of silently degrading. This capability is the data plane only: collapsible dialogs, exception controls and the event-viewer control are out of scope and arrive in separate tasks."
+      }
+    ],
+    "api": [
+      {
+        "id": "bt-pool-api",
+        "rows": [
+          {
+            "name": "taskNotifications",
+            "type": "TaskNotificationPool",
+            "def": "\u5168\u5C40\u5355\u4F8B",
+            "desc": {
+              "zh": "\u540C\u9875\u6240\u6709\u526F\u672C\u5171\u4EAB\u7684\u6C60\uFF1B\u60F0\u6027\u521B\u5EFA\uFF0C\u9996\u6B21\u4F7F\u7528\u624D\u5360\u7528\u5168\u5C40\u952E",
+              "en": "Pool shared by all copies on the page; lazy, claims the global key on first use"
+            }
+          },
+          {
+            "name": "getSnapshot()",
+            "type": "() => TaskNotificationSnapshot",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5F53\u524D\u5168\u91CF\u5FEB\u7167\uFF0C\u5F15\u7528\u7A33\u5B9A\uFF1B\u53EF\u76F4\u63A5\u4F5C useSyncExternalStore \u7684\u7B2C\u4E8C\u53C2",
+              "en": "Current full snapshot with a stable reference; use as the second useSyncExternalStore argument"
+            }
+          },
+          {
+            "name": "getServerSnapshot()",
+            "type": "() => TaskNotificationSnapshot",
+            "def": "\u51BB\u7ED3\u7A7A\u5FEB\u7167",
+            "desc": {
+              "zh": "SSR / \u975E\u5BBF\u4E3B\u73AF\u5883\u7528\uFF0C\u6C38\u8FDC\u662F\u540C\u4E00\u4E2A\u5BF9\u8C61",
+              "en": "For SSR and non-host environments; always the same object"
+            }
+          },
+          {
+            "name": "subscribe(listener)",
+            "type": "(listener: () => void) => () => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u72B6\u6001\u771F\u53D8\u4E86\u624D\u901A\u77E5\uFF1B\u8FD4\u56DE\u9000\u8BA2\u51FD\u6570",
+              "en": "Notifies only on real state changes; returns an unsubscribe function"
+            }
+          },
+          {
+            "name": "connect()",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5E42\u7B49\uFF1B\u5F00\u8DE8\u9875\u901A\u9053\u5E76\u8BF7\u6C42\u4E00\u6B21\u5168\u91CF baseline",
+              "en": "Idempotent; opens the cross-page channel and requests one full baseline"
+            }
+          },
+          {
+            "name": "refresh()",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u91CD\u65B0\u5411\u540C\u6E90\u6807\u7B7E\u9875\u8981\u4E00\u6B21\u5168\u91CF\u72B6\u6001\uFF1B\u4F11\u7720\u6062\u590D\u65F6\u81EA\u52A8\u89E6\u53D1\uFF0C\u5E73\u65F6\u4E0D\u7528\u624B\u52A8\u8C03",
+              "en": "Re-requests a full snapshot from same-origin tabs; runs automatically after sleep, no manual call needed"
+            }
+          },
+          {
+            "name": "select(groups?)",
+            "type": "(groups?: readonly string[]) => readonly TaskNotificationRecord[]",
+            "def": "\u4E0D\u4F20 = \u5168\u7AD9",
+            "desc": {
+              "zh": "\u6C60\u5185\u81EA\u5E26\u7F13\u5B58\u7684\u8FC7\u6EE4\uFF1B\u4E0E selectTaskNotifications \u540C\u4E00\u5957\u4E09\u6001",
+              "en": "Cached pool-level filtering; same three-state contract as selectTaskNotifications"
+            }
+          },
+          {
+            "name": "register(input)",
+            "type": "(input: TaskNotificationInput) => TaskNotificationHandle",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u767B\u8BB0\u4E00\u6761\u771F\u5B9E\u4EFB\u52A1\u5E76\u8FD4\u56DE\u53E5\u67C4",
+              "en": "Registers a real task and returns its handle"
+            }
+          },
+          {
+            "name": "canRestore(task)",
+            "type": "(task: TaskNotificationRecord) => boolean",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53EA\u6709\u672C\u9875\u521B\u5EFA\u7684\u6761\u76EE\u53EF\u8FD8\u539F",
+              "en": "Only rows created on this page can be restored"
+            }
+          },
+          {
+            "name": "requestRestore(taskId)",
+            "type": "(taskId: string) => boolean",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53D1\u672C\u5730 restored \u4E8B\u4EF6\uFF1B\u8DE8\u9875\u6761\u76EE\u8FD4\u56DE false\uFF0C\u4E0D\u8DE8\u9875\u4F20\u9012",
+              "en": "Emits a local restored event; returns false for cross-page rows, never crosses pages"
+            }
+          },
+          {
+            "name": "dispose()",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5173\u901A\u9053\u4E0E\u6458\u76D1\u542C\uFF0C\u4FDD\u7559\u72B6\u6001\uFF1B\u4E0B\u6B21 connect \u4F1A\u590D\u6D3B\u5E76\u91CD\u53D1\u5168\u91CF\u5206\u7247",
+              "en": "Closes the channel and detaches listeners but keeps state; the next connect revives it and rebroadcasts a full shard"
+            }
+          }
+        ]
+      },
+      {
+        "id": "bt-handle-api",
+        "rows": [
+          {
+            "name": "input.group",
+            "type": "string",
+            "def": "\u2014",
+            "required": "\u5FC5\u586B",
+            "desc": {
+              "zh": "\u8C03\u7528\u65B9\u7ED9\u7684\u5206\u7EC4 id\uFF1Bcore \u53D6\u4E0D\u5230\u9879\u76EE\u540D",
+              "en": "Caller-supplied group id; core cannot discover a project name"
+            }
+          },
+          {
+            "name": "input.title",
+            "type": "string",
+            "def": "\u2014",
+            "required": "\u5FC5\u586B",
+            "desc": {
+              "zh": "\u6761\u76EE\u6807\u9898",
+              "en": "Row title"
+            }
+          },
+          {
+            "name": "input.detail / groupLabel",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u8BE6\u60C5\u6587\u6848 / \u5206\u7EC4\u663E\u793A\u540D\u8986\u76D6",
+              "en": "Detail text / group display-name override"
+            }
+          },
+          {
+            "name": "handle.update(patch)",
+            "type": "(patch: TaskNotificationPatch) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53EA\u6539\u7EAF\u6570\u636E\u5B57\u6BB5\uFF0C\u968F\u65F6\u53EF\u8C03\u7528",
+              "en": "Updates plain data fields, callable any time"
+            }
+          },
+          {
+            "name": "handle.background()",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6807\u8BB0\u6536\u8D77\u5E76\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97",
+              "en": "Marks the task backgrounded and emits a backgrounded event without settling"
+            }
+          },
+          {
+            "name": "handle.done(detail?) / fail(reason?)",
+            "type": "(text?: string) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5E42\u7B49\uFF1B\u6210\u529F\u540E\u6761\u76EE\u7ACB\u523B\u79FB\u51FA\u6C60\u5E76\u53D1 settled \u4E8B\u4EF6",
+              "en": "Idempotent; removes the row immediately and emits a settled event"
+            }
+          },
+          {
+            "name": "handle.track(promise)",
+            "type": "<T>(promise: Promise<T>) => Promise<T>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6210\u529F\u4E0E reject \u8D70\u540C\u4E00\u6536\u5C3E\uFF1B\u8FD4\u56DE\u539F Promise",
+              "en": "Settles on both success and rejection; returns the original promise"
+            }
+          },
+          {
+            "name": "handle.settled",
+            "type": "Promise<TaskNotificationSettlement>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53EA\u5728\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0",
+              "en": "Resolves only on a real ending, never on collapse"
+            }
+          },
+          {
+            "name": "subscribeTaskNotificationEvents(listener)",
+            "type": "(listener: TaskNotificationEventListener) => () => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u76D1\u542C registered / updated / backgrounded / settled / restored / peer-left",
+              "en": "Listens for registered / updated / backgrounded / settled / restored / peer-left"
+            }
+          },
+          {
+            "name": "createTaskNotificationPool(options?)",
+            "type": "(options?: TaskNotificationPoolOptions) => TaskNotificationPool",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u72EC\u7ACB\u6C60\uFF1B\u6D4B\u8BD5\u53EF\u6CE8\u5165 origin / channelName / offline / lifecycle",
+              "en": "Standalone pool; tests can inject origin / channelName / offline / lifecycle"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "bt-subscribe-example",
+        "lang": "ts",
+        "src": "import { useSyncExternalStore } from 'react'\nimport {\n  taskNotifications,\n  selectTaskNotifications,\n  subscribeTaskNotificationEvents,\n} from 'dsh-plugin-core/ui'\n\n// \u4E09\u4E2A\u53C2\u6570\u90FD\u7ED9\uFF1AgetServerSnapshot \u8BA9 SSR / \u975E\u5BBF\u4E3B\u73AF\u5883\u4E0D\u70B8\nconst snapshot = useSyncExternalStore(\n  taskNotifications.subscribe,\n  taskNotifications.getSnapshot,\n  taskNotifications.getServerSnapshot,\n)\n\n// \u8FC7\u6EE4\u4E09\u6001\uFF1A\u4E0D\u4F20 = \u5168\u7AD9\uFF1B\u4E00\u4E2A = \u53EA\u770B\u8BE5\u7EC4\uFF1B\u591A\u4E2A = \u770B\u8FD9\u51E0\u4E2A\nconst visible = selectTaskNotifications(snapshot, ['dsh-task-reminder'])\n\n// \u5E42\u7B49\uFF1A\u5F00\u540C\u6E90\u6807\u7B7E\u9875\u901A\u9053\uFF0C\u5E76\u5411\u5728\u7EBF\u9875\u9762\u8981\u4E00\u6B21\u5168\u91CF baseline\ntaskNotifications.connect()\n\n// \u4E8B\u4EF6\u662F\u4E00\u6B21\u6027\u4E8B\u5B9E\uFF0C\u4E0D\u7559\u5B58\uFF1B\u9000\u8BA2\u51FD\u6570\u7167\u5E38\u8C03\u7528\nconst off = subscribeTaskNotificationEvents((event) => {\n  if (event.type === 'backgrounded') {\n    // \u6536\u8D77\u53D1\u751F\u4E86\uFF1B\u4EFB\u52A1\u4ECD\u5728\u8DD1\uFF0C\u5FEB\u7167\u91CC\u4E5F\u770B\u5F97\u5230\n  }\n})\n// off() \u4E8E\u5378\u8F7D\u65F6\u8C03\u7528"
+      },
+      {
+        "id": "bt-lifecycle-example",
+        "lang": "ts",
+        "src": "import { taskNotifications } from 'dsh-plugin-core/ui'\n\n// \u5206\u7EC4\u540D\u5FC5\u987B\u7531\u8C03\u7528\u65B9\u7ED9\uFF1Acore \u53D6\u4E0D\u5230\u9879\u76EE\u540D\nconst handle = taskNotifications.register({\n  group: 'dsh-task-reminder',\n  title: '\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6',\n})\n\nhandle.update({ detail: '\u5DF2\u5B8C\u6210 12 / 40' })\nhandle.background()   // \u53EA\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\u4EFB\u52A1\n\n// \u7ED3\u675F\u6743\u5728\u8C03\u7528\u65B9\uFF1B\u4E24\u8005\u5E42\u7B49\uFF0C\u6210\u529F\u540E\u6761\u76EE\u7ACB\u523B\u79FB\u51FA\u6C60\nhandle.done('\u626B\u63CF\u5B8C\u6210')\n// handle.fail('\u88AB\u7528\u6237\u53D6\u6D88')\n\n// Promise \u515C\u5E95\uFF1A\u6210\u529F\u4E0E reject \u8D70\u540C\u4E00\u4E2A\u6536\u5C3E\uFF0C\u4E14\u4E0D\u6539\u53D8\u539F Promise \u7684\u7ED3\u7B97\u8BED\u4E49\n// await handle.track(runWork())   // runWork(): Promise<void>\uFF0C\u7531\u8C03\u7528\u65B9\u63D0\u4F9B\n// await handle.settled            // \u53EA\u5728\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0"
+      }
+    ]
   }
 };
 
@@ -68334,13 +69108,13 @@ function ApiTable(props) {
         "tbody",
         null,
         props.rows.map(
-          (row) => (0, import_react93.createElement)(
+          (row2) => (0, import_react93.createElement)(
             "tr",
-            { key: row.name },
-            (0, import_react93.createElement)("td", null, row.name),
-            (0, import_react93.createElement)("td", null, row.type),
-            (0, import_react93.createElement)("td", null, row.def),
-            (0, import_react93.createElement)("td", null, row.desc ?? t3(row.descKey ?? "docApiDesc"))
+            { key: row2.name },
+            (0, import_react93.createElement)("td", null, row2.name),
+            (0, import_react93.createElement)("td", null, row2.type),
+            (0, import_react93.createElement)("td", null, row2.def),
+            (0, import_react93.createElement)("td", null, row2.desc ?? t3(row2.descKey ?? "docApiDesc"))
           )
         )
       )
@@ -71582,7 +72356,7 @@ function RealSessionListDemo() {
   const view = (0, import_react97.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
   const workspaceFiles2 = files.workspaceFiles;
   const canOpenFile = workspaceFiles2 !== null && anchor !== null;
-  const displayTitle = openId === null ? void 0 : state.rows.find((row) => row.sessionId === openId)?.displayTitle;
+  const displayTitle = openId === null ? void 0 : state.rows.find((row2) => row2.sessionId === openId)?.displayTitle;
   const withSlots = openId !== null && openId === state.rows[0]?.sessionId;
   const openLinkedFile = (path, sessionId, options) => {
     console.log("[preview] openLinkedFile path=", JSON.stringify(path), "sessionId=", sessionId, "anchorSessionId=", anchor?.sessionId);
@@ -71615,28 +72389,28 @@ function RealSessionListDemo() {
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "6px", maxWidth: "720px" } },
     ...state.rows.map(
-      (row) => (0, import_react97.createElement)(
+      (row2) => (0, import_react97.createElement)(
         ListRow,
         {
-          key: row.sessionId,
+          key: row2.sessionId,
           bordered: true,
-          selected: activeId === row.sessionId,
+          selected: activeId === row2.sessionId,
           onClick: () => {
-            setActiveId(row.sessionId);
-            setOpenId(row.sessionId);
+            setActiveId(row2.sessionId);
+            setOpenId(row2.sessionId);
           },
           actions: (0, import_react97.createElement)(
             "span",
             { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-3)" } },
-            formatDateTime(new Date(row.updatedAt).toISOString())
+            formatDateTime(new Date(row2.updatedAt).toISOString())
           )
         },
         (0, import_react97.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "8px", minWidth: 0 } },
-          (0, import_react97.createElement)("span", { style: { flex: "1 1 auto", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, row.displayTitle),
-          row.running ? (0, import_react97.createElement)(Chip, { size: "xs", tone: "warning" }, t3("sessionListRunning")) : null,
-          archivedIds.includes(row.sessionId) ? (0, import_react97.createElement)(
+          (0, import_react97.createElement)("span", { style: { flex: "1 1 auto", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, row2.displayTitle),
+          row2.running ? (0, import_react97.createElement)(Chip, { size: "xs", tone: "warning" }, t3("sessionListRunning")) : null,
+          archivedIds.includes(row2.sessionId) ? (0, import_react97.createElement)(
             Chip,
             { size: "xs" },
             (0, import_react97.createElement)(
@@ -71958,7 +72732,7 @@ function TablePage() {
           borders: "all",
           selectedKeys: selected === null ? [] : [selected],
           // 再点一次已选中的行 = 取消选中
-          onRowClick: (row) => setSelected((prev) => prev === row.key ? null : row.key),
+          onRowClick: (row2) => setSelected((prev) => prev === row2.key ? null : row2.key),
           ariaLabel: "Surveillance studies",
           style: { minWidth: 960 }
         })
@@ -71987,7 +72761,7 @@ function TablePage() {
           density: "compact",
           borders: "y",
           selectedKeys: spanSelected === null ? [] : [spanSelected],
-          onRowClick: (row) => setSpanSelected((prev) => prev === row.key ? null : row.key),
+          onRowClick: (row2) => setSpanSelected((prev) => prev === row2.key ? null : row2.key),
           ariaLabel: "Enrollment by site",
           style: { maxWidth: "560px" }
         })
@@ -72020,7 +72794,7 @@ function TablePage() {
           groups: GROUPS,
           groupAccent: groupAccentOn ? groupAccent : false,
           selectedKeys: groupSelected === null ? [] : [groupSelected],
-          onRowClick: (row) => setGroupSelected((prev) => prev === row.key ? null : row.key),
+          onRowClick: (row2) => setGroupSelected((prev) => prev === row2.key ? null : row2.key),
           ariaLabel: "Tasks by workspace",
           style: { minWidth: 660 }
         })
@@ -72245,8 +73019,175 @@ function PaginationPage() {
   );
 }
 
-// packages/demo/src/sections/utils.tsx
+// packages/demo/src/sections/task-notifications.tsx
 var import_react101 = require("react");
+var GROUP_REMINDER = "dsh-task-reminder";
+var GROUP_LEDGER = "dsh-task-ledger";
+var CODE_SUBSCRIBE = `import { useSyncExternalStore } from 'react'
+import { taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/ui'
+
+const snapshot = useSyncExternalStore(
+  taskNotifications.subscribe,
+  taskNotifications.getSnapshot,
+  taskNotifications.getServerSnapshot,
+)
+const rows = selectTaskNotifications(snapshot, ['dsh-task-reminder'])
+
+const handle = taskNotifications.register({
+  group: 'dsh-task-reminder',
+  title: 'workspace-scan',
+})
+handle.background()   // collapse is an event, not a settlement
+handle.done()         // the caller owns the ending`;
+var mono = { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px" };
+var row = { display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" };
+var panel = { display: "flex", flexDirection: "column", gap: "8px", fontSize: "12px" };
+var main = { display: "flex", flexDirection: "column", gap: "2px", minWidth: 0, wordBreak: "break-all" };
+function TaskNotificationsPage() {
+  const snapshot = (0, import_react101.useSyncExternalStore)(
+    taskNotifications.subscribe,
+    taskNotifications.getSnapshot,
+    taskNotifications.getServerSnapshot
+  );
+  const [events, setEvents] = (0, import_react101.useState)([]);
+  const [filter2, setFilter] = (0, import_react101.useState)("all");
+  const handles = (0, import_react101.useRef)(/* @__PURE__ */ new Map());
+  const serial = (0, import_react101.useRef)(0);
+  (0, import_react101.useEffect)(() => {
+    taskNotifications.connect();
+    return subscribeTaskNotificationEvents((event) => {
+      setEvents((prev) => [event, ...prev].slice(0, 8));
+    });
+  }, []);
+  const groups = filter2 === "all" ? void 0 : filter2 === "one" ? [GROUP_REMINDER] : [GROUP_REMINDER, GROUP_LEDGER];
+  const visible = selectTaskNotifications(snapshot, groups);
+  const localPending = [...handles.current.values()].filter((handle) => !handle.isSettled).length;
+  function register(group, label) {
+    serial.current += 1;
+    const handle = taskNotifications.register({ group, title: `${label} #${serial.current}` });
+    handles.current.set(handle.id, handle);
+  }
+  function withHandle(task, fn) {
+    const handle = handles.current.get(task.id);
+    if (handle !== void 0 && !handle.isSettled) fn(handle);
+  }
+  function finishAll() {
+    for (const handle of handles.current.values()) {
+      if (!handle.isSettled) handle.done("finished in demo");
+    }
+  }
+  function renderTask(task) {
+    const local = taskNotifications.canRestore(task);
+    const handle = handles.current.get(task.id);
+    const owned = handle !== void 0 && !handle.isSettled;
+    return (0, import_react101.createElement)(
+      ListRow,
+      {
+        key: task.id,
+        actions: owned ? (0, import_react101.createElement)(
+          "div",
+          { style: { ...row, justifyContent: "flex-end" } },
+          (0, import_react101.createElement)(Button, { size: "sm", onClick: () => withHandle(task, (x) => x.update({ detail: `updated ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}` })) }, t3("tnUpdate")),
+          (0, import_react101.createElement)(Button, { size: "sm", onClick: () => withHandle(task, (x) => x.background()) }, t3("tnBackground")),
+          (0, import_react101.createElement)(Button, { size: "sm", variant: "primary", onClick: () => withHandle(task, (x) => x.done()) }, t3("tnDone")),
+          (0, import_react101.createElement)(Button, { size: "sm", variant: "danger", onClick: () => withHandle(task, (x) => x.fail("cancelled in demo")) }, t3("tnFail")),
+          (0, import_react101.createElement)(Button, { size: "sm", onClick: () => taskNotifications.requestRestore(task.id) }, t3("tnRestore"))
+        ) : void 0
+      },
+      (0, import_react101.createElement)(
+        "div",
+        { style: main },
+        (0, import_react101.createElement)("div", { style: { fontWeight: 600 } }, task.title),
+        (0, import_react101.createElement)(
+          "div",
+          { style: { ...mono, color: "var(--dshpc-fg-3)" } },
+          `group=${task.group} \xB7 status=${task.status} \xB7 backgrounded=${task.backgrounded} \xB7 origin=${task.origin}`
+        ),
+        (0, import_react101.createElement)(
+          "div",
+          { style: { ...mono, color: local ? "var(--dshpc-fg-2)" : "var(--dshpc-fg-4)" } },
+          local ? t3("tnBadgeLocal") : t3("tnBadgeRemote")
+        ),
+        task.detail === void 0 ? null : (0, import_react101.createElement)("div", { style: mono }, task.detail)
+      )
+    );
+  }
+  function renderEvent(event, index3) {
+    const label = "task" in event ? event.task.title : "taskId" in event ? event.taskId : event.origin;
+    return (0, import_react101.createElement)(
+      ListRow,
+      { key: `${index3}-${event.type}-${label}` },
+      (0, import_react101.createElement)(
+        "div",
+        { style: row },
+        (0, import_react101.createElement)("span", { style: { ...mono, color: "var(--dshpc-business)" } }, event.type),
+        (0, import_react101.createElement)("span", { style: { ...mono, color: "var(--dshpc-fg-3)" } }, ` \xB7 remote=${event.remote} \xB7 ${label}`)
+      )
+    );
+  }
+  return (0, import_react101.createElement)(
+    "div",
+    null,
+    (0, import_react101.createElement)(Note, { text: t3("tnNote") }),
+    (0, import_react101.createElement)("div", { style: { ...mono, margin: "10px 0 16px", color: "var(--dshpc-fg-3)" } }, t3("tnCrossPage")),
+    (0, import_react101.createElement)(
+      Example,
+      { title: t3("tnOpsTitle"), hint: t3("tnOpsHint"), code: CODE_SUBSCRIBE },
+      (0, import_react101.createElement)(
+        "div",
+        { style: panel },
+        (0, import_react101.createElement)(
+          "div",
+          { style: row },
+          (0, import_react101.createElement)(Button, { size: "sm", variant: "primary", onClick: () => register(GROUP_REMINDER, "workspace-scan") }, t3("tnRegisterReminder")),
+          (0, import_react101.createElement)(Button, { size: "sm", onClick: () => register(GROUP_LEDGER, "session-index") }, t3("tnRegisterLedger"))
+        ),
+        (0, import_react101.createElement)(
+          "div",
+          { style: row },
+          (0, import_react101.createElement)(Button, { size: "sm", variant: filter2 === "all" ? "primary" : "outline", onClick: () => setFilter("all") }, t3("tnFilterAll")),
+          (0, import_react101.createElement)(Button, { size: "sm", variant: filter2 === "one" ? "primary" : "outline", onClick: () => setFilter("one") }, t3("tnFilterOne")),
+          (0, import_react101.createElement)(Button, { size: "sm", variant: filter2 === "two" ? "primary" : "outline", onClick: () => setFilter("two") }, t3("tnFilterTwo"))
+        ),
+        (0, import_react101.createElement)(
+          "div",
+          { style: row },
+          (0, import_react101.createElement)(Button, { size: "sm", onClick: () => taskNotifications.refresh() }, t3("tnRefresh")),
+          (0, import_react101.createElement)(Button, { size: "sm", variant: "danger", disabled: localPending === 0, onClick: finishAll }, t3("tnFinishAll")),
+          (0, import_react101.createElement)("span", { style: { ...mono, color: "var(--dshpc-fg-4)" } }, t3("tnRefreshHint"))
+        ),
+        (0, import_react101.createElement)(
+          "div",
+          { style: { ...mono, color: "var(--dshpc-fg-4)" } },
+          `${t3("tnOpsNote")} \xB7 localPending=${localPending}`
+        )
+      )
+    ),
+    (0, import_react101.createElement)(
+      Example,
+      { title: t3("tnSnapshotTitle"), hint: t3("tnSnapshotHint") },
+      (0, import_react101.createElement)(
+        "div",
+        { style: panel },
+        (0, import_react101.createElement)("div", { style: mono }, `${t3("tnCountLabel")}: ${visible.length} / ${snapshot.tasks.length} \xB7 revision=${snapshot.revision}`),
+        visible.length === 0 ? (0, import_react101.createElement)(Note, { text: t3("tnEmptyTasks") }) : visible.map(renderTask)
+      )
+    ),
+    (0, import_react101.createElement)(
+      Example,
+      { title: t3("tnEventsTitle"), hint: t3("tnEventsHint") },
+      (0, import_react101.createElement)(
+        "div",
+        { style: panel },
+        events.length === 0 ? (0, import_react101.createElement)(Note, { text: t3("tnEmptyEvents") }) : events.map(renderEvent)
+      )
+    ),
+    (0, import_react101.createElement)(DocContent, { id: "task-notifications" })
+  );
+}
+
+// packages/demo/src/sections/utils.tsx
+var import_react102 = require("react");
 var CODE_DATE = `// \u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\uFF08\u5168\u90E8\u8D70\u5F53\u524D locale\uFF09
 formatDateTime('2026-10-18T09:30:05.000Z', { seconds: true })  // 2026-10-18 09:30:05
 formatYmd('2026-10-18T09:30:05.000Z')                          // 2026-10-18
@@ -72281,28 +73222,28 @@ var NUMBER_ROWS = [
   ["formatBytes", formatBytes(125829)]
 ];
 function FnTable(props) {
-  return (0, import_react101.createElement)(
+  return (0, import_react102.createElement)(
     "table",
     { style: { borderCollapse: "collapse", fontSize: "13px" } },
-    (0, import_react101.createElement)(
+    (0, import_react102.createElement)(
       "thead",
       null,
-      (0, import_react101.createElement)(
+      (0, import_react102.createElement)(
         "tr",
         null,
-        (0, import_react101.createElement)("th", { style: th }, "\u51FD\u6570"),
-        (0, import_react101.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
+        (0, import_react102.createElement)("th", { style: th }, "\u51FD\u6570"),
+        (0, import_react102.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react102.createElement)(
       "tbody",
       null,
       props.rows.map(
-        ([fn, out]) => (0, import_react101.createElement)(
+        ([fn, out]) => (0, import_react102.createElement)(
           "tr",
           { key: fn },
-          (0, import_react101.createElement)("td", { style: td }, fn),
-          (0, import_react101.createElement)("td", { style: td }, out)
+          (0, import_react102.createElement)("td", { style: td }, fn),
+          (0, import_react102.createElement)("td", { style: td }, out)
         )
       )
     )
@@ -72311,41 +73252,41 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react101.createElement)(
+  return (0, import_react102.createElement)(
     "div",
     null,
-    (0, import_react101.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react101.createElement)(FnTable, { rows: DATE_ROWS })),
-    (0, import_react101.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react101.createElement)(DocApi, { id: "date" })
+    (0, import_react102.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react102.createElement)(FnTable, { rows: DATE_ROWS })),
+    (0, import_react102.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react102.createElement)(DocApi, { id: "date" })
   );
 }
 function NumberPage() {
-  return (0, import_react101.createElement)(
+  return (0, import_react102.createElement)(
     "div",
     null,
-    (0, import_react101.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react101.createElement)(FnTable, { rows: NUMBER_ROWS })),
-    (0, import_react101.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react101.createElement)(DocApi, { id: "number" })
+    (0, import_react102.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react102.createElement)(FnTable, { rows: NUMBER_ROWS })),
+    (0, import_react102.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react102.createElement)(DocApi, { id: "number" })
   );
 }
 function TextPage() {
-  return (0, import_react101.createElement)(DocContent, { id: "text" });
+  return (0, import_react102.createElement)(DocContent, { id: "text" });
 }
 function HttpPage() {
-  return (0, import_react101.createElement)(DocContent, { id: "http" });
+  return (0, import_react102.createElement)(DocContent, { id: "http" });
 }
 function I18nPage() {
-  return (0, import_react101.createElement)(
+  return (0, import_react102.createElement)(
     "div",
     null,
-    (0, import_react101.createElement)(
+    (0, import_react102.createElement)(
       Example,
       { title: "getLocale / setLocale", code: CODE_I18N },
-      (0, import_react101.createElement)(
+      (0, import_react102.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react101.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
-        (0, import_react101.createElement)("code", {
+        (0, import_react102.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
+        (0, import_react102.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -72357,60 +73298,60 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react101.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react101.createElement)(DocApi, { id: "i18n" })
+    (0, import_react102.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react102.createElement)(DocApi, { id: "i18n" })
   );
 }
 
 // packages/demo/src/sections/reference.tsx
-var import_react102 = require("react");
+var import_react103 = require("react");
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
 function ReferencePage() {
-  return (0, import_react102.createElement)(
+  return (0, import_react103.createElement)(
     "div",
     null,
-    (0, import_react102.createElement)(Note, { text: t3("referenceNote") }),
-    (0, import_react102.createElement)(Example, { title: t3("secA11y") }, (0, import_react102.createElement)(Placeholder2, { descKey: "a11yDesc" })),
-    (0, import_react102.createElement)(
+    (0, import_react103.createElement)(Note, { text: t3("referenceNote") }),
+    (0, import_react103.createElement)(Example, { title: t3("secA11y") }, (0, import_react103.createElement)(Placeholder2, { descKey: "a11yDesc" })),
+    (0, import_react103.createElement)(
       Example,
       { title: t3("secRoadmap"), hint: t3("roadmapHint") },
-      (0, import_react102.createElement)(
+      (0, import_react103.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
         OUT_OF_SCOPE.map(
-          (key) => (0, import_react102.createElement)(
+          (key) => (0, import_react103.createElement)(
             "div",
             { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-            (0, import_react102.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-            (0, import_react102.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
+            (0, import_react103.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react103.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
           )
         ),
-        (0, import_react102.createElement)(
+        (0, import_react103.createElement)(
           "div",
           { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t3("roadmapLayout")
         )
       )
     ),
-    (0, import_react102.createElement)(
+    (0, import_react103.createElement)(
       Example,
       { title: t3("secBuild"), hint: t3("buildDesc") },
-      (0, import_react102.createElement)(
+      (0, import_react103.createElement)(
         "table",
         { style: { borderCollapse: "collapse", fontSize: "13px" } },
-        (0, import_react102.createElement)(
+        (0, import_react103.createElement)(
           "tbody",
           null,
           [
             [t3("buildCore"), `v${"0.35.25"}`],
             [t3("buildDemo"), `v${"0.35.25"}`],
-            [t3("buildStamp"), "261111-235231-463"]
+            [t3("buildStamp"), "261112-170204-742"]
           ].map(
-            ([label, value]) => (0, import_react102.createElement)(
+            ([label, value]) => (0, import_react103.createElement)(
               "tr",
               { key: label },
-              (0, import_react102.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-              (0, import_react102.createElement)("td", {
+              (0, import_react103.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react103.createElement)("td", {
                 style: {
                   padding: "5px 14px 5px 0",
                   fontFamily: "var(--dshpc-font-mono)",
@@ -72429,21 +73370,22 @@ function ReferencePage() {
 // packages/demo/src/sections/index.tsx
 var SECTION_GROUPS = [
   { id: "start", titleKey: "grpStart" },
-  { id: "design", titleKey: "grpDesign" },
+  { id: "infra", titleKey: "grpInfra" },
   { id: "components", titleKey: "grpComponents" },
   { id: "blocks", titleKey: "grpBlocks" },
   { id: "utils", titleKey: "grpUtils" }
 ];
-var stack = (...pages) => () => (0, import_react103.createElement)("div", null, ...pages.map((Page) => (0, import_react103.createElement)(Page, { key: Page.name })));
+var stack = (...pages) => () => (0, import_react104.createElement)("div", null, ...pages.map((Page) => (0, import_react104.createElement)(Page, { key: Page.name })));
 var ALL_SECTIONS = [
   // ① 入门：帮助索引 → 快速开始 → 参考
-  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react103.createElement)(HelpIndexPage, null) },
-  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react103.createElement)(QuickstartPage, null) },
-  { id: "reference", group: "start", titleKey: "secReference", render: () => (0, import_react103.createElement)(ReferencePage, null) },
-  // ② 设计
-  { id: "foundation", group: "design", titleKey: "secFoundation", render: () => (0, import_react103.createElement)(FoundationPage, null) },
+  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react104.createElement)(HelpIndexPage, null) },
+  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react104.createElement)(QuickstartPage, null) },
+  { id: "reference", group: "start", titleKey: "secReference", render: () => (0, import_react104.createElement)(ReferencePage, null) },
+  // ② 基础设施
+  { id: "foundation", group: "infra", titleKey: "secFoundation", render: () => (0, import_react104.createElement)(FoundationPage, null) },
+  { id: "task-notifications", group: "infra", titleKey: "secTaskNotifications", render: () => (0, import_react104.createElement)(TaskNotificationsPage, null) },
   // ③ 控件：一页一类，页内按控件族顺序排列
-  { id: "actions", group: "components", titleKey: "secActions", render: () => (0, import_react103.createElement)(ButtonPage, null) },
+  { id: "actions", group: "components", titleKey: "secActions", render: () => (0, import_react104.createElement)(ButtonPage, null) },
   { id: "inputs", group: "components", titleKey: "secInputs", render: stack(InputPage, PickerPage, DateTimePage) },
   {
     id: "display",
@@ -72451,21 +73393,21 @@ var ALL_SECTIONS = [
     titleKey: "secDisplay",
     render: stack(CardPage, ChipPage, FlipTextPage, TooltipPage, TablePage)
   },
-  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react103.createElement)(FeedbackPage, null) },
+  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react104.createElement)(FeedbackPage, null) },
   { id: "layout", group: "components", titleKey: "secLayout", render: stack(LayoutPage, ToolbarPage) },
-  { id: "navigation", group: "components", titleKey: "secNavigation", render: () => (0, import_react103.createElement)(PaginationPage, null) },
+  { id: "navigation", group: "components", titleKey: "secNavigation", render: () => (0, import_react104.createElement)(PaginationPage, null) },
   // ④ 应用模块
-  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react103.createElement)(ExplorerPage, null) },
-  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react103.createElement)(SessionPage, null) },
+  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react104.createElement)(ExplorerPage, null) },
+  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react104.createElement)(SessionPage, null) },
   // ⑤ 工具方法
-  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react103.createElement)(DatePage, null) },
-  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react103.createElement)(TextPage, null) },
-  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react103.createElement)(NumberPage, null) },
-  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react103.createElement)(HttpPage, null) },
-  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react103.createElement)(I18nPage, null) }
+  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react104.createElement)(DatePage, null) },
+  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react104.createElement)(TextPage, null) },
+  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react104.createElement)(NumberPage, null) },
+  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react104.createElement)(HttpPage, null) },
+  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react104.createElement)(I18nPage, null) }
 ];
 function Placeholder2(props) {
-  return (0, import_react103.createElement)(
+  return (0, import_react104.createElement)(
     Surface,
     {
       tone: "sunken",
@@ -72473,7 +73415,7 @@ function Placeholder2(props) {
       padding: "lg",
       style: { marginTop: "4px", marginBottom: "16px", color: "var(--dshpc-fg-3)" }
     },
-    (0, import_react103.createElement)("div", {
+    (0, import_react104.createElement)("div", {
       style: {
         fontSize: "11px",
         fontWeight: 600,
@@ -72483,23 +73425,23 @@ function Placeholder2(props) {
         marginBottom: "10px"
       }
     }, t3("phTodo")),
-    (0, import_react103.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
+    (0, import_react104.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
   );
 }
 function SectionHead2(props) {
-  return (0, import_react103.createElement)(
+  return (0, import_react104.createElement)(
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
-    (0, import_react103.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react103.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "var(--dshpc-radius-xs)", marginTop: "6px" } })
+    (0, import_react104.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
+    (0, import_react104.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "var(--dshpc-radius-xs)", marginTop: "6px" } })
   );
 }
 function Sections(props) {
   const current3 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
-  return (0, import_react103.createElement)(
+  return (0, import_react104.createElement)(
     "div",
     null,
-    (0, import_react103.createElement)(SectionHead2, { id: current3.id, title: t3(current3.titleKey) }),
+    (0, import_react104.createElement)(SectionHead2, { id: current3.id, title: t3(current3.titleKey) }),
     current3.render()
   );
 }
@@ -72559,10 +73501,10 @@ function applySidebarEntry() {
   }
 }
 function MoreMenuRow(props) {
-  return (0, import_react104.createElement)(
+  return (0, import_react105.createElement)(
     import_dsh_client_ui_primitives6.MenuItemButton,
     {
-      icon: (0, import_react104.createElement)(PanelIcon, null),
+      icon: (0, import_react105.createElement)(PanelIcon, null),
       onSelect: () => {
         props.onDismiss();
         jump(PANEL_ID);
@@ -72573,8 +73515,8 @@ function MoreMenuRow(props) {
 }
 function useHostDark() {
   const read = () => document.body.hasAttribute("data-ds-dark-theme");
-  const [dark, setDark] = (0, import_react104.useState)(read);
-  (0, import_react104.useEffect)(() => {
+  const [dark, setDark] = (0, import_react105.useState)(read);
+  (0, import_react105.useEffect)(() => {
     const obs = new MutationObserver(() => {
       setDark(read());
     });
@@ -72594,11 +73536,11 @@ function useHostDark() {
 function DemoPage() {
   useLocale();
   const { dark, toggle } = useHostDark();
-  const [active, setActive2] = (0, import_react104.useState)(ALL_SECTIONS[0].id);
+  const [active, setActive2] = (0, import_react105.useState)(ALL_SECTIONS[0].id);
   const nav2 = [];
   SECTION_GROUPS.forEach((group, gi) => {
     nav2.push(
-      (0, import_react104.createElement)(
+      (0, import_react105.createElement)(
         "div",
         {
           key: `group-${group.id}`,
@@ -72616,7 +73558,7 @@ function DemoPage() {
     );
     for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
       nav2.push(
-        (0, import_react104.createElement)(
+        (0, import_react105.createElement)(
           "button",
           {
             key: section.id,
@@ -72644,7 +73586,7 @@ function DemoPage() {
       );
     }
   });
-  return (0, import_react104.createElement)(
+  return (0, import_react105.createElement)(
     "div",
     {
       // 分栏挂载点：explorer 的 openFilePreview 要把 dock 塞进这一行，主区才被挤窄。
@@ -72661,7 +73603,7 @@ function DemoPage() {
         ["--dshpc-dock-h"]: "100%"
       }
     },
-    (0, import_react104.createElement)(
+    (0, import_react105.createElement)(
       "aside",
       {
         style: {
@@ -72677,9 +73619,9 @@ function DemoPage() {
       },
       // 导航区：唯一滚动容器；底部操作/版本区固定不动
       // 细滚动条 + 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/design/style.md §滚动条让位）
-      (0, import_react104.createElement)("div", { className: "dshpc-scroll-thin", style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px" } }, nav2),
+      (0, import_react105.createElement)("div", { className: "dshpc-scroll-thin", style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px" } }, nav2),
       // 固定底栏：明暗切换 + 版本号 + 编译码（时间戳，一眼看出编译时刻）
-      (0, import_react104.createElement)(
+      (0, import_react105.createElement)(
         "div",
         {
           style: {
@@ -72692,7 +73634,7 @@ function DemoPage() {
           }
         },
         // 明暗切换：核心 Segmented 滑动分段（左亮右暗，图标进 label），不手写按钮
-        (0, import_react104.createElement)(Segmented, {
+        (0, import_react105.createElement)(Segmented, {
           items: [
             { value: "light", label: `\u2600 ${t3("themeLight")}` },
             { value: "dark", label: `\u263E ${t3("themeDark")}` }
@@ -72706,7 +73648,7 @@ function DemoPage() {
           label: t3("themeToggle")
         }),
         // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行；编译码小一号、与上面隔开
-        (0, import_react104.createElement)(
+        (0, import_react105.createElement)(
           "div",
           {
             style: {
@@ -72720,46 +73662,46 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react104.createElement)("span", null, `core v${"0.35.25"}`),
-          (0, import_react104.createElement)("span", null, `demo v${"0.35.25"}`),
-          (0, import_react104.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261111-235231-463")
+          (0, import_react105.createElement)("span", null, `core v${"0.35.25"}`),
+          (0, import_react105.createElement)("span", null, `demo v${"0.35.25"}`),
+          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261112-170204-742")
         )
       )
     ),
-    (0, import_react104.createElement)(
+    (0, import_react105.createElement)(
       "main",
       // 细滚动条与 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/design/style.md §滚动条让位）：
       // dock 不再让 margin，靠这里让，滚动条与分栏分隔线之间才是 1px。
       { className: "dshpc-scroll-thin", style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px" } },
-      (0, import_react104.createElement)(Sections, { active })
+      (0, import_react105.createElement)(Sections, { active })
     ),
     // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。
     // 内容与头部在 demoPanels() 里声明（DockPanel），这里只管显隐。
-    (0, import_react104.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
+    (0, import_react105.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
   );
 }
 function ConfigPanel(props) {
   const form = props.form;
-  const [, rerender] = (0, import_react104.useState)(0);
-  (0, import_react104.useEffect)(() => form.subscribe(() => {
+  const [, rerender] = (0, import_react105.useState)(0);
+  (0, import_react105.useEffect)(() => form.subscribe(() => {
     rerender((n) => n + 1);
   }), [form]);
-  if (props.view !== "page") return (0, import_react104.createElement)("div", { style: { display: "none" } });
+  if (props.view !== "page") return (0, import_react105.createElement)("div", { style: { display: "none" } });
   const snap = form.getSnapshot();
   const storedMode = snap.value?.entryMode;
   const mode = storedMode === "off" || storedMode === "first" || storedMode === "more" ? storedMode : "more";
   const ready = snap.status === "ready";
-  return (0, import_react104.createElement)(
+  return (0, import_react105.createElement)(
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "14px" } },
     // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
-    (0, import_react104.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
+    (0, import_react105.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
     // 设置行：滑动栏在右、说明在左；左缘圆角短条有入口=绿 / 关闭=灰（核心 Card 框式）
-    ready ? (0, import_react104.createElement)(
+    ready ? (0, import_react105.createElement)(
       Card,
       {
         accent: mode === "off" ? "neutral" : "success",
-        action: (0, import_react104.createElement)(Segmented, {
+        action: (0, import_react105.createElement)(Segmented, {
           size: "sm",
           value: mode,
           disabled: !snap.writable,
@@ -72776,35 +73718,35 @@ function ConfigPanel(props) {
           ]
         })
       },
-      (0, import_react104.createElement)(
+      (0, import_react105.createElement)(
         "div",
         null,
-        (0, import_react104.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
-        (0, import_react104.createElement)(
+        (0, import_react105.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
+        (0, import_react105.createElement)(
           "div",
           { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
           t3("settingsEntryHint")
         )
       )
-    ) : (0, import_react104.createElement)(
+    ) : (0, import_react105.createElement)(
       "div",
       { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } },
       t3(snap.status === "loading" ? "settingsLoading" : "settingsUnavailable")
     ),
-    (0, import_react104.createElement)(
+    (0, import_react105.createElement)(
       "div",
       { style: { display: "flex", gap: "8px" } },
-      (0, import_react104.createElement)(
+      (0, import_react105.createElement)(
         Button,
-        { size: "md", variant: "primary", icon: (0, import_react104.createElement)(import_dsh_client_ui_primitives6.IconPlayOutlineRegular, null), onClick: props.openDemo },
+        { size: "md", variant: "primary", icon: (0, import_react105.createElement)(import_dsh_client_ui_primitives6.IconPlayOutlineRegular, null), onClick: props.openDemo },
         t3("settingsOpenDemo")
       ),
-      (0, import_react104.createElement)(
+      (0, import_react105.createElement)(
         Button,
         {
           size: "md",
           variant: "outline",
-          icon: (0, import_react104.createElement)(import_dsh_client_ui_primitives6.IconLinkOutlineRegular, null),
+          icon: (0, import_react105.createElement)(import_dsh_client_ui_primitives6.IconLinkOutlineRegular, null),
           onClick: () => {
             window.open("https://github.com/cq-guojia/dsh-plugin-core", "_blank", "noopener");
           }
@@ -72816,14 +73758,14 @@ function ConfigPanel(props) {
 }
 function PanelIcon(props) {
   const size4 = props.size ?? 18;
-  return (0, import_react104.createElement)(
+  return (0, import_react105.createElement)(
     "svg",
     { width: size4, height: size4, viewBox: "0 0 1024 1024", "aria-hidden": true },
-    (0, import_react104.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
-    (0, import_react104.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react104.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
-    (0, import_react104.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react104.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
+    (0, import_react105.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
+    (0, import_react105.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react105.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
+    (0, import_react105.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react105.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
   );
 }
 function apply(ctx) {
@@ -72832,7 +73774,7 @@ function apply(ctx) {
   ensureControls(kit);
   kit.registerStyle("demo", DEMO_CSS);
   kit.ensureStyles();
-  setTooltipRenderer((props) => (0, import_react104.createElement)(import_dsh_client_ui_primitives6.Tooltip, props));
+  setTooltipRenderer((props) => (0, import_react105.createElement)(import_dsh_client_ui_primitives6.Tooltip, props));
   ctx.inject(["layout"], (sub) => {
     const layout = sub?.layout;
     if (layout?.selectPanel === void 0) return;

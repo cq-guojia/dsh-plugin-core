@@ -24,15 +24,15 @@
 import { createStore } from 'zustand/vanilla'
 
 /** Protocol version lives in the keys: a different wire shape gets its own host. */
-export const BACKGROUND_TASKS_PROTOCOL = 1
-export const BACKGROUND_TASKS_KEY = Symbol.for('dsh-plugin-core/background-tasks/v1')
-export const BACKGROUND_TASKS_EVENTS_KEY = Symbol.for('dsh-plugin-core/background-tasks/events/v1')
-export const BACKGROUND_TASKS_CHANNEL = 'dsh-plugin-core/background-tasks/v1'
+export const TASK_NOTIFICATIONS_PROTOCOL = 1
+export const TASK_NOTIFICATIONS_KEY = Symbol.for('dsh-plugin-core/task-notifications/v1')
+export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-notifications/events/v1')
+export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v1'
 
-export type BackgroundTaskStatus = 'running' | 'done' | 'failed'
+export type TaskNotificationStatus = 'running' | 'done' | 'failed'
 
 /** Plain, structured-cloneable data. No functions, no ReactNode, no components. */
-export interface BackgroundTaskRecord {
+export interface TaskNotificationRecord {
   readonly id: string
   /** Caller-supplied group id; core cannot discover a project name. */
   readonly group: string
@@ -40,7 +40,7 @@ export interface BackgroundTaskRecord {
   readonly groupLabel?: string
   readonly title: string
   readonly detail?: string
-  readonly status: BackgroundTaskStatus
+  readonly status: TaskNotificationStatus
   readonly startedAt: number
   readonly updatedAt: number
   /** Page that owns the task. Only the owning page can restore its dialog. */
@@ -49,32 +49,32 @@ export interface BackgroundTaskRecord {
   readonly reason?: string
 }
 
-export interface BackgroundTaskInput {
+export interface TaskNotificationInput {
   group: string
   title: string
   groupLabel?: string
   detail?: string
 }
 
-export interface BackgroundTaskPatch {
+export interface TaskNotificationPatch {
   title?: string
   detail?: string
   group?: string
   groupLabel?: string
 }
 
-export interface BackgroundTaskSettlement {
+export interface TaskNotificationSettlement {
   readonly outcome: 'done' | 'failed'
   readonly reason?: string
-  readonly task: BackgroundTaskRecord
+  readonly task: TaskNotificationRecord
 }
 
-export interface BackgroundTaskHandle {
+export interface TaskNotificationHandle {
   readonly id: string
   readonly isSettled: boolean
   /** Settles only when the task really ends; collapsing never settles it. */
-  readonly settled: Promise<BackgroundTaskSettlement>
-  update(patch: BackgroundTaskPatch): void
+  readonly settled: Promise<TaskNotificationSettlement>
+  update(patch: TaskNotificationPatch): void
   background(): void
   done(detail?: string): void
   fail(reason?: string): void
@@ -82,78 +82,78 @@ export interface BackgroundTaskHandle {
   track<T>(promise: Promise<T>): Promise<T>
 }
 
-export interface BackgroundTaskSnapshot {
-  readonly tasks: readonly BackgroundTaskRecord[]
+export interface TaskNotificationSnapshot {
+  readonly tasks: readonly TaskNotificationRecord[]
   /** Real monotonic counter of state changes on this page. */
   readonly revision: number
 }
 
-export type BackgroundTaskEvent =
-  | { readonly type: 'registered'; readonly task: BackgroundTaskRecord; readonly remote: boolean }
-  | { readonly type: 'updated'; readonly task: BackgroundTaskRecord; readonly remote: boolean }
-  | { readonly type: 'backgrounded'; readonly task: BackgroundTaskRecord; readonly remote: boolean }
+export type TaskNotificationEvent =
+  | { readonly type: 'registered'; readonly task: TaskNotificationRecord; readonly remote: boolean }
+  | { readonly type: 'updated'; readonly task: TaskNotificationRecord; readonly remote: boolean }
+  | { readonly type: 'backgrounded'; readonly task: TaskNotificationRecord; readonly remote: boolean }
   | {
       readonly type: 'settled'
       readonly outcome: 'done' | 'failed'
-      readonly task: BackgroundTaskRecord
+      readonly task: TaskNotificationRecord
       readonly remote: boolean
     }
   /** Never crosses pages: restoring a dialog is local by contract. */
   | { readonly type: 'restored'; readonly taskId: string; readonly remote: false }
   | { readonly type: 'peer-left'; readonly origin: string; readonly remote: true }
 
-export type BackgroundTaskEventListener = (event: BackgroundTaskEvent) => void
+export type TaskNotificationEventListener = (event: TaskNotificationEvent) => void
 
-export interface BackgroundTaskEventBus {
-  subscribe(listener: BackgroundTaskEventListener): () => void
-  emit(event: BackgroundTaskEvent): void
+export interface TaskNotificationEventBus {
+  subscribe(listener: TaskNotificationEventListener): () => void
+  emit(event: TaskNotificationEvent): void
 }
 
-export interface BackgroundTaskPoolOptions {
+export interface TaskNotificationPoolOptions {
   /** Defaults to a fresh per-page id. Inject only for deterministic tests. */
   origin?: string
-  /** Defaults to BACKGROUND_TASKS_CHANNEL. Use a private name in tests. */
+  /** Defaults to TASK_NOTIFICATIONS_CHANNEL. Use a private name in tests. */
   channelName?: string
   /** true = never open a BroadcastChannel (single page / offline use). */
   offline?: boolean
   /** Defaults to the global singleton bus. */
-  events?: BackgroundTaskEventBus
+  events?: TaskNotificationEventBus
   /** Defaults to browser detection; false keeps the pool free of lifecycle hooks. */
   lifecycle?: boolean
 }
 
-export interface BackgroundTaskPool {
+export interface TaskNotificationPool {
   readonly protocol: number
   readonly origin: string
-  getSnapshot(): BackgroundTaskSnapshot
-  getServerSnapshot(): BackgroundTaskSnapshot
+  getSnapshot(): TaskNotificationSnapshot
+  getServerSnapshot(): TaskNotificationSnapshot
   subscribe(listener: () => void): () => void
   /** Open the cross-page channel and request the baseline. Idempotent. */
   connect(): void
   /** Re-request the baseline after a suspended tab wakes up. */
   refresh(): void
-  select(groups?: readonly string[]): readonly BackgroundTaskRecord[]
-  register(input: BackgroundTaskInput): BackgroundTaskHandle
-  canRestore(task: BackgroundTaskRecord): boolean
+  select(groups?: readonly string[]): readonly TaskNotificationRecord[]
+  register(input: TaskNotificationInput): TaskNotificationHandle
+  canRestore(task: TaskNotificationRecord): boolean
   /** Emits a local `restored` event. Returns false for cross-page tasks. */
   requestRestore(taskId: string): boolean
   dispose(): void
 }
 
-const EMPTY_TASKS: readonly BackgroundTaskRecord[] = Object.freeze([])
-const EMPTY_SNAPSHOT: BackgroundTaskSnapshot = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 })
+const EMPTY_TASKS: readonly TaskNotificationRecord[] = Object.freeze([])
+const EMPTY_SNAPSHOT: TaskNotificationSnapshot = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 })
 
 /** Per-snapshot derived cache: same snapshot + same filter returns the SAME array. */
-const SELECT_CACHE = new WeakMap<BackgroundTaskSnapshot, Map<string, readonly BackgroundTaskRecord[]>>()
+const SELECT_CACHE = new WeakMap<TaskNotificationSnapshot, Map<string, readonly TaskNotificationRecord[]>>()
 
 /**
  * undefined / empty = show every group; one or more = show only those groups.
  * The returned reference is stable for the lifetime of the snapshot.
  */
-export function selectBackgroundTasks(
-  snapshot: BackgroundTaskSnapshot,
+export function selectTaskNotifications(
+  snapshot: TaskNotificationSnapshot,
   groups?: readonly string[],
-): readonly BackgroundTaskRecord[] {
+): readonly TaskNotificationRecord[] {
   const key = groups === undefined || groups.length === 0 ? '*' : [...groups].sort().join('\u0000')
   let perSnapshot = SELECT_CACHE.get(snapshot)
   if (perSnapshot === undefined) {
@@ -170,8 +170,8 @@ export function selectBackgroundTasks(
   return result
 }
 
-export function createBackgroundTaskEventBus(): BackgroundTaskEventBus {
-  const listeners = new Set<BackgroundTaskEventListener>()
+export function createTaskNotificationEventBus(): TaskNotificationEventBus {
+  const listeners = new Set<TaskNotificationEventListener>()
   return {
     subscribe(listener): () => void {
       listeners.add(listener)
@@ -204,19 +204,19 @@ function claim<T>(key: symbol, create: () => T, isValid: (value: unknown) => boo
   return created
 }
 
-export function claimBackgroundTasks(create: () => BackgroundTaskPool): BackgroundTaskPool {
-  return claim(BACKGROUND_TASKS_KEY, create, isPool)
+export function claimTaskNotifications(create: () => TaskNotificationPool): TaskNotificationPool {
+  return claim(TASK_NOTIFICATIONS_KEY, create, isPool)
 }
 
-export function claimBackgroundTaskEvents(create: () => BackgroundTaskEventBus): BackgroundTaskEventBus {
-  return claim(BACKGROUND_TASKS_EVENTS_KEY, create, isEventBus)
+export function claimTaskNotificationEvents(create: () => TaskNotificationEventBus): TaskNotificationEventBus {
+  return claim(TASK_NOTIFICATIONS_EVENTS_KEY, create, isEventBus)
 }
 
 function isPool(value: unknown): boolean {
   return (
     typeof value === 'object' &&
     value !== null &&
-    (value as { protocol?: unknown }).protocol === BACKGROUND_TASKS_PROTOCOL &&
+    (value as { protocol?: unknown }).protocol === TASK_NOTIFICATIONS_PROTOCOL &&
     typeof (value as { getSnapshot?: unknown }).getSnapshot === 'function'
   )
 }
@@ -234,26 +234,26 @@ function isEventBus(value: unknown): boolean {
 
 interface WireNotice {
   type: 'registered' | 'updated' | 'backgrounded' | 'settled'
-  task: BackgroundTaskRecord
+  task: TaskNotificationRecord
   outcome?: 'done' | 'failed'
 }
 
 type WireMessage =
   | { kind: 'hello'; origin: string }
-  | { kind: 'shard'; origin: string; seq: number; tasks: readonly BackgroundTaskRecord[]; notice?: WireNotice }
+  | { kind: 'shard'; origin: string; seq: number; tasks: readonly TaskNotificationRecord[]; notice?: WireNotice }
   | { kind: 'bye'; origin: string; seq: number }
 
 interface Shard {
   origin: string
   seq: number
-  tasks: readonly BackgroundTaskRecord[]
+  tasks: readonly TaskNotificationRecord[]
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-function isTaskRecord(value: unknown): value is BackgroundTaskRecord {
+function isTaskRecord(value: unknown): value is TaskNotificationRecord {
   if (!isRecord(value)) return false
   return (
     typeof value.id === 'string' &&
@@ -283,7 +283,7 @@ function parseMessage(value: unknown): WireMessage | null {
   if (value.kind === 'shard') {
     if (typeof value.seq !== 'number' || !Array.isArray(value.tasks)) return null
     if (!value.tasks.every(isTaskRecord)) return null
-    const tasks = value.tasks as readonly BackgroundTaskRecord[]
+    const tasks = value.tasks as readonly TaskNotificationRecord[]
     if (value.notice === undefined) return { kind: 'shard', origin: value.origin, seq: value.seq, tasks }
     if (!isNotice(value.notice)) return null
     return { kind: 'shard', origin: value.origin, seq: value.seq, tasks, notice: value.notice }
@@ -291,7 +291,7 @@ function parseMessage(value: unknown): WireMessage | null {
   return null
 }
 
-function noticeToEvent(notice: WireNotice, remote: boolean): BackgroundTaskEvent {
+function noticeToEvent(notice: WireNotice, remote: boolean): TaskNotificationEvent {
   if (notice.type === 'settled') {
     return {
       type: 'settled',
@@ -323,18 +323,18 @@ function openChannel(name: string): BroadcastChannel | null {
 }
 
 /** Deterministic order across pages: startedAt first, id as the tie-break. */
-function compareTasks(a: BackgroundTaskRecord, b: BackgroundTaskRecord): number {
+function compareTasks(a: TaskNotificationRecord, b: TaskNotificationRecord): number {
   return a.startedAt - b.startedAt || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
 }
 
-export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}): BackgroundTaskPool {
+export function createTaskNotificationPool(options: TaskNotificationPoolOptions = {}): TaskNotificationPool {
   const origin = options.origin ?? makeOrigin()
-  const channelName = options.channelName ?? BACKGROUND_TASKS_CHANNEL
+  const channelName = options.channelName ?? TASK_NOTIFICATIONS_CHANNEL
   const offline = options.offline === true
   const wantLifecycle = options.lifecycle ?? (typeof window !== 'undefined' && typeof document !== 'undefined')
-  const bus = (): BackgroundTaskEventBus => options.events ?? backgroundTaskEvents
+  const bus = (): TaskNotificationEventBus => options.events ?? taskNotificationEvents
 
-  const store = createStore<BackgroundTaskSnapshot>(() => EMPTY_SNAPSHOT)
+  const store = createStore<TaskNotificationSnapshot>(() => EMPTY_SNAPSHOT)
   const shards = new Map<string, Shard>()
   const knownSeq = new Map<string, number>()
   let seq = 0
@@ -344,8 +344,8 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
   let everConnected = false
   let everPublished = false
 
-  function collect(): readonly BackgroundTaskRecord[] {
-    const all: BackgroundTaskRecord[] = []
+  function collect(): readonly TaskNotificationRecord[] {
+    const all: TaskNotificationRecord[] = []
     for (const shard of shards.values()) all.push(...shard.tasks)
     return Object.freeze(all.sort(compareTasks))
   }
@@ -355,7 +355,7 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
     channel.postMessage(message)
   }
 
-  function localShard(): readonly BackgroundTaskRecord[] {
+  function localShard(): readonly TaskNotificationRecord[] {
     return shards.get(origin)?.tasks ?? EMPTY_TASKS
   }
 
@@ -370,7 +370,7 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
   }
 
   /** One write path: new local shard -> new snapshot -> local event -> cross-page message. */
-  function publish(nextTasks: readonly BackgroundTaskRecord[], notice: WireNotice): void {
+  function publish(nextTasks: readonly TaskNotificationRecord[], notice: WireNotice): void {
     seq += 1
     revision += 1
     shards.set(origin, { origin, seq, tasks: Object.freeze([...nextTasks]) })
@@ -381,11 +381,11 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
     broadcastShard(notice)
   }
 
-  function find(id: string): BackgroundTaskRecord | undefined {
+  function find(id: string): TaskNotificationRecord | undefined {
     return localShard().find((task) => task.id === id)
   }
 
-  function replace(tasks: readonly BackgroundTaskRecord[], record: BackgroundTaskRecord): readonly BackgroundTaskRecord[] {
+  function replace(tasks: readonly TaskNotificationRecord[], record: TaskNotificationRecord): readonly TaskNotificationRecord[] {
     return tasks.map((task) => (task.id === record.id ? record : task))
   }
 
@@ -473,11 +473,11 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
     post({ kind: 'hello', origin })
   }
 
-  function register(input: BackgroundTaskInput): BackgroundTaskHandle {
+  function register(input: TaskNotificationInput): TaskNotificationHandle {
     connect()
     const now = Date.now()
     const id = `${origin}:${String(++idSeq)}`
-    const record: BackgroundTaskRecord = {
+    const record: TaskNotificationRecord = {
       id,
       group: input.group,
       groupLabel: input.groupLabel,
@@ -490,8 +490,8 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
       backgrounded: false,
     }
     let isSettled = false
-    let resolveSettled: (value: BackgroundTaskSettlement) => void = () => {}
-    const settled = new Promise<BackgroundTaskSettlement>((resolve) => { resolveSettled = resolve })
+    let resolveSettled: (value: TaskNotificationSettlement) => void = () => {}
+    const settled = new Promise<TaskNotificationSettlement>((resolve) => { resolveSettled = resolve })
 
     publish([...localShard(), record], { type: 'registered', task: record })
 
@@ -500,7 +500,7 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
       const current = find(id)
       if (current === undefined) return
       isSettled = true
-      const final: BackgroundTaskRecord = {
+      const final: TaskNotificationRecord = {
         ...current,
         status: outcome === 'done' ? 'done' : 'failed',
         reason,
@@ -513,7 +513,7 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
       resolveSettled({ outcome, reason, task: final })
     }
 
-    const handle: BackgroundTaskHandle = {
+    const handle: TaskNotificationHandle = {
       id,
       get isSettled(): boolean { return isSettled },
       settled,
@@ -521,7 +521,7 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
         if (isSettled) return
         const current = find(id)
         if (current === undefined) return
-        const next: BackgroundTaskRecord = {
+        const next: TaskNotificationRecord = {
           ...current,
           ...(patch.title === undefined ? {} : { title: patch.title }),
           ...(patch.detail === undefined ? {} : { detail: patch.detail }),
@@ -535,7 +535,7 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
         if (isSettled) return
         const current = find(id)
         if (current === undefined || current.backgrounded) return
-        const next: BackgroundTaskRecord = { ...current, backgrounded: true, updatedAt: Date.now() }
+        const next: TaskNotificationRecord = { ...current, backgrounded: true, updatedAt: Date.now() }
         publish(replace(localShard(), next), { type: 'backgrounded', task: next })
       },
       done(detail?: string): void {
@@ -556,8 +556,8 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
     return handle
   }
 
-  const pool: BackgroundTaskPool = {
-    protocol: BACKGROUND_TASKS_PROTOCOL,
+  const pool: TaskNotificationPool = {
+    protocol: TASK_NOTIFICATIONS_PROTOCOL,
     origin,
     getSnapshot: () => store.getState(),
     getServerSnapshot: () => EMPTY_SNAPSHOT,
@@ -567,7 +567,7 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
     },
     connect,
     refresh,
-    select: (groups) => selectBackgroundTasks(store.getState(), groups),
+    select: (groups) => selectTaskNotifications(store.getState(), groups),
     register,
     canRestore: (task) => task.origin === origin,
     requestRestore(taskId): boolean {
@@ -598,21 +598,21 @@ export function createBackgroundTaskPool(options: BackgroundTaskPoolOptions = {}
  * host behind (that used to break the whole `ui` entry on import). The host is
  * claimed on first actual use instead.
  */
-let sharedPool: BackgroundTaskPool | undefined
-let sharedBus: BackgroundTaskEventBus | undefined
+let sharedPool: TaskNotificationPool | undefined
+let sharedBus: TaskNotificationEventBus | undefined
 
-function globalPool(): BackgroundTaskPool {
-  if (sharedPool === undefined) sharedPool = claimBackgroundTasks(() => createBackgroundTaskPool())
+function globalPool(): TaskNotificationPool {
+  if (sharedPool === undefined) sharedPool = claimTaskNotifications(() => createTaskNotificationPool())
   return sharedPool
 }
 
-function globalBus(): BackgroundTaskEventBus {
-  if (sharedBus === undefined) sharedBus = claimBackgroundTaskEvents(createBackgroundTaskEventBus)
+function globalBus(): TaskNotificationEventBus {
+  if (sharedBus === undefined) sharedBus = claimTaskNotificationEvents(createTaskNotificationEventBus)
   return sharedBus
 }
 
-export const backgroundTasks: BackgroundTaskPool = {
-  protocol: BACKGROUND_TASKS_PROTOCOL,
+export const taskNotifications: TaskNotificationPool = {
+  protocol: TASK_NOTIFICATIONS_PROTOCOL,
   get origin(): string { return globalPool().origin },
   getSnapshot: () => globalPool().getSnapshot(),
   getServerSnapshot: () => globalPool().getServerSnapshot(),
@@ -626,15 +626,15 @@ export const backgroundTasks: BackgroundTaskPool = {
   dispose: () => { globalPool().dispose() },
 }
 
-export const backgroundTaskEvents: BackgroundTaskEventBus = {
+export const taskNotificationEvents: TaskNotificationEventBus = {
   subscribe: (listener) => globalBus().subscribe(listener),
   emit: (event) => { globalBus().emit(event) },
 }
 
-export function subscribeBackgroundTaskEvents(listener: BackgroundTaskEventListener): () => void {
-  return backgroundTaskEvents.subscribe(listener)
+export function subscribeTaskNotificationEvents(listener: TaskNotificationEventListener): () => void {
+  return taskNotificationEvents.subscribe(listener)
 }
 
-export function emitBackgroundTaskEvent(event: BackgroundTaskEvent): void {
-  backgroundTaskEvents.emit(event)
+export function emitTaskNotificationEvent(event: TaskNotificationEvent): void {
+  taskNotificationEvents.emit(event)
 }

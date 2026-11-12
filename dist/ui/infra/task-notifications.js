@@ -23,10 +23,10 @@
  */
 import { createStore } from 'zustand/vanilla';
 /** Protocol version lives in the keys: a different wire shape gets its own host. */
-export const BACKGROUND_TASKS_PROTOCOL = 1;
-export const BACKGROUND_TASKS_KEY = Symbol.for('dsh-plugin-core/background-tasks/v1');
-export const BACKGROUND_TASKS_EVENTS_KEY = Symbol.for('dsh-plugin-core/background-tasks/events/v1');
-export const BACKGROUND_TASKS_CHANNEL = 'dsh-plugin-core/background-tasks/v1';
+export const TASK_NOTIFICATIONS_PROTOCOL = 1;
+export const TASK_NOTIFICATIONS_KEY = Symbol.for('dsh-plugin-core/task-notifications/v1');
+export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-notifications/events/v1');
+export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v1';
 const EMPTY_TASKS = Object.freeze([]);
 const EMPTY_SNAPSHOT = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 });
 /** Per-snapshot derived cache: same snapshot + same filter returns the SAME array. */
@@ -35,7 +35,7 @@ const SELECT_CACHE = new WeakMap();
  * undefined / empty = show every group; one or more = show only those groups.
  * The returned reference is stable for the lifetime of the snapshot.
  */
-export function selectBackgroundTasks(snapshot, groups) {
+export function selectTaskNotifications(snapshot, groups) {
     const key = groups === undefined || groups.length === 0 ? '*' : [...groups].sort().join('\u0000');
     let perSnapshot = SELECT_CACHE.get(snapshot);
     if (perSnapshot === undefined) {
@@ -51,7 +51,7 @@ export function selectBackgroundTasks(snapshot, groups) {
     perSnapshot.set(key, result);
     return result;
 }
-export function createBackgroundTaskEventBus() {
+export function createTaskNotificationEventBus() {
     const listeners = new Set();
     return {
         subscribe(listener) {
@@ -84,16 +84,16 @@ function claim(key, create, isValid) {
     g[key] = created;
     return created;
 }
-export function claimBackgroundTasks(create) {
-    return claim(BACKGROUND_TASKS_KEY, create, isPool);
+export function claimTaskNotifications(create) {
+    return claim(TASK_NOTIFICATIONS_KEY, create, isPool);
 }
-export function claimBackgroundTaskEvents(create) {
-    return claim(BACKGROUND_TASKS_EVENTS_KEY, create, isEventBus);
+export function claimTaskNotificationEvents(create) {
+    return claim(TASK_NOTIFICATIONS_EVENTS_KEY, create, isEventBus);
 }
 function isPool(value) {
     return (typeof value === 'object' &&
         value !== null &&
-        value.protocol === BACKGROUND_TASKS_PROTOCOL &&
+        value.protocol === TASK_NOTIFICATIONS_PROTOCOL &&
         typeof value.getSnapshot === 'function');
 }
 function isEventBus(value) {
@@ -182,12 +182,12 @@ function openChannel(name) {
 function compareTasks(a, b) {
     return a.startedAt - b.startedAt || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 }
-export function createBackgroundTaskPool(options = {}) {
+export function createTaskNotificationPool(options = {}) {
     const origin = options.origin ?? makeOrigin();
-    const channelName = options.channelName ?? BACKGROUND_TASKS_CHANNEL;
+    const channelName = options.channelName ?? TASK_NOTIFICATIONS_CHANNEL;
     const offline = options.offline === true;
     const wantLifecycle = options.lifecycle ?? (typeof window !== 'undefined' && typeof document !== 'undefined');
-    const bus = () => options.events ?? backgroundTaskEvents;
+    const bus = () => options.events ?? taskNotificationEvents;
     const store = createStore(() => EMPTY_SNAPSHOT);
     const shards = new Map();
     const knownSeq = new Map();
@@ -401,7 +401,7 @@ export function createBackgroundTaskPool(options = {}) {
         return handle;
     }
     const pool = {
-        protocol: BACKGROUND_TASKS_PROTOCOL,
+        protocol: TASK_NOTIFICATIONS_PROTOCOL,
         origin,
         getSnapshot: () => store.getState(),
         getServerSnapshot: () => EMPTY_SNAPSHOT,
@@ -411,7 +411,7 @@ export function createBackgroundTaskPool(options = {}) {
         },
         connect,
         refresh,
-        select: (groups) => selectBackgroundTasks(store.getState(), groups),
+        select: (groups) => selectTaskNotifications(store.getState(), groups),
         register,
         canRestore: (task) => task.origin === origin,
         requestRestore(taskId) {
@@ -446,16 +446,16 @@ let sharedPool;
 let sharedBus;
 function globalPool() {
     if (sharedPool === undefined)
-        sharedPool = claimBackgroundTasks(() => createBackgroundTaskPool());
+        sharedPool = claimTaskNotifications(() => createTaskNotificationPool());
     return sharedPool;
 }
 function globalBus() {
     if (sharedBus === undefined)
-        sharedBus = claimBackgroundTaskEvents(createBackgroundTaskEventBus);
+        sharedBus = claimTaskNotificationEvents(createTaskNotificationEventBus);
     return sharedBus;
 }
-export const backgroundTasks = {
-    protocol: BACKGROUND_TASKS_PROTOCOL,
+export const taskNotifications = {
+    protocol: TASK_NOTIFICATIONS_PROTOCOL,
     get origin() { return globalPool().origin; },
     getSnapshot: () => globalPool().getSnapshot(),
     getServerSnapshot: () => globalPool().getServerSnapshot(),
@@ -468,14 +468,14 @@ export const backgroundTasks = {
     requestRestore: (taskId) => globalPool().requestRestore(taskId),
     dispose: () => { globalPool().dispose(); },
 };
-export const backgroundTaskEvents = {
+export const taskNotificationEvents = {
     subscribe: (listener) => globalBus().subscribe(listener),
     emit: (event) => { globalBus().emit(event); },
 };
-export function subscribeBackgroundTaskEvents(listener) {
-    return backgroundTaskEvents.subscribe(listener);
+export function subscribeTaskNotificationEvents(listener) {
+    return taskNotificationEvents.subscribe(listener);
 }
-export function emitBackgroundTaskEvent(event) {
-    backgroundTaskEvents.emit(event);
+export function emitTaskNotificationEvent(event) {
+    taskNotificationEvents.emit(event);
 }
-//# sourceMappingURL=background-tasks.js.map
+//# sourceMappingURL=task-notifications.js.map

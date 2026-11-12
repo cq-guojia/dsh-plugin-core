@@ -23,14 +23,14 @@
 | **帮助文档区（追加槽位）** | **`docs/help/`** | **给引用方 / Agent，随包发布；`.doc.ts` 真源 + `.md` 投影同目录** |
 | 帮助索引（入口） | `docs/help/index.md`（← `index.doc.ts`） | 引用方与 Agent 的唯一入口：按任务挑一份 |
 | 接入样例 | `docs/help/integration.md`（← `integration.doc.ts`） | 从零接入一个插件 |
-| 各功能帮助 | `docs/help/<包名>.md`（← 同名 `.doc.ts`） | `ui` / `design` / `utils` / `explorer` / `session` 各一份 |
+| 各功能帮助 | `docs/help/<包名>.md`（← 同名 `.doc.ts`） | `ui` / `design` / `utils` / `explorer` / `session` / `task-notifications` 各一份 |
 | 方法 / 样式的使用侧 | `docs/help/methods.md`、`docs/help/style.md` | 手写 md（无对应 demo 页，不进投影） |
 | 任务进度（在办 / 已结案 / 过程叙事） | **不入 `docs/`** —— 由 `task-ledger` skill 管理（`ledger/`） | 不得在 docs 内另建进度文档 |
 | 文档格式规范（帮助文档真源 + 双投影） | `docs/design/doc-format.md` | schema、section.id 契约、Bilingual、生成与类型闸 |
 | 各功能真源（旧落位） | **不适用**（已迁入 `docs/help/<包名>.doc.ts`） | 保留行说明去向，不删行 |
 | 样例（旧落位） | **不适用**（已迁入 `docs/help/integration.*`） | 同上 |
 | 运行逻辑 | `docs/design/architecture.md`（路径固定） | 五子包分层、依赖方向、样式注入机制、不变量 |
-| 后台任务池契约 | `docs/design/background-tasks.md` | 状态快照、订阅、事件通知、跨页分片协议、结束句柄、Promise 结局定稿 |
+| 通知任务中心契约 | `docs/design/task-notifications.md` | 状态快照、订阅、事件通知、跨页分片协议、结束句柄、Promise 结局定稿 |
 | 结构规范（运行逻辑拆分） | `docs/design/structure.md` | 代码分层树（目标态）+ demo 展示分区 + 做/暂缓标注 |
 | 功能总索引 | **不适用**（职责由 `docs/help/index.md` 承担，路径固定槽位保留行） | 引用方走帮助索引，本文件不再维护第二份 |
 | 外部事实 | `docs/design/external/dsh-host.md` | 宿主 API 契约、官方 primitives、CSS 类名发现、暗色判据来源 |
@@ -56,7 +56,7 @@ docs/                                               # 项目文档库入口与�
 │   ├── external/                                   # 宿主与官方包等仓库外事实，带来源与复核口径
 │   │   └── dsh-host.md                             # DSH 宿主 API、官方 primitives 与产物形态的已核实行为
 │   ├── architecture.md                             # 五子包分层、依赖方向、样式注入机制与不变量
-│   ├── background-tasks.md                         # 后台任务池的状态、订阅、事件与跨页分片契约
+│   ├── task-notifications.md                         # 通知任务中心的状态、订阅、事件与跨页分片契约
 │   ├── copywriting.md                              # 帮助文档文案标准：读者定性、双语对等、格式冻结
 │   ├── doc-format.md                               # .doc.ts 真源与 md / demo 双投影的 schema 及生成闸
 │   ├── features.md                                 # 功能总索引槽位说明：职责已交帮助索引，保留占位
@@ -64,6 +64,7 @@ docs/                                               # 项目文档库入口与�
 │   ├── structure.md                                # 代码分层树与 demo 展示分区的结构规范
 │   └── style.md                                    # 本仓改动样式的 why、派生色口径与三条硬规矩
 ├── help/                                           # 随包发布的帮助文档区，.doc.ts 真源与同名 .md 投影同目录
+│   ├── task-notifications.md                         # 通知任务中心：状态池、事件总线与跨页同步的对外用法
 │   ├── design.md                                   # design 子包使用帮助：token、createStyleKit、明暗判据
 │   ├── explorer.md                                 # 工作区浏览与文件预览的接入方式与 API
 │   ├── index.md                                    # 帮助索引：按你要做的事挑一份文档

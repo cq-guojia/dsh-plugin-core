@@ -7,7 +7,7 @@ export type Locale = 'zh' | 'en'
 /** demo 界面文案的 key（含六个分组名、25 个页面标题、各 Demo 块 hint、空页待补说明；演示数据/按钮文案不在内）。 */
 export type DemoMessageKey =
   | 'grpStart'
-  | 'grpDesign'
+  | 'grpInfra'
   | 'grpComponents'
   | 'grpBlocks'
   | 'grpUtils'
@@ -17,6 +17,34 @@ export type DemoMessageKey =
   | 'secHelpIndex'
   | 'secQuickstart'
   | 'secFoundation'
+  | 'secTaskNotifications'
+  | 'tnNote'
+  | 'tnCrossPage'
+  | 'tnOpsTitle'
+  | 'tnOpsHint'
+  | 'tnRegisterReminder'
+  | 'tnRegisterLedger'
+  | 'tnUpdate'
+  | 'tnBackground'
+  | 'tnDone'
+  | 'tnFail'
+  | 'tnRestore'
+  | 'tnRefresh'
+  | 'tnRefreshHint'
+  | 'tnFilterAll'
+  | 'tnFilterOne'
+  | 'tnFilterTwo'
+  | 'tnOpsNote'
+  | 'tnFinishAll'
+  | 'tnSnapshotTitle'
+  | 'tnSnapshotHint'
+  | 'tnEventsTitle'
+  | 'tnEventsHint'
+  | 'tnEmptyTasks'
+  | 'tnEmptyEvents'
+  | 'tnCountLabel'
+  | 'tnBadgeLocal'
+  | 'tnBadgeRemote'
   | 'secWritePlugin'
   | 'secReference'
   | 'secNaming'
@@ -285,7 +313,7 @@ export type DemoMessageKey =
 export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
   zh: {
     grpStart: '入门',
-    grpDesign: '设计',
+    grpInfra: '基础设施',
     grpComponents: '控件',
     grpBlocks: '应用模块',
     grpUtils: '工具方法',
@@ -296,6 +324,34 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secInstall: '安装与初始化',
     secQuickstart: '快速开始',
     secFoundation: '设计基础',
+    secTaskNotifications: '通知任务中心',
+    tnNote: '本页只演示数据面：状态池、订阅、事件总线、跨页同步与结束句柄。任务、条数、revision、时间与事件全部来自真实 API 调用，没有模拟数据、没有定时器、没有占位行。可收起弹窗与事件查看控件不在这里，由后续任务单独提供。',
+    tnCrossPage: '跨页演示：在另一个同源标签页打开本页，两边各自注册或结束任务，列表与事件会即时同步；关掉其中一个标签页可看到 peer-left 事件。跨页条目能看不能点。',
+    tnOpsTitle: '真实操作台',
+    tnOpsHint: '每个按钮都调用真实 API；右侧是同一套调用的代码',
+    tnRegisterReminder: '注册到 dsh-task-reminder',
+    tnRegisterLedger: '注册到 dsh-task-ledger',
+    tnUpdate: '更新详情',
+    tnBackground: '收起（不结算）',
+    tnDone: '结束 · done',
+    tnFail: '结束 · fail',
+    tnRestore: '请求还原（本页）',
+    tnRefresh: '重新同步',
+    tnRefreshHint: '平时会自动同步，只有怀疑状态不同步时才点',
+    tnFilterAll: '不过滤',
+    tnFilterOne: '只看 reminder',
+    tnFilterTwo: '看两个组',
+    tnOpsNote: '注册与过滤在这里；每条任务自己的收起 / 结束 / 还原按钮在下方列表的对应行里',
+    tnFinishAll: '结束本页全部',
+    tnSnapshotTitle: '状态快照',
+    tnSnapshotHint: '三参 useSyncExternalStore，引用稳定；每行右侧是这条任务自己的操作',
+    tnEventsTitle: '事件总线',
+    tnEventsHint: '真实事件，只显示最近 8 条；历史不留存',
+    tnEmptyTasks: '池里还没有任务：点上面的按钮注册一条真实任务',
+    tnEmptyEvents: '还没有事件',
+    tnCountLabel: '显示 / 全池',
+    tnBadgeLocal: '本页创建 · 可还原',
+    tnBadgeRemote: '跨页条目 · 能看不能点',
     secWritePlugin: '写一个插件',
     secReference: '参考与约定',
     secNaming: '命名与前缀契约',
@@ -600,7 +656,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
   },
   en: {
     grpStart: 'Getting started',
-    grpDesign: 'Design',
+    grpInfra: 'Infrastructure',
     grpComponents: 'Components',
     grpBlocks: 'App modules',
     grpUtils: 'Utilities',
@@ -611,6 +667,34 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secInstall: 'Install & init',
     secQuickstart: 'Quick start',
     secFoundation: 'Foundations',
+    secTaskNotifications: 'Task Notification Hub',
+    tnNote: 'This page demos the data plane only: pool, subscription, event bus, cross-page sync and settlement handles. Rows, counts, revision, timestamps and events all come from real API calls — no mock data, no timers, no placeholder rows. Collapsible dialogs and the event-viewer control are not here; they arrive in separate tasks.',
+    tnCrossPage: 'Cross-page demo: open this page in another same-origin tab. Register or settle a task on either side and both lists and event streams update immediately; close one tab to see a peer-left event. Cross-page rows are view-only.',
+    tnOpsTitle: 'Live controls',
+    tnOpsHint: 'Every button calls a real API; the code on the right is that same call',
+    tnRegisterReminder: 'Register to dsh-task-reminder',
+    tnRegisterLedger: 'Register to dsh-task-ledger',
+    tnUpdate: 'Update detail',
+    tnBackground: 'Collapse (no settle)',
+    tnDone: 'Finish · done',
+    tnFail: 'Finish · fail',
+    tnRestore: 'Request restore (local)',
+    tnRefresh: 'Resync',
+    tnRefreshHint: 'Syncs automatically; click only if you suspect it drifted',
+    tnFilterAll: 'No filter',
+    tnFilterOne: 'Reminder only',
+    tnFilterTwo: 'Both groups',
+    tnOpsNote: 'Register and filter here; each row has its own collapse / finish / restore actions',
+    tnFinishAll: 'Finish all local tasks',
+    tnSnapshotTitle: 'State snapshot',
+    tnSnapshotHint: 'Three-argument useSyncExternalStore, stable references; each row owns its actions',
+    tnEventsTitle: 'Event bus',
+    tnEventsHint: 'Real events, latest 8 only; no history retained',
+    tnEmptyTasks: 'No tasks yet: register a real one with a button above',
+    tnEmptyEvents: 'No events yet',
+    tnCountLabel: 'shown / total',
+    tnBadgeLocal: 'Created here · restorable',
+    tnBadgeRemote: 'Cross-page row · view only',
     secWritePlugin: 'Write a plugin',
     secReference: 'Reference',
     secNaming: 'Naming & prefix contract',

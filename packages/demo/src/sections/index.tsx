@@ -20,6 +20,7 @@ import { ExplorerPage, SessionPage } from './blocks.js'
 import { TablePage } from './tables.js'
 import { ToolbarPage } from './toolbar.js'
 import { PaginationPage } from './navigation.js'
+import { TaskNotificationsPage } from './task-notifications.js'
 import { DatePage, HttpPage, I18nPage, NumberPage, TextPage } from './utils.js'
 import { ReferencePage } from './reference.js'
 import { Example } from '../doc.js'
@@ -28,13 +29,14 @@ import { Example } from '../doc.js'
  * 两级目录：第一层（group）是能力域，不可点；第二层（id）是一个可看页。
  * 分类规则见 docs/design/structure.md（区 → 类 → 控件）；一级固定 5 个，二级按「类」成页。
  */
-export type SectionGroup = 'start' | 'design' | 'components' | 'blocks' | 'utils'
+export type SectionGroup = 'start' | 'infra' | 'components' | 'blocks' | 'utils'
 
 export type SectionId =
   | 'help-index'
   | 'quickstart'
   | 'reference'
   | 'foundation'
+  | 'task-notifications'
   | 'actions'
   | 'inputs'
   | 'display'
@@ -59,7 +61,7 @@ export interface SectionDef {
 /** 第一层：顺序即侧栏顺序。 */
 export const SECTION_GROUPS: { id: SectionGroup; titleKey: DemoMessageKey }[] = [
   { id: 'start', titleKey: 'grpStart' },
-  { id: 'design', titleKey: 'grpDesign' },
+  { id: 'infra', titleKey: 'grpInfra' },
   { id: 'components', titleKey: 'grpComponents' },
   { id: 'blocks', titleKey: 'grpBlocks' },
   { id: 'utils', titleKey: 'grpUtils' },
@@ -76,8 +78,9 @@ export const ALL_SECTIONS: SectionDef[] = [
   { id: 'quickstart', group: 'start', titleKey: 'secQuickstart', render: () => h(QuickstartPage, null) },
   { id: 'reference', group: 'start', titleKey: 'secReference', render: () => h(ReferencePage, null) },
 
-  // ② 设计
-  { id: 'foundation', group: 'design', titleKey: 'secFoundation', render: () => h(FoundationPage, null) },
+  // ② 基础设施
+  { id: 'foundation', group: 'infra', titleKey: 'secFoundation', render: () => h(FoundationPage, null) },
+  { id: 'task-notifications', group: 'infra', titleKey: 'secTaskNotifications', render: () => h(TaskNotificationsPage, null) },
 
   // ③ 控件：一页一类，页内按控件族顺序排列
   { id: 'actions', group: 'components', titleKey: 'secActions', render: () => h(ButtonPage, null) },

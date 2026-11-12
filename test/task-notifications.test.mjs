@@ -4,17 +4,17 @@ import vm from 'node:vm'
 import { fileURLToPath } from 'node:url'
 import { build } from 'esbuild'
 import {
-  BACKGROUND_TASKS_EVENTS_KEY,
-  BACKGROUND_TASKS_KEY,
-  BACKGROUND_TASKS_PROTOCOL,
-  backgroundTaskEvents,
-  backgroundTasks,
-  claimBackgroundTaskEvents,
-  claimBackgroundTasks,
-  createBackgroundTaskEventBus,
-  createBackgroundTaskPool,
-  selectBackgroundTasks,
-  subscribeBackgroundTaskEvents,
+  TASK_NOTIFICATIONS_EVENTS_KEY,
+  TASK_NOTIFICATIONS_KEY,
+  TASK_NOTIFICATIONS_PROTOCOL,
+  taskNotificationEvents,
+  taskNotifications,
+  claimTaskNotificationEvents,
+  claimTaskNotifications,
+  createTaskNotificationEventBus,
+  createTaskNotificationPool,
+  selectTaskNotifications,
+  subscribeTaskNotificationEvents,
 } from '../dist/ui/index.js'
 
 /** 等异步 BroadcastChannel 消息落地；只用于测试等待，库本身不轮询。 */
@@ -29,13 +29,13 @@ async function waitFor(predicate, label, timeoutMs = 2000) {
 let channelSeq = 0
 function testChannel() {
   channelSeq += 1
-  return `dsh-plugin-core-test/background-tasks/${String(process.pid)}-${String(channelSeq)}`
+  return `dsh-plugin-core-test/task-notifications/${String(process.pid)}-${String(channelSeq)}`
 }
 
 function makePool(channelName, extra = {}) {
-  return createBackgroundTaskPool({
+  return createTaskNotificationPool({
     channelName,
-    events: createBackgroundTaskEventBus(),
+    events: createTaskNotificationEventBus(),
     lifecycle: false,
     ...extra,
   })
@@ -57,50 +57,50 @@ function wireTask(origin, id, group = 'plugin-a') {
 
 test('全局单例：多副本 claim 只建一次，且键是 Symbol.for 全局符号', () => {
   const g = globalThis
-  const originalPool = g[BACKGROUND_TASKS_KEY]
-  const originalBus = g[BACKGROUND_TASKS_EVENTS_KEY]
-  delete g[BACKGROUND_TASKS_KEY]
-  delete g[BACKGROUND_TASKS_EVENTS_KEY]
+  const originalPool = g[TASK_NOTIFICATIONS_KEY]
+  const originalBus = g[TASK_NOTIFICATIONS_EVENTS_KEY]
+  delete g[TASK_NOTIFICATIONS_KEY]
+  delete g[TASK_NOTIFICATIONS_EVENTS_KEY]
   try {
     let created = 0
-    const a = claimBackgroundTasks(() => {
+    const a = claimTaskNotifications(() => {
       created += 1
-      return createBackgroundTaskPool({ offline: true })
+      return createTaskNotificationPool({ offline: true })
     })
-    const b = claimBackgroundTasks(() => {
+    const b = claimTaskNotifications(() => {
       created += 1
-      return createBackgroundTaskPool({ offline: true })
+      return createTaskNotificationPool({ offline: true })
     })
     assert.equal(created, 1)
     assert.equal(a, b)
-    assert.equal(a.protocol, BACKGROUND_TASKS_PROTOCOL)
+    assert.equal(a.protocol, TASK_NOTIFICATIONS_PROTOCOL)
 
     let busCreated = 0
-    const busA = claimBackgroundTaskEvents(() => {
+    const busA = claimTaskNotificationEvents(() => {
       busCreated += 1
-      return createBackgroundTaskEventBus()
+      return createTaskNotificationEventBus()
     })
-    const busB = claimBackgroundTaskEvents(() => {
+    const busB = claimTaskNotificationEvents(() => {
       busCreated += 1
-      return createBackgroundTaskEventBus()
+      return createTaskNotificationEventBus()
     })
     assert.equal(busCreated, 1)
     assert.equal(busA, busB)
-    assert.equal(BACKGROUND_TASKS_KEY, Symbol.for('dsh-plugin-core/background-tasks/v1'))
+    assert.equal(TASK_NOTIFICATIONS_KEY, Symbol.for('dsh-plugin-core/task-notifications/v1'))
   } finally {
-    g[BACKGROUND_TASKS_KEY] = originalPool
-    g[BACKGROUND_TASKS_EVENTS_KEY] = originalBus
+    g[TASK_NOTIFICATIONS_KEY] = originalPool
+    g[TASK_NOTIFICATIONS_EVENTS_KEY] = originalBus
   }
 })
 
 test('形状不符的全局宿主直接拒绝，不静默复用', () => {
   const g = globalThis
-  const original = g[BACKGROUND_TASKS_KEY]
-  g[BACKGROUND_TASKS_KEY] = { protocol: 999, getSnapshot: () => ({}) }
+  const original = g[TASK_NOTIFICATIONS_KEY]
+  g[TASK_NOTIFICATIONS_KEY] = { protocol: 999, getSnapshot: () => ({}) }
   try {
-    assert.throws(() => claimBackgroundTasks(() => createBackgroundTaskPool({ offline: true })), /Incompatible/)
+    assert.throws(() => claimTaskNotifications(() => createTaskNotificationPool({ offline: true })), /Incompatible/)
   } finally {
-    g[BACKGROUND_TASKS_KEY] = original
+    g[TASK_NOTIFICATIONS_KEY] = original
   }
 })
 
@@ -109,8 +109,8 @@ test('getServerSnapshot 是稳定空快照；import 期不碰 DOM，SSR 不炸',
   try {
     assert.equal(pool.getServerSnapshot(), pool.getServerSnapshot())
     assert.deepEqual(pool.getServerSnapshot().tasks, [])
-    assert.equal(backgroundTasks.getServerSnapshot(), backgroundTasks.getServerSnapshot())
-    assert.equal(typeof backgroundTaskEvents.emit, 'function')
+    assert.equal(taskNotifications.getServerSnapshot(), taskNotifications.getServerSnapshot())
+    assert.equal(typeof taskNotificationEvents.emit, 'function')
   } finally {
     pool.dispose()
   }
@@ -121,8 +121,8 @@ test('快照引用稳定：无变化不换引用，变化才换；派生缓存�
   try {
     const before = pool.getSnapshot()
     assert.equal(pool.getSnapshot(), before)
-    const all = selectBackgroundTasks(before)
-    assert.equal(selectBackgroundTasks(before), all, '同快照同过滤必须返回同一数组')
+    const all = selectTaskNotifications(before)
+    assert.equal(selectTaskNotifications(before), all, '同快照同过滤必须返回同一数组')
     assert.equal(pool.select(), all)
 
     const a = pool.register({ group: 'plugin-a', title: 'A' })
@@ -148,7 +148,7 @@ test('快照引用稳定：无变化不换引用，变化才换；派生缓存�
 })
 
 test('结束句柄幂等：done / fail 后条目消失，重复调用不再发通知', async () => {
-  const bus = createBackgroundTaskEventBus()
+  const bus = createTaskNotificationEventBus()
   const pool = makePool(testChannel(), { offline: true, events: bus })
   const notices = []
   bus.subscribe((event) => { notices.push(event) })
@@ -203,7 +203,7 @@ test('track(promise)：成功与 reject 都走同一收尾（不留幽灵条目�
 })
 
 test('事件总线：注册 / 更新 / 收起 / 结束四类通知都带真实条目', () => {
-  const bus = createBackgroundTaskEventBus()
+  const bus = createTaskNotificationEventBus()
   const pool = makePool(testChannel(), { offline: true, events: bus })
   try {
     const seen = []
@@ -226,7 +226,7 @@ test('事件总线：注册 / 更新 / 收起 / 结束四类通知都带真实�
 })
 
 test('事件总线：单个消费端抛错不阻断别的消费端', () => {
-  const bus = createBackgroundTaskEventBus()
+  const bus = createTaskNotificationEventBus()
   const original = console.error
   console.error = () => {}
   try {
@@ -393,8 +393,8 @@ test('dispose 后可复活：重连自动补发全量分片，不留幽灵也不
 
 test('跨页通知 remote 标记：远端 settled 带 outcome，本地不重复发 N 次', async () => {
   const channelName = testChannel()
-  const busA = createBackgroundTaskEventBus()
-  const busB = createBackgroundTaskEventBus()
+  const busA = createTaskNotificationEventBus()
+  const busB = createTaskNotificationEventBus()
   const a = makePool(channelName, { origin: 'page-a', events: busA })
   const b = makePool(channelName, { origin: 'page-b', events: busB })
   try {
@@ -422,12 +422,12 @@ test('跨页通知 remote 标记：远端 settled 带 outcome，本地不重复�
 
 test('同页多副本共享一个池：两个副本注册都落在同一份状态里', () => {
   const g = globalThis
-  const original = g[BACKGROUND_TASKS_KEY]
-  delete g[BACKGROUND_TASKS_KEY]
+  const original = g[TASK_NOTIFICATIONS_KEY]
+  delete g[TASK_NOTIFICATIONS_KEY]
   const pool = makePool(testChannel(), { offline: true })
   try {
-    const copyA = claimBackgroundTasks(() => pool)
-    const copyB = claimBackgroundTasks(() => makePool(testChannel(), { offline: true }))
+    const copyA = claimTaskNotifications(() => pool)
+    const copyB = claimTaskNotifications(() => makePool(testChannel(), { offline: true }))
     assert.equal(copyA, copyB)
     const h1 = copyA.register({ group: 'g', title: 'from-copy-A' })
     const h2 = copyB.register({ group: 'g', title: 'from-copy-B' })
@@ -437,22 +437,22 @@ test('同页多副本共享一个池：两个副本注册都落在同一份状�
     h2.done()
   } finally {
     pool.dispose()
-    g[BACKGROUND_TASKS_KEY] = original
+    g[TASK_NOTIFICATIONS_KEY] = original
   }
 })
 
-test('subscribeBackgroundTaskEvents 走全局总线且可退订', () => {
+test('subscribeTaskNotificationEvents 走全局总线且可退订', () => {
   let hits = 0
-  const off = subscribeBackgroundTaskEvents(() => { hits += 1 })
-  backgroundTaskEvents.emit({ type: 'restored', taskId: 'x', remote: false })
+  const off = subscribeTaskNotificationEvents(() => { hits += 1 })
+  taskNotificationEvents.emit({ type: 'restored', taskId: 'x', remote: false })
   assert.equal(hits, 1)
   off()
-  backgroundTaskEvents.emit({ type: 'restored', taskId: 'y', remote: false })
+  taskNotificationEvents.emit({ type: 'restored', taskId: 'y', remote: false })
   assert.equal(hits, 1)
 })
 
 test('DSH CJS 闭包：zustand 被打进产物且状态池真能跑（不是只看字符串）', async () => {
-  const entry = fileURLToPath(new URL('../dist/ui/infra/background-tasks.js', import.meta.url))
+  const entry = fileURLToPath(new URL('../dist/ui/infra/task-notifications.js', import.meta.url))
   const out = await build({
     entryPoints: [entry],
     bundle: true,
@@ -485,14 +485,14 @@ test('DSH CJS 闭包：zustand 被打进产物且状态池真能跑（不是只�
   assert.doesNotThrow(() => vm.runInContext(code, sandbox), '闭包里 import 期不得碰 DOM / 宿主模块')
   assert.ok(loaded !== null, 'factory 必须返回 exports')
 
-  const { createBackgroundTaskPool, createBackgroundTaskEventBus, selectBackgroundTasks } = loaded.exports ?? loaded
-  const bus = createBackgroundTaskEventBus()
+  const { createTaskNotificationPool, createTaskNotificationEventBus, selectTaskNotifications } = loaded.exports ?? loaded
+  const bus = createTaskNotificationEventBus()
   const seen = []
   bus.subscribe((event) => { seen.push(event.type) })
-  const pool = createBackgroundTaskPool({ offline: true, events: bus, lifecycle: false })
+  const pool = createTaskNotificationPool({ offline: true, events: bus, lifecycle: false })
   const handle = pool.register({ group: 'probe-group', title: 'probe task' })
   assert.equal(pool.getSnapshot().tasks.length, 1)
-  assert.equal(selectBackgroundTasks(pool.getSnapshot(), ['probe-group']).length, 1)
+  assert.equal(selectTaskNotifications(pool.getSnapshot(), ['probe-group']).length, 1)
   assert.equal(pool.select(['other']).length, 0)
   handle.background()
   handle.done()
