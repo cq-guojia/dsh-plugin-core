@@ -1473,12 +1473,34 @@ function openChannel(name2) {
 function compareTasks(a, b) {
   return a.startedAt - b.startedAt || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 }
+var TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v1/";
+function lockNameFor(pageOrigin) {
+  return `${TASK_NOTIFICATIONS_LOCK_PREFIX}${pageOrigin}`;
+}
+function browserLocks() {
+  const locks = typeof navigator === "undefined" ? void 0 : navigator.locks;
+  if (locks === void 0 || locks === null || typeof locks.request !== "function")
+    return null;
+  return {
+    hold(name2) {
+      void locks.request(name2, () => new Promise(() => {
+      }));
+    },
+    free(name2) {
+      return locks.request(name2, { ifAvailable: true }, (lock) => lock === null).then((occupied) => occupied === false).catch(() => false);
+    }
+  };
+}
 function createTaskNotificationPool(options = {}) {
   const origin = options.origin ?? makeOrigin();
   const channelName = options.channelName ?? TASK_NOTIFICATIONS_CHANNEL;
   const offline = options.offline === true;
   const wantLifecycle = options.lifecycle ?? (typeof window !== "undefined" && typeof document !== "undefined");
   const bus = () => options.events ?? taskNotificationEvents;
+  const locks = options.locks === void 0 ? browserLocks() : options.locks;
+  const finishers = /* @__PURE__ */ new Map();
+  const probing = /* @__PURE__ */ new Set();
+  let locksHeld = false;
   const store = createStore(() => EMPTY_SNAPSHOT);
   const shards = /* @__PURE__ */ new Map();
   const knownSeq = /* @__PURE__ */ new Map();
@@ -1526,6 +1548,40 @@ function createTaskNotificationPool(options = {}) {
   function replace2(tasks, record) {
     return tasks.map((task) => task.id === record.id ? record : task);
   }
+  function holdLiveness() {
+    if (locksHeld || locks === null)
+      return;
+    locksHeld = true;
+    locks.hold(lockNameFor(origin));
+  }
+  function dropRemoteShard(pageOrigin) {
+    if (!shards.delete(pageOrigin))
+      return;
+    revision += 1;
+    store.setState({ tasks: collect(), revision }, true);
+    bus().emit({ type: "peer-left", origin: pageOrigin, remote: true });
+  }
+  function probeDeadPeers() {
+    if (locks === null)
+      return;
+    for (const pageOrigin of [...shards.keys()]) {
+      if (pageOrigin === origin || probing.has(pageOrigin))
+        continue;
+      probing.add(pageOrigin);
+      void (async () => {
+        try {
+          if (!await locks.free(lockNameFor(pageOrigin)))
+            return;
+          await new Promise((resolve) => setTimeout(resolve, 250));
+          if (!await locks.free(lockNameFor(pageOrigin)))
+            return;
+          dropRemoteShard(pageOrigin);
+        } finally {
+          probing.delete(pageOrigin);
+        }
+      })();
+    }
+  }
   function onMessage(raw) {
     const message = parseMessage(raw);
     if (message === null || message.origin === origin)
@@ -1538,11 +1594,7 @@ function createTaskNotificationPool(options = {}) {
       if (message.seq < (knownSeq.get(message.origin) ?? 0))
         return;
       knownSeq.set(message.origin, message.seq);
-      if (shards.delete(message.origin)) {
-        revision += 1;
-        store.setState({ tasks: collect(), revision }, true);
-        bus().emit({ type: "peer-left", origin: message.origin, remote: true });
-      }
+      dropRemoteShard(message.origin);
       return;
     }
     const seen = knownSeq.get(message.origin) ?? 0;
@@ -1554,6 +1606,7 @@ function createTaskNotificationPool(options = {}) {
     store.setState({ tasks: collect(), revision }, true);
     if (message.notice !== void 0)
       emit(message.notice, true);
+    probeDeadPeers();
   }
   function onPageHide() {
     post({ kind: "bye", origin, seq });
@@ -1569,6 +1622,7 @@ function createTaskNotificationPool(options = {}) {
     if (document.visibilityState === "visible") {
       connect();
       refresh();
+      probeDeadPeers();
     }
   }
   function attachLifecycle() {
@@ -1595,6 +1649,7 @@ function createTaskNotificationPool(options = {}) {
       onMessage(event.data);
     };
     attachLifecycle();
+    holdLiveness();
     const reopened = everConnected;
     everConnected = true;
     post({ kind: "hello", origin });
@@ -1637,6 +1692,7 @@ function createTaskNotificationPool(options = {}) {
       if (current3 === void 0)
         return;
       isSettled = true;
+      finishers.delete(id3);
       const final = {
         ...current3,
         status: outcome === "done" ? "done" : "failed",
@@ -1646,6 +1702,7 @@ function createTaskNotificationPool(options = {}) {
       publish(localShard().filter((task) => task.id !== id3), { type: "settled", task: final, outcome });
       resolveSettled({ outcome, reason, task: final });
     }
+    finishers.set(id3, finish);
     const handle = {
       id: id3,
       get isSettled() {
@@ -1696,6 +1753,17 @@ function createTaskNotificationPool(options = {}) {
     };
     return handle;
   }
+  function settleLocal(reason) {
+    let settledCount = 0;
+    for (const task of [...localShard()]) {
+      const finish = finishers.get(task.id);
+      if (finish === void 0)
+        continue;
+      finish("done", reason);
+      settledCount += 1;
+    }
+    return settledCount;
+  }
   const pool = {
     protocol: TASK_NOTIFICATIONS_PROTOCOL,
     origin,
@@ -1709,6 +1777,7 @@ function createTaskNotificationPool(options = {}) {
     refresh,
     select: (groups) => selectTaskNotifications(store.getState(), groups),
     register,
+    settleLocal,
     canRestore: (task) => task.origin === origin,
     requestRestore(taskId) {
       const record = find2(taskId);
@@ -1758,6 +1827,7 @@ var taskNotifications = {
   },
   select: (groups) => globalPool().select(groups),
   register: (input) => globalPool().register(input),
+  settleLocal: (reason) => globalPool().settleLocal(reason),
   canRestore: (task) => globalPool().canRestore(task),
   requestRestore: (taskId) => globalPool().requestRestore(taskId),
   dispose: () => {
@@ -68681,6 +68751,14 @@ h(SideSheet, {
         "en": "Cross-page sync uses the native `BroadcastChannel`: each page broadcasts its own full shard with a monotonic `seq`; stale, duplicate and malformed messages are dropped. `pagehide` / `pageshow` cover tab teardown, bfcache and sleep/wake. Only same-origin tabs are covered \u2014 not other browsers, profiles or machines. Cross-page rows are read-only; only the owning page may request a restore."
       },
       {
+        "zh": "\u9875\u9762\u6D88\u5931\u8981\u6709\u4EBA\u6536\u5C3E\uFF0C\u5426\u5219\u7559\u4E0B\u6C38\u8FDC `running` \u7684\u50F5\u5C38\u6761\u76EE\uFF1A\u5B83\u4E0D\u5C5E\u4E8E\u672C\u9875\u3001\u672C\u9875\u4E5F\u6CA1\u6709\u5B83\u7684\u53E5\u67C4\uFF0C\u8C01\u90FD\u7ED3\u675F\u4E0D\u6389\u3002\u5224\u6D3B\u7528\u6D4F\u89C8\u5668\u539F\u751F Web Locks\u2014\u2014\u6BCF\u9875\u6301\u4E00\u628A\u4EE5 origin \u547D\u540D\u7684\u9501\uFF0C\u5176\u4ED6\u9875\u7528 `ifAvailable` \u63A2\u6D4B\u540C\u540D\u9501\uFF0C\u7ACB\u523B\u62FF\u5F97\u5230\u5C31\u8BF4\u660E\u90A3\u9875\u5DF2\u7ECF\u4E0D\u5728\u4E86\uFF1B\u63A2\u6D4B\u53EA\u53D1\u751F\u5728\u6536\u5230\u5206\u7247\u4E0E\u9875\u9762\u91CD\u65B0\u53EF\u89C1\u65F6\uFF0C\u6CA1\u6709\u5B9A\u65F6\u5668\uFF0C\u8FDE\u7EED\u4E24\u6B21\uFF08\u95F4\u9694 250ms\uFF09\u90FD\u62FF\u5F97\u5230\u624D\u6E05\u3002`navigator.locks` \u4E0D\u53EF\u7528\u65F6\u4E0D\u6E05\u7406\uFF0C\u5176\u4F59\u884C\u4E3A\u4E0D\u53D8\u3002\u5D29\u6E83\u6389\u7684\u6E32\u67D3\u8FDB\u7A0B\u89C4\u8303\u4E0D\u4FDD\u8BC1\u91CA\u653E\u9501\uFF0C\u90A3\u7C7B\u6B8B\u7559\u7559\u5230\u6D4F\u89C8\u5668\u91CD\u542F\u3002",
+        "en": "A vanished page must be cleaned up, otherwise a row stays `running` forever: it belongs to another page, this page holds no handle for it, and nobody can end it. Liveness uses native Web Locks \u2014 each page holds a lock named after its origin, and other pages probe the same name with `ifAvailable`: getting it immediately means that page is gone. Probes run only when a shard arrives or the tab becomes visible, never on a timer, and only two successful probes 250ms apart drop a shard. Without `navigator.locks` nothing is cleaned up and everything else stays as before. A crashed renderer is not guaranteed to release its lock by the spec, so that residue lasts until the browser restarts."
+      },
+      {
+        "zh": "\u53E5\u67C4\u4F1A\u4E22\uFF1A\u7EC4\u4EF6\u91CD\u6302\u8F7D\u3001HMR\u3001\u9875\u9762\u5207\u8D70\u518D\u56DE\u6765\uFF0C`useRef` \u91CC\u7684\u53E5\u67C4\u5C31\u6CA1\u4E86\uFF0C\u4F46\u6761\u76EE\u8FD8\u5728\u6C60\u91CC\u3002`settleLocal(reason?)` \u7ED3\u675F\u672C\u9875\u4ECD\u6301\u6709\u7684\u5168\u90E8\u4EFB\u52A1\u5E76\u8FD4\u56DE\u6761\u6570\uFF0C\u4E0D\u9700\u8981\u53E5\u67C4\uFF1B\u8DE8\u9875\u6761\u76EE\u4E00\u5F8B\u4E0D\u52A8\u3002",
+        "en": "Handles get lost: a component remount, HMR or switching pages clears the `useRef` that held them while the row stays in the pool. `settleLocal(reason?)` ends every task this page still owns and returns the count, without needing a handle; rows owned by other pages are never touched."
+      },
+      {
         "zh": "\u540C\u9875\u591A\u526F\u672C\u6536\u53E3\u5230 `globalThis[Symbol.for(...)]` \u4E0A\u7684\u540C\u4E00\u4E2A\u6C60\u4E0E\u540C\u4E00\u6761\u603B\u7EBF\uFF0C\u6CE8\u518C\u4E0E\u901A\u77E5\u4E0D\u4F1A\u91CD\u590D N \u6B21\uFF1B\u952E\u91CC\u5E26\u534F\u8BAE\u7248\u672C\uFF0C\u5F62\u72B6\u4E0D\u7B26\u76F4\u63A5\u62A5\u9519\u800C\u4E0D\u662F\u9759\u9ED8\u964D\u7EA7\u3002\u672C\u80FD\u529B\u662F\u6570\u636E\u9762\uFF1A\u53EF\u6536\u8D77\u5F39\u7A97\u3001\u4F8B\u5916\u63A7\u4EF6\u4E0E\u4E8B\u4EF6\u67E5\u770B\u63A7\u4EF6\u4E0D\u5C5E\u4E8E\u5B83\uFF0C\u7531\u540E\u7EED\u4EFB\u52A1\u5355\u72EC\u63D0\u4F9B\u3002",
         "en": "Multiple copies on one page share a single pool and bus on `globalThis[Symbol.for(...)]`, so registration and notification never fire N times. Keys carry a protocol version; a shape mismatch throws instead of silently degrading. This capability is the data plane only: collapsible dialogs, exception controls and the event-viewer control are out of scope and arrive in separate tasks."
       }
@@ -68777,6 +68855,15 @@ h(SideSheet, {
             "desc": {
               "zh": "\u767B\u8BB0\u4E00\u6761\u771F\u5B9E\u4EFB\u52A1\u5E76\u8FD4\u56DE\u53E5\u67C4",
               "en": "Registers a real task and returns its handle"
+            }
+          },
+          {
+            "name": "settleLocal(reason?)",
+            "type": "(reason?: string) => number",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u7ED3\u675F\u672C\u9875\u4ECD\u6301\u6709\u7684\u5168\u90E8\u4EFB\u52A1\u5E76\u8FD4\u56DE\u6761\u6570\uFF0C\u4E0D\u9700\u8981\u53E5\u67C4\uFF1B\u8DE8\u9875\u6761\u76EE\u4E0D\u52A8",
+              "en": "Ends every task this page still owns and returns the count without needing a handle; rows from other pages are untouched"
             }
           },
           {
@@ -68899,8 +68986,17 @@ h(SideSheet, {
             "type": "(options?: TaskNotificationPoolOptions) => TaskNotificationPool",
             "def": "\u2014",
             "desc": {
-              "zh": "\u72EC\u7ACB\u6C60\uFF1B\u6D4B\u8BD5\u53EF\u6CE8\u5165 origin / channelName / offline / lifecycle",
-              "en": "Standalone pool; tests can inject origin / channelName / offline / lifecycle"
+              "zh": "\u72EC\u7ACB\u6C60\uFF1B\u6D4B\u8BD5\u53EF\u6CE8\u5165 origin / channelName / offline / lifecycle / locks\uFF08locks: null \u5173\u6389\u5931\u8054\u6E05\u7406\uFF09",
+              "en": "Standalone pool; tests can inject origin / channelName / offline / lifecycle / locks (locks: null disables dead-page cleanup)"
+            }
+          },
+          {
+            "name": "TASK_NOTIFICATIONS_LOCK_PREFIX",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5B58\u6D3B\u9501\u540D\u524D\u7F00\uFF0C\u540E\u63A5\u672C\u9875 origin\uFF1B\u534F\u8BAE\u5347\u7EA7\u65F6\u968F\u952E\u4E00\u8D77\u6362\u547D\u540D\u7A7A\u95F4",
+              "en": "Liveness lock-name prefix, followed by the page origin; the protocol bump carries it to a new namespace"
             }
           }
         ]
@@ -73008,9 +73104,8 @@ function TaskNotificationsPage() {
     if (handle !== void 0 && !handle.isSettled) fn(handle);
   }
   function finishAll() {
-    for (const handle of handles.current.values()) {
-      if (!handle.isSettled) handle.done("finished in demo");
-    }
+    taskNotifications.settleLocal("finished in demo");
+    handles.current.clear();
   }
   function renderTask(task) {
     const local = taskNotifications.canRestore(task);
@@ -73281,7 +73376,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.25"}`],
             [t3("buildDemo"), `v${"0.35.25"}`],
-            [t3("buildStamp"), "261112-172826-975"]
+            [t3("buildStamp"), "261112-175915-043"]
           ].map(
             ([label, value]) => (0, import_react103.createElement)(
               "tr",
@@ -73600,7 +73695,7 @@ function DemoPage() {
           },
           (0, import_react105.createElement)("span", null, `core v${"0.35.25"}`),
           (0, import_react105.createElement)("span", null, `demo v${"0.35.25"}`),
-          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261112-172826-975")
+          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261112-175915-043")
         )
       )
     ),

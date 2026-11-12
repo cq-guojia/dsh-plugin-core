@@ -182,12 +182,47 @@ function openChannel(name) {
 function compareTasks(a, b) {
     return a.startedAt - b.startedAt || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 }
+/** One lock per page, named by origin. Bumping the protocol gives a clean namespace. */
+export const TASK_NOTIFICATIONS_LOCK_PREFIX = 'dsh-plugin-core/task-notifications/v1/';
+function lockNameFor(pageOrigin) {
+    return `${TASK_NOTIFICATIONS_LOCK_PREFIX}${pageOrigin}`;
+}
+/**
+ * `navigator.locks` bridge. Resolved lazily so importing this module never
+ * touches the DOM (Node / SSR can import it). Returns null where unavailable:
+ * the pool then behaves exactly as before and simply keeps no liveness data.
+ */
+function browserLocks() {
+    const locks = typeof navigator === 'undefined' ? undefined : navigator.locks;
+    if (locks === undefined || locks === null || typeof locks.request !== 'function')
+        return null;
+    return {
+        hold(name) {
+            // Never resolves: the lock lives as long as this page does.
+            void locks.request(name, () => new Promise(() => { }));
+        },
+        free(name) {
+            // ifAvailable: no queueing. Getting the lock here means nobody held it,
+            // and returning from the callback releases it again immediately.
+            return locks
+                .request(name, { ifAvailable: true }, (lock) => lock === null)
+                .then((occupied) => occupied === false)
+                .catch(() => false);
+        },
+    };
+}
 export function createTaskNotificationPool(options = {}) {
     const origin = options.origin ?? makeOrigin();
     const channelName = options.channelName ?? TASK_NOTIFICATIONS_CHANNEL;
     const offline = options.offline === true;
     const wantLifecycle = options.lifecycle ?? (typeof window !== 'undefined' && typeof document !== 'undefined');
     const bus = () => options.events ?? taskNotificationEvents;
+    const locks = options.locks === undefined ? browserLocks() : options.locks;
+    /** Page -> settle function, so a task can be ended without the caller's handle. */
+    const finishers = new Map();
+    /** Remotes currently being probed, so overlapping triggers do not stack up. */
+    const probing = new Set();
+    let locksHeld = false;
     const store = createStore(() => EMPTY_SNAPSHOT);
     const shards = new Map();
     const knownSeq = new Map();
@@ -236,6 +271,51 @@ export function createTaskNotificationPool(options = {}) {
     function replace(tasks, record) {
         return tasks.map((task) => (task.id === record.id ? record : task));
     }
+    /** Claim the page-level liveness lock. Called on connect, idempotent. */
+    function holdLiveness() {
+        if (locksHeld || locks === null)
+            return;
+        locksHeld = true;
+        locks.hold(lockNameFor(origin));
+    }
+    /** A page vanished without `bye`: drop its shard and say so. */
+    function dropRemoteShard(pageOrigin) {
+        if (!shards.delete(pageOrigin))
+            return;
+        revision += 1;
+        store.setState({ tasks: collect(), revision }, true);
+        bus().emit({ type: 'peer-left', origin: pageOrigin, remote: true });
+    }
+    /**
+     * Remove shards whose page no longer holds its liveness lock.
+     *
+     * Two probes 250ms apart: a page that just started may not have taken its
+     * lock yet, and a stale shard must not be dropped on that single sample.
+     * Runs only on real events (message received, tab became visible) — there is
+     * no timer, so an idle or backgrounded tab costs nothing.
+     */
+    function probeDeadPeers() {
+        if (locks === null)
+            return;
+        for (const pageOrigin of [...shards.keys()]) {
+            if (pageOrigin === origin || probing.has(pageOrigin))
+                continue;
+            probing.add(pageOrigin);
+            void (async () => {
+                try {
+                    if (!(await locks.free(lockNameFor(pageOrigin))))
+                        return;
+                    await new Promise((resolve) => setTimeout(resolve, 250));
+                    if (!(await locks.free(lockNameFor(pageOrigin))))
+                        return;
+                    dropRemoteShard(pageOrigin);
+                }
+                finally {
+                    probing.delete(pageOrigin);
+                }
+            })();
+        }
+    }
     function onMessage(raw) {
         const message = parseMessage(raw);
         if (message === null || message.origin === origin)
@@ -249,11 +329,7 @@ export function createTaskNotificationPool(options = {}) {
             if (message.seq < (knownSeq.get(message.origin) ?? 0))
                 return;
             knownSeq.set(message.origin, message.seq);
-            if (shards.delete(message.origin)) {
-                revision += 1;
-                store.setState({ tasks: collect(), revision }, true);
-                bus().emit({ type: 'peer-left', origin: message.origin, remote: true });
-            }
+            dropRemoteShard(message.origin);
             return;
         }
         const seen = knownSeq.get(message.origin) ?? 0;
@@ -265,6 +341,8 @@ export function createTaskNotificationPool(options = {}) {
         store.setState({ tasks: collect(), revision }, true);
         if (message.notice !== undefined)
             emit(message.notice, true);
+        // A shard without a live page behind it is a zombie; check on every arrival.
+        probeDeadPeers();
     }
     function onPageHide() {
         post({ kind: 'bye', origin, seq });
@@ -282,6 +360,7 @@ export function createTaskNotificationPool(options = {}) {
         if (document.visibilityState === 'visible') {
             connect();
             refresh();
+            probeDeadPeers();
         }
     }
     function attachLifecycle() {
@@ -306,6 +385,9 @@ export function createTaskNotificationPool(options = {}) {
             return;
         channel.onmessage = (event) => { onMessage(event.data); };
         attachLifecycle();
+        // Take the liveness lock before advertising anything: a page that has
+        // published a shard must already be distinguishable from a dead one.
+        holdLiveness();
         const reopened = everConnected;
         everConnected = true;
         post({ kind: 'hello', origin });
@@ -347,6 +429,7 @@ export function createTaskNotificationPool(options = {}) {
             if (current === undefined)
                 return;
             isSettled = true;
+            finishers.delete(id);
             const final = {
                 ...current,
                 status: outcome === 'done' ? 'done' : 'failed',
@@ -356,6 +439,7 @@ export function createTaskNotificationPool(options = {}) {
             publish(localShard().filter((task) => task.id !== id), { type: 'settled', task: final, outcome });
             resolveSettled({ outcome, reason, task: final });
         }
+        finishers.set(id, finish);
         const handle = {
             id,
             get isSettled() { return isSettled; },
@@ -400,6 +484,22 @@ export function createTaskNotificationPool(options = {}) {
         };
         return handle;
     }
+    /**
+     * End every task this page still owns, whether or not the caller kept its
+     * handle (component remount, HMR, page switch). Cross-page rows are untouched:
+     * only their owning page may settle them.
+     */
+    function settleLocal(reason) {
+        let settledCount = 0;
+        for (const task of [...localShard()]) {
+            const finish = finishers.get(task.id);
+            if (finish === undefined)
+                continue;
+            finish('done', reason);
+            settledCount += 1;
+        }
+        return settledCount;
+    }
     const pool = {
         protocol: TASK_NOTIFICATIONS_PROTOCOL,
         origin,
@@ -413,6 +513,7 @@ export function createTaskNotificationPool(options = {}) {
         refresh,
         select: (groups) => selectTaskNotifications(store.getState(), groups),
         register,
+        settleLocal,
         canRestore: (task) => task.origin === origin,
         requestRestore(taskId) {
             const record = find(taskId);
@@ -464,6 +565,7 @@ export const taskNotifications = {
     refresh: () => { globalPool().refresh(); },
     select: (groups) => globalPool().select(groups),
     register: (input) => globalPool().register(input),
+    settleLocal: (reason) => globalPool().settleLocal(reason),
     canRestore: (task) => globalPool().canRestore(task),
     requestRestore: (taskId) => globalPool().requestRestore(taskId),
     dispose: () => { globalPool().dispose(); },

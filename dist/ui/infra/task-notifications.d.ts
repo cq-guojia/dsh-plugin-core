@@ -88,6 +88,19 @@ export interface TaskNotificationEventBus {
     subscribe(listener: TaskNotificationEventListener): () => void;
     emit(event: TaskNotificationEvent): void;
 }
+/**
+ * Liveness provider: one lock per page, held for the life of the page.
+ *
+ * The browser releases a page's locks when the document unloads or its agent
+ * terminates (Web Locks spec §2.6), so "is that name still held?" answers
+ * "is that page still there?" without timers, heartbeats or replies.
+ */
+export interface TaskNotificationLockManager {
+    /** Hold a lock until the page goes away. Idempotent per name. */
+    hold(name: string): void;
+    /** true = no context holds that name right now, i.e. that page is gone. */
+    free(name: string): Promise<boolean>;
+}
 export interface TaskNotificationPoolOptions {
     /** Defaults to a fresh per-page id. Inject only for deterministic tests. */
     origin?: string;
@@ -99,6 +112,8 @@ export interface TaskNotificationPoolOptions {
     events?: TaskNotificationEventBus;
     /** Defaults to browser detection; false keeps the pool free of lifecycle hooks. */
     lifecycle?: boolean;
+    /** Defaults to `navigator.locks`; null disables dead-page cleanup. */
+    locks?: TaskNotificationLockManager | null;
 }
 export interface TaskNotificationPool {
     readonly protocol: number;
@@ -112,6 +127,8 @@ export interface TaskNotificationPool {
     refresh(): void;
     select(groups?: readonly string[]): readonly TaskNotificationRecord[];
     register(input: TaskNotificationInput): TaskNotificationHandle;
+    /** Settle every task this page still owns; handles are not needed. */
+    settleLocal(reason?: string): number;
     canRestore(task: TaskNotificationRecord): boolean;
     /** Emits a local `restored` event. Returns false for cross-page tasks. */
     requestRestore(taskId: string): boolean;
@@ -125,6 +142,8 @@ export declare function selectTaskNotifications(snapshot: TaskNotificationSnapsh
 export declare function createTaskNotificationEventBus(): TaskNotificationEventBus;
 export declare function claimTaskNotifications(create: () => TaskNotificationPool): TaskNotificationPool;
 export declare function claimTaskNotificationEvents(create: () => TaskNotificationEventBus): TaskNotificationEventBus;
+/** One lock per page, named by origin. Bumping the protocol gives a clean namespace. */
+export declare const TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v1/";
 export declare function createTaskNotificationPool(options?: TaskNotificationPoolOptions): TaskNotificationPool;
 export declare const taskNotifications: TaskNotificationPool;
 export interface NotifyTaskOptions {

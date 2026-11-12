@@ -4519,6 +4519,14 @@ export const docData = {
         "en": "Cross-page sync uses the native `BroadcastChannel`: each page broadcasts its own full shard with a monotonic `seq`; stale, duplicate and malformed messages are dropped. `pagehide` / `pageshow` cover tab teardown, bfcache and sleep/wake. Only same-origin tabs are covered — not other browsers, profiles or machines. Cross-page rows are read-only; only the owning page may request a restore."
       },
       {
+        "zh": "页面消失要有人收尾，否则留下永远 `running` 的僵尸条目：它不属于本页、本页也没有它的句柄，谁都结束不掉。判活用浏览器原生 Web Locks——每页持一把以 origin 命名的锁，其他页用 `ifAvailable` 探测同名锁，立刻拿得到就说明那页已经不在了；探测只发生在收到分片与页面重新可见时，没有定时器，连续两次（间隔 250ms）都拿得到才清。`navigator.locks` 不可用时不清理，其余行为不变。崩溃掉的渲染进程规范不保证释放锁，那类残留留到浏览器重启。",
+        "en": "A vanished page must be cleaned up, otherwise a row stays `running` forever: it belongs to another page, this page holds no handle for it, and nobody can end it. Liveness uses native Web Locks — each page holds a lock named after its origin, and other pages probe the same name with `ifAvailable`: getting it immediately means that page is gone. Probes run only when a shard arrives or the tab becomes visible, never on a timer, and only two successful probes 250ms apart drop a shard. Without `navigator.locks` nothing is cleaned up and everything else stays as before. A crashed renderer is not guaranteed to release its lock by the spec, so that residue lasts until the browser restarts."
+      },
+      {
+        "zh": "句柄会丢：组件重挂载、HMR、页面切走再回来，`useRef` 里的句柄就没了，但条目还在池里。`settleLocal(reason?)` 结束本页仍持有的全部任务并返回条数，不需要句柄；跨页条目一律不动。",
+        "en": "Handles get lost: a component remount, HMR or switching pages clears the `useRef` that held them while the row stays in the pool. `settleLocal(reason?)` ends every task this page still owns and returns the count, without needing a handle; rows owned by other pages are never touched."
+      },
+      {
         "zh": "同页多副本收口到 `globalThis[Symbol.for(...)]` 上的同一个池与同一条总线，注册与通知不会重复 N 次；键里带协议版本，形状不符直接报错而不是静默降级。本能力是数据面：可收起弹窗、例外控件与事件查看控件不属于它，由后续任务单独提供。",
         "en": "Multiple copies on one page share a single pool and bus on `globalThis[Symbol.for(...)]`, so registration and notification never fire N times. Keys carry a protocol version; a shape mismatch throws instead of silently degrading. This capability is the data plane only: collapsible dialogs, exception controls and the event-viewer control are out of scope and arrive in separate tasks."
       }
@@ -4615,6 +4623,15 @@ export const docData = {
             "desc": {
               "zh": "登记一条真实任务并返回句柄",
               "en": "Registers a real task and returns its handle"
+            }
+          },
+          {
+            "name": "settleLocal(reason?)",
+            "type": "(reason?: string) => number",
+            "def": "—",
+            "desc": {
+              "zh": "结束本页仍持有的全部任务并返回条数，不需要句柄；跨页条目不动",
+              "en": "Ends every task this page still owns and returns the count without needing a handle; rows from other pages are untouched"
             }
           },
           {
@@ -4737,8 +4754,17 @@ export const docData = {
             "type": "(options?: TaskNotificationPoolOptions) => TaskNotificationPool",
             "def": "—",
             "desc": {
-              "zh": "独立池；测试可注入 origin / channelName / offline / lifecycle",
-              "en": "Standalone pool; tests can inject origin / channelName / offline / lifecycle"
+              "zh": "独立池；测试可注入 origin / channelName / offline / lifecycle / locks（locks: null 关掉失联清理）",
+              "en": "Standalone pool; tests can inject origin / channelName / offline / lifecycle / locks (locks: null disables dead-page cleanup)"
+            }
+          },
+          {
+            "name": "TASK_NOTIFICATIONS_LOCK_PREFIX",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "存活锁名前缀，后接本页 origin；协议升级时随键一起换命名空间",
+              "en": "Liveness lock-name prefix, followed by the page origin; the protocol bump carries it to a new namespace"
             }
           }
         ]

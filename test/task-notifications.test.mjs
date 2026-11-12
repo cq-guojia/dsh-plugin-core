@@ -6,6 +6,7 @@ import { build } from 'esbuild'
 import {
   TASK_NOTIFICATIONS_EVENTS_KEY,
   TASK_NOTIFICATIONS_KEY,
+  TASK_NOTIFICATIONS_LOCK_PREFIX,
   TASK_NOTIFICATIONS_PROTOCOL,
   taskNotificationEvents,
   taskNotifications,
@@ -568,4 +569,151 @@ test('notifyTask.run：work 同步抛错也收尾，不留永远 running 的条�
     /sync boom/,
   )
   assert.equal(taskByTitle('notify sync throw probe'), undefined)
+})
+
+// ── 本页一键收尾 + 失联页面清理 ─────────────────────────────────────────────
+
+/** 假锁：alive 决定「那把锁是否还被某个页面持有」。 */
+function fakeLocks(alive = new Set()) {
+  const held = new Set(alive)
+  const calls = { hold: [], free: [] }
+  return {
+    held,
+    calls,
+    manager: {
+      hold(name) {
+        calls.hold.push(name)
+        held.add(name)
+      },
+      async free(name) {
+        calls.free.push(name)
+        return !held.has(name)
+      },
+    },
+  }
+}
+
+function shardMessage(pageOrigin, title) {
+  return {
+    kind: 'shard',
+    origin: pageOrigin,
+    seq: 1,
+    tasks: [wireTask(pageOrigin, `${pageOrigin}:1`), { ...wireTask(pageOrigin, `${pageOrigin}:2`), title }],
+  }
+}
+
+test('settleLocal：本页条目全部收尾且不需句柄，返回条数并兑现句柄的 settled', async () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const a = pool.register({ group: 'g', title: 'local-a' })
+  const b = pool.register({ group: 'g', title: 'local-b' })
+  assert.equal(pool.settleLocal('page switch'), 2)
+  assert.equal(pool.getSnapshot().tasks.length, 0)
+  assert.equal(a.isSettled, true)
+  assert.equal(b.isSettled, true)
+  const settlement = await a.settled
+  assert.equal(settlement.outcome, 'done')
+  assert.equal(settlement.reason, 'page switch')
+  assert.equal(pool.settleLocal('again'), 0)
+})
+
+test('settleLocal：跨页条目一律不动，只清自己的分片', async () => {
+  const channelName = testChannel()
+  const owner = makePool(channelName, { origin: 'page-owner', locks: null })
+  const watcher = makePool(channelName, { origin: 'page-watcher', locks: null })
+  watcher.connect()
+  owner.connect()
+  await new Promise((resolve) => setTimeout(resolve, 30))
+  const handle = owner.register({ group: 'g', title: 'remote-owned' })
+  await waitFor(() => watcher.getSnapshot().tasks.some((task) => task.title === 'remote-owned'), 'watcher sees remote')
+  assert.equal(watcher.settleLocal('nope'), 0)
+  assert.equal(watcher.getSnapshot().tasks.length, 1)
+  assert.equal(owner.getSnapshot().tasks.length, 1)
+  handle.done()
+  owner.dispose()
+  watcher.dispose()
+})
+
+test('存活锁：connect 只拿一把，名字按 origin 拼', () => {
+  const { manager, calls } = fakeLocks()
+  const pool = createTaskNotificationPool({
+    channelName: testChannel(),
+    events: createTaskNotificationEventBus(),
+    lifecycle: false,
+    origin: 'page-lock',
+    locks: manager,
+  })
+  pool.connect()
+  pool.connect()
+  pool.register({ group: 'g', title: 'lock probe' })
+  assert.deepEqual(calls.hold, [`${TASK_NOTIFICATIONS_LOCK_PREFIX}page-lock`])
+  pool.settleLocal()
+  pool.dispose()
+})
+
+test('失联清理：收到分片但对方不持锁（连续两次探测都空）→ 条目被清并发 peer-left', async () => {
+  const channelName = testChannel()
+  const { manager } = fakeLocks()
+  const bus = createTaskNotificationEventBus()
+  const seen = []
+  bus.subscribe((event) => { seen.push(event.type) })
+  const pool = createTaskNotificationPool({
+    channelName,
+    events: bus,
+    lifecycle: false,
+    origin: 'page-live',
+    locks: manager,
+  })
+  pool.connect()
+  const sender = new BroadcastChannel(channelName)
+  sender.unref?.()
+  sender.postMessage(shardMessage('page-dead', 'zombie'))
+  await waitFor(() => seen.includes('peer-left'), 'peer-left for dead page')
+  assert.equal(pool.getSnapshot().tasks.some((task) => task.title === 'zombie'), false)
+  sender.close()
+  pool.dispose()
+})
+
+test('失联清理：第一次探空、第二次探到持有者（刚启动的页）→ 不删', async () => {
+  const channelName = testChannel()
+  let probes = 0
+  const manager = {
+    held: new Set(),
+    hold() {},
+    async free() {
+      probes += 1
+      return probes === 1
+    },
+  }
+  const bus = createTaskNotificationEventBus()
+  const seen = []
+  bus.subscribe((event) => { seen.push(event.type) })
+  const pool = createTaskNotificationPool({
+    channelName,
+    events: bus,
+    lifecycle: false,
+    origin: 'page-live',
+    locks: manager,
+  })
+  pool.connect()
+  const sender = new BroadcastChannel(channelName)
+  sender.unref?.()
+  sender.postMessage(shardMessage('page-starting', 'just-started'))
+  await new Promise((resolve) => setTimeout(resolve, 400))
+  assert.equal(pool.getSnapshot().tasks.some((task) => task.title === 'just-started'), true)
+  assert.equal(seen.includes('peer-left'), false)
+  sender.close()
+  pool.dispose()
+})
+
+test('没有 locks（老浏览器 / Node 无 Web Locks）：收到分片也不清理，行为与从前一致', async () => {
+  const channelName = testChannel()
+  const pool = makePool(channelName, { origin: 'page-nolocks', locks: null })
+  pool.connect()
+  const sender = new BroadcastChannel(channelName)
+  sender.unref?.()
+  sender.postMessage(shardMessage('page-unknown', 'kept'))
+  await new Promise((resolve) => setTimeout(resolve, 400))
+  assert.equal(pool.getSnapshot().tasks.some((task) => task.title === 'kept'), true)
+  sender.close()
+  pool.dispose()
 })

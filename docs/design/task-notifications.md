@@ -67,6 +67,25 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 - `taskNotifications.register(input)` 保留给「需要对象参数或池级能力」的场合，`notifyTask` 内部就是它。
 - `handle.track(promise)` 保留为兜底（句柄已在手时才用得上），文档从主推降为备选，避免两套写法并存。
 
+## 失联页面清理
+
+状态在页面内存，页面消失时必须有人收尾：否则池里留下一条永远 `running` 的僵尸条目——它不属于本页（`canRestore` 为 false），本页也没有它的句柄，谁点都结束不掉。
+
+判活用浏览器原生 **Web Locks**，不用心跳：
+
+- 每页 `connect()` 时持一把以 origin 命名的锁（`TASK_NOTIFICATIONS_LOCK_PREFIX + origin`），永不主动释放。
+- 其他页对已知远端 origin 用 `{ ifAvailable: true }` 探测同名锁：**立刻拿得到 = 没有持有者 = 那页已经不在了**；回调返回即释放，探测本身不留痕迹。
+- 探测时机只有真实事件：**收到分片**、**页面重新可见**。没有定时器，空闲或后台标签零开销。
+- 防误判：连续两次探测（间隔 250ms）都拿得到才清，刚启动、还没拿锁的页不会被误删。
+- 清理动作与 `bye` 完全同路径：删该 origin 分片 → `revision` 递增 → 发 `peer-left` 事件。
+- `navigator.locks` 不存在（老浏览器）→ 不做清理，其余行为不变；`createTaskNotificationPool({ locks: null })` 可显式关闭。
+
+依据与边界：Web Locks 规范 §2.6 要求文档卸载与 agent 终止时释放其锁，`broadcast-channel` 5.x 正是用这条路替掉整套死亡检测。**渲染进程崩溃**规范不保证，那类残留留到浏览器重启；不为它引入心跳——后台标签页的定时器会被浏览器节流，心跳会误删正在跑的任务。
+
+## 本页一键收尾
+
+`settleLocal(reason?)` 结束本页仍持有的全部任务并返回条数，**不需要句柄**：组件重挂载、HMR、页面切走都会让调用方丢掉句柄，这条路径让本页永远能自己收干净。跨页条目一律不动，保持「只有 owner 能结束」。
+
 ## 跨页协议
 
 浏览器原生 `BroadcastChannel`，频道名 `TASK_NOTIFICATIONS_CHANNEL`。每页有唯一 `origin`：
@@ -122,6 +141,7 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 
 ## 更新日志
 
+- 2026-11-12：新增 `settleLocal()`（无需句柄地收尾本页条目）与失联页面清理（Web Locks 判活，无定时器，触发于收到分片 / 页面可见）；协议与 `bye` 路径不变
 - 2026-11-12：新增日常入口 `notifyTask` / `notifyTask.run`（形态对齐 `oraPromise` / `toast.promise` / `withProgress`）；`register`、句柄与跨页协议一律不变
 - 2026-11-12 14:57:52：建立后台任务池契约；阶段 0 / 1 落地并通过全链自检
 - 2026-11-12：能力对外定名「通知任务中心 / Task Notification Hub」，内部两条通道为「任务快照池」与「事件总线」；显示层标题、组名同步

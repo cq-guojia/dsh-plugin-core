@@ -83,9 +83,9 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
   }
 
   function finishAll(): void {
-    for (const handle of handles.current.values()) {
-      if (!handle.isSettled) handle.done('finished in demo')
-    }
+    // 不遍历句柄：组件重挂载后句柄会丢，本页条目仍要能一键收干净。
+    taskNotifications.settleLocal('finished in demo')
+    handles.current.clear()
   }
 
   function renderTask(task: TaskNotificationRecord): ReturnType<typeof h> {
