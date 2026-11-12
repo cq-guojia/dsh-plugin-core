@@ -1764,6 +1764,21 @@ var taskNotifications = {
     globalPool().dispose();
   }
 };
+function notifyTaskBase(group, title, options = {}) {
+  return taskNotifications.register({ group, title, detail: options.detail, groupLabel: options.groupLabel });
+}
+function runTask(group, title, work) {
+  const handle = notifyTaskBase(group, title);
+  let pending;
+  try {
+    pending = typeof work === "function" ? work() : work;
+  } catch (error) {
+    handle.fail(error instanceof Error ? error.message : String(error));
+    return Promise.reject(error);
+  }
+  return handle.track(pending);
+}
+var notifyTask = Object.assign(notifyTaskBase, { run: runTask });
 var taskNotificationEvents = {
   subscribe: (listener) => globalBus().subscribe(listener),
   emit: (event) => {
@@ -68654,6 +68669,10 @@ h(SideSheet, {
         "en": "A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter. The caller supplies the group id explicitly; `groupLabel` only overrides the display name."
       },
       {
+        "zh": "\u4E24\u4E2A\u5165\u53E3\u5206\u5DE5\u4E0E `oraPromise` / `toast.promise` / `withProgress` \u4E00\u81F4\uFF1A`notifyTask(group, title, options?)` \u8FD4\u56DE\u53E5\u67C4\uFF0C\u81EA\u5DF1\u6536\u5C3E\uFF1B`notifyTask.run(group, title, work)` \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF0C\u6210\u529F\u4E0E\u5931\u8D25\u81EA\u52A8\u6536\u5C3E\u5E76\u900F\u4F20\u7ED3\u679C\u3002\u4E24\u8005\u524D\u4E24\u53C2\u4E00\u81F4\uFF0C\u4E14\u57FA\u7840\u5165\u53E3\u7684\u8FD4\u56DE\u7C7B\u578B\u4E0D\u968F\u53C2\u6570\u53D8\u5316\u3002\u9700\u8981\u5BF9\u8C61\u53C2\u6570\u6216\u6C60\u7EA7\u80FD\u529B\u65F6\u4ECD\u7528 `taskNotifications.register()`\u3002",
+        "en": "The two entries split the work the way `oraPromise` / `toast.promise` / `withProgress` do: `notifyTask(group, title, options?)` returns a handle you settle yourself, while `notifyTask.run(group, title, work)` wraps an async task, settling it either way and passing the result through. Both take the same first two arguments, and the base entry never changes its return type based on its arguments. Use `taskNotifications.register()` when you need an options object or pool-level control."
+      },
+      {
         "zh": "\u7ED3\u675F\u6743\u5728\u8C03\u7528\u65B9\uFF1A`done()` / `fail()` \u5E42\u7B49\uFF0C`track(promise)` \u8BA9\u6210\u529F\u4E0E reject \u8D70\u540C\u4E00\u6536\u5C3E\u4E14\u8FD4\u56DE\u539F Promise\u3002`settled` \u53EA\u5728\u4EFB\u52A1\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0\u5B83\uFF0C\u800C\u662F\u53D1\u4E00\u4E2A `backgrounded` \u4E8B\u4EF6\u3002\u8FD9\u5C31\u662F\u300CPromise \u4E24\u6001 + \u6536\u8D77\u4F5C\u4E3A\u4E8B\u4EF6\u300D\uFF0C\u8C03\u7528\u65B9 `await` \u7684\u4ECD\u662F\u6B63\u5E38\u4E24\u6001\u3002",
         "en": 'The caller decides when a task ends: `done()` / `fail()` are idempotent, and `track(promise)` settles on both success and rejection while returning the original promise. `settled` resolves only on a real ending; collapsing emits a `backgrounded` event instead. This is the "two-state promise plus collapse as event" contract \u2014 callers still await ordinary two-state promises.'
       },
@@ -68677,6 +68696,24 @@ h(SideSheet, {
             "desc": {
               "zh": "\u540C\u9875\u6240\u6709\u526F\u672C\u5171\u4EAB\u7684\u6C60\uFF1B\u60F0\u6027\u521B\u5EFA\uFF0C\u9996\u6B21\u4F7F\u7528\u624D\u5360\u7528\u5168\u5C40\u952E",
               "en": "Pool shared by all copies on the page; lazy, claims the global key on first use"
+            }
+          },
+          {
+            "name": "notifyTask(group, title, options?)",
+            "type": "(group: string, title: string, options?: NotifyTaskOptions) => TaskNotificationHandle",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u65E5\u5E38\u5165\u53E3\uFF1A\u4F4D\u7F6E\u53C2\u6570\u767B\u8BB0\u4E00\u6761\u4EFB\u52A1\u5E76\u8FD4\u56DE\u53E5\u67C4\uFF1B\u9700\u8981\u5BF9\u8C61\u53C2\u6570\u6216\u6C60\u7EA7\u80FD\u529B\u65F6\u7528 register",
+              "en": "Everyday entry: registers a task positionally and returns its handle; reach for register when you need an options object or pool-level control"
+            }
+          },
+          {
+            "name": "notifyTask.run(group, title, work)",
+            "type": "<T>(group: string, title: string, work: Promise<T> | (() => Promise<T>)) => Promise<T>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20",
+              "en": "Wraps an async task: done on success, fail on rejection, passing the result and error through"
             }
           },
           {
@@ -68835,8 +68872,8 @@ h(SideSheet, {
             "type": "<T>(promise: Promise<T>) => Promise<T>",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6210\u529F\u4E0E reject \u8D70\u540C\u4E00\u6536\u5C3E\uFF1B\u8FD4\u56DE\u539F Promise",
-              "en": "Settles on both success and rejection; returns the original promise"
+              "zh": "\u53E5\u67C4\u5DF2\u5728\u624B\u65F6\u7684\u515C\u5E95\u6536\u5C3E\uFF1B\u8FD4\u56DE\u539F Promise\u3002\u5305\u4E00\u6BB5\u5F02\u6B65\u7684\u65E5\u5E38\u5199\u6CD5\u662F notifyTask.run",
+              "en": "Fallback settlement when the handle is already in hand; returns the original promise. The everyday way to wrap async work is notifyTask.run"
             }
           },
           {
@@ -68878,7 +68915,7 @@ h(SideSheet, {
       {
         "id": "bt-lifecycle-example",
         "lang": "ts",
-        "src": "import { taskNotifications } from 'dsh-plugin-core/ui'\n\n// \u5206\u7EC4\u540D\u5FC5\u987B\u7531\u8C03\u7528\u65B9\u7ED9\uFF1Acore \u53D6\u4E0D\u5230\u9879\u76EE\u540D\nconst handle = taskNotifications.register({\n  group: 'dsh-task-reminder',\n  title: '\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6',\n})\n\nhandle.update({ detail: '\u5DF2\u5B8C\u6210 12 / 40' })\nhandle.background()   // \u53EA\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\u4EFB\u52A1\n\n// \u7ED3\u675F\u6743\u5728\u8C03\u7528\u65B9\uFF1B\u4E24\u8005\u5E42\u7B49\uFF0C\u6210\u529F\u540E\u6761\u76EE\u7ACB\u523B\u79FB\u51FA\u6C60\nhandle.done('\u626B\u63CF\u5B8C\u6210')\n// handle.fail('\u88AB\u7528\u6237\u53D6\u6D88')\n\n// Promise \u515C\u5E95\uFF1A\u6210\u529F\u4E0E reject \u8D70\u540C\u4E00\u4E2A\u6536\u5C3E\uFF0C\u4E14\u4E0D\u6539\u53D8\u539F Promise \u7684\u7ED3\u7B97\u8BED\u4E49\n// await handle.track(runWork())   // runWork(): Promise<void>\uFF0C\u7531\u8C03\u7528\u65B9\u63D0\u4F9B\n// await handle.settled            // \u53EA\u5728\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0"
+        "src": "import { notifyTask } from 'dsh-plugin-core/ui'\n\n// \u5206\u7EC4\u540D\u5FC5\u987B\u7531\u8C03\u7528\u65B9\u7ED9\uFF1Acore \u53D6\u4E0D\u5230\u9879\u76EE\u540D\n\n// \u2460 \u81EA\u5DF1\u7BA1\u7ED3\u675F\uFF1A\u62FF\u5230\u53E5\u67C4\uFF0C\u968F\u65F6\u66F4\u65B0\uFF0C\u81EA\u5DF1\u6536\u5C3E\nconst handle = notifyTask('dsh-task-reminder', '\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', { detail: '\u5DF2\u5B8C\u6210 12 / 40' })\nhandle.background()   // \u53EA\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\u4EFB\u52A1\nhandle.done('\u626B\u63CF\u5B8C\u6210')\n// handle.fail('\u88AB\u7528\u6237\u53D6\u6D88')\n\n// \u2461 \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20\nawait notifyTask.run('dsh-task-reminder', '\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', () => runWork())\n\n// \u53E5\u67C4\u5DF2\u7ECF\u5728\u624B\u65F6\u624D\u7528\u5F97\u4E0A\u7684\u515C\u5E95\uFF1A\u4E0E run \u540C\u4E00\u4E2A\u6536\u5C3E\uFF0C\u4E0D\u6539\u53D8\u539F Promise \u7684\u7ED3\u7B97\u8BED\u4E49\n// await handle.track(otherWork())   // otherWork(): Promise<void>\uFF0C\u7531\u8C03\u7528\u65B9\u63D0\u4F9B\n// await handle.settled              // \u53EA\u5728\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0"
       }
     ]
   }
@@ -72922,7 +72959,7 @@ var import_react101 = require("react");
 var GROUP_REMINDER = "dsh-task-reminder";
 var GROUP_LEDGER = "dsh-task-ledger";
 var CODE_SUBSCRIBE = `import { useSyncExternalStore } from 'react'
-import { taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/ui'
+import { notifyTask, taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/ui'
 
 const snapshot = useSyncExternalStore(
   taskNotifications.subscribe,
@@ -72931,12 +72968,13 @@ const snapshot = useSyncExternalStore(
 )
 const rows = selectTaskNotifications(snapshot, ['dsh-task-reminder'])
 
-const handle = taskNotifications.register({
-  group: 'dsh-task-reminder',
-  title: 'workspace-scan',
-})
+// \u2460 settle it yourself: you hold the handle
+const handle = notifyTask('dsh-task-reminder', 'workspace-scan')
 handle.background()   // collapse is an event, not a settlement
-handle.done()         // the caller owns the ending`;
+handle.done()         // the caller owns the ending
+
+// \u2461 or wrap the work and let the library close it
+await notifyTask.run('dsh-task-reminder', 'workspace-scan', () => scanWorkspace())`;
 var mono = { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px" };
 var row = { display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" };
 var panel = { display: "flex", flexDirection: "column", gap: "8px", fontSize: "12px" };
@@ -72962,7 +73000,7 @@ function TaskNotificationsPage() {
   const localPending = [...handles.current.values()].filter((handle) => !handle.isSettled).length;
   function register(group, label) {
     serial.current += 1;
-    const handle = taskNotifications.register({ group, title: `${label} #${serial.current}` });
+    const handle = notifyTask(group, `${label} #${serial.current}`);
     handles.current.set(handle.id, handle);
   }
   function withHandle(task, fn) {
@@ -73243,7 +73281,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.25"}`],
             [t3("buildDemo"), `v${"0.35.25"}`],
-            [t3("buildStamp"), "261112-171201-405"]
+            [t3("buildStamp"), "261112-172826-975"]
           ].map(
             ([label, value]) => (0, import_react103.createElement)(
               "tr",
@@ -73562,7 +73600,7 @@ function DemoPage() {
           },
           (0, import_react105.createElement)("span", null, `core v${"0.35.25"}`),
           (0, import_react105.createElement)("span", null, `demo v${"0.35.25"}`),
-          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261112-171201-405")
+          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261112-172826-975")
         )
       )
     ),

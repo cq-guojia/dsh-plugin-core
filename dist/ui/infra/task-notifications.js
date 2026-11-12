@@ -468,6 +468,23 @@ export const taskNotifications = {
     requestRestore: (taskId) => globalPool().requestRestore(taskId),
     dispose: () => { globalPool().dispose(); },
 };
+function notifyTaskBase(group, title, options = {}) {
+    return taskNotifications.register({ group, title, detail: options.detail, groupLabel: options.groupLabel });
+}
+function runTask(group, title, work) {
+    const handle = notifyTaskBase(group, title);
+    let pending;
+    try {
+        pending = typeof work === 'function' ? work() : work;
+    }
+    catch (error) {
+        // 同步抛错也要收尾，否则池里留下一条永远 running 的条目。
+        handle.fail(error instanceof Error ? error.message : String(error));
+        return Promise.reject(error);
+    }
+    return handle.track(pending);
+}
+export const notifyTask = Object.assign(notifyTaskBase, { run: runTask });
 export const taskNotificationEvents = {
     subscribe: (listener) => globalBus().subscribe(listener),
     emit: (event) => { globalBus().emit(event); },

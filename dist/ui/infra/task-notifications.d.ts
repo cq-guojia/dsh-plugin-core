@@ -127,6 +127,25 @@ export declare function claimTaskNotifications(create: () => TaskNotificationPoo
 export declare function claimTaskNotificationEvents(create: () => TaskNotificationEventBus): TaskNotificationEventBus;
 export declare function createTaskNotificationPool(options?: TaskNotificationPoolOptions): TaskNotificationPool;
 export declare const taskNotifications: TaskNotificationPool;
+export interface NotifyTaskOptions {
+    /** 首屏就带的详情文案；之后仍可用 handle.update() 改。 */
+    detail?: string;
+    /** 分组显示名覆盖。 */
+    groupLabel?: string;
+}
+/**
+ * 日常入口：位置参数登记一条任务，返回句柄（等价 `taskNotifications.register({ ... })`）。
+ *
+ * 分工与 oraPromise / toast.promise / withProgress 一致：
+ * 自己管结束用 `notifyTask(group, title)`；包住一段异步用 `notifyTask.run(group, title, work)`。
+ * 前者返回句柄，后者返回 work 的原结果 —— 同一入口不靠参数把返回类型换掉。
+ */
+export interface NotifyTask {
+    (group: string, title: string, options?: NotifyTaskOptions): TaskNotificationHandle;
+    /** 包住一段异步：成功走 done、失败走 fail，结果与异常原样透传。 */
+    run<T>(group: string, title: string, work: Promise<T> | (() => Promise<T>)): Promise<T>;
+}
+export declare const notifyTask: NotifyTask;
 export declare const taskNotificationEvents: TaskNotificationEventBus;
 export declare function subscribeTaskNotificationEvents(listener: TaskNotificationEventListener): () => void;
 export declare function emitTaskNotificationEvent(event: TaskNotificationEvent): void;

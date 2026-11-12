@@ -30,28 +30,27 @@ const off = subscribeTaskNotificationEvents((event) => {
 })
 // off() 于卸载时调用`
 
-const lifecycleExample = `import { taskNotifications } from 'dsh-plugin-core/ui'
+const lifecycleExample = `import { notifyTask } from 'dsh-plugin-core/ui'
 
 // 分组名必须由调用方给：core 取不到项目名
-const handle = taskNotifications.register({
-  group: 'dsh-task-reminder',
-  title: '扫描工作区文件',
-})
 
-handle.update({ detail: '已完成 12 / 40' })
+// ① 自己管结束：拿到句柄，随时更新，自己收尾
+const handle = notifyTask('dsh-task-reminder', '扫描工作区文件', { detail: '已完成 12 / 40' })
 handle.background()   // 只发 backgrounded 事件，不结算任务
-
-// 结束权在调用方；两者幂等，成功后条目立刻移出池
 handle.done('扫描完成')
 // handle.fail('被用户取消')
 
-// Promise 兜底：成功与 reject 走同一个收尾，且不改变原 Promise 的结算语义
-// await handle.track(runWork())   // runWork(): Promise<void>，由调用方提供
-// await handle.settled            // 只在真正结束时兑现；收起不兑现`
+// ② 包住一段异步：成功 done、失败 fail，结果与异常原样透传
+await notifyTask.run('dsh-task-reminder', '扫描工作区文件', () => runWork())
+
+// 句柄已经在手时才用得上的兜底：与 run 同一个收尾，不改变原 Promise 的结算语义
+// await handle.track(otherWork())   // otherWork(): Promise<void>，由调用方提供
+// await handle.settled              // 只在真正结束时兑现；收起不兑现`
 
 const doc: DocTopic = {
   title: { zh: '通知任务中心', en: 'Task Notification Hub' },
   exports: [
+    'notifyTask',
     'taskNotifications',
     'taskNotificationEvents',
     'createTaskNotificationPool',
@@ -78,6 +77,10 @@ const doc: DocTopic = {
           en: 'A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter. The caller supplies the group id explicitly; `groupLabel` only overrides the display name.',
         },
         {
+          zh: '两个入口分工与 `oraPromise` / `toast.promise` / `withProgress` 一致：`notifyTask(group, title, options?)` 返回句柄，自己收尾；`notifyTask.run(group, title, work)` 包住一段异步，成功与失败自动收尾并透传结果。两者前两参一致，且基础入口的返回类型不随参数变化。需要对象参数或池级能力时仍用 `taskNotifications.register()`。',
+          en: 'The two entries split the work the way `oraPromise` / `toast.promise` / `withProgress` do: `notifyTask(group, title, options?)` returns a handle you settle yourself, while `notifyTask.run(group, title, work)` wraps an async task, settling it either way and passing the result through. Both take the same first two arguments, and the base entry never changes its return type based on its arguments. Use `taskNotifications.register()` when you need an options object or pool-level control.',
+        },
+        {
           zh: '结束权在调用方：`done()` / `fail()` 幂等，`track(promise)` 让成功与 reject 走同一收尾且返回原 Promise。`settled` 只在任务真正结束时兑现；收起不兑现它，而是发一个 `backgrounded` 事件。这就是「Promise 两态 + 收起作为事件」，调用方 `await` 的仍是正常两态。',
           en: 'The caller decides when a task ends: `done()` / `fail()` are idempotent, and `track(promise)` settles on both success and rejection while returning the original promise. `settled` resolves only on a real ending; collapsing emits a `backgrounded` event instead. This is the "two-state promise plus collapse as event" contract — callers still await ordinary two-state promises.',
         },
@@ -95,6 +98,8 @@ const doc: DocTopic = {
           id: 'bt-pool-api',
           rows: [
             { name: 'taskNotifications', type: 'TaskNotificationPool', def: '全局单例', desc: { zh: '同页所有副本共享的池；惰性创建，首次使用才占用全局键', en: 'Pool shared by all copies on the page; lazy, claims the global key on first use' } },
+            { name: 'notifyTask(group, title, options?)', type: '(group: string, title: string, options?: NotifyTaskOptions) => TaskNotificationHandle', def: '—', desc: { zh: '日常入口：位置参数登记一条任务并返回句柄；需要对象参数或池级能力时用 register', en: 'Everyday entry: registers a task positionally and returns its handle; reach for register when you need an options object or pool-level control' } },
+            { name: 'notifyTask.run(group, title, work)', type: '<T>(group: string, title: string, work: Promise<T> | (() => Promise<T>)) => Promise<T>', def: '—', desc: { zh: '包住一段异步：成功 done、失败 fail，结果与异常原样透传', en: 'Wraps an async task: done on success, fail on rejection, passing the result and error through' } },
             { name: 'getSnapshot()', type: '() => TaskNotificationSnapshot', def: '—', desc: { zh: '当前全量快照，引用稳定；可直接作 useSyncExternalStore 的第二参', en: 'Current full snapshot with a stable reference; use as the second useSyncExternalStore argument' } },
             { name: 'getServerSnapshot()', type: '() => TaskNotificationSnapshot', def: '冻结空快照', desc: { zh: 'SSR / 非宿主环境用，永远是同一个对象', en: 'For SSR and non-host environments; always the same object' } },
             { name: 'subscribe(listener)', type: '(listener: () => void) => () => void', def: '—', desc: { zh: '状态真变了才通知；返回退订函数', en: 'Notifies only on real state changes; returns an unsubscribe function' } },
@@ -116,7 +121,7 @@ const doc: DocTopic = {
             { name: 'handle.update(patch)', type: '(patch: TaskNotificationPatch) => void', def: '—', desc: { zh: '只改纯数据字段，随时可调用', en: 'Updates plain data fields, callable any time' } },
             { name: 'handle.background()', type: '() => void', def: '—', desc: { zh: '标记收起并发 backgrounded 事件，不结算', en: 'Marks the task backgrounded and emits a backgrounded event without settling' } },
             { name: 'handle.done(detail?) / fail(reason?)', type: '(text?: string) => void', def: '—', desc: { zh: '幂等；成功后条目立刻移出池并发 settled 事件', en: 'Idempotent; removes the row immediately and emits a settled event' } },
-            { name: 'handle.track(promise)', type: '<T>(promise: Promise<T>) => Promise<T>', def: '—', desc: { zh: '成功与 reject 走同一收尾；返回原 Promise', en: 'Settles on both success and rejection; returns the original promise' } },
+            { name: 'handle.track(promise)', type: '<T>(promise: Promise<T>) => Promise<T>', def: '—', desc: { zh: '句柄已在手时的兜底收尾；返回原 Promise。包一段异步的日常写法是 notifyTask.run', en: 'Fallback settlement when the handle is already in hand; returns the original promise. The everyday way to wrap async work is notifyTask.run' } },
             { name: 'handle.settled', type: 'Promise<TaskNotificationSettlement>', def: '—', desc: { zh: '只在真正结束时兑现；收起不兑现', en: 'Resolves only on a real ending, never on collapse' } },
             { name: 'subscribeTaskNotificationEvents(listener)', type: '(listener: TaskNotificationEventListener) => () => void', def: '—', desc: { zh: '监听 registered / updated / backgrounded / settled / restored / peer-left', en: 'Listens for registered / updated / backgrounded / settled / restored / peer-left' } },
             { name: 'createTaskNotificationPool(options?)', type: '(options?: TaskNotificationPoolOptions) => TaskNotificationPool', def: '—', desc: { zh: '独立池；测试可注入 origin / channelName / offline / lifecycle', en: 'Standalone pool; tests can inject origin / channelName / offline / lifecycle' } },

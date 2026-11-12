@@ -2,6 +2,7 @@ import { createElement as h, useEffect, useRef, useState, useSyncExternalStore }
 import {
   Button,
   ListRow,
+  notifyTask,
   taskNotifications,
   selectTaskNotifications,
   subscribeTaskNotificationEvents,
@@ -24,7 +25,7 @@ const GROUP_REMINDER = 'dsh-task-reminder'
 const GROUP_LEDGER = 'dsh-task-ledger'
 
 const CODE_SUBSCRIBE = `import { useSyncExternalStore } from 'react'
-import { taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/ui'
+import { notifyTask, taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/ui'
 
 const snapshot = useSyncExternalStore(
   taskNotifications.subscribe,
@@ -33,12 +34,13 @@ const snapshot = useSyncExternalStore(
 )
 const rows = selectTaskNotifications(snapshot, ['dsh-task-reminder'])
 
-const handle = taskNotifications.register({
-  group: 'dsh-task-reminder',
-  title: 'workspace-scan',
-})
+// ① settle it yourself: you hold the handle
+const handle = notifyTask('dsh-task-reminder', 'workspace-scan')
 handle.background()   // collapse is an event, not a settlement
-handle.done()         // the caller owns the ending`
+handle.done()         // the caller owns the ending
+
+// ② or wrap the work and let the library close it
+await notifyTask.run('dsh-task-reminder', 'workspace-scan', () => scanWorkspace())`
 
 const mono: Record<string, string | number> = { fontFamily: 'var(--dshpc-font-mono)', fontSize: '12px' }
 const row: Record<string, string | number> = { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }
@@ -70,7 +72,7 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
 
   function register(group: string, label: string): void {
     serial.current += 1
-    const handle = taskNotifications.register({ group, title: `${label} #${serial.current}` })
+    const handle = notifyTask(group, `${label} #${serial.current}`)
     handles.current.set(handle.id, handle)
   }
 

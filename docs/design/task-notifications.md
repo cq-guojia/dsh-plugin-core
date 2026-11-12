@@ -52,6 +52,21 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 「Promise 两态（由 `settled` 表达）+ 收起作为事件」，调用方 `await` 的仍是正常两态，
 想跟踪收起就监听事件。弹窗侧在阶段 2 按此口径新开 API，不改现有 `confirmModal` / `alertModal` 签名。
 
+## 对外两个入口
+
+日常写法是 `notifyTask`，形态对齐成熟实现，**不引入重载**（返回类型不随参数变）：
+
+| 入口 | 形态 | 先例 |
+|---|---|---|
+| `notifyTask(group, title, options?)` → 句柄 | 自己管结束 | `ora(text)` 返回实例；`toast.loading(msg)` 返回 id |
+| `notifyTask.run(group, title, work)` → `work` 的原结果 | 自动收尾（成功 `done`、失败 `fail`） | `oraPromise(p)`、`toast.promise(p, opts)`、`window.withProgress(opts, task)` |
+
+- 两个入口前两参一致（`group, title`）：从前者改后者只需换函数名再加一个活，不用记两套参数顺序。
+- `work` 收 `Promise` 或返回 `Promise` 的函数（函数形式让任务在调用后才启动），与 `oraPromise` / `toast.promise` 相同。
+- 基础入口**恒返回句柄**；自动收尾独立成 `run`，而不是塞进同一个函数的第三参 —— 后者会让调用处看不出拿到的是句柄还是 Promise，三家先例都没这么做。
+- `taskNotifications.register(input)` 保留给「需要对象参数或池级能力」的场合，`notifyTask` 内部就是它。
+- `handle.track(promise)` 保留为兜底（句柄已在手时才用得上），文档从主推降为备选，避免两套写法并存。
+
 ## 跨页协议
 
 浏览器原生 `BroadcastChannel`，频道名 `TASK_NOTIFICATIONS_CHANNEL`。每页有唯一 `origin`：
@@ -101,12 +116,13 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 
 **任务边界（2026-11-12 用户拍板）**：阶段 2（可收起弹窗：例外控件、隐藏保树、Tab / Esc 联动）与阶段 3（事件查看控件：计数、下拉、还原弹窗、过滤、该控件的 demo 页）**整体不属于「总的订阅通知中心」任务**，由用户后续单独开任务承接。本任务只交付阶段 0 / 1 的数据面，加上本轮的对外使用帮助与 demo 数据面演示页；演示页只演示真实调用池与事件总线，不实现可复用查看控件、不做下拉、不还原弹窗。
 
-阶段 1 的自检覆盖：快照引用稳定、结束幂等、事件四类、跨页即时可见、baseline、
+阶段 1 的自检覆盖：快照引用稳定、结束幂等、事件五类（registered / updated / backgrounded / settled / restored）、跨页即时可见、baseline、
 乱序 / 重复 / 畸形消息、迟到 `bye`、休眠恢复、多副本单例、SSR，以及 CJS 闭包里
 真实注册并结束一条任务（不是只检查产物字符串）。
 
 ## 更新日志
 
+- 2026-11-12：新增日常入口 `notifyTask` / `notifyTask.run`（形态对齐 `oraPromise` / `toast.promise` / `withProgress`）；`register`、句柄与跨页协议一律不变
 - 2026-11-12 14:57:52：建立后台任务池契约；阶段 0 / 1 落地并通过全链自检
 - 2026-11-12：能力对外定名「通知任务中心 / Task Notification Hub」，内部两条通道为「任务快照池」与「事件总线」；显示层标题、组名同步
 - 2026-11-12：按用户「都改呀」完成统一改名——公共导出、源码、测试、契约与帮助文档、demo、`SectionId`、i18n 前缀 `tn*`、协议键与全部文件路径都换成 `task-notifications`；协议结构未变，`PROTOCOL` 仍为 1，不留旧别名与兼容层

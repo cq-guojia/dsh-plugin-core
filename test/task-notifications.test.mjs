@@ -13,6 +13,7 @@ import {
   claimTaskNotifications,
   createTaskNotificationEventBus,
   createTaskNotificationPool,
+  notifyTask,
   selectTaskNotifications,
   subscribeTaskNotificationEvents,
 } from '../dist/ui/index.js'
@@ -499,4 +500,72 @@ test('DSH CJS 闭包：zustand 被打进产物且状态池真能跑（不是只�
   assert.equal(pool.getSnapshot().tasks.length, 0)
   assert.deepEqual(seen, ['registered', 'backgrounded', 'settled'])
   pool.dispose()
+})
+
+// ── 日常入口 notifyTask：位置参数登记 + run 自动收尾 ─────────────────────────
+
+/** 全局池里按 handle.id 找条目：不受同进程其它用例影响。 */
+function taskById(handle) {
+  return taskNotifications.getSnapshot().tasks.find((task) => task.id === handle.id)
+}
+
+function taskByTitle(title) {
+  return taskNotifications.getSnapshot().tasks.find((task) => task.title === title)
+}
+
+test('notifyTask：位置参数登记并返回句柄，字段落地，done 后移出池', () => {
+  const handle = notifyTask('probe-notify', 'notify task probe')
+  assert.equal(taskById(handle)?.group, 'probe-notify')
+  assert.equal(taskById(handle)?.title, 'notify task probe')
+  assert.equal(taskById(handle)?.status, 'running')
+  assert.equal(handle.isSettled, false)
+  handle.done()
+  assert.equal(handle.isSettled, true)
+  assert.equal(taskById(handle), undefined)
+})
+
+test('notifyTask：options.detail / groupLabel 落到条目上，之后仍可 update', () => {
+  const handle = notifyTask('probe-notify', 'notify detail probe', { detail: '12 / 40', groupLabel: 'Probe' })
+  assert.equal(taskById(handle)?.detail, '12 / 40')
+  assert.equal(taskById(handle)?.groupLabel, 'Probe')
+  handle.update({ detail: '30 / 40' })
+  assert.equal(taskById(handle)?.detail, '30 / 40')
+  handle.done()
+})
+
+test('notifyTask.run：成功自动 done、原样返回结果、条目移出池', async () => {
+  assert.equal(await notifyTask.run('probe-notify', 'notify run probe', async () => 'value'), 'value')
+  assert.equal(taskByTitle('notify run probe'), undefined)
+})
+
+test('notifyTask.run：接受现成 Promise，不改其结算语义', async () => {
+  assert.equal(await notifyTask.run('probe-notify', 'notify promise probe', Promise.resolve(42)), 42)
+  assert.equal(taskByTitle('notify promise probe'), undefined)
+})
+
+test('notifyTask.run：失败自动 fail、异常原样抛出、条目移出池且原因与 settled 都在', async () => {
+  const settled = []
+  const off = subscribeTaskNotificationEvents((event) => {
+    if (event.type === 'settled' && event.task.title === 'notify run fail probe') settled.push(event)
+  })
+  try {
+    await assert.rejects(
+      notifyTask.run('probe-notify', 'notify run fail probe', async () => { throw new Error('boom') }),
+      /boom/,
+    )
+  } finally {
+    off()
+  }
+  assert.equal(taskByTitle('notify run fail probe'), undefined)
+  assert.equal(settled.length, 1)
+  assert.equal(settled[0].outcome, 'failed')
+  assert.equal(settled[0].task.reason, 'boom')
+})
+
+test('notifyTask.run：work 同步抛错也收尾，不留永远 running 的条目', async () => {
+  await assert.rejects(
+    notifyTask.run('probe-notify', 'notify sync throw probe', () => { throw new Error('sync boom') }),
+    /sync boom/,
+  )
+  assert.equal(taskByTitle('notify sync throw probe'), undefined)
 })

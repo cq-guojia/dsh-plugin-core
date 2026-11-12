@@ -626,6 +626,45 @@ export const taskNotifications: TaskNotificationPool = {
   dispose: () => { globalPool().dispose() },
 }
 
+export interface NotifyTaskOptions {
+  /** 首屏就带的详情文案；之后仍可用 handle.update() 改。 */
+  detail?: string
+  /** 分组显示名覆盖。 */
+  groupLabel?: string
+}
+
+/**
+ * 日常入口：位置参数登记一条任务，返回句柄（等价 `taskNotifications.register({ ... })`）。
+ *
+ * 分工与 oraPromise / toast.promise / withProgress 一致：
+ * 自己管结束用 `notifyTask(group, title)`；包住一段异步用 `notifyTask.run(group, title, work)`。
+ * 前者返回句柄，后者返回 work 的原结果 —— 同一入口不靠参数把返回类型换掉。
+ */
+export interface NotifyTask {
+  (group: string, title: string, options?: NotifyTaskOptions): TaskNotificationHandle
+  /** 包住一段异步：成功走 done、失败走 fail，结果与异常原样透传。 */
+  run<T>(group: string, title: string, work: Promise<T> | (() => Promise<T>)): Promise<T>
+}
+
+function notifyTaskBase(group: string, title: string, options: NotifyTaskOptions = {}): TaskNotificationHandle {
+  return taskNotifications.register({ group, title, detail: options.detail, groupLabel: options.groupLabel })
+}
+
+function runTask<T>(group: string, title: string, work: Promise<T> | (() => Promise<T>)): Promise<T> {
+  const handle = notifyTaskBase(group, title)
+  let pending: Promise<T>
+  try {
+    pending = typeof work === 'function' ? work() : work
+  } catch (error) {
+    // 同步抛错也要收尾，否则池里留下一条永远 running 的条目。
+    handle.fail(error instanceof Error ? error.message : String(error))
+    return Promise.reject(error)
+  }
+  return handle.track(pending)
+}
+
+export const notifyTask: NotifyTask = Object.assign(notifyTaskBase, { run: runTask })
+
 export const taskNotificationEvents: TaskNotificationEventBus = {
   subscribe: (listener) => globalBus().subscribe(listener),
   emit: (event) => { globalBus().emit(event) },
