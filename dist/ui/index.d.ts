@@ -1,5 +1,6 @@
 export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './infra/css.js';
 export { useLocale } from './infra/locale.js';
+export { BACKGROUND_TASKS_CHANNEL, BACKGROUND_TASKS_EVENTS_KEY, BACKGROUND_TASKS_KEY, BACKGROUND_TASKS_PROTOCOL, backgroundTaskEvents, backgroundTasks, claimBackgroundTaskEvents, claimBackgroundTasks, createBackgroundTaskEventBus, createBackgroundTaskPool, emitBackgroundTaskEvent, selectBackgroundTasks, subscribeBackgroundTaskEvents, type BackgroundTaskEvent, type BackgroundTaskEventListener, type BackgroundTaskEventBus, type BackgroundTaskHandle, type BackgroundTaskInput, type BackgroundTaskPatch, type BackgroundTaskPool, type BackgroundTaskPoolOptions, type BackgroundTaskRecord, type BackgroundTaskSettlement, type BackgroundTaskSnapshot, type BackgroundTaskStatus, } from './infra/background-tasks.js';
 export { filterGroups, flattenOptions, groupOf, labelsOf, PICKER_DEFAULT_MIN_WIDTH, resolveMenuSizing, resolveTriggerSizing, retainSelectedValue, sliceGroups, toFlatOptions, toGroups, toggleValue, type PickerGroup, type PickerOption, type PickerSizing, } from './inputs/picker-logic.js';
 export { Picker, type PickerProps, type PickerSize } from './inputs/Picker.js';
 export { DateTimePicker, type DateTimeOutput, type DateTimePickerProps, type DateTimeSize, } from './inputs/DateTimePicker.js';

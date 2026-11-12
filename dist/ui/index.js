@@ -4,6 +4,8 @@
 // `ensureControls()` 退化为可选的 token 预热，不再需要调。
 export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './infra/css.js';
 export { useLocale } from './infra/locale.js';
+// 后台任务池：状态可查 / 订阅 / 事件通知分两条通道；跨页分片同步与多副本单例都在模块内。
+export { BACKGROUND_TASKS_CHANNEL, BACKGROUND_TASKS_EVENTS_KEY, BACKGROUND_TASKS_KEY, BACKGROUND_TASKS_PROTOCOL, backgroundTaskEvents, backgroundTasks, claimBackgroundTaskEvents, claimBackgroundTasks, createBackgroundTaskEventBus, createBackgroundTaskPool, emitBackgroundTaskEvent, selectBackgroundTasks, subscribeBackgroundTaskEvents, } from './infra/background-tasks.js';
 export { filterGroups, flattenOptions, groupOf, labelsOf, PICKER_DEFAULT_MIN_WIDTH, resolveMenuSizing, resolveTriggerSizing, retainSelectedValue, sliceGroups, toFlatOptions, toGroups, toggleValue, } from './inputs/picker-logic.js';
 export { Picker } from './inputs/Picker.js';
 export { DateTimePicker, } from './inputs/DateTimePicker.js';

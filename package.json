@@ -104,7 +104,8 @@
     "@floating-ui/react": "^0.27.20",
     "@lezer/highlight": "^1.2.5",
     "@uiw/react-codemirror": "^4.25.12",
-    "sonner": "^2.0.8"
+    "sonner": "^2.0.8",
+    "zustand": "5.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",
