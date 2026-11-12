@@ -30,6 +30,8 @@ export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-no
 export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v2'
 /** Default project lives on a global symbol: every inlined copy must see one value. */
 export const TASK_NOTIFICATIONS_PROJECT_KEY = Symbol.for('dsh-plugin-core/task-notifications/project/v2')
+/** 静默任务的默认回收窗口；与 TanStack Query 的 gcTime 默认值一致。 */
+export const TASK_NOTIFICATIONS_HIDDEN_TTL_MS = 5 * 60_000
 
 export type TaskNotificationStatus = 'running' | 'done' | 'failed'
 
@@ -70,6 +72,10 @@ export interface TaskNotificationRecord {
   /** Page that owns the task. Only the owning page can restore its dialog. */
   readonly origin: string
   readonly backgrounded: boolean
+  /** 不进默认列表；池、事件、跨页、收尾一切照旧。可在运行时切换。 */
+  readonly hidden?: boolean
+  /** 回收窗口（毫秒）。以最后一次活动（updatedAt）起算，到点由池结算为 failed。 */
+  readonly timeoutMs?: number
   readonly reason?: string
 }
 
@@ -84,6 +90,10 @@ export interface TaskNotificationInput {
   icon?: string
   iconSvg?: string
   detail?: TaskNotificationDetail
+  /** 不进默认列表；默认关闭。开了之后默认带 5 分钟超时兜底。 */
+  hidden?: boolean
+  /** 毫秒；0 = 不回收。缺省：hidden 用 5 分钟，可见任务不回收。 */
+  timeoutMs?: number
 }
 
 export interface TaskNotificationPatch {
@@ -94,6 +104,7 @@ export interface TaskNotificationPatch {
   groupLabel?: string
   icon?: string
   iconSvg?: string
+  hidden?: boolean
 }
 
 export type TaskNotificationLevel = 'info' | 'success' | 'warning' | 'error'
@@ -132,6 +143,8 @@ export type TaskNotificationGroupFilter = readonly string[] | '*'
 export interface TaskNotificationSelectOptions {
   /** Defaults to the global default project; `null` means "do not filter by project". */
   project?: string | null
+  /** Default false: `hidden` tasks stay out of every list unless asked for. */
+  includeHidden?: boolean
 }
 
 export interface TaskNotificationSettlement {
@@ -319,7 +332,7 @@ export function selectTaskNotifications(
       : groups.length === 0
         ? ''
         : [...groups].sort().join('\u0000')
-  const cacheKey = `${project ?? '\u0001*'}\u0002${groups === '*' ? '*' : groupKey}`
+  const cacheKey = `${project ?? '\u0001*'}\u0002${groups === '*' ? '*' : groupKey}\u0002${options.includeHidden === true ? 'hidden' : ''}`
 
   let perSnapshot = SELECT_CACHE.get(snapshot)
   if (perSnapshot === undefined) {
@@ -332,6 +345,7 @@ export function selectTaskNotifications(
   const wanted = groupKey === '' ? null : new Set(groupKey.split('\u0000'))
   const result = Object.freeze(
     snapshot.tasks.filter((task) => {
+      if (options.includeHidden !== true && task.hidden === true) return false
       if (project !== null && task.project !== project) return false
       if (wanted === null) return true
       return wanted.has(task.group)
@@ -604,8 +618,37 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
 
   function collect(): readonly TaskNotificationRecord[] {
     const all: TaskNotificationRecord[] = []
-    for (const shard of shards.values()) all.push(...shard.tasks)
+    const now = Date.now()
+    for (const shard of shards.values()) {
+      for (const task of shard.tasks) {
+        // 超过回收窗口的一律不进快照：本页的先结算（见 expireLocal），远端的直接丢。
+        if (task.timeoutMs !== undefined && now - task.updatedAt > task.timeoutMs) continue
+        all.push(task)
+      }
+    }
     return Object.freeze(all.sort(compareTasks))
+  }
+
+  let expiring = false
+
+  /**
+   * 把本页到点的任务结算为 failed。惰性执行：只在下次写之前跑，不装定时器。
+   * 只放弃池里的记录，不取消调用方还在跑的 work —— 那个我们没能力动。
+   */
+  function expireLocal(): void {
+    if (expiring) return
+    const now = Date.now()
+    for (const task of [...localShard()]) {
+      if (task.timeoutMs === undefined || now - task.updatedAt <= task.timeoutMs) continue
+      const finish = finishers.get(task.id)
+      if (finish === undefined) continue
+      expiring = true
+      try {
+        finish('failed', 'timed out')
+      } finally {
+        expiring = false
+      }
+    }
   }
 
   function post(message: WireMessage): void {
@@ -629,6 +672,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
 
   /** One write path: new local shard -> new snapshot -> local event -> cross-page message. */
   function publish(nextTasks: readonly TaskNotificationRecord[], notice: WireNotice): void {
+    expireLocal()
     seq += 1
     revision += 1
     shards.set(origin, { origin, seq, tasks: Object.freeze([...nextTasks]) })
@@ -811,6 +855,9 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     if (project === null) throw new Error('task notification project cannot be null when registering')
     const group = normalizeGroup(input.group)
     const detail = cloneDetail(input.detail)
+    const hidden = input.hidden === true
+    const timeoutMs = input.timeoutMs ?? (hidden ? TASK_NOTIFICATIONS_HIDDEN_TTL_MS : 0)
+    if (timeoutMs < 0) throw new Error('task notification timeoutMs must be >= 0')
     connect()
     const now = Date.now()
     const id = `${origin}:${String(++idSeq)}`
@@ -829,6 +876,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       updatedAt: now,
       origin,
       backgrounded: false,
+      ...(hidden ? { hidden: true } : {}),
+      ...(timeoutMs > 0 ? { timeoutMs } : {}),
     }
     let isSettled = false
     let resolveSettled: (value: TaskNotificationSettlement) => void = () => {}
@@ -877,6 +926,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
           ...(patch.groupLabel === undefined ? {} : { groupLabel: patch.groupLabel }),
           ...(patch.icon === undefined ? {} : { icon: patch.icon }),
           ...(patch.iconSvg === undefined ? {} : { iconSvg: patch.iconSvg }),
+          ...(patch.hidden === undefined ? {} : patch.hidden ? { hidden: true } : {}),
+          // updatedAt 前移即「续期」：回收窗口从最后一次活动起算。
           updatedAt: Date.now(),
         }
         publish(replace(localShard(), next), { type: 'updated', task: next })
@@ -1009,6 +1060,10 @@ export interface NotifyTaskOptions {
   icon?: string
   /** 原始 SVG 源，消费端自行渲染。 */
   iconSvg?: string
+  /** 不进默认列表（仍进池、仍可 await）；不设 timeoutMs 时默认 5 分钟兜底。 */
+  hidden?: boolean
+  /** 毫秒；0 = 不回收。缺省：hidden 用 5 分钟，可见任务不回收。 */
+  timeoutMs?: number
 }
 
 /**
@@ -1034,6 +1089,8 @@ function notifyTaskBase(title: string, options: NotifyTaskOptions = {}): TaskNot
     ...(options.groupLabel === undefined ? {} : { groupLabel: options.groupLabel }),
     ...(options.icon === undefined ? {} : { icon: options.icon }),
     ...(options.iconSvg === undefined ? {} : { iconSvg: options.iconSvg }),
+    ...(options.hidden === undefined ? {} : { hidden: options.hidden }),
+    ...(options.timeoutMs === undefined ? {} : { timeoutMs: options.timeoutMs }),
   })
 }
 

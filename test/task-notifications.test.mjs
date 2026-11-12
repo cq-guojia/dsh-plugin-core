@@ -878,3 +878,86 @@ test('图标：icon / iconSvg 落到任务与广播消息上；update 也能改'
   assert.equal(message.icon, 'check')
   assert.equal(message.iconSvg, '<svg/>')
 })
+
+// ── 静默任务：不进默认列表，到点回收 ──────────────────────────────────────────
+
+test('hidden 任务：默认列表看不到，includeHidden 才看得到，池里一直有', () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const handle = pool.register({ group: 'g', title: 'silent work', hidden: true })
+  assert.equal(pool.getSnapshot().tasks.length, 1, '快照是全量数据面')
+  assert.equal(selectTaskNotifications(pool.getSnapshot()).length, 0, '默认视图看不到')
+  assert.equal(selectTaskNotifications(pool.getSnapshot(), '*').length, 0, "'*' 也一样")
+  assert.equal(
+    selectTaskNotifications(pool.getSnapshot(), undefined, { includeHidden: true }).length,
+    1,
+    'includeHidden 才看得到',
+  )
+  handle.update({ detail: '10%' })
+  assert.equal(localTask(pool, handle)?.detail, '10%')
+  handle.done()
+  assert.equal(pool.getSnapshot().tasks.length, 0)
+})
+
+test('hidden 跨页：对端也照 hidden 处理', async () => {
+  const channelName = testChannel()
+  const owner = makePool(channelName, { origin: 'page-owner', locks: null })
+  const watcher = makePool(channelName, { origin: 'page-watcher', locks: null })
+  watcher.connect()
+  owner.connect()
+  await new Promise((resolve) => setTimeout(resolve, 30))
+  const handle = owner.register({ group: 'g', title: 'remote hidden', hidden: true })
+  await waitFor(() => watcher.getSnapshot().tasks.length === 1, 'watcher sees the row')
+  assert.equal(selectTaskNotifications(watcher.getSnapshot()).length, 0)
+  assert.equal(selectTaskNotifications(watcher.getSnapshot(), undefined, { includeHidden: true }).length, 1)
+  handle.done()
+  owner.dispose()
+  watcher.dispose()
+})
+
+test('hidden 默认 5 分钟兜底：条目带 timeoutMs，可见任务默认不带', () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const silent = pool.register({ group: 'g', title: 'silent default', hidden: true })
+  const normal = pool.register({ group: 'g', title: 'visible default' })
+  assert.equal(localTask(pool, silent)?.timeoutMs, 5 * 60_000)
+  assert.equal(localTask(pool, normal)?.timeoutMs, undefined)
+  silent.done()
+  normal.done()
+})
+
+function localTask(pool, handle) {
+  return pool.getSnapshot().tasks.find((task) => task.id === handle.id)
+}
+
+test('静默任务超时：到点结算为 failed 并移出，handle.settled 兑现', async () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const handle = pool.register({ group: 'g', title: 'ttl probe', hidden: true, timeoutMs: 20 })
+  const settlement = handle.settled
+  await new Promise((resolve) => setTimeout(resolve, 40))
+  pool.register({ group: 'g', title: 'trigger write' })
+  const result = await settlement
+  assert.equal(result.outcome, 'failed')
+  assert.equal(result.reason, 'timed out')
+  assert.equal(localTask(pool, handle), undefined)
+})
+
+test('回收窗口按最后一次活动起算：持续 update 的任务不会被误收', async () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const handle = pool.register({ group: 'g', title: 'renew probe', hidden: true, timeoutMs: 30 })
+  for (let step = 0; step < 3; step += 1) {
+    await new Promise((resolve) => setTimeout(resolve, 20))
+    handle.update({ detail: `step ${step}` })
+  }
+  assert.equal(localTask(pool, handle)?.title, 'renew probe', '累计 60ms 已超窗口，但一直在活动')
+  await new Promise((resolve) => setTimeout(resolve, 50))
+  pool.register({ group: 'g', title: 'trigger again' })
+  assert.equal(localTask(pool, handle), undefined, '停止活动后到点被收')
+})
+
+test('可见任务默认不回收：没有 timeoutMs 就一直挂着', async () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const handle = pool.register({ group: 'g', title: 'visible stays' })
+  await new Promise((resolve) => setTimeout(resolve, 60))
+  pool.register({ group: 'g', title: 'trigger visible' })
+  assert.equal(localTask(pool, handle)?.title, 'visible stays')
+  handle.done()
+})

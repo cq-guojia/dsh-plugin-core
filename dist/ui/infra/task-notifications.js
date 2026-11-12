@@ -29,6 +29,8 @@ export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-no
 export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v2';
 /** Default project lives on a global symbol: every inlined copy must see one value. */
 export const TASK_NOTIFICATIONS_PROJECT_KEY = Symbol.for('dsh-plugin-core/task-notifications/project/v2');
+/** 静默任务的默认回收窗口；与 TanStack Query 的 gcTime 默认值一致。 */
+export const TASK_NOTIFICATIONS_HIDDEN_TTL_MS = 5 * 60000;
 const EMPTY_TASKS = Object.freeze([]);
 const EMPTY_SNAPSHOT = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 });
 function projectSlot() {
@@ -94,7 +96,7 @@ export function selectTaskNotifications(snapshot, groups, options = {}) {
         : groups.length === 0
             ? ''
             : [...groups].sort().join('\u0000');
-    const cacheKey = `${project ?? '\u0001*'}\u0002${groups === '*' ? '*' : groupKey}`;
+    const cacheKey = `${project ?? '\u0001*'}\u0002${groups === '*' ? '*' : groupKey}\u0002${options.includeHidden === true ? 'hidden' : ''}`;
     let perSnapshot = SELECT_CACHE.get(snapshot);
     if (perSnapshot === undefined) {
         perSnapshot = new Map();
@@ -105,6 +107,8 @@ export function selectTaskNotifications(snapshot, groups, options = {}) {
         return cached;
     const wanted = groupKey === '' ? null : new Set(groupKey.split('\u0000'));
     const result = Object.freeze(snapshot.tasks.filter((task) => {
+        if (options.includeHidden !== true && task.hidden === true)
+            return false;
         if (project !== null && task.project !== project)
             return false;
         if (wanted === null)
@@ -351,9 +355,40 @@ export function createTaskNotificationPool(options = {}) {
     let everPublished = false;
     function collect() {
         const all = [];
-        for (const shard of shards.values())
-            all.push(...shard.tasks);
+        const now = Date.now();
+        for (const shard of shards.values()) {
+            for (const task of shard.tasks) {
+                // 超过回收窗口的一律不进快照：本页的先结算（见 expireLocal），远端的直接丢。
+                if (task.timeoutMs !== undefined && now - task.updatedAt > task.timeoutMs)
+                    continue;
+                all.push(task);
+            }
+        }
         return Object.freeze(all.sort(compareTasks));
+    }
+    let expiring = false;
+    /**
+     * 把本页到点的任务结算为 failed。惰性执行：只在下次写之前跑，不装定时器。
+     * 只放弃池里的记录，不取消调用方还在跑的 work —— 那个我们没能力动。
+     */
+    function expireLocal() {
+        if (expiring)
+            return;
+        const now = Date.now();
+        for (const task of [...localShard()]) {
+            if (task.timeoutMs === undefined || now - task.updatedAt <= task.timeoutMs)
+                continue;
+            const finish = finishers.get(task.id);
+            if (finish === undefined)
+                continue;
+            expiring = true;
+            try {
+                finish('failed', 'timed out');
+            }
+            finally {
+                expiring = false;
+            }
+        }
     }
     function post(message) {
         if (channel === null)
@@ -373,6 +408,7 @@ export function createTaskNotificationPool(options = {}) {
     }
     /** One write path: new local shard -> new snapshot -> local event -> cross-page message. */
     function publish(nextTasks, notice) {
+        expireLocal();
         seq += 1;
         revision += 1;
         shards.set(origin, { origin, seq, tasks: Object.freeze([...nextTasks]) });
@@ -557,6 +593,10 @@ export function createTaskNotificationPool(options = {}) {
             throw new Error('task notification project cannot be null when registering');
         const group = normalizeGroup(input.group);
         const detail = cloneDetail(input.detail);
+        const hidden = input.hidden === true;
+        const timeoutMs = input.timeoutMs ?? (hidden ? TASK_NOTIFICATIONS_HIDDEN_TTL_MS : 0);
+        if (timeoutMs < 0)
+            throw new Error('task notification timeoutMs must be >= 0');
         connect();
         const now = Date.now();
         const id = `${origin}:${String(++idSeq)}`;
@@ -575,6 +615,8 @@ export function createTaskNotificationPool(options = {}) {
             updatedAt: now,
             origin,
             backgrounded: false,
+            ...(hidden ? { hidden: true } : {}),
+            ...(timeoutMs > 0 ? { timeoutMs } : {}),
         };
         let isSettled = false;
         let resolveSettled = () => { };
@@ -620,6 +662,8 @@ export function createTaskNotificationPool(options = {}) {
                     ...(patch.groupLabel === undefined ? {} : { groupLabel: patch.groupLabel }),
                     ...(patch.icon === undefined ? {} : { icon: patch.icon }),
                     ...(patch.iconSvg === undefined ? {} : { iconSvg: patch.iconSvg }),
+                    ...(patch.hidden === undefined ? {} : patch.hidden ? { hidden: true } : {}),
+                    // updatedAt 前移即「续期」：回收窗口从最后一次活动起算。
                     updatedAt: Date.now(),
                 };
                 publish(replace(localShard(), next), { type: 'updated', task: next });
@@ -746,6 +790,8 @@ function notifyTaskBase(title, options = {}) {
         ...(options.groupLabel === undefined ? {} : { groupLabel: options.groupLabel }),
         ...(options.icon === undefined ? {} : { icon: options.icon }),
         ...(options.iconSvg === undefined ? {} : { iconSvg: options.iconSvg }),
+        ...(options.hidden === undefined ? {} : { hidden: options.hidden }),
+        ...(options.timeoutMs === undefined ? {} : { timeoutMs: options.timeoutMs }),
     });
 }
 /**

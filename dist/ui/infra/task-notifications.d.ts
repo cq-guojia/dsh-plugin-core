@@ -5,6 +5,8 @@ export declare const TASK_NOTIFICATIONS_EVENTS_KEY: unique symbol;
 export declare const TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v2";
 /** Default project lives on a global symbol: every inlined copy must see one value. */
 export declare const TASK_NOTIFICATIONS_PROJECT_KEY: unique symbol;
+/** 静默任务的默认回收窗口；与 TanStack Query 的 gcTime 默认值一致。 */
+export declare const TASK_NOTIFICATIONS_HIDDEN_TTL_MS: number;
 export type TaskNotificationStatus = 'running' | 'done' | 'failed';
 /**
  * Detail payload: any JSON value. Objects and arrays cross pages through the
@@ -38,6 +40,10 @@ export interface TaskNotificationRecord {
     /** Page that owns the task. Only the owning page can restore its dialog. */
     readonly origin: string;
     readonly backgrounded: boolean;
+    /** 不进默认列表；池、事件、跨页、收尾一切照旧。可在运行时切换。 */
+    readonly hidden?: boolean;
+    /** 回收窗口（毫秒）。以最后一次活动（updatedAt）起算，到点由池结算为 failed。 */
+    readonly timeoutMs?: number;
     readonly reason?: string;
 }
 export interface TaskNotificationInput {
@@ -51,6 +57,10 @@ export interface TaskNotificationInput {
     icon?: string;
     iconSvg?: string;
     detail?: TaskNotificationDetail;
+    /** 不进默认列表；默认关闭。开了之后默认带 5 分钟超时兜底。 */
+    hidden?: boolean;
+    /** 毫秒；0 = 不回收。缺省：hidden 用 5 分钟，可见任务不回收。 */
+    timeoutMs?: number;
 }
 export interface TaskNotificationPatch {
     title?: string;
@@ -60,6 +70,7 @@ export interface TaskNotificationPatch {
     groupLabel?: string;
     icon?: string;
     iconSvg?: string;
+    hidden?: boolean;
 }
 export type TaskNotificationLevel = 'info' | 'success' | 'warning' | 'error';
 /**
@@ -93,6 +104,8 @@ export type TaskNotificationGroupFilter = readonly string[] | '*';
 export interface TaskNotificationSelectOptions {
     /** Defaults to the global default project; `null` means "do not filter by project". */
     project?: string | null;
+    /** Default false: `hidden` tasks stay out of every list unless asked for. */
+    includeHidden?: boolean;
 }
 export interface TaskNotificationSettlement {
     readonly outcome: 'done' | 'failed';
@@ -235,6 +248,10 @@ export interface NotifyTaskOptions {
     icon?: string;
     /** 原始 SVG 源，消费端自行渲染。 */
     iconSvg?: string;
+    /** 不进默认列表（仍进池、仍可 await）；不设 timeoutMs 时默认 5 分钟兜底。 */
+    hidden?: boolean;
+    /** 毫秒；0 = 不回收。缺省：hidden 用 5 分钟，可见任务不回收。 */
+    timeoutMs?: number;
 }
 /**
  * 日常入口：只要一个标题，项目和二级分组都能省。
