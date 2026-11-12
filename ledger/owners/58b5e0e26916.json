@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261112-0728-d355-总的订阅通知中心": {"category": null, "created": "2026-11-12 07:28:32", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-12 07:28:32", "status": "doing", "tags": ["订阅通知", "后台任务", "跨页同步", "事件总线"], "title": "总的订阅通知中心", "updated": "2026-11-12 07:58:56", "worklog": "worklog/202611/12-0728-d355-总的订阅通知中心.md"}
+    "20261112-0728-d355-总的订阅通知中心": {"category": null, "created": "2026-11-12 07:28:32", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-12 07:28:32", "status": "doing", "tags": ["订阅通知", "后台任务", "跨页同步", "事件总线"], "title": "总的订阅通知中心", "updated": "2026-11-12 08:07:50", "worklog": "worklog/202611/12-0728-d355-总的订阅通知中心.md"}
   },
   "version": "20261022000000"
 }
