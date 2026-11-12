@@ -1,7 +1,8 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261112-0343-f5d1-弹窗收起到后台统一展示": {"category": "功能建设", "created": "2026-11-12 03:43:16", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-12 03:43:48", "status": "doing", "tags": ["弹窗", "例外控件", "后台任务", "事件查看", "分组过滤"], "title": "弹窗收起到后台统一展示", "updated": "2026-11-12 07:12:03", "worklog": "worklog/202611/12-0343-f5d1-弹窗收起到后台统一展示.md"}
+    "20261112-0343-f5d1-弹窗收起到后台统一展示": {"category": "功能建设", "created": "2026-11-12 03:43:16", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-12 03:43:48", "status": "doing", "tags": ["弹窗", "例外控件", "后台任务", "事件查看", "分组过滤"], "title": "弹窗收起到后台统一展示", "updated": "2026-11-12 07:12:03", "worklog": "worklog/202611/12-0343-f5d1-弹窗收起到后台统一展示.md"},
+    "20261112-0728-d355-总的订阅通知中心": {"category": null, "created": "2026-11-12 07:28:32", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-12 07:28:32", "status": "doing", "tags": ["订阅通知", "后台任务", "跨页同步", "事件总线"], "title": "总的订阅通知中心", "updated": "2026-11-12 07:28:32", "worklog": "worklog/202611/12-0728-d355-总的订阅通知中心.md"}
   },
   "version": "20261022000000"
 }
