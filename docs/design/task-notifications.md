@@ -32,7 +32,7 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 - 快照是 `{ tasks, revision }`，`tasks` 按 `startedAt` 再按 `id` 排序，跨页顺序确定。
 - **引用稳定**：无变化不产生新对象；只有状态真变了才推一次新快照。
   `getServerSnapshot()` 永远是同一个冻结空快照，SSR 不炸。
-- 派生结果有缓存：`selectTaskNotifications(snapshot, groups)` 对同一快照、同一过滤条件返回同一数组，
+- 派生结果有缓存：`selectTaskNotifications(snapshot, groups?, options?)` 对同一快照、同一过滤条件返回同一数组，
   不会每次渲染现算新引用。
 - 两级分组：`project`（项目，一级）+ `group`（项目内二级，缺省 `default`）。
 - 过滤三档：不传 / 空数组 = 本项目的全部二级；一个或多个名字 = 本项目这几个二级；
@@ -72,6 +72,24 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 - `handle.track(promise)` 保留为兜底（句柄已在手时才用得上），文档从主推降为备选，避免两套写法并存。
 - `detail` 收任意 JSON 值（对象、数组、数字、布尔、null），入池前 `structuredClone` 取私有副本；
   函数、DOM 节点与类实例当场抛错。**调用方不需要自己 `JSON.stringify`**。
+
+## 两类：常驻任务 vs 纯广播
+
+| | 常驻任务（监控） | 纯广播（通知） |
+|---|---|---|
+| 入口 | `notifyTask` / `notifyTask.run` | `notifyMessage` |
+| 进池 | 是 | **否** |
+| 列表表现 | 出现 → 挂着（可 `update` 进度）→ `done()` 后消失 | **完全不出现**，只发一个 `message` 事件 |
+| 跨页 | 分片同步，对端可见 | 一次性消息，不参与 baseline |
+| 结束 | 必须有人 `done()` / `fail()` | 没有结束这回事，发完即止 |
+
+- 纯广播**不写 shard、不动快照**：`revision` 不变，`useSyncExternalStore` 的订阅者不会被叫醒，
+  所以不可能出现「先多一行再少一行」的闪动。
+- **别用 `notifyTask(...).done()` 冒充广播**：它会先发 `registered` 再发 `settled`，列表必然闪一帧。
+- 广播跨页走独立消息类型 `kind: 'message'`，带自己的序号，不参与分片 `seq` 与 baseline；
+  旧版本副本解析失败直接丢弃，不会污染池，因此升协议不是必需的。
+- 图标：`icon`（图标名 / 图标字体类名）与 `iconSvg`（原始 SVG 源）都是字符串，核心只存不解释；
+  渲染方式与安全性由消费端负责 —— 组件和 ReactNode 跨页传不了。
 
 ## 两级分组
 
@@ -160,6 +178,7 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 
 ## 更新日志
 
+- 2026-11-12：新增纯广播 `notifyMessage()`（只发 `message` 事件，不进池、不动快照，因此不闪）；任务与消息都支持 `icon` / `iconSvg`
 - 2026-11-12：两级分组（`project` + 二级 `group`）与协议 2；`setDefaultTaskProject()` 一次定型；`notifyTask` 改为 `(title, options?)`；`selectTaskNotifications` 改为三档 + `'*'` 全站；`detail` 放宽为任意 JSON 值（入池前克隆私有副本）
 - 2026-11-12：新增 `settleLocal()`（无需句柄地收尾本页条目）与失联页面清理（Web Locks 判活，无定时器，触发于收到分片 / 页面可见）；协议与 `bye` 路径不变
 - 2026-11-12：新增日常入口 `notifyTask` / `notifyTask.run`（形态对齐 `oraPromise` / `toast.promise` / `withProgress`）；`register`、句柄与跨页协议一律不变

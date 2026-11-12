@@ -15,6 +15,7 @@ import {
   createTaskNotificationEventBus,
   createTaskNotificationPool,
   getDefaultTaskProject,
+  notifyMessage,
   notifyTask,
   selectTaskNotifications,
   setDefaultTaskProject,
@@ -803,4 +804,77 @@ test('没有 locks（老浏览器 / Node 无 Web Locks）：收到分片也不�
   assert.equal(pool.getSnapshot().tasks.some((task) => task.title === 'kept'), true)
   sender.close()
   pool.dispose()
+})
+
+// ── 纯广播：只出 message 事件，池和快照一律不动 ───────────────────────────────
+
+test('notifyMessage：只发 message 事件，不进池、不动 revision（列表不会闪）', () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const seen = []
+  const off = subscribeTaskNotificationEvents((event) => {
+    if (event.type === 'message') seen.push(event)
+  })
+  const before = pool.getSnapshot()
+  try {
+    const message = notifyMessage('saved', { group: 'notice', icon: 'check', level: 'success' })
+    assert.equal(message.group, 'notice')
+    assert.equal(message.project, TEST_PROJECT)
+    assert.equal(message.icon, 'check')
+    assert.equal(message.level, 'success')
+  } finally {
+    off()
+  }
+  const after = pool.getSnapshot()
+  assert.equal(pool.getSnapshot().tasks.length, 0, '池里不留条目')
+  assert.equal(after.tasks.length, 0)
+  assert.equal(before.revision, after.revision, '快照 revision 不变，订阅者不会被惊动')
+  assert.equal(seen.length, 1)
+  assert.equal(seen[0].remote, false)
+  assert.equal(seen[0].message.title, 'saved')
+})
+
+test('notifyMessage：跨页到达对端（remote: true），对端池仍为空', async () => {
+  const channelName = testChannel()
+  const bus = createTaskNotificationEventBus()
+  const received = []
+  bus.subscribe((event) => {
+    if (event.type === 'message') received.push(event)
+  })
+  const pool = createTaskNotificationPool({
+    channelName,
+    events: bus,
+    lifecycle: false,
+    origin: 'page-listener',
+    locks: null,
+  })
+  pool.connect()
+  const sender = new BroadcastChannel(channelName)
+  sender.unref?.()
+  const message = {
+    id: 'page-sender:msg:1',
+    project: TEST_PROJECT,
+    group: 'notice',
+    title: 'from another page',
+    level: 'info',
+    at: Date.now(),
+  }
+  sender.postMessage({ kind: 'message', origin: 'page-sender', seq: 1, message })
+  await waitFor(() => received.some((event) => event.message.title === 'from another page'), 'remote message')
+  assert.equal(received[0].remote, true)
+  assert.equal(pool.getSnapshot().tasks.length, 0)
+  sender.close()
+  pool.dispose()
+})
+
+test('图标：icon / iconSvg 落到任务与广播消息上；update 也能改', () => {
+  const handle = notifyTask('icon probe', { icon: 'bell', iconSvg: '<svg/>' })
+  assert.equal(taskById(handle)?.icon, 'bell')
+  assert.equal(taskById(handle)?.iconSvg, '<svg/>')
+  handle.update({ icon: 'check' })
+  assert.equal(taskById(handle)?.icon, 'check')
+  handle.done()
+
+  const message = notifyMessage('icon message probe', { icon: 'check', iconSvg: '<svg/>' })
+  assert.equal(message.icon, 'check')
+  assert.equal(message.iconSvg, '<svg/>')
 })

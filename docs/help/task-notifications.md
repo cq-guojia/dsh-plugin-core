@@ -4,7 +4,7 @@
 
 > EN: Task Notification Hub
 
-导出：notifyTask、taskNotifications、taskNotificationEvents、TASK_NOTIFICATIONS_LOCK_PREFIX、TASK_NOTIFICATIONS_PROJECT_KEY、setDefaultTaskProject、getDefaultTaskProject、createTaskNotificationPool、createTaskNotificationEventBus、selectTaskNotifications、subscribeTaskNotificationEvents、emitTaskNotificationEvent
+导出：notifyTask、notifyMessage、taskNotifications、taskNotificationEvents、TASK_NOTIFICATIONS_LOCK_PREFIX、TASK_NOTIFICATIONS_PROJECT_KEY、setDefaultTaskProject、getDefaultTaskProject、createTaskNotificationPool、createTaskNotificationEventBus、selectTaskNotifications、subscribeTaskNotificationEvents、emitTaskNotificationEvent
 
 ## 让长耗时任务登记、订阅与跨页可见
 
@@ -21,6 +21,14 @@
 快照是 `{ tasks, revision }`，`tasks` 按开始时间再按 id 排序，跨页顺序确定；无变化不产生新对象，`getServerSnapshot()` 永远是同一个冻结空快照。`selectTaskNotifications()` 对同一快照与同一过滤条件返回同一数组。
 
 > EN: A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter.
+
+两条路，别混用：要进列表、要监控、要能被结束的，用 `notifyTask`；只想广播一句、不需要留在列表里的，用 `notifyMessage(title, options?)`。后者**不写池、不动快照**（`revision` 不变），只发一个 `message` 事件，所以不会出现「列表闪一下」。反过来，用 `notifyTask(...).done()` 冒充广播会先 `registered` 再 `settled`，必闪一帧。
+
+> EN: Two paths, not interchangeable: use `notifyTask` when the row must appear in the list, be monitored and be endable; use `notifyMessage(title, options?)` when you only need to announce something and it should not stay in the list. The latter writes nothing to the pool and does not touch the snapshot (`revision` stays put) — it only emits a `message` event, so the list cannot flash. Faking a broadcast with `notifyTask(...).done()` emits `registered` then `settled` and always flashes one frame.
+
+图标：`icon`（图标名 / 图标字体类名）与 `iconSvg`（原始 SVG 源）都只是字符串，核心只存不解释，渲染与注入安全由消费端负责 —— 组件和 ReactNode 跨页传不了。
+
+> EN: Icons: `icon` (an icon name or icon-font class) and `iconSvg` (raw SVG source) are plain strings; core stores them without interpreting, and rendering plus injection safety are the consumer's job — components and ReactNodes cannot cross pages.
 
 NaN
 
@@ -61,6 +69,7 @@ NaN
 | `getDefaultTaskProject()` | `() => string \| undefined` | — | undefined | 读当前默认项目 | Reads the current default project |
 | `notifyTask(title, options?)` | `(title: string, options?: NotifyTaskOptions) => TaskNotificationHandle` | — | — | 日常入口：项目取全局默认、二级分组取 options.group（缺省 default）；需要对象参数或池级能力时用 register | Everyday entry: project from the global default, group from options.group (default "default"); reach for register when you need an options object or pool-level control |
 | `notifyTask.run(title, work, options?)` | `<T>(title: string, work: Promise<T> \| (() => Promise<T>), options?: NotifyTaskOptions) => Promise<T>` | — | — | 包住一段异步：成功 done、失败 fail，结果与异常原样透传 | Wraps an async task: done on success, fail on rejection, passing the result and error through |
+| `notifyMessage(title, options?)` | `(title: string, options?: NotifyMessageOptions) => TaskNotificationMessage` | — | — | 纯广播：只发 message 事件，不进池、不动快照，因此列表不会闪 | Pure broadcast: emits a message event only, writes no pool state and leaves the snapshot alone, so the list cannot flash |
 | `getSnapshot()` | `() => TaskNotificationSnapshot` | — | — | 当前全量快照，引用稳定；可直接作 useSyncExternalStore 的第二参 | Current full snapshot with a stable reference; use as the second useSyncExternalStore argument |
 | `getServerSnapshot()` | `() => TaskNotificationSnapshot` | — | 冻结空快照 | SSR / 非宿主环境用，永远是同一个对象 | For SSR and non-host environments; always the same object |
 | `subscribe(listener)` | `(listener: () => void) => () => void` | — | — | 状态真变了才通知；返回退订函数 | Notifies only on real state changes; returns an unsubscribe function |
@@ -134,6 +143,9 @@ handle.done('扫描完成')
 
 // ② 包住一段异步：成功 done、失败 fail，结果与异常原样透传
 await notifyTask.run('扫描工作区文件', () => runWork(), { group: 'scan' })
+
+// ③ 只想广播一句：不进列表，只发 message 事件，不会闪
+notifyMessage('已保存', { group: 'notice', icon: 'check', level: 'success' })
 
 // 句柄已经在手时才用得上的兜底：与 run 同一个收尾，不改变原 Promise 的结算语义
 // await handle.track(otherWork())   // otherWork(): Promise<void>，由调用方提供

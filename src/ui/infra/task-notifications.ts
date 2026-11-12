@@ -59,6 +59,10 @@ export interface TaskNotificationRecord {
   /** Optional display name override for the group. */
   readonly groupLabel?: string
   readonly title: string
+  /** 图标标识（图标名 / 图标字体类名）。核心不解释它，由消费端渲染。 */
+  readonly icon?: string
+  /** 原始 SVG 源，消费端自行渲染；核心只存不解释，注入风险由调用方承担。 */
+  readonly iconSvg?: string
   readonly detail?: TaskNotificationDetail
   readonly status: TaskNotificationStatus
   readonly startedAt: number
@@ -77,6 +81,8 @@ export interface TaskNotificationInput {
   readonly title: string
   projectLabel?: string
   groupLabel?: string
+  icon?: string
+  iconSvg?: string
   detail?: TaskNotificationDetail
 }
 
@@ -86,6 +92,38 @@ export interface TaskNotificationPatch {
   /** Second level only: a task never changes project. */
   group?: string
   groupLabel?: string
+  icon?: string
+  iconSvg?: string
+}
+
+export type TaskNotificationLevel = 'info' | 'success' | 'warning' | 'error'
+
+/**
+ * 纯广播：只出 `message` 事件，**不进池、不进列表**，所以不会有任何一闪。
+ * 常驻监控请用 notifyTask；这里的东西发完即止，没有 id 可查、也不可结束。
+ */
+export interface TaskNotificationMessage {
+  readonly id: string
+  readonly project: string
+  readonly group: string
+  readonly title: string
+  readonly icon?: string
+  readonly iconSvg?: string
+  readonly detail?: TaskNotificationDetail
+  readonly level: TaskNotificationLevel
+  readonly at: number
+}
+
+export interface TaskNotificationMessageInput {
+  /** Defaults to the global default project; throws when neither is set. */
+  project?: string
+  /** Second level; defaults to 'default'. */
+  group?: string
+  readonly title: string
+  icon?: string
+  iconSvg?: string
+  detail?: TaskNotificationDetail
+  level?: TaskNotificationLevel
 }
 
 /** `'*'` means every project, every group. An array means those groups of one project. */
@@ -131,6 +169,8 @@ export type TaskNotificationEvent =
       readonly task: TaskNotificationRecord
       readonly remote: boolean
     }
+  /** 纯广播：来了就是一条消息，池里没有它，列表不会因为它闪一下。 */
+  | { readonly type: 'message'; readonly message: TaskNotificationMessage; readonly remote: boolean }
   /** Never crosses pages: restoring a dialog is local by contract. */
   | { readonly type: 'restored'; readonly taskId: string; readonly remote: false }
   | { readonly type: 'peer-left'; readonly origin: string; readonly remote: true }
@@ -186,6 +226,8 @@ export interface TaskNotificationPool {
     options?: TaskNotificationSelectOptions,
   ): readonly TaskNotificationRecord[]
   register(input: TaskNotificationInput): TaskNotificationHandle
+  /** 纯广播：只出 `message` 事件，不写池、不动快照。 */
+  broadcast(input: TaskNotificationMessageInput): TaskNotificationMessage
   /** Settle every task this page still owns; handles are not needed. */
   settleLocal(reason?: string): number
   canRestore(task: TaskNotificationRecord): boolean
@@ -233,6 +275,12 @@ export function setDefaultTaskProject(project: string | undefined): void {
 
 export function getDefaultTaskProject(): string | undefined {
   return projectSlot()?.value
+}
+
+function normalizeGroup(group?: string): string {
+  if (group === undefined) return 'default'
+  if (group.trim() === '') throw new Error('task notification group must be a non-empty string')
+  return group
 }
 
 function requireProject(project?: string | null): string | null {
@@ -364,6 +412,8 @@ interface WireNotice {
 type WireMessage =
   | { kind: 'hello'; origin: string }
   | { kind: 'shard'; origin: string; seq: number; tasks: readonly TaskNotificationRecord[]; notice?: WireNotice }
+  /** 一次性广播：不携带任何状态，收到即 emit，不参与 baseline 与分片序号。 */
+  | { kind: 'message'; origin: string; seq: number; message: TaskNotificationMessage }
   | { kind: 'bye'; origin: string; seq: number }
 
 interface Shard {
@@ -425,12 +475,29 @@ function isNotice(value: unknown): value is WireNotice {
   return value.type === 'registered' || value.type === 'updated' || value.type === 'backgrounded'
 }
 
+function isWireMessageValue(value: unknown): value is TaskNotificationMessage {
+  if (!isRecord(value)) return false
+  if (value.detail !== undefined && !isDetail(value.detail)) return false
+  return (
+    typeof value.id === 'string' &&
+    typeof value.project === 'string' &&
+    typeof value.group === 'string' &&
+    typeof value.title === 'string' &&
+    typeof value.at === 'number' &&
+    (value.level === 'info' || value.level === 'success' || value.level === 'warning' || value.level === 'error')
+  )
+}
+
 /** Reject malformed / foreign messages instead of letting them poison the pool. */
 function parseMessage(value: unknown): WireMessage | null {
   if (!isRecord(value) || typeof value.origin !== 'string') return null
   if (value.kind === 'hello') return { kind: 'hello', origin: value.origin }
   if (value.kind === 'bye') {
     return typeof value.seq === 'number' ? { kind: 'bye', origin: value.origin, seq: value.seq } : null
+  }
+  if (value.kind === 'message') {
+    if (typeof value.seq !== 'number' || !isWireMessageValue(value.message)) return null
+    return { kind: 'message', origin: value.origin, seq: value.seq, message: value.message }
   }
   if (value.kind === 'shard') {
     if (typeof value.seq !== 'number' || !Array.isArray(value.tasks)) return null
@@ -529,6 +596,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
   let seq = 0
   let revision = 0
   let idSeq = 0
+  /** 广播消息自己的序号，不参与分片 seq，避免打乱 baseline 的比较。 */
+  let messageSeq = 0
   let channel: BroadcastChannel | null = null
   let everConnected = false
   let everPublished = false
@@ -568,6 +637,32 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     store.setState({ tasks: collect(), revision }, true)
     emit(notice, false)
     broadcastShard(notice)
+  }
+
+  /**
+   * 纯广播：**不写池、不动快照**，所以订阅列表不会因为它多一行再少一行。
+   * 本地先发一次，再发给同源其他页（一次性，不参与 baseline）。
+   */
+  function broadcast(input: TaskNotificationMessageInput): TaskNotificationMessage {
+    const project = requireProject(input.project)
+    if (project === null) throw new Error('task notification project cannot be null when broadcasting')
+    const group = normalizeGroup(input.group)
+    const detail = cloneDetail(input.detail)
+    const message: TaskNotificationMessage = {
+      id: `${origin}:msg:${String(++messageSeq)}`,
+      project,
+      group,
+      title: input.title,
+      ...(input.icon === undefined ? {} : { icon: input.icon }),
+      ...(input.iconSvg === undefined ? {} : { iconSvg: input.iconSvg }),
+      ...(detail === undefined ? {} : { detail }),
+      level: input.level ?? 'info',
+      at: Date.now(),
+    }
+    bus().emit({ type: 'message', message, remote: false })
+    connect()
+    post({ kind: 'message', origin, seq: ++messageSeq, message })
+    return message
   }
 
   function find(id: string): TaskNotificationRecord | undefined {
@@ -631,6 +726,11 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       if (message.seq < (knownSeq.get(message.origin) ?? 0)) return
       knownSeq.set(message.origin, message.seq)
       dropRemoteShard(message.origin)
+      return
+    }
+    if (message.kind === 'message') {
+      // 纯广播不带状态、不进池：直接交给监听者，列表不会因为它变化。
+      bus().emit({ type: 'message', message: message.message, remote: true })
       return
     }
     const seen = knownSeq.get(message.origin) ?? 0
@@ -709,8 +809,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     // Resolve before touching the pool: a missing project must not leave a row behind.
     const project = requireProject(input.project)
     if (project === null) throw new Error('task notification project cannot be null when registering')
-    const group = input.group === undefined ? 'default' : input.group
-    if (group.trim() === '') throw new Error('task notification group must be a non-empty string')
+    const group = normalizeGroup(input.group)
     const detail = cloneDetail(input.detail)
     connect()
     const now = Date.now()
@@ -721,6 +820,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       group,
       ...(input.projectLabel === undefined ? {} : { projectLabel: input.projectLabel }),
       ...(input.groupLabel === undefined ? {} : { groupLabel: input.groupLabel }),
+      ...(input.icon === undefined ? {} : { icon: input.icon }),
+      ...(input.iconSvg === undefined ? {} : { iconSvg: input.iconSvg }),
       title: input.title,
       ...(detail === undefined ? {} : { detail }),
       status: 'running',
@@ -774,6 +875,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
           ...(detail === undefined ? {} : { detail }),
           ...(patch.group === undefined ? {} : { group: patch.group }),
           ...(patch.groupLabel === undefined ? {} : { groupLabel: patch.groupLabel }),
+          ...(patch.icon === undefined ? {} : { icon: patch.icon }),
+          ...(patch.iconSvg === undefined ? {} : { iconSvg: patch.iconSvg }),
           updatedAt: Date.now(),
         }
         publish(replace(localShard(), next), { type: 'updated', task: next })
@@ -832,6 +935,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     refresh,
     select: (groups, options) => selectTaskNotifications(store.getState(), groups, options),
     register,
+    broadcast,
     settleLocal,
     canRestore: (task) => task.origin === origin,
     requestRestore(taskId): boolean {
@@ -885,6 +989,7 @@ export const taskNotifications: TaskNotificationPool = {
   refresh: () => { globalPool().refresh() },
   select: (groups, options) => globalPool().select(groups, options),
   register: (input) => globalPool().register(input),
+  broadcast: (input) => globalPool().broadcast(input),
   settleLocal: (reason) => globalPool().settleLocal(reason),
   canRestore: (task) => globalPool().canRestore(task),
   requestRestore: (taskId) => globalPool().requestRestore(taskId),
@@ -900,6 +1005,10 @@ export interface NotifyTaskOptions {
   detail?: TaskNotificationDetail
   projectLabel?: string
   groupLabel?: string
+  /** 图标标识（图标名 / 字体类名），核心不解释，消费端渲染。 */
+  icon?: string
+  /** 原始 SVG 源，消费端自行渲染。 */
+  iconSvg?: string
 }
 
 /**
@@ -923,6 +1032,37 @@ function notifyTaskBase(title: string, options: NotifyTaskOptions = {}): TaskNot
     ...(options.detail === undefined ? {} : { detail: options.detail }),
     ...(options.projectLabel === undefined ? {} : { projectLabel: options.projectLabel }),
     ...(options.groupLabel === undefined ? {} : { groupLabel: options.groupLabel }),
+    ...(options.icon === undefined ? {} : { icon: options.icon }),
+    ...(options.iconSvg === undefined ? {} : { iconSvg: options.iconSvg }),
+  })
+}
+
+export interface NotifyMessageOptions {
+  /** 一级分组：缺省用全局默认项目。 */
+  project?: string
+  /** 二级分组：缺省 'default'。 */
+  group?: string
+  detail?: TaskNotificationDetail
+  icon?: string
+  iconSvg?: string
+  /** 语义级别，缺省 info；核心只用它传数据，怎么显示由消费端决定。 */
+  level?: TaskNotificationLevel
+}
+
+/**
+ * 纯广播：只发一个 `message` 事件，**不进池、不进列表**，所以不会有「出现一帧又消失」的闪动。
+ *
+ * 常驻、要进监控列表、要能被结束的，用 `notifyTask`。
+ */
+export function notifyMessage(title: string, options: NotifyMessageOptions = {}): TaskNotificationMessage {
+  return taskNotifications.broadcast({
+    title,
+    ...(options.project === undefined ? {} : { project: options.project }),
+    ...(options.group === undefined ? {} : { group: options.group }),
+    ...(options.detail === undefined ? {} : { detail: options.detail }),
+    ...(options.icon === undefined ? {} : { icon: options.icon }),
+    ...(options.iconSvg === undefined ? {} : { iconSvg: options.iconSvg }),
+    ...(options.level === undefined ? {} : { level: options.level }),
   })
 }
 

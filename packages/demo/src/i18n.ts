@@ -32,6 +32,7 @@ export type DemoMessageKey =
   | 'tnFilterOne'
   | 'tnFilterTwo'
   | 'tnFilterAllProjects'
+  | 'tnBroadcast'
   | 'tnOpsNote'
   | 'tnFinishAll'
   | 'tnSnapshotTitle'
@@ -289,6 +290,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnFilterOne: '只看 reminder',
     tnFilterTwo: '看两个组',
     tnFilterAllProjects: '全站（含跨项目）',
+    tnBroadcast: '广播一条（不进列表）',
     tnOpsNote: '注册与过滤在这里；每条任务自己的收起 / 结束 / 还原按钮在下方列表的对应行里',
     tnFinishAll: '结束本页全部',
     tnSnapshotTitle: '状态快照',
@@ -571,6 +573,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnFilterOne: 'Reminder only',
     tnFilterTwo: 'Both groups',
     tnFilterAllProjects: 'All projects',
+    tnBroadcast: 'Broadcast one (not listed)',
     tnOpsNote: 'Register and filter here; each row has its own collapse / finish / restore actions',
     tnFinishAll: 'Finish all local tasks',
     tnSnapshotTitle: 'State snapshot',

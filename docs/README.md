@@ -30,7 +30,7 @@
 | 各功能真源（旧落位） | **不适用**（已迁入 `docs/help/<包名>.doc.ts`） | 保留行说明去向，不删行 |
 | 样例（旧落位） | **不适用**（已迁入 `docs/help/integration.*`） | 同上 |
 | 运行逻辑 | `docs/design/architecture.md`（路径固定） | 五子包分层、依赖方向、样式注入机制、不变量 |
-| 通知任务中心契约 | `docs/design/task-notifications.md` | 状态快照、订阅、事件通知、跨页分片协议、结束句柄、Promise 结局定稿 |
+| 通知任务中心契约 | `docs/design/task-notifications.md` | 状态快照、订阅、事件、跨页分片协议、结束句柄、Promise 结局定稿、两级分组、常驻任务与纯广播之分、Web Locks 存活判定 |
 | 结构规范（运行逻辑拆分） | `docs/design/structure.md` | 代码分层树（目标态）+ demo 展示分区 + 做/暂缓标注 |
 | 功能总索引 | **不适用**（职责由 `docs/help/index.md` 承担，路径固定槽位保留行） | 引用方走帮助索引，本文件不再维护第二份 |
 | 外部事实 | `docs/design/external/dsh-host.md` | 宿主 API 契约、官方 primitives、CSS 类名发现、暗色判据来源 |

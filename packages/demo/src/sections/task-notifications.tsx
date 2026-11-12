@@ -2,6 +2,7 @@ import { createElement as h, useEffect, useRef, useState, useSyncExternalStore }
 import {
   Button,
   ListRow,
+  notifyMessage,
   notifyTask,
   setDefaultTaskProject,
   taskNotifications,
@@ -57,6 +58,13 @@ function detailText(detail: TaskNotificationDetail): string {
   return typeof detail === 'string' ? detail : JSON.stringify(detail)
 }
 
+/** 图标名由消费端映射：核心只传标识，不管怎么画。 */
+const DEMO_ICONS: Record<string, string> = { bell: '🔔', ledger: '📒', check: '✅' }
+
+function iconText(icon: string): string {
+  return DEMO_ICONS[icon] ?? icon
+}
+
 const mono: Record<string, string | number> = { fontFamily: 'var(--dshpc-font-mono)', fontSize: '12px' }
 const row: Record<string, string | number> = { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }
 const panel: Record<string, string | number> = { display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }
@@ -93,8 +101,14 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
 
   function register(group: string, label: string): void {
     serial.current += 1
-    const handle = notifyTask(`${label} #${serial.current}`, { group })
+    const handle = notifyTask(`${label} #${serial.current}`, { group, icon: group === SUB_REMINDER ? 'bell' : 'ledger' })
     handles.current.set(handle.id, handle)
+  }
+
+  /** 纯广播：列表不会多一行再少一行，只在事件区看到。 */
+  function broadcast(): void {
+    serial.current += 1
+    notifyMessage(`notice #${serial.current}`, { group: SUB_REMINDER, icon: 'check', level: 'success' })
   }
 
   /** 每条任务按自己的 id 找句柄，互不覆盖；跨页条目没有本页句柄，不给按钮。 */
@@ -132,7 +146,7 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
       h(
         'div',
         { style: main },
-        h('div', { style: { fontWeight: 600 } }, task.title),
+        h('div', { style: { fontWeight: 600 } }, task.icon === undefined ? task.title : `${iconText(task.icon)} ${task.title}`),
         h(
           'div',
           { style: { ...mono, color: 'var(--dshpc-fg-3)' } },
@@ -149,7 +163,14 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
   }
 
   function renderEvent(event: TaskNotificationEvent, index: number): ReturnType<typeof h> {
-    const label = 'task' in event ? event.task.title : 'taskId' in event ? event.taskId : event.origin
+    const label =
+      'message' in event
+        ? `${event.message.level}: ${event.message.title}`
+        : 'task' in event
+          ? event.task.title
+          : 'taskId' in event
+            ? event.taskId
+            : event.origin
     return h(
       ListRow,
       { key: `${index}-${event.type}-${label}` },
@@ -178,6 +199,7 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
           { style: row },
           h(Button, { size: 'sm', variant: 'primary', onClick: () => register(SUB_REMINDER, 'workspace-scan') }, t('tnRegisterReminder')),
           h(Button, { size: 'sm', onClick: () => register(SUB_LEDGER, 'session-index') }, t('tnRegisterLedger')),
+          h(Button, { size: 'sm', variant: 'outline', onClick: broadcast }, t('tnBroadcast')),
         ),
         h(
           'div',

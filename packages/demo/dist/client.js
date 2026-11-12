@@ -1371,6 +1371,13 @@ function setDefaultTaskProject(project) {
 function getDefaultTaskProject() {
   return projectSlot()?.value;
 }
+function normalizeGroup(group) {
+  if (group === void 0)
+    return "default";
+  if (group.trim() === "")
+    throw new Error("task notification group must be a non-empty string");
+  return group;
+}
 function requireProject(project) {
   if (project === null)
     return null;
@@ -1493,6 +1500,13 @@ function isNotice(value) {
     return value.outcome === "done" || value.outcome === "failed";
   return value.type === "registered" || value.type === "updated" || value.type === "backgrounded";
 }
+function isWireMessageValue(value) {
+  if (!isRecord(value))
+    return false;
+  if (value.detail !== void 0 && !isDetail(value.detail))
+    return false;
+  return typeof value.id === "string" && typeof value.project === "string" && typeof value.group === "string" && typeof value.title === "string" && typeof value.at === "number" && (value.level === "info" || value.level === "success" || value.level === "warning" || value.level === "error");
+}
 function parseMessage(value) {
   if (!isRecord(value) || typeof value.origin !== "string")
     return null;
@@ -1500,6 +1514,11 @@ function parseMessage(value) {
     return { kind: "hello", origin: value.origin };
   if (value.kind === "bye") {
     return typeof value.seq === "number" ? { kind: "bye", origin: value.origin, seq: value.seq } : null;
+  }
+  if (value.kind === "message") {
+    if (typeof value.seq !== "number" || !isWireMessageValue(value.message))
+      return null;
+    return { kind: "message", origin: value.origin, seq: value.seq, message: value.message };
   }
   if (value.kind === "shard") {
     if (typeof value.seq !== "number" || !Array.isArray(value.tasks))
@@ -1581,6 +1600,7 @@ function createTaskNotificationPool(options = {}) {
   let seq = 0;
   let revision = 0;
   let idSeq2 = 0;
+  let messageSeq = 0;
   let channel = null;
   let everConnected = false;
   let everPublished = false;
@@ -1615,6 +1635,28 @@ function createTaskNotificationPool(options = {}) {
     store.setState({ tasks: collect(), revision }, true);
     emit(notice, false);
     broadcastShard(notice);
+  }
+  function broadcast(input) {
+    const project = requireProject(input.project);
+    if (project === null)
+      throw new Error("task notification project cannot be null when broadcasting");
+    const group = normalizeGroup(input.group);
+    const detail = cloneDetail(input.detail);
+    const message = {
+      id: `${origin}:msg:${String(++messageSeq)}`,
+      project,
+      group,
+      title: input.title,
+      ...input.icon === void 0 ? {} : { icon: input.icon },
+      ...input.iconSvg === void 0 ? {} : { iconSvg: input.iconSvg },
+      ...detail === void 0 ? {} : { detail },
+      level: input.level ?? "info",
+      at: Date.now()
+    };
+    bus().emit({ type: "message", message, remote: false });
+    connect();
+    post({ kind: "message", origin, seq: ++messageSeq, message });
+    return message;
   }
   function find2(id3) {
     return localShard().find((task) => task.id === id3);
@@ -1669,6 +1711,10 @@ function createTaskNotificationPool(options = {}) {
         return;
       knownSeq.set(message.origin, message.seq);
       dropRemoteShard(message.origin);
+      return;
+    }
+    if (message.kind === "message") {
+      bus().emit({ type: "message", message: message.message, remote: true });
       return;
     }
     const seen = knownSeq.get(message.origin) ?? 0;
@@ -1740,9 +1786,7 @@ function createTaskNotificationPool(options = {}) {
     const project = requireProject(input.project);
     if (project === null)
       throw new Error("task notification project cannot be null when registering");
-    const group = input.group === void 0 ? "default" : input.group;
-    if (group.trim() === "")
-      throw new Error("task notification group must be a non-empty string");
+    const group = normalizeGroup(input.group);
     const detail = cloneDetail(input.detail);
     connect();
     const now = Date.now();
@@ -1753,6 +1797,8 @@ function createTaskNotificationPool(options = {}) {
       group,
       ...input.projectLabel === void 0 ? {} : { projectLabel: input.projectLabel },
       ...input.groupLabel === void 0 ? {} : { groupLabel: input.groupLabel },
+      ...input.icon === void 0 ? {} : { icon: input.icon },
+      ...input.iconSvg === void 0 ? {} : { iconSvg: input.iconSvg },
       title: input.title,
       ...detail === void 0 ? {} : { detail },
       status: "running",
@@ -1808,6 +1854,8 @@ function createTaskNotificationPool(options = {}) {
           ...detail2 === void 0 ? {} : { detail: detail2 },
           ...patch.group === void 0 ? {} : { group: patch.group },
           ...patch.groupLabel === void 0 ? {} : { groupLabel: patch.groupLabel },
+          ...patch.icon === void 0 ? {} : { icon: patch.icon },
+          ...patch.iconSvg === void 0 ? {} : { iconSvg: patch.iconSvg },
           updatedAt: Date.now()
         };
         publish(replace2(localShard(), next), { type: "updated", task: next });
@@ -1864,6 +1912,7 @@ function createTaskNotificationPool(options = {}) {
     refresh,
     select: (groups, options2) => selectTaskNotifications(store.getState(), groups, options2),
     register,
+    broadcast,
     settleLocal,
     canRestore: (task) => task.origin === origin,
     requestRestore(taskId) {
@@ -1914,6 +1963,7 @@ var taskNotifications = {
   },
   select: (groups, options) => globalPool().select(groups, options),
   register: (input) => globalPool().register(input),
+  broadcast: (input) => globalPool().broadcast(input),
   settleLocal: (reason) => globalPool().settleLocal(reason),
   canRestore: (task) => globalPool().canRestore(task),
   requestRestore: (taskId) => globalPool().requestRestore(taskId),
@@ -1928,7 +1978,20 @@ function notifyTaskBase(title, options = {}) {
     ...options.group === void 0 ? {} : { group: options.group },
     ...options.detail === void 0 ? {} : { detail: options.detail },
     ...options.projectLabel === void 0 ? {} : { projectLabel: options.projectLabel },
-    ...options.groupLabel === void 0 ? {} : { groupLabel: options.groupLabel }
+    ...options.groupLabel === void 0 ? {} : { groupLabel: options.groupLabel },
+    ...options.icon === void 0 ? {} : { icon: options.icon },
+    ...options.iconSvg === void 0 ? {} : { iconSvg: options.iconSvg }
+  });
+}
+function notifyMessage(title, options = {}) {
+  return taskNotifications.broadcast({
+    title,
+    ...options.project === void 0 ? {} : { project: options.project },
+    ...options.group === void 0 ? {} : { group: options.group },
+    ...options.detail === void 0 ? {} : { detail: options.detail },
+    ...options.icon === void 0 ? {} : { icon: options.icon },
+    ...options.iconSvg === void 0 ? {} : { iconSvg: options.iconSvg },
+    ...options.level === void 0 ? {} : { level: options.level }
   });
 }
 function runTask(title, work, options = {}) {
@@ -63758,6 +63821,7 @@ var DICT2 = {
     tnFilterOne: "\u53EA\u770B reminder",
     tnFilterTwo: "\u770B\u4E24\u4E2A\u7EC4",
     tnFilterAllProjects: "\u5168\u7AD9\uFF08\u542B\u8DE8\u9879\u76EE\uFF09",
+    tnBroadcast: "\u5E7F\u64AD\u4E00\u6761\uFF08\u4E0D\u8FDB\u5217\u8868\uFF09",
     tnOpsNote: "\u6CE8\u518C\u4E0E\u8FC7\u6EE4\u5728\u8FD9\u91CC\uFF1B\u6BCF\u6761\u4EFB\u52A1\u81EA\u5DF1\u7684\u6536\u8D77 / \u7ED3\u675F / \u8FD8\u539F\u6309\u94AE\u5728\u4E0B\u65B9\u5217\u8868\u7684\u5BF9\u5E94\u884C\u91CC",
     tnFinishAll: "\u7ED3\u675F\u672C\u9875\u5168\u90E8",
     tnSnapshotTitle: "\u72B6\u6001\u5FEB\u7167",
@@ -64006,6 +64070,7 @@ var DICT2 = {
     tnFilterOne: "Reminder only",
     tnFilterTwo: "Both groups",
     tnFilterAllProjects: "All projects",
+    tnBroadcast: "Broadcast one (not listed)",
     tnOpsNote: "Register and filter here; each row has its own collapse / finish / restore actions",
     tnFinishAll: "Finish all local tasks",
     tnSnapshotTitle: "State snapshot",
@@ -68835,6 +68900,14 @@ h(SideSheet, {
         "en": "A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter."
       },
       {
+        "zh": "\u4E24\u6761\u8DEF\uFF0C\u522B\u6DF7\u7528\uFF1A\u8981\u8FDB\u5217\u8868\u3001\u8981\u76D1\u63A7\u3001\u8981\u80FD\u88AB\u7ED3\u675F\u7684\uFF0C\u7528 `notifyTask`\uFF1B\u53EA\u60F3\u5E7F\u64AD\u4E00\u53E5\u3001\u4E0D\u9700\u8981\u7559\u5728\u5217\u8868\u91CC\u7684\uFF0C\u7528 `notifyMessage(title, options?)`\u3002\u540E\u8005**\u4E0D\u5199\u6C60\u3001\u4E0D\u52A8\u5FEB\u7167**\uFF08`revision` \u4E0D\u53D8\uFF09\uFF0C\u53EA\u53D1\u4E00\u4E2A `message` \u4E8B\u4EF6\uFF0C\u6240\u4EE5\u4E0D\u4F1A\u51FA\u73B0\u300C\u5217\u8868\u95EA\u4E00\u4E0B\u300D\u3002\u53CD\u8FC7\u6765\uFF0C\u7528 `notifyTask(...).done()` \u5192\u5145\u5E7F\u64AD\u4F1A\u5148 `registered` \u518D `settled`\uFF0C\u5FC5\u95EA\u4E00\u5E27\u3002",
+        "en": "Two paths, not interchangeable: use `notifyTask` when the row must appear in the list, be monitored and be endable; use `notifyMessage(title, options?)` when you only need to announce something and it should not stay in the list. The latter writes nothing to the pool and does not touch the snapshot (`revision` stays put) \u2014 it only emits a `message` event, so the list cannot flash. Faking a broadcast with `notifyTask(...).done()` emits `registered` then `settled` and always flashes one frame."
+      },
+      {
+        "zh": "\u56FE\u6807\uFF1A`icon`\uFF08\u56FE\u6807\u540D / \u56FE\u6807\u5B57\u4F53\u7C7B\u540D\uFF09\u4E0E `iconSvg`\uFF08\u539F\u59CB SVG \u6E90\uFF09\u90FD\u53EA\u662F\u5B57\u7B26\u4E32\uFF0C\u6838\u5FC3\u53EA\u5B58\u4E0D\u89E3\u91CA\uFF0C\u6E32\u67D3\u4E0E\u6CE8\u5165\u5B89\u5168\u7531\u6D88\u8D39\u7AEF\u8D1F\u8D23 \u2014\u2014 \u7EC4\u4EF6\u548C ReactNode \u8DE8\u9875\u4F20\u4E0D\u4E86\u3002",
+        "en": "Icons: `icon` (an icon name or icon-font class) and `iconSvg` (raw SVG source) are plain strings; core stores them without interpreting, and rendering plus injection safety are the consumer's job \u2014 components and ReactNodes cannot cross pages."
+      },
+      {
         "zh": null,
         "en": "Two levels: `project` is set once at app start with `setDefaultTaskProject()`, and `group` is a second-level bucket inside it (default `default`). Reading has three tiers: omitted or empty = every group of the current project; one or more names = only those groups; `'*'` = every project and every group. A third argument `{ project }` switches projects, and `{ project: null }` drops the project filter. Core cannot discover a project name, so somebody must set it; `projectLabel` / `groupLabel` only override display names."
       },
@@ -68915,6 +68988,15 @@ h(SideSheet, {
             "desc": {
               "zh": "\u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20",
               "en": "Wraps an async task: done on success, fail on rejection, passing the result and error through"
+            }
+          },
+          {
+            "name": "notifyMessage(title, options?)",
+            "type": "(title: string, options?: NotifyMessageOptions) => TaskNotificationMessage",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u7EAF\u5E7F\u64AD\uFF1A\u53EA\u53D1 message \u4E8B\u4EF6\uFF0C\u4E0D\u8FDB\u6C60\u3001\u4E0D\u52A8\u5FEB\u7167\uFF0C\u56E0\u6B64\u5217\u8868\u4E0D\u4F1A\u95EA",
+              "en": "Pure broadcast: emits a message event only, writes no pool state and leaves the snapshot alone, so the list cannot flash"
             }
           },
           {
@@ -69152,7 +69234,7 @@ h(SideSheet, {
       {
         "id": "bt-lifecycle-example",
         "lang": "ts",
-        "src": "import { notifyTask, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// \u9879\u76EE\u5728 app \u5165\u53E3\u8BBE\u4E00\u6B21\uFF1Bcore \u53D6\u4E0D\u5230\u9879\u76EE\u540D\uFF0C\u6240\u4EE5\u5FC5\u987B\u6709\u4EBA\u544A\u8BC9\u5B83\nsetDefaultTaskProject('dsh-task-reminder')\n\n// \u2460 \u81EA\u5DF1\u7BA1\u7ED3\u675F\uFF1A\u62FF\u5230\u53E5\u67C4\uFF0C\u968F\u65F6\u66F4\u65B0\uFF0C\u81EA\u5DF1\u6536\u5C3E\nconst handle = notifyTask('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', { group: 'scan', detail: { done: 12, total: 40 } })\nhandle.background()   // \u53EA\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\u4EFB\u52A1\nhandle.done('\u626B\u63CF\u5B8C\u6210')\n// handle.fail('\u88AB\u7528\u6237\u53D6\u6D88')\n\n// \u2461 \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20\nawait notifyTask.run('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', () => runWork(), { group: 'scan' })\n\n// \u53E5\u67C4\u5DF2\u7ECF\u5728\u624B\u65F6\u624D\u7528\u5F97\u4E0A\u7684\u515C\u5E95\uFF1A\u4E0E run \u540C\u4E00\u4E2A\u6536\u5C3E\uFF0C\u4E0D\u6539\u53D8\u539F Promise \u7684\u7ED3\u7B97\u8BED\u4E49\n// await handle.track(otherWork())   // otherWork(): Promise<void>\uFF0C\u7531\u8C03\u7528\u65B9\u63D0\u4F9B\n// await handle.settled              // \u53EA\u5728\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0"
+        "src": "import { notifyTask, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// \u9879\u76EE\u5728 app \u5165\u53E3\u8BBE\u4E00\u6B21\uFF1Bcore \u53D6\u4E0D\u5230\u9879\u76EE\u540D\uFF0C\u6240\u4EE5\u5FC5\u987B\u6709\u4EBA\u544A\u8BC9\u5B83\nsetDefaultTaskProject('dsh-task-reminder')\n\n// \u2460 \u81EA\u5DF1\u7BA1\u7ED3\u675F\uFF1A\u62FF\u5230\u53E5\u67C4\uFF0C\u968F\u65F6\u66F4\u65B0\uFF0C\u81EA\u5DF1\u6536\u5C3E\nconst handle = notifyTask('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', { group: 'scan', detail: { done: 12, total: 40 } })\nhandle.background()   // \u53EA\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\u4EFB\u52A1\nhandle.done('\u626B\u63CF\u5B8C\u6210')\n// handle.fail('\u88AB\u7528\u6237\u53D6\u6D88')\n\n// \u2461 \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20\nawait notifyTask.run('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', () => runWork(), { group: 'scan' })\n\n// \u2462 \u53EA\u60F3\u5E7F\u64AD\u4E00\u53E5\uFF1A\u4E0D\u8FDB\u5217\u8868\uFF0C\u53EA\u53D1 message \u4E8B\u4EF6\uFF0C\u4E0D\u4F1A\u95EA\nnotifyMessage('\u5DF2\u4FDD\u5B58', { group: 'notice', icon: 'check', level: 'success' })\n\n// \u53E5\u67C4\u5DF2\u7ECF\u5728\u624B\u65F6\u624D\u7528\u5F97\u4E0A\u7684\u515C\u5E95\uFF1A\u4E0E run \u540C\u4E00\u4E2A\u6536\u5C3E\uFF0C\u4E0D\u6539\u53D8\u539F Promise \u7684\u7ED3\u7B97\u8BED\u4E49\n// await handle.track(otherWork())   // otherWork(): Promise<void>\uFF0C\u7531\u8C03\u7528\u65B9\u63D0\u4F9B\n// await handle.settled              // \u53EA\u5728\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0"
       }
     ]
   }
@@ -73221,6 +73303,10 @@ await notifyTask.run('workspace-scan', () => scanWorkspace(), { group: 'scan' })
 function detailText(detail) {
   return typeof detail === "string" ? detail : JSON.stringify(detail);
 }
+var DEMO_ICONS = { bell: "\u{1F514}", ledger: "\u{1F4D2}", check: "\u2705" };
+function iconText(icon2) {
+  return DEMO_ICONS[icon2] ?? icon2;
+}
 var mono = { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px" };
 var row = { display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" };
 var panel = { display: "flex", flexDirection: "column", gap: "8px", fontSize: "12px" };
@@ -73246,8 +73332,12 @@ function TaskNotificationsPage() {
   const localPending = [...handles.current.values()].filter((handle) => !handle.isSettled).length;
   function register(group, label) {
     serial.current += 1;
-    const handle = notifyTask(`${label} #${serial.current}`, { group });
+    const handle = notifyTask(`${label} #${serial.current}`, { group, icon: group === SUB_REMINDER ? "bell" : "ledger" });
     handles.current.set(handle.id, handle);
+  }
+  function broadcast() {
+    serial.current += 1;
+    notifyMessage(`notice #${serial.current}`, { group: SUB_REMINDER, icon: "check", level: "success" });
   }
   function withHandle(task, fn) {
     const handle = handles.current.get(task.id);
@@ -73278,7 +73368,7 @@ function TaskNotificationsPage() {
       (0, import_react101.createElement)(
         "div",
         { style: main },
-        (0, import_react101.createElement)("div", { style: { fontWeight: 600 } }, task.title),
+        (0, import_react101.createElement)("div", { style: { fontWeight: 600 } }, task.icon === void 0 ? task.title : `${iconText(task.icon)} ${task.title}`),
         (0, import_react101.createElement)(
           "div",
           { style: { ...mono, color: "var(--dshpc-fg-3)" } },
@@ -73294,7 +73384,7 @@ function TaskNotificationsPage() {
     );
   }
   function renderEvent(event, index3) {
-    const label = "task" in event ? event.task.title : "taskId" in event ? event.taskId : event.origin;
+    const label = "message" in event ? `${event.message.level}: ${event.message.title}` : "task" in event ? event.task.title : "taskId" in event ? event.taskId : event.origin;
     return (0, import_react101.createElement)(
       ListRow,
       { key: `${index3}-${event.type}-${label}` },
@@ -73321,7 +73411,8 @@ function TaskNotificationsPage() {
           "div",
           { style: row },
           (0, import_react101.createElement)(Button, { size: "sm", variant: "primary", onClick: () => register(SUB_REMINDER, "workspace-scan") }, t3("tnRegisterReminder")),
-          (0, import_react101.createElement)(Button, { size: "sm", onClick: () => register(SUB_LEDGER, "session-index") }, t3("tnRegisterLedger"))
+          (0, import_react101.createElement)(Button, { size: "sm", onClick: () => register(SUB_LEDGER, "session-index") }, t3("tnRegisterLedger")),
+          (0, import_react101.createElement)(Button, { size: "sm", variant: "outline", onClick: broadcast }, t3("tnBroadcast"))
         ),
         (0, import_react101.createElement)(
           "div",
@@ -73527,7 +73618,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.25"}`],
             [t3("buildDemo"), `v${"0.35.25"}`],
-            [t3("buildStamp"), "261112-195823-900"]
+            [t3("buildStamp"), "261112-204426-956"]
           ].map(
             ([label, value]) => (0, import_react103.createElement)(
               "tr",
@@ -73846,7 +73937,7 @@ function DemoPage() {
           },
           (0, import_react105.createElement)("span", null, `core v${"0.35.25"}`),
           (0, import_react105.createElement)("span", null, `demo v${"0.35.25"}`),
-          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261112-195823-900")
+          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261112-204426-956")
         )
       )
     ),

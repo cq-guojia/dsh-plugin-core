@@ -45,6 +45,9 @@ handle.done('扫描完成')
 // ② 包住一段异步：成功 done、失败 fail，结果与异常原样透传
 await notifyTask.run('扫描工作区文件', () => runWork(), { group: 'scan' })
 
+// ③ 只想广播一句：不进列表，只发 message 事件，不会闪
+notifyMessage('已保存', { group: 'notice', icon: 'check', level: 'success' })
+
 // 句柄已经在手时才用得上的兜底：与 run 同一个收尾，不改变原 Promise 的结算语义
 // await handle.track(otherWork())   // otherWork(): Promise<void>，由调用方提供
 // await handle.settled              // 只在真正结束时兑现；收起不兑现`
@@ -53,6 +56,7 @@ const doc: DocTopic = {
   title: { zh: '通知任务中心', en: 'Task Notification Hub' },
   exports: [
     'notifyTask',
+    'notifyMessage',
     'taskNotifications',
     'taskNotificationEvents',
     'TASK_NOTIFICATIONS_LOCK_PREFIX',
@@ -81,6 +85,14 @@ const doc: DocTopic = {
         {
           zh: '快照是 `{ tasks, revision }`，`tasks` 按开始时间再按 id 排序，跨页顺序确定；无变化不产生新对象，`getServerSnapshot()` 永远是同一个冻结空快照。`selectTaskNotifications()` 对同一快照与同一过滤条件返回同一数组。',
           en: 'A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter.',
+        },
+        {
+          zh: '两条路，别混用：要进列表、要监控、要能被结束的，用 `notifyTask`；只想广播一句、不需要留在列表里的，用 `notifyMessage(title, options?)`。后者**不写池、不动快照**（`revision` 不变），只发一个 `message` 事件，所以不会出现「列表闪一下」。反过来，用 `notifyTask(...).done()` 冒充广播会先 `registered` 再 `settled`，必闪一帧。',
+          en: 'Two paths, not interchangeable: use `notifyTask` when the row must appear in the list, be monitored and be endable; use `notifyMessage(title, options?)` when you only need to announce something and it should not stay in the list. The latter writes nothing to the pool and does not touch the snapshot (`revision` stays put) — it only emits a `message` event, so the list cannot flash. Faking a broadcast with `notifyTask(...).done()` emits `registered` then `settled` and always flashes one frame.',
+        },
+        {
+          zh: '图标：`icon`（图标名 / 图标字体类名）与 `iconSvg`（原始 SVG 源）都只是字符串，核心只存不解释，渲染与注入安全由消费端负责 —— 组件和 ReactNode 跨页传不了。',
+          en: 'Icons: `icon` (an icon name or icon-font class) and `iconSvg` (raw SVG source) are plain strings; core stores them without interpreting, and rendering plus injection safety are the consumer\'s job — components and ReactNodes cannot cross pages.',
         },
         {
           zh: '两级分组：`project`（项目）在 app 入口用 `setDefaultTaskProject()` 设一次，`group` 是项目内的二级分类（缺省 `default`）。读取三档：不传 / 空数组 = 本项目全部二级；一个或多个名字 = 本项目这几个二级；`'*'` = 所有项目所有二级。第三参 `{ project }` 可以换项目，`{ project: null }` 表示不限项目。项目名 core 取不到，所以必须有人设；`projectLabel` / `groupLabel` 只覆盖显示名。',
@@ -124,6 +136,7 @@ const doc: DocTopic = {
             { name: 'getDefaultTaskProject()', type: '() => string | undefined', def: 'undefined', desc: { zh: '读当前默认项目', en: 'Reads the current default project' } },
             { name: 'notifyTask(title, options?)', type: '(title: string, options?: NotifyTaskOptions) => TaskNotificationHandle', def: '—', desc: { zh: '日常入口：项目取全局默认、二级分组取 options.group（缺省 default）；需要对象参数或池级能力时用 register', en: 'Everyday entry: project from the global default, group from options.group (default "default"); reach for register when you need an options object or pool-level control' } },
             { name: 'notifyTask.run(title, work, options?)', type: '<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions) => Promise<T>', def: '—', desc: { zh: '包住一段异步：成功 done、失败 fail，结果与异常原样透传', en: 'Wraps an async task: done on success, fail on rejection, passing the result and error through' } },
+            { name: 'notifyMessage(title, options?)', type: '(title: string, options?: NotifyMessageOptions) => TaskNotificationMessage', def: '—', desc: { zh: '纯广播：只发 message 事件，不进池、不动快照，因此列表不会闪', en: 'Pure broadcast: emits a message event only, writes no pool state and leaves the snapshot alone, so the list cannot flash' } },
             { name: 'getSnapshot()', type: '() => TaskNotificationSnapshot', def: '—', desc: { zh: '当前全量快照，引用稳定；可直接作 useSyncExternalStore 的第二参', en: 'Current full snapshot with a stable reference; use as the second useSyncExternalStore argument' } },
             { name: 'getServerSnapshot()', type: '() => TaskNotificationSnapshot', def: '冻结空快照', desc: { zh: 'SSR / 非宿主环境用，永远是同一个对象', en: 'For SSR and non-host environments; always the same object' } },
             { name: 'subscribe(listener)', type: '(listener: () => void) => () => void', def: '—', desc: { zh: '状态真变了才通知；返回退订函数', en: 'Notifies only on real state changes; returns an unsubscribe function' } },

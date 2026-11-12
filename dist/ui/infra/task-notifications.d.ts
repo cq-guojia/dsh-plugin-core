@@ -27,6 +27,10 @@ export interface TaskNotificationRecord {
     /** Optional display name override for the group. */
     readonly groupLabel?: string;
     readonly title: string;
+    /** 图标标识（图标名 / 图标字体类名）。核心不解释它，由消费端渲染。 */
+    readonly icon?: string;
+    /** 原始 SVG 源，消费端自行渲染；核心只存不解释，注入风险由调用方承担。 */
+    readonly iconSvg?: string;
     readonly detail?: TaskNotificationDetail;
     readonly status: TaskNotificationStatus;
     readonly startedAt: number;
@@ -44,6 +48,8 @@ export interface TaskNotificationInput {
     readonly title: string;
     projectLabel?: string;
     groupLabel?: string;
+    icon?: string;
+    iconSvg?: string;
     detail?: TaskNotificationDetail;
 }
 export interface TaskNotificationPatch {
@@ -52,6 +58,35 @@ export interface TaskNotificationPatch {
     /** Second level only: a task never changes project. */
     group?: string;
     groupLabel?: string;
+    icon?: string;
+    iconSvg?: string;
+}
+export type TaskNotificationLevel = 'info' | 'success' | 'warning' | 'error';
+/**
+ * 纯广播：只出 `message` 事件，**不进池、不进列表**，所以不会有任何一闪。
+ * 常驻监控请用 notifyTask；这里的东西发完即止，没有 id 可查、也不可结束。
+ */
+export interface TaskNotificationMessage {
+    readonly id: string;
+    readonly project: string;
+    readonly group: string;
+    readonly title: string;
+    readonly icon?: string;
+    readonly iconSvg?: string;
+    readonly detail?: TaskNotificationDetail;
+    readonly level: TaskNotificationLevel;
+    readonly at: number;
+}
+export interface TaskNotificationMessageInput {
+    /** Defaults to the global default project; throws when neither is set. */
+    project?: string;
+    /** Second level; defaults to 'default'. */
+    group?: string;
+    readonly title: string;
+    icon?: string;
+    iconSvg?: string;
+    detail?: TaskNotificationDetail;
+    level?: TaskNotificationLevel;
 }
 /** `'*'` means every project, every group. An array means those groups of one project. */
 export type TaskNotificationGroupFilter = readonly string[] | '*';
@@ -97,6 +132,12 @@ export type TaskNotificationEvent = {
     readonly type: 'settled';
     readonly outcome: 'done' | 'failed';
     readonly task: TaskNotificationRecord;
+    readonly remote: boolean;
+}
+/** 纯广播：来了就是一条消息，池里没有它，列表不会因为它闪一下。 */
+ | {
+    readonly type: 'message';
+    readonly message: TaskNotificationMessage;
     readonly remote: boolean;
 }
 /** Never crosses pages: restoring a dialog is local by contract. */
@@ -153,6 +194,8 @@ export interface TaskNotificationPool {
     refresh(): void;
     select(groups?: TaskNotificationGroupFilter, options?: TaskNotificationSelectOptions): readonly TaskNotificationRecord[];
     register(input: TaskNotificationInput): TaskNotificationHandle;
+    /** 纯广播：只出 `message` 事件，不写池、不动快照。 */
+    broadcast(input: TaskNotificationMessageInput): TaskNotificationMessage;
     /** Settle every task this page still owns; handles are not needed. */
     settleLocal(reason?: string): number;
     canRestore(task: TaskNotificationRecord): boolean;
@@ -188,6 +231,10 @@ export interface NotifyTaskOptions {
     detail?: TaskNotificationDetail;
     projectLabel?: string;
     groupLabel?: string;
+    /** 图标标识（图标名 / 字体类名），核心不解释，消费端渲染。 */
+    icon?: string;
+    /** 原始 SVG 源，消费端自行渲染。 */
+    iconSvg?: string;
 }
 /**
  * 日常入口：只要一个标题，项目和二级分组都能省。
@@ -201,6 +248,23 @@ export interface NotifyTask {
     /** 包住一段异步：成功走 done、失败走 fail，结果与异常原样透传。 */
     run<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions): Promise<T>;
 }
+export interface NotifyMessageOptions {
+    /** 一级分组：缺省用全局默认项目。 */
+    project?: string;
+    /** 二级分组：缺省 'default'。 */
+    group?: string;
+    detail?: TaskNotificationDetail;
+    icon?: string;
+    iconSvg?: string;
+    /** 语义级别，缺省 info；核心只用它传数据，怎么显示由消费端决定。 */
+    level?: TaskNotificationLevel;
+}
+/**
+ * 纯广播：只发一个 `message` 事件，**不进池、不进列表**，所以不会有「出现一帧又消失」的闪动。
+ *
+ * 常驻、要进监控列表、要能被结束的，用 `notifyTask`。
+ */
+export declare function notifyMessage(title: string, options?: NotifyMessageOptions): TaskNotificationMessage;
 export declare const notifyTask: NotifyTask;
 export declare const taskNotificationEvents: TaskNotificationEventBus;
 export declare function subscribeTaskNotificationEvents(listener: TaskNotificationEventListener): () => void;

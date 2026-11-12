@@ -4507,6 +4507,14 @@ export const docData = {
         "en": "A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter."
       },
       {
+        "zh": "两条路，别混用：要进列表、要监控、要能被结束的，用 `notifyTask`；只想广播一句、不需要留在列表里的，用 `notifyMessage(title, options?)`。后者**不写池、不动快照**（`revision` 不变），只发一个 `message` 事件，所以不会出现「列表闪一下」。反过来，用 `notifyTask(...).done()` 冒充广播会先 `registered` 再 `settled`，必闪一帧。",
+        "en": "Two paths, not interchangeable: use `notifyTask` when the row must appear in the list, be monitored and be endable; use `notifyMessage(title, options?)` when you only need to announce something and it should not stay in the list. The latter writes nothing to the pool and does not touch the snapshot (`revision` stays put) — it only emits a `message` event, so the list cannot flash. Faking a broadcast with `notifyTask(...).done()` emits `registered` then `settled` and always flashes one frame."
+      },
+      {
+        "zh": "图标：`icon`（图标名 / 图标字体类名）与 `iconSvg`（原始 SVG 源）都只是字符串，核心只存不解释，渲染与注入安全由消费端负责 —— 组件和 ReactNode 跨页传不了。",
+        "en": "Icons: `icon` (an icon name or icon-font class) and `iconSvg` (raw SVG source) are plain strings; core stores them without interpreting, and rendering plus injection safety are the consumer's job — components and ReactNodes cannot cross pages."
+      },
+      {
         "zh": null,
         "en": "Two levels: `project` is set once at app start with `setDefaultTaskProject()`, and `group` is a second-level bucket inside it (default `default`). Reading has three tiers: omitted or empty = every group of the current project; one or more names = only those groups; `'*'` = every project and every group. A third argument `{ project }` switches projects, and `{ project: null }` drops the project filter. Core cannot discover a project name, so somebody must set it; `projectLabel` / `groupLabel` only override display names."
       },
@@ -4587,6 +4595,15 @@ export const docData = {
             "desc": {
               "zh": "包住一段异步：成功 done、失败 fail，结果与异常原样透传",
               "en": "Wraps an async task: done on success, fail on rejection, passing the result and error through"
+            }
+          },
+          {
+            "name": "notifyMessage(title, options?)",
+            "type": "(title: string, options?: NotifyMessageOptions) => TaskNotificationMessage",
+            "def": "—",
+            "desc": {
+              "zh": "纯广播：只发 message 事件，不进池、不动快照，因此列表不会闪",
+              "en": "Pure broadcast: emits a message event only, writes no pool state and leaves the snapshot alone, so the list cannot flash"
             }
           },
           {
@@ -4824,7 +4841,7 @@ export const docData = {
       {
         "id": "bt-lifecycle-example",
         "lang": "ts",
-        "src": "import { notifyTask, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// 项目在 app 入口设一次；core 取不到项目名，所以必须有人告诉它\nsetDefaultTaskProject('dsh-task-reminder')\n\n// ① 自己管结束：拿到句柄，随时更新，自己收尾\nconst handle = notifyTask('扫描工作区文件', { group: 'scan', detail: { done: 12, total: 40 } })\nhandle.background()   // 只发 backgrounded 事件，不结算任务\nhandle.done('扫描完成')\n// handle.fail('被用户取消')\n\n// ② 包住一段异步：成功 done、失败 fail，结果与异常原样透传\nawait notifyTask.run('扫描工作区文件', () => runWork(), { group: 'scan' })\n\n// 句柄已经在手时才用得上的兜底：与 run 同一个收尾，不改变原 Promise 的结算语义\n// await handle.track(otherWork())   // otherWork(): Promise<void>，由调用方提供\n// await handle.settled              // 只在真正结束时兑现；收起不兑现"
+        "src": "import { notifyTask, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// 项目在 app 入口设一次；core 取不到项目名，所以必须有人告诉它\nsetDefaultTaskProject('dsh-task-reminder')\n\n// ① 自己管结束：拿到句柄，随时更新，自己收尾\nconst handle = notifyTask('扫描工作区文件', { group: 'scan', detail: { done: 12, total: 40 } })\nhandle.background()   // 只发 backgrounded 事件，不结算任务\nhandle.done('扫描完成')\n// handle.fail('被用户取消')\n\n// ② 包住一段异步：成功 done、失败 fail，结果与异常原样透传\nawait notifyTask.run('扫描工作区文件', () => runWork(), { group: 'scan' })\n\n// ③ 只想广播一句：不进列表，只发 message 事件，不会闪\nnotifyMessage('已保存', { group: 'notice', icon: 'check', level: 'success' })\n\n// 句柄已经在手时才用得上的兜底：与 run 同一个收尾，不改变原 Promise 的结算语义\n// await handle.track(otherWork())   // otherWork(): Promise<void>，由调用方提供\n// await handle.settled              // 只在真正结束时兑现；收起不兑现"
       }
     ]
   }
