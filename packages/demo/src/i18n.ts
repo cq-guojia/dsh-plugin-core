@@ -11,9 +11,6 @@ export type DemoMessageKey =
   | 'grpComponents'
   | 'grpBlocks'
   | 'grpUtils'
-  | 'grpReference'
-  | 'secOverview'
-  | 'secInstall'
   | 'secHelpIndex'
   | 'secQuickstart'
   | 'secFoundation'
@@ -45,25 +42,13 @@ export type DemoMessageKey =
   | 'tnCountLabel'
   | 'tnBadgeLocal'
   | 'tnBadgeRemote'
-  | 'secWritePlugin'
   | 'secReference'
-  | 'secNaming'
   | 'secActions'
   | 'secInputs'
   | 'secDisplay'
   | 'secNavigation'
-  | 'secButton'
-  | 'secInput'
-  | 'secPicker'
-  | 'secDateTime'
   | 'dateTimePickerHint'
-  | 'secTooltip'
-  | 'secCard'
-  | 'secChip'
-  | 'secFlipText'
-  | 'secTable'
   | 'tableHint'
-  | 'tableEmptyHint'
   | 'tableSpanHint'
   | 'tableGroupHint'
   | 'paginationHint'
@@ -71,7 +56,6 @@ export type DemoMessageKey =
   | 'tableLoadingHint'
   | 'secFeedback'
   | 'secLayout'
-  | 'secToolbar'
   | 'secExplorer'
   | 'secSession'
   | 'secDate'
@@ -85,14 +69,10 @@ export type DemoMessageKey =
   | 'phTodo'
   | 'inputMissingDesc'
   | 'pickerLogicDesc'
-  | 'overviewDesc'
-  | 'installDesc'
-  | 'quickstartDesc'
   | 'tokensHint'
   | 'darkHint'
   | 'darkNow'
   | 'injectHint'
-  | 'namingDesc'
   | 'btnTextTitle'
   | 'btnTextHint'
   | 'btnVariantTitle'
@@ -147,8 +127,6 @@ export type DemoMessageKey =
   | 'marqueeTitle'
   | 'liveTitle'
   | 'flipTitle'
-  | 'feedbackModalHint'
-  | 'feedbackToastHint'
   | 'dockHint'
   | 'dockMainText'
   | 'dockPanelBody'
@@ -168,8 +146,6 @@ export type DemoMessageKey =
   | 'dockPanelC'
   | 'dockCustomHeadTitle'
   | 'dockCustomHeadHint'
-  | 'explorerDataTitle'
-  | 'explorerDataHint'
   | 'explorerFilesNone'
   | 'explorerAnchorNone'
   | 'explorerAnchorLabel'
@@ -178,21 +154,13 @@ export type DemoMessageKey =
   | 'methodATitle'
   | 'methodAHint'
   | 'openRootPreview'
-  | 'sampleMd'
-  | 'sampleHtml'
-  | 'sampleCss'
   | 'methodBTitle'
   | 'methodBHint'
   | 'pickAny'
-  | 'pickTs'
   | 'pickDir'
-  | 'pickFolder'
   | 'pickNone'
   | 'pickResult'
-  | 'previewBodyTitle'
-  | 'previewBodyHint'
   | 'pickJsMd'
-  | 'openedPath'
   | 'sessionRealTitle'
   | 'sessionRealHint'
   | 'sessionSlotTitle'
@@ -225,11 +193,6 @@ export type DemoMessageKey =
   | 'sessionListEmpty'
   | 'sessionListRunning'
   | 'sessionListArchived'
-  | 'dateHint'
-  | 'numberHint'
-  | 'textDesc'
-  | 'httpDesc'
-  | 'i18nDesc'
   | 'i18nNow'
   | 'a11yDesc'
   | 'roadmapHint'
@@ -259,21 +222,11 @@ export type DemoMessageKey =
   | 'demoBarTitle'
   | 'surfaceHint'
   | 'barHint'
-  | 'segDay'
-  | 'segWeek'
-  | 'segMonth'
   | 'segAll'
   | 'segDoing'
   | 'segClaimed'
   | 'segBlocked'
   | 'segStalled'
-  | 'weekday1'
-  | 'weekday2'
-  | 'weekday3'
-  | 'weekday4'
-  | 'weekday5'
-  | 'weekday6'
-  | 'weekday7'
   | 'pluginTitle'
   | 'settingsIntro'
   | 'settingsEntryTitle'
@@ -293,12 +246,8 @@ export type DemoMessageKey =
   // 反馈页（弹窗 + 提示）
   // 布局页（PanelDock）
   // 区块页（explorer / session）
-  | 'blocksNote'
   // 工具页（utils）
-  | 'utilsNote'
   // 起始/基础/参考页
-  | 'startNote'
-  | 'foundationNote'
   | 'referenceNote'
   | 'docNote'
   | 'docPreview'
@@ -317,11 +266,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     grpComponents: '控件',
     grpBlocks: '应用模块',
     grpUtils: '工具方法',
-    grpReference: '参考',
 
-    secOverview: '概览',
     secHelpIndex: '帮助索引',
-    secInstall: '安装与初始化',
     secQuickstart: '快速开始',
     secFoundation: '设计基础',
     secTaskNotifications: '通知任务中心',
@@ -352,24 +298,12 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnCountLabel: '显示 / 全池',
     tnBadgeLocal: '本页创建 · 可还原',
     tnBadgeRemote: '跨页条目 · 能看不能点',
-    secWritePlugin: '写一个插件',
     secReference: '参考与约定',
-    secNaming: '命名与前缀契约',
     secActions: '动作',
     secInputs: '录入',
     secDisplay: '展示',
     secNavigation: '导航',
-    secButton: '按钮',
-    secInput: '录入',
-    secPicker: '选择器',
-    secDateTime: '日期时间',
-    secTooltip: '提示',
-    secCard: '卡片与容器',
-    secChip: '标签 · 文本 · 状态',
-    secFlipText: '翻牌文本',
-    secTable: '表格',
     tableHint: '全框外观：双行表头、斑马纹、点行选中',
-    tableEmptyHint: '无数据时的内置空态',
     tableSpanHint: '无左右外框：跨行、跨列合并',
     tableGroupHint: '默认外观：groups 分组表，组间一条实线',
     paginationHint: '独立分页：对齐、简洁模式、总数可选',
@@ -377,7 +311,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tableLoadingHint: '加载态与空态切换',
     secFeedback: '反馈',
     secLayout: '布局与滚动',
-    secToolbar: '快捷工具栏',
     secExplorer: '工作区浏览',
     secSession: '会话预览',
     secDate: '日期与时间',
@@ -395,14 +328,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     pickerLogicDesc:
       '本页尚未展示：\n· picker-logic 导出的纯函数 filterGroups / flattenOptions / groupOf / labelsOf / toGroups / toggleValue\n' +
       '—— 它们是选择题底层的取值逻辑，没有 UI，需要一张「输入 → 输出」的速查表才讲得清',
-    overviewDesc:
-      '待补：\n· 包的一句话定位：谁能用、解决什么\n· 五个子包各自回答什么问题（design / ui / utils / explorer / session）\n· 一张能力地图，直接跳到对应二级页\n· 不适用边界（不是 i18n 框架、不是设置页骨架）',
-    installDesc:
-      '待补：\n· 依赖声明怎么装（git 安装，宿主不跑构建脚本）\n· 入口必须做的一行：setStyleKit（控件样式按需自注入）\n· 为什么 @deepseek-ai/* 必须标 external（不标打包会失败）\n· 宿主 slots 注册：sidebar.panellist / main / plugins.bundle.config（设置页）\n· 装不上的排查清单（先看 build 编码是否变了）',
-    quickstartDesc:
-      '待补：\n· 一个最小可跑插件的完整源码\n· 从建目录到在宿主里看见它的分步说明\n· 本预览插件自己就是样例，可对照 packages/demo/src',
-    namingDesc:
-      '待补：\n· 变量与类名统一 dshpc 前缀的理由\n· 类名必须与组件里硬编码的 className 逐字一致——不一致会整片失效\n· createStyleKit({ id }) 隔离到什么粒度\n· 注入顺序：同特异性时后注入者胜出\n· 明暗判据为什么是 body[data-ds-dark-theme] 而不是系统设置',
     dockHint:
       '右侧停靠分栏，挂在整页上：结构写在页面里（DockPanel），open(id) 只管显隐。\n试一遍：开 A（图标 + 标题 + 右侧标签）→ 开 B（整块自定义头部）→ 开 C（无头部、关闭钮浮在右上角）→ 关 A 后再开新组名 → 满 3 栏再开会被拒绝。\n另：点分割线中间的 › 可把该栏收起成右侧耳朵（分栏消失、不占宽），点耳朵展开。',
     dockMainText: '分栏是布局成员：它把这一页的正文挤窄，而不是盖在上面。三个面板分别演示内置头、自定义头、无头 + 浮动关闭钮。',
@@ -423,12 +348,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     dockBtnDefault: '打开默认窗口',
     dockBtnOpenC: '打开 C',
     dockBtnReset: '全部关闭',
-    textDesc:
-      '待补：\n· baseNameOf / safeTrim / truncateBytes 的实际表现\n· crumbsOf / extOf / joinPath / mimeOf / parentOf\n· 共同口径：解析失败一律兜底、不抛错、不编造',
-    httpDesc:
-      '待补：\n· request / requestJson 的用法\n· HttpError 的字段与判错方式\n· 超时 / 重试 / 鉴权怎么传',
-    i18nDesc:
-      '待补：\n· getLocale / setLocale：单一语言状态\n· 核心自带的多语言是「组件的固定提示语」，不含插件界面文案\n· 插件自己的文案由插件自管——本预览插件的 DICT 就是样例\n· 语言由宿主驱动，插件不自带语言选择器',
     i18nNow: '当前 locale',
     a11yDesc:
       '待补：\n· 焦点环与键盘可达性\n· Tab 顺序与 Modal 的焦点陷阱\n· role / aria-* 语义的覆盖情况\n· 对比度与 prefers-reduced-motion 的处理',
@@ -464,14 +383,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
 
 
-    blocksNote: '工作区浏览两块演示：① Explorer——右侧停靠预览（openFilePreview，占宽度、把主区挤窄）与锚定弹窗选文件（pickWorkspaceFile，Promise 返回工作区相对路径）。② Session——会话预览（SessionPreview，variant modal/inline）。本页不用任何 mock：样例文件是仓库真文件，取数走宿主 workspaceFiles，探不到就如实说「没找到」。',
 
 
-    utilsNote: 'utils 组是纯函数工具：日期时间格式化、数字/体积格式化、多语言。全部走当前 locale（由宿主驱动，切宿主语言即变）。',
 
 
-    startNote: '快速开始：原「概览 / 安装与初始化 / 写一个插件」三条并成一页，每块仍是独立卡片。先看一眼能从本包拿到什么，再照安装与样式注入两段把环境搭起来。',
-    foundationNote: '设计基础：Token 色板（全部消费 --dshpc-* 变量，明暗交给 token）、暗色主题判据（渲染时读 body[data-ds-dark-theme]）、样式注入（createStyleKit + setStyleKit，每个插件用固定 id）、命名契约（dshpc- 前缀）。',
     referenceNote: '参考与约定：无障碍要点、明确不做的部分（与 docs/design/features.md 同源）、版本与构建产物信息。',
     btnLabelSave: '保存修改',
     btnLabelCancel: '取消',
@@ -530,13 +445,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     liveTitle: 'LiveText 实时文本',
     flipTitle: 'FlipText 翻牌文本',
 
-    feedbackModalHint: '自绘 overlay；遮罩 / Esc / ✕ 都能关',
-    feedbackToastHint: '命令式 notify，不要求挂组件',
 
-    explorerDataTitle: '数据来源（真数据，无 mock）',
-    explorerDataHint:
-      '文件服务取宿主的 remote.workspaceFiles（dotted 注入），工作区清单取官方 workspaces 服务快照；' +
-      '「最近会话所属工作区」= 更新过的最新且带会话的那个工作区（pickWorkspaceAnchor）——list / read 都要 sessionId，锚点必须先落到一个真会话上。',
     explorerFilesNone: '未就位：宿主还没给出 remote.workspaceFiles（文件预览 / 选择都不可用，不造假数据）',
     explorerAnchorNone: '未就位：工作区清单里还没有带会话的工作区（先在宿主里开一个会话再回来看）',
     explorerAnchorLabel: '当前锚点：',
@@ -545,23 +454,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     methodATitle: '方法 A：openFilePreview 侧边栏预览',
     methodAHint: '传文件或文件夹路径，右侧分栏打开，主区被挤窄而不是盖上去',
     openRootPreview: '打开最近工作区的根目录',
-    sampleMd: '预览 README.md',
-    sampleHtml: '预览 demo.html',
-    sampleCss: '预览 sample.css',
     methodBTitle: '方法 B：pickWorkspaceFile 选择文件',
     methodBHint: '锚点旁弹模态，Promise 返回 { path, isDir }',
     pickAny: '选择文件（不限）',
-    pickTs: '只要 .ts',
     pickDir: '只要文件夹',
-    pickFolder: '文件夹',
     pickNone: '还没选',
     pickJsMd: '仅 JS/MD',
-    openedPath: '已打开：',
     pickResult: '已选择',
-    previewBodyTitle: 'FilePreview 预览体（可单独用）',
-    previewBodyHint:
-      '上面那块已经包含它——FileBrowser 内部渲染的就是 FilePreview。\n' +
-      '它同时也是一条独立子路径 dsh-plugin-core/explorer/preview：只有一个文件要显示时（会话附件、工具输出）不必搬出整个面板。',
     sessionRealTitle: '真实会话列表',
     exModelPickerTitle: 'ModelPicker（真实目录）',
     exWorkspacePickerTitle: 'WorkspacePicker（真实列表）',
@@ -594,8 +493,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     sessionSlotHeader: '顶端槽：调用方自己的内容（随会话滚动）',
     sessionSlotFooter: '底端槽：本次会话的产出汇总',
 
-    dateHint: '解析失败给兜底，不抛错、不编造',
-    numberHint: 'formatBytes 1024 进制；formatCount 千分位',
 
     roadmapHint: '下面列的是明确不提供的能力',
     roadmapOut: '设置页骨架、i18n 框架（插件文案插件自管）、host 宿主类型面',
@@ -612,21 +509,11 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     themeLight: '浅色',
     themeDark: '深色',
 
-    segDay: '日',
-    segWeek: '周',
-    segMonth: '月',
     segAll: '全部',
     segDoing: '进行中',
     segClaimed: '待认领',
     segBlocked: '阻塞',
     segStalled: '停滞',
-    weekday1: '一',
-    weekday2: '二',
-    weekday3: '三',
-    weekday4: '四',
-    weekday5: '五',
-    weekday6: '六',
-    weekday7: '日',
     // 文档骨架：示例 / 代码 / 用法 / API 表的栏位名与表头
     docNote: '说明',
     docPreview: '示例',
@@ -660,11 +547,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     grpComponents: 'Components',
     grpBlocks: 'App modules',
     grpUtils: 'Utilities',
-    grpReference: 'Reference',
 
-    secOverview: 'Overview',
     secHelpIndex: 'Help index',
-    secInstall: 'Install & init',
     secQuickstart: 'Quick start',
     secFoundation: 'Foundations',
     secTaskNotifications: 'Task Notification Hub',
@@ -695,24 +579,12 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnCountLabel: 'shown / total',
     tnBadgeLocal: 'Created here · restorable',
     tnBadgeRemote: 'Cross-page row · view only',
-    secWritePlugin: 'Write a plugin',
     secReference: 'Reference',
-    secNaming: 'Naming & prefix contract',
     secActions: 'Actions',
     secInputs: 'Inputs',
     secDisplay: 'Display',
     secNavigation: 'Navigation',
-    secButton: 'Button',
-    secInput: 'Inputs',
-    secPicker: 'Pickers',
-    secDateTime: 'Date & time',
-    secTooltip: 'Tooltip',
-    secCard: 'Cards & containers',
-    secChip: 'Tags · text · states',
-    secFlipText: 'Flip text',
-    secTable: 'Table',
     tableHint: 'Full frame: grouped header, zebra, click-to-select',
-    tableEmptyHint: 'Built-in empty state',
     tableSpanHint: 'No side edges: row and column spans',
     tableGroupHint: 'Default look: grouped table, solid rule between groups',
     paginationHint: 'Standalone pager: align, simple, total',
@@ -720,7 +592,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tableLoadingHint: 'Loading and empty states',
     secFeedback: 'Feedback',
     secLayout: 'Layout',
-    secToolbar: 'Quick toolbar',
     secExplorer: 'Workspace browsing',
     secSession: 'Session preview',
     secDate: 'Date & time',
@@ -738,14 +609,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     pickerLogicDesc:
       'Not shown on this page yet:\n· The pure helpers from picker-logic: filterGroups / flattenOptions / groupOf / labelsOf / toGroups / toggleValue\n' +
       '— they are the value logic under the pickers, no UI of their own; they need an input → output cheat sheet to explain',
-    overviewDesc:
-      'To be added:\n· One-line positioning: who it is for, what it solves\n· What each of the five subpackages answers (design / ui / utils / explorer / session)\n· A capability map linking straight to the pages below\n· The boundary: not an i18n framework, not a settings-page skeleton',
-    installDesc:
-      'To be added:\n· How to install (via git — the host does not run build scripts)\n· The one mandatory entry line: setStyleKit (controls self-inject their own CSS)\n· Why @deepseek-ai/* must stay external (otherwise bundling fails)\n· Registering host slots: sidebar.panellist / main / plugins.bundle.config (settings page)\n· Checklist when it does not load (start by checking the build stamp)',
-    quickstartDesc:
-      'To be added:\n· Full source of a minimal working plugin\n· Step-by-step from empty folder to visible panel\n· This preview plugin is itself the sample — see packages/demo/src',
-    namingDesc:
-      'To be added:\n· Why variables and class names share the dshpc prefix\n· Class names must match the hard-coded className character for character — any drift kills the whole block\n· How far createStyleKit({ id }) isolates\n· Injection order: at equal specificity the later one wins\n· Why the theme switch is body[data-ds-dark-theme] and not prefers-color-scheme',
     dockHint:
       'Right-side dock: a group name is one window; reopening the same name replaces its content in place (no extra column).\nTry it: open A → open B → reopen A (content replaced) → close A → open C (the freed slot is usable) → with 3 columns open, a new group name is rejected.\nTip: click › in the middle of the splitter to collapse that column into a right-edge ear (it leaves the layout); click the ear to expand.',
     dockMainText: 'The dock is a layout member: it squeezes the page content instead of covering it. The three panels demo a built-in header, a custom header, and a header-less panel with a floating close button.',
@@ -766,12 +629,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     dockBtnDefault: 'Open default',
     dockBtnOpenC: 'Open C',
     dockBtnReset: 'Close all',
-    textDesc:
-      'To be added:\n· What baseNameOf / safeTrim / truncateBytes actually return\n· crumbsOf / extOf / joinPath / mimeOf / parentOf\n· Shared rule: never throw on parse failure — fall back, never fabricate',
-    httpDesc:
-      'To be added:\n· Using request / requestJson\n· HttpError fields and how to detect failures\n· Passing timeouts, retries and auth',
-    i18nDesc:
-      'To be added:\n· getLocale / setLocale: a single language state\n· What ships in the core dictionary: fixed component prompts only, no plugin UI copy\n· Plugin copy is the plugin’s own job — this preview plugin’s DICT is the sample\n· Language is driven by the host; a plugin must not ship its own language picker',
     i18nNow: 'Current locale',
     a11yDesc:
       'To be added:\n· Focus rings and keyboard reachability\n· Tab order and the Modal focus trap\n· Which role / aria-* semantics are covered\n· Contrast and prefers-reduced-motion handling',
@@ -807,14 +664,10 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
 
 
-    blocksNote: 'Two workspace-browsing demos: ① Explorer — right-dock preview (openFilePreview, takes width and squeezes the main area) and anchor-popover file picking (pickWorkspaceFile, Promise returns the workspace-relative path). ② Session — session preview (SessionPreview, variant modal/inline). This page uses no mock: sample files are real repo files, data comes from the host workspaceFiles, and if probing fails it says "not found" honestly.',
 
 
-    utilsNote: 'The utils group is pure-function tooling: date/time formatting, number/byte formatting, and i18n. All honor the current locale (driven by the host; switch host language and it changes).',
 
 
-    startNote: 'Quick start: the original three (overview / install & init / write a plugin) are merged into one page, each still an independent card. First see what this package gives you, then set up the environment with the install and style-injection snippets.',
-    foundationNote: 'Design foundations: the Token palette (all consume --dshpc-* variables; light/dark is the token’s job), the dark-theme predicate (read body[data-ds-dark-theme] at render time), style injection (createStyleKit + setStyleKit, each plugin uses a fixed id), and the naming contract (dshpc- prefix).',
     referenceNote: 'Reference & conventions: accessibility notes, what is explicitly out of scope (same source as docs/design/features.md), and version/build artifact info.',
 
     btnLabelSave: 'Save changes',
@@ -874,13 +727,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     liveTitle: 'LiveText',
     flipTitle: 'FlipText',
 
-    feedbackModalHint: 'Own overlay; mask, Esc and ✕ all close',
-    feedbackToastHint: 'Imperative notify, no component needed',
 
-    explorerDataTitle: 'Where the data comes from (real data, no mocks)',
-    explorerDataHint:
-      'File services come from the host remote.workspaceFiles (dotted injection); the workspace list is the official workspaces snapshot. ' +
-      'The "most recent workspace" is the newest updated one that owns a session (pickWorkspaceAnchor) — list / read all need a sessionId, so browsing must land on a real session first.',
     explorerFilesNone: 'Not ready: the host has not exposed remote.workspaceFiles yet (no preview, no picking — no fake data either)',
     explorerAnchorNone: 'Not ready: no workspace in the list owns a session yet (open a session in the host and come back)',
     explorerAnchorLabel: 'Anchor: ',
@@ -889,23 +736,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     methodATitle: 'Method A: openFilePreview dock preview',
     methodAHint: 'Pass a path; a dock opens on the right and squeezes the main area',
     openRootPreview: 'Open the most recent workspace root',
-    sampleMd: 'Preview README.md',
-    sampleHtml: 'Preview demo.html',
-    sampleCss: 'Preview sample.css',
     methodBTitle: 'Method B: pickWorkspaceFile',
     methodBHint: 'Modal by anchor; resolves to { path, isDir }',
     pickAny: 'Pick a file (any)',
-    pickTs: '.ts only',
     pickDir: 'Folders only',
-    pickFolder: 'folder',
     pickNone: 'Nothing picked yet',
     pickJsMd: 'JS/MD only',
-    openedPath: 'Opened: ',
     pickResult: 'Picked',
-    previewBodyTitle: 'FilePreview (usable on its own)',
-    previewBodyHint:
-      'The block above already includes it — FileBrowser renders FilePreview inside.\n' +
-      'It is also a separate subpath, dsh-plugin-core/explorer/preview: when there is only one file to show (a session attachment, a tool result) you do not need the whole panel.',
     sessionRealTitle: 'Real session list',
     exModelPickerTitle: 'ModelPicker (real catalog)',
     exWorkspacePickerTitle: 'WorkspacePicker (real list)',
@@ -938,8 +775,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     sessionSlotHeader: 'Top slot: your own content (scrolls with the session)',
     sessionSlotFooter: 'Bottom slot: summary of this session',
 
-    dateHint: 'Falls back instead of throwing or inventing',
-    numberHint: 'formatBytes in 1024; formatCount with separators',
 
     roadmapHint: 'What is deliberately not provided',
     roadmapOut: 'A settings-page skeleton, an i18n framework (plugin copy is the plugin’s own job), a host typings surface',
@@ -956,21 +791,11 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     themeLight: 'Light',
     themeDark: 'Dark',
 
-    segDay: 'Day',
-    segWeek: 'Week',
-    segMonth: 'Month',
     segAll: 'All',
     segDoing: 'Doing',
     segClaimed: 'Open',
     segBlocked: 'Blocked',
     segStalled: 'Stalled',
-    weekday1: 'Mo',
-    weekday2: 'Tu',
-    weekday3: 'We',
-    weekday4: 'Th',
-    weekday5: 'Fr',
-    weekday6: 'Sa',
-    weekday7: 'Su',
     // Documentation skeleton: labels for the example / code / usage / API table
     docNote: 'Note',
     docPreview: 'Example',
