@@ -23,32 +23,88 @@
  */
 import { createStore } from 'zustand/vanilla';
 /** Protocol version lives in the keys: a different wire shape gets its own host. */
-export const TASK_NOTIFICATIONS_PROTOCOL = 1;
-export const TASK_NOTIFICATIONS_KEY = Symbol.for('dsh-plugin-core/task-notifications/v1');
-export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-notifications/events/v1');
-export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v1';
+export const TASK_NOTIFICATIONS_PROTOCOL = 2;
+export const TASK_NOTIFICATIONS_KEY = Symbol.for('dsh-plugin-core/task-notifications/v2');
+export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-notifications/events/v2');
+export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v2';
+/** Default project lives on a global symbol: every inlined copy must see one value. */
+export const TASK_NOTIFICATIONS_PROJECT_KEY = Symbol.for('dsh-plugin-core/task-notifications/project/v2');
 const EMPTY_TASKS = Object.freeze([]);
 const EMPTY_SNAPSHOT = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 });
+function projectSlot() {
+    const g = globalThis;
+    return g[TASK_NOTIFICATIONS_PROJECT_KEY];
+}
+function writeProjectSlot() {
+    const g = globalThis;
+    let slot = g[TASK_NOTIFICATIONS_PROJECT_KEY];
+    if (slot === undefined) {
+        slot = {};
+        g[TASK_NOTIFICATIONS_PROJECT_KEY] = slot;
+    }
+    return slot;
+}
+/** Set once at app start. `undefined` clears it (tests rely on this). */
+export function setDefaultTaskProject(project) {
+    if (project !== undefined && project.trim() === '') {
+        throw new Error('task notification default project must be a non-empty string');
+    }
+    const slot = writeProjectSlot();
+    if (project === undefined)
+        delete slot.value;
+    else
+        slot.value = project;
+}
+export function getDefaultTaskProject() {
+    return projectSlot()?.value;
+}
+function requireProject(project) {
+    if (project === null)
+        return null;
+    if (project !== undefined)
+        return project;
+    const fallback = getDefaultTaskProject();
+    if (fallback === undefined) {
+        throw new Error('task notification project is required: call setDefaultTaskProject() once at app start, or pass `project` explicitly');
+    }
+    return fallback;
+}
 /** Per-snapshot derived cache: same snapshot + same filter returns the SAME array. */
 const SELECT_CACHE = new WeakMap();
 /**
- * undefined / empty = show every group; one or more = show only those groups.
+ * Three tiers, in that order:
+ *   - no filter / empty array: every group of the current project;
+ *   - one or more names: only those groups of the current project;
+ *   - `'*'`: every project and every group (pass `{ project }` to scope it).
+ *
  * The returned reference is stable for the lifetime of the snapshot.
  */
-export function selectTaskNotifications(snapshot, groups) {
-    const key = groups === undefined || groups.length === 0 ? '*' : [...groups].sort().join('\u0000');
+export function selectTaskNotifications(snapshot, groups, options = {}) {
+    const allProjects = groups === '*' && options.project === undefined;
+    const project = allProjects ? null : requireProject(options.project);
+    const groupKey = groups === undefined || groups === '*'
+        ? ''
+        : groups.length === 0
+            ? ''
+            : [...groups].sort().join('\u0000');
+    const cacheKey = `${project ?? '\u0001*'}\u0002${groups === '*' ? '*' : groupKey}`;
     let perSnapshot = SELECT_CACHE.get(snapshot);
     if (perSnapshot === undefined) {
         perSnapshot = new Map();
         SELECT_CACHE.set(snapshot, perSnapshot);
     }
-    const cached = perSnapshot.get(key);
+    const cached = perSnapshot.get(cacheKey);
     if (cached !== undefined)
         return cached;
-    const result = key === '*'
-        ? snapshot.tasks
-        : Object.freeze(snapshot.tasks.filter((task) => groups.includes(task.group)));
-    perSnapshot.set(key, result);
+    const wanted = groupKey === '' ? null : new Set(groupKey.split('\u0000'));
+    const result = Object.freeze(snapshot.tasks.filter((task) => {
+        if (project !== null && task.project !== project)
+            return false;
+        if (wanted === null)
+            return true;
+        return wanted.has(task.group);
+    }));
+    perSnapshot.set(cacheKey, result);
     return result;
 }
 export function createTaskNotificationEventBus() {
@@ -105,10 +161,45 @@ function isEventBus(value) {
 function isRecord(value) {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
+/** JSON value check with a depth guard so a cyclic payload cannot hang the parser. */
+function isDetail(value, depth = 0) {
+    if (depth > 20)
+        return false;
+    if (value === null)
+        return true;
+    const kind = typeof value;
+    if (kind === 'string' || kind === 'boolean')
+        return true;
+    if (kind === 'number')
+        return Number.isFinite(value);
+    if (Array.isArray(value))
+        return value.every((item) => isDetail(item, depth + 1));
+    if (isRecord(value))
+        return Object.values(value).every((item) => isDetail(item, depth + 1));
+    return false;
+}
+/**
+ * Private copy on the way in: mutating the object afterwards must not leak into
+ * the pool, and anything the wire cannot carry must fail here — not later, and
+ * not differently depending on whether a channel happens to be open.
+ */
+function cloneDetail(value) {
+    if (value === undefined)
+        return undefined;
+    if (!isDetail(value)) {
+        throw new Error('task notification detail must be a JSON value (string, number, boolean, null, array or plain object)');
+    }
+    return typeof structuredClone === 'function'
+        ? structuredClone(value)
+        : JSON.parse(JSON.stringify(value));
+}
 function isTaskRecord(value) {
     if (!isRecord(value))
         return false;
+    if (value.detail !== undefined && !isDetail(value.detail))
+        return false;
     return (typeof value.id === 'string' &&
+        typeof value.project === 'string' &&
         typeof value.group === 'string' &&
         typeof value.title === 'string' &&
         (value.status === 'running' || value.status === 'done' || value.status === 'failed') &&
@@ -183,7 +274,7 @@ function compareTasks(a, b) {
     return a.startedAt - b.startedAt || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 }
 /** One lock per page, named by origin. Bumping the protocol gives a clean namespace. */
-export const TASK_NOTIFICATIONS_LOCK_PREFIX = 'dsh-plugin-core/task-notifications/v1/';
+export const TASK_NOTIFICATIONS_LOCK_PREFIX = 'dsh-plugin-core/task-notifications/v2/';
 function lockNameFor(pageOrigin) {
     return `${TASK_NOTIFICATIONS_LOCK_PREFIX}${pageOrigin}`;
 }
@@ -403,15 +494,25 @@ export function createTaskNotificationPool(options = {}) {
         post({ kind: 'hello', origin });
     }
     function register(input) {
+        // Resolve before touching the pool: a missing project must not leave a row behind.
+        const project = requireProject(input.project);
+        if (project === null)
+            throw new Error('task notification project cannot be null when registering');
+        const group = input.group === undefined ? 'default' : input.group;
+        if (group.trim() === '')
+            throw new Error('task notification group must be a non-empty string');
+        const detail = cloneDetail(input.detail);
         connect();
         const now = Date.now();
         const id = `${origin}:${String(++idSeq)}`;
         const record = {
             id,
-            group: input.group,
-            groupLabel: input.groupLabel,
+            project,
+            group,
+            ...(input.projectLabel === undefined ? {} : { projectLabel: input.projectLabel }),
+            ...(input.groupLabel === undefined ? {} : { groupLabel: input.groupLabel }),
             title: input.title,
-            detail: input.detail,
+            ...(detail === undefined ? {} : { detail }),
             status: 'running',
             startedAt: now,
             updatedAt: now,
@@ -447,13 +548,17 @@ export function createTaskNotificationPool(options = {}) {
             update(patch) {
                 if (isSettled)
                     return;
+                const detail = cloneDetail(patch.detail);
+                if (patch.group !== undefined && patch.group.trim() === '') {
+                    throw new Error('task notification group must be a non-empty string');
+                }
                 const current = find(id);
                 if (current === undefined)
                     return;
                 const next = {
                     ...current,
                     ...(patch.title === undefined ? {} : { title: patch.title }),
-                    ...(patch.detail === undefined ? {} : { detail: patch.detail }),
+                    ...(detail === undefined ? {} : { detail }),
                     ...(patch.group === undefined ? {} : { group: patch.group }),
                     ...(patch.groupLabel === undefined ? {} : { groupLabel: patch.groupLabel }),
                     updatedAt: Date.now(),
@@ -511,7 +616,7 @@ export function createTaskNotificationPool(options = {}) {
         },
         connect,
         refresh,
-        select: (groups) => selectTaskNotifications(store.getState(), groups),
+        select: (groups, options) => selectTaskNotifications(store.getState(), groups, options),
         register,
         settleLocal,
         canRestore: (task) => task.origin === origin,
@@ -563,18 +668,25 @@ export const taskNotifications = {
     subscribe: (listener) => globalPool().subscribe(listener),
     connect: () => { globalPool().connect(); },
     refresh: () => { globalPool().refresh(); },
-    select: (groups) => globalPool().select(groups),
+    select: (groups, options) => globalPool().select(groups, options),
     register: (input) => globalPool().register(input),
     settleLocal: (reason) => globalPool().settleLocal(reason),
     canRestore: (task) => globalPool().canRestore(task),
     requestRestore: (taskId) => globalPool().requestRestore(taskId),
     dispose: () => { globalPool().dispose(); },
 };
-function notifyTaskBase(group, title, options = {}) {
-    return taskNotifications.register({ group, title, detail: options.detail, groupLabel: options.groupLabel });
+function notifyTaskBase(title, options = {}) {
+    return taskNotifications.register({
+        title,
+        ...(options.project === undefined ? {} : { project: options.project }),
+        ...(options.group === undefined ? {} : { group: options.group }),
+        ...(options.detail === undefined ? {} : { detail: options.detail }),
+        ...(options.projectLabel === undefined ? {} : { projectLabel: options.projectLabel }),
+        ...(options.groupLabel === undefined ? {} : { groupLabel: options.groupLabel }),
+    });
 }
-function runTask(group, title, work) {
-    const handle = notifyTaskBase(group, title);
+function runTask(title, work, options = {}) {
+    const handle = notifyTaskBase(title, options);
     let pending;
     try {
         pending = typeof work === 'function' ? work() : work;

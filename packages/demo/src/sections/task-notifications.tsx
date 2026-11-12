@@ -3,9 +3,11 @@ import {
   Button,
   ListRow,
   notifyTask,
+  setDefaultTaskProject,
   taskNotifications,
   selectTaskNotifications,
   subscribeTaskNotificationEvents,
+  type TaskNotificationDetail,
   type TaskNotificationEvent,
   type TaskNotificationHandle,
   type TaskNotificationRecord,
@@ -21,8 +23,12 @@ import { t } from '../i18n.js'
  * 面板里的每一条都来自真实 register / 真实事件与真实时钟；无模拟数据、无定时器、无占位行。
  * 列表行一律用基础库的 ListRow（一行一条、右侧操作槽挡冒泡），不手搓行容器。
  */
-const GROUP_REMINDER = 'dsh-task-reminder'
-const GROUP_LEDGER = 'dsh-task-ledger'
+const DEMO_PROJECT = 'dsh-plugin-core-demo'
+const SUB_REMINDER = 'reminder'
+const SUB_LEDGER = 'ledger'
+
+// 和真实插件一样：项目在入口处设置一次，之后只写二级分组
+setDefaultTaskProject(DEMO_PROJECT)
 
 const CODE_SUBSCRIBE = `import { useSyncExternalStore } from 'react'
 import { notifyTask, taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/ui'
@@ -32,15 +38,24 @@ const snapshot = useSyncExternalStore(
   taskNotifications.getSnapshot,
   taskNotifications.getServerSnapshot,
 )
-const rows = selectTaskNotifications(snapshot, ['dsh-task-reminder'])
+
+// 三档：不传 = 本项目全部二级；数组 = 本项目这几个二级；'*' = 全站所有项目
+const mine = selectTaskNotifications(snapshot)
+const scanOnly = selectTaskNotifications(snapshot, ['scan'])
+const everything = selectTaskNotifications(snapshot, '*')
 
 // ① settle it yourself: you hold the handle
-const handle = notifyTask('dsh-task-reminder', 'workspace-scan')
+const handle = notifyTask('workspace-scan', { group: 'scan' })
 handle.background()   // collapse is an event, not a settlement
 handle.done()         // the caller owns the ending
 
 // ② or wrap the work and let the library close it
-await notifyTask.run('dsh-task-reminder', 'workspace-scan', () => scanWorkspace())`
+await notifyTask.run('workspace-scan', () => scanWorkspace(), { group: 'scan' })`
+
+/** detail 现在是任意 JSON 值：字符串原样，其余转成 JSON 文本给人看。 */
+function detailText(detail: TaskNotificationDetail): string {
+  return typeof detail === 'string' ? detail : JSON.stringify(detail)
+}
 
 const mono: Record<string, string | number> = { fontFamily: 'var(--dshpc-font-mono)', fontSize: '12px' }
 const row: Record<string, string | number> = { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }
@@ -54,7 +69,7 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
     taskNotifications.getServerSnapshot,
   )
   const [events, setEvents] = useState<readonly TaskNotificationEvent[]>([])
-  const [filter, setFilter] = useState<'all' | 'one' | 'two'>('all')
+  const [filter, setFilter] = useState<'all' | 'one' | 'two' | 'allProjects'>('all')
   const handles = useRef(new Map<string, TaskNotificationHandle>())
   const serial = useRef(0)
 
@@ -66,13 +81,19 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
   }, [])
 
   const groups =
-    filter === 'all' ? undefined : filter === 'one' ? [GROUP_REMINDER] : [GROUP_REMINDER, GROUP_LEDGER]
+    filter === 'all'
+      ? undefined
+      : filter === 'allProjects'
+        ? ('*' as const)
+        : filter === 'one'
+          ? [SUB_REMINDER]
+          : [SUB_REMINDER, SUB_LEDGER]
   const visible = selectTaskNotifications(snapshot, groups)
   const localPending = [...handles.current.values()].filter((handle) => !handle.isSettled).length
 
   function register(group: string, label: string): void {
     serial.current += 1
-    const handle = notifyTask(group, `${label} #${serial.current}`)
+    const handle = notifyTask(`${label} #${serial.current}`, { group })
     handles.current.set(handle.id, handle)
   }
 
@@ -115,14 +136,14 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
         h(
           'div',
           { style: { ...mono, color: 'var(--dshpc-fg-3)' } },
-          `group=${task.group} · status=${task.status} · backgrounded=${task.backgrounded} · origin=${task.origin}`,
+          `project=${task.project} · group=${task.group} · status=${task.status} · backgrounded=${task.backgrounded} · origin=${task.origin}`,
         ),
         h(
           'div',
           { style: { ...mono, color: local ? 'var(--dshpc-fg-2)' : 'var(--dshpc-fg-4)' } },
           local ? t('tnBadgeLocal') : t('tnBadgeRemote'),
         ),
-        task.detail === undefined ? null : h('div', { style: mono }, task.detail),
+        task.detail === undefined ? null : h('div', { style: mono }, detailText(task.detail)),
       ),
     )
   }
@@ -155,8 +176,8 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
         h(
           'div',
           { style: row },
-          h(Button, { size: 'sm', variant: 'primary', onClick: () => register(GROUP_REMINDER, 'workspace-scan') }, t('tnRegisterReminder')),
-          h(Button, { size: 'sm', onClick: () => register(GROUP_LEDGER, 'session-index') }, t('tnRegisterLedger')),
+          h(Button, { size: 'sm', variant: 'primary', onClick: () => register(SUB_REMINDER, 'workspace-scan') }, t('tnRegisterReminder')),
+          h(Button, { size: 'sm', onClick: () => register(SUB_LEDGER, 'session-index') }, t('tnRegisterLedger')),
         ),
         h(
           'div',
@@ -164,6 +185,7 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
           h(Button, { size: 'sm', variant: filter === 'all' ? 'primary' : 'outline', onClick: () => setFilter('all') }, t('tnFilterAll')),
           h(Button, { size: 'sm', variant: filter === 'one' ? 'primary' : 'outline', onClick: () => setFilter('one') }, t('tnFilterOne')),
           h(Button, { size: 'sm', variant: filter === 'two' ? 'primary' : 'outline', onClick: () => setFilter('two') }, t('tnFilterTwo')),
+          h(Button, { size: 'sm', variant: filter === 'allProjects' ? 'primary' : 'outline', onClick: () => setFilter('allProjects') }, t('tnFilterAllProjects')),
         ),
         h(
           'div',

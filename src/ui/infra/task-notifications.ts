@@ -24,22 +24,42 @@
 import { createStore } from 'zustand/vanilla'
 
 /** Protocol version lives in the keys: a different wire shape gets its own host. */
-export const TASK_NOTIFICATIONS_PROTOCOL = 1
-export const TASK_NOTIFICATIONS_KEY = Symbol.for('dsh-plugin-core/task-notifications/v1')
-export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-notifications/events/v1')
-export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v1'
+export const TASK_NOTIFICATIONS_PROTOCOL = 2
+export const TASK_NOTIFICATIONS_KEY = Symbol.for('dsh-plugin-core/task-notifications/v2')
+export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-notifications/events/v2')
+export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v2'
+/** Default project lives on a global symbol: every inlined copy must see one value. */
+export const TASK_NOTIFICATIONS_PROJECT_KEY = Symbol.for('dsh-plugin-core/task-notifications/project/v2')
 
 export type TaskNotificationStatus = 'running' | 'done' | 'failed'
+
+/**
+ * Detail payload: any JSON value. Objects and arrays cross pages through the
+ * structured clone algorithm, so callers never stringify — the pool clones a
+ * private copy on the way in. Functions, DOM nodes and class instances are
+ * rejected with an explicit error.
+ */
+export type TaskNotificationDetail =
+  | string
+  | number
+  | boolean
+  | null
+  | readonly TaskNotificationDetail[]
+  | { readonly [key: string]: TaskNotificationDetail }
 
 /** Plain, structured-cloneable data. No functions, no ReactNode, no components. */
 export interface TaskNotificationRecord {
   readonly id: string
-  /** Caller-supplied group id; core cannot discover a project name. */
+  /** First level: the project that owns this task. */
+  readonly project: string
+  /** Second level: a group inside that project. Never empty; defaults to 'default'. */
   readonly group: string
+  /** Optional display name override for the project. */
+  readonly projectLabel?: string
   /** Optional display name override for the group. */
   readonly groupLabel?: string
   readonly title: string
-  readonly detail?: string
+  readonly detail?: TaskNotificationDetail
   readonly status: TaskNotificationStatus
   readonly startedAt: number
   readonly updatedAt: number
@@ -50,17 +70,30 @@ export interface TaskNotificationRecord {
 }
 
 export interface TaskNotificationInput {
-  group: string
-  title: string
+  /** Defaults to the global default project; throws when neither is set. */
+  project?: string
+  /** Second level; defaults to 'default'. */
+  group?: string
+  readonly title: string
+  projectLabel?: string
   groupLabel?: string
-  detail?: string
+  detail?: TaskNotificationDetail
 }
 
 export interface TaskNotificationPatch {
   title?: string
-  detail?: string
+  detail?: TaskNotificationDetail
+  /** Second level only: a task never changes project. */
   group?: string
   groupLabel?: string
+}
+
+/** `'*'` means every project, every group. An array means those groups of one project. */
+export type TaskNotificationGroupFilter = readonly string[] | '*'
+
+export interface TaskNotificationSelectOptions {
+  /** Defaults to the global default project; `null` means "do not filter by project". */
+  project?: string | null
 }
 
 export interface TaskNotificationSettlement {
@@ -76,7 +109,7 @@ export interface TaskNotificationHandle {
   readonly settled: Promise<TaskNotificationSettlement>
   update(patch: TaskNotificationPatch): void
   background(): void
-  done(detail?: string): void
+  done(detail?: TaskNotificationDetail): void
   fail(reason?: string): void
   /** Promise-settle fallback: success and rejection both close the task. */
   track<T>(promise: Promise<T>): Promise<T>
@@ -148,7 +181,10 @@ export interface TaskNotificationPool {
   connect(): void
   /** Re-request the baseline after a suspended tab wakes up. */
   refresh(): void
-  select(groups?: readonly string[]): readonly TaskNotificationRecord[]
+  select(
+    groups?: TaskNotificationGroupFilter,
+    options?: TaskNotificationSelectOptions,
+  ): readonly TaskNotificationRecord[]
   register(input: TaskNotificationInput): TaskNotificationHandle
   /** Settle every task this page still owns; handles are not needed. */
   settleLocal(reason?: string): number
@@ -161,30 +197,99 @@ export interface TaskNotificationPool {
 const EMPTY_TASKS: readonly TaskNotificationRecord[] = Object.freeze([])
 const EMPTY_SNAPSHOT: TaskNotificationSnapshot = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 })
 
+/**
+ * The default project is process-wide on purpose: core is inlined into every
+ * plugin bundle, so a module-level variable would give each copy its own value.
+ * `setDefaultTaskProject()` at app start therefore reaches every copy on the page.
+ */
+interface DefaultProjectSlot {
+  value?: string
+}
+
+function projectSlot(): DefaultProjectSlot | undefined {
+  const g = globalThis as unknown as Record<symbol, DefaultProjectSlot | undefined>
+  return g[TASK_NOTIFICATIONS_PROJECT_KEY]
+}
+
+function writeProjectSlot(): DefaultProjectSlot {
+  const g = globalThis as unknown as Record<symbol, DefaultProjectSlot | undefined>
+  let slot = g[TASK_NOTIFICATIONS_PROJECT_KEY]
+  if (slot === undefined) {
+    slot = {}
+    g[TASK_NOTIFICATIONS_PROJECT_KEY] = slot
+  }
+  return slot
+}
+
+/** Set once at app start. `undefined` clears it (tests rely on this). */
+export function setDefaultTaskProject(project: string | undefined): void {
+  if (project !== undefined && project.trim() === '') {
+    throw new Error('task notification default project must be a non-empty string')
+  }
+  const slot = writeProjectSlot()
+  if (project === undefined) delete slot.value
+  else slot.value = project
+}
+
+export function getDefaultTaskProject(): string | undefined {
+  return projectSlot()?.value
+}
+
+function requireProject(project?: string | null): string | null {
+  if (project === null) return null
+  if (project !== undefined) return project
+  const fallback = getDefaultTaskProject()
+  if (fallback === undefined) {
+    throw new Error(
+      'task notification project is required: call setDefaultTaskProject() once at app start, or pass `project` explicitly',
+    )
+  }
+  return fallback
+}
+
 /** Per-snapshot derived cache: same snapshot + same filter returns the SAME array. */
 const SELECT_CACHE = new WeakMap<TaskNotificationSnapshot, Map<string, readonly TaskNotificationRecord[]>>()
 
 /**
- * undefined / empty = show every group; one or more = show only those groups.
+ * Three tiers, in that order:
+ *   - no filter / empty array: every group of the current project;
+ *   - one or more names: only those groups of the current project;
+ *   - `'*'`: every project and every group (pass `{ project }` to scope it).
+ *
  * The returned reference is stable for the lifetime of the snapshot.
  */
 export function selectTaskNotifications(
   snapshot: TaskNotificationSnapshot,
-  groups?: readonly string[],
+  groups?: TaskNotificationGroupFilter,
+  options: TaskNotificationSelectOptions = {},
 ): readonly TaskNotificationRecord[] {
-  const key = groups === undefined || groups.length === 0 ? '*' : [...groups].sort().join('\u0000')
+  const allProjects = groups === '*' && options.project === undefined
+  const project = allProjects ? null : requireProject(options.project)
+  const groupKey =
+    groups === undefined || groups === '*'
+      ? ''
+      : groups.length === 0
+        ? ''
+        : [...groups].sort().join('\u0000')
+  const cacheKey = `${project ?? '\u0001*'}\u0002${groups === '*' ? '*' : groupKey}`
+
   let perSnapshot = SELECT_CACHE.get(snapshot)
   if (perSnapshot === undefined) {
     perSnapshot = new Map()
     SELECT_CACHE.set(snapshot, perSnapshot)
   }
-  const cached = perSnapshot.get(key)
+  const cached = perSnapshot.get(cacheKey)
   if (cached !== undefined) return cached
-  const result =
-    key === '*'
-      ? snapshot.tasks
-      : Object.freeze(snapshot.tasks.filter((task) => (groups as readonly string[]).includes(task.group)))
-  perSnapshot.set(key, result)
+
+  const wanted = groupKey === '' ? null : new Set(groupKey.split('\u0000'))
+  const result = Object.freeze(
+    snapshot.tasks.filter((task) => {
+      if (project !== null && task.project !== project) return false
+      if (wanted === null) return true
+      return wanted.has(task.group)
+    }),
+  )
+  perSnapshot.set(cacheKey, result)
   return result
 }
 
@@ -271,10 +376,39 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
+/** JSON value check with a depth guard so a cyclic payload cannot hang the parser. */
+function isDetail(value: unknown, depth = 0): value is TaskNotificationDetail {
+  if (depth > 20) return false
+  if (value === null) return true
+  const kind = typeof value
+  if (kind === 'string' || kind === 'boolean') return true
+  if (kind === 'number') return Number.isFinite(value as number)
+  if (Array.isArray(value)) return value.every((item) => isDetail(item, depth + 1))
+  if (isRecord(value)) return Object.values(value).every((item) => isDetail(item, depth + 1))
+  return false
+}
+
+/**
+ * Private copy on the way in: mutating the object afterwards must not leak into
+ * the pool, and anything the wire cannot carry must fail here — not later, and
+ * not differently depending on whether a channel happens to be open.
+ */
+function cloneDetail(value: TaskNotificationDetail | undefined): TaskNotificationDetail | undefined {
+  if (value === undefined) return undefined
+  if (!isDetail(value)) {
+    throw new Error('task notification detail must be a JSON value (string, number, boolean, null, array or plain object)')
+  }
+  return typeof structuredClone === 'function'
+    ? (structuredClone(value) as TaskNotificationDetail)
+    : (JSON.parse(JSON.stringify(value)) as TaskNotificationDetail)
+}
+
 function isTaskRecord(value: unknown): value is TaskNotificationRecord {
   if (!isRecord(value)) return false
+  if (value.detail !== undefined && !isDetail(value.detail)) return false
   return (
     typeof value.id === 'string' &&
+    typeof value.project === 'string' &&
     typeof value.group === 'string' &&
     typeof value.title === 'string' &&
     (value.status === 'running' || value.status === 'done' || value.status === 'failed') &&
@@ -346,7 +480,7 @@ function compareTasks(a: TaskNotificationRecord, b: TaskNotificationRecord): num
 }
 
 /** One lock per page, named by origin. Bumping the protocol gives a clean namespace. */
-export const TASK_NOTIFICATIONS_LOCK_PREFIX = 'dsh-plugin-core/task-notifications/v1/'
+export const TASK_NOTIFICATIONS_LOCK_PREFIX = 'dsh-plugin-core/task-notifications/v2/'
 
 function lockNameFor(pageOrigin: string): string {
   return `${TASK_NOTIFICATIONS_LOCK_PREFIX}${pageOrigin}`
@@ -572,15 +706,23 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
   }
 
   function register(input: TaskNotificationInput): TaskNotificationHandle {
+    // Resolve before touching the pool: a missing project must not leave a row behind.
+    const project = requireProject(input.project)
+    if (project === null) throw new Error('task notification project cannot be null when registering')
+    const group = input.group === undefined ? 'default' : input.group
+    if (group.trim() === '') throw new Error('task notification group must be a non-empty string')
+    const detail = cloneDetail(input.detail)
     connect()
     const now = Date.now()
     const id = `${origin}:${String(++idSeq)}`
     const record: TaskNotificationRecord = {
       id,
-      group: input.group,
-      groupLabel: input.groupLabel,
+      project,
+      group,
+      ...(input.projectLabel === undefined ? {} : { projectLabel: input.projectLabel }),
+      ...(input.groupLabel === undefined ? {} : { groupLabel: input.groupLabel }),
       title: input.title,
-      detail: input.detail,
+      ...(detail === undefined ? {} : { detail }),
       status: 'running',
       startedAt: now,
       updatedAt: now,
@@ -620,12 +762,16 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       settled,
       update(patch): void {
         if (isSettled) return
+        const detail = cloneDetail(patch.detail)
+        if (patch.group !== undefined && patch.group.trim() === '') {
+          throw new Error('task notification group must be a non-empty string')
+        }
         const current = find(id)
         if (current === undefined) return
         const next: TaskNotificationRecord = {
           ...current,
           ...(patch.title === undefined ? {} : { title: patch.title }),
-          ...(patch.detail === undefined ? {} : { detail: patch.detail }),
+          ...(detail === undefined ? {} : { detail }),
           ...(patch.group === undefined ? {} : { group: patch.group }),
           ...(patch.groupLabel === undefined ? {} : { groupLabel: patch.groupLabel }),
           updatedAt: Date.now(),
@@ -639,7 +785,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
         const next: TaskNotificationRecord = { ...current, backgrounded: true, updatedAt: Date.now() }
         publish(replace(localShard(), next), { type: 'backgrounded', task: next })
       },
-      done(detail?: string): void {
+      done(detail?: TaskNotificationDetail): void {
         if (detail !== undefined) handle.update({ detail })
         finish('done')
       },
@@ -684,7 +830,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     },
     connect,
     refresh,
-    select: (groups) => selectTaskNotifications(store.getState(), groups),
+    select: (groups, options) => selectTaskNotifications(store.getState(), groups, options),
     register,
     settleLocal,
     canRestore: (task) => task.origin === origin,
@@ -737,7 +883,7 @@ export const taskNotifications: TaskNotificationPool = {
   subscribe: (listener) => globalPool().subscribe(listener),
   connect: () => { globalPool().connect() },
   refresh: () => { globalPool().refresh() },
-  select: (groups) => globalPool().select(groups),
+  select: (groups, options) => globalPool().select(groups, options),
   register: (input) => globalPool().register(input),
   settleLocal: (reason) => globalPool().settleLocal(reason),
   canRestore: (task) => globalPool().canRestore(task),
@@ -746,31 +892,46 @@ export const taskNotifications: TaskNotificationPool = {
 }
 
 export interface NotifyTaskOptions {
-  /** 首屏就带的详情文案；之后仍可用 handle.update() 改。 */
-  detail?: string
-  /** 分组显示名覆盖。 */
+  /** 一级分组：缺省用全局默认项目；两者都没有则抛错。 */
+  project?: string
+  /** 二级分组：缺省 'default'。 */
+  group?: string
+  /** 入池即带的详情；任意 JSON 值，库内部克隆一份私有副本。 */
+  detail?: TaskNotificationDetail
+  projectLabel?: string
   groupLabel?: string
 }
 
 /**
- * 日常入口：位置参数登记一条任务，返回句柄（等价 `taskNotifications.register({ ... })`）。
+ * 日常入口：只要一个标题，项目和二级分组都能省。
  *
  * 分工与 oraPromise / toast.promise / withProgress 一致：
- * 自己管结束用 `notifyTask(group, title)`；包住一段异步用 `notifyTask.run(group, title, work)`。
+ * 自己管结束用 `notifyTask(title, options?)`；包住一段异步用 `notifyTask.run(title, work, options?)`。
  * 前者返回句柄，后者返回 work 的原结果 —— 同一入口不靠参数把返回类型换掉。
  */
 export interface NotifyTask {
-  (group: string, title: string, options?: NotifyTaskOptions): TaskNotificationHandle
+  (title: string, options?: NotifyTaskOptions): TaskNotificationHandle
   /** 包住一段异步：成功走 done、失败走 fail，结果与异常原样透传。 */
-  run<T>(group: string, title: string, work: Promise<T> | (() => Promise<T>)): Promise<T>
+  run<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions): Promise<T>
 }
 
-function notifyTaskBase(group: string, title: string, options: NotifyTaskOptions = {}): TaskNotificationHandle {
-  return taskNotifications.register({ group, title, detail: options.detail, groupLabel: options.groupLabel })
+function notifyTaskBase(title: string, options: NotifyTaskOptions = {}): TaskNotificationHandle {
+  return taskNotifications.register({
+    title,
+    ...(options.project === undefined ? {} : { project: options.project }),
+    ...(options.group === undefined ? {} : { group: options.group }),
+    ...(options.detail === undefined ? {} : { detail: options.detail }),
+    ...(options.projectLabel === undefined ? {} : { projectLabel: options.projectLabel }),
+    ...(options.groupLabel === undefined ? {} : { groupLabel: options.groupLabel }),
+  })
 }
 
-function runTask<T>(group: string, title: string, work: Promise<T> | (() => Promise<T>)): Promise<T> {
-  const handle = notifyTaskBase(group, title)
+function runTask<T>(
+  title: string,
+  work: Promise<T> | (() => Promise<T>),
+  options: NotifyTaskOptions = {},
+): Promise<T> {
+  const handle = notifyTaskBase(title, options)
   let pending: Promise<T>
   try {
     pending = typeof work === 'function' ? work() : work

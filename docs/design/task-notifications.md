@@ -34,9 +34,13 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
   `getServerSnapshot()` 永远是同一个冻结空快照，SSR 不炸。
 - 派生结果有缓存：`selectTaskNotifications(snapshot, groups)` 对同一快照、同一过滤条件返回同一数组，
   不会每次渲染现算新引用。
-- 过滤三态：不传 / 空数组 = 全站全显示；传一个 = 只看该分组；传多个 = 只看这几个。
-- 分组名由**调用方显式给**。core 拿不到项目名：`createStyleKit({ id })` 的 `id` 是每副本私有的
-  style 标签 id，不是项目标识。`groupLabel` 只覆盖显示名。
+- 两级分组：`project`（项目，一级）+ `group`（项目内二级，缺省 `default`）。
+- 过滤三档：不传 / 空数组 = 本项目的全部二级；一个或多个名字 = 本项目这几个二级；
+  `'*'` = 所有项目所有二级。第三参 `{ project }` 可以换项目，`{ project: null }` 表示不限项目。
+- 项目名由**调用方显式给**，但只需在 app 入口 `setDefaultTaskProject()` 设一次；
+  `notifyTask` 与 `selectTaskNotifications` 都从全局默认取值。core 拿不到项目名：
+  `createStyleKit({ id })` 的 `id` 是每副本私有的 style 标签 id，不是项目标识。
+  `projectLabel` / `groupLabel` 只覆盖显示名。
 
 ## 结束与收起
 
@@ -58,14 +62,29 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 
 | 入口 | 形态 | 先例 |
 |---|---|---|
-| `notifyTask(group, title, options?)` → 句柄 | 自己管结束 | `ora(text)` 返回实例；`toast.loading(msg)` 返回 id |
-| `notifyTask.run(group, title, work)` → `work` 的原结果 | 自动收尾（成功 `done`、失败 `fail`） | `oraPromise(p)`、`toast.promise(p, opts)`、`window.withProgress(opts, task)` |
+| `notifyTask(title, options?)` → 句柄 | 自己管结束 | `ora(text)` 返回实例；`toast.loading(msg)` 返回 id |
+| `notifyTask.run(title, work, options?)` → `work` 的原结果 | 自动收尾（成功 `done`、失败 `fail`） | `oraPromise(p)`、`toast.promise(p, opts)`、`window.withProgress(opts, task)` |
 
-- 两个入口前两参一致（`group, title`）：从前者改后者只需换函数名再加一个活，不用记两套参数顺序。
+- 第一个参数恒为标题：项目来自 `setDefaultTaskProject()`，二级分组来自 `options.group`，两者都能省。
 - `work` 收 `Promise` 或返回 `Promise` 的函数（函数形式让任务在调用后才启动），与 `oraPromise` / `toast.promise` 相同。
 - 基础入口**恒返回句柄**；自动收尾独立成 `run`，而不是塞进同一个函数的第三参 —— 后者会让调用处看不出拿到的是句柄还是 Promise，三家先例都没这么做。
 - `taskNotifications.register(input)` 保留给「需要对象参数或池级能力」的场合，`notifyTask` 内部就是它。
 - `handle.track(promise)` 保留为兜底（句柄已在手时才用得上），文档从主推降为备选，避免两套写法并存。
+- `detail` 收任意 JSON 值（对象、数组、数字、布尔、null），入池前 `structuredClone` 取私有副本；
+  函数、DOM 节点与类实例当场抛错。**调用方不需要自己 `JSON.stringify`**。
+
+## 两级分组
+
+| 层 | 字段 | 谁给 | 缺省 |
+|---|---|---|---|
+| 一级 | `project` | app 入口 `setDefaultTaskProject('dsh-task-reminder')` 一次 | 无默认则抛错，不静默塞 `default` |
+| 二级 | `group` | 调用时 `{ group: 'scan' }` | `default` |
+
+- 默认项目挂在 `globalThis[Symbol.for('.../project/v2')]` 上：core 被打进每个插件各自的 bundle，
+  模块级变量会让每个副本各存一份，app 里设一次对别的副本不生效。
+- 读取三档见「快照契约」：本项目全部 → 本项目指定二级 → `'*'` 全站。
+- 已知边界：同页多个插件共用一个全局默认项目，谁的 UI 要读**别人**的项目必须显式传 `{ project }`。
+- 跨项目条目能看不能结束：`canRestore` 仍按 `origin` 判定，`settleLocal` 只清本页分片。
 
 ## 失联页面清理
 
@@ -141,6 +160,7 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 
 ## 更新日志
 
+- 2026-11-12：两级分组（`project` + 二级 `group`）与协议 2；`setDefaultTaskProject()` 一次定型；`notifyTask` 改为 `(title, options?)`；`selectTaskNotifications` 改为三档 + `'*'` 全站；`detail` 放宽为任意 JSON 值（入池前克隆私有副本）
 - 2026-11-12：新增 `settleLocal()`（无需句柄地收尾本页条目）与失联页面清理（Web Locks 判活，无定时器，触发于收到分片 / 页面可见）；协议与 `bye` 路径不变
 - 2026-11-12：新增日常入口 `notifyTask` / `notifyTask.run`（形态对齐 `oraPromise` / `toast.promise` / `withProgress`）；`register`、句柄与跨页协议一律不变
 - 2026-11-12 14:57:52：建立后台任务池契约；阶段 0 / 1 落地并通过全链自检

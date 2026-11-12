@@ -1338,25 +1338,73 @@ var createStoreImpl = (createState) => {
 var createStore = ((createState) => createState ? createStoreImpl(createState) : createStoreImpl);
 
 // dist/ui/infra/task-notifications.js
-var TASK_NOTIFICATIONS_PROTOCOL = 1;
-var TASK_NOTIFICATIONS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/v1");
-var TASK_NOTIFICATIONS_EVENTS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/events/v1");
-var TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v1";
+var TASK_NOTIFICATIONS_PROTOCOL = 2;
+var TASK_NOTIFICATIONS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/v2");
+var TASK_NOTIFICATIONS_EVENTS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/events/v2");
+var TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v2";
+var TASK_NOTIFICATIONS_PROJECT_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/project/v2");
 var EMPTY_TASKS = Object.freeze([]);
 var EMPTY_SNAPSHOT = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 });
+function projectSlot() {
+  const g = globalThis;
+  return g[TASK_NOTIFICATIONS_PROJECT_KEY];
+}
+function writeProjectSlot() {
+  const g = globalThis;
+  let slot = g[TASK_NOTIFICATIONS_PROJECT_KEY];
+  if (slot === void 0) {
+    slot = {};
+    g[TASK_NOTIFICATIONS_PROJECT_KEY] = slot;
+  }
+  return slot;
+}
+function setDefaultTaskProject(project) {
+  if (project !== void 0 && project.trim() === "") {
+    throw new Error("task notification default project must be a non-empty string");
+  }
+  const slot = writeProjectSlot();
+  if (project === void 0)
+    delete slot.value;
+  else
+    slot.value = project;
+}
+function getDefaultTaskProject() {
+  return projectSlot()?.value;
+}
+function requireProject(project) {
+  if (project === null)
+    return null;
+  if (project !== void 0)
+    return project;
+  const fallback = getDefaultTaskProject();
+  if (fallback === void 0) {
+    throw new Error("task notification project is required: call setDefaultTaskProject() once at app start, or pass `project` explicitly");
+  }
+  return fallback;
+}
 var SELECT_CACHE = /* @__PURE__ */ new WeakMap();
-function selectTaskNotifications(snapshot, groups) {
-  const key = groups === void 0 || groups.length === 0 ? "*" : [...groups].sort().join("\0");
+function selectTaskNotifications(snapshot, groups, options = {}) {
+  const allProjects = groups === "*" && options.project === void 0;
+  const project = allProjects ? null : requireProject(options.project);
+  const groupKey = groups === void 0 || groups === "*" ? "" : groups.length === 0 ? "" : [...groups].sort().join("\0");
+  const cacheKey = `${project ?? "*"}${groups === "*" ? "*" : groupKey}`;
   let perSnapshot = SELECT_CACHE.get(snapshot);
   if (perSnapshot === void 0) {
     perSnapshot = /* @__PURE__ */ new Map();
     SELECT_CACHE.set(snapshot, perSnapshot);
   }
-  const cached = perSnapshot.get(key);
+  const cached = perSnapshot.get(cacheKey);
   if (cached !== void 0)
     return cached;
-  const result = key === "*" ? snapshot.tasks : Object.freeze(snapshot.tasks.filter((task) => groups.includes(task.group)));
-  perSnapshot.set(key, result);
+  const wanted = groupKey === "" ? null : new Set(groupKey.split("\0"));
+  const result = Object.freeze(snapshot.tasks.filter((task) => {
+    if (project !== null && task.project !== project)
+      return false;
+    if (wanted === null)
+      return true;
+    return wanted.has(task.group);
+  }));
+  perSnapshot.set(cacheKey, result);
   return result;
 }
 function createTaskNotificationEventBus() {
@@ -1407,10 +1455,36 @@ function isEventBus(value) {
 function isRecord(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
+function isDetail(value, depth = 0) {
+  if (depth > 20)
+    return false;
+  if (value === null)
+    return true;
+  const kind = typeof value;
+  if (kind === "string" || kind === "boolean")
+    return true;
+  if (kind === "number")
+    return Number.isFinite(value);
+  if (Array.isArray(value))
+    return value.every((item) => isDetail(item, depth + 1));
+  if (isRecord(value))
+    return Object.values(value).every((item) => isDetail(item, depth + 1));
+  return false;
+}
+function cloneDetail(value) {
+  if (value === void 0)
+    return void 0;
+  if (!isDetail(value)) {
+    throw new Error("task notification detail must be a JSON value (string, number, boolean, null, array or plain object)");
+  }
+  return typeof structuredClone === "function" ? structuredClone(value) : JSON.parse(JSON.stringify(value));
+}
 function isTaskRecord(value) {
   if (!isRecord(value))
     return false;
-  return typeof value.id === "string" && typeof value.group === "string" && typeof value.title === "string" && (value.status === "running" || value.status === "done" || value.status === "failed") && typeof value.startedAt === "number" && typeof value.updatedAt === "number" && typeof value.origin === "string" && typeof value.backgrounded === "boolean";
+  if (value.detail !== void 0 && !isDetail(value.detail))
+    return false;
+  return typeof value.id === "string" && typeof value.project === "string" && typeof value.group === "string" && typeof value.title === "string" && (value.status === "running" || value.status === "done" || value.status === "failed") && typeof value.startedAt === "number" && typeof value.updatedAt === "number" && typeof value.origin === "string" && typeof value.backgrounded === "boolean";
 }
 function isNotice(value) {
   if (!isRecord(value) || !isTaskRecord(value.task))
@@ -1473,7 +1547,7 @@ function openChannel(name2) {
 function compareTasks(a, b) {
   return a.startedAt - b.startedAt || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 }
-var TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v1/";
+var TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v2/";
 function lockNameFor(pageOrigin) {
   return `${TASK_NOTIFICATIONS_LOCK_PREFIX}${pageOrigin}`;
 }
@@ -1663,15 +1737,24 @@ function createTaskNotificationPool(options = {}) {
     post({ kind: "hello", origin });
   }
   function register(input) {
+    const project = requireProject(input.project);
+    if (project === null)
+      throw new Error("task notification project cannot be null when registering");
+    const group = input.group === void 0 ? "default" : input.group;
+    if (group.trim() === "")
+      throw new Error("task notification group must be a non-empty string");
+    const detail = cloneDetail(input.detail);
     connect();
     const now = Date.now();
     const id3 = `${origin}:${String(++idSeq2)}`;
     const record = {
       id: id3,
-      group: input.group,
-      groupLabel: input.groupLabel,
+      project,
+      group,
+      ...input.projectLabel === void 0 ? {} : { projectLabel: input.projectLabel },
+      ...input.groupLabel === void 0 ? {} : { groupLabel: input.groupLabel },
       title: input.title,
-      detail: input.detail,
+      ...detail === void 0 ? {} : { detail },
       status: "running",
       startedAt: now,
       updatedAt: now,
@@ -1712,13 +1795,17 @@ function createTaskNotificationPool(options = {}) {
       update(patch) {
         if (isSettled)
           return;
+        const detail2 = cloneDetail(patch.detail);
+        if (patch.group !== void 0 && patch.group.trim() === "") {
+          throw new Error("task notification group must be a non-empty string");
+        }
         const current3 = find2(id3);
         if (current3 === void 0)
           return;
         const next = {
           ...current3,
           ...patch.title === void 0 ? {} : { title: patch.title },
-          ...patch.detail === void 0 ? {} : { detail: patch.detail },
+          ...detail2 === void 0 ? {} : { detail: detail2 },
           ...patch.group === void 0 ? {} : { group: patch.group },
           ...patch.groupLabel === void 0 ? {} : { groupLabel: patch.groupLabel },
           updatedAt: Date.now()
@@ -1734,9 +1821,9 @@ function createTaskNotificationPool(options = {}) {
         const next = { ...current3, backgrounded: true, updatedAt: Date.now() };
         publish(replace2(localShard(), next), { type: "backgrounded", task: next });
       },
-      done(detail) {
-        if (detail !== void 0)
-          handle.update({ detail });
+      done(detail2) {
+        if (detail2 !== void 0)
+          handle.update({ detail: detail2 });
         finish("done");
       },
       fail(reason) {
@@ -1775,7 +1862,7 @@ function createTaskNotificationPool(options = {}) {
     },
     connect,
     refresh,
-    select: (groups) => selectTaskNotifications(store.getState(), groups),
+    select: (groups, options2) => selectTaskNotifications(store.getState(), groups, options2),
     register,
     settleLocal,
     canRestore: (task) => task.origin === origin,
@@ -1825,7 +1912,7 @@ var taskNotifications = {
   refresh: () => {
     globalPool().refresh();
   },
-  select: (groups) => globalPool().select(groups),
+  select: (groups, options) => globalPool().select(groups, options),
   register: (input) => globalPool().register(input),
   settleLocal: (reason) => globalPool().settleLocal(reason),
   canRestore: (task) => globalPool().canRestore(task),
@@ -1834,11 +1921,18 @@ var taskNotifications = {
     globalPool().dispose();
   }
 };
-function notifyTaskBase(group, title, options = {}) {
-  return taskNotifications.register({ group, title, detail: options.detail, groupLabel: options.groupLabel });
+function notifyTaskBase(title, options = {}) {
+  return taskNotifications.register({
+    title,
+    ...options.project === void 0 ? {} : { project: options.project },
+    ...options.group === void 0 ? {} : { group: options.group },
+    ...options.detail === void 0 ? {} : { detail: options.detail },
+    ...options.projectLabel === void 0 ? {} : { projectLabel: options.projectLabel },
+    ...options.groupLabel === void 0 ? {} : { groupLabel: options.groupLabel }
+  });
 }
-function runTask(group, title, work) {
-  const handle = notifyTaskBase(group, title);
+function runTask(title, work, options = {}) {
+  const handle = notifyTaskBase(title, options);
   let pending;
   try {
     pending = typeof work === "function" ? work() : work;
@@ -63663,6 +63757,7 @@ var DICT2 = {
     tnFilterAll: "\u4E0D\u8FC7\u6EE4",
     tnFilterOne: "\u53EA\u770B reminder",
     tnFilterTwo: "\u770B\u4E24\u4E2A\u7EC4",
+    tnFilterAllProjects: "\u5168\u7AD9\uFF08\u542B\u8DE8\u9879\u76EE\uFF09",
     tnOpsNote: "\u6CE8\u518C\u4E0E\u8FC7\u6EE4\u5728\u8FD9\u91CC\uFF1B\u6BCF\u6761\u4EFB\u52A1\u81EA\u5DF1\u7684\u6536\u8D77 / \u7ED3\u675F / \u8FD8\u539F\u6309\u94AE\u5728\u4E0B\u65B9\u5217\u8868\u7684\u5BF9\u5E94\u884C\u91CC",
     tnFinishAll: "\u7ED3\u675F\u672C\u9875\u5168\u90E8",
     tnSnapshotTitle: "\u72B6\u6001\u5FEB\u7167",
@@ -63910,6 +64005,7 @@ var DICT2 = {
     tnFilterAll: "No filter",
     tnFilterOne: "Reminder only",
     tnFilterTwo: "Both groups",
+    tnFilterAllProjects: "All projects",
     tnOpsNote: "Register and filter here; each row has its own collapse / finish / restore actions",
     tnFinishAll: "Finish all local tasks",
     tnSnapshotTitle: "State snapshot",
@@ -68735,12 +68831,20 @@ h(SideSheet, {
         "en": "Data lives in memory only: one copy per page and per same-origin tab, gone when the process or page closes. No files, no requests, no polling. Cross-page messages are plain structured-cloneable data \u2014 no functions, components, `ReactNode` or promises. Every row comes from a real registration and the real clock; the library ships no mock or placeholder data."
       },
       {
-        "zh": "\u5FEB\u7167\u662F `{ tasks, revision }`\uFF0C`tasks` \u6309\u5F00\u59CB\u65F6\u95F4\u518D\u6309 id \u6392\u5E8F\uFF0C\u8DE8\u9875\u987A\u5E8F\u786E\u5B9A\uFF1B\u65E0\u53D8\u5316\u4E0D\u4EA7\u751F\u65B0\u5BF9\u8C61\uFF0C`getServerSnapshot()` \u6C38\u8FDC\u662F\u540C\u4E00\u4E2A\u51BB\u7ED3\u7A7A\u5FEB\u7167\u3002`selectTaskNotifications()` \u5BF9\u540C\u4E00\u5FEB\u7167\u4E0E\u540C\u4E00\u8FC7\u6EE4\u6761\u4EF6\u8FD4\u56DE\u540C\u4E00\u6570\u7EC4\u3002\u5206\u7EC4\u540D\u7531\u8C03\u7528\u65B9\u663E\u5F0F\u7ED9\uFF0C`groupLabel` \u53EA\u8986\u76D6\u663E\u793A\u540D\u3002",
-        "en": "A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter. The caller supplies the group id explicitly; `groupLabel` only overrides the display name."
+        "zh": "\u5FEB\u7167\u662F `{ tasks, revision }`\uFF0C`tasks` \u6309\u5F00\u59CB\u65F6\u95F4\u518D\u6309 id \u6392\u5E8F\uFF0C\u8DE8\u9875\u987A\u5E8F\u786E\u5B9A\uFF1B\u65E0\u53D8\u5316\u4E0D\u4EA7\u751F\u65B0\u5BF9\u8C61\uFF0C`getServerSnapshot()` \u6C38\u8FDC\u662F\u540C\u4E00\u4E2A\u51BB\u7ED3\u7A7A\u5FEB\u7167\u3002`selectTaskNotifications()` \u5BF9\u540C\u4E00\u5FEB\u7167\u4E0E\u540C\u4E00\u8FC7\u6EE4\u6761\u4EF6\u8FD4\u56DE\u540C\u4E00\u6570\u7EC4\u3002",
+        "en": "A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter."
       },
       {
-        "zh": "\u4E24\u4E2A\u5165\u53E3\u5206\u5DE5\u4E0E `oraPromise` / `toast.promise` / `withProgress` \u4E00\u81F4\uFF1A`notifyTask(group, title, options?)` \u8FD4\u56DE\u53E5\u67C4\uFF0C\u81EA\u5DF1\u6536\u5C3E\uFF1B`notifyTask.run(group, title, work)` \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF0C\u6210\u529F\u4E0E\u5931\u8D25\u81EA\u52A8\u6536\u5C3E\u5E76\u900F\u4F20\u7ED3\u679C\u3002\u4E24\u8005\u524D\u4E24\u53C2\u4E00\u81F4\uFF0C\u4E14\u57FA\u7840\u5165\u53E3\u7684\u8FD4\u56DE\u7C7B\u578B\u4E0D\u968F\u53C2\u6570\u53D8\u5316\u3002\u9700\u8981\u5BF9\u8C61\u53C2\u6570\u6216\u6C60\u7EA7\u80FD\u529B\u65F6\u4ECD\u7528 `taskNotifications.register()`\u3002",
-        "en": "The two entries split the work the way `oraPromise` / `toast.promise` / `withProgress` do: `notifyTask(group, title, options?)` returns a handle you settle yourself, while `notifyTask.run(group, title, work)` wraps an async task, settling it either way and passing the result through. Both take the same first two arguments, and the base entry never changes its return type based on its arguments. Use `taskNotifications.register()` when you need an options object or pool-level control."
+        "zh": null,
+        "en": "Two levels: `project` is set once at app start with `setDefaultTaskProject()`, and `group` is a second-level bucket inside it (default `default`). Reading has three tiers: omitted or empty = every group of the current project; one or more names = only those groups; `'*'` = every project and every group. A third argument `{ project }` switches projects, and `{ project: null }` drops the project filter. Core cannot discover a project name, so somebody must set it; `projectLabel` / `groupLabel` only override display names."
+      },
+      {
+        "zh": "`detail` \u6536\u4EFB\u610F JSON \u503C\uFF08\u5BF9\u8C61\u3001\u6570\u7EC4\u3001\u6570\u5B57\u3001\u5E03\u5C14\u3001null\uFF09\uFF0C\u5165\u6C60\u524D\u5E93\u53D6\u4E00\u4EFD\u79C1\u6709\u526F\u672C\uFF1A\u8C03\u7528\u65B9\u4E4B\u540E\u6539\u539F\u5BF9\u8C61\u4E0D\u4F1A\u6C61\u67D3\u72B6\u6001\uFF0C\u4E5F\u4E0D\u9700\u8981\u81EA\u5DF1 `JSON.stringify`\u3002\u51FD\u6570\u3001DOM \u8282\u70B9\u4E0E\u7C7B\u5B9E\u4F8B\u5F53\u573A\u629B\u9519\uFF0C\u4E0D\u4F1A\u7B49\u5230\u8DE8\u9875\u5E7F\u64AD\u65F6\u624D\u70B8\u3002",
+        "en": "`detail` accepts any JSON value (object, array, number, boolean, null); the pool takes a private copy on the way in, so later mutation by the caller cannot change stored state and no `JSON.stringify` is needed. Functions, DOM nodes and class instances throw right away instead of failing later during the cross-page broadcast."
+      },
+      {
+        "zh": "\u4E24\u4E2A\u5165\u53E3\u5206\u5DE5\u4E0E `oraPromise` / `toast.promise` / `withProgress` \u4E00\u81F4\uFF1A`notifyTask(title, options?)` \u8FD4\u56DE\u53E5\u67C4\uFF0C\u81EA\u5DF1\u6536\u5C3E\uFF1B`notifyTask.run(title, work, options?)` \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF0C\u6210\u529F\u4E0E\u5931\u8D25\u81EA\u52A8\u6536\u5C3E\u5E76\u900F\u4F20\u7ED3\u679C\u3002\u7B2C\u4E00\u53C2\u6052\u4E3A\u6807\u9898\uFF0C\u9879\u76EE\u6765\u81EA\u5168\u5C40\u9ED8\u8BA4\u3001\u4E8C\u7EA7\u5206\u7EC4\u6765\u81EA `options.group`\uFF0C\u4E24\u8005\u90FD\u80FD\u7701\uFF1B\u57FA\u7840\u5165\u53E3\u7684\u8FD4\u56DE\u7C7B\u578B\u4E0D\u968F\u53C2\u6570\u53D8\u5316\u3002\u9700\u8981\u5BF9\u8C61\u53C2\u6570\u6216\u6C60\u7EA7\u80FD\u529B\u65F6\u4ECD\u7528 `taskNotifications.register()`\u3002",
+        "en": "The two entries split the work the way `oraPromise` / `toast.promise` / `withProgress` do: `notifyTask(title, options?)` returns a handle you settle yourself, while `notifyTask.run(title, work, options?)` wraps an async task, settling it either way and passing the result through. The first argument is always the title: the project comes from the global default and the group from `options.group`, so both can be omitted, and the base entry never changes its return type based on its arguments. Use `taskNotifications.register()` when you need an options object or pool-level control."
       },
       {
         "zh": "\u7ED3\u675F\u6743\u5728\u8C03\u7528\u65B9\uFF1A`done()` / `fail()` \u5E42\u7B49\uFF0C`track(promise)` \u8BA9\u6210\u529F\u4E0E reject \u8D70\u540C\u4E00\u6536\u5C3E\u4E14\u8FD4\u56DE\u539F Promise\u3002`settled` \u53EA\u5728\u4EFB\u52A1\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0\u5B83\uFF0C\u800C\u662F\u53D1\u4E00\u4E2A `backgrounded` \u4E8B\u4EF6\u3002\u8FD9\u5C31\u662F\u300CPromise \u4E24\u6001 + \u6536\u8D77\u4F5C\u4E3A\u4E8B\u4EF6\u300D\uFF0C\u8C03\u7528\u65B9 `await` \u7684\u4ECD\u662F\u6B63\u5E38\u4E24\u6001\u3002",
@@ -68777,17 +68881,36 @@ h(SideSheet, {
             }
           },
           {
-            "name": "notifyTask(group, title, options?)",
-            "type": "(group: string, title: string, options?: NotifyTaskOptions) => TaskNotificationHandle",
+            "name": "setDefaultTaskProject(project)",
+            "type": "(project: string | undefined) => void",
             "def": "\u2014",
+            "required": "app \u5165\u53E3\u8C03\u4E00\u6B21",
             "desc": {
-              "zh": "\u65E5\u5E38\u5165\u53E3\uFF1A\u4F4D\u7F6E\u53C2\u6570\u767B\u8BB0\u4E00\u6761\u4EFB\u52A1\u5E76\u8FD4\u56DE\u53E5\u67C4\uFF1B\u9700\u8981\u5BF9\u8C61\u53C2\u6570\u6216\u6C60\u7EA7\u80FD\u529B\u65F6\u7528 register",
-              "en": "Everyday entry: registers a task positionally and returns its handle; reach for register when you need an options object or pool-level control"
+              "zh": "\u8BBE\u4E00\u7EA7\u5206\u7EC4\uFF08\u9879\u76EE\uFF09\uFF1B\u6302\u5728\u5168\u5C40\u7B26\u53F7\u4E0A\uFF0C\u540C\u9875\u6240\u6709\u526F\u672C\u5171\u4EAB\uFF1B\u4F20 undefined \u6E05\u7A7A\uFF08\u6D4B\u8BD5\u7528\uFF09",
+              "en": "Sets the first-level project on a global symbol so every copy on the page shares it; pass undefined to clear it (tests)"
             }
           },
           {
-            "name": "notifyTask.run(group, title, work)",
-            "type": "<T>(group: string, title: string, work: Promise<T> | (() => Promise<T>)) => Promise<T>",
+            "name": "getDefaultTaskProject()",
+            "type": "() => string | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "\u8BFB\u5F53\u524D\u9ED8\u8BA4\u9879\u76EE",
+              "en": "Reads the current default project"
+            }
+          },
+          {
+            "name": "notifyTask(title, options?)",
+            "type": "(title: string, options?: NotifyTaskOptions) => TaskNotificationHandle",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u65E5\u5E38\u5165\u53E3\uFF1A\u9879\u76EE\u53D6\u5168\u5C40\u9ED8\u8BA4\u3001\u4E8C\u7EA7\u5206\u7EC4\u53D6 options.group\uFF08\u7F3A\u7701 default\uFF09\uFF1B\u9700\u8981\u5BF9\u8C61\u53C2\u6570\u6216\u6C60\u7EA7\u80FD\u529B\u65F6\u7528 register",
+              "en": 'Everyday entry: project from the global default, group from options.group (default "default"); reach for register when you need an options object or pool-level control'
+            }
+          },
+          {
+            "name": "notifyTask.run(title, work, options?)",
+            "type": "<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions) => Promise<T>",
             "def": "\u2014",
             "desc": {
               "zh": "\u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20",
@@ -68840,12 +68963,12 @@ h(SideSheet, {
             }
           },
           {
-            "name": "select(groups?)",
-            "type": "(groups?: readonly string[]) => readonly TaskNotificationRecord[]",
-            "def": "\u4E0D\u4F20 = \u5168\u7AD9",
+            "name": "select(groups?, options?)",
+            "type": "(groups?: TaskNotificationGroupFilter, options?: TaskNotificationSelectOptions) => readonly TaskNotificationRecord[]",
+            "def": "\u4E0D\u4F20 = \u672C\u9879\u76EE\u5168\u90E8\u4E8C\u7EA7",
             "desc": {
-              "zh": "\u6C60\u5185\u81EA\u5E26\u7F13\u5B58\u7684\u8FC7\u6EE4\uFF1B\u4E0E selectTaskNotifications \u540C\u4E00\u5957\u4E09\u6001",
-              "en": "Cached pool-level filtering; same three-state contract as selectTaskNotifications"
+              "zh": "\u6C60\u5185\u81EA\u5E26\u7F13\u5B58\u7684\u8FC7\u6EE4\uFF1B\u4E0E selectTaskNotifications \u540C\u4E00\u5957\u4E09\u6863\u8BED\u4E49",
+              "en": "Cached pool-level filtering; same three-tier contract as selectTaskNotifications"
             }
           },
           {
@@ -68899,13 +69022,22 @@ h(SideSheet, {
         "id": "bt-handle-api",
         "rows": [
           {
+            "name": "input.project",
+            "type": "string",
+            "def": "\u5168\u5C40\u9ED8\u8BA4\u9879\u76EE",
+            "required": "\u4E8C\u8005\u5FC5\u6709\u4E00\u4E2A",
+            "desc": {
+              "zh": "\u4E00\u7EA7\u5206\u7EC4\uFF1B\u4E0D\u4F20\u5219\u53D6 setDefaultTaskProject \u7684\u503C\uFF0C\u4E24\u8005\u90FD\u6CA1\u6709\u5C31\u629B\u9519",
+              "en": "First-level project; falls back to setDefaultTaskProject, and throws when neither exists"
+            }
+          },
+          {
             "name": "input.group",
             "type": "string",
-            "def": "\u2014",
-            "required": "\u5FC5\u586B",
+            "def": "'default'",
             "desc": {
-              "zh": "\u8C03\u7528\u65B9\u7ED9\u7684\u5206\u7EC4 id\uFF1Bcore \u53D6\u4E0D\u5230\u9879\u76EE\u540D",
-              "en": "Caller-supplied group id; core cannot discover a project name"
+              "zh": "\u4E8C\u7EA7\u5206\u7EC4\uFF1A\u9879\u76EE\u5185\u7684\u5206\u7C7B\uFF1B\u4E0D\u80FD\u662F\u7A7A\u5B57\u7B26\u4E32",
+              "en": "Second-level bucket inside the project; must not be empty"
             }
           },
           {
@@ -68919,12 +69051,21 @@ h(SideSheet, {
             }
           },
           {
-            "name": "input.detail / groupLabel",
+            "name": "input.detail",
+            "type": "TaskNotificationDetail",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4EFB\u610F JSON \u503C\uFF08\u5BF9\u8C61 / \u6570\u7EC4 / \u6570\u5B57 / \u5E03\u5C14 / null\uFF09\uFF1B\u5165\u6C60\u524D\u514B\u9686\u79C1\u6709\u526F\u672C\uFF0C\u51FD\u6570\u4E0E\u7C7B\u5B9E\u4F8B\u5F53\u573A\u629B\u9519",
+              "en": "Any JSON value (object / array / number / boolean / null); cloned into a private copy on the way in, while functions and class instances throw immediately"
+            }
+          },
+          {
+            "name": "input.projectLabel / groupLabel",
             "type": "string",
             "def": "\u2014",
             "desc": {
-              "zh": "\u8BE6\u60C5\u6587\u6848 / \u5206\u7EC4\u663E\u793A\u540D\u8986\u76D6",
-              "en": "Detail text / group display-name override"
+              "zh": "\u9879\u76EE / \u5206\u7EC4\u7684\u663E\u793A\u540D\u8986\u76D6",
+              "en": "Project / group display-name overrides"
             }
           },
           {
@@ -68947,7 +69088,7 @@ h(SideSheet, {
           },
           {
             "name": "handle.done(detail?) / fail(reason?)",
-            "type": "(text?: string) => void",
+            "type": "(detail?: TaskNotificationDetail) => void",
             "def": "\u2014",
             "desc": {
               "zh": "\u5E42\u7B49\uFF1B\u6210\u529F\u540E\u6761\u76EE\u7ACB\u523B\u79FB\u51FA\u6C60\u5E76\u53D1 settled \u4E8B\u4EF6",
@@ -69006,12 +69147,12 @@ h(SideSheet, {
       {
         "id": "bt-subscribe-example",
         "lang": "ts",
-        "src": "import { useSyncExternalStore } from 'react'\nimport {\n  taskNotifications,\n  selectTaskNotifications,\n  subscribeTaskNotificationEvents,\n} from 'dsh-plugin-core/ui'\n\n// \u4E09\u4E2A\u53C2\u6570\u90FD\u7ED9\uFF1AgetServerSnapshot \u8BA9 SSR / \u975E\u5BBF\u4E3B\u73AF\u5883\u4E0D\u70B8\nconst snapshot = useSyncExternalStore(\n  taskNotifications.subscribe,\n  taskNotifications.getSnapshot,\n  taskNotifications.getServerSnapshot,\n)\n\n// \u8FC7\u6EE4\u4E09\u6001\uFF1A\u4E0D\u4F20 = \u5168\u7AD9\uFF1B\u4E00\u4E2A = \u53EA\u770B\u8BE5\u7EC4\uFF1B\u591A\u4E2A = \u770B\u8FD9\u51E0\u4E2A\nconst visible = selectTaskNotifications(snapshot, ['dsh-task-reminder'])\n\n// \u5E42\u7B49\uFF1A\u5F00\u540C\u6E90\u6807\u7B7E\u9875\u901A\u9053\uFF0C\u5E76\u5411\u5728\u7EBF\u9875\u9762\u8981\u4E00\u6B21\u5168\u91CF baseline\ntaskNotifications.connect()\n\n// \u4E8B\u4EF6\u662F\u4E00\u6B21\u6027\u4E8B\u5B9E\uFF0C\u4E0D\u7559\u5B58\uFF1B\u9000\u8BA2\u51FD\u6570\u7167\u5E38\u8C03\u7528\nconst off = subscribeTaskNotificationEvents((event) => {\n  if (event.type === 'backgrounded') {\n    // \u6536\u8D77\u53D1\u751F\u4E86\uFF1B\u4EFB\u52A1\u4ECD\u5728\u8DD1\uFF0C\u5FEB\u7167\u91CC\u4E5F\u770B\u5F97\u5230\n  }\n})\n// off() \u4E8E\u5378\u8F7D\u65F6\u8C03\u7528"
+        "src": "import { useSyncExternalStore } from 'react'\nimport {\n  taskNotifications,\n  selectTaskNotifications,\n  subscribeTaskNotificationEvents,\n} from 'dsh-plugin-core/ui'\n\n// \u4E09\u4E2A\u53C2\u6570\u90FD\u7ED9\uFF1AgetServerSnapshot \u8BA9 SSR / \u975E\u5BBF\u4E3B\u73AF\u5883\u4E0D\u70B8\nconst snapshot = useSyncExternalStore(\n  taskNotifications.subscribe,\n  taskNotifications.getSnapshot,\n  taskNotifications.getServerSnapshot,\n)\n\n// \u4E09\u6863\uFF1A\u4E0D\u4F20 = \u672C\u9879\u76EE\u5168\u90E8\u4E8C\u7EA7\uFF1B\u6570\u7EC4 = \u672C\u9879\u76EE\u8FD9\u51E0\u4E2A\u4E8C\u7EA7\uFF1B'*' = \u5168\u7AD9\u6240\u6709\u9879\u76EE\nconst visible = selectTaskNotifications(snapshot, ['scan'])\nconst everything = selectTaskNotifications(snapshot, '*')\n\n// \u5E42\u7B49\uFF1A\u5F00\u540C\u6E90\u6807\u7B7E\u9875\u901A\u9053\uFF0C\u5E76\u5411\u5728\u7EBF\u9875\u9762\u8981\u4E00\u6B21\u5168\u91CF baseline\ntaskNotifications.connect()\n\n// \u4E8B\u4EF6\u662F\u4E00\u6B21\u6027\u4E8B\u5B9E\uFF0C\u4E0D\u7559\u5B58\uFF1B\u9000\u8BA2\u51FD\u6570\u7167\u5E38\u8C03\u7528\nconst off = subscribeTaskNotificationEvents((event) => {\n  if (event.type === 'backgrounded') {\n    // \u6536\u8D77\u53D1\u751F\u4E86\uFF1B\u4EFB\u52A1\u4ECD\u5728\u8DD1\uFF0C\u5FEB\u7167\u91CC\u4E5F\u770B\u5F97\u5230\n  }\n})\n// off() \u4E8E\u5378\u8F7D\u65F6\u8C03\u7528"
       },
       {
         "id": "bt-lifecycle-example",
         "lang": "ts",
-        "src": "import { notifyTask } from 'dsh-plugin-core/ui'\n\n// \u5206\u7EC4\u540D\u5FC5\u987B\u7531\u8C03\u7528\u65B9\u7ED9\uFF1Acore \u53D6\u4E0D\u5230\u9879\u76EE\u540D\n\n// \u2460 \u81EA\u5DF1\u7BA1\u7ED3\u675F\uFF1A\u62FF\u5230\u53E5\u67C4\uFF0C\u968F\u65F6\u66F4\u65B0\uFF0C\u81EA\u5DF1\u6536\u5C3E\nconst handle = notifyTask('dsh-task-reminder', '\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', { detail: '\u5DF2\u5B8C\u6210 12 / 40' })\nhandle.background()   // \u53EA\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\u4EFB\u52A1\nhandle.done('\u626B\u63CF\u5B8C\u6210')\n// handle.fail('\u88AB\u7528\u6237\u53D6\u6D88')\n\n// \u2461 \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20\nawait notifyTask.run('dsh-task-reminder', '\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', () => runWork())\n\n// \u53E5\u67C4\u5DF2\u7ECF\u5728\u624B\u65F6\u624D\u7528\u5F97\u4E0A\u7684\u515C\u5E95\uFF1A\u4E0E run \u540C\u4E00\u4E2A\u6536\u5C3E\uFF0C\u4E0D\u6539\u53D8\u539F Promise \u7684\u7ED3\u7B97\u8BED\u4E49\n// await handle.track(otherWork())   // otherWork(): Promise<void>\uFF0C\u7531\u8C03\u7528\u65B9\u63D0\u4F9B\n// await handle.settled              // \u53EA\u5728\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0"
+        "src": "import { notifyTask, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// \u9879\u76EE\u5728 app \u5165\u53E3\u8BBE\u4E00\u6B21\uFF1Bcore \u53D6\u4E0D\u5230\u9879\u76EE\u540D\uFF0C\u6240\u4EE5\u5FC5\u987B\u6709\u4EBA\u544A\u8BC9\u5B83\nsetDefaultTaskProject('dsh-task-reminder')\n\n// \u2460 \u81EA\u5DF1\u7BA1\u7ED3\u675F\uFF1A\u62FF\u5230\u53E5\u67C4\uFF0C\u968F\u65F6\u66F4\u65B0\uFF0C\u81EA\u5DF1\u6536\u5C3E\nconst handle = notifyTask('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', { group: 'scan', detail: { done: 12, total: 40 } })\nhandle.background()   // \u53EA\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\u4EFB\u52A1\nhandle.done('\u626B\u63CF\u5B8C\u6210')\n// handle.fail('\u88AB\u7528\u6237\u53D6\u6D88')\n\n// \u2461 \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20\nawait notifyTask.run('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', () => runWork(), { group: 'scan' })\n\n// \u53E5\u67C4\u5DF2\u7ECF\u5728\u624B\u65F6\u624D\u7528\u5F97\u4E0A\u7684\u515C\u5E95\uFF1A\u4E0E run \u540C\u4E00\u4E2A\u6536\u5C3E\uFF0C\u4E0D\u6539\u53D8\u539F Promise \u7684\u7ED3\u7B97\u8BED\u4E49\n// await handle.track(otherWork())   // otherWork(): Promise<void>\uFF0C\u7531\u8C03\u7528\u65B9\u63D0\u4F9B\n// await handle.settled              // \u53EA\u5728\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0"
       }
     ]
   }
@@ -73052,8 +73193,10 @@ function PaginationPage() {
 
 // packages/demo/src/sections/task-notifications.tsx
 var import_react101 = require("react");
-var GROUP_REMINDER = "dsh-task-reminder";
-var GROUP_LEDGER = "dsh-task-ledger";
+var DEMO_PROJECT = "dsh-plugin-core-demo";
+var SUB_REMINDER = "reminder";
+var SUB_LEDGER = "ledger";
+setDefaultTaskProject(DEMO_PROJECT);
 var CODE_SUBSCRIBE = `import { useSyncExternalStore } from 'react'
 import { notifyTask, taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/ui'
 
@@ -73062,15 +73205,22 @@ const snapshot = useSyncExternalStore(
   taskNotifications.getSnapshot,
   taskNotifications.getServerSnapshot,
 )
-const rows = selectTaskNotifications(snapshot, ['dsh-task-reminder'])
+
+// \u4E09\u6863\uFF1A\u4E0D\u4F20 = \u672C\u9879\u76EE\u5168\u90E8\u4E8C\u7EA7\uFF1B\u6570\u7EC4 = \u672C\u9879\u76EE\u8FD9\u51E0\u4E2A\u4E8C\u7EA7\uFF1B'*' = \u5168\u7AD9\u6240\u6709\u9879\u76EE
+const mine = selectTaskNotifications(snapshot)
+const scanOnly = selectTaskNotifications(snapshot, ['scan'])
+const everything = selectTaskNotifications(snapshot, '*')
 
 // \u2460 settle it yourself: you hold the handle
-const handle = notifyTask('dsh-task-reminder', 'workspace-scan')
+const handle = notifyTask('workspace-scan', { group: 'scan' })
 handle.background()   // collapse is an event, not a settlement
 handle.done()         // the caller owns the ending
 
 // \u2461 or wrap the work and let the library close it
-await notifyTask.run('dsh-task-reminder', 'workspace-scan', () => scanWorkspace())`;
+await notifyTask.run('workspace-scan', () => scanWorkspace(), { group: 'scan' })`;
+function detailText(detail) {
+  return typeof detail === "string" ? detail : JSON.stringify(detail);
+}
 var mono = { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px" };
 var row = { display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" };
 var panel = { display: "flex", flexDirection: "column", gap: "8px", fontSize: "12px" };
@@ -73091,12 +73241,12 @@ function TaskNotificationsPage() {
       setEvents((prev) => [event, ...prev].slice(0, 8));
     });
   }, []);
-  const groups = filter2 === "all" ? void 0 : filter2 === "one" ? [GROUP_REMINDER] : [GROUP_REMINDER, GROUP_LEDGER];
+  const groups = filter2 === "all" ? void 0 : filter2 === "allProjects" ? "*" : filter2 === "one" ? [SUB_REMINDER] : [SUB_REMINDER, SUB_LEDGER];
   const visible = selectTaskNotifications(snapshot, groups);
   const localPending = [...handles.current.values()].filter((handle) => !handle.isSettled).length;
   function register(group, label) {
     serial.current += 1;
-    const handle = notifyTask(group, `${label} #${serial.current}`);
+    const handle = notifyTask(`${label} #${serial.current}`, { group });
     handles.current.set(handle.id, handle);
   }
   function withHandle(task, fn) {
@@ -73132,14 +73282,14 @@ function TaskNotificationsPage() {
         (0, import_react101.createElement)(
           "div",
           { style: { ...mono, color: "var(--dshpc-fg-3)" } },
-          `group=${task.group} \xB7 status=${task.status} \xB7 backgrounded=${task.backgrounded} \xB7 origin=${task.origin}`
+          `project=${task.project} \xB7 group=${task.group} \xB7 status=${task.status} \xB7 backgrounded=${task.backgrounded} \xB7 origin=${task.origin}`
         ),
         (0, import_react101.createElement)(
           "div",
           { style: { ...mono, color: local ? "var(--dshpc-fg-2)" : "var(--dshpc-fg-4)" } },
           local ? t3("tnBadgeLocal") : t3("tnBadgeRemote")
         ),
-        task.detail === void 0 ? null : (0, import_react101.createElement)("div", { style: mono }, task.detail)
+        task.detail === void 0 ? null : (0, import_react101.createElement)("div", { style: mono }, detailText(task.detail))
       )
     );
   }
@@ -73170,15 +73320,16 @@ function TaskNotificationsPage() {
         (0, import_react101.createElement)(
           "div",
           { style: row },
-          (0, import_react101.createElement)(Button, { size: "sm", variant: "primary", onClick: () => register(GROUP_REMINDER, "workspace-scan") }, t3("tnRegisterReminder")),
-          (0, import_react101.createElement)(Button, { size: "sm", onClick: () => register(GROUP_LEDGER, "session-index") }, t3("tnRegisterLedger"))
+          (0, import_react101.createElement)(Button, { size: "sm", variant: "primary", onClick: () => register(SUB_REMINDER, "workspace-scan") }, t3("tnRegisterReminder")),
+          (0, import_react101.createElement)(Button, { size: "sm", onClick: () => register(SUB_LEDGER, "session-index") }, t3("tnRegisterLedger"))
         ),
         (0, import_react101.createElement)(
           "div",
           { style: row },
           (0, import_react101.createElement)(Button, { size: "sm", variant: filter2 === "all" ? "primary" : "outline", onClick: () => setFilter("all") }, t3("tnFilterAll")),
           (0, import_react101.createElement)(Button, { size: "sm", variant: filter2 === "one" ? "primary" : "outline", onClick: () => setFilter("one") }, t3("tnFilterOne")),
-          (0, import_react101.createElement)(Button, { size: "sm", variant: filter2 === "two" ? "primary" : "outline", onClick: () => setFilter("two") }, t3("tnFilterTwo"))
+          (0, import_react101.createElement)(Button, { size: "sm", variant: filter2 === "two" ? "primary" : "outline", onClick: () => setFilter("two") }, t3("tnFilterTwo")),
+          (0, import_react101.createElement)(Button, { size: "sm", variant: filter2 === "allProjects" ? "primary" : "outline", onClick: () => setFilter("allProjects") }, t3("tnFilterAllProjects"))
         ),
         (0, import_react101.createElement)(
           "div",
@@ -73376,7 +73527,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.25"}`],
             [t3("buildDemo"), `v${"0.35.25"}`],
-            [t3("buildStamp"), "261112-175915-043"]
+            [t3("buildStamp"), "261112-195823-900"]
           ].map(
             ([label, value]) => (0, import_react103.createElement)(
               "tr",
@@ -73695,7 +73846,7 @@ function DemoPage() {
           },
           (0, import_react105.createElement)("span", null, `core v${"0.35.25"}`),
           (0, import_react105.createElement)("span", null, `demo v${"0.35.25"}`),
-          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261112-175915-043")
+          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261112-195823-900")
         )
       )
     ),

@@ -1,4 +1,4 @@
-import test from 'node:test'
+import test, { beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
 import vm from 'node:vm'
 import { fileURLToPath } from 'node:url'
@@ -14,10 +14,19 @@ import {
   claimTaskNotifications,
   createTaskNotificationEventBus,
   createTaskNotificationPool,
+  getDefaultTaskProject,
   notifyTask,
   selectTaskNotifications,
+  setDefaultTaskProject,
   subscribeTaskNotificationEvents,
 } from '../dist/ui/index.js'
+
+/** 每条用例的默认项目：绝大多数用例只关心二级分组，项目用同一个就够。 */
+const TEST_PROJECT = 'test-project'
+
+beforeEach(() => {
+  setDefaultTaskProject(TEST_PROJECT)
+})
 
 /** 等异步 BroadcastChannel 消息落地；只用于测试等待，库本身不轮询。 */
 async function waitFor(predicate, label, timeoutMs = 2000) {
@@ -44,9 +53,10 @@ function makePool(channelName, extra = {}) {
 }
 
 /** 一条合法的跨页任务记录（纯数据，不带函数 / 组件）。 */
-function wireTask(origin, id, group = 'plugin-a') {
+function wireTask(origin, id, group = 'plugin-a', project = TEST_PROJECT) {
   return {
     id,
+    project,
     group,
     title: 'remote task',
     status: 'running',
@@ -88,7 +98,7 @@ test('全局单例：多副本 claim 只建一次，且键是 Symbol.for 全局�
     })
     assert.equal(busCreated, 1)
     assert.equal(busA, busB)
-    assert.equal(TASK_NOTIFICATIONS_KEY, Symbol.for('dsh-plugin-core/task-notifications/v1'))
+    assert.equal(TASK_NOTIFICATIONS_KEY, Symbol.for('dsh-plugin-core/task-notifications/v2'))
   } finally {
     g[TASK_NOTIFICATIONS_KEY] = originalPool
     g[TASK_NOTIFICATIONS_EVENTS_KEY] = originalBus
@@ -137,7 +147,7 @@ test('快照引用稳定：无变化不换引用，变化才换；派生缓存�
     const onlyA = pool.select(['plugin-a'])
     assert.deepEqual(onlyA.map((t) => t.group), ['plugin-a'])
     assert.equal(pool.select(['plugin-a']), onlyA)
-    assert.equal(pool.select([]).length, 2, '不传 / 空数组 = 全站全显示')
+    assert.equal(pool.select([]).length, 2, '不传 / 空数组 = 本项目全部二级')
     assert.equal(pool.select(['plugin-a', 'plugin-b']).length, 2)
     assert.equal(pool.select(['plugin-a', 'plugin-b']).length, 2)
     assert.equal(pool.select(['plugin-c']).length, 0)
@@ -492,10 +502,10 @@ test('DSH CJS 闭包：zustand 被打进产物且状态池真能跑（不是只�
   const seen = []
   bus.subscribe((event) => { seen.push(event.type) })
   const pool = createTaskNotificationPool({ offline: true, events: bus, lifecycle: false })
-  const handle = pool.register({ group: 'probe-group', title: 'probe task' })
+  const handle = pool.register({ project: 'probe-project', group: 'probe-group', title: 'probe task' })
   assert.equal(pool.getSnapshot().tasks.length, 1)
-  assert.equal(selectTaskNotifications(pool.getSnapshot(), ['probe-group']).length, 1)
-  assert.equal(pool.select(['other']).length, 0)
+  assert.equal(selectTaskNotifications(pool.getSnapshot(), ['probe-group'], { project: 'probe-project' }).length, 1)
+  assert.equal(pool.select(['other'], { project: 'probe-project' }).length, 0)
   handle.background()
   handle.done()
   assert.equal(pool.getSnapshot().tasks.length, 0)
@@ -514,9 +524,35 @@ function taskByTitle(title) {
   return taskNotifications.getSnapshot().tasks.find((task) => task.title === title)
 }
 
-test('notifyTask：位置参数登记并返回句柄，字段落地，done 后移出池', () => {
-  const handle = notifyTask('probe-notify', 'notify task probe')
-  assert.equal(taskById(handle)?.group, 'probe-notify')
+test('两级过滤三档：不传 = 本项目全部二级；数组 = 这些二级；* = 全站', () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  pool.register({ project: 'p1', group: 'scan', title: 'p1-scan' })
+  pool.register({ project: 'p1', group: 'export', title: 'p1-export' })
+  pool.register({ project: 'p2', group: 'scan', title: 'p2-scan' })
+  const snapshot = pool.getSnapshot()
+
+  const mine = selectTaskNotifications(snapshot, undefined, { project: 'p1' }).map((task) => task.title)
+  assert.deepEqual([...mine].sort(), ['p1-export', 'p1-scan'])
+  assert.equal(selectTaskNotifications(snapshot, [], { project: 'p1' }).length, 2, '空数组 = 本项目全部二级')
+  assert.deepEqual(
+    selectTaskNotifications(snapshot, ['scan'], { project: 'p1' }).map((task) => task.title),
+    ['p1-scan'],
+  )
+  assert.equal(selectTaskNotifications(snapshot, ['scan', 'export'], { project: 'p1' }).length, 2)
+  assert.equal(selectTaskNotifications(snapshot, '*').length, 3, "'*' = 所有项目所有二级")
+  assert.equal(selectTaskNotifications(snapshot, '*', { project: 'p2' }).length, 1, "'*' 加 project 可只留一个项目")
+  assert.equal(selectTaskNotifications(snapshot, undefined, { project: null }).length, 3, 'project: null = 不限项目')
+  assert.equal(
+    selectTaskNotifications(snapshot, '*'),
+    selectTaskNotifications(snapshot, '*'),
+    '同快照同过滤必须返回同一数组',
+  )
+})
+
+test('notifyTask：只给标题即可，项目取全局默认、二级缺省 default', () => {
+  const handle = notifyTask('notify task probe')
+  assert.equal(taskById(handle)?.project, TEST_PROJECT)
+  assert.equal(taskById(handle)?.group, 'default')
   assert.equal(taskById(handle)?.title, 'notify task probe')
   assert.equal(taskById(handle)?.status, 'running')
   assert.equal(handle.isSettled, false)
@@ -525,23 +561,74 @@ test('notifyTask：位置参数登记并返回句柄，字段落地，done 后�
   assert.equal(taskById(handle), undefined)
 })
 
-test('notifyTask：options.detail / groupLabel 落到条目上，之后仍可 update', () => {
-  const handle = notifyTask('probe-notify', 'notify detail probe', { detail: '12 / 40', groupLabel: 'Probe' })
-  assert.equal(taskById(handle)?.detail, '12 / 40')
-  assert.equal(taskById(handle)?.groupLabel, 'Probe')
-  handle.update({ detail: '30 / 40' })
-  assert.equal(taskById(handle)?.detail, '30 / 40')
+test('notifyTask：options 里的二级分组、detail 与显示名都落到条目上', () => {
+  const handle = notifyTask('notify detail probe', {
+    group: 'scan',
+    detail: { done: 12, total: 40 },
+    groupLabel: 'Scan',
+    projectLabel: 'Probe',
+  })
+  assert.equal(taskById(handle)?.group, 'scan')
+  assert.deepEqual(taskById(handle)?.detail, { done: 12, total: 40 })
+  assert.equal(taskById(handle)?.groupLabel, 'Scan')
+  assert.equal(taskById(handle)?.projectLabel, 'Probe')
+  handle.update({ detail: ['a', 'b'] })
+  assert.deepEqual(taskById(handle)?.detail, ['a', 'b'])
+  handle.done()
+})
+
+test('notifyTask：detail 入池前取私有副本，调用方事后改原对象不影响状态', () => {
+  const detail = { step: 1 }
+  const handle = notifyTask('notify clone probe', { detail })
+  detail.step = 99
+  assert.equal(taskById(handle)?.detail?.step, 1)
+  handle.done()
+})
+
+test('notifyTask：detail 带函数 → 当场抛错，且不留下条目', () => {
+  assert.throws(() => notifyTask('notify bad detail', { detail: { fn: () => 1 } }), /JSON value/)
+  assert.equal(taskByTitle('notify bad detail'), undefined)
+})
+
+test('notifyTask：没设默认项目也没传 project → 抛错并指出怎么修', () => {
+  setDefaultTaskProject(undefined)
+  try {
+    assert.throws(() => notifyTask('no project'), /setDefaultTaskProject/)
+  } finally {
+    setDefaultTaskProject(TEST_PROJECT)
+  }
+  assert.equal(taskByTitle('no project'), undefined)
+})
+
+test('notifyTask：显式 project 覆盖默认，且不改默认值', () => {
+  const handle = notifyTask('notify other project', { project: 'other-project' })
+  assert.equal(taskById(handle)?.project, 'other-project')
+  assert.equal(getDefaultTaskProject(), TEST_PROJECT)
   handle.done()
 })
 
 test('notifyTask.run：成功自动 done、原样返回结果、条目移出池', async () => {
-  assert.equal(await notifyTask.run('probe-notify', 'notify run probe', async () => 'value'), 'value')
+  assert.equal(await notifyTask.run('notify run probe', async () => 'value'), 'value')
   assert.equal(taskByTitle('notify run probe'), undefined)
 })
 
 test('notifyTask.run：接受现成 Promise，不改其结算语义', async () => {
-  assert.equal(await notifyTask.run('probe-notify', 'notify promise probe', Promise.resolve(42)), 42)
+  assert.equal(await notifyTask.run('notify promise probe', Promise.resolve(42)), 42)
   assert.equal(taskByTitle('notify promise probe'), undefined)
+})
+
+test('notifyTask.run：第三个参数把二级分组 / 项目透传到条目', async () => {
+  const seen = []
+  const off = subscribeTaskNotificationEvents((event) => {
+    if (event.type === 'registered' && event.task.title === 'notify run group probe') seen.push(event.task)
+  })
+  try {
+    await notifyTask.run('notify run group probe', async () => 'ok', { group: 'run-group' })
+  } finally {
+    off()
+  }
+  assert.equal(seen[0]?.group, 'run-group')
+  assert.equal(seen[0]?.project, TEST_PROJECT)
 })
 
 test('notifyTask.run：失败自动 fail、异常原样抛出、条目移出池且原因与 settled 都在', async () => {
@@ -551,7 +638,7 @@ test('notifyTask.run：失败自动 fail、异常原样抛出、条目移出池�
   })
   try {
     await assert.rejects(
-      notifyTask.run('probe-notify', 'notify run fail probe', async () => { throw new Error('boom') }),
+      notifyTask.run('notify run fail probe', async () => { throw new Error('boom') }),
       /boom/,
     )
   } finally {
@@ -565,7 +652,7 @@ test('notifyTask.run：失败自动 fail、异常原样抛出、条目移出池�
 
 test('notifyTask.run：work 同步抛错也收尾，不留永远 running 的条目', async () => {
   await assert.rejects(
-    notifyTask.run('probe-notify', 'notify sync throw probe', () => { throw new Error('sync boom') }),
+    notifyTask.run('notify sync throw probe', () => { throw new Error('sync boom') }),
     /sync boom/,
   )
   assert.equal(taskByTitle('notify sync throw probe'), undefined)

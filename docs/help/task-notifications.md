@@ -4,7 +4,7 @@
 
 > EN: Task Notification Hub
 
-导出：notifyTask、taskNotifications、taskNotificationEvents、TASK_NOTIFICATIONS_LOCK_PREFIX、createTaskNotificationPool、createTaskNotificationEventBus、selectTaskNotifications、subscribeTaskNotificationEvents、emitTaskNotificationEvent
+导出：notifyTask、taskNotifications、taskNotificationEvents、TASK_NOTIFICATIONS_LOCK_PREFIX、TASK_NOTIFICATIONS_PROJECT_KEY、setDefaultTaskProject、getDefaultTaskProject、createTaskNotificationPool、createTaskNotificationEventBus、selectTaskNotifications、subscribeTaskNotificationEvents、emitTaskNotificationEvent
 
 ## 让长耗时任务登记、订阅与跨页可见
 
@@ -18,13 +18,21 @@
 
 > EN: Data lives in memory only: one copy per page and per same-origin tab, gone when the process or page closes. No files, no requests, no polling. Cross-page messages are plain structured-cloneable data — no functions, components, `ReactNode` or promises. Every row comes from a real registration and the real clock; the library ships no mock or placeholder data.
 
-快照是 `{ tasks, revision }`，`tasks` 按开始时间再按 id 排序，跨页顺序确定；无变化不产生新对象，`getServerSnapshot()` 永远是同一个冻结空快照。`selectTaskNotifications()` 对同一快照与同一过滤条件返回同一数组。分组名由调用方显式给，`groupLabel` 只覆盖显示名。
+快照是 `{ tasks, revision }`，`tasks` 按开始时间再按 id 排序，跨页顺序确定；无变化不产生新对象，`getServerSnapshot()` 永远是同一个冻结空快照。`selectTaskNotifications()` 对同一快照与同一过滤条件返回同一数组。
 
-> EN: A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter. The caller supplies the group id explicitly; `groupLabel` only overrides the display name.
+> EN: A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter.
 
-两个入口分工与 `oraPromise` / `toast.promise` / `withProgress` 一致：`notifyTask(group, title, options?)` 返回句柄，自己收尾；`notifyTask.run(group, title, work)` 包住一段异步，成功与失败自动收尾并透传结果。两者前两参一致，且基础入口的返回类型不随参数变化。需要对象参数或池级能力时仍用 `taskNotifications.register()`。
+NaN
 
-> EN: The two entries split the work the way `oraPromise` / `toast.promise` / `withProgress` do: `notifyTask(group, title, options?)` returns a handle you settle yourself, while `notifyTask.run(group, title, work)` wraps an async task, settling it either way and passing the result through. Both take the same first two arguments, and the base entry never changes its return type based on its arguments. Use `taskNotifications.register()` when you need an options object or pool-level control.
+> EN: Two levels: `project` is set once at app start with `setDefaultTaskProject()`, and `group` is a second-level bucket inside it (default `default`). Reading has three tiers: omitted or empty = every group of the current project; one or more names = only those groups; `'*'` = every project and every group. A third argument `{ project }` switches projects, and `{ project: null }` drops the project filter. Core cannot discover a project name, so somebody must set it; `projectLabel` / `groupLabel` only override display names.
+
+`detail` 收任意 JSON 值（对象、数组、数字、布尔、null），入池前库取一份私有副本：调用方之后改原对象不会污染状态，也不需要自己 `JSON.stringify`。函数、DOM 节点与类实例当场抛错，不会等到跨页广播时才炸。
+
+> EN: `detail` accepts any JSON value (object, array, number, boolean, null); the pool takes a private copy on the way in, so later mutation by the caller cannot change stored state and no `JSON.stringify` is needed. Functions, DOM nodes and class instances throw right away instead of failing later during the cross-page broadcast.
+
+两个入口分工与 `oraPromise` / `toast.promise` / `withProgress` 一致：`notifyTask(title, options?)` 返回句柄，自己收尾；`notifyTask.run(title, work, options?)` 包住一段异步，成功与失败自动收尾并透传结果。第一参恒为标题，项目来自全局默认、二级分组来自 `options.group`，两者都能省；基础入口的返回类型不随参数变化。需要对象参数或池级能力时仍用 `taskNotifications.register()`。
+
+> EN: The two entries split the work the way `oraPromise` / `toast.promise` / `withProgress` do: `notifyTask(title, options?)` returns a handle you settle yourself, while `notifyTask.run(title, work, options?)` wraps an async task, settling it either way and passing the result through. The first argument is always the title: the project comes from the global default and the group from `options.group`, so both can be omitted, and the base entry never changes its return type based on its arguments. Use `taskNotifications.register()` when you need an options object or pool-level control.
 
 结束权在调用方：`done()` / `fail()` 幂等，`track(promise)` 让成功与 reject 走同一收尾且返回原 Promise。`settled` 只在任务真正结束时兑现；收起不兑现它，而是发一个 `backgrounded` 事件。这就是「Promise 两态 + 收起作为事件」，调用方 `await` 的仍是正常两态。
 
@@ -46,31 +54,35 @@
 
 > EN: Multiple copies on one page share a single pool and bus on `globalThis[Symbol.for(...)]`, so registration and notification never fire N times. Keys carry a protocol version; a shape mismatch throws instead of silently degrading. This capability is the data plane only: collapsible dialogs, exception controls and the event-viewer control are out of scope and arrive in separate tasks.
 
-| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
-|---|---|---|---|---|
-| `taskNotifications` | `TaskNotificationPool` | 全局单例 | 同页所有副本共享的池；惰性创建，首次使用才占用全局键 | Pool shared by all copies on the page; lazy, claims the global key on first use |
-| `notifyTask(group, title, options?)` | `(group: string, title: string, options?: NotifyTaskOptions) => TaskNotificationHandle` | — | 日常入口：位置参数登记一条任务并返回句柄；需要对象参数或池级能力时用 register | Everyday entry: registers a task positionally and returns its handle; reach for register when you need an options object or pool-level control |
-| `notifyTask.run(group, title, work)` | `<T>(group: string, title: string, work: Promise<T> \| (() => Promise<T>)) => Promise<T>` | — | 包住一段异步：成功 done、失败 fail，结果与异常原样透传 | Wraps an async task: done on success, fail on rejection, passing the result and error through |
-| `getSnapshot()` | `() => TaskNotificationSnapshot` | — | 当前全量快照，引用稳定；可直接作 useSyncExternalStore 的第二参 | Current full snapshot with a stable reference; use as the second useSyncExternalStore argument |
-| `getServerSnapshot()` | `() => TaskNotificationSnapshot` | 冻结空快照 | SSR / 非宿主环境用，永远是同一个对象 | For SSR and non-host environments; always the same object |
-| `subscribe(listener)` | `(listener: () => void) => () => void` | — | 状态真变了才通知；返回退订函数 | Notifies only on real state changes; returns an unsubscribe function |
-| `connect()` | `() => void` | — | 幂等；开跨页通道并请求一次全量 baseline | Idempotent; opens the cross-page channel and requests one full baseline |
-| `refresh()` | `() => void` | — | 重新向同源标签页要一次全量状态；休眠恢复时自动触发，平时不用手动调 | Re-requests a full snapshot from same-origin tabs; runs automatically after sleep, no manual call needed |
-| `select(groups?)` | `(groups?: readonly string[]) => readonly TaskNotificationRecord[]` | 不传 = 全站 | 池内自带缓存的过滤；与 selectTaskNotifications 同一套三态 | Cached pool-level filtering; same three-state contract as selectTaskNotifications |
-| `register(input)` | `(input: TaskNotificationInput) => TaskNotificationHandle` | — | 登记一条真实任务并返回句柄 | Registers a real task and returns its handle |
-| `settleLocal(reason?)` | `(reason?: string) => number` | — | 结束本页仍持有的全部任务并返回条数，不需要句柄；跨页条目不动 | Ends every task this page still owns and returns the count without needing a handle; rows from other pages are untouched |
-| `canRestore(task)` | `(task: TaskNotificationRecord) => boolean` | — | 只有本页创建的条目可还原 | Only rows created on this page can be restored |
-| `requestRestore(taskId)` | `(taskId: string) => boolean` | — | 发本地 restored 事件；跨页条目返回 false，不跨页传递 | Emits a local restored event; returns false for cross-page rows, never crosses pages |
-| `dispose()` | `() => void` | — | 关通道与摘监听，保留状态；下次 connect 会复活并重发全量分片 | Closes the channel and detaches listeners but keeps state; the next connect revives it and rebroadcasts a full shard |
+| 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|---|
+| `taskNotifications` | `TaskNotificationPool` | — | 全局单例 | 同页所有副本共享的池；惰性创建，首次使用才占用全局键 | Pool shared by all copies on the page; lazy, claims the global key on first use |
+| `setDefaultTaskProject(project)` | `(project: string \| undefined) => void` | app 入口调一次 | — | 设一级分组（项目）；挂在全局符号上，同页所有副本共享；传 undefined 清空（测试用） | Sets the first-level project on a global symbol so every copy on the page shares it; pass undefined to clear it (tests) |
+| `getDefaultTaskProject()` | `() => string \| undefined` | — | undefined | 读当前默认项目 | Reads the current default project |
+| `notifyTask(title, options?)` | `(title: string, options?: NotifyTaskOptions) => TaskNotificationHandle` | — | — | 日常入口：项目取全局默认、二级分组取 options.group（缺省 default）；需要对象参数或池级能力时用 register | Everyday entry: project from the global default, group from options.group (default "default"); reach for register when you need an options object or pool-level control |
+| `notifyTask.run(title, work, options?)` | `<T>(title: string, work: Promise<T> \| (() => Promise<T>), options?: NotifyTaskOptions) => Promise<T>` | — | — | 包住一段异步：成功 done、失败 fail，结果与异常原样透传 | Wraps an async task: done on success, fail on rejection, passing the result and error through |
+| `getSnapshot()` | `() => TaskNotificationSnapshot` | — | — | 当前全量快照，引用稳定；可直接作 useSyncExternalStore 的第二参 | Current full snapshot with a stable reference; use as the second useSyncExternalStore argument |
+| `getServerSnapshot()` | `() => TaskNotificationSnapshot` | — | 冻结空快照 | SSR / 非宿主环境用，永远是同一个对象 | For SSR and non-host environments; always the same object |
+| `subscribe(listener)` | `(listener: () => void) => () => void` | — | — | 状态真变了才通知；返回退订函数 | Notifies only on real state changes; returns an unsubscribe function |
+| `connect()` | `() => void` | — | — | 幂等；开跨页通道并请求一次全量 baseline | Idempotent; opens the cross-page channel and requests one full baseline |
+| `refresh()` | `() => void` | — | — | 重新向同源标签页要一次全量状态；休眠恢复时自动触发，平时不用手动调 | Re-requests a full snapshot from same-origin tabs; runs automatically after sleep, no manual call needed |
+| `select(groups?, options?)` | `(groups?: TaskNotificationGroupFilter, options?: TaskNotificationSelectOptions) => readonly TaskNotificationRecord[]` | — | 不传 = 本项目全部二级 | 池内自带缓存的过滤；与 selectTaskNotifications 同一套三档语义 | Cached pool-level filtering; same three-tier contract as selectTaskNotifications |
+| `register(input)` | `(input: TaskNotificationInput) => TaskNotificationHandle` | — | — | 登记一条真实任务并返回句柄 | Registers a real task and returns its handle |
+| `settleLocal(reason?)` | `(reason?: string) => number` | — | — | 结束本页仍持有的全部任务并返回条数，不需要句柄；跨页条目不动 | Ends every task this page still owns and returns the count without needing a handle; rows from other pages are untouched |
+| `canRestore(task)` | `(task: TaskNotificationRecord) => boolean` | — | — | 只有本页创建的条目可还原 | Only rows created on this page can be restored |
+| `requestRestore(taskId)` | `(taskId: string) => boolean` | — | — | 发本地 restored 事件；跨页条目返回 false，不跨页传递 | Emits a local restored event; returns false for cross-page rows, never crosses pages |
+| `dispose()` | `() => void` | — | — | 关通道与摘监听，保留状态；下次 connect 会复活并重发全量分片 | Closes the channel and detaches listeners but keeps state; the next connect revives it and rebroadcasts a full shard |
 
 | 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|---|
-| `input.group` | `string` | 必填 | — | 调用方给的分组 id；core 取不到项目名 | Caller-supplied group id; core cannot discover a project name |
+| `input.project` | `string` | 二者必有一个 | 全局默认项目 | 一级分组；不传则取 setDefaultTaskProject 的值，两者都没有就抛错 | First-level project; falls back to setDefaultTaskProject, and throws when neither exists |
+| `input.group` | `string` | — | 'default' | 二级分组：项目内的分类；不能是空字符串 | Second-level bucket inside the project; must not be empty |
 | `input.title` | `string` | 必填 | — | 条目标题 | Row title |
-| `input.detail / groupLabel` | `string` | — | — | 详情文案 / 分组显示名覆盖 | Detail text / group display-name override |
+| `input.detail` | `TaskNotificationDetail` | — | — | 任意 JSON 值（对象 / 数组 / 数字 / 布尔 / null）；入池前克隆私有副本，函数与类实例当场抛错 | Any JSON value (object / array / number / boolean / null); cloned into a private copy on the way in, while functions and class instances throw immediately |
+| `input.projectLabel / groupLabel` | `string` | — | — | 项目 / 分组的显示名覆盖 | Project / group display-name overrides |
 | `handle.update(patch)` | `(patch: TaskNotificationPatch) => void` | — | — | 只改纯数据字段，随时可调用 | Updates plain data fields, callable any time |
 | `handle.background()` | `() => void` | — | — | 标记收起并发 backgrounded 事件，不结算 | Marks the task backgrounded and emits a backgrounded event without settling |
-| `handle.done(detail?) / fail(reason?)` | `(text?: string) => void` | — | — | 幂等；成功后条目立刻移出池并发 settled 事件 | Idempotent; removes the row immediately and emits a settled event |
+| `handle.done(detail?) / fail(reason?)` | `(detail?: TaskNotificationDetail) => void` | — | — | 幂等；成功后条目立刻移出池并发 settled 事件 | Idempotent; removes the row immediately and emits a settled event |
 | `handle.track(promise)` | `<T>(promise: Promise<T>) => Promise<T>` | — | — | 句柄已在手时的兜底收尾；返回原 Promise。包一段异步的日常写法是 notifyTask.run | Fallback settlement when the handle is already in hand; returns the original promise. The everyday way to wrap async work is notifyTask.run |
 | `handle.settled` | `Promise<TaskNotificationSettlement>` | — | — | 只在真正结束时兑现；收起不兑现 | Resolves only on a real ending, never on collapse |
 | `subscribeTaskNotificationEvents(listener)` | `(listener: TaskNotificationEventListener) => () => void` | — | — | 监听 registered / updated / backgrounded / settled / restored / peer-left | Listens for registered / updated / backgrounded / settled / restored / peer-left |
@@ -92,8 +104,9 @@ const snapshot = useSyncExternalStore(
   taskNotifications.getServerSnapshot,
 )
 
-// 过滤三态：不传 = 全站；一个 = 只看该组；多个 = 看这几个
-const visible = selectTaskNotifications(snapshot, ['dsh-task-reminder'])
+// 三档：不传 = 本项目全部二级；数组 = 本项目这几个二级；'*' = 全站所有项目
+const visible = selectTaskNotifications(snapshot, ['scan'])
+const everything = selectTaskNotifications(snapshot, '*')
 
 // 幂等：开同源标签页通道，并向在线页面要一次全量 baseline
 taskNotifications.connect()
@@ -108,18 +121,19 @@ const off = subscribeTaskNotificationEvents((event) => {
 ```
 
 ```ts id="bt-lifecycle-example"
-import { notifyTask } from 'dsh-plugin-core/ui'
+import { notifyTask, setDefaultTaskProject } from 'dsh-plugin-core/ui'
 
-// 分组名必须由调用方给：core 取不到项目名
+// 项目在 app 入口设一次；core 取不到项目名，所以必须有人告诉它
+setDefaultTaskProject('dsh-task-reminder')
 
 // ① 自己管结束：拿到句柄，随时更新，自己收尾
-const handle = notifyTask('dsh-task-reminder', '扫描工作区文件', { detail: '已完成 12 / 40' })
+const handle = notifyTask('扫描工作区文件', { group: 'scan', detail: { done: 12, total: 40 } })
 handle.background()   // 只发 backgrounded 事件，不结算任务
 handle.done('扫描完成')
 // handle.fail('被用户取消')
 
 // ② 包住一段异步：成功 done、失败 fail，结果与异常原样透传
-await notifyTask.run('dsh-task-reminder', '扫描工作区文件', () => runWork())
+await notifyTask.run('扫描工作区文件', () => runWork(), { group: 'scan' })
 
 // 句柄已经在手时才用得上的兜底：与 run 同一个收尾，不改变原 Promise 的结算语义
 // await handle.track(otherWork())   // otherWork(): Promise<void>，由调用方提供

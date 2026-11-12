@@ -4503,12 +4503,20 @@ export const docData = {
         "en": "Data lives in memory only: one copy per page and per same-origin tab, gone when the process or page closes. No files, no requests, no polling. Cross-page messages are plain structured-cloneable data — no functions, components, `ReactNode` or promises. Every row comes from a real registration and the real clock; the library ships no mock or placeholder data."
       },
       {
-        "zh": "快照是 `{ tasks, revision }`，`tasks` 按开始时间再按 id 排序，跨页顺序确定；无变化不产生新对象，`getServerSnapshot()` 永远是同一个冻结空快照。`selectTaskNotifications()` 对同一快照与同一过滤条件返回同一数组。分组名由调用方显式给，`groupLabel` 只覆盖显示名。",
-        "en": "A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter. The caller supplies the group id explicitly; `groupLabel` only overrides the display name."
+        "zh": "快照是 `{ tasks, revision }`，`tasks` 按开始时间再按 id 排序，跨页顺序确定；无变化不产生新对象，`getServerSnapshot()` 永远是同一个冻结空快照。`selectTaskNotifications()` 对同一快照与同一过滤条件返回同一数组。",
+        "en": "A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter."
       },
       {
-        "zh": "两个入口分工与 `oraPromise` / `toast.promise` / `withProgress` 一致：`notifyTask(group, title, options?)` 返回句柄，自己收尾；`notifyTask.run(group, title, work)` 包住一段异步，成功与失败自动收尾并透传结果。两者前两参一致，且基础入口的返回类型不随参数变化。需要对象参数或池级能力时仍用 `taskNotifications.register()`。",
-        "en": "The two entries split the work the way `oraPromise` / `toast.promise` / `withProgress` do: `notifyTask(group, title, options?)` returns a handle you settle yourself, while `notifyTask.run(group, title, work)` wraps an async task, settling it either way and passing the result through. Both take the same first two arguments, and the base entry never changes its return type based on its arguments. Use `taskNotifications.register()` when you need an options object or pool-level control."
+        "zh": null,
+        "en": "Two levels: `project` is set once at app start with `setDefaultTaskProject()`, and `group` is a second-level bucket inside it (default `default`). Reading has three tiers: omitted or empty = every group of the current project; one or more names = only those groups; `'*'` = every project and every group. A third argument `{ project }` switches projects, and `{ project: null }` drops the project filter. Core cannot discover a project name, so somebody must set it; `projectLabel` / `groupLabel` only override display names."
+      },
+      {
+        "zh": "`detail` 收任意 JSON 值（对象、数组、数字、布尔、null），入池前库取一份私有副本：调用方之后改原对象不会污染状态，也不需要自己 `JSON.stringify`。函数、DOM 节点与类实例当场抛错，不会等到跨页广播时才炸。",
+        "en": "`detail` accepts any JSON value (object, array, number, boolean, null); the pool takes a private copy on the way in, so later mutation by the caller cannot change stored state and no `JSON.stringify` is needed. Functions, DOM nodes and class instances throw right away instead of failing later during the cross-page broadcast."
+      },
+      {
+        "zh": "两个入口分工与 `oraPromise` / `toast.promise` / `withProgress` 一致：`notifyTask(title, options?)` 返回句柄，自己收尾；`notifyTask.run(title, work, options?)` 包住一段异步，成功与失败自动收尾并透传结果。第一参恒为标题，项目来自全局默认、二级分组来自 `options.group`，两者都能省；基础入口的返回类型不随参数变化。需要对象参数或池级能力时仍用 `taskNotifications.register()`。",
+        "en": "The two entries split the work the way `oraPromise` / `toast.promise` / `withProgress` do: `notifyTask(title, options?)` returns a handle you settle yourself, while `notifyTask.run(title, work, options?)` wraps an async task, settling it either way and passing the result through. The first argument is always the title: the project comes from the global default and the group from `options.group`, so both can be omitted, and the base entry never changes its return type based on its arguments. Use `taskNotifications.register()` when you need an options object or pool-level control."
       },
       {
         "zh": "结束权在调用方：`done()` / `fail()` 幂等，`track(promise)` 让成功与 reject 走同一收尾且返回原 Promise。`settled` 只在任务真正结束时兑现；收起不兑现它，而是发一个 `backgrounded` 事件。这就是「Promise 两态 + 收起作为事件」，调用方 `await` 的仍是正常两态。",
@@ -4545,17 +4553,36 @@ export const docData = {
             }
           },
           {
-            "name": "notifyTask(group, title, options?)",
-            "type": "(group: string, title: string, options?: NotifyTaskOptions) => TaskNotificationHandle",
+            "name": "setDefaultTaskProject(project)",
+            "type": "(project: string | undefined) => void",
             "def": "—",
+            "required": "app 入口调一次",
             "desc": {
-              "zh": "日常入口：位置参数登记一条任务并返回句柄；需要对象参数或池级能力时用 register",
-              "en": "Everyday entry: registers a task positionally and returns its handle; reach for register when you need an options object or pool-level control"
+              "zh": "设一级分组（项目）；挂在全局符号上，同页所有副本共享；传 undefined 清空（测试用）",
+              "en": "Sets the first-level project on a global symbol so every copy on the page shares it; pass undefined to clear it (tests)"
             }
           },
           {
-            "name": "notifyTask.run(group, title, work)",
-            "type": "<T>(group: string, title: string, work: Promise<T> | (() => Promise<T>)) => Promise<T>",
+            "name": "getDefaultTaskProject()",
+            "type": "() => string | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "读当前默认项目",
+              "en": "Reads the current default project"
+            }
+          },
+          {
+            "name": "notifyTask(title, options?)",
+            "type": "(title: string, options?: NotifyTaskOptions) => TaskNotificationHandle",
+            "def": "—",
+            "desc": {
+              "zh": "日常入口：项目取全局默认、二级分组取 options.group（缺省 default）；需要对象参数或池级能力时用 register",
+              "en": "Everyday entry: project from the global default, group from options.group (default \"default\"); reach for register when you need an options object or pool-level control"
+            }
+          },
+          {
+            "name": "notifyTask.run(title, work, options?)",
+            "type": "<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions) => Promise<T>",
             "def": "—",
             "desc": {
               "zh": "包住一段异步：成功 done、失败 fail，结果与异常原样透传",
@@ -4608,12 +4635,12 @@ export const docData = {
             }
           },
           {
-            "name": "select(groups?)",
-            "type": "(groups?: readonly string[]) => readonly TaskNotificationRecord[]",
-            "def": "不传 = 全站",
+            "name": "select(groups?, options?)",
+            "type": "(groups?: TaskNotificationGroupFilter, options?: TaskNotificationSelectOptions) => readonly TaskNotificationRecord[]",
+            "def": "不传 = 本项目全部二级",
             "desc": {
-              "zh": "池内自带缓存的过滤；与 selectTaskNotifications 同一套三态",
-              "en": "Cached pool-level filtering; same three-state contract as selectTaskNotifications"
+              "zh": "池内自带缓存的过滤；与 selectTaskNotifications 同一套三档语义",
+              "en": "Cached pool-level filtering; same three-tier contract as selectTaskNotifications"
             }
           },
           {
@@ -4667,13 +4694,22 @@ export const docData = {
         "id": "bt-handle-api",
         "rows": [
           {
+            "name": "input.project",
+            "type": "string",
+            "def": "全局默认项目",
+            "required": "二者必有一个",
+            "desc": {
+              "zh": "一级分组；不传则取 setDefaultTaskProject 的值，两者都没有就抛错",
+              "en": "First-level project; falls back to setDefaultTaskProject, and throws when neither exists"
+            }
+          },
+          {
             "name": "input.group",
             "type": "string",
-            "def": "—",
-            "required": "必填",
+            "def": "'default'",
             "desc": {
-              "zh": "调用方给的分组 id；core 取不到项目名",
-              "en": "Caller-supplied group id; core cannot discover a project name"
+              "zh": "二级分组：项目内的分类；不能是空字符串",
+              "en": "Second-level bucket inside the project; must not be empty"
             }
           },
           {
@@ -4687,12 +4723,21 @@ export const docData = {
             }
           },
           {
-            "name": "input.detail / groupLabel",
+            "name": "input.detail",
+            "type": "TaskNotificationDetail",
+            "def": "—",
+            "desc": {
+              "zh": "任意 JSON 值（对象 / 数组 / 数字 / 布尔 / null）；入池前克隆私有副本，函数与类实例当场抛错",
+              "en": "Any JSON value (object / array / number / boolean / null); cloned into a private copy on the way in, while functions and class instances throw immediately"
+            }
+          },
+          {
+            "name": "input.projectLabel / groupLabel",
             "type": "string",
             "def": "—",
             "desc": {
-              "zh": "详情文案 / 分组显示名覆盖",
-              "en": "Detail text / group display-name override"
+              "zh": "项目 / 分组的显示名覆盖",
+              "en": "Project / group display-name overrides"
             }
           },
           {
@@ -4715,7 +4760,7 @@ export const docData = {
           },
           {
             "name": "handle.done(detail?) / fail(reason?)",
-            "type": "(text?: string) => void",
+            "type": "(detail?: TaskNotificationDetail) => void",
             "def": "—",
             "desc": {
               "zh": "幂等；成功后条目立刻移出池并发 settled 事件",
@@ -4774,12 +4819,12 @@ export const docData = {
       {
         "id": "bt-subscribe-example",
         "lang": "ts",
-        "src": "import { useSyncExternalStore } from 'react'\nimport {\n  taskNotifications,\n  selectTaskNotifications,\n  subscribeTaskNotificationEvents,\n} from 'dsh-plugin-core/ui'\n\n// 三个参数都给：getServerSnapshot 让 SSR / 非宿主环境不炸\nconst snapshot = useSyncExternalStore(\n  taskNotifications.subscribe,\n  taskNotifications.getSnapshot,\n  taskNotifications.getServerSnapshot,\n)\n\n// 过滤三态：不传 = 全站；一个 = 只看该组；多个 = 看这几个\nconst visible = selectTaskNotifications(snapshot, ['dsh-task-reminder'])\n\n// 幂等：开同源标签页通道，并向在线页面要一次全量 baseline\ntaskNotifications.connect()\n\n// 事件是一次性事实，不留存；退订函数照常调用\nconst off = subscribeTaskNotificationEvents((event) => {\n  if (event.type === 'backgrounded') {\n    // 收起发生了；任务仍在跑，快照里也看得到\n  }\n})\n// off() 于卸载时调用"
+        "src": "import { useSyncExternalStore } from 'react'\nimport {\n  taskNotifications,\n  selectTaskNotifications,\n  subscribeTaskNotificationEvents,\n} from 'dsh-plugin-core/ui'\n\n// 三个参数都给：getServerSnapshot 让 SSR / 非宿主环境不炸\nconst snapshot = useSyncExternalStore(\n  taskNotifications.subscribe,\n  taskNotifications.getSnapshot,\n  taskNotifications.getServerSnapshot,\n)\n\n// 三档：不传 = 本项目全部二级；数组 = 本项目这几个二级；'*' = 全站所有项目\nconst visible = selectTaskNotifications(snapshot, ['scan'])\nconst everything = selectTaskNotifications(snapshot, '*')\n\n// 幂等：开同源标签页通道，并向在线页面要一次全量 baseline\ntaskNotifications.connect()\n\n// 事件是一次性事实，不留存；退订函数照常调用\nconst off = subscribeTaskNotificationEvents((event) => {\n  if (event.type === 'backgrounded') {\n    // 收起发生了；任务仍在跑，快照里也看得到\n  }\n})\n// off() 于卸载时调用"
       },
       {
         "id": "bt-lifecycle-example",
         "lang": "ts",
-        "src": "import { notifyTask } from 'dsh-plugin-core/ui'\n\n// 分组名必须由调用方给：core 取不到项目名\n\n// ① 自己管结束：拿到句柄，随时更新，自己收尾\nconst handle = notifyTask('dsh-task-reminder', '扫描工作区文件', { detail: '已完成 12 / 40' })\nhandle.background()   // 只发 backgrounded 事件，不结算任务\nhandle.done('扫描完成')\n// handle.fail('被用户取消')\n\n// ② 包住一段异步：成功 done、失败 fail，结果与异常原样透传\nawait notifyTask.run('dsh-task-reminder', '扫描工作区文件', () => runWork())\n\n// 句柄已经在手时才用得上的兜底：与 run 同一个收尾，不改变原 Promise 的结算语义\n// await handle.track(otherWork())   // otherWork(): Promise<void>，由调用方提供\n// await handle.settled              // 只在真正结束时兑现；收起不兑现"
+        "src": "import { notifyTask, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// 项目在 app 入口设一次；core 取不到项目名，所以必须有人告诉它\nsetDefaultTaskProject('dsh-task-reminder')\n\n// ① 自己管结束：拿到句柄，随时更新，自己收尾\nconst handle = notifyTask('扫描工作区文件', { group: 'scan', detail: { done: 12, total: 40 } })\nhandle.background()   // 只发 backgrounded 事件，不结算任务\nhandle.done('扫描完成')\n// handle.fail('被用户取消')\n\n// ② 包住一段异步：成功 done、失败 fail，结果与异常原样透传\nawait notifyTask.run('扫描工作区文件', () => runWork(), { group: 'scan' })\n\n// 句柄已经在手时才用得上的兜底：与 run 同一个收尾，不改变原 Promise 的结算语义\n// await handle.track(otherWork())   // otherWork(): Promise<void>，由调用方提供\n// await handle.settled              // 只在真正结束时兑现；收起不兑现"
       }
     ]
   }
