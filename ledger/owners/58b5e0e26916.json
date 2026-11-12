@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261112-1302-5333-把站内自建功能逐个迁入-core": {"category": "建设", "created": "2026-11-12 13:02:54", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-12 13:02:54", "status": "doing", "tags": ["迁移", "demo", "组件复用"], "title": "把站内自建功能逐个迁入 core", "updated": "2026-11-12 14:50:48", "worklog": "worklog/202611/12-1302-5333-把站内自建功能逐个迁入-core.md"}
+    "20261112-1302-5333-把站内自建功能逐个迁入-core": {"category": "建设", "created": "2026-11-12 13:02:54", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-12 13:02:54", "status": "doing", "tags": ["迁移", "demo", "组件复用"], "title": "把站内自建功能逐个迁入 core", "updated": "2026-11-12 14:54:02", "worklog": "worklog/202611/12-1302-5333-把站内自建功能逐个迁入-core.md"}
   },
   "version": "20261022000000"
 }
