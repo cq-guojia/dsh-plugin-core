@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261113-1552-1668-盘点全仓图标并迁移到新图标库": {"category": "重构", "created": "2026-11-13 15:52:08", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-13 15:52:08", "status": "doing", "tags": ["图标", "图标库", "盘点"], "title": "盘点全仓图标并迁移到新图标库", "updated": "2026-11-13 17:11:16", "worklog": "worklog/202611/13-1552-1668-盘点全仓图标并迁移到新图标库.md"}
+    "20261113-1552-1668-盘点全仓图标并迁移到新图标库": {"category": "重构", "created": "2026-11-13 15:52:08", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-13 15:52:08", "status": "doing", "tags": ["图标", "图标库", "盘点"], "title": "盘点全仓图标并迁移到新图标库", "updated": "2026-11-13 17:17:14", "worklog": "worklog/202611/13-1552-1668-盘点全仓图标并迁移到新图标库.md"}
   },
   "version": "20261022000000"
 }
