@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261113-0853-4259-建图标库并统一全仓图标来源": {"category": "建设", "created": "2026-11-13 08:53:55", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-13 08:53:55", "status": "doing", "tags": ["图标库", "图标资产", "UI"], "title": "建图标库并统一全仓图标来源", "updated": "2026-11-13 09:26:25", "worklog": "worklog/202611/13-0853-4259-建图标库并统一全仓图标来源.md"}
+    "20261113-0853-4259-建图标库并统一全仓图标来源": {"category": "建设", "created": "2026-11-13 08:53:55", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-13 08:53:55", "status": "doing", "tags": ["图标库", "图标资产", "UI"], "title": "建图标库并统一全仓图标来源", "updated": "2026-11-13 11:02:07", "worklog": "worklog/202611/13-0853-4259-建图标库并统一全仓图标来源.md"}
   },
   "version": "20261022000000"
 }
