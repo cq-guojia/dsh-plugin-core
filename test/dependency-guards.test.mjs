@@ -70,12 +70,13 @@ function specifiersOf(code) {
   return [...code.matchAll(SPECIFIER)].map((m) => m[1] ?? m[2] ?? m[3])
 }
 
-const OFFICIAL_ALLOWED = 'ui/official.ts'
+/** 允许静态 import 平台模块的薄 adapter：official.ts（宿主弹窗）+ official-icons.ts（只导命名空间）。 */
+const OFFICIAL_ALLOWED = ['ui/official.ts', 'ui/infra/official-icons.ts']
 
-test('@deepseek-ai/* 只许在 src/ui/official.ts 静态 import', async () => {
+test('@deepseek-ai/* 只许在两个官方 adapter 里静态 import', async () => {
   const hits = []
   for (const file of await sources()) {
-    if (file === OFFICIAL_ALLOWED) continue
+    if (OFFICIAL_ALLOWED.includes(file)) continue
     for (const spec of specifiersOf(stripComments(await readFile(new URL(file, SRC), 'utf8')))) {
       if (spec.startsWith('@deepseek-ai/')) hits.push(`src/${file} → ${spec}`)
     }
@@ -83,17 +84,19 @@ test('@deepseek-ai/* 只许在 src/ui/official.ts 静态 import', async () => {
   assert.deepEqual(
     hits,
     [],
-    `官方平台模块只许在 src/ui/official.ts import（宿主外解析不到，整入口会崩）：\n${hits.join('\n')}`,
+    `官方平台模块只许在 ${OFFICIAL_ALLOWED.join(' / ')} import（宿主外解析不到，整入口会崩）：\n${hits.join('\n')}`,
   )
 })
 
-test('闸没空转：official.ts 的官方 import 抓得到', async () => {
-  const code = stripComments(await readFile(new URL(OFFICIAL_ALLOWED, SRC), 'utf8'))
-  const official = specifiersOf(code).filter((spec) => spec.startsWith('@deepseek-ai/'))
-  assert.ok(
-    official.length > 0,
-    '正则失效：连 src/ui/official.ts 的官方 import 都抓不到，上面那道闸等于没装',
-  )
+test('闸没空转：每个 adapter 的官方 import 都抓得到', async () => {
+  for (const file of OFFICIAL_ALLOWED) {
+    const code = stripComments(await readFile(new URL(file, SRC), 'utf8'))
+    const official = specifiersOf(code).filter((spec) => spec.startsWith('@deepseek-ai/'))
+    assert.ok(
+      official.length > 0,
+      `正则失效：连 src/${file} 的官方 import 都抓不到，上面那道闸等于没装`,
+    )
+  }
 })
 
 /** utils 不许碰的东西：React、宿主平台模块、UI 运行时依赖、本包其它子路径。 */

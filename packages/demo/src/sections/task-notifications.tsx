@@ -13,6 +13,7 @@ import {
   type TaskNotificationHandle,
   type TaskNotificationRecord,
 } from '../../../../dist/ui/index.js'
+import { Icon } from '../../../../dist/ui/display/Icon.js'
 import { DocContent, Example, Note } from '../doc.js'
 import { t } from '../i18n.js'
 
@@ -59,12 +60,6 @@ function detailText(detail: TaskNotificationDetail): string {
 }
 
 /** 图标名由消费端映射：核心只传标识，不管怎么画。 */
-const DEMO_ICONS: Record<string, string> = { bell: '🔔', ledger: '📒', check: '✅' }
-
-function iconText(icon: string): string {
-  return DEMO_ICONS[icon] ?? icon
-}
-
 const mono: Record<string, string | number> = { fontFamily: 'var(--dshpc-font-mono)', fontSize: '12px' }
 const row: Record<string, string | number> = { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }
 const panel: Record<string, string | number> = { display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }
@@ -101,14 +96,14 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
 
   function register(group: string, label: string): void {
     serial.current += 1
-    const handle = notifyTask(`${label} #${serial.current}`, { group, icon: group === SUB_REMINDER ? 'bell' : 'ledger' })
+    const handle = notifyTask(`${label} #${serial.current}`, { group, icon: group === SUB_REMINDER ? 'base:shijian1' : 'base:shuju' })
     handles.current.set(handle.id, handle)
   }
 
   /** 纯广播：列表不会多一行再少一行，只在事件区看到。 */
   function broadcast(): void {
     serial.current += 1
-    notifyMessage(`notice #${serial.current}`, { group: SUB_REMINDER, icon: 'check', level: 'success' })
+    notifyMessage(`notice #${serial.current}`, { group: SUB_REMINDER, icon: 'base:gou', level: 'success' })
   }
 
   /** 每条任务按自己的 id 找句柄，互不覆盖；跨页条目没有本页句柄，不给按钮。 */
@@ -146,7 +141,12 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
       h(
         'div',
         { style: main },
-        h('div', { style: { fontWeight: 600 } }, task.icon === undefined ? task.title : `${iconText(task.icon)} ${task.title}`),
+        h(
+          'div',
+          { style: { fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' } },
+          task.icon === undefined ? null : h(Icon, { name: task.icon }),
+          h('span', null, task.title),
+        ),
         h(
           'div',
           { style: { ...mono, color: 'var(--dshpc-fg-3)' } },

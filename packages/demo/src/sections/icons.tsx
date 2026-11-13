@@ -1,12 +1,12 @@
 import { createElement as h, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { Input } from '../../../../dist/ui/index.js'
 import {
   ICON_FONTS,
   Icon,
-  Input,
   loadIconFont,
   type IconFontId,
   type ParsedIconFont,
-} from '../../../../dist/ui/index.js'
+} from '../../../../dist/ui/display/Icon.js'
 import { Official } from '../../../../dist/ui/official.js'
 import { t } from '../i18n.js'
 
@@ -53,12 +53,8 @@ const GRID: Record<string, string | number> = {
   marginTop: '10px',
 }
 
-/** 官方图标：一个图标一个组件，复制出来就能 import。 */
-const officialUsage = (name: string): string =>
-  `import { ${name} } from 'dsh-plugin-core/ui/official'\n<${name} />`
-
-/** 字体图标：同一个 Icon 组件 + 名字。 */
-const fontUsage = (name: string): string =>
+/** 复制出去的用法：官方写组件名、字体写 `库名:图标名`，同一个 Icon 组件。 */
+const usage = (name: string): string =>
   `import { Icon } from 'dsh-plugin-core/ui/icons'\n<Icon name="${name}" />`
 
 const NAME: Record<string, string | number> = {
@@ -145,9 +141,9 @@ export function IconsPage(): ReturnType<typeof h> {
             h(Cell, {
               key: item.name,
               name: item.name,
-              copied: copied === officialUsage(item.name),
+              copied: copied === usage(item.name),
               glyph: h(item.Comp, { size: 40 }),
-              onPick: () => pick(officialUsage(item.name)),
+              onPick: () => pick(usage(item.name)),
             }),
           ),
         ),
@@ -181,9 +177,9 @@ export function IconsPage(): ReturnType<typeof h> {
                 h(Cell, {
                   key: name,
                   name,
-                  copied: copied === fontUsage(name),
-                  glyph: h(Icon, { name, set: id, size: 40 }),
-                  onPick: () => pick(fontUsage(name)),
+                  copied: copied === usage(`${id}:${name}`),
+                  glyph: h(Icon, { name: `${id}:${name}`, size: 40 }),
+                  onPick: () => pick(usage(`${id}:${name}`)),
                 }),
               ),
             ),

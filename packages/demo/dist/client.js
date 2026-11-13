@@ -10720,85 +10720,8 @@ function PanelDock(props) {
   )), earHost === null ? null : (0, import_react_dom4.createPortal)(ears, earHost));
 }
 
-// dist/ui/display/Icon.js
-var import_react46 = require("react");
-
-// dist/ui/display/icon-parse.js
-function commonPrefix(classes) {
-  let prefix2 = classes[0] ?? "";
-  for (const name2 of classes) {
-    let i2 = 0;
-    while (i2 < prefix2.length && i2 < name2.length && prefix2[i2] === name2[i2])
-      i2 += 1;
-    prefix2 = prefix2.slice(0, i2);
-  }
-  return prefix2.slice(0, prefix2.lastIndexOf("-") + 1);
-}
-function parseFontCss(css3) {
-  const family = /font-family:\s*["']([^"']+)["']/.exec(css3)?.[1];
-  const classes = [...css3.matchAll(/\.([\w-]+):before\s*\{[^}]*content:/g)].map((m) => m[1] ?? "");
-  const baseClass = [...css3.matchAll(/\.([\w-]+)\s*\{([^}]*)\}/g)].find((m) => (m[2] ?? "").includes("font-family"))?.[1];
-  if (family === void 0 || baseClass === void 0 || classes.length === 0) {
-    throw new Error("[dsh-plugin-core:icons] \u56FE\u6807 CSS \u7ED3\u6784\u4E0D\u8BA4\u8BC6\uFF08\u7F3A font-family / \u57FA\u7840\u7C7B / glyph \u7C7B\uFF09");
-  }
-  const prefix2 = commonPrefix(classes);
-  return {
-    family,
-    baseClass,
-    prefix: prefix2,
-    names: classes.map((name2) => name2.slice(prefix2.length))
-  };
-}
-
-// dist/ui/display/Icon.js
-var ICON_FONTS = {
-  base: {
-    url: "https://at.alicdn.com/t/c/font_5252865_mu5upqjaqf.css",
-    family: "dshpc-icons-base",
-    baseClass: "dshpc-icons-base",
-    prefix: "dshpc-i-"
-  }
-};
-function ensureIconFont(id3 = "base") {
-  if (typeof document === "undefined")
-    return;
-  const font = ICON_FONTS[id3];
-  let link = document.querySelector(`link[data-dshpc-icon-font="${id3}"]`);
-  if (link === null) {
-    link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.dataset.dshpcIconFont = id3;
-    link.href = font.url;
-    document.head.appendChild(link);
-  } else if (link.href !== font.url) {
-    link.href = font.url;
-  }
-}
-var loaded = /* @__PURE__ */ new Map();
-function loadIconFont(id3 = "base") {
-  const hit = loaded.get(id3);
-  if (hit !== void 0)
-    return hit;
-  const task = fetch(ICON_FONTS[id3].url).then((res) => res.text()).then(parseFontCss);
-  loaded.set(id3, task);
-  task.catch(() => loaded.delete(id3));
-  return task;
-}
-function Icon(props) {
-  const { name: name2, set = "base", size: size4 = "1em", title, className: className2, style: style2 } = props;
-  ensureIconFont(set);
-  const font = ICON_FONTS[set];
-  return (0, import_react46.createElement)("i", {
-    className: `${font.baseClass} ${font.prefix}${name2}${className2 === void 0 || className2 === "" ? "" : ` ${className2}`}`,
-    role: title === void 0 ? void 0 : "img",
-    "aria-label": title,
-    title,
-    style: { fontSize: size4, lineHeight: 1, ...style2 }
-  });
-}
-
 // dist/adv/explorer/FileBrowser.js
-var import_react61 = require("react");
+var import_react60 = require("react");
 
 // dist/ui/official.js
 var official_exports = {};
@@ -10808,7 +10731,7 @@ __export(official_exports, {
 });
 var Official = __toESM(require("@deepseek-ai/dsh-client-ui-primitives"), 1);
 __reExport(official_exports, require("@deepseek-ai/dsh-client-ui-primitives"));
-var import_react47 = require("react");
+var import_react46 = require("react");
 var import_client4 = require("react-dom/client");
 var warned = /* @__PURE__ */ new Set();
 var officialRegistry = Official;
@@ -10836,7 +10759,7 @@ function mountHostModal(render) {
   root.render(render(close));
 }
 var hostConfirm = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react47.createElement)(Official.Modal, {
+  mountHostModal((close) => (0, import_react46.createElement)(Official.Modal, {
     open: true,
     onClose: () => {
       close();
@@ -10845,17 +10768,17 @@ var hostConfirm = (opts) => new Promise((resolve) => {
     title: opts.title ?? "",
     closeLabel: t("modalClose"),
     description: opts.description,
-    footer: (0, import_react47.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react47.createElement)(Button, { variant: "outline", onClick: () => {
+    footer: (0, import_react46.createElement)("div", { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } }, (0, import_react46.createElement)(Button, { variant: "outline", onClick: () => {
       close();
       resolve(false);
-    } }, opts.cancelText ?? t("cancel")), (0, import_react47.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
+    } }, opts.cancelText ?? t("cancel")), (0, import_react46.createElement)(Button, { variant: opts.danger === true ? "danger" : "primary", onClick: () => {
       close();
       resolve(true);
     } }, opts.confirmText ?? t("confirm")))
   }));
 });
 var hostAlert = (opts) => new Promise((resolve) => {
-  mountHostModal((close) => (0, import_react47.createElement)(Official.Modal, {
+  mountHostModal((close) => (0, import_react46.createElement)(Official.Modal, {
     open: true,
     onClose: () => {
       close();
@@ -10864,7 +10787,7 @@ var hostAlert = (opts) => new Promise((resolve) => {
     title: opts.title ?? "",
     closeLabel: t("modalClose"),
     description: opts.description,
-    footer: (0, import_react47.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react47.createElement)(Button, { variant: "primary", onClick: () => {
+    footer: (0, import_react46.createElement)("div", { style: { display: "flex", justifyContent: "flex-end" } }, (0, import_react46.createElement)(Button, { variant: "primary", onClick: () => {
       close();
       resolve();
     } }, opts.confirmText ?? t("dialogOk")))
@@ -10873,7 +10796,7 @@ var hostAlert = (opts) => new Promise((resolve) => {
 registerHostDialog({ confirm: hostConfirm, alert: hostAlert });
 
 // dist/adv/explorer/preview/index.js
-var import_react56 = require("react");
+var import_react55 = require("react");
 
 // dist/utils/path.js
 var IMAGE_EXT = {
@@ -11139,7 +11062,7 @@ function pickWorkspaceAnchor(items) {
 }
 
 // dist/adv/explorer/preview/BytesPreview.js
-var import_react48 = require("react");
+var import_react47 = require("react");
 
 // dist/adv/explorer/explorer-css.generated.js
 var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dshpc-fb-*\uFF09\u3002\n *\n * \u5EA6\u91CF\u771F\u6E90 = \u5144\u5F1F\u9879\u76EE dsh-task-dispatch-table \u7684 src/client/archive-session-css.ts\n * \uFF08.dsh-tdt-sv-* \u5168\u65CF\uFF09\u3002**\u9010\u6761\u7167\u6284\uFF0C\u4E0D\u8BB8\u81EA\u5DF1\u4F30**\uFF1Apadding / gap / \u5706\u89D2 / \u5B57\u53F7 / \u884C\u9AD8 /\n * \u8FB9\u6846\u8272 / \u60AC\u505C\u8272 / \u900F\u660E\u5EA6\u52A8\u753B / \u6EA2\u51FA\u7B56\u7565\uFF0C\u4E00\u4E00\u5BF9\u5E94\uFF0C\u6539\u8FD9\u91CC\u4E4B\u524D\u5148\u53BB\u90A3\u8FB9\u5BF9\u539F\u6587\u3002\n * \u524D\u7F00\u4E0E\u53D8\u91CF\u540D\u6362\u6210\u672C\u4ED3\u53E3\u5F84\uFF08--tdt-* \u2192 --dshpc-*\uFF09\uFF0C\u6570\u503C\u4E0D\u6362\u3002\n * **\u4F8B\u5916**\uFF1A\u5BB9\u5668\u7EA7\u5185\u8DDD\uFF08__bar / __title / __tree / __body\uFF092026-11-03 \u8D77\u6539\u6210\u56DB\u5468\u4E00\u81F4\n * \u7684 token \u6863\uFF08space-2 / space-3\uFF09\u2014\u2014\u7528\u6237\u53CD\u9988\u5144\u5F1F\u90A3\u5957\u300C\u5DE6\u53F3\u6BD4\u4E0A\u4E0B\u5BBD\u300D\u5728\u8FD9\u4E24\u5904\u7A97\u53E3\u91CC\u4E0D\u5BF9\u79F0\u3002\n * \u884C\u7EA7\u5185\u8DDD\uFF08__row / __row-note / __banner\uFF09\u4ECD\u662F\u5144\u5F1F\u6570\u503C\uFF0C\u672A\u52A8\u3002\n *\n * \u63A7\u4EF6\uFF1A\u80FD\u6838\u5FC3\u5C31\u6838\u5FC3\uFF08\u9762\u5305\u5C51 = Button ghost\u3001\u884C\u5C3E = Button outline\u3001\u5C55\u5F00 / \u56FE\u6807 = IconButton\u3001\n * \u5206\u6BB5 = Segmented\u3001\u6587\u5B57 = MarqueeText\uFF09\u3002\u6838\u5FC3\u63A7\u4EF6\u81EA\u5E26\u7684 padding / \u9AD8\u5EA6 / \u76AE\u80A4\u5728\u672C\u6587\u4EF6\u91CC\n * **\u6309\u5144\u5F1F\u6570\u503C\u8986\u76D6**\uFF08\u9009\u62E9\u5668\u5E26 .dshpc-fb \u524D\u7F00\u63D0\u9AD8\u7279\u5F02\u6027\uFF0C\u786E\u4FDD\u76D6\u5F97\u4F4F\u63A7\u4EF6\u9ED8\u8BA4\u503C\uFF09\u3002\n */\n/* \u80CC\u666F\u4E0D\u5728\u8FD9\u91CC\u753B\uFF1Adock \u7531 .dshpc-side-surface\u3001\u9009\u6587\u4EF6\u5F39\u7A97\u7531 .dshpc-panel \u63D0\u4F9B\u3002\n   \u81EA\u5DF1\u518D\u5237\u4E00\u5C42 surface-base \u4F1A\u628A\u9762\u677F\u6863\u4F4D\uFF08modal \u540C\u8272\u7684 surface-1\uFF09\u76D6\u6389 \u2014\u2014 \u5F39\u7A97\u5C31\u663E\u5F97\u53D1\u9ED1\u3002 */\n.dshpc-fb{\n  position:relative;display:flex;flex-direction:column;height:100%;min-height:0;\n  background:transparent;color:var(--dshpc-fg);\n}\n\n/* \u7B2C\u4E00\u6392\uFF1A\u25BE \u9009\u5C42 + \u9762\u5305\u5C51 + \u52A8\u4F5C\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar\uFF09\n   \u26A0\uFE0F \u4E0D\u80FD overflow:hidden \u2014\u2014 \u4E0B\u62C9\u6D6E\u5C42\u6302\u5728\u5B83\u4E0B\u9762\uFF0C\u88C1\u4E86\u5C31\u770B\u4E0D\u89C1\u3002 */\n.dshpc-fb__bar{\n  position:relative;flex:none;display:flex;align-items:center;gap:2px;\n  /* \u56DB\u5468\u5185\u8DDD\u4E00\u81F4\uFF08\u7528\u6237 2026-11-03\uFF1A\u539F\u6765 4/10\uFF0C\u5DE6\u53F3\u6BD4\u4E0A\u4E0B\u5BBD\uFF0C\u770B\u7740\u4E0D\u5BF9\u79F0\uFF09\u2014\u2014\u4E0B\u6587 __title / __tree / __body \u540C\u53E3\u5F84\u3002 */\n  padding:var(--dshpc-space-2);border-bottom:1px solid var(--dshpc-border);white-space:nowrap;\n}\n.dshpc-fb__menu-wrap{position:relative;flex:none;display:inline-flex}\n.dshpc-fb__crumbs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:2px;overflow:hidden}\n.dshpc-fb__crumbs-measure{\n  position:absolute;top:0;left:0;display:inline-flex;align-items:center;gap:2px;\n  visibility:hidden;pointer-events:none;white-space:nowrap;\n}\n\n/* \u9762\u5305\u5C51\uFF1A\u6838\u5FC3 ghost \u94AE\uFF0C\u4F46\u76AE\u80A4\u4E0E\u5C3A\u5BF8\u53D6\u5144\u5F1F .dsh-tdt-sv-crumb\uFF08\u9AD8\u7531\u5185\u5BB9\u51B3\u5B9A\uFF0C\u4E0D\u9501\u63A7\u5236\u9AD8\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__crumb{\n  appearance:none;background:0 0;border:none;height:auto;\n  padding:2px 4px;border-radius:var(--dshpc-radius-sm);\n  font:inherit;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis;\n}\n.dshpc-fb .dshpc-fb__crumb:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-fb .dshpc-fb__crumb:disabled{color:var(--dshpc-fg-2);cursor:default}\n.dshpc-fb .dshpc-fb__crumb--current{cursor:default;color:var(--dshpc-fg);font-weight:600;min-width:0}\n.dshpc-fb .dshpc-fb__crumb--current:hover{background:0 0}\n.dshpc-fb__crumb-mq{flex:1 1 auto;min-width:0}\n.dshpc-fb__crumb-sep{flex:none;color:var(--dshpc-fg-3)}\n\n/* \u8D8A\u754C\uFF08outside-workspace\uFF09\u7B2C\u4E00\u6392\uFF1A\u53EA\u8BFB\u5B8C\u6574\u8DEF\u5F84\uFF08\u5144\u5F1F .dsh-tdt-sv-crumbbar-plain-inner\uFF09\u3002 */\n.dshpc-fb__bar-plain{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-2);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;user-select:none;\n}\n.dshpc-fb__actions{flex:none;display:flex;align-items:center;gap:4px}\n/* \u9009\u62E9\u5668\u5934\u90E8\u300C\u9009\u5F53\u524D\u6587\u4EF6 / \u5F53\u524D\u6587\u4EF6\u5939\u300D\u94AE\uFF1A\u4E0E \u2715 \u5E76\u6392\uFF0C\u4E0D\u88AB\u9762\u5305\u5C51\u6324\u6241\u3002\n   \u300C\u9009\u5F53\u524D\u76EE\u5F55\u300D= \u6838\u5FC3 Button outline\uFF08sm \u6863\uFF09\uFF1A\u5C3A\u5BF8\u4E0E\u76AE\u80A4\u5168\u5F52\u6838\u5FC3\uFF0C\u8FD9\u91CC\u53EA\u7559\u5E03\u5C40\u3002\n   \u26A0\uFE0F \u522B\u518D\u5F80\u8FD9\u91CC\u5199 height / padding \u8986\u76D6 \u2014\u2014 \u57DF\u6309\u767B\u8BB0\u987A\u5E8F\u62FC\u63A5\uFF0C\u6838\u5FC3 .dshpc-btn--sm \u8C01\u5148\u8C01\u540E\n   \u53D6\u51B3\u4E8E\u6E32\u67D3\u6B21\u5E8F\uFF0C\u8986\u76D6\u4F1A\u65F6\u7075\u65F6\u4E0D\u7075\uFF082026-11-03 \u524D\u5C31\u662F\u8FD9\u4E48\u5199\u7684\uFF09\u3002 */\n.dshpc-fb__pick{flex:none}\n\n/* \u25BE \u9009\u5C42\u6D6E\u5C42\u3002\n   \u5C42\u5E8F\uFF1A\u906E\u7F69\u5FC5\u987B\u9AD8\u4E8E picker \u9762\u677F\uFF08--dshpc-z-panel\uFF09\uFF0C\u5426\u5219\u83DC\u5355\u5F00\u7740\u70B9\u9762\u677F\u4E0D\u7B97\u300C\u70B9\u5916\u90E8\u300D\uFF1B\n   \u83DC\u5355\u518D\u538B\u5728\u906E\u7F69\u4E4B\u4E0A\uFF0C\u6240\u4EE5\u662F popmenu \u4E00\u6863 +1\u3002\u8868\u76AE\u6765\u81EA panel.css \u7684 menu \u6863\u3002 */\n.dshpc-fb__crumbs-backdrop{position:fixed;inset:0;z-index:var(--dshpc-z-popmenu);background:transparent}\n.dshpc-fb__crumbs-menu{\n  position:absolute;top:calc(100% + 4px);left:0;z-index:calc(var(--dshpc-z-popmenu) + 1);\n  min-width:160px;max-height:240px;overflow:auto;padding:4px;display:flex;flex-direction:column;\n}\n.dshpc-fb__menu-item{\n  appearance:none;background:0 0;border:none;text-align:left;font:inherit;\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);\n  padding:4px 8px;border-radius:var(--dshpc-radius-sm);color:var(--dshpc-fg);cursor:pointer;\n  max-width:280px;display:flex;align-items:center;gap:2px;\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n.dshpc-fb__menu-item:hover{background:var(--dshpc-hover)}\n.dshpc-fb__menu-empty{\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-md);padding:4px 8px;color:var(--dshpc-fg-3);\n}\n.dshpc-fb__menu-icon{flex:none;display:inline-flex}\n.dshpc-fb__menu-chev{flex:none;color:var(--dshpc-fg-3);margin-right:1px}\n.dshpc-fb__menu-chev-slot{flex:none;width:11px;height:11px;margin-right:1px}\n.dshpc-fb__menu-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n\n/* \u7B2C\u4E8C\u6392\uFF08\u4EC5\u9884\u89C8\u6001\uFF09\uFF1A\u6587\u4EF6\u540D + \u5DE5\u5177\uFF08\u5144\u5F1F .dsh-tdt-sv-titlebar / -preview-title-inner\uFF09\u3002 */\n.dshpc-fb__title{\n  flex:none;display:flex;align-items:center;gap:8px;\n  padding:var(--dshpc-space-2);border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-fb__title-inner{\n  font-family:var(--dshpc-font-mono,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace);\n  font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg);\n  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;\n}\n\n/* \u4E3B\u4F53\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-body / -hint / -preview-err\uFF09\n   \u4E0B\u9762\u4E09\u4E2A\u6EDA\u52A8\u5BB9\u5668\u53EA\u6302 .dshpc-scroll-thin\uFF1A\u7EC6\u6EDA\u52A8\u6761\u4E0E 1px \u8BA9\u4F4D\u90FD\u7531\u90A3\u4E2A\u7C7B\u7EDF\u4E00\u7ED9\uFF0C\n   \u8FD9\u91CC\u4E0D\u518D\u5199\u900F\u660E\u8FB9\u6846\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-fb__body{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;padding:var(--dshpc-space-3)}\n.dshpc-fb__note{font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);text-align:center;padding:12px 0}\n.dshpc-fb__err{\n  display:flex;flex-direction:column;align-items:flex-start;gap:10px;\n  font-size:var(--dshpc-font-sm);line-height:1.6;color:var(--dshpc-fg-2);padding:8px 0;\n}\n\n/* \u76EE\u5F55\u6811\uFF08\u5144\u5F1F .dsh-tdt-sv-tree*\uFF09 */\n.dshpc-fb__tree{flex:1;min-height:0;overflow:auto;padding:var(--dshpc-space-2)}\n.dshpc-fb__row{\n  display:flex;align-items:center;gap:8px;padding:6px 8px;\n  border-radius:var(--dshpc-radius-sm);cursor:pointer;user-select:none;\n}\n.dshpc-fb__row:hover{background:var(--dshpc-hover)}\n.dshpc-fb__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px}\n.dshpc-fb__row-icon{flex:none;display:inline-flex;color:var(--dshpc-fg-2);font-size:var(--dshpc-font-lg)}\n/* \u6587\u4EF6\u884C\u56FE\u6807\u8D70\u6838\u5FC3 1em \u57FA\u7EBF\uFF08button.css:112\uFF09\uFF1A\u4E0D\u518D\u7531\u8C03\u7528\u65B9 size={18} \u8BF4\u4E86\u7B97\u3002 */\n.dshpc-fb__row-icon svg{display:block;width:1em;height:1em;flex:none;}\n.dshpc-fb__row-name{\n  flex:1;min-width:0;font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);color:var(--dshpc-fg);\n  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;\n}\n\n/* \u5C55\u5F00\u5F00\u5173\uFF1A\u6838\u5FC3 IconButton\uFF0C\u547D\u4E2D\u4F4D 20\xD720 + \u5C55\u5F00\u65F6\u8F6C 90\xB0\uFF08\u5144\u5F1F .dsh-tdt-sv-tree-toggle{,-open}\uFF09\u3002 */\n.dshpc-fb .dshpc-fb__row-toggle{\n  appearance:none;background:0 0;border:none;flex:none;\n  width:20px;height:20px;padding:0;margin:0;border-radius:var(--dshpc-radius-sm);\n  color:var(--dshpc-fg-2);cursor:pointer;\n  display:inline-flex;align-items:center;justify-content:center;\n  transition:transform var(--dshpc-dur-fast) var(--dshpc-ease),background var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb .dshpc-fb__row-toggle--open{transform:rotate(90deg)}\n\n/* \u884C\u5C3E\u300C\u8FDB\u5165 / \u9009\u62E9\u300D\uFF1A\u6309\u94AE**\u76AE\u80A4\u5B8C\u5168\u4EA4\u7ED9\u6838\u5FC3 Button**\uFF082026-11-03\uFF1A\u539F\u6765\u8FD9\u91CC\u53C8\u5199\u4E86\u4E00\u904D\u63CF\u8FB9/\u5185\u8DDD/\n   \u5B57\u53F7\uFF0C\u7B49\u4E8E\u81EA\u5DF1\u624B\u6413\u4E86\u4E00\u9897\uFF0C\u8DDF\u522B\u5904\u7684\u6309\u94AE\u957F\u5F97\u4E0D\u4E00\u6837\uFF09\u3002\u672C\u4ED3\u53EA\u4FDD\u7559\u5E03\u5C40\u4E0E\u300C\u60AC\u505C\u624D\u73B0\u8EAB\u300D\uFF1A\n   \u5E73\u65F6\u9690\u8EAB\u4F46\u5360\u4F4D\uFF08opacity \u800C\u975E display\uFF09\u21D2 \u51FA\u73B0\u65F6\u4E0D\u9876\u52A8\u884C\u5185\u5E03\u5C40\u3002 */\n.dshpc-fb .dshpc-fb__row-act{\n  flex:none;margin-left:auto;\n  opacity:0;pointer-events:none;\n  transition:opacity var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-fb__row:hover .dshpc-fb__row-act,.dshpc-fb .dshpc-fb__row-act:focus-visible{opacity:1;pointer-events:auto}\n\n.dshpc-fb__row-children{\n  margin-left:9px;padding-left:7px;border-left:1px solid var(--dshpc-border);\n  display:flex;flex-direction:column;\n}\n.dshpc-fb__row-note{flex:none;padding:8px 10px;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-3)}\n.dshpc-fb__row-err{padding:4px 8px 4px 36px;font-size:var(--dshpc-font-sm);color:var(--dshpc-danger)}\n\n/* \u9884\u89C8\u4F53\u5185\u90E8\u5BB9\u5668\uFF08\u4EC5\u672C\u4ED3\u9884\u89C8\u7EC4\u4EF6\u7528\uFF1B\u5144\u5F1F\u5BF9\u5E94 preview-fill / preview-body-code \u4E00\u7C7B\uFF09\u3002\n   \u5FC5\u987B border-box\uFF1A\u6E32\u67D3\u6001 inline \u52A0\u4E86 padding:12px 14px\uFF0Ccontent-box \u4E0B width:100%+padding\n   \u4F1A\u6EA2\u51FA\u7236\u5C42 28px\uFF08\u7236 .dshpc-fb \u65E0 overflow \u88C1\u5207\uFF09\u2192 \u6052\u591A\u4E00\u6761\u6A2A\u6EDA\u6761\uFF1Bborder-box \u628A padding\n   \u7B97\u8FDB 100%\uFF0C\u4ECE\u6839\u6D88\u9664\u8BE5\u6EA2\u51FA\u3002 */\n.dshpc-fb__text{flex:1;min-height:0;overflow:auto;width:100%;box-sizing:border-box}\n.dshpc-fb__banner{padding:6px 10px;background:var(--dshpc-open-bg);color:var(--dshpc-fg-2);font-size:var(--dshpc-font-sm)}\n.dshpc-fb__more{display:flex;justify-content:center;padding:10px}\n.dshpc-fb__image{max-width:100%;border-radius:var(--dshpc-radius-sm);border:1px solid var(--dshpc-border)}\n/* iframe \u7684\u5916\u58F3\uFF08\u5144\u5F1F .dsh-tdt-sv-preview-fill\uFF09\uFF1Aiframe \u5FC5\u987B\u5305\u5728\u8FD9\u4E00\u5C42\u91CC\u624D\u62FF\u5F97\u5230\u9AD8\u5EA6\u2014\u2014\n   \u88F8\u6302 iframe \u65F6\u66FF\u6362\u5143\u7D20\u7684\u81EA\u52A8\u6700\u5C0F\u5C3A\u5BF8\u4F1A\u8BA9\u9AD8\u5EA6\u7B97\u4E0D\u51FA\u6765\uFF08\u8868\u73B0\u4E3A\u9884\u89C8\u533A\u6574\u7247\u7A7A\u767D\u3001\u50CF\u6CA1\u53CD\u5E94\uFF09\u3002 */\n.dshpc-fb__fill{flex:1;min-height:0;display:flex;overflow:hidden;padding:0}\n.dshpc-fb__frame{flex:1;min-height:0;width:100%;height:100%;border:none;background:var(--dshpc-surface-1)}\n\n";
@@ -11148,9 +11071,9 @@ var EXPLORER_CSS = "/* \u5DE5\u4F5C\u533A\u6587\u4EF6\u6D4F\u89C8\u5668\uFF08dsh
 function BytesPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [url, setUrl] = (0, import_react48.useState)(null);
-  const [failed, setFailed] = (0, import_react48.useState)(null);
-  (0, import_react48.useEffect)(() => {
+  const [url, setUrl] = (0, import_react47.useState)(null);
+  const [failed, setFailed] = (0, import_react47.useState)(null);
+  (0, import_react47.useEffect)(() => {
     const controller = new AbortController();
     let objectUrl = null;
     setUrl(null);
@@ -11183,29 +11106,29 @@ function BytesPreview(props) {
     };
   }, [props.files, props.path, props.mime]);
   if (failed !== null)
-    return (0, import_react48.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react47.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (url === null)
-    return (0, import_react48.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+    return (0, import_react47.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
   if (props.kind === "image") {
-    return (0, import_react48.createElement)("img", { className: "dshpc-fb__image", src: url, alt: props.path });
+    return (0, import_react47.createElement)("img", { className: "dshpc-fb__image", src: url, alt: props.path });
   }
-  return (0, import_react48.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react48.createElement)("iframe", { className: "dshpc-fb__frame", src: url }));
+  return (0, import_react47.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react47.createElement)("iframe", { className: "dshpc-fb__frame", src: url }));
 }
 
 // dist/adv/explorer/preview/HtmlPreview.js
-var import_react54 = require("react");
-
-// dist/adv/explorer/preview/TextPreview.js
 var import_react53 = require("react");
 
-// dist/ui/display/CodeViewer.js
+// dist/adv/explorer/preview/TextPreview.js
 var import_react52 = require("react");
+
+// dist/ui/display/CodeViewer.js
+var import_react51 = require("react");
 
 // dist/ui/display/code-viewer-css.generated.js
 var CODE_VIEWER_CSS = "/* CodeViewer\uFF08\u53EA\u8BFB CodeMirror \u67E5\u770B\u5668\uFF09\u6837\u5F0F\u3002\u7C7B\u540D\u56FA\u5B9A dshpc-cv*\uFF1B\u989C\u8272\u5403 --dshpc-* token\uFF0C\n   \u6DF1\u8272\u7531 design \u7684 token \u6DF1\u8272\u6BB5\u81EA\u52A8\u751F\u6548\uFF08\u4E0D\u5199\u6B7B\u989C\u8272\u503C\uFF09\u3002 */\n/* flex:1 1 auto + min-width:0\uFF1A\u8C03\u7528\u65B9\u5E38\u628A\u5B83\u653E\u8FDB display:flex \u7684\u5BB9\u5668\u91CC\uFF08TextPreview\uFF09\uFF0C\n   \u4E0D\u5199\u4F1A\u5728\u4E3B\u8F74\u6309\u5185\u5BB9\u5BBD\u6392 \u2014\u2014 \u77ED\u6587\u672C\u65F6 __copy\uFF08absolute \u76F8\u5BF9\u672C\u5C42\uFF09\u843D\u5728\u6587\u5B57\u53F3\u7AEF\u800C\u4E0D\u662F\u9762\u677F\u53F3\u7F18\u3002 */\n.dshpc-cv{position:relative;display:flex;flex-direction:column;flex:1 1 auto;min-width:0;height:100%;min-height:0;}\n/* \u590D\u5236\u94AE\u590D\u7528\u6838\u5FC3 IconButton\uFF08variant=outline / size=md\uFF09\uFF1A\u76D2\u578B\u3001\u63CF\u8FB9\u3001\u5706\u89D2\uFF08\u5DF2\u7EDF\u4E00 md\uFF09\u3001\u5E95\u8272\u3001hover\n   \u4E0E\u56FE\u6807\u5C3A\u5BF8\u5168\u7531\u6838\u5FC3\u63D0\u4F9B \u2014\u2014 \u56FE\u6807\u8DDF\u968F .dshpc-iconbtn svg \u7684 1em\uFF0C\u8FD9\u91CC\u4E0D\u518D\u5355\u72EC\u653E\u5927\uFF08\u5199\u6B7B 16px \u66FE\u8BA9\u5B83\u663E\u5927\uFF09\u3002\n   \u672C\u6587\u4EF6\u53EA\u7BA1\u300C\u7EDD\u5BF9\u5B9A\u4F4D + \u9ED8\u8BA4\u9690\u85CF\u3001hover/\u805A\u7126\u624D\u663E\u300D\uFF08overlay \u6D6E\u5728\u7F16\u8F91\u5668\u53F3\u4E0A\u89D2\uFF09\u3002 */\n.dshpc-cv__copy{position:absolute;top:6px;right:6px;z-index:5;opacity:0;}\n.dshpc-cv:hover .dshpc-cv__copy,.dshpc-cv__copy:focus-visible{opacity:1;}\n/* \u5916\u5C42\u53EA\u628A .dshpc-scroll-thin \u4F20\u7ED9\u5B98\u65B9\u751F\u6210\u7684 .cm-scroller\uFF08\u7EBF\u5BBD + \u53F3\u8BA9\u4F4D\u90FD\u7531 tokens.css\n   \u7684\u540E\u4EE3\u89C4\u5219\u7ED9\uFF09\uFF0C\u81EA\u5DF1 overflow:hidden \u4E0D\u6EDA \u21D2 \u5173\u6389\u81EA\u8EAB\u8BA9\u4F4D\uFF0C\u5426\u5219\u4E24\u5C42\u5404 1px \u4F1A\u53E0\u6210 2px\u3002\n   scroller \u53EA\u8BA9\u53F3\u4E0D\u8BA9\u5E95\uFF1A\u7ED9\u5E95\u4F1A\u6539 scroller \u9AD8\u5EA6\uFF0CCodeMirror \u7684\u6D4B\u91CF\u5FAA\u73AF\u4F1A\u591A\u7B97\u4E00\u6761\u6A2A\u6EDA\u6761\u3002 */\n.dshpc-cv__editor{flex:1 1 auto;min-height:0;overflow:hidden;--dshpc-scroll-inset-right:0px;}\n.dshpc-cv__editor .cm-editor{height:100%;}\n.dshpc-cv__editor .cm-scroller{overflow:auto}\n\n";
 
 // dist/ui/infra/code-mirror-surface.js
-var import_react51 = require("react");
+var import_react50 = require("react");
 
 // node_modules/.pnpm/@babel+runtime@8.0.7/node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
@@ -11230,10 +11153,10 @@ function _objectWithoutPropertiesLoose(r2, e) {
 }
 
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/index.js
-var import_react50 = __toESM(require("react"), 1);
+var import_react49 = __toESM(require("react"), 1);
 
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/useCodeMirror.js
-var import_react49 = require("react");
+var import_react48 = require("react");
 
 // node_modules/.pnpm/@marijn+find-cluster-break@1.0.4/node_modules/@marijn/find-cluster-break/src/index.js
 var rangeFrom = [];
@@ -35635,13 +35558,13 @@ var TYPING_TIMOUT = 200;
 var emptyExtensions = [];
 function useCodeMirror(props) {
   var value = props.value, selection2 = props.selection, onChange = props.onChange, onStatistics = props.onStatistics, onCreateEditor = props.onCreateEditor, onUpdate = props.onUpdate, _props$extensions = props.extensions, extensions = _props$extensions === void 0 ? emptyExtensions : _props$extensions, autoFocus = props.autoFocus, _props$theme = props.theme, theme2 = _props$theme === void 0 ? "light" : _props$theme, _props$height = props.height, height = _props$height === void 0 ? null : _props$height, _props$minHeight = props.minHeight, minHeight = _props$minHeight === void 0 ? null : _props$minHeight, _props$maxHeight = props.maxHeight, maxHeight = _props$maxHeight === void 0 ? null : _props$maxHeight, _props$width = props.width, width = _props$width === void 0 ? null : _props$width, _props$minWidth = props.minWidth, minWidth = _props$minWidth === void 0 ? null : _props$minWidth, _props$maxWidth = props.maxWidth, maxWidth = _props$maxWidth === void 0 ? null : _props$maxWidth, _props$placeholder = props.placeholder, placeholderStr = _props$placeholder === void 0 ? "" : _props$placeholder, _props$editable = props.editable, editable2 = _props$editable === void 0 ? true : _props$editable, _props$readOnly = props.readOnly, readOnly2 = _props$readOnly === void 0 ? false : _props$readOnly, _props$indentWithTab = props.indentWithTab, defaultIndentWithTab = _props$indentWithTab === void 0 ? true : _props$indentWithTab, _props$basicSetup = props.basicSetup, defaultBasicSetup = _props$basicSetup === void 0 ? true : _props$basicSetup, root = props.root, initialState = props.initialState;
-  var _useState = (0, import_react49.useState)(), container = _useState[0], setContainer = _useState[1];
-  var _useState2 = (0, import_react49.useState)(), view = _useState2[0], setView = _useState2[1];
-  var _useState3 = (0, import_react49.useState)(), state = _useState3[0], setState = _useState3[1];
-  var typingLatch = (0, import_react49.useState)(() => ({
+  var _useState = (0, import_react48.useState)(), container = _useState[0], setContainer = _useState[1];
+  var _useState2 = (0, import_react48.useState)(), view = _useState2[0], setView = _useState2[1];
+  var _useState3 = (0, import_react48.useState)(), state = _useState3[0], setState = _useState3[1];
+  var typingLatch = (0, import_react48.useState)(() => ({
     current: null
   }))[0];
-  var pendingUpdate = (0, import_react49.useState)(() => ({
+  var pendingUpdate = (0, import_react48.useState)(() => ({
     current: null
   }))[0];
   var defaultThemeOption = getDimensionTheme(height, minHeight, maxHeight, width, minWidth, maxWidth);
@@ -35681,7 +35604,7 @@ function useCodeMirror(props) {
     getExtensions.push(EditorView.updateListener.of(onUpdate));
   }
   getExtensions = getExtensions.concat(extensions);
-  (0, import_react49.useLayoutEffect)(() => {
+  (0, import_react48.useLayoutEffect)(() => {
     if (container && !state) {
       var config2 = {
         doc: value,
@@ -35707,12 +35630,12 @@ function useCodeMirror(props) {
       }
     };
   }, [container, state]);
-  (0, import_react49.useEffect)(() => {
+  (0, import_react48.useEffect)(() => {
     if (props.container) {
       setContainer(props.container);
     }
   }, [props.container]);
-  (0, import_react49.useEffect)(() => () => {
+  (0, import_react48.useEffect)(() => () => {
     if (view) {
       view.destroy();
       setView(void 0);
@@ -35722,19 +35645,19 @@ function useCodeMirror(props) {
       typingLatch.current = null;
     }
   }, [view]);
-  (0, import_react49.useEffect)(() => {
+  (0, import_react48.useEffect)(() => {
     if (autoFocus && view) {
       view.focus();
     }
   }, [autoFocus, view]);
-  (0, import_react49.useEffect)(() => {
+  (0, import_react48.useEffect)(() => {
     if (view) {
       view.dispatch({
         effects: StateEffect.reconfigure.of(getExtensions)
       });
     }
   }, [theme2, extensions, height, minHeight, maxHeight, width, minWidth, maxWidth, placeholderStr, editable2, readOnly2, defaultIndentWithTab, defaultBasicSetup, onChange, onUpdate]);
-  (0, import_react49.useEffect)(() => {
+  (0, import_react48.useEffect)(() => {
     if (value === void 0) {
       return;
     }
@@ -35773,9 +35696,9 @@ function useCodeMirror(props) {
 // node_modules/.pnpm/@uiw+react-codemirror@4.25.12_@babel+runtime@8.0.7_@codemirror+autocomplete@6.20.4_@cod_c4cd8b9e223cf57630d5201a440b3303/node_modules/@uiw/react-codemirror/esm/index.js
 var import_jsx_runtime2 = require("react/jsx-runtime");
 var _excluded = ["className", "value", "selection", "extensions", "onChange", "onStatistics", "onCreateEditor", "onUpdate", "autoFocus", "theme", "height", "minHeight", "maxHeight", "width", "minWidth", "maxWidth", "basicSetup", "placeholder", "indentWithTab", "editable", "readOnly", "root", "initialState"];
-var ReactCodeMirror = /* @__PURE__ */ (0, import_react50.forwardRef)((props, ref) => {
+var ReactCodeMirror = /* @__PURE__ */ (0, import_react49.forwardRef)((props, ref) => {
   var className2 = props.className, _props$value = props.value, value = _props$value === void 0 ? "" : _props$value, selection2 = props.selection, _props$extensions = props.extensions, extensions = _props$extensions === void 0 ? [] : _props$extensions, onChange = props.onChange, onStatistics = props.onStatistics, onCreateEditor = props.onCreateEditor, onUpdate = props.onUpdate, autoFocus = props.autoFocus, _props$theme = props.theme, theme2 = _props$theme === void 0 ? "light" : _props$theme, height = props.height, minHeight = props.minHeight, maxHeight = props.maxHeight, width = props.width, minWidth = props.minWidth, maxWidth = props.maxWidth, basicSetup3 = props.basicSetup, placeholder2 = props.placeholder, indentWithTab2 = props.indentWithTab, editable2 = props.editable, readOnly2 = props.readOnly, root = props.root, initialState = props.initialState, other = _objectWithoutPropertiesLoose(props, _excluded);
-  var editor = (0, import_react50.useRef)(null);
+  var editor = (0, import_react49.useRef)(null);
   var _useCodeMirror = useCodeMirror({
     root,
     value,
@@ -35800,12 +35723,12 @@ var ReactCodeMirror = /* @__PURE__ */ (0, import_react50.forwardRef)((props, ref
     extensions,
     initialState
   }), state = _useCodeMirror.state, view = _useCodeMirror.view, container = _useCodeMirror.container, setContainer = _useCodeMirror.setContainer;
-  (0, import_react50.useImperativeHandle)(ref, () => ({
+  (0, import_react49.useImperativeHandle)(ref, () => ({
     editor: editor.current,
     state,
     view
   }), [editor, container, state, view]);
-  var setEditorRef = (0, import_react50.useCallback)((el) => {
+  var setEditorRef = (0, import_react49.useCallback)((el) => {
     editor.current = el;
     setContainer(el);
   }, [setContainer]);
@@ -56057,9 +55980,9 @@ function hostDark() {
 function CodeMirrorSurface(props) {
   ensureComponentStyles("code-viewer", CODE_VIEWER_CSS);
   const { value, path, readOnly: readOnly2, onChange, overlay, className: className2, style: style2, height = "100%", lineNumbers: lineNumbers2 = true } = props;
-  const [dark, setDark] = (0, import_react51.useState)(hostDark);
-  const viewRef = (0, import_react51.useRef)(null);
-  (0, import_react51.useEffect)(() => {
+  const [dark, setDark] = (0, import_react50.useState)(hostDark);
+  const viewRef = (0, import_react50.useRef)(null);
+  (0, import_react50.useEffect)(() => {
     if (typeof document === "undefined" || typeof MutationObserver !== "function")
       return;
     const body = document.body;
@@ -56075,14 +55998,14 @@ function CodeMirrorSurface(props) {
       observer.disconnect();
     };
   }, []);
-  const language2 = (0, import_react51.useMemo)(() => languageForPath(path), [path]);
-  const extensions = (0, import_react51.useMemo)(() => [
+  const language2 = (0, import_react50.useMemo)(() => languageForPath(path), [path]);
+  const extensions = (0, import_react50.useMemo)(() => [
     ...codeMirrorTheme(dark),
     EditorView.lineWrapping,
     // 默认全换行，避免横向滚动条
     ...language2 !== null ? [language2] : []
   ], [dark, language2]);
-  (0, import_react51.useEffect)(() => {
+  (0, import_react50.useEffect)(() => {
     const view = viewRef.current;
     if (view === null || props.focusLine === void 0)
       return;
@@ -56090,7 +56013,7 @@ function CodeMirrorSurface(props) {
       return;
     view.dispatch({ effects: EditorView.scrollIntoView(view.state.doc.line(props.focusLine).from, { y: "center" }) });
   }, [value, props.focusLine]);
-  return (0, import_react51.createElement)("div", { className: `dshpc-cv${className2 ? ` ${className2}` : ""}`, style: style2 }, overlay ?? null, (0, import_react51.createElement)(esm_default, {
+  return (0, import_react50.createElement)("div", { className: `dshpc-cv${className2 ? ` ${className2}` : ""}`, style: style2 }, overlay ?? null, (0, import_react50.createElement)(esm_default, {
     value,
     className: "dshpc-cv__editor dshpc-scroll-thin",
     // 明暗与语法配色交给官方：dark → oneDark（官方主题 + 完整 highlighter），
@@ -56126,7 +56049,7 @@ function CodeMirrorSurface(props) {
 function CodeViewer(props) {
   ensureComponentStyles("code-viewer", CODE_VIEWER_CSS);
   const { text: text2, path, t: t4, className: className2, style: style2, height = "100%", lineNumbers: lineNumbers2 = true } = props;
-  const [copied, setCopied] = (0, import_react52.useState)(false);
+  const [copied, setCopied] = (0, import_react51.useState)(false);
   const copy = () => {
     void (0, official_exports.writeClipboard)(text2).then((ok) => {
       if (ok) {
@@ -56135,7 +56058,7 @@ function CodeViewer(props) {
       }
     });
   };
-  return (0, import_react52.createElement)(CodeMirrorSurface, {
+  return (0, import_react51.createElement)(CodeMirrorSurface, {
     value: text2,
     path,
     readOnly: true,
@@ -56144,10 +56067,10 @@ function CodeViewer(props) {
     className: className2,
     style: style2,
     focusLine: props.focusLine,
-    overlay: (0, import_react52.createElement)(IconButton, {
+    overlay: (0, import_react51.createElement)(IconButton, {
       variant: "outline",
       size: "md",
-      icon: copied ? (0, import_react52.createElement)(official_exports.IconCheckOutlineRegular) : (0, import_react52.createElement)(official_exports.IconCopyOutlineRegular),
+      icon: copied ? (0, import_react51.createElement)(official_exports.IconCheckOutlineRegular) : (0, import_react51.createElement)(official_exports.IconCopyOutlineRegular),
       label: copied ? t4("codeCopied") : t4("codeCopy"),
       className: "dshpc-cv__copy",
       onClick: copy
@@ -56188,14 +56111,14 @@ var FOCUS_MAX_PAGES = 10;
 function TextPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [text2, setText] = (0, import_react53.useState)("");
-  const [truncated, setTruncated] = (0, import_react53.useState)(false);
-  const [nextOffset, setNextOffset] = (0, import_react53.useState)(null);
-  const [loading, setLoading] = (0, import_react53.useState)(false);
-  const [failed, setFailed] = (0, import_react53.useState)(null);
-  const accRef = (0, import_react53.useRef)("");
-  const abortRef = (0, import_react53.useRef)(null);
-  const load = (0, import_react53.useCallback)(async (offset4, append2) => {
+  const [text2, setText] = (0, import_react52.useState)("");
+  const [truncated, setTruncated] = (0, import_react52.useState)(false);
+  const [nextOffset, setNextOffset] = (0, import_react52.useState)(null);
+  const [loading, setLoading] = (0, import_react52.useState)(false);
+  const [failed, setFailed] = (0, import_react52.useState)(null);
+  const accRef = (0, import_react52.useRef)("");
+  const abortRef = (0, import_react52.useRef)(null);
+  const load = (0, import_react52.useCallback)(async (offset4, append2) => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -56241,7 +56164,7 @@ function TextPreview(props) {
         setLoading(false);
     }
   }, [props.files, props.path, props.maxBytes]);
-  (0, import_react53.useEffect)(() => {
+  (0, import_react52.useEffect)(() => {
     accRef.current = "";
     setText("");
     setTruncated(false);
@@ -56258,11 +56181,11 @@ function TextPreview(props) {
     };
   }, [load, props.focusLine]);
   if (failed !== null)
-    return (0, import_react53.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react52.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (text2 === "" && loading)
-    return (0, import_react53.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+    return (0, import_react52.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
   const rendered = props.markdown && !props.sourceView;
-  return (0, import_react53.createElement)("div", { className: "dshpc-fb__text dshpc-scroll-thin dshpc-scroll-thin--both", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "var(--dshpc-space-3)" } : {} } }, truncated ? (0, import_react53.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react53.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react53.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react53.createElement)(CodeViewer, { text: text2, path: props.path, t: tt, focusLine: props.focusLine })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react53.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react53.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
+  return (0, import_react52.createElement)("div", { className: "dshpc-fb__text dshpc-scroll-thin dshpc-scroll-thin--both", style: { display: "flex", flexDirection: "column", ...rendered ? { padding: "var(--dshpc-space-3)" } : {} } }, truncated ? (0, import_react52.createElement)("div", { className: "dshpc-fb__banner" }, tt("previewTruncated", { n: formatBytes(props.maxBytes ?? 0) })) : null, rendered ? (0, import_react52.createElement)(official_exports.MarkdownText, { text: text2, labels: markdownLabels() }) : (0, import_react52.createElement)("div", { style: { flex: "1 1 auto", minHeight: 0, display: "flex" } }, (0, import_react52.createElement)(CodeViewer, { text: text2, path: props.path, t: tt, focusLine: props.focusLine })), nextOffset !== null && props.maxBytes === void 0 ? (0, import_react52.createElement)("div", { className: "dshpc-fb__more" }, (0, import_react52.createElement)(Button, { variant: "outline", size: "sm", loading, onClick: () => void load(nextOffset, true) }, tt("previewLoadMore"))) : null);
 }
 
 // dist/adv/explorer/preview/HtmlPreview.js
@@ -56303,9 +56226,9 @@ ${doc2.documentElement.outerHTML}`;
 function HtmlPreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [doc2, setDoc] = (0, import_react54.useState)(null);
-  const [failed, setFailed] = (0, import_react54.useState)(null);
-  (0, import_react54.useEffect)(() => {
+  const [doc2, setDoc] = (0, import_react53.useState)(null);
+  const [failed, setFailed] = (0, import_react53.useState)(null);
+  (0, import_react53.useEffect)(() => {
     if (props.sourceView)
       return;
     const controller = new AbortController();
@@ -56340,7 +56263,7 @@ function HtmlPreview(props) {
     };
   }, [props.files, props.path, props.sourceView]);
   if (props.sourceView) {
-    return (0, import_react54.createElement)(TextPreview, {
+    return (0, import_react53.createElement)(TextPreview, {
       files: props.files,
       path: props.path,
       markdown: false,
@@ -56350,20 +56273,20 @@ function HtmlPreview(props) {
     });
   }
   if (failed !== null)
-    return (0, import_react54.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react53.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (doc2 === null)
-    return (0, import_react54.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
-  return (0, import_react54.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react54.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc2 }));
+    return (0, import_react53.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  return (0, import_react53.createElement)("div", { className: "dshpc-fb__fill" }, (0, import_react53.createElement)("iframe", { className: "dshpc-fb__frame", sandbox: "", srcDoc: doc2 }));
 }
 
 // dist/adv/explorer/preview/OfficePreview.js
-var import_react55 = require("react");
+var import_react54 = require("react");
 function OfficePreview(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const tt = props.translate ?? t;
-  const [url, setUrl] = (0, import_react55.useState)(null);
-  const [failed, setFailed] = (0, import_react55.useState)(null);
-  (0, import_react55.useEffect)(() => {
+  const [url, setUrl] = (0, import_react54.useState)(null);
+  const [failed, setFailed] = (0, import_react54.useState)(null);
+  (0, import_react54.useEffect)(() => {
     const controller = new AbortController();
     let objectUrl = null;
     setUrl(null);
@@ -56399,13 +56322,13 @@ function OfficePreview(props) {
     };
   }, [props.officeToPdf, props.sessionId, props.path]);
   if (props.officeToPdf === null) {
-    return (0, import_react55.createElement)("div", { className: "dshpc-fb__note" }, tt("previewOfficeUnavailable"));
+    return (0, import_react54.createElement)("div", { className: "dshpc-fb__note" }, tt("previewOfficeUnavailable"));
   }
   if (failed !== null)
-    return (0, import_react55.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
+    return (0, import_react54.createElement)("div", { className: "dshpc-fb__note" }, tt(failed.key, failed.params));
   if (url === null)
-    return (0, import_react55.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
-  return (0, import_react55.createElement)("iframe", { className: "dshpc-fb__frame", src: url });
+    return (0, import_react54.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerLoading"));
+  return (0, import_react54.createElement)("iframe", { className: "dshpc-fb__frame", src: url });
 }
 
 // dist/adv/explorer/preview/index.js
@@ -56417,7 +56340,7 @@ function FilePreview(props) {
   switch (info.kind) {
     case "image":
     case "pdf":
-      return (0, import_react56.createElement)(BytesPreview, {
+      return (0, import_react55.createElement)(BytesPreview, {
         files: props.files,
         path: props.path,
         kind: info.kind,
@@ -56425,14 +56348,14 @@ function FilePreview(props) {
         translate: tt
       });
     case "office":
-      return (0, import_react56.createElement)(OfficePreview, {
+      return (0, import_react55.createElement)(OfficePreview, {
         officeToPdf: props.officeToPdf ?? null,
         sessionId: props.sessionId,
         path: props.path,
         translate: tt
       });
     case "html":
-      return (0, import_react56.createElement)(HtmlPreview, {
+      return (0, import_react55.createElement)(HtmlPreview, {
         files: props.files,
         path: props.path,
         sourceView,
@@ -56440,7 +56363,7 @@ function FilePreview(props) {
       });
     case "md":
     case "text":
-      return (0, import_react56.createElement)(TextPreview, {
+      return (0, import_react55.createElement)(TextPreview, {
         files: props.files,
         path: props.path,
         markdown: info.kind === "md",
@@ -56453,22 +56376,22 @@ function FilePreview(props) {
 }
 
 // dist/adv/explorer/crumbs-menu.js
-var import_react57 = require("react");
+var import_react56 = require("react");
 function crumbsMenuEntries(params) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const { workspaces, roots, rootName, rootFallbackLabel, crumbs, onPickWorkspace, onLoadDir } = params;
   const out = [];
   for (const root of roots) {
-    out.push((0, import_react57.createElement)("button", {
+    out.push((0, import_react56.createElement)("button", {
       key: `root:${root.path}`,
       type: "button",
       role: "menuitem",
       className: "dshpc-fb__menu-item",
       style: { paddingLeft: 8, display: "flex", alignItems: "center", gap: "6px" },
       onClick: () => onLoadDir?.(root.path)
-    }, (0, import_react57.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: "var(--dshpc-fg-2)" } }, (0, import_react57.createElement)(official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react57.createElement)("span", { className: "dshpc-fb__menu-label" }, root.label)));
+    }, (0, import_react56.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: "var(--dshpc-fg-2)" } }, (0, import_react56.createElement)(official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react56.createElement)("span", { className: "dshpc-fb__menu-label" }, root.label)));
   }
-  const wsEntry = (ws, current3) => (0, import_react57.createElement)("button", {
+  const wsEntry = (ws, current3) => (0, import_react56.createElement)("button", {
     key: `ws:${ws}`,
     type: "button",
     role: "menuitem",
@@ -56482,8 +56405,8 @@ function crumbsMenuEntries(params) {
       else
         onPickWorkspace?.(ws);
     }
-  }, (0, import_react57.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current3 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react57.createElement)(current3 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react57.createElement)("span", { className: "dshpc-fb__menu-label", style: { fontWeight: current3 ? 600 : 400 } }, ws));
-  const pathEntry = (crumb, depth, withArrow = true) => (0, import_react57.createElement)("button", {
+  }, (0, import_react56.createElement)("span", { className: "dshpc-fb__menu-icon", style: { color: current3 ? "var(--dshpc-fg)" : "var(--dshpc-fg-2)" } }, (0, import_react56.createElement)(current3 ? official_exports.IconFolderOpenOutlineRegular : official_exports.IconFolderCloseRegular, { size: 13 })), (0, import_react56.createElement)("span", { className: "dshpc-fb__menu-label", style: { fontWeight: current3 ? 600 : 400 } }, ws));
+  const pathEntry = (crumb, depth, withArrow = true) => (0, import_react56.createElement)("button", {
     key: `dir:${crumb.path}`,
     type: "button",
     role: "menuitem",
@@ -56492,10 +56415,10 @@ function crumbsMenuEntries(params) {
     onClick: () => {
       onLoadDir?.(crumb.path);
     }
-  }, withArrow ? (0, import_react57.createElement)(import_react57.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react57.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot", "aria-hidden": true })), (0, import_react57.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react57.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react57.createElement)("span", { className: "dshpc-fb__menu-label" }, crumb.label));
+  }, withArrow ? (0, import_react56.createElement)(import_react56.Fragment, null, Array.from({ length: depth }, (_, s) => (0, import_react56.createElement)("span", { key: `s${s}`, className: "dshpc-fb__menu-chev-slot", "aria-hidden": true })), (0, import_react56.createElement)("span", { className: "dshpc-fb__menu-chev" }, (0, import_react56.createElement)(official_exports.IconChevronRightOutlineRegular, { size: 11 }))) : null, (0, import_react56.createElement)("span", { className: "dshpc-fb__menu-label" }, crumb.label));
   if (workspaces.length === 0) {
     if (crumbs.length === 0)
-      return [(0, import_react57.createElement)("div", { key: "empty", className: "dshpc-fb__menu-empty" }, rootFallbackLabel)];
+      return [(0, import_react56.createElement)("div", { key: "empty", className: "dshpc-fb__menu-empty" }, rootFallbackLabel)];
     return crumbs.map((crumb, index3) => pathEntry(crumb, index3 === 0 ? 0 : index3 - 1, index3 !== 0));
   }
   const head = crumbs[0];
@@ -56521,58 +56444,58 @@ function crumbsMenuEntries(params) {
 }
 
 // dist/adv/explorer/crumb-nav.js
-var import_react58 = require("react");
+var import_react57 = require("react");
 function crumbButton(label, onClick, current3 = false) {
-  return (0, import_react58.createElement)(Button, {
+  return (0, import_react57.createElement)(Button, {
     variant: "ghost",
     size: "sm",
     className: `dshpc-fb__crumb${current3 ? " dshpc-fb__crumb--current" : ""}`,
     disabled: onClick === void 0,
     tabIndex: onClick === void 0 ? -1 : 0,
     onClick
-  }, (0, import_react58.createElement)(MarqueeText, { text: label, className: "dshpc-fb__crumb-mq" }));
+  }, (0, import_react57.createElement)(MarqueeText, { text: label, className: "dshpc-fb__crumb-mq" }));
 }
 function actions(pickNow, tt, onClose) {
   if (pickNow == null && onClose === void 0)
     return null;
-  return (0, import_react58.createElement)("div", { className: "dshpc-fb__actions" }, pickNow, onClose === void 0 ? null : (0, import_react58.createElement)(PanelClose, { label: tt("previewClose"), onClick: onClose }));
+  return (0, import_react57.createElement)("div", { className: "dshpc-fb__actions" }, pickNow, onClose === void 0 ? null : (0, import_react57.createElement)(PanelClose, { label: tt("previewClose"), onClick: onClose }));
 }
 function CrumbNav(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const { translate: tt, landing, crumbs, overflow, menuItems, menuOpen, onToggleMenu, onCloseMenu, onLoadDir, pickNow, onClose, regionRef, measureRef } = props;
-  const visibleCrumbs = overflow ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"), void 0, true) : crumbs.length === 0 ? crumbButton(tt("explorerRootName"), void 0, true) : crumbs.map((crumb, index3) => (0, import_react58.createElement)(import_react58.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react58.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label, () => onLoadDir(crumb.path))));
-  return (0, import_react58.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react58.createElement)(
+  const visibleCrumbs = overflow ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt("explorerRootName") : tt("explorerRootName"), void 0, true) : crumbs.length === 0 ? crumbButton(tt("explorerRootName"), void 0, true) : crumbs.map((crumb, index3) => (0, import_react57.createElement)(import_react57.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react57.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label, () => onLoadDir(crumb.path))));
+  return (0, import_react57.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react57.createElement)(
     "div",
     { className: "dshpc-fb__menu-wrap" },
-    (0, import_react58.createElement)(IconButton, {
+    (0, import_react57.createElement)(IconButton, {
       variant: "plain",
       size: "md",
-      icon: (0, import_react58.createElement)(official_exports.IconChevronDownOutlineRegular, { size: 14 }),
+      icon: (0, import_react57.createElement)(official_exports.IconChevronDownOutlineRegular, { size: 14 }),
       label: tt("explorerLevels"),
       "aria-expanded": menuOpen,
       onClick: onToggleMenu
     }),
     // 选层下拉 = 自写浮层：透明遮罩点一下即收；遮罩层序走 --dshpc-z-popmenu，
     // 高于 picker 面板（--dshpc-z-panel）⇒ 菜单开着时点面板也算「点外部」。
-    menuOpen ? (0, import_react58.createElement)(
-      import_react58.Fragment,
+    menuOpen ? (0, import_react57.createElement)(
+      import_react57.Fragment,
       null,
-      (0, import_react58.createElement)("div", { className: "dshpc-fb__crumbs-backdrop", onClick: onCloseMenu }),
+      (0, import_react57.createElement)("div", { className: "dshpc-fb__crumbs-backdrop", onClick: onCloseMenu }),
       // 表皮走 panel.css 的 menu 档；`.dshpc-fb__crumbs-menu` 只留定位与滚动（旧类名作别名）。
-      (0, import_react58.createElement)("div", { className: "dshpc-panel dshpc-panel--menu dshpc-fb__crumbs-menu dshpc-scroll-thin", role: "menu" }, menuItems)
+      (0, import_react57.createElement)("div", { className: "dshpc-panel dshpc-panel--menu dshpc-fb__crumbs-menu dshpc-scroll-thin", role: "menu" }, menuItems)
     ) : null
-  ), landing ? (0, import_react58.createElement)("div", { className: "dshpc-fb__crumbs" }) : (0, import_react58.createElement)(
+  ), landing ? (0, import_react57.createElement)("div", { className: "dshpc-fb__crumbs" }) : (0, import_react57.createElement)(
     "div",
     { ref: regionRef, className: "dshpc-fb__crumbs" },
     // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
-    (0, import_react58.createElement)("span", { ref: measureRef, className: "dshpc-fb__crumbs-measure", "aria-hidden": true }, crumbs.length === 0 ? crumbButton(tt("explorerRootName")) : crumbs.map((crumb, index3) => (0, import_react58.createElement)(import_react58.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react58.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label)))),
+    (0, import_react57.createElement)("span", { ref: measureRef, className: "dshpc-fb__crumbs-measure", "aria-hidden": true }, crumbs.length === 0 ? crumbButton(tt("explorerRootName")) : crumbs.map((crumb, index3) => (0, import_react57.createElement)(import_react57.Fragment, { key: crumb.path }, index3 > 0 ? (0, import_react57.createElement)(official_exports.IconChevronRightOutlineRegular, { className: "dshpc-fb__crumb-sep", size: 12 }) : null, crumbButton(crumb.label)))),
     visibleCrumbs
   ), actions(pickNow, tt, onClose));
 }
 function PlainNav(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const { translate: tt, path, pickNow, onClose } = props;
-  return (0, import_react58.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react58.createElement)(MarqueeText, {
+  return (0, import_react57.createElement)("nav", { className: "dshpc-fb__bar", "aria-label": tt("explorerCrumbsAria") }, (0, import_react57.createElement)(MarqueeText, {
     text: path,
     className: "dshpc-fb__bar-plain",
     style: { flex: "1 1 auto", minWidth: 0 }
@@ -56580,11 +56503,11 @@ function PlainNav(props) {
 }
 
 // dist/adv/explorer/landing.js
-var import_react59 = require("react");
+var import_react58 = require("react");
 function LandingBody(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const { translate: tt, roots, anchors, pickable, onOpen, onPickDir } = props;
-  const row2 = (key, label, target) => (0, import_react59.createElement)(
+  const row2 = (key, label, target) => (0, import_react58.createElement)(
     "div",
     {
       key,
@@ -56597,10 +56520,10 @@ function LandingBody(props) {
           onOpen(target);
       }
     },
-    (0, import_react59.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react59.createElement)(official_exports.IconFolderCloseRegular, null)),
-    (0, import_react59.createElement)("span", { className: "dshpc-fb__row-name" }, label),
+    (0, import_react58.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react58.createElement)(official_exports.IconFolderCloseRegular, null)),
+    (0, import_react58.createElement)("span", { className: "dshpc-fb__row-name" }, label),
     // 行 = 展开进去；行尾钮 = 直接选这个目录（根目录 / 盘符 / 工作区根本身都能选）。
-    pickable ? (0, import_react59.createElement)(Button, {
+    pickable ? (0, import_react58.createElement)(Button, {
       variant: "outline",
       size: "sm",
       className: "dshpc-fb__row-act",
@@ -56611,19 +56534,19 @@ function LandingBody(props) {
       }
     }, tt("explorerPickDir")) : null
   );
-  return (0, import_react59.createElement)("div", { className: "dshpc-fb__tree dshpc-scroll-thin dshpc-scroll-thin--both" }, roots.map((root) => row2(`root:${root.path}`, root.label, root.path)), anchors.filter((item) => item.path !== void 0 && item.path !== "").map((item) => row2(`ws:${item.title}`, item.title, item.path)));
+  return (0, import_react58.createElement)("div", { className: "dshpc-fb__tree dshpc-scroll-thin dshpc-scroll-thin--both" }, roots.map((root) => row2(`root:${root.path}`, root.label, root.path)), anchors.filter((item) => item.path !== void 0 && item.path !== "").map((item) => row2(`ws:${item.title}`, item.title, item.path)));
 }
 
 // dist/adv/explorer/preview-title-bar.js
-var import_react60 = require("react");
+var import_react59 = require("react");
 function PreviewTitleBar(props) {
   ensureComponentStyles("explorer", EXPLORER_CSS);
   const { translate: tt, path, switchable, isMarkdown, sourceView, onSourceViewChange, copied, onCopyPath, onReload } = props;
-  return (0, import_react60.createElement)("div", { className: "dshpc-fb__title" }, (0, import_react60.createElement)(MarqueeText, {
+  return (0, import_react59.createElement)("div", { className: "dshpc-fb__title" }, (0, import_react59.createElement)(MarqueeText, {
     text: baseNameOfPath(path),
     className: "dshpc-fb__title-inner",
     style: { flex: "1 1 auto", minWidth: 0 }
-  }), (0, import_react60.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react60.createElement)(Segmented, {
+  }), (0, import_react59.createElement)("div", { className: "dshpc-fb__actions" }, switchable ? (0, import_react59.createElement)(Segmented, {
     size: "sm",
     label: isMarkdown ? tt("previewMdSwitchAria") : tt("previewHtmlSwitchAria"),
     value: sourceView ? "source" : "render",
@@ -56632,16 +56555,16 @@ function PreviewTitleBar(props) {
       { value: "source", label: tt("previewSource") }
     ],
     onChange: (next) => onSourceViewChange(next === "source")
-  }) : null, (0, import_react60.createElement)(IconButton, {
+  }) : null, (0, import_react59.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: copied ? (0, import_react60.createElement)(official_exports.IconCheckOutlineRegular, { size: 14 }) : (0, import_react60.createElement)(official_exports.IconCopyOutlineRegular, { size: 14 }),
+    icon: copied ? (0, import_react59.createElement)(official_exports.IconCheckOutlineRegular, { size: 14 }) : (0, import_react59.createElement)(official_exports.IconCopyOutlineRegular, { size: 14 }),
     label: tt("previewCopyPath"),
     onClick: onCopyPath
-  }), (0, import_react60.createElement)(IconButton, {
+  }), (0, import_react59.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: (0, import_react60.createElement)(official_exports.IconRefreshOutlineRegular, { size: 14 }),
+    icon: (0, import_react59.createElement)(official_exports.IconRefreshOutlineRegular, { size: 14 }),
     label: tt("previewRefresh"),
     onClick: onReload
   })));
@@ -56655,48 +56578,48 @@ function FileBrowser(props) {
   useLocale();
   const tt = props.translate ?? t;
   const picker = props.picker === true;
-  const [mode, setMode] = (0, import_react61.useState)("loading");
-  const [dir, setDir] = (0, import_react61.useState)("");
-  const [listing, setListing] = (0, import_react61.useState)(null);
-  const [truncated, setTruncated] = (0, import_react61.useState)(false);
-  const [viewing, setViewing] = (0, import_react61.useState)(null);
-  const [listErr, setListErr] = (0, import_react61.useState)(null);
-  const [crumbsOverflow, setCrumbsOverflow] = (0, import_react61.useState)(false);
-  const [menuOpen, setMenuOpen] = (0, import_react61.useState)(false);
-  const regionRef = (0, import_react61.useRef)(null);
-  const measureRef = (0, import_react61.useRef)(null);
-  const [sourceView, setSourceView] = (0, import_react61.useState)(false);
-  const [reloadNonce, setReloadNonce] = (0, import_react61.useState)(0);
-  const [copied, setCopied] = (0, import_react61.useState)(false);
-  const [openDirs, setOpenDirs] = (0, import_react61.useState)(/* @__PURE__ */ new Set());
-  const [childCache, setChildCache] = (0, import_react61.useState)({});
-  const [outside, setOutside] = (0, import_react61.useState)(false);
-  const [landing, setLanding] = (0, import_react61.useState)(props.picker === true && props.path === "" && props.sessionId === void 0);
-  const landingRef = (0, import_react61.useRef)(landing);
-  (0, import_react61.useLayoutEffect)(() => {
+  const [mode, setMode] = (0, import_react60.useState)("loading");
+  const [dir, setDir] = (0, import_react60.useState)("");
+  const [listing, setListing] = (0, import_react60.useState)(null);
+  const [truncated, setTruncated] = (0, import_react60.useState)(false);
+  const [viewing, setViewing] = (0, import_react60.useState)(null);
+  const [listErr, setListErr] = (0, import_react60.useState)(null);
+  const [crumbsOverflow, setCrumbsOverflow] = (0, import_react60.useState)(false);
+  const [menuOpen, setMenuOpen] = (0, import_react60.useState)(false);
+  const regionRef = (0, import_react60.useRef)(null);
+  const measureRef = (0, import_react60.useRef)(null);
+  const [sourceView, setSourceView] = (0, import_react60.useState)(false);
+  const [reloadNonce, setReloadNonce] = (0, import_react60.useState)(0);
+  const [copied, setCopied] = (0, import_react60.useState)(false);
+  const [openDirs, setOpenDirs] = (0, import_react60.useState)(/* @__PURE__ */ new Set());
+  const [childCache, setChildCache] = (0, import_react60.useState)({});
+  const [outside, setOutside] = (0, import_react60.useState)(false);
+  const [landing, setLanding] = (0, import_react60.useState)(props.picker === true && props.path === "" && props.sessionId === void 0);
+  const landingRef = (0, import_react60.useRef)(landing);
+  (0, import_react60.useLayoutEffect)(() => {
     landingRef.current = landing;
   }, [landing]);
   const revision = props.revision ?? 0;
-  const listGateRef = (0, import_react61.useRef)(null);
+  const listGateRef = (0, import_react60.useRef)(null);
   if (listGateRef.current === null)
     listGateRef.current = createRequestGate();
   const listGate = listGateRef.current;
-  const childAbortsRef = (0, import_react61.useRef)(/* @__PURE__ */ new Map());
-  const abortChildren = (0, import_react61.useCallback)(() => {
+  const childAbortsRef = (0, import_react60.useRef)(/* @__PURE__ */ new Map());
+  const abortChildren = (0, import_react60.useCallback)(() => {
     for (const controller of childAbortsRef.current.values())
       controller.abort();
     childAbortsRef.current.clear();
   }, []);
-  const dirRef = (0, import_react61.useRef)("");
-  const listingRef = (0, import_react61.useRef)(null);
-  (0, import_react61.useLayoutEffect)(() => {
+  const dirRef = (0, import_react60.useRef)("");
+  const listingRef = (0, import_react60.useRef)(null);
+  (0, import_react60.useLayoutEffect)(() => {
     dirRef.current = dir;
     listingRef.current = listing;
   }, [dir, listing]);
-  const hostWorkspaces = (0, import_react61.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const hostWorkspaces = (0, import_react60.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchors = props.workspaceAnchors ?? hostWorkspaces;
-  const [roots, setRoots] = (0, import_react61.useState)([FS_ROOT]);
-  (0, import_react61.useEffect)(() => {
+  const [roots, setRoots] = (0, import_react60.useState)([FS_ROOT]);
+  (0, import_react60.useEffect)(() => {
     const ask = props.files.roots;
     if (ask === void 0)
       return;
@@ -56711,22 +56634,22 @@ function FileBrowser(props) {
       alive = false;
     };
   }, [props.files]);
-  const anchorMatch = (0, import_react61.useMemo)(() => workspaceOfPath(props.path, anchors), [props.path, anchors]);
+  const anchorMatch = (0, import_react60.useMemo)(() => workspaceOfPath(props.path, anchors), [props.path, anchors]);
   const sessionAnchor = props.sessionId === void 0 ? null : anchors.find((item) => item.sessionIds?.includes(props.sessionId) === true) ?? null;
   const rootBase = anchorMatch?.path ?? props.rootPath ?? sessionAnchor?.path ?? anchors.find((item) => item.path !== void 0)?.path;
-  const absOf = (0, import_react61.useCallback)((p) => {
+  const absOf = (0, import_react60.useCallback)((p) => {
     if (isAbsoluteish(p))
       return normalizePath(p);
     if (rootBase === void 0 || rootBase === "")
       return p === "" ? FS_ROOT : p;
     return p === "" ? normalizePath(rootBase) : normalizePath(`${rootBase}/${p.replace(/^\/+/, "")}`);
   }, [rootBase]);
-  const toPicked = (0, import_react61.useCallback)((p, isDir) => {
+  const toPicked = (0, import_react60.useCallback)((p, isDir) => {
     const abs = absOf(p);
     const owner2 = workspaceOfPath(abs, anchors);
     return owner2 === null ? { path: abs, isDir } : { path: abs, isDir, workspaceRel: relativizeToDir(abs, owner2.path ?? null), workspace: owner2.title };
   }, [absOf, anchors]);
-  const noteOutside = (0, import_react61.useCallback)((parsed) => {
+  const noteOutside = (0, import_react60.useCallback)((parsed) => {
     if (parsed === null || parsed === void 0)
       return;
     if (!isFailed(parsed)) {
@@ -56737,7 +56660,7 @@ function FileBrowser(props) {
     if (code3 === "outside-workspace" || code3 === "not-found")
       setOutside(true);
   }, []);
-  const fetchDir = (0, import_react61.useCallback)((targetDir) => {
+  const fetchDir = (0, import_react60.useCallback)((targetDir) => {
     const token = listGate.begin();
     abortChildren();
     const absTarget = absOf(targetDir);
@@ -56773,12 +56696,12 @@ function FileBrowser(props) {
       setMode("error");
     });
   }, [abortChildren, absOf, listGate, noteOutside, props.files]);
-  const loadDir = (0, import_react61.useCallback)((targetDir) => {
+  const loadDir = (0, import_react60.useCallback)((targetDir) => {
     if (landingRef.current)
       setLanding(false);
     fetchDir(targetDir);
   }, [fetchDir]);
-  (0, import_react61.useEffect)(() => {
+  (0, import_react60.useEffect)(() => {
     if (landingRef.current)
       return;
     const parent = dirnameOf(props.path);
@@ -56842,8 +56765,8 @@ function FileBrowser(props) {
       listGate.abort();
     };
   }, [abortChildren, absOf, listGate, noteOutside, props.files, props.path, revision]);
-  (0, import_react61.useEffect)(() => () => abortChildren(), [abortChildren]);
-  const switchWorkspace = (0, import_react61.useCallback)((name2) => {
+  (0, import_react60.useEffect)(() => () => abortChildren(), [abortChildren]);
+  const switchWorkspace = (0, import_react60.useCallback)((name2) => {
     if (props.onSelectWorkspace !== void 0) {
       props.onSelectWorkspace(name2);
       return;
@@ -56852,7 +56775,7 @@ function FileBrowser(props) {
     if (target?.path !== void 0)
       loadDir(target.path);
   }, [anchors, loadDir, props.onSelectWorkspace]);
-  (0, import_react61.useLayoutEffect)(() => {
+  (0, import_react60.useLayoutEffect)(() => {
     const region = regionRef.current;
     const measure = measureRef.current;
     if (region === null || measure === null)
@@ -56865,14 +56788,14 @@ function FileBrowser(props) {
     ro.observe(region);
     return () => ro.disconnect();
   }, [dir, viewing, mode, listing, outside]);
-  const reload = (0, import_react61.useCallback)(() => {
+  const reload = (0, import_react60.useCallback)(() => {
     if (viewing !== null) {
       setReloadNonce((n) => n + 1);
       return;
     }
     loadDir(dir);
   }, [viewing, dir, loadDir]);
-  const copyPath = (0, import_react61.useCallback)(() => {
+  const copyPath = (0, import_react60.useCallback)(() => {
     const target = viewing ?? dir;
     if (target === "")
       return;
@@ -56885,7 +56808,7 @@ function FileBrowser(props) {
     }).catch(() => {
     });
   }, [viewing, dir, rootBase]);
-  const toggleDir = (0, import_react61.useCallback)((path) => {
+  const toggleDir = (0, import_react60.useCallback)((path) => {
     setOpenDirs((prev) => {
       const next = new Set(prev);
       if (next.has(path))
@@ -56919,7 +56842,7 @@ function FileBrowser(props) {
   }, [absOf, childCache, props.files]);
   const extsOnly = picker && props.filter !== void 0 && props.filter.dirs !== true && (props.filter.exts?.length ?? 0) > 0;
   const dirPickable = picker && props.onPick !== void 0 && !extsOnly;
-  const renderTree = (0, import_react61.useCallback)((entries2, baseDir) => sortEntries(entries2).map((entry) => {
+  const renderTree = (0, import_react60.useCallback)((entries2, baseDir) => sortEntries(entries2).map((entry) => {
     const childPath = joinPath(baseDir, entry.name);
     const isDir = entry.type === "directory";
     if (!isDir && picker && !matchesFilter(childPath, false, props.filter))
@@ -56937,7 +56860,7 @@ function FileBrowser(props) {
         setReloadNonce(0);
         setSourceView(false);
       };
-      return (0, import_react61.createElement)(
+      return (0, import_react60.createElement)(
         "div",
         {
           key: childPath,
@@ -56950,11 +56873,11 @@ function FileBrowser(props) {
               pick2();
           }
         },
-        (0, import_react61.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react61.createElement)(official_exports.FileTypeIcon, { path: childPath })),
-        (0, import_react61.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
+        (0, import_react60.createElement)("span", { className: "dshpc-fb__row-icon" }, (0, import_react60.createElement)(official_exports.FileTypeIcon, { path: childPath })),
+        (0, import_react60.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
         // 选择器里文件行也给一枚「选择」钮，与目录行的操作位对齐（目录没有时它仍在，
         // 「点行 = 选中」的旧默契保持不变，外显入口不再缺）。
-        picker && props.onPick !== void 0 ? (0, import_react61.createElement)(Button, {
+        picker && props.onPick !== void 0 ? (0, import_react60.createElement)(Button, {
           variant: "outline",
           size: "sm",
           className: "dshpc-fb__row-act",
@@ -56980,7 +56903,7 @@ function FileBrowser(props) {
       }
       loadDir(childPath);
     };
-    return (0, import_react61.createElement)(import_react61.Fragment, { key: childPath }, (0, import_react61.createElement)(
+    return (0, import_react60.createElement)(import_react60.Fragment, { key: childPath }, (0, import_react60.createElement)(
       "div",
       {
         className: "dshpc-fb__row",
@@ -56993,11 +56916,11 @@ function FileBrowser(props) {
         }
       },
       // 展开 / 收起：核心 IconButton，20×20 命中位 + 展开时转 90°（与兄弟 .dsh-tdt-sv-tree-toggle 同款）。
-      (0, import_react61.createElement)(IconButton, {
+      (0, import_react60.createElement)(IconButton, {
         variant: "plain",
         size: "sm",
         className: `dshpc-fb__row-toggle${isOpen2 ? " dshpc-fb__row-toggle--open" : ""}`,
-        icon: (0, import_react61.createElement)(official_exports.IconChevronRightOutlineRegular, null),
+        icon: (0, import_react60.createElement)(official_exports.IconChevronRightOutlineRegular, null),
         label: isOpen2 ? tt("explorerCollapse") : tt("explorerExpand"),
         "aria-expanded": isOpen2,
         onClick: (event) => {
@@ -57005,27 +56928,27 @@ function FileBrowser(props) {
           toggleDir(childPath);
         }
       }),
-      (0, import_react61.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
+      (0, import_react60.createElement)("span", { className: "dshpc-fb__row-name" }, entry.name),
       // picker：仅目录可选时才出「选择」（扩展名过滤下没有，目录只作导航）；
       // 浏览态：出「进入」。
-      picker ? dirPickable ? (0, import_react61.createElement)(Button, {
+      picker ? dirPickable ? (0, import_react60.createElement)(Button, {
         variant: "outline",
         size: "sm",
         className: "dshpc-fb__row-act",
         "aria-label": tt("explorerPickDirAria"),
         onClick: actThisDir
-      }, tt("explorerPickDir")) : null : (0, import_react61.createElement)(Button, {
+      }, tt("explorerPickDir")) : null : (0, import_react60.createElement)(Button, {
         variant: "outline",
         size: "sm",
         className: "dshpc-fb__row-act",
         "aria-label": tt("explorerEnter"),
         onClick: actThisDir
       }, tt("explorerEnter"))
-    ), isOpen2 ? (0, import_react61.createElement)(
+    ), isOpen2 ? (0, import_react60.createElement)(
       "div",
       { className: "dshpc-fb__row-children" },
       // 硬性规定：不新建 Loading、不写加载文案 ⇒ 还在拉就空着（源实现用户 2026-10-05）。
-      cached === void 0 || cached.status === "loading" ? null : cached.status === "error" ? (0, import_react61.createElement)("div", { className: "dshpc-fb__row-err" }, tt(cached.error.key, cached.error.params)) : (0, import_react61.createElement)(import_react61.Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? (0, import_react61.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null)
+      cached === void 0 || cached.status === "loading" ? null : cached.status === "error" ? (0, import_react60.createElement)("div", { className: "dshpc-fb__row-err" }, tt(cached.error.key, cached.error.params)) : (0, import_react60.createElement)(import_react60.Fragment, null, renderTree(cached.entries, childPath), cached.truncated ? (0, import_react60.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null)
     ) : null);
   }), [childCache, openDirs, picker, dirPickable, extsOnly, props.filter, props.onPick, toPicked, dir, loadDir, tt]);
   const drives = roots.filter((root) => root !== FS_ROOT);
@@ -57045,7 +56968,7 @@ function FileBrowser(props) {
     onPickWorkspace: switchWorkspace,
     onLoadDir: loadDir
   });
-  const pickNow = picker && props.onPick !== void 0 && !landing && dirPickable && dir !== "" ? (0, import_react61.createElement)(Button, {
+  const pickNow = picker && props.onPick !== void 0 && !landing && dirPickable && dir !== "" ? (0, import_react60.createElement)(Button, {
     // 描边（outline）：ghost 在这一排**看不出来是按钮**——它无底无边，与面板同色，
     // 用户 2026-11-03 实测「就像没有背景一样」，于是改回有 border 的一档（覆盖当天早些的 ghost 结论）。
     variant: "outline",
@@ -57054,7 +56977,7 @@ function FileBrowser(props) {
     "aria-label": tt("explorerPickDirAria"),
     onClick: () => props.onPick?.(toPicked(dir, true))
   }, tt("explorerPickDir")) : null;
-  const nav2 = outside ? (0, import_react61.createElement)(PlainNav, { translate: tt, path: dir, pickNow, onClose: props.onClose }) : (0, import_react61.createElement)(CrumbNav, {
+  const nav2 = outside ? (0, import_react60.createElement)(PlainNav, { translate: tt, path: dir, pickNow, onClose: props.onClose }) : (0, import_react60.createElement)(CrumbNav, {
     translate: tt,
     landing,
     crumbs,
@@ -57069,7 +56992,7 @@ function FileBrowser(props) {
     regionRef,
     measureRef
   });
-  const titleBar = viewing === null ? null : (0, import_react61.createElement)(PreviewTitleBar, {
+  const titleBar = viewing === null ? null : (0, import_react60.createElement)(PreviewTitleBar, {
     translate: tt,
     path: viewing,
     switchable,
@@ -57082,7 +57005,7 @@ function FileBrowser(props) {
   });
   let body;
   if (landing) {
-    body = (0, import_react61.createElement)(LandingBody, {
+    body = (0, import_react60.createElement)(LandingBody, {
       translate: tt,
       roots: rootRows,
       anchors,
@@ -57091,7 +57014,7 @@ function FileBrowser(props) {
       onPickDir: (target) => props.onPick?.(toPicked(target, true))
     });
   } else if (viewing !== null) {
-    body = (0, import_react61.createElement)(FilePreview, {
+    body = (0, import_react60.createElement)(FilePreview, {
       key: `${viewing}:${reloadNonce}`,
       files: props.files,
       officeToPdf: props.officeToPdf ?? null,
@@ -57102,21 +57025,21 @@ function FileBrowser(props) {
       translate: tt
     });
   } else if (mode === "error" && listErr !== null) {
-    body = (0, import_react61.createElement)("div", { className: "dshpc-fb__body dshpc-scroll-thin" }, (0, import_react61.createElement)("div", { className: "dshpc-fb__err" }, tt(listErr.key, listErr.params)));
+    body = (0, import_react60.createElement)("div", { className: "dshpc-fb__body dshpc-scroll-thin" }, (0, import_react60.createElement)("div", { className: "dshpc-fb__err" }, tt(listErr.key, listErr.params)));
   } else if (listing !== null) {
     const visible = listing.filter((entry) => entry.type === "directory" || matchesFilter(joinPath(dir, entry.name), false, picker ? props.filter : void 0));
-    body = visible.length === 0 ? (0, import_react61.createElement)("div", { className: "dshpc-fb__body dshpc-scroll-thin" }, (0, import_react61.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerEmptyDir"))) : (0, import_react61.createElement)("div", { className: "dshpc-fb__tree dshpc-scroll-thin dshpc-scroll-thin--both" }, renderTree(visible, dir), truncated ? (0, import_react61.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null);
+    body = visible.length === 0 ? (0, import_react60.createElement)("div", { className: "dshpc-fb__body dshpc-scroll-thin" }, (0, import_react60.createElement)("div", { className: "dshpc-fb__note" }, tt("explorerEmptyDir"))) : (0, import_react60.createElement)("div", { className: "dshpc-fb__tree dshpc-scroll-thin dshpc-scroll-thin--both" }, renderTree(visible, dir), truncated ? (0, import_react60.createElement)("div", { className: "dshpc-fb__row-note" }, tt("explorerTruncated")) : null);
   } else {
-    body = (0, import_react61.createElement)("div", { className: "dshpc-fb__body dshpc-scroll-thin" });
+    body = (0, import_react60.createElement)("div", { className: "dshpc-fb__body dshpc-scroll-thin" });
   }
-  return (0, import_react61.createElement)("div", {
+  return (0, import_react60.createElement)("div", {
     className: "dshpc-fb",
     style: props.style ?? void 0
   }, nav2, titleBar, body);
 }
 
 // dist/adv/explorer/open.js
-var import_react62 = require("react");
+var import_react61 = require("react");
 var import_client5 = require("react-dom/client");
 
 // dist/adv/explorer/fs-face.js
@@ -57385,11 +57308,11 @@ function openFilePreview(options) {
     if (dock.isCollapsed(PREVIEW_PANEL_ID))
       dock.expand(PREVIEW_PANEL_ID);
     const revision = ++openSeq;
-    root.render((0, import_react62.createElement)(
+    root.render((0, import_react61.createElement)(
       "div",
       // 高度吃调用方给的 --dshpc-dock-h（demo 的页面行给 100%）；退化成视口高是整页场景。
       { style: { display: "contents", ["--dshpc-dock-h"]: "100%" } },
-      (0, import_react62.createElement)(PanelDock, { dock, mainMinWidth: o.mainMinWidth ?? 480, translate: o.translate }, (0, import_react62.createElement)(DockPanel, {
+      (0, import_react61.createElement)(PanelDock, { dock, mainMinWidth: o.mainMinWidth ?? 480, translate: o.translate }, (0, import_react61.createElement)(DockPanel, {
         id: PREVIEW_PANEL_ID,
         // 不要头部（用户 2026-10-21：核心的『无 header』那版）——上面不再多一条线。
         header: null,
@@ -57402,7 +57325,7 @@ function openFilePreview(options) {
         width: pinnedWidth ?? o.width ?? 460,
         minWidth: o.minWidth ?? 320,
         maxWidth: o.maxWidth
-      }, o.content !== void 0 ? (0, import_react62.createElement)(import_react62.Fragment, { key: `custom:${revision}` }, o.content()) : (0, import_react62.createElement)(FileBrowser, {
+      }, o.content !== void 0 ? (0, import_react61.createElement)(import_react61.Fragment, { key: `custom:${revision}` }, o.content()) : (0, import_react61.createElement)(FileBrowser, {
         files: getFsFace(),
         officeToPdf: o.officeToPdf ?? null,
         path: start2,
@@ -57479,17 +57402,17 @@ function pickWorkspaceFile(options) {
     ensureComponentStyles("panel-dock", PANEL_DOCK_CSS, getStyleKit());
     ensureComponentStyles("feedback", FEEDBACK_CSS, getStyleKit());
     const root = (0, import_client5.createRoot)(mount);
-    root.render((0, import_react62.createElement)(
+    root.render((0, import_react61.createElement)(
       OverlayMask,
       { kind: "plain", closeOnMask: true, onClose: () => finish(null), attrs: { "data-dshpc-picker-backdrop": "" } },
       // `data-dshpc-picker-panel` / `data-dshpc-picker-backdrop` 是既有定位钩子，继续保留。
-      (0, import_react62.createElement)(PanelSurface, {
+      (0, import_react61.createElement)(PanelSurface, {
         tier: "popover",
         role: "dialog",
         attrs: { "data-dshpc-picker-panel": "", "aria-modal": "true" },
         style: panelStyle,
         stopPropagation: true
-      }, (0, import_react62.createElement)(FileBrowser, {
+      }, (0, import_react61.createElement)(FileBrowser, {
         files,
         officeToPdf: options.officeToPdf ?? null,
         path: start,
@@ -57554,10 +57477,10 @@ function connectFileServices(ctx) {
 }
 
 // dist/adv/session/SessionViewModal.js
-var import_react91 = require("react");
+var import_react90 = require("react");
 
 // dist/adv/session/mirror/ChatView.js
-var import_react65 = require("react");
+var import_react64 = require("react");
 
 // dist/adv/session/official-classes.js
 var CSS_PKG_PREFIXES = [
@@ -57653,10 +57576,10 @@ function officialClass(module2, semantic) {
 }
 
 // dist/adv/session/mirror/ChatGroupSeat.js
-var import_react64 = require("react");
+var import_react63 = require("react");
 
 // dist/adv/session/mirror/ChatNodeSeat.js
-var import_react63 = require("react");
+var import_react62 = require("react");
 var TURN_PROCESS_INDEPENDENT_KINDS = /* @__PURE__ */ new Set([
   "system-prompt",
   "user",
@@ -57729,7 +57652,7 @@ function ChatNodeSeatMirror(props) {
   if (inner === null || inner === void 0)
     return null;
   const flowKey = groupPart === void 0 || groupPart === "response" ? node.key : JSON.stringify([node.key, groupPart]);
-  return (0, import_react63.createElement)("div", {
+  return (0, import_react62.createElement)("div", {
     className: officialClass("ChatView", "flowItem") ?? "",
     "data-chat-anchor-key": flowKey,
     "data-chat-flow-key": flowKey,
@@ -57976,7 +57899,7 @@ var SMALL_ICONS = /* @__PURE__ */ new Set([
 ]);
 function ChatGroupSeatMirror(props) {
   const { group, grouped, store, openState, onSetOpen, foldCompleted, renderNode, t: t4 } = props;
-  const [open, setOpen] = (0, import_react64.useState)(false);
+  const [open, setOpen] = (0, import_react63.useState)(false);
   const first = group.members[0];
   const firstNode = first === void 0 ? void 0 : store?.get(first.key);
   const presentation = first === void 0 ? void 0 : readPresentation(store, first.key);
@@ -57986,13 +57909,13 @@ function ChatGroupSeatMirror(props) {
   const alwaysOpen = presentation?.turnClosed === false || group.data.live === true || presentation?.hasInterleavedInput === true || reason === "aborted" || reason === "interrupted" || reason === "error";
   const storedAnswerStep = openState.get(group.data.turn);
   const outerHidden = foldCompleted && presentation?.turnClosed === true && spec !== void 0 && !alwaysOpen && storedAnswerStep !== (spec.answerStep ?? 0);
-  (0, import_react64.useEffect)(() => {
+  (0, import_react63.useEffect)(() => {
     if (outerHidden)
       setOpen(false);
   }, [outerHidden]);
-  const bodyRef = (0, import_react64.useRef)(null);
-  const [edges, setEdges] = (0, import_react64.useState)({ up: false, down: false });
-  const measure = (0, import_react64.useCallback)(() => {
+  const bodyRef = (0, import_react63.useRef)(null);
+  const [edges, setEdges] = (0, import_react63.useState)({ up: false, down: false });
+  const measure = (0, import_react63.useCallback)(() => {
     const el = bodyRef.current;
     if (el === null)
       return;
@@ -58001,7 +57924,7 @@ function ChatGroupSeatMirror(props) {
       down: el.scrollTop + el.clientHeight < el.scrollHeight - 1
     });
   }, []);
-  (0, import_react64.useEffect)(() => {
+  (0, import_react63.useEffect)(() => {
     if (grouped && open)
       measure();
   }, [grouped, open, measure]);
@@ -58016,7 +57939,7 @@ function ChatGroupSeatMirror(props) {
     grouped && edges.up ? officialClass("ChatGroupSeat", "fadeTop") ?? "" : "",
     grouped && edges.down ? officialClass("ChatGroupSeat", "fadeBottom") ?? "" : ""
   ].filter((part) => part !== "").join(" ");
-  return (0, import_react64.createElement)("div", {
+  return (0, import_react63.createElement)("div", {
     className: officialClass("ChatGroupSeat", "root") ?? "",
     "data-chat-group-key": group.key,
     "data-chat-flow-key": group.key,
@@ -58025,20 +57948,20 @@ function ChatGroupSeatMirror(props) {
     "data-step-process": true,
     "data-group-expanded-mode": !grouped || void 0,
     hidden: outerHidden || void 0
-  }, grouped ? (0, import_react64.createElement)("button", {
+  }, grouped ? (0, import_react63.createElement)("button", {
     type: "button",
     className: officialClass("ChatGroupSeat", "title") ?? "",
     "aria-expanded": open,
     onClick: () => {
       setOpen((value) => !value);
     }
-  }, (0, import_react64.createElement)("span", {
+  }, (0, import_react63.createElement)("span", {
     className: officialClass("ChatGroupSeat", "leading") ?? "",
     "aria-hidden": true
-  }, (0, import_react64.createElement)("span", {
+  }, (0, import_react63.createElement)("span", {
     className: officialClass("ChatGroupSeat", "activityIcon") ?? "",
     "data-step-process-icon": true
-  }, (0, import_react64.createElement)(ActivityIcon, SMALL_ICONS.has(activity) ? { size: 14 } : {})), open ? (0, import_react64.createElement)(official_exports.IconChevronUpOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" }) : (0, import_react64.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" })), (0, import_react64.createElement)("span", { className: officialClass("ChatGroupSeat", "label") ?? "" }, label)) : null, (0, import_react64.createElement)("div", {
+  }, (0, import_react63.createElement)(ActivityIcon, SMALL_ICONS.has(activity) ? { size: 14 } : {})), open ? (0, import_react63.createElement)(official_exports.IconChevronUpOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" }) : (0, import_react63.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("ChatGroupSeat", "chevron") ?? "" })), (0, import_react63.createElement)("span", { className: officialClass("ChatGroupSeat", "label") ?? "" }, label)) : null, (0, import_react63.createElement)("div", {
     ref: bodyRef,
     className: bodyClass,
     "data-step-process-body": true,
@@ -58046,11 +57969,11 @@ function ChatGroupSeatMirror(props) {
     "data-scroll-down": edges.down || void 0,
     onScroll: measure,
     hidden: grouped && !open || void 0
-  }, (0, import_react64.createElement)("div", {
+  }, (0, import_react63.createElement)("div", {
     className: officialClass("ChatGroupSeat", "content") ?? "",
     "data-step-process-content": true,
     "data-chat-flow": ""
-  }, group.members.map((member) => (0, import_react64.createElement)(ChatNodeSeatMirror, {
+  }, group.members.map((member) => (0, import_react63.createElement)(ChatNodeSeatMirror, {
     key: JSON.stringify([member.key, member.groupPart ?? null]),
     node: store?.get(member.key) ?? { key: member.key, kind: "", anchorSeq: 0 },
     groupPart: member.groupPart,
@@ -58068,16 +57991,16 @@ var SESSION_CSS = "/* \u4F1A\u8BDD\u9884\u89C8\uFF08SessionViewModal\uFF09\u81EA
 // dist/adv/session/mirror/ChatView.js
 function ChatViewFrame(props) {
   ensureComponentStyles("session", SESSION_CSS);
-  return (0, import_react65.createElement)(
+  return (0, import_react64.createElement)(
     "div",
     { className: `${officialClass("ChatView", "frame") ?? ""} dshpc-sv-frame dshpc-sv-chat` },
     // 弹窗恒贴尾 ⇒ root 带 data-chat-following-tail（官方只在贴尾时写，作用 = overflow-anchor:none）。
-    (0, import_react65.createElement)("div", { className: officialClass("ChatView", "root") ?? "", "data-chat-following-tail": "" }, (0, import_react65.createElement)(
+    (0, import_react64.createElement)("div", { className: officialClass("ChatView", "root") ?? "", "data-chat-following-tail": "" }, (0, import_react64.createElement)(
       "div",
       { className: `${officialClass("ChatView", "scroll") ?? ""} dshpc-sv-scroll` },
-      (0, import_react65.createElement)("div", { className: officialClass("ChatView", "column") ?? "", "data-chat-flow": "" }, props.children),
+      (0, import_react64.createElement)("div", { className: officialClass("ChatView", "column") ?? "", "data-chat-flow": "" }, props.children),
       // 官方 scroll 末尾的滚动占位（高度 0，只做锚点）。
-      (0, import_react65.createElement)("div", {
+      (0, import_react64.createElement)("div", {
         className: officialClass("ChatView", "turnSpacer") ?? "",
         "data-chat-turn-spacer": true,
         "aria-hidden": "true"
@@ -58104,7 +58027,7 @@ function ChatNodeListMirror(props) {
         const group = groups.get(entry.key);
         if (group === void 0)
           continue;
-        rows.push((0, import_react65.createElement)(ChatGroupSeatMirror, {
+        rows.push((0, import_react64.createElement)(ChatGroupSeatMirror, {
           key: entry.key,
           group,
           // 官方 `grouped` 由呈现模式决定（detailed 默认：轮次还开着就不分组、条目平铺）。
@@ -58120,7 +58043,7 @@ function ChatNodeListMirror(props) {
         const node = readSafe(entry.key);
         if (node === void 0)
           continue;
-        rows.push((0, import_react65.createElement)(ChatNodeSeatMirror, {
+        rows.push((0, import_react64.createElement)(ChatNodeSeatMirror, {
           key: JSON.stringify([entry.key, entry.groupPart ?? null]),
           node,
           groupPart: entry.groupPart,
@@ -58138,28 +58061,28 @@ function ChatNodeListMirror(props) {
     const node = readSafe(key);
     if (node === void 0)
       continue;
-    rows.push((0, import_react65.createElement)(ChatNodeSeatMirror, { key, node, store, openState, onSetOpen, foldCompleted, renderNode }));
+    rows.push((0, import_react64.createElement)(ChatNodeSeatMirror, { key, node, store, openState, onSetOpen, foldCompleted, renderNode }));
   }
   return rows;
 }
 function ChatHint(props) {
-  return (0, import_react65.createElement)("div", { className: officialClass("ChatView", "hint") ?? "" }, props.text);
+  return (0, import_react64.createElement)("div", { className: officialClass("ChatView", "hint") ?? "" }, props.text);
 }
 function ChatOpenError(props) {
-  return (0, import_react65.createElement)("div", { className: officialClass("ChatView", "openError") ?? "" }, props.text);
+  return (0, import_react64.createElement)("div", { className: officialClass("ChatView", "openError") ?? "" }, props.text);
 }
 function ChatCallRow(props) {
-  return (0, import_react65.createElement)("div", { className: officialClass("ChatView", "callRow") ?? "" }, props.children);
+  return (0, import_react64.createElement)("div", { className: officialClass("ChatView", "callRow") ?? "" }, props.children);
 }
 function ChatOlderButton(props) {
-  return (0, import_react65.createElement)("div", { className: officialClass("ChatView", "older") ?? "" }, (0, import_react65.createElement)("button", { type: "button", onClick: props.onClick }, props.label));
+  return (0, import_react64.createElement)("div", { className: officialClass("ChatView", "older") ?? "" }, (0, import_react64.createElement)("button", { type: "button", onClick: props.onClick }, props.label));
 }
 
 // dist/adv/session/mirror/GenericCommandCard.js
-var import_react69 = require("react");
+var import_react68 = require("react");
 
 // dist/adv/session/mirror/MessageImage.js
-var import_react66 = require("react");
+var import_react65 = require("react");
 function singleFit(dimensions) {
   const natural = dimensions.width / dimensions.height;
   const ratio = Math.min(4, Math.max(0.25, natural));
@@ -58177,11 +58100,11 @@ function fitOf(attachment) {
 }
 function MessageImageMirror(props) {
   const { attachment, load, variant, t: t4 } = props;
-  const [loaded2, setLoaded] = (0, import_react66.useState)(() => load.peek?.(attachment) ?? null);
-  const [error, setError] = (0, import_react66.useState)(false);
-  const [open, setOpen] = (0, import_react66.useState)(false);
-  const [attempt, setAttempt] = (0, import_react66.useState)(0);
-  (0, import_react66.useEffect)(() => {
+  const [loaded2, setLoaded] = (0, import_react65.useState)(() => load.peek?.(attachment) ?? null);
+  const [error, setError] = (0, import_react65.useState)(false);
+  const [open, setOpen] = (0, import_react65.useState)(false);
+  const [attempt, setAttempt] = (0, import_react65.useState)(0);
+  (0, import_react65.useEffect)(() => {
     let live = true;
     setError(false);
     setLoaded(load.peek?.(attachment) ?? null);
@@ -58198,7 +58121,7 @@ function MessageImageMirror(props) {
   }, [attachment, load, attempt]);
   const label = attachment.name ?? t4("sessionImage");
   if (error) {
-    return (0, import_react66.createElement)("button", {
+    return (0, import_react65.createElement)("button", {
       type: "button",
       className: officialClass("MessageImage", "error") ?? "",
       "data-variant": variant,
@@ -58208,7 +58131,7 @@ function MessageImageMirror(props) {
     }, t4("sessionImageLoadFailed"));
   }
   const fit = variant === "single" ? fitOf(attachment) : void 0;
-  return (0, import_react66.createElement)(import_react66.Fragment, null, (0, import_react66.createElement)("button", {
+  return (0, import_react65.createElement)(import_react65.Fragment, null, (0, import_react65.createElement)("button", {
     type: "button",
     className: officialClass("MessageImage", "frame") ?? "",
     "data-variant": variant,
@@ -58219,11 +58142,11 @@ function MessageImageMirror(props) {
       if (loaded2 !== null)
         setOpen(true);
     }
-  }, loaded2 === null ? (0, import_react66.createElement)("span", { className: officialClass("MessageImage", "loading") ?? "" }, t4("sessionImageLoading")) : (0, import_react66.createElement)("img", {
+  }, loaded2 === null ? (0, import_react65.createElement)("span", { className: officialClass("MessageImage", "loading") ?? "" }, t4("sessionImageLoading")) : (0, import_react65.createElement)("img", {
     src: loaded2,
     alt: label,
     style: fit === void 0 ? void 0 : { objectPosition: fit.objectPosition }
-  })), open && loaded2 !== null ? (0, import_react66.createElement)(official_exports.ImageLightbox, {
+  })), open && loaded2 !== null ? (0, import_react65.createElement)(official_exports.ImageLightbox, {
     src: loaded2,
     alt: label,
     labels: { dialog: t4("sessionImagePreview"), close: t4("sessionImageClosePreview") },
@@ -58237,10 +58160,10 @@ function ImageGalleryMirror(props) {
   if (images.length === 0)
     return null;
   const variant = images.length > 1 ? "tile" : "single";
-  return (0, import_react66.createElement)("div", {
+  return (0, import_react65.createElement)("div", {
     className: officialClass("MessageImage", "gallery") ?? "",
     "data-align": align
-  }, images.map((image, index3) => (0, import_react66.createElement)(MessageImageMirror, {
+  }, images.map((image, index3) => (0, import_react65.createElement)(MessageImageMirror, {
     key: `${image.attachment.attachmentId ?? "image"}:${index3}`,
     attachment: image.attachment,
     load,
@@ -58250,7 +58173,7 @@ function ImageGalleryMirror(props) {
 }
 
 // dist/adv/session/mirror/AskCard.js
-var import_react67 = require("react");
+var import_react66 = require("react");
 var isRecord2 = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
 function parseJson(text2) {
   try {
@@ -58350,16 +58273,16 @@ function askCardModel(name2, argsRaw, output, errorCode, settled, t4) {
 function AskQuestionCardView({ card }) {
   const cls4 = (semantic) => officialClass("AskQuestionCard", semantic) ?? "";
   if (card.kind === "unanswered") {
-    return (0, import_react67.createElement)("div", { className: cls4("card") }, (0, import_react67.createElement)("p", { className: cls4("verdict") }, card.verdict), (0, import_react67.createElement)("ul", { className: cls4("questionList") }, card.questions.map((question3) => (0, import_react67.createElement)("li", { key: question3.id, className: cls4("unansweredQuestion") }, question3.question))));
+    return (0, import_react66.createElement)("div", { className: cls4("card") }, (0, import_react66.createElement)("p", { className: cls4("verdict") }, card.verdict), (0, import_react66.createElement)("ul", { className: cls4("questionList") }, card.questions.map((question3) => (0, import_react66.createElement)("li", { key: question3.id, className: cls4("unansweredQuestion") }, question3.question))));
   }
-  return (0, import_react67.createElement)("dl", { className: cls4("card") }, card.questions.map((question3) => {
+  return (0, import_react66.createElement)("dl", { className: cls4("card") }, card.questions.map((question3) => {
     const answers = question3.answers ?? [];
-    return (0, import_react67.createElement)("div", { key: question3.id, className: cls4("item") }, (0, import_react67.createElement)("dt", { className: cls4("question") }, question3.question), (0, import_react67.createElement)("dd", { className: cls4("answer") }, answers.length === 0 ? (0, import_react67.createElement)("span", { className: cls4("skipped") }, card.skippedLabel) : answers.map((answer, index3) => (0, import_react67.createElement)("span", { key: `${question3.id}-${index3}`, className: cls4("answerLine") }, answer))));
+    return (0, import_react66.createElement)("div", { key: question3.id, className: cls4("item") }, (0, import_react66.createElement)("dt", { className: cls4("question") }, question3.question), (0, import_react66.createElement)("dd", { className: cls4("answer") }, answers.length === 0 ? (0, import_react66.createElement)("span", { className: cls4("skipped") }, card.skippedLabel) : answers.map((answer, index3) => (0, import_react66.createElement)("span", { key: `${question3.id}-${index3}`, className: cls4("answerLine") }, answer))));
   }));
 }
 
 // dist/adv/session/mirror/ToolDetails.js
-var import_react68 = require("react");
+var import_react67 = require("react");
 
 // dist/adv/session/mirror/detail-i18n.js
 var DETAIL_KEYS = {
@@ -59293,7 +59216,7 @@ function detailsSummary(model) {
 function DetailItem({ item, t: t4, onOpenFile }) {
   const cls4 = (semantic) => officialClass("ToolDetails", semantic) ?? "";
   const status = item.status;
-  return (0, import_react68.createElement)("li", { className: cls4("item"), "data-change": item.change?.value }, item.title !== void 0 ? (0, import_react68.createElement)("div", { className: cls4("heading") }, status !== void 0 ? (0, import_react68.createElement)("span", { className: cls4("status"), role: "img", "aria-label": item.change?.label ?? status.label }, item.change?.value === "added" ? "+" : item.change?.value === "removed" ? "\u2212" : status.value === "completed" ? (0, import_react68.createElement)(official_exports.IconCheckOutlineRegular, { size: 14 }) : status.value === "in_progress" ? (0, import_react68.createElement)(official_exports.IconPlayOutlineRegular, { size: 14 }) : (0, import_react68.createElement)("span", { className: cls4("pending") })) : null, item.location !== void 0 && onOpenFile !== void 0 ? (0, import_react68.createElement)("button", {
+  return (0, import_react67.createElement)("li", { className: cls4("item"), "data-change": item.change?.value }, item.title !== void 0 ? (0, import_react67.createElement)("div", { className: cls4("heading") }, status !== void 0 ? (0, import_react67.createElement)("span", { className: cls4("status"), role: "img", "aria-label": item.change?.label ?? status.label }, item.change?.value === "added" ? "+" : item.change?.value === "removed" ? "\u2212" : status.value === "completed" ? (0, import_react67.createElement)(official_exports.IconCheckOutlineRegular, { size: 14 }) : status.value === "in_progress" ? (0, import_react67.createElement)(official_exports.IconPlayOutlineRegular, { size: 14 }) : (0, import_react67.createElement)("span", { className: cls4("pending") })) : null, item.location !== void 0 && onOpenFile !== void 0 ? (0, import_react67.createElement)("button", {
     className: cls4("path"),
     type: "button",
     onClick: () => {
@@ -59305,18 +59228,18 @@ function DetailItem({ item, t: t4, onOpenFile }) {
           onOpenFile(location.path, { line: location.line });
       }
     }
-  }, item.title) : (0, import_react68.createElement)("span", { className: cls4("text") }, item.title), item.badge !== void 0 ? (0, import_react68.createElement)("span", { className: cls4("badge"), "data-tone": item.badge.tone }, item.badge.label) : null, status !== void 0 ? (0, import_react68.createElement)("span", { className: cls4("statusText") }, item.previousStatus !== void 0 ? (0, import_react68.createElement)("span", null, (0, import_react68.createElement)("span", { className: cls4("previous") }, item.previousStatus), (0, import_react68.createElement)("span", null, " \u2192 ")) : null, (0, import_react68.createElement)("span", null, status.label), item.change?.value === "updated" && item.previousStatus === void 0 ? (0, import_react68.createElement)("span", null, " \xB7 ", item.change.label) : null) : null) : null, item.subtitle !== void 0 ? (0, import_react68.createElement)("div", { className: cls4("subtitle") }, item.subtitle) : null, item.description !== void 0 ? (0, import_react68.createElement)("p", { className: cls4("description") }, item.description) : null, item.fields.length > 0 ? (0, import_react68.createElement)("dl", { className: cls4("fields") }, item.fields.map((field) => (0, import_react68.createElement)("div", { key: field.label, className: cls4("field") }, (0, import_react68.createElement)("dt", null, field.label), (0, import_react68.createElement)("dd", null, field.value)))) : null, item.lines !== void 0 ? (0, import_react68.createElement)("ul", { className: cls4("lines") }, item.lines.map((line, index3) => (0, import_react68.createElement)("li", { key: index3 }, line))) : null, item.markdown !== void 0 ? (0, import_react68.createElement)("div", { className: cls4("prose") }, (0, import_react68.createElement)(official_exports.MarkdownText, { text: item.markdown, labels: markdownLabels() })) : null, item.code !== void 0 ? (0, import_react68.createElement)(official_exports.CodeBlock, {
+  }, item.title) : (0, import_react67.createElement)("span", { className: cls4("text") }, item.title), item.badge !== void 0 ? (0, import_react67.createElement)("span", { className: cls4("badge"), "data-tone": item.badge.tone }, item.badge.label) : null, status !== void 0 ? (0, import_react67.createElement)("span", { className: cls4("statusText") }, item.previousStatus !== void 0 ? (0, import_react67.createElement)("span", null, (0, import_react67.createElement)("span", { className: cls4("previous") }, item.previousStatus), (0, import_react67.createElement)("span", null, " \u2192 ")) : null, (0, import_react67.createElement)("span", null, status.label), item.change?.value === "updated" && item.previousStatus === void 0 ? (0, import_react67.createElement)("span", null, " \xB7 ", item.change.label) : null) : null) : null, item.subtitle !== void 0 ? (0, import_react67.createElement)("div", { className: cls4("subtitle") }, item.subtitle) : null, item.description !== void 0 ? (0, import_react67.createElement)("p", { className: cls4("description") }, item.description) : null, item.fields.length > 0 ? (0, import_react67.createElement)("dl", { className: cls4("fields") }, item.fields.map((field) => (0, import_react67.createElement)("div", { key: field.label, className: cls4("field") }, (0, import_react67.createElement)("dt", null, field.label), (0, import_react67.createElement)("dd", null, field.value)))) : null, item.lines !== void 0 ? (0, import_react67.createElement)("ul", { className: cls4("lines") }, item.lines.map((line, index3) => (0, import_react67.createElement)("li", { key: index3 }, line))) : null, item.markdown !== void 0 ? (0, import_react67.createElement)("div", { className: cls4("prose") }, (0, import_react67.createElement)(official_exports.MarkdownText, { text: item.markdown, labels: markdownLabels() })) : null, item.code !== void 0 ? (0, import_react67.createElement)(official_exports.CodeBlock, {
     code: item.code.text,
     lang: item.code.language,
     toolbarLabels: { codeLabel: t4("codeBlockLabel"), wrapLabel: t4("diffWrapLabel"), unwrapLabel: t4("diffUnwrapLabel") },
     copyLabel: t4("copyLabel"),
     copiedLabel: t4("copiedLabel"),
     className: cls4("code")
-  }) : null, ...(item.groups ?? []).map((group, index3) => (0, import_react68.createElement)("details", { key: index3, className: cls4("group") }, (0, import_react68.createElement)("summary", null, (0, import_react68.createElement)(official_exports.IconChevronRightOutlineRegular), (0, import_react68.createElement)("span", null, group.label)), (0, import_react68.createElement)("ul", { className: cls4("list") }, group.items.map((child, childIndex) => (0, import_react68.createElement)(DetailItem, { key: childIndex, item: child, t: t4, onOpenFile }))))));
+  }) : null, ...(item.groups ?? []).map((group, index3) => (0, import_react67.createElement)("details", { key: index3, className: cls4("group") }, (0, import_react67.createElement)("summary", null, (0, import_react67.createElement)(official_exports.IconChevronRightOutlineRegular), (0, import_react67.createElement)("span", null, group.label)), (0, import_react67.createElement)("ul", { className: cls4("list") }, group.items.map((child, childIndex) => (0, import_react67.createElement)(DetailItem, { key: childIndex, item: child, t: t4, onOpenFile }))))));
 }
 function ToolDetailsView({ model, t: t4, onOpenFile }) {
   const cls4 = (semantic) => officialClass("ToolDetails", semantic) ?? "";
-  return (0, import_react68.createElement)("div", { className: cls4("root"), "data-caption": model.caption !== void 0 || void 0 }, model.caption !== void 0 ? (0, import_react68.createElement)("div", { className: cls4("caption") }, model.caption) : null, model.items.length === 0 ? (0, import_react68.createElement)("p", { className: cls4("empty") }, model.empty) : (0, import_react68.createElement)("ul", { className: cls4("list") }, model.items.map((item, index3) => (0, import_react68.createElement)(DetailItem, { key: index3, item, t: t4, onOpenFile }))), model.unchanged !== void 0 ? (0, import_react68.createElement)("details", { className: cls4("unchanged") }, (0, import_react68.createElement)("summary", null, (0, import_react68.createElement)(official_exports.IconChevronRightOutlineRegular), model.unchanged.label), (0, import_react68.createElement)("ul", { className: cls4("list") }, model.unchanged.items.map((item, index3) => (0, import_react68.createElement)(DetailItem, { key: index3, item, t: t4, onOpenFile })))) : null);
+  return (0, import_react67.createElement)("div", { className: cls4("root"), "data-caption": model.caption !== void 0 || void 0 }, model.caption !== void 0 ? (0, import_react67.createElement)("div", { className: cls4("caption") }, model.caption) : null, model.items.length === 0 ? (0, import_react67.createElement)("p", { className: cls4("empty") }, model.empty) : (0, import_react67.createElement)("ul", { className: cls4("list") }, model.items.map((item, index3) => (0, import_react67.createElement)(DetailItem, { key: index3, item, t: t4, onOpenFile }))), model.unchanged !== void 0 ? (0, import_react67.createElement)("details", { className: cls4("unchanged") }, (0, import_react67.createElement)("summary", null, (0, import_react67.createElement)(official_exports.IconChevronRightOutlineRegular), model.unchanged.label), (0, import_react67.createElement)("ul", { className: cls4("list") }, model.unchanged.items.map((item, index3) => (0, import_react67.createElement)(DetailItem, { key: index3, item, t: t4, onOpenFile })))) : null);
 }
 
 // dist/adv/session/mirror/GenericCommandCard.js
@@ -59402,13 +59325,13 @@ var TOOL_TITLE_KEYS = {
 };
 var toolTitleKey = (name2) => TOOL_TITLE_KEYS[name2] ?? VARIANT_TITLE_KEYS[classifyTool(name2)];
 var VARIANT_ICONS = {
-  search: (0, import_react69.createElement)(official_exports.IconSearchOutlineRegular, { size: 14 }),
-  read: (0, import_react69.createElement)(official_exports.IconBrowseOutlineRegular, { size: 14 }),
-  bash: (0, import_react69.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
-  write: (0, import_react69.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
-  edit: (0, import_react69.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
-  code: (0, import_react69.createElement)(official_exports.IconCodeOutlineRegular, { size: 14 }),
-  others: (0, import_react69.createElement)(official_exports.IconSparkleRegular, { size: 14 })
+  search: (0, import_react68.createElement)(official_exports.IconSearchOutlineRegular, { size: 14 }),
+  read: (0, import_react68.createElement)(official_exports.IconBrowseOutlineRegular, { size: 14 }),
+  bash: (0, import_react68.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
+  write: (0, import_react68.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
+  edit: (0, import_react68.createElement)(official_exports.IconEditOutlineRegular, { size: 14 }),
+  code: (0, import_react68.createElement)(official_exports.IconCodeOutlineRegular, { size: 14 }),
+  others: (0, import_react68.createElement)(official_exports.IconSparkleRegular, { size: 14 })
 };
 var SUMMARY_KEYS = {
   bash: ["description", "command"],
@@ -60004,22 +59927,22 @@ var summaryLinkKeyDown = (event) => {
     event.stopPropagation();
 };
 function ExitCodeBadge({ label }) {
-  return (0, import_react69.createElement)(official_exports.Tag, { tone: "neutral", className: officialClass("ExitCodeBadge", "badge") ?? "" }, (0, import_react69.createElement)("span", { className: officialClass("ExitCodeBadge", "dot") ?? "", "aria-hidden": true }), label);
+  return (0, import_react68.createElement)(official_exports.Tag, { tone: "neutral", className: officialClass("ExitCodeBadge", "badge") ?? "" }, (0, import_react68.createElement)("span", { className: officialClass("ExitCodeBadge", "dot") ?? "", "aria-hidden": true }), label);
 }
 function GenericCommandCard(props) {
   const { name: name2, argsRaw, output, isError, meta: meta2, settled = true, phase, interrupted, errorCode, onOpenFile, image, loadImage, t: t4 } = props;
-  const [expanded, setExpanded] = (0, import_react69.useState)(false);
+  const [expanded, setExpanded] = (0, import_react68.useState)(false);
   const variant = classifyTool(name2);
   const titleKey = toolTitleKey(name2);
   const state = !settled ? phase === "preparing" ? "preparing" : "running" : interrupted ? "stopped" : isError ? "error" : "ok";
-  const terminalFace = (0, import_react69.useMemo)(() => terminalCardModel(name2, argsRaw, output, isError, settled), [name2, argsRaw, output, isError, settled]);
-  const read = (0, import_react69.useMemo)(() => readCardModel(name2, argsRaw, output, meta2, isError, settled), [name2, argsRaw, output, meta2, isError, settled]);
-  const diffs = (0, import_react69.useMemo)(() => diffCardModel(name2, argsRaw, meta2, isError, settled), [name2, argsRaw, meta2, isError, settled]);
-  const search = (0, import_react69.useMemo)(() => searchCardModel(name2, argsRaw, output, meta2, isError, settled), [name2, argsRaw, output, meta2, isError, settled]);
-  const web = (0, import_react69.useMemo)(() => webCardModel(name2, argsRaw, meta2, isError, settled), [name2, argsRaw, meta2, isError, settled]);
-  const ask = (0, import_react69.useMemo)(() => askCardModel(name2, argsRaw, output, errorCode, settled, t4), [name2, argsRaw, output, errorCode, settled, t4]);
-  const details = (0, import_react69.useMemo)(() => detailsCardModel(name2, argsRaw, output, settled, isError, t4), [name2, argsRaw, output, settled, isError, t4]);
-  const terminal = (0, import_react69.useMemo)(() => {
+  const terminalFace = (0, import_react68.useMemo)(() => terminalCardModel(name2, argsRaw, output, isError, settled), [name2, argsRaw, output, isError, settled]);
+  const read = (0, import_react68.useMemo)(() => readCardModel(name2, argsRaw, output, meta2, isError, settled), [name2, argsRaw, output, meta2, isError, settled]);
+  const diffs = (0, import_react68.useMemo)(() => diffCardModel(name2, argsRaw, meta2, isError, settled), [name2, argsRaw, meta2, isError, settled]);
+  const search = (0, import_react68.useMemo)(() => searchCardModel(name2, argsRaw, output, meta2, isError, settled), [name2, argsRaw, output, meta2, isError, settled]);
+  const web = (0, import_react68.useMemo)(() => webCardModel(name2, argsRaw, meta2, isError, settled), [name2, argsRaw, meta2, isError, settled]);
+  const ask = (0, import_react68.useMemo)(() => askCardModel(name2, argsRaw, output, errorCode, settled, t4), [name2, argsRaw, output, errorCode, settled, t4]);
+  const details = (0, import_react68.useMemo)(() => detailsCardModel(name2, argsRaw, output, settled, isError, t4), [name2, argsRaw, output, settled, isError, t4]);
+  const terminal = (0, import_react68.useMemo)(() => {
     if (terminalFace === null)
       return null;
     return terminalFace.sessionId !== void 0 ? { ...terminalFace, command: terminalFace.command === "" ? t4("terminalSendInput") : terminalFace.command, description: t4("terminalSession", { sessionId: terminalFace.sessionId }) } : terminalFace;
@@ -60072,7 +59995,7 @@ function GenericCommandCard(props) {
   const cardBody = variant === "code" ? null : bodyText;
   const expandable = rowState !== "preparing" && (inputRaw !== null || outputText !== null || card !== null);
   const open = expanded && expandable;
-  const blockLabels = (0, import_react69.useMemo)(() => ({
+  const blockLabels = (0, import_react68.useMemo)(() => ({
     diff: diffLabels(t4),
     read: readLabels(t4),
     search: searchLabels(t4),
@@ -60081,14 +60004,14 @@ function GenericCommandCard(props) {
   }), [t4]);
   const statusText = rowState === "preparing" ? t4("rowPreparing") : rowState === "running" ? t4("rowRunning") : rowState === "error" ? t4("rowFailed") : rowState === "stopped" ? t4("rowStopped") : null;
   const summaryClassName = `${officialClass("ToolRow", "summary") ?? ""}${rowState === "error" ? ` ${officialClass("ToolRow", "errorSummary") ?? ""}` : ""}${rowState === "stopped" ? ` ${officialClass("ToolRow", "stoppedSummary") ?? ""}` : ""}`;
-  const collapsedContent = summaryText === "" ? void 0 : (0, import_react69.createElement)(import_react69.Fragment, null, (0, import_react69.createElement)("span", { className: officialClass("ToolRow", "sep") ?? "", "aria-hidden": true }), openFile !== void 0 ? (0, import_react69.createElement)("button", {
+  const collapsedContent = summaryText === "" ? void 0 : (0, import_react68.createElement)(import_react68.Fragment, null, (0, import_react68.createElement)("span", { className: officialClass("ToolRow", "sep") ?? "", "aria-hidden": true }), openFile !== void 0 ? (0, import_react68.createElement)("button", {
     type: "button",
     className: officialClass("ToolRow", "fileLink") ?? "",
     onClick: (event) => {
       stopLinkClick(event);
       openFile();
     }
-  }, (0, import_react69.createElement)(official_exports.TextShimmer, { active: running }, summaryText)) : linkHref !== void 0 ? (0, import_react69.createElement)("a", {
+  }, (0, import_react68.createElement)(official_exports.TextShimmer, { active: running }, summaryText)) : linkHref !== void 0 ? (0, import_react68.createElement)("a", {
     className: officialClass("ToolRow", "fileLink") ?? "",
     href: linkHref,
     target: "_blank",
@@ -60097,15 +60020,15 @@ function GenericCommandCard(props) {
       event.stopPropagation();
     },
     onKeyDown: summaryLinkKeyDown
-  }, (0, import_react69.createElement)(official_exports.TextShimmer, { active: running }, summaryText)) : (0, import_react69.createElement)("span", { className: summaryClassName }, (0, import_react69.createElement)(official_exports.TextShimmer, { active: running }, summaryText)), exitLabel !== null ? (0, import_react69.createElement)(ExitCodeBadge, { label: exitLabel }) : null, summarySuffix !== null ? (0, import_react69.createElement)(official_exports.TextShimmer, {
+  }, (0, import_react68.createElement)(official_exports.TextShimmer, { active: running }, summaryText)) : (0, import_react68.createElement)("span", { className: summaryClassName }, (0, import_react68.createElement)(official_exports.TextShimmer, { active: running }, summaryText)), exitLabel !== null ? (0, import_react68.createElement)(ExitCodeBadge, { label: exitLabel }) : null, summarySuffix !== null ? (0, import_react68.createElement)(official_exports.TextShimmer, {
     className: officialClass("ToolRow", "summarySuffix") ?? "",
     active: running
-  }, summarySuffix) : null, diffStatTotals !== null ? (0, import_react69.createElement)(official_exports.TextShimmer, {
+  }, summarySuffix) : null, diffStatTotals !== null ? (0, import_react68.createElement)(official_exports.TextShimmer, {
     className: `${officialClass("ToolRow", "summarySuffix") ?? ""} ${officialClass("ToolRow", "diffStat") ?? ""}`,
     active: running
-  }, (0, import_react69.createElement)("span", { className: officialClass("ToolRow", "diffAdded") ?? "" }, `+${diffStatTotals.added}`), " ", (0, import_react69.createElement)("span", { className: officialClass("ToolRow", "diffRemoved") ?? "" }, `-${diffStatTotals.removed}`)) : null);
+  }, (0, import_react68.createElement)("span", { className: officialClass("ToolRow", "diffAdded") ?? "" }, `+${diffStatTotals.added}`), " ", (0, import_react68.createElement)("span", { className: officialClass("ToolRow", "diffRemoved") ?? "" }, `-${diffStatTotals.removed}`)) : null);
   const bodyWrapClass = `${officialClass("ToolRow", "bodyWrap") ?? ""}${details !== null ? ` ${officialClass("ToolRow", "detailsBodyWrap") ?? ""}` : ""}`;
-  const expandedContent = open ? (0, import_react69.createElement)("div", { className: bodyWrapClass }, ask?.card !== void 0 ? (0, import_react69.createElement)(AskQuestionCardView, { card: ask.card }) : terminal !== null ? (0, import_react69.createElement)(official_exports.TerminalBlock, {
+  const expandedContent = open ? (0, import_react68.createElement)("div", { className: bodyWrapClass }, ask?.card !== void 0 ? (0, import_react68.createElement)(AskQuestionCardView, { card: ask.card }) : terminal !== null ? (0, import_react68.createElement)(official_exports.TerminalBlock, {
     command: terminal.command,
     cwd: terminal.cwd,
     output: terminal.output,
@@ -60115,7 +60038,7 @@ function GenericCommandCard(props) {
     maxLines: Infinity,
     labels: blockLabels.terminal,
     className: officialClass("ToolRow", "terminalBody") ?? ""
-  }) : diffs !== null ? (0, import_react69.createElement)(official_exports.DiffBlock, { diffs, labels: blockLabels.diff, maxLines: 9, className: officialClass("ToolRow", "diffBody") ?? "" }) : read !== null ? (0, import_react69.createElement)(official_exports.ReadBlock, {
+  }) : diffs !== null ? (0, import_react68.createElement)(official_exports.DiffBlock, { diffs, labels: blockLabels.diff, maxLines: 9, className: officialClass("ToolRow", "diffBody") ?? "" }) : read !== null ? (0, import_react68.createElement)(official_exports.ReadBlock, {
     label: read.label,
     lines: read.lines,
     totalLines: read.totalLines,
@@ -60123,7 +60046,7 @@ function GenericCommandCard(props) {
     labels: blockLabels.read,
     maxLines: 8,
     className: officialClass("ToolRow", "readBody") ?? ""
-  }) : image !== void 0 ? (0, import_react69.createElement)("div", { className: officialClass("ToolRow", "imageBody") ?? "" }, loadImage === void 0 ? null : (0, import_react69.createElement)(ImageGalleryMirror, { images: image.images, load: loadImage, align: "start", t: t4 }), (0, import_react69.createElement)("div", { className: officialClass("ToolRow", "imageMeta") ?? "" }, (0, import_react69.createElement)("div", null, image.path), image.images.map(({ attachment }, index3) => (0, import_react69.createElement)("div", { key: index3 }, attachment.originalDimensions === void 0 ? t4("toolImageSize", {
+  }) : image !== void 0 ? (0, import_react68.createElement)("div", { className: officialClass("ToolRow", "imageBody") ?? "" }, loadImage === void 0 ? null : (0, import_react68.createElement)(ImageGalleryMirror, { images: image.images, load: loadImage, align: "start", t: t4 }), (0, import_react68.createElement)("div", { className: officialClass("ToolRow", "imageMeta") ?? "" }, (0, import_react68.createElement)("div", null, image.path), image.images.map(({ attachment }, index3) => (0, import_react68.createElement)("div", { key: index3 }, attachment.originalDimensions === void 0 ? t4("toolImageSize", {
     width: attachment.width ?? "",
     height: attachment.height ?? "",
     bytes: formatBytes(attachment.bytes ?? 0)
@@ -60133,25 +60056,25 @@ function GenericCommandCard(props) {
     originalWidth: attachment.originalDimensions.width,
     originalHeight: attachment.originalDimensions.height,
     bytes: formatBytes(attachment.bytes ?? 0)
-  })))), image.extraText === null ? null : (0, import_react69.createElement)("div", { className: officialClass("ToolRow", "imageExtra") ?? "" }, image.extraText)) : search !== null ? (0, import_react69.createElement)(import_react69.Fragment, null, (0, import_react69.createElement)(official_exports.SearchBlock, {
+  })))), image.extraText === null ? null : (0, import_react68.createElement)("div", { className: officialClass("ToolRow", "imageExtra") ?? "" }, image.extraText)) : search !== null ? (0, import_react68.createElement)(import_react68.Fragment, null, (0, import_react68.createElement)(official_exports.SearchBlock, {
     ...search.card,
     labels: blockLabels.search,
     maxLines: 8,
     className: officialClass("ToolRow", "searchBody") ?? ""
-  }), search.recovery !== void 0 ? (0, import_react69.createElement)("div", { className: officialClass("ToolRow", "searchRecovery") ?? "" }, search.recovery) : null) : web !== null ? (0, import_react69.createElement)(official_exports.WebBlock, { ...web, labels: blockLabels.web, className: officialClass("ToolRow", "webBody") ?? "" }) : details !== null ? (0, import_react69.createElement)(ToolDetailsView, { model: details, t: t4, onOpenFile }) : (0, import_react69.createElement)(import_react69.Fragment, null, variant === "code" && bodyText !== null ? (0, import_react69.createElement)("div", { className: officialClass("ToolRow", "bodyScroll") ?? "" }, (0, import_react69.createElement)(CodeViewer, {
+  }), search.recovery !== void 0 ? (0, import_react68.createElement)("div", { className: officialClass("ToolRow", "searchRecovery") ?? "" }, search.recovery) : null) : web !== null ? (0, import_react68.createElement)(official_exports.WebBlock, { ...web, labels: blockLabels.web, className: officialClass("ToolRow", "webBody") ?? "" }) : details !== null ? (0, import_react68.createElement)(ToolDetailsView, { model: details, t: t4, onOpenFile }) : (0, import_react68.createElement)(import_react68.Fragment, null, variant === "code" && bodyText !== null ? (0, import_react68.createElement)("div", { className: officialClass("ToolRow", "bodyScroll") ?? "" }, (0, import_react68.createElement)(CodeViewer, {
     text: bodyText,
     path: "tool-code.ts",
     t: t4,
     className: officialClass("ToolRow", "codeBody") ?? "",
     height: "auto",
     style: { height: "auto" }
-  })) : null, (cardBody !== null || outputText !== null) && (0, import_react69.createElement)("div", { className: officialClass("ToolRow", "ioCard") ?? "" }, cardBody !== null && (0, import_react69.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react69.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolInputLabel")), (0, import_react69.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "" }, cardBody)), cardBody !== null && outputText !== null && (0, import_react69.createElement)("span", { className: officialClass("ToolRow", "ioDivider") ?? "", "aria-hidden": true }), outputText !== null && (0, import_react69.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react69.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolOutputLabel")), (0, import_react69.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "", "data-error": rowState === "error" || void 0 }, outputText))))) : void 0;
-  return (0, import_react69.createElement)("div", {
+  })) : null, (cardBody !== null || outputText !== null) && (0, import_react68.createElement)("div", { className: officialClass("ToolRow", "ioCard") ?? "" }, cardBody !== null && (0, import_react68.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react68.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolInputLabel")), (0, import_react68.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "" }, cardBody)), cardBody !== null && outputText !== null && (0, import_react68.createElement)("span", { className: officialClass("ToolRow", "ioDivider") ?? "", "aria-hidden": true }), outputText !== null && (0, import_react68.createElement)("div", { className: officialClass("ToolRow", "ioSection") ?? "" }, (0, import_react68.createElement)("span", { className: officialClass("ToolRow", "ioLabel") ?? "" }, t4("toolOutputLabel")), (0, import_react68.createElement)("span", { className: officialClass("ToolRow", "ioText") ?? "", "data-error": rowState === "error" || void 0 }, outputText))))) : void 0;
+  return (0, import_react68.createElement)("div", {
     className: officialClass("ToolRow", "root") ?? "",
     "data-variant": variant,
     "data-tool": name2,
     "data-state": rowState
-  }, statusText !== null ? (0, import_react69.createElement)("span", { className: officialClass("ToolRow", "visuallyHidden") ?? "" }, statusText) : null, (0, import_react69.createElement)(official_exports.DisclosureRow, {
+  }, statusText !== null ? (0, import_react68.createElement)("span", { className: officialClass("ToolRow", "visuallyHidden") ?? "" }, statusText) : null, (0, import_react68.createElement)(official_exports.DisclosureRow, {
     rowClassName: officialClass("ToolRow", "row") ?? "",
     leadingClassName: officialClass("ToolRow", "leading") ?? "",
     titleClassName: officialClass("ToolRow", "title") ?? "",
@@ -60171,7 +60094,7 @@ function GenericCommandCard(props) {
 }
 
 // dist/adv/session/mirror/CommandCard.js
-var import_react70 = require("react");
+var import_react69 = require("react");
 var gcc = (semantic) => officialClass("GenericCommandCard", semantic) ?? "";
 function stateOf(outcome) {
   if (outcome === null || outcome === void 0)
@@ -60180,7 +60103,7 @@ function stateOf(outcome) {
 }
 function CommandCard(props) {
   const { node, t: t4, runningSummary } = props;
-  const [expanded, setExpanded] = (0, import_react70.useState)(false);
+  const [expanded, setExpanded] = (0, import_react69.useState)(false);
   const outcome = node.outcome ?? null;
   const text2 = outcome?.text;
   const summary = outcome === null ? runningSummary ?? t4("commandRunning") : text2 ?? (outcome.kind === "error" ? t4("commandFailed") : t4("commandDone"));
@@ -60189,19 +60112,19 @@ function CommandCard(props) {
   const running = state === "running";
   const body = text2?.includes("\n") === true ? text2 : null;
   const open = expanded && body !== null;
-  const toggle = (0, import_react70.useCallback)(() => {
+  const toggle = (0, import_react69.useCallback)(() => {
     setExpanded((value) => !value);
   }, []);
   const hidden = officialClass("ToolRow", "visuallyHidden") ?? "";
-  return (0, import_react70.createElement)(
+  return (0, import_react69.createElement)(
     "div",
     { className: gcc("root"), "data-state": state },
     // 官方 a11y：running/error 的读屏状态词（visually-hidden，不占可见空间）。
-    state === "running" ? (0, import_react70.createElement)("span", { className: hidden }, t4("rowRunning")) : state === "error" ? (0, import_react70.createElement)("span", { className: hidden }, t4("rowFailed")) : null,
-    (0, import_react70.createElement)(official_exports.DisclosureRow, {
+    state === "running" ? (0, import_react69.createElement)("span", { className: hidden }, t4("rowRunning")) : state === "error" ? (0, import_react69.createElement)("span", { className: hidden }, t4("rowFailed")) : null,
+    (0, import_react69.createElement)(official_exports.DisclosureRow, {
       leadingClassName: gcc("leading"),
       titleClassName: gcc("title"),
-      icon: (0, import_react70.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
+      icon: (0, import_react69.createElement)(official_exports.IconApiOutlineRegular, { size: 14 }),
       title,
       running,
       open,
@@ -60209,11 +60132,11 @@ function CommandCard(props) {
       expandOnRowClick: true,
       keepContentWhenOpen: true,
       onToggle: toggle,
-      collapsedContent: (0, import_react70.createElement)(import_react70.Fragment, null, (0, import_react70.createElement)("span", { className: gcc("separator"), "aria-hidden": true }), (0, import_react70.createElement)("span", {
+      collapsedContent: (0, import_react69.createElement)(import_react69.Fragment, null, (0, import_react69.createElement)("span", { className: gcc("separator"), "aria-hidden": true }), (0, import_react69.createElement)("span", {
         className: gcc("summary"),
         "data-error": state === "error" || void 0
-      }, (0, import_react70.createElement)(official_exports.TextShimmer, { active: running }, summary))),
-      children: open && body !== null ? (0, import_react70.createElement)("div", {
+      }, (0, import_react69.createElement)(official_exports.TextShimmer, { active: running }, summary))),
+      children: open && body !== null ? (0, import_react69.createElement)("div", {
         className: gcc("body"),
         "data-error": state === "error" || void 0
       }, body) : void 0
@@ -60222,10 +60145,10 @@ function CommandCard(props) {
 }
 
 // dist/adv/session/mirror/MessageIconActions.js
-var import_react72 = require("react");
+var import_react71 = require("react");
 
 // dist/adv/session/mirror/message-chrome.js
-var import_react71 = require("react");
+var import_react70 = require("react");
 function formatRunDuration(ms, tt) {
   const total = Math.max(0, Math.floor(ms / 1e3));
   const hours = Math.floor(total / 3600);
@@ -60330,10 +60253,10 @@ function formatCacheHitPercent(cacheReadTokens, promptTokens, decimalPlaces = 0)
 var COPIED_RESET_MS = 1e3;
 function MessageIconActionsMirror(props) {
   const { text: text2, time, clock, onBranch, branchUnavailable = false, className: className2, extraActions, usageAction, t: t4 } = props;
-  const [copied, setCopied] = (0, import_react72.useState)(false);
-  const [pending, setPending] = (0, import_react72.useState)(false);
-  const timerRef = (0, import_react72.useRef)(void 0);
-  (0, import_react72.useEffect)(() => () => {
+  const [copied, setCopied] = (0, import_react71.useState)(false);
+  const [pending, setPending] = (0, import_react71.useState)(false);
+  const timerRef = (0, import_react71.useRef)(void 0);
+  (0, import_react71.useEffect)(() => () => {
     if (timerRef.current !== void 0)
       clearTimeout(timerRef.current);
   }, []);
@@ -60353,20 +60276,20 @@ function MessageIconActionsMirror(props) {
     });
   };
   const clockClass = (clock === "end" ? officialClass("MessageIconActions", "timeEnd") : officialClass("MessageIconActions", "timeStart")) ?? "";
-  const clockEl = time === void 0 ? null : (0, import_react72.createElement)("time", {
+  const clockEl = time === void 0 ? null : (0, import_react71.createElement)("time", {
     className: clockClass,
     dateTime: new Date(time).toISOString()
   }, formatMessageClock(time, t4));
   const reasonId = "dshpc-sv-branch-unavailable";
-  return (0, import_react72.createElement)("div", {
+  return (0, import_react71.createElement)("div", {
     className: `${officialClass("MessageIconActions", "actions") ?? ""}${className2 === void 0 ? "" : ` ${className2}`}`,
     "data-clock": clock
-  }, clock === "start" ? clockEl : null, (0, import_react72.createElement)(official_exports.Tooltip, { label: copyLabel, side: "bottom" }, (0, import_react72.createElement)("button", {
+  }, clock === "start" ? clockEl : null, (0, import_react71.createElement)(official_exports.Tooltip, { label: copyLabel, side: "bottom" }, (0, import_react71.createElement)("button", {
     type: "button",
     className: officialClass("MessageIconActions", "action") ?? "",
     "aria-label": copyLabel,
     onClick: onCopy
-  }, copied ? (0, import_react72.createElement)(official_exports.IconCheckOutlineRegular, null) : (0, import_react72.createElement)(official_exports.IconCopyOutlineRegular, null))), extraActions, onBranch === void 0 ? null : (0, import_react72.createElement)(official_exports.Tooltip, { label: branchUnavailable ? t4("branchUnavailableLabel") : t4("branchLabel"), side: "bottom" }, (0, import_react72.createElement)("button", {
+  }, copied ? (0, import_react71.createElement)(official_exports.IconCheckOutlineRegular, null) : (0, import_react71.createElement)(official_exports.IconCopyOutlineRegular, null))), extraActions, onBranch === void 0 ? null : (0, import_react71.createElement)(official_exports.Tooltip, { label: branchUnavailable ? t4("branchUnavailableLabel") : t4("branchLabel"), side: "bottom" }, (0, import_react71.createElement)("button", {
     type: "button",
     className: officialClass("MessageIconActions", "action") ?? "",
     "aria-label": t4("branchLabel"),
@@ -60374,15 +60297,15 @@ function MessageIconActionsMirror(props) {
     "aria-describedby": branchUnavailable ? reasonId : void 0,
     "data-unavailable": branchUnavailable || void 0,
     onClick: branchUnavailable ? void 0 : onBranch
-  }, (0, import_react72.createElement)(official_exports.IconBranchOutlineRegular, null))), onBranch === void 0 || !branchUnavailable ? null : (0, import_react72.createElement)("span", { id: reasonId, className: officialClass("MessageIconActions", "visuallyHidden") ?? "" }, t4("branchUnavailableLabel")), clock === "end" ? (0, import_react72.createElement)("span", { className: officialClass("MessageIconActions", "endInfo") ?? "" }, usageAction, clockEl) : usageAction);
+  }, (0, import_react71.createElement)(official_exports.IconBranchOutlineRegular, null))), onBranch === void 0 || !branchUnavailable ? null : (0, import_react71.createElement)("span", { id: reasonId, className: officialClass("MessageIconActions", "visuallyHidden") ?? "" }, t4("branchUnavailableLabel")), clock === "end" ? (0, import_react71.createElement)("span", { className: officialClass("MessageIconActions", "endInfo") ?? "" }, usageAction, clockEl) : usageAction);
 }
 
 // dist/adv/session/mirror/MessageItem.js
-var import_react73 = require("react");
+var import_react72 = require("react");
 function AssistantMarkdown(props) {
   if (props.text.trim() === "")
-    return (0, import_react73.createElement)("span", null);
-  return (0, import_react73.createElement)("div", { className: officialClass("AssistantMarkdown", "root") ?? "" }, (0, import_react73.createElement)("div", { className: officialClass("AssistantMarkdown", "body") ?? "" }, (0, import_react73.createElement)(official_exports.MarkdownText, {
+    return (0, import_react72.createElement)("span", null);
+  return (0, import_react72.createElement)("div", { className: officialClass("AssistantMarkdown", "root") ?? "" }, (0, import_react72.createElement)("div", { className: officialClass("AssistantMarkdown", "body") ?? "" }, (0, import_react72.createElement)(official_exports.MarkdownText, {
     text: props.text,
     streaming: props.streaming,
     labels: markdownLabels(),
@@ -60390,59 +60313,59 @@ function AssistantMarkdown(props) {
   })));
 }
 function AssistantStoppedBadge(props) {
-  return (0, import_react73.createElement)("span", { className: officialClass("AssistantMarkdown", "stopped") ?? "" }, props.t("turnStopped"));
+  return (0, import_react72.createElement)("span", { className: officialClass("AssistantMarkdown", "stopped") ?? "" }, props.t("turnStopped"));
 }
 function UserMessage(props) {
   const { text: text2, files, referenceLabels, skillNames, t: t4 } = props;
   const chips = files ?? [];
   const references = referenceLabels ?? [];
   const skills = skillNames ?? [];
-  const gallery = props.images !== void 0 && props.images.length > 0 && props.loadImage !== void 0 ? (0, import_react73.createElement)(ImageGalleryMirror, { images: props.images, load: props.loadImage, align: "end", t: t4 }) : null;
-  return (0, import_react73.createElement)("div", {
+  const gallery = props.images !== void 0 && props.images.length > 0 && props.loadImage !== void 0 ? (0, import_react72.createElement)(ImageGalleryMirror, { images: props.images, load: props.loadImage, align: "end", t: t4 }) : null;
+  return (0, import_react72.createElement)("div", {
     className: officialClass("MessageItem", "userRow") ?? "",
     "data-pending-steering": props.pending || void 0,
     "data-submission-echo": props.echo || void 0
-  }, (0, import_react73.createElement)(
+  }, (0, import_react72.createElement)(
     "div",
     { className: officialClass("MessageItem", "userStack") ?? "" },
     // 官方 UserContent：附件行在气泡**之前**（attachmentRow 先、bubble 后）。
-    gallery === null && chips.length === 0 ? null : (0, import_react73.createElement)("div", {
+    gallery === null && chips.length === 0 ? null : (0, import_react72.createElement)("div", {
       className: officialClass("MessageItem", "attachmentRow") ?? "",
       "data-message-attachments": true
-    }, gallery, chips.map((file, index3) => (0, import_react73.createElement)("span", {
+    }, gallery, chips.map((file, index3) => (0, import_react72.createElement)("span", {
       key: `${file.name}:${index3}`,
       className: officialClass("MessageItem", "fileCard") ?? ""
-    }, (0, import_react73.createElement)(official_exports.FileTypeIcon, {
+    }, (0, import_react72.createElement)(official_exports.FileTypeIcon, {
       path: file.name,
       className: officialClass("MessageItem", "fileIcon") ?? ""
-    }), (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "fileContent") ?? "" }, (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "fileName") ?? "" }, file.name), (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "fileMeta") ?? "" }, [(0, official_exports.fileExtension)(file.name).toUpperCase().slice(0, 8), (0, official_exports.fileSizeText)(file.bytes)].filter(Boolean).join(" ")))))),
-    text2 === "" ? null : (0, import_react73.createElement)(official_exports.UserMessageBubble, {
+    }), (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "fileContent") ?? "" }, (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "fileName") ?? "" }, file.name), (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "fileMeta") ?? "" }, [(0, official_exports.fileExtension)(file.name).toUpperCase().slice(0, 8), (0, official_exports.fileSizeText)(file.bytes)].filter(Boolean).join(" ")))))),
+    text2 === "" ? null : (0, import_react72.createElement)(official_exports.UserMessageBubble, {
       // 0.2.2-rc.1 起官方 UserContent 用 primitives.UserMessageBubble 取代
       // MessageItem.bubble（chat lib/client.js:9393），两个 data 标记逐字照搬。
       // 气泡内容是官方纯文本节点 UserTextRun（conversation.user.text 默认 slot = PlainUserText）：
       // 用户消息不解析 Markdown，## / ** / ` 一律逐字显示；bubble 自带 white-space:pre-wrap。
       "data-message-bubble": "",
       "data-text-interaction-source": ""
-    }, (0, import_react73.createElement)(official_exports.UserTextRun, { text: text2 })),
+    }, (0, import_react72.createElement)(official_exports.UserTextRun, { text: text2 })),
     // 官方 UserContent（lib/client.js:7377）：referenceLabels 在气泡**之后**单独一行。
-    references.length === 0 ? null : (0, import_react73.createElement)("div", {
+    references.length === 0 ? null : (0, import_react72.createElement)("div", {
       className: officialClass("MessageItem", "referenceSummary") ?? ""
     }, t4("referenceSummary", { labels: references.join(t4("referenceSeparator")) })),
-    skills.length === 0 ? null : (0, import_react73.createElement)("div", {
+    skills.length === 0 ? null : (0, import_react72.createElement)("div", {
       className: officialClass("MessageItem", "referenceSummary") ?? ""
     }, t4("skillSummary", { names: skills.join(t4("skillSeparator")) }))
   ));
 }
 function CompactionItemMirror(props) {
   const { node, t: t4 } = props;
-  const [expanded, setExpanded] = (0, import_react73.useState)(false);
+  const [expanded, setExpanded] = (0, import_react72.useState)(false);
   const summaryText = node.summary ?? null;
   const expandable = summaryText !== null;
   const open = expandable && expanded;
   const items = node.shadowedItemCount ?? null;
   const tokens = node.shadowedTokenCount ?? null;
   const summary = items !== null && tokens !== null ? t4("compactionCompleted", { items, tokens }) : node.fallbackSummary ?? (expandable ? t4("compactionExpand") : t4("compactionUnavailable"));
-  return (0, import_react73.createElement)("div", { className: officialClass("MessageItem", "compactionRow") ?? "" }, (0, import_react73.createElement)("button", {
+  return (0, import_react72.createElement)("div", { className: officialClass("MessageItem", "compactionRow") ?? "" }, (0, import_react72.createElement)("button", {
     type: "button",
     className: officialClass("MessageItem", "compactionButton") ?? "",
     disabled: !expandable,
@@ -60450,13 +60373,13 @@ function CompactionItemMirror(props) {
     onClick: () => {
       setExpanded((value) => !value);
     }
-  }, (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "compactionLeading") ?? "", "aria-hidden": true }, (0, import_react73.createElement)("span", {
+  }, (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "compactionLeading") ?? "", "aria-hidden": true }, (0, import_react72.createElement)("span", {
     className: officialClass("MessageItem", "compactionContextIcon") ?? "",
     "data-compaction-icon": "context"
-  }, (0, import_react73.createElement)(official_exports.IconApiOutlineRegular, {})), (0, import_react73.createElement)("span", {
+  }, (0, import_react72.createElement)(official_exports.IconApiOutlineRegular, {})), (0, import_react72.createElement)("span", {
     className: officialClass("MessageItem", "compactionDisclosureIcon") ?? "",
     "data-compaction-disclosure": open ? "expanded" : "collapsed"
-  }, open ? (0, import_react73.createElement)(official_exports.IconChevronDownOutlineRegular, {}) : (0, import_react73.createElement)(official_exports.IconChevronRightOutlineRegular, {}))), (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "compactionTitle") ?? "" }, node.title ?? t4("compactionTitle")), (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "compactionSep") ?? "", "aria-hidden": true }), (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "compactionSummary") ?? "" }, summary)), open && summaryText !== null ? (0, import_react73.createElement)("div", { className: officialClass("MessageItem", "compactionBody") ?? "" }, (0, import_react73.createElement)(official_exports.MarkdownText, { text: summaryText, labels: markdownLabels() })) : null);
+  }, open ? (0, import_react72.createElement)(official_exports.IconChevronDownOutlineRegular, {}) : (0, import_react72.createElement)(official_exports.IconChevronRightOutlineRegular, {}))), (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "compactionTitle") ?? "" }, node.title ?? t4("compactionTitle")), (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "compactionSep") ?? "", "aria-hidden": true }), (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "compactionSummary") ?? "" }, summary)), open && summaryText !== null ? (0, import_react72.createElement)("div", { className: officialClass("MessageItem", "compactionBody") ?? "" }, (0, import_react72.createElement)(official_exports.MarkdownText, { text: summaryText, labels: markdownLabels() })) : null);
 }
 function retrySeconds(milliseconds) {
   return Math.max(1, Math.ceil(milliseconds / 1e3));
@@ -60477,11 +60400,11 @@ function ModelRetryItemMirror(props) {
   const node = props.node;
   const delayMs = typeof node.delayMs === "number" ? node.delayMs : 0;
   const maximum = node.mode === "normal" && typeof node.maxRetries === "number" ? node.maxRetries : "\u221E";
-  const deadline = (0, import_react73.useMemo)(() => Date.now() + delayMs, [delayMs, node.retryState]);
+  const deadline = (0, import_react72.useMemo)(() => Date.now() + delayMs, [delayMs, node.retryState]);
   const scheduledSeconds = retrySeconds(delayMs);
-  const [countdown, setCountdown] = (0, import_react73.useState)(() => ({ deadline, seconds: retrySeconds(deadline - Date.now()) }));
+  const [countdown, setCountdown] = (0, import_react72.useState)(() => ({ deadline, seconds: retrySeconds(deadline - Date.now()) }));
   const remainingSeconds = countdown.deadline === deadline ? countdown.seconds : retrySeconds(deadline - Date.now());
-  (0, import_react73.useEffect)(() => {
+  (0, import_react72.useEffect)(() => {
     if (!active)
       return;
     const updateCountdown = () => {
@@ -60502,32 +60425,32 @@ function ModelRetryItemMirror(props) {
   const label = active ? t4("retryActive") : node.retryState === "cancelled" ? t4("retryCancelled") : node.retryState === "started" ? t4("retryStarted") : t4("retryScheduled");
   const seconds = active ? remainingSeconds : scheduledSeconds;
   const failure2 = node.failure;
-  return (0, import_react73.createElement)("details", {
+  return (0, import_react72.createElement)("details", {
     className: officialClass("MessageItem", "retryRow") ?? "",
     "data-active": active || void 0
-  }, (0, import_react73.createElement)("summary", { className: officialClass("MessageItem", "retrySummary") ?? "" }, (0, import_react73.createElement)("span", {
+  }, (0, import_react72.createElement)("summary", { className: officialClass("MessageItem", "retrySummary") ?? "" }, (0, import_react72.createElement)("span", {
     className: officialClass("MessageItem", "retryText") ?? "",
     role: "status"
-  }, (0, import_react73.createElement)(official_exports.TextShimmer, { active }, t4("retryStatus", { label, retry: node.retry ?? 0, maximum, seconds })))), (0, import_react73.createElement)("div", { className: officialClass("MessageItem", "retryDetails") ?? "" }, (0, import_react73.createElement)("div", null, (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryDelay")), t4("durationMilliseconds", { milliseconds: Math.round(delayMs) })), (0, import_react73.createElement)("div", null, (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryFailure")), failureMessage(failure2?.message, failure2?.code, t4))));
+  }, (0, import_react72.createElement)(official_exports.TextShimmer, { active }, t4("retryStatus", { label, retry: node.retry ?? 0, maximum, seconds })))), (0, import_react72.createElement)("div", { className: officialClass("MessageItem", "retryDetails") ?? "" }, (0, import_react72.createElement)("div", null, (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryDelay")), t4("durationMilliseconds", { milliseconds: Math.round(delayMs) })), (0, import_react72.createElement)("div", null, (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "retryDetailLabel") ?? "" }, t4("retryFailure")), failureMessage(failure2?.message, failure2?.code, t4))));
 }
 function TurnErrorItemMirror(props) {
   const { node, t: t4 } = props;
-  return (0, import_react73.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react73.createElement)(official_exports.StateDot, {
+  return (0, import_react72.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react72.createElement)(official_exports.StateDot, {
     state: "error",
     className: officialClass("MessageItem", "turnErrorDot") ?? ""
-  }), (0, import_react73.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "turnErrorTitle") ?? "" }, node.code === "ACCOUNT_SIGNED_OUT" || node.code === "INTERRUPTED" ? t4("accountStopped") : t4("turnErrorTitle")), (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, failureMessage(node.message, node.code, t4))), node.code !== void 0 && node.code !== "" && node.code !== "INTERRUPTED" ? (0, import_react73.createElement)("code", { className: officialClass("MessageItem", "turnErrorCode") ?? "" }, node.code) : null);
+  }), (0, import_react72.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "turnErrorTitle") ?? "" }, node.code === "ACCOUNT_SIGNED_OUT" || node.code === "INTERRUPTED" ? t4("accountStopped") : t4("turnErrorTitle")), (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, failureMessage(node.message, node.code, t4))), node.code !== void 0 && node.code !== "" && node.code !== "INTERRUPTED" ? (0, import_react72.createElement)("code", { className: officialClass("MessageItem", "turnErrorCode") ?? "" }, node.code) : null);
 }
 function TurnMaxTokensItemMirror(props) {
   const { t: t4 } = props;
-  return (0, import_react73.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react73.createElement)(official_exports.StateDot, {
+  return (0, import_react72.createElement)("div", { className: officialClass("MessageItem", "turnErrorRow") ?? "", role: "status" }, (0, import_react72.createElement)(official_exports.StateDot, {
     state: "warning",
     className: officialClass("MessageItem", "turnErrorDot") ?? ""
-  }), (0, import_react73.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "maxTokensTitle") ?? "" }, t4("maxTokensTitle")), (0, import_react73.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, t4("maxTokensHint"))));
+  }), (0, import_react72.createElement)("div", { className: officialClass("MessageItem", "turnErrorCopy") ?? "" }, (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "maxTokensTitle") ?? "" }, t4("maxTokensTitle")), (0, import_react72.createElement)("span", { className: officialClass("MessageItem", "turnErrorMessage") ?? "" }, t4("maxTokensHint"))));
 }
 
 // dist/adv/session/mirror/BashRow.js
-var import_react74 = require("react");
-var BASH_ICON = (0, import_react74.createElement)(official_exports.IconApiOutlineRegular, { size: 14 });
+var import_react73 = require("react");
+var BASH_ICON = (0, import_react73.createElement)(official_exports.IconApiOutlineRegular, { size: 14 });
 var firstLine2 = (text2) => {
   const nl = text2.indexOf("\n");
   return nl === -1 ? text2 : text2.slice(0, nl);
@@ -60537,11 +60460,11 @@ function terminalFailedOf(model) {
 }
 function BashRowMirror(props) {
   const { name: name2, argsRaw, output, isError, settled = true, phase, interrupted, t: t4 } = props;
-  const [expanded, setExpanded] = (0, import_react74.useState)(false);
+  const [expanded, setExpanded] = (0, import_react73.useState)(false);
   const variant = classifyTool(name2);
   const titleKey = toolTitleKey(name2);
   const state = !settled ? phase === "preparing" ? "preparing" : "running" : interrupted ? "stopped" : isError ? "error" : "ok";
-  const args = (0, import_react74.useMemo)(() => {
+  const args = (0, import_react73.useMemo)(() => {
     try {
       const parsed = JSON.parse(argsRaw);
       return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed) ? parsed : null;
@@ -60553,8 +60476,8 @@ function BashRowMirror(props) {
   const background2 = shell2?.background === true;
   const persistent = shell2?.persistent === true;
   const spilled = hasSpillNotice(output);
-  const terminalFace = (0, import_react74.useMemo)(() => terminalCardModel(name2, argsRaw, output, isError, settled), [name2, argsRaw, output, isError, settled]);
-  const terminal = (0, import_react74.useMemo)(() => {
+  const terminalFace = (0, import_react73.useMemo)(() => terminalCardModel(name2, argsRaw, output, isError, settled), [name2, argsRaw, output, isError, settled]);
+  const terminal = (0, import_react73.useMemo)(() => {
     if (terminalFace === null)
       return null;
     return terminalFace.sessionId !== void 0 ? { ...terminalFace, command: terminalFace.command === "" ? t4("terminalSendInput") : terminalFace.command, description: t4("terminalSession", { sessionId: terminalFace.sessionId }) } : terminalFace;
@@ -60577,7 +60500,7 @@ function BashRowMirror(props) {
   const open = expanded && expandable;
   const status = rowState === "preparing" ? t4("rowPreparing") : rowState === "running" ? t4("rowRunning") : rowState === "error" ? t4("rowFailed") : rowState === "stopped" ? t4("rowStopped") : null;
   const summaryClassName = `${officialClass("bash-sample", "summary") ?? ""}${exitLabel === null && rowState === "error" ? ` ${officialClass("bash-sample", "errorSummary") ?? ""}` : ""}${exitLabel === null && rowState === "stopped" ? ` ${officialClass("bash-sample", "stoppedSummary") ?? ""}` : ""}`;
-  const leading = open ? (0, import_react74.createElement)(official_exports.IconChevronUpOutlineRegular, { className: officialClass("bash-sample", "chevron") ?? "" }) : expandable ? (0, import_react74.createElement)(import_react74.Fragment, null, (0, import_react74.createElement)("span", { className: officialClass("bash-sample", "iconIdle") ?? "" }, BASH_ICON), (0, import_react74.createElement)(official_exports.IconChevronDownOutlineRegular, {
+  const leading = open ? (0, import_react73.createElement)(official_exports.IconChevronUpOutlineRegular, { className: officialClass("bash-sample", "chevron") ?? "" }) : expandable ? (0, import_react73.createElement)(import_react73.Fragment, null, (0, import_react73.createElement)("span", { className: officialClass("bash-sample", "iconIdle") ?? "" }, BASH_ICON), (0, import_react73.createElement)(official_exports.IconChevronDownOutlineRegular, {
     className: `${officialClass("bash-sample", "chevron") ?? ""} ${officialClass("bash-sample", "chevronHover") ?? ""}`
   })) : BASH_ICON;
   const toggleFromKeyboard = (event) => {
@@ -60586,7 +60509,7 @@ function BashRowMirror(props) {
     event.preventDefault();
     setExpanded((value) => !value);
   };
-  return (0, import_react74.createElement)("div", { className: officialClass("bash-sample", "card") ?? "" }, (0, import_react74.createElement)("div", {
+  return (0, import_react73.createElement)("div", { className: officialClass("bash-sample", "card") ?? "" }, (0, import_react73.createElement)("div", {
     className: officialClass("bash-sample", "root") ?? "",
     "data-sample": "bash",
     "data-variant": "bash",
@@ -60599,11 +60522,11 @@ function BashRowMirror(props) {
       setExpanded((value) => !value);
     } : void 0,
     onKeyDown: expandable ? toggleFromKeyboard : void 0
-  }, (0, import_react74.createElement)("span", { className: officialClass("bash-sample", "leading") ?? "" }, leading), status !== null ? (0, import_react74.createElement)("span", { className: officialClass("bash-sample", "visuallyHidden") ?? "" }, status) : null, (0, import_react74.createElement)(official_exports.TextShimmer, { active: running }, (0, import_react74.createElement)(official_exports.TextShimmer, { className: officialClass("bash-sample", "title") ?? "" }, t4(titleKey)), (0, import_react74.createElement)("span", {
+  }, (0, import_react73.createElement)("span", { className: officialClass("bash-sample", "leading") ?? "" }, leading), status !== null ? (0, import_react73.createElement)("span", { className: officialClass("bash-sample", "visuallyHidden") ?? "" }, status) : null, (0, import_react73.createElement)(official_exports.TextShimmer, { active: running }, (0, import_react73.createElement)(official_exports.TextShimmer, { className: officialClass("bash-sample", "title") ?? "" }, t4(titleKey)), (0, import_react73.createElement)("span", {
     className: officialClass("bash-sample", "sep") ?? "",
     "data-shimmer-decoration": true,
     "aria-hidden": true
-  }), (0, import_react74.createElement)("span", { className: summaryClassName }, (0, import_react74.createElement)(official_exports.TextShimmer, null, settlementLine ?? summaryText)), exitLabel !== null ? (0, import_react74.createElement)(ExitCodeBadge, { label: exitLabel }) : null)), open ? (0, import_react74.createElement)("div", { className: officialClass("bash-sample", "bodyWrap") ?? "" }, terminal !== null ? (0, import_react74.createElement)(official_exports.TerminalBlock, {
+  }), (0, import_react73.createElement)("span", { className: summaryClassName }, (0, import_react73.createElement)(official_exports.TextShimmer, null, settlementLine ?? summaryText)), exitLabel !== null ? (0, import_react73.createElement)(ExitCodeBadge, { label: exitLabel }) : null)), open ? (0, import_react73.createElement)("div", { className: officialClass("bash-sample", "bodyWrap") ?? "" }, terminal !== null ? (0, import_react73.createElement)(official_exports.TerminalBlock, {
     command: terminal.command,
     cwd: terminal.cwd,
     output: terminal.output,
@@ -60613,25 +60536,25 @@ function BashRowMirror(props) {
     maxLines: Infinity,
     labels: terminalLabels(t4),
     className: officialClass("bash-sample", "terminal") ?? ""
-  }) : (0, import_react74.createElement)("div", { className: officialClass("bash-sample", "ioCard") ?? "" }, body !== null ? (0, import_react74.createElement)(
+  }) : (0, import_react73.createElement)("div", { className: officialClass("bash-sample", "ioCard") ?? "" }, body !== null ? (0, import_react73.createElement)(
     "div",
     { className: officialClass("bash-sample", "ioSection") ?? "" },
-    (0, import_react74.createElement)("span", { className: officialClass("bash-sample", "ioLabel") ?? "" }, t4("toolInputLabel")),
+    (0, import_react73.createElement)("span", { className: officialClass("bash-sample", "ioLabel") ?? "" }, t4("toolInputLabel")),
     // 官方 bash-sample：后台常驻 shell 的命令参数走 CommandText 滚动槽（commandInput 类），
     // 普通前台 shell 仍是 plain ioText。
-    background2 ? (0, import_react74.createElement)(official_exports.CommandText, {
+    background2 ? (0, import_react73.createElement)(official_exports.CommandText, {
       className: officialClass("bash-sample", "commandInput") ?? "",
       text: body,
       label: t4("toolCommandArguments")
-    }) : (0, import_react74.createElement)("span", { className: officialClass("bash-sample", "ioText") ?? "" }, body)
-  ) : null, body !== null && outputText !== null ? (0, import_react74.createElement)("span", { className: officialClass("bash-sample", "ioDivider") ?? "", "aria-hidden": true }) : null, outputText !== null ? (0, import_react74.createElement)("div", { className: officialClass("bash-sample", "ioSection") ?? "" }, (0, import_react74.createElement)("span", { className: officialClass("bash-sample", "ioLabel") ?? "" }, t4("toolOutputLabel")), (0, import_react74.createElement)("span", {
+    }) : (0, import_react73.createElement)("span", { className: officialClass("bash-sample", "ioText") ?? "" }, body)
+  ) : null, body !== null && outputText !== null ? (0, import_react73.createElement)("span", { className: officialClass("bash-sample", "ioDivider") ?? "", "aria-hidden": true }) : null, outputText !== null ? (0, import_react73.createElement)("div", { className: officialClass("bash-sample", "ioSection") ?? "" }, (0, import_react73.createElement)("span", { className: officialClass("bash-sample", "ioLabel") ?? "" }, t4("toolOutputLabel")), (0, import_react73.createElement)("span", {
     className: officialClass("bash-sample", "ioText") ?? "",
     "data-error": rowState === "error" || void 0
   }, outputText)) : null)) : void 0);
 }
 
 // dist/adv/session/mirror/ApprovalPanel.js
-var import_react75 = require("react");
+var import_react74 = require("react");
 var cls = (semantic) => officialClass("ApprovalPanel", semantic) ?? "";
 function headline(approval, t4) {
   const shown = approval.displayReason;
@@ -60667,8 +60590,8 @@ function approvalCommand(order, read, callId) {
 }
 function ApprovalPanelMirror(props) {
   const { approval, command: command2, t: t4 } = props;
-  const [answered, setAnswered] = (0, import_react75.useState)(false);
-  const waiting = (0, import_react75.useRef)(false);
+  const [answered, setAnswered] = (0, import_react74.useState)(false);
+  const waiting = (0, import_react74.useRef)(false);
   const answer = (outcome) => {
     if (waiting.current || !approval.answerable)
       return;
@@ -60679,20 +60602,20 @@ function ApprovalPanelMirror(props) {
       setAnswered(false);
     });
   };
-  return (0, import_react75.createElement)("div", { className: cls("root"), "data-approval-key": approval.key, "aria-busy": answered }, (0, import_react75.createElement)("div", { className: cls("card") }, (0, import_react75.createElement)("div", { className: cls("strip") }, (0, import_react75.createElement)(official_exports.StateDot, { state: answered ? "ongoing" : "warning" }), t4("approvalWaiting")), (0, import_react75.createElement)("div", {
+  return (0, import_react74.createElement)("div", { className: cls("root"), "data-approval-key": approval.key, "aria-busy": answered }, (0, import_react74.createElement)("div", { className: cls("card") }, (0, import_react74.createElement)("div", { className: cls("strip") }, (0, import_react74.createElement)(official_exports.StateDot, { state: answered ? "ongoing" : "warning" }), t4("approvalWaiting")), (0, import_react74.createElement)("div", {
     className: cls("body"),
     "data-approval-scroll": "",
     tabIndex: 0,
     role: "group",
     "aria-label": t4("approvalDetailAria")
-  }, (0, import_react75.createElement)("div", { className: cls("headline") }, headline(approval, t4)), command2 === void 0 ? null : (0, import_react75.createElement)("div", { className: cls("command") }, command2)), (0, import_react75.createElement)("div", { className: cls("actionRow") }, (0, import_react75.createElement)(official_exports.Button, {
+  }, (0, import_react74.createElement)("div", { className: cls("headline") }, headline(approval, t4)), command2 === void 0 ? null : (0, import_react74.createElement)("div", { className: cls("command") }, command2)), (0, import_react74.createElement)("div", { className: cls("actionRow") }, (0, import_react74.createElement)(official_exports.Button, {
     variant: "outline",
     className: cls("reject"),
     disabled: answered,
     onClick: () => {
       answer("rejected");
     }
-  }, t4("approvalReject")), (0, import_react75.createElement)(official_exports.Button, {
+  }, t4("approvalReject")), (0, import_react74.createElement)(official_exports.Button, {
     variant: "primary",
     disabled: answered,
     onClick: () => {
@@ -60896,23 +60819,23 @@ function questionSet(row2) {
 }
 
 // dist/adv/session/mirror/QuestionPanel.js
-var import_react76 = require("react");
+var import_react75 = require("react");
 var cls2 = (...names) => names.filter((name2) => typeof name2 === "string" && name2 !== "").join(" ");
 var c2 = (semantic) => officialClass("QuestionComposer", semantic) ?? "";
 var EMPTY_COPIES = /* @__PURE__ */ new Set();
 function QuestionPanel(props) {
   const { panelKey, questions, answer, dismiss: dismiss2, dismissal = "hide", subscribeCard, t: t4 } = props;
-  const [index3, setIndex] = (0, import_react76.useState)(0);
-  const [drafts, setDrafts] = (0, import_react76.useState)(() => questions.map((question3) => {
+  const [index3, setIndex] = (0, import_react75.useState)(0);
+  const [drafts, setDrafts] = (0, import_react75.useState)(() => questions.map((question3) => {
     const recommended = recommendedOptions(question3);
     return { selected: recommended, custom: "", skipped: false };
   }));
-  const [busy, setBusy] = (0, import_react76.useState)(false);
-  const [error, setError] = (0, import_react76.useState)(null);
-  const [minimized, setMinimized] = (0, import_react76.useState)(false);
-  const [expanded, setExpanded] = (0, import_react76.useState)({ index: 0, copies: /* @__PURE__ */ new Set() });
-  const [, force] = (0, import_react76.useReducer)((n) => n + 1, 0);
-  (0, import_react76.useEffect)(() => {
+  const [busy, setBusy] = (0, import_react75.useState)(false);
+  const [error, setError] = (0, import_react75.useState)(null);
+  const [minimized, setMinimized] = (0, import_react75.useState)(false);
+  const [expanded, setExpanded] = (0, import_react75.useState)({ index: 0, copies: /* @__PURE__ */ new Set() });
+  const [, force] = (0, import_react75.useReducer)((n) => n + 1, 0);
+  (0, import_react75.useEffect)(() => {
     if (subscribeCard === void 0)
       return void 0;
     return subscribeCard(() => {
@@ -60926,7 +60849,7 @@ function QuestionPanel(props) {
   const draft = drafts[Math.min(index3, drafts.length - 1)];
   const hasOptions = (current3.options?.length ?? 0) > 0;
   const copies = expanded.index === index3 ? expanded.copies : EMPTY_COPIES;
-  const labelOf = (0, import_react76.useMemo)(() => ({
+  const labelOf = (0, import_react75.useMemo)(() => ({
     expand: t4("askPanelExpand"),
     collapse: t4("askPanelCollapse"),
     prev: t4("askPanelPrev"),
@@ -61032,10 +60955,10 @@ function QuestionPanel(props) {
       });
     }
   };
-  const customField = (variant) => (0, import_react76.createElement)("div", {
+  const customField = (variant) => (0, import_react75.createElement)("div", {
     className: cls2(c2("field"), variant === "inline" ? c2("customInline") : c2("customBlock"))
-  }, (0, import_react76.createElement)("div", { "aria-hidden": true, className: c2("fieldMirror") }, `${draft.custom}
-`), (0, import_react76.createElement)("textarea", {
+  }, (0, import_react75.createElement)("div", { "aria-hidden": true, className: c2("fieldMirror") }, `${draft.custom}
+`), (0, import_react75.createElement)("textarea", {
     className: c2("fieldInput"),
     value: draft.custom,
     rows: 1,
@@ -61059,7 +60982,7 @@ function QuestionPanel(props) {
   }));
   const countdown = card?.countdown;
   const feedback = error === null ? null : "key" in error ? t4(error.key === "incomplete" ? "askPanelErrorIncomplete" : error.key === "unanswered" ? "askPanelErrorUnanswered" : "askPanelErrorUnavailable") : error.text;
-  return (0, import_react76.createElement)("div", { className: c2("frame"), "data-question-key": panelKey }, (0, import_react76.createElement)("section", { className: cls2(c2("card"), minimized && c2("cardMinimized")) }, (0, import_react76.createElement)("header", { className: c2("header") }, current3.header === void 0 && !minimized ? null : (0, import_react76.createElement)("div", { className: c2("headingBlock") }, current3.header === void 0 ? null : (0, import_react76.createElement)("div", { className: c2("eyebrow") }, current3.header), minimized ? (0, import_react76.createElement)("h2", { className: c2("title") }, current3.question) : null), (0, import_react76.createElement)("div", { className: c2("headerActions") }, state === "continued" ? (0, import_react76.createElement)("span", { className: c2("waitStatus") }, t4("askPanelContinued")) : countdown === void 0 ? null : (0, import_react76.createElement)("span", { className: c2("waitStatus") }, countdown.running ? t4("askPanelCountdown", { seconds: Math.ceil(countdown.remainingMs / 1e3) }) : t4("askPanelWaitPaused", { seconds: Math.ceil(countdown.remainingMs / 1e3) })), (0, import_react76.createElement)("button", {
+  return (0, import_react75.createElement)("div", { className: c2("frame"), "data-question-key": panelKey }, (0, import_react75.createElement)("section", { className: cls2(c2("card"), minimized && c2("cardMinimized")) }, (0, import_react75.createElement)("header", { className: c2("header") }, current3.header === void 0 && !minimized ? null : (0, import_react75.createElement)("div", { className: c2("headingBlock") }, current3.header === void 0 ? null : (0, import_react75.createElement)("div", { className: c2("eyebrow") }, current3.header), minimized ? (0, import_react75.createElement)("h2", { className: c2("title") }, current3.question) : null), (0, import_react75.createElement)("div", { className: c2("headerActions") }, state === "continued" ? (0, import_react75.createElement)("span", { className: c2("waitStatus") }, t4("askPanelContinued")) : countdown === void 0 ? null : (0, import_react75.createElement)("span", { className: c2("waitStatus") }, countdown.running ? t4("askPanelCountdown", { seconds: Math.ceil(countdown.remainingMs / 1e3) }) : t4("askPanelWaitPaused", { seconds: Math.ceil(countdown.remainingMs / 1e3) })), (0, import_react75.createElement)("button", {
     type: "button",
     className: c2("iconButton"),
     "aria-label": minimized ? labelOf.maximize : labelOf.minimize,
@@ -61069,14 +60992,14 @@ function QuestionPanel(props) {
     onClick: () => {
       setMinimized((value) => !value);
     }
-  }, minimized ? (0, import_react76.createElement)(official_exports.IconChevronUpOutlineRegular) : (0, import_react76.createElement)(official_exports.IconChevronDownOutlineRegular)), dismiss2 === void 0 ? null : (0, import_react76.createElement)("button", {
+  }, minimized ? (0, import_react75.createElement)(official_exports.IconChevronUpOutlineRegular) : (0, import_react75.createElement)(official_exports.IconChevronDownOutlineRegular)), dismiss2 === void 0 ? null : (0, import_react75.createElement)("button", {
     type: "button",
     className: c2("iconButton"),
     "aria-label": labelOf.hide,
     title: labelOf.hide,
     disabled: busy,
     onClick: dismissFlow
-  }, (0, import_react76.createElement)(official_exports.IconCloseOutlineRegular)))), minimized ? null : (0, import_react76.createElement)("div", { className: c2("body"), "data-question-scroll": "" }, (0, import_react76.createElement)("div", { className: cls2(c2("questionTitle")), ...copies.has("question") ? { "data-expanded": "" } : {} }, (0, import_react76.createElement)("h2", { className: cls2(c2("title"), c2("titlePreview")) }, current3.question), (0, import_react76.createElement)("button", {
+  }, (0, import_react75.createElement)(official_exports.IconCloseOutlineRegular)))), minimized ? null : (0, import_react75.createElement)("div", { className: c2("body"), "data-question-scroll": "" }, (0, import_react75.createElement)("div", { className: cls2(c2("questionTitle")), ...copies.has("question") ? { "data-expanded": "" } : {} }, (0, import_react75.createElement)("h2", { className: cls2(c2("title"), c2("titlePreview")) }, current3.question), (0, import_react75.createElement)("button", {
     type: "button",
     className: cls2(c2("iconButton"), c2("copyToggle"), c2("questionToggle")),
     "aria-label": copies.has("question") ? labelOf.collapse : labelOf.expand,
@@ -61084,7 +61007,7 @@ function QuestionPanel(props) {
     onClick: () => {
       toggleCopy("question");
     }
-  }, copies.has("question") ? (0, import_react76.createElement)(official_exports.IconChevronUpOutlineRegular) : (0, import_react76.createElement)(official_exports.IconChevronDownOutlineRegular))), current3.detail === void 0 ? null : (0, import_react76.createElement)("div", { className: c2("detail") }, (0, import_react76.createElement)(official_exports.MarkdownText, { text: current3.detail, labels: markdownLabels() })), (0, import_react76.createElement)("div", {
+  }, copies.has("question") ? (0, import_react75.createElement)(official_exports.IconChevronUpOutlineRegular) : (0, import_react75.createElement)(official_exports.IconChevronDownOutlineRegular))), current3.detail === void 0 ? null : (0, import_react75.createElement)("div", { className: c2("detail") }, (0, import_react75.createElement)(official_exports.MarkdownText, { text: current3.detail, labels: markdownLabels() })), (0, import_react75.createElement)("div", {
     className: c2("options"),
     role: current3.multiSelect === true ? "group" : "radiogroup"
   }, (current3.options ?? []).map((option, optionIndex) => {
@@ -61093,12 +61016,12 @@ function QuestionPanel(props) {
     const description = option.description !== void 0 && option.description.trim() !== "" ? option.description : void 0;
     const key = `${String(optionIndex)}`;
     const isExpanded = copies.has(key);
-    return (0, import_react76.createElement)("div", {
+    return (0, import_react75.createElement)("div", {
       key: `${option.label}-${key}`,
       className: cls2(c2("optionRow"), !interactive || busy ? false : c2("optionRowInteractive"), selected && current3.multiSelect !== true ? c2("optionSelected") : false),
       "data-option-row": "",
       ...isExpanded ? { "data-expanded": "" } : {}
-    }, (0, import_react76.createElement)("button", {
+    }, (0, import_react75.createElement)("button", {
       type: "button",
       className: c2("option"),
       role: current3.multiSelect === true ? "checkbox" : "radio",
@@ -61108,10 +61031,10 @@ function QuestionPanel(props) {
       onClick: () => {
         choose(option.label);
       }
-    }, current3.multiSelect === true ? (0, import_react76.createElement)("span", {
+    }, current3.multiSelect === true ? (0, import_react75.createElement)("span", {
       className: cls2(c2("checkbox"), selected && c2("checkboxChecked")),
       "aria-hidden": true
-    }, selected ? (0, import_react76.createElement)(official_exports.IconCheckOutlineRegular, { size: 12 }) : null) : (0, import_react76.createElement)("span", { className: c2("number") }, optionIndex + 1), (0, import_react76.createElement)("span", { className: c2("optionCopy") }, (0, import_react76.createElement)("span", { className: c2("optionLine"), "data-option-line": "" }, (0, import_react76.createElement)("span", { className: c2("optionLabel") }, display.label), display.recommended ? (0, import_react76.createElement)("span", { className: c2("badge") }, t4("askPanelRecommended")) : null), description === void 0 ? null : (0, import_react76.createElement)("span", { className: c2("description"), "data-option-description": "" }, description))), description === void 0 ? null : (0, import_react76.createElement)("button", {
+    }, selected ? (0, import_react75.createElement)(official_exports.IconCheckOutlineRegular, { size: 12 }) : null) : (0, import_react75.createElement)("span", { className: c2("number") }, optionIndex + 1), (0, import_react75.createElement)("span", { className: c2("optionCopy") }, (0, import_react75.createElement)("span", { className: c2("optionLine"), "data-option-line": "" }, (0, import_react75.createElement)("span", { className: c2("optionLabel") }, display.label), display.recommended ? (0, import_react75.createElement)("span", { className: c2("badge") }, t4("askPanelRecommended")) : null), description === void 0 ? null : (0, import_react75.createElement)("span", { className: c2("description"), "data-option-description": "" }, description))), description === void 0 ? null : (0, import_react75.createElement)("button", {
       type: "button",
       className: cls2(c2("iconButton"), c2("copyToggle"), c2("descriptionToggle")),
       "aria-label": isExpanded ? labelOf.collapse : labelOf.expand,
@@ -61119,13 +61042,13 @@ function QuestionPanel(props) {
       onClick: () => {
         toggleCopy(key);
       }
-    }, isExpanded ? (0, import_react76.createElement)(official_exports.IconChevronUpOutlineRegular) : (0, import_react76.createElement)(official_exports.IconChevronDownOutlineRegular)));
-  }), hasOptions ? (0, import_react76.createElement)("div", {
+    }, isExpanded ? (0, import_react75.createElement)(official_exports.IconChevronUpOutlineRegular) : (0, import_react75.createElement)(official_exports.IconChevronDownOutlineRegular)));
+  }), hasOptions ? (0, import_react75.createElement)("div", {
     className: cls2(c2("customRow"), draft.custom !== "" && c2("customRowActive"))
-  }, current3.multiSelect === true ? (0, import_react76.createElement)("span", {
+  }, current3.multiSelect === true ? (0, import_react75.createElement)("span", {
     className: cls2(c2("checkbox"), draft.custom !== "" && c2("checkboxChecked")),
     "aria-hidden": true
-  }, draft.custom !== "" ? (0, import_react76.createElement)(official_exports.IconCheckOutlineRegular, { size: 12 }) : null) : (0, import_react76.createElement)("span", { className: c2("number"), "aria-hidden": true }, (0, import_react76.createElement)(official_exports.IconEditOutlineRegular, { size: 12 })), customField("inline")) : customField("block"))), minimized ? null : (0, import_react76.createElement)("footer", { className: c2("footer") }, (0, import_react76.createElement)("div", { className: c2("pager") }, (0, import_react76.createElement)("button", {
+  }, draft.custom !== "" ? (0, import_react75.createElement)(official_exports.IconCheckOutlineRegular, { size: 12 }) : null) : (0, import_react75.createElement)("span", { className: c2("number"), "aria-hidden": true }, (0, import_react75.createElement)(official_exports.IconEditOutlineRegular, { size: 12 })), customField("inline")) : customField("block"))), minimized ? null : (0, import_react75.createElement)("footer", { className: c2("footer") }, (0, import_react75.createElement)("div", { className: c2("pager") }, (0, import_react75.createElement)("button", {
     type: "button",
     className: c2("iconButton"),
     "aria-label": labelOf.prev,
@@ -61135,7 +61058,7 @@ function QuestionPanel(props) {
       setExpanded({ index: index3 - 1, copies: EMPTY_COPIES });
       setError(null);
     }
-  }, (0, import_react76.createElement)(official_exports.IconChevronLeftOutlineRegular)), (0, import_react76.createElement)("span", { className: c2("progress") }, `${String(index3 + 1)} / ${String(questions.length)}`), (0, import_react76.createElement)("button", {
+  }, (0, import_react75.createElement)(official_exports.IconChevronLeftOutlineRegular)), (0, import_react75.createElement)("span", { className: c2("progress") }, `${String(index3 + 1)} / ${String(questions.length)}`), (0, import_react75.createElement)("button", {
     type: "button",
     className: c2("iconButton"),
     "aria-label": labelOf.next,
@@ -61145,7 +61068,7 @@ function QuestionPanel(props) {
       setExpanded({ index: index3 + 1, copies: EMPTY_COPIES });
       setError(null);
     }
-  }, (0, import_react76.createElement)(official_exports.IconChevronRightOutlineRegular))), (0, import_react76.createElement)("div", { className: c2("feedback"), role: "status" }, feedback), interactive ? (0, import_react76.createElement)("div", { className: c2("footerActions") }, (0, import_react76.createElement)(official_exports.Button, { variant: "outline", disabled: busy, onClick: skipQuestion }, t4("askPanelSkip")), (0, import_react76.createElement)(official_exports.Button, {
+  }, (0, import_react75.createElement)(official_exports.IconChevronRightOutlineRegular))), (0, import_react75.createElement)("div", { className: c2("feedback"), role: "status" }, feedback), interactive ? (0, import_react75.createElement)("div", { className: c2("footerActions") }, (0, import_react75.createElement)(official_exports.Button, { variant: "outline", disabled: busy, onClick: skipQuestion }, t4("askPanelSkip")), (0, import_react75.createElement)(official_exports.Button, {
     variant: "primary",
     disabled: busy || !answered(draft),
     onClick: continueFlow
@@ -61153,7 +61076,7 @@ function QuestionPanel(props) {
 }
 
 // dist/adv/session/mirror/QuestionReply.js
-var import_react77 = require("react");
+var import_react76 = require("react");
 var COPIED_RESET_MS2 = 1e3;
 var c3 = (semantic) => officialClass("QuestionReplyView", semantic) ?? "";
 function replyAnswerValues(data2, id3) {
@@ -61185,26 +61108,26 @@ function clockOf(time) {
 }
 function QuestionReplyBubble(props) {
   const { data: data2, t: t4 } = props;
-  const [copied, setCopied] = (0, import_react77.useState)(false);
-  const timerRef = (0, import_react77.useRef)(void 0);
-  (0, import_react77.useEffect)(() => () => {
+  const [copied, setCopied] = (0, import_react76.useState)(false);
+  const timerRef = (0, import_react76.useRef)(void 0);
+  (0, import_react76.useEffect)(() => () => {
     if (timerRef.current !== void 0)
       clearTimeout(timerRef.current);
   }, []);
   const label = copied ? t4("copiedLabel") : t4("copyLabel");
   const questions = data2.questions ?? [];
   const clock = clockOf(data2.time);
-  return (0, import_react77.createElement)("div", {
+  return (0, import_react76.createElement)("div", {
     className: c3("row"),
     "data-question-reply": data2.callId,
     "data-reply-outcome": data2.outcome,
     role: "group",
     "aria-label": t4("replyLabel")
-  }, (0, import_react77.createElement)("div", { className: c3("bubbleWidth") }, (0, import_react77.createElement)(official_exports.UserMessageBubble, { className: c3("bubble") }, questions.length === 0 ? (0, import_react77.createElement)("p", { className: c3("text") }, data2.text ?? "") : (0, import_react77.createElement)("dl", { className: c3("details") }, questions.map((question3) => {
+  }, (0, import_react76.createElement)("div", { className: c3("bubbleWidth") }, (0, import_react76.createElement)(official_exports.UserMessageBubble, { className: c3("bubble") }, questions.length === 0 ? (0, import_react76.createElement)("p", { className: c3("text") }, data2.text ?? "") : (0, import_react76.createElement)("dl", { className: c3("details") }, questions.map((question3) => {
     const values2 = replyAnswerValues(data2, question3.id);
     const headed = question3.header !== void 0 && question3.header !== question3.question;
-    return (0, import_react77.createElement)("div", { key: question3.id }, (0, import_react77.createElement)("dt", { className: c3("question") }, headed ? (0, import_react77.createElement)("span", { className: c3("header") }, question3.header) : null, (0, import_react77.createElement)("span", null, question3.question)), (0, import_react77.createElement)("dd", { className: c3("answer") }, values2.length === 0 ? t4("replySkipped") : values2.join(", ")));
-  })))), (0, import_react77.createElement)("div", { className: c3("actions") }, clock === null ? null : (0, import_react77.createElement)("span", { className: c3("time") }, clock), (0, import_react77.createElement)(official_exports.Tooltip, { label, side: "bottom" }, (0, import_react77.createElement)("button", {
+    return (0, import_react76.createElement)("div", { key: question3.id }, (0, import_react76.createElement)("dt", { className: c3("question") }, headed ? (0, import_react76.createElement)("span", { className: c3("header") }, question3.header) : null, (0, import_react76.createElement)("span", null, question3.question)), (0, import_react76.createElement)("dd", { className: c3("answer") }, values2.length === 0 ? t4("replySkipped") : values2.join(", ")));
+  })))), (0, import_react76.createElement)("div", { className: c3("actions") }, clock === null ? null : (0, import_react76.createElement)("span", { className: c3("time") }, clock), (0, import_react76.createElement)(official_exports.Tooltip, { label, side: "bottom" }, (0, import_react76.createElement)("button", {
     type: "button",
     className: c3("action"),
     "aria-label": label,
@@ -61220,11 +61143,11 @@ function QuestionReplyBubble(props) {
         }, COPIED_RESET_MS2);
       });
     }
-  }, copied ? (0, import_react77.createElement)(official_exports.IconCheckOutlineRegular) : (0, import_react77.createElement)(official_exports.IconCopyOutlineRegular)))));
+  }, copied ? (0, import_react76.createElement)(official_exports.IconCheckOutlineRegular) : (0, import_react76.createElement)(official_exports.IconCopyOutlineRegular)))));
 }
 
 // dist/adv/session/mirror/SkillRow.js
-var import_react78 = require("react");
+var import_react77 = require("react");
 var cls3 = (semantic) => officialClass("SkillRow", semantic) ?? "";
 var firstLine3 = (text2) => {
   const nl = text2.indexOf("\n");
@@ -61244,10 +61167,10 @@ function skillName(argsRaw) {
 }
 function SkillRowMirror(props) {
   const { argsRaw, output, isError, settled = true, phase, interrupted, t: t4 } = props;
-  const [expanded, setExpanded] = (0, import_react78.useState)(false);
+  const [expanded, setExpanded] = (0, import_react77.useState)(false);
   const state = !settled ? phase === "preparing" ? "preparing" : "running" : interrupted ? "stopped" : isError ? "error" : "ok";
   if (state === "preparing") {
-    return (0, import_react78.createElement)("div", { className: cls3("card"), "data-tool": "skill", "data-state": "preparing" }, (0, import_react78.createElement)("div", { className: cls3("row") }, (0, import_react78.createElement)("span", { className: cls3("leading") }, (0, import_react78.createElement)(official_exports.IconSkillOutlineRegular, { size: 14 })), (0, import_react78.createElement)("span", { className: cls3("visuallyHidden") }, t4("skillRowPreparing")), (0, import_react78.createElement)(official_exports.TextShimmer, { active: true, className: cls3("title") }, t4("skillRowTitle"))));
+    return (0, import_react77.createElement)("div", { className: cls3("card"), "data-tool": "skill", "data-state": "preparing" }, (0, import_react77.createElement)("div", { className: cls3("row") }, (0, import_react77.createElement)("span", { className: cls3("leading") }, (0, import_react77.createElement)(official_exports.IconSkillOutlineRegular, { size: 14 })), (0, import_react77.createElement)("span", { className: cls3("visuallyHidden") }, t4("skillRowPreparing")), (0, import_react77.createElement)(official_exports.TextShimmer, { active: true, className: cls3("title") }, t4("skillRowTitle"))));
   }
   const running = state === "running";
   const errorSummary = state === "error" && output !== "" ? firstLine3(output) : null;
@@ -61255,9 +61178,9 @@ function SkillRowMirror(props) {
   const expandable = output !== "";
   const open = expanded && expandable;
   const status = state === "running" ? t4("skillRowRunning") : state === "error" ? t4("skillRowFailed") : null;
-  const leading = open ? (0, import_react78.createElement)(official_exports.IconChevronDownOutlineRegular, { className: cls3("chevron") }) : expandable ? (0, import_react78.createElement)(import_react78.Fragment, null, (0, import_react78.createElement)("span", { className: cls3("iconIdle") }, (0, import_react78.createElement)(official_exports.IconSkillOutlineRegular, { size: 14 })), (0, import_react78.createElement)(official_exports.IconChevronDownOutlineRegular, {
+  const leading = open ? (0, import_react77.createElement)(official_exports.IconChevronDownOutlineRegular, { className: cls3("chevron") }) : expandable ? (0, import_react77.createElement)(import_react77.Fragment, null, (0, import_react77.createElement)("span", { className: cls3("iconIdle") }, (0, import_react77.createElement)(official_exports.IconSkillOutlineRegular, { size: 14 })), (0, import_react77.createElement)(official_exports.IconChevronDownOutlineRegular, {
     className: `${cls3("chevron")} ${cls3("chevronHover")}`
-  })) : (0, import_react78.createElement)(official_exports.IconSkillOutlineRegular, { size: 14 });
+  })) : (0, import_react77.createElement)(official_exports.IconSkillOutlineRegular, { size: 14 });
   const summaryClassName = `${cls3("summary")}${state === "error" ? ` ${cls3("errorSummary")}` : ""}${state === "stopped" ? ` ${cls3("stoppedSummary")}` : ""}`;
   const toggleFromKeyboard = (event) => {
     if (!expandable || event.key !== "Enter" && event.key !== " ")
@@ -61265,7 +61188,7 @@ function SkillRowMirror(props) {
     event.preventDefault();
     setExpanded((value) => !value);
   };
-  return (0, import_react78.createElement)("div", { className: cls3("card"), "data-tool": "skill", "data-state": state }, (0, import_react78.createElement)("div", {
+  return (0, import_react77.createElement)("div", { className: cls3("card"), "data-tool": "skill", "data-state": state }, (0, import_react77.createElement)("div", {
     className: cls3("row"),
     "data-expandable": expandable || void 0,
     role: expandable ? "button" : void 0,
@@ -61275,18 +61198,18 @@ function SkillRowMirror(props) {
       setExpanded((value) => !value);
     } : void 0,
     onKeyDown: expandable ? toggleFromKeyboard : void 0
-  }, (0, import_react78.createElement)("span", { className: cls3("leading") }, leading), status !== null ? (0, import_react78.createElement)("span", { className: cls3("visuallyHidden") }, status) : null, (0, import_react78.createElement)(official_exports.TextShimmer, { active: running }, (0, import_react78.createElement)("span", { className: cls3("title") }, (0, import_react78.createElement)(official_exports.TextShimmer, null, t4("skillRowTitle"))), (0, import_react78.createElement)("span", {
+  }, (0, import_react77.createElement)("span", { className: cls3("leading") }, leading), status !== null ? (0, import_react77.createElement)("span", { className: cls3("visuallyHidden") }, status) : null, (0, import_react77.createElement)(official_exports.TextShimmer, { active: running }, (0, import_react77.createElement)("span", { className: cls3("title") }, (0, import_react77.createElement)(official_exports.TextShimmer, null, t4("skillRowTitle"))), (0, import_react77.createElement)("span", {
     className: cls3("separator"),
     "data-shimmer-decoration": true,
     "aria-hidden": true
-  }), (0, import_react78.createElement)("span", { className: summaryClassName }, (0, import_react78.createElement)(official_exports.TextShimmer, null, summary)))), open ? (0, import_react78.createElement)(
+  }), (0, import_react77.createElement)("span", { className: summaryClassName }, (0, import_react77.createElement)(official_exports.TextShimmer, null, summary)))), open ? (0, import_react77.createElement)(
     "div",
     { className: cls3("bodyWrap") },
     // 官方 inspectButton 仅在槽位给了 inspect 回调时才渲染；会话预览没有技能目录 ⇒ 不伪造入口。
-    (0, import_react78.createElement)("section", {
+    (0, import_react77.createElement)("section", {
       className: cls3("instructionsCard"),
       "aria-label": t4("skillRowInstructions")
-    }, (0, import_react78.createElement)("div", { className: cls3("instructionsHeader") }, t4("skillRowInstructions")), (0, import_react78.createElement)("pre", {
+    }, (0, import_react77.createElement)("div", { className: cls3("instructionsHeader") }, t4("skillRowInstructions")), (0, import_react77.createElement)("pre", {
       className: cls3("instructions"),
       "data-error": state === "error" || void 0
     }, output))
@@ -61294,10 +61217,10 @@ function SkillRowMirror(props) {
 }
 
 // dist/adv/session/mirror/ContextInjectionRow.js
-var import_react80 = require("react");
+var import_react79 = require("react");
 
 // dist/adv/session/mirror/ContextBody.js
-var import_react79 = require("react");
+var import_react78 = require("react");
 var C2 = (semantic) => officialClass("ContextBody", semantic) ?? "";
 var MAX_CHARS = 2e4;
 var MAX_ENTRIES = 200;
@@ -61326,7 +61249,7 @@ function modelFacingContent(content2, t4) {
       runs.push(text2);
     inText = true;
   }
-  return (0, import_react79.createElement)("span", null, runs.filter((text2) => text2 !== "").map((text2, index3) => (0, import_react79.createElement)("pre", {
+  return (0, import_react78.createElement)("span", null, runs.filter((text2) => text2 !== "").map((text2, index3) => (0, import_react78.createElement)("pre", {
     key: index3,
     className: C2("text"),
     "data-context-text": true
@@ -61344,10 +61267,10 @@ function SourceFields(props) {
   const rows = Object.entries(record).filter(([key]) => !hidden.includes(key));
   if (rows.length === 0)
     return null;
-  return (0, import_react79.createElement)("dl", { className: C2("fields"), "data-context-fields": true }, rows.map(([key, value]) => (0, import_react79.createElement)("div", { key, className: C2("field") }, (0, import_react79.createElement)("dt", { className: C2("fieldKey") }, key), (0, import_react79.createElement)("dd", { className: C2("fieldValue") }, fieldValue(value, props.t)))));
+  return (0, import_react78.createElement)("dl", { className: C2("fields"), "data-context-fields": true }, rows.map(([key, value]) => (0, import_react78.createElement)("div", { key, className: C2("field") }, (0, import_react78.createElement)("dt", { className: C2("fieldKey") }, key), (0, import_react78.createElement)("dd", { className: C2("fieldValue") }, fieldValue(value, props.t)))));
 }
 function OpaqueBody(props) {
-  return (0, import_react79.createElement)("span", null, modelFacingContent(props.content, props.t), (0, import_react79.createElement)(SourceFields, { source: props.source, formRendered: false, t: props.t }));
+  return (0, import_react78.createElement)("span", null, modelFacingContent(props.content, props.t), (0, import_react78.createElement)(SourceFields, { source: props.source, formRendered: false, t: props.t }));
 }
 function instructionChanges(source) {
   const list = asRecord(source)?.changes;
@@ -61383,9 +61306,9 @@ function instructionAction(action, baseline) {
 function InstructionsBody(props) {
   const changes = instructionChanges(props.source);
   if (changes === null)
-    return (0, import_react79.createElement)(OpaqueBody, { content: props.content, source: props.source, t: props.t });
+    return (0, import_react78.createElement)(OpaqueBody, { content: props.content, source: props.source, t: props.t });
   const baseline = asRecord(props.source)?.baseline === true;
-  return (0, import_react79.createElement)("span", null, (0, import_react79.createElement)("ul", { className: C2("files"), "data-context-files": true }, changes.map((change) => (0, import_react79.createElement)("li", { key: change.path, className: C2("file") }, (0, import_react79.createElement)("span", { className: C2("filePath") }, change.path), (0, import_react79.createElement)("span", { className: C2("fileAction") }, props.t(instructionAction(change.action, baseline)))))), modelFacingContent(props.content, props.t));
+  return (0, import_react78.createElement)("span", null, (0, import_react78.createElement)("ul", { className: C2("files"), "data-context-files": true }, changes.map((change) => (0, import_react78.createElement)("li", { key: change.path, className: C2("file") }, (0, import_react78.createElement)("span", { className: C2("filePath") }, change.path), (0, import_react78.createElement)("span", { className: C2("fileAction") }, props.t(instructionAction(change.action, baseline)))))), modelFacingContent(props.content, props.t));
 }
 function catalogEntries(source) {
   const list = asRecord(source)?.entries;
@@ -61407,10 +61330,10 @@ function catalogEntries(source) {
 function CatalogBody(props) {
   const entries2 = catalogEntries(props.source);
   if (entries2 === null)
-    return (0, import_react79.createElement)(OpaqueBody, { content: props.content, source: props.source, t: props.t });
+    return (0, import_react78.createElement)(OpaqueBody, { content: props.content, source: props.source, t: props.t });
   const update = asRecord(props.source)?.update === true;
   const shown = entries2.slice(0, MAX_ENTRIES);
-  return (0, import_react79.createElement)("span", null, update ? (0, import_react79.createElement)("p", { className: C2("catalogNotice"), "data-context-catalog-update": true }, props.t("contextCatalogReplaced")) : null, (0, import_react79.createElement)("ul", { className: C2("entries"), "data-context-entries": true }, shown.map((entry, index3) => (0, import_react79.createElement)("li", { key: index3, className: C2("entry") }, (0, import_react79.createElement)("code", { className: C2("entryName") }, entry.name), (0, import_react79.createElement)("span", { className: C2("entryDescription") }, entry.description)))), shown.length < entries2.length ? (0, import_react79.createElement)("p", { className: C2("catalogNotice"), "data-context-entries-truncated": true }, props.t("contextCatalogMore", { count: entries2.length - shown.length })) : null);
+  return (0, import_react78.createElement)("span", null, update ? (0, import_react78.createElement)("p", { className: C2("catalogNotice"), "data-context-catalog-update": true }, props.t("contextCatalogReplaced")) : null, (0, import_react78.createElement)("ul", { className: C2("entries"), "data-context-entries": true }, shown.map((entry, index3) => (0, import_react78.createElement)("li", { key: index3, className: C2("entry") }, (0, import_react78.createElement)("code", { className: C2("entryName") }, entry.name), (0, import_react78.createElement)("span", { className: C2("entryDescription") }, entry.description)))), shown.length < entries2.length ? (0, import_react78.createElement)("p", { className: C2("catalogNotice"), "data-context-entries-truncated": true }, props.t("contextCatalogMore", { count: entries2.length - shown.length })) : null);
 }
 function snapshotSections(source) {
   const list = asRecord(source)?.sections;
@@ -61432,8 +61355,8 @@ function snapshotSections(source) {
 function SnapshotBody(props) {
   const sections = snapshotSections(props.source);
   if (sections === null)
-    return (0, import_react79.createElement)(OpaqueBody, { content: props.content, source: props.source, t: props.t });
-  return (0, import_react79.createElement)("span", null, (0, import_react79.createElement)("p", { className: C2("catalogNotice"), "data-context-snapshot-supersedes": true }, props.t("contextSnapshotSupersedes")), (0, import_react79.createElement)("dl", { className: C2("sections"), "data-context-sections": true }, sections.map((section, index3) => (0, import_react79.createElement)("div", { key: index3, className: C2("section") }, (0, import_react79.createElement)("dt", { className: C2("sectionName") }, section.name), (0, import_react79.createElement)("dd", { className: C2("sectionText") }, boundedText(section.text, props.t))))));
+    return (0, import_react78.createElement)(OpaqueBody, { content: props.content, source: props.source, t: props.t });
+  return (0, import_react78.createElement)("span", null, (0, import_react78.createElement)("p", { className: C2("catalogNotice"), "data-context-snapshot-supersedes": true }, props.t("contextSnapshotSupersedes")), (0, import_react78.createElement)("dl", { className: C2("sections"), "data-context-sections": true }, sections.map((section, index3) => (0, import_react78.createElement)("div", { key: index3, className: C2("section") }, (0, import_react78.createElement)("dt", { className: C2("sectionName") }, section.name), (0, import_react78.createElement)("dd", { className: C2("sectionText") }, boundedText(section.text, props.t))))));
 }
 function relaySender(source) {
   const sender = asRecord(source)?.senderSessionId;
@@ -61442,8 +61365,8 @@ function relaySender(source) {
 function RelayBody(props) {
   const sender = relaySender(props.source);
   if (sender === null)
-    return (0, import_react79.createElement)(OpaqueBody, { content: props.content, source: props.source, t: props.t });
-  return (0, import_react79.createElement)("span", null, (0, import_react79.createElement)("p", { className: C2("relaySender"), "data-context-relay-sender": true }, props.t("contextRelayFrom", { session: sender })), modelFacingContent(props.content, props.t));
+    return (0, import_react78.createElement)(OpaqueBody, { content: props.content, source: props.source, t: props.t });
+  return (0, import_react78.createElement)("span", null, (0, import_react78.createElement)("p", { className: C2("relaySender"), "data-context-relay-sender": true }, props.t("contextRelayFrom", { session: sender })), modelFacingContent(props.content, props.t));
 }
 function recalledSessions(source) {
   const list = asRecord(source)?.references;
@@ -61469,8 +61392,8 @@ function recalledSessions(source) {
 function RecallBody(props) {
   const sessions = recalledSessions(props.source);
   if (sessions === null)
-    return (0, import_react79.createElement)(OpaqueBody, { content: props.content, source: props.source, t: props.t });
-  return (0, import_react79.createElement)("span", null, (0, import_react79.createElement)("ul", { className: C2("recalls"), "data-context-recalls": true }, sessions.map((session, index3) => (0, import_react79.createElement)("li", { key: index3, className: C2("recall") }, (0, import_react79.createElement)("span", { className: C2("recallLabel") }, session.label), (0, import_react79.createElement)("span", { className: C2("recallCounts") }, props.t("contextRecallCounts", { retained: session.retained, omitted: session.omitted })), session.truncated ? (0, import_react79.createElement)("span", { className: C2("recallCounts") }, props.t("contextRecallTruncated")) : null))), modelFacingContent(props.content, props.t));
+    return (0, import_react78.createElement)(OpaqueBody, { content: props.content, source: props.source, t: props.t });
+  return (0, import_react78.createElement)("span", null, (0, import_react78.createElement)("ul", { className: C2("recalls"), "data-context-recalls": true }, sessions.map((session, index3) => (0, import_react78.createElement)("li", { key: index3, className: C2("recall") }, (0, import_react78.createElement)("span", { className: C2("recallLabel") }, session.label), (0, import_react78.createElement)("span", { className: C2("recallCounts") }, props.t("contextRecallCounts", { retained: session.retained, omitted: session.omitted })), session.truncated ? (0, import_react78.createElement)("span", { className: C2("recallCounts") }, props.t("contextRecallTruncated")) : null))), modelFacingContent(props.content, props.t));
 }
 function noticeSummary(source) {
   const summary = asRecord(source)?.summary;
@@ -61478,22 +61401,22 @@ function noticeSummary(source) {
 }
 function contextBodyView(props) {
   const { form, content: content2, source, t: t4 } = props;
-  const opaque = { rendered: null, summary: null, body: (0, import_react79.createElement)(OpaqueBody, { content: content2, source, t: t4 }) };
+  const opaque = { rendered: null, summary: null, body: (0, import_react78.createElement)(OpaqueBody, { content: content2, source, t: t4 }) };
   switch (form) {
     case "instructions":
-      return instructionChanges(source) === null ? opaque : { rendered: "instructions", summary: null, body: (0, import_react79.createElement)(InstructionsBody, { content: content2, source, t: t4 }) };
+      return instructionChanges(source) === null ? opaque : { rendered: "instructions", summary: null, body: (0, import_react78.createElement)(InstructionsBody, { content: content2, source, t: t4 }) };
     case "catalog":
-      return catalogEntries(source) === null ? opaque : { rendered: "catalog", summary: null, body: (0, import_react79.createElement)(CatalogBody, { content: content2, source, t: t4 }) };
+      return catalogEntries(source) === null ? opaque : { rendered: "catalog", summary: null, body: (0, import_react78.createElement)(CatalogBody, { content: content2, source, t: t4 }) };
     case "snapshot":
-      return snapshotSections(source) === null ? opaque : { rendered: "snapshot", summary: null, body: (0, import_react79.createElement)(SnapshotBody, { content: content2, source, t: t4 }) };
+      return snapshotSections(source) === null ? opaque : { rendered: "snapshot", summary: null, body: (0, import_react78.createElement)(SnapshotBody, { content: content2, source, t: t4 }) };
     case "notice": {
       const summary = noticeSummary(source);
       return summary === null ? opaque : { rendered: "notice", summary, body: modelFacingContent(content2, t4) };
     }
     case "relay":
-      return relaySender(source) === null ? opaque : { rendered: "relay", summary: null, body: (0, import_react79.createElement)(RelayBody, { content: content2, source, t: t4 }) };
+      return relaySender(source) === null ? opaque : { rendered: "relay", summary: null, body: (0, import_react78.createElement)(RelayBody, { content: content2, source, t: t4 }) };
     case "recall":
-      return recalledSessions(source) === null ? opaque : { rendered: "recall", summary: null, body: (0, import_react79.createElement)(RecallBody, { content: content2, source, t: t4 }) };
+      return recalledSessions(source) === null ? opaque : { rendered: "recall", summary: null, body: (0, import_react78.createElement)(RecallBody, { content: content2, source, t: t4 }) };
     default:
       return opaque;
   }
@@ -61514,23 +61437,23 @@ function contextRowFacts(content2, producerRole, t4) {
 }
 function ContextInjectionRowMirror(props) {
   const { node, t: t4 } = props;
-  const [open, setOpen] = (0, import_react80.useState)(false);
+  const [open, setOpen] = (0, import_react79.useState)(false);
   const content2 = Array.isArray(node.content) ? node.content : [];
   const producer = node.producer ?? null;
   const label = producer?.label ?? null;
   const { rendered, summary: bodySummary, body } = contextBodyView({ form: node.form, content: content2, source: node.source, t: t4 });
   const { toolBlocks, added, removed, single, title, summary } = contextRowFacts(content2, producer?.role, t4);
-  const sep = (key) => (0, import_react80.createElement)("span", { key, className: officialClass("ContextInjectionRow", "sep") ?? "", "aria-hidden": true });
-  const collapsedContent = summary !== null ? (0, import_react80.createElement)(import_react80.Fragment, null, sep("sep"), (0, import_react80.createElement)("span", { className: officialClass("ContextInjectionRow", "summary") ?? "" }, summary)) : toolBlocks !== void 0 || label === null ? void 0 : (0, import_react80.createElement)(import_react80.Fragment, null, sep("sep"), (0, import_react80.createElement)("span", {
+  const sep = (key) => (0, import_react79.createElement)("span", { key, className: officialClass("ContextInjectionRow", "sep") ?? "", "aria-hidden": true });
+  const collapsedContent = summary !== null ? (0, import_react79.createElement)(import_react79.Fragment, null, sep("sep"), (0, import_react79.createElement)("span", { className: officialClass("ContextInjectionRow", "summary") ?? "" }, summary)) : toolBlocks !== void 0 || label === null ? void 0 : (0, import_react79.createElement)(import_react79.Fragment, null, sep("sep"), (0, import_react79.createElement)("span", {
     className: officialClass("ContextInjectionRow", "source") ?? "",
     "data-context-source": true
-  }, label), bodySummary === null ? null : (0, import_react80.createElement)(import_react80.Fragment, null, sep("sep2"), (0, import_react80.createElement)("span", {
+  }, label), bodySummary === null ? null : (0, import_react79.createElement)(import_react79.Fragment, null, sep("sep2"), (0, import_react79.createElement)("span", {
     className: officialClass("ContextInjectionRow", "summary") ?? "",
     "data-context-summary": true
   }, bodySummary)));
-  return (0, import_react80.createElement)(official_exports.DisclosureRow, {
+  return (0, import_react79.createElement)(official_exports.DisclosureRow, {
     className: officialClass("ContextInjectionRow", "root") ?? "",
-    icon: toolBlocks === void 0 ? (0, import_react80.createElement)(official_exports.IconContextInjectionOutlineRegular, { size: 14 }) : (0, import_react80.createElement)(official_exports.IconBrowseOutlineRegular, { size: 14 }),
+    icon: toolBlocks === void 0 ? (0, import_react79.createElement)(official_exports.IconContextInjectionOutlineRegular, { size: 14 }) : (0, import_react79.createElement)(official_exports.IconBrowseOutlineRegular, { size: 14 }),
     chevronClassName: officialClass("ContextInjectionRow", "chevron") ?? "",
     title,
     collapsedContent,
@@ -61542,16 +61465,16 @@ function ContextInjectionRowMirror(props) {
     onToggle: () => {
       setOpen((value) => !value);
     },
-    children: (0, import_react80.createElement)("div", {
+    children: (0, import_react79.createElement)("div", {
       className: officialClass("ContextInjectionRow", "body") ?? "",
       "data-context-injection-body": true,
       "data-context-form": rendered ?? void 0
-    }, toolBlocks === void 0 ? body : (0, import_react80.createElement)("div", { className: officialClass("ContextInjectionRow", "toolChanges") ?? "" }, added.length > 0 ? (0, import_react80.createElement)("div", null, t4("toolsAdded", { names: added.join(", ") })) : null, removed.length > 0 ? (0, import_react80.createElement)("div", null, t4("toolsRemoved", { names: removed.join(", ") })) : null))
+    }, toolBlocks === void 0 ? body : (0, import_react79.createElement)("div", { className: officialClass("ContextInjectionRow", "toolChanges") ?? "" }, added.length > 0 ? (0, import_react79.createElement)("div", null, t4("toolsAdded", { names: added.join(", ") })) : null, removed.length > 0 ? (0, import_react79.createElement)("div", null, t4("toolsRemoved", { names: removed.join(", ") })) : null))
   });
 }
 
 // dist/adv/session/mirror/ReasoningRow.js
-var import_react81 = require("react");
+var import_react80 = require("react");
 function firstLine4(text2) {
   const newline4 = text2.indexOf("\n");
   return newline4 === -1 ? text2 : text2.slice(0, newline4);
@@ -61598,22 +61521,22 @@ function latestCompletedParagraphFirstLine(text2) {
 }
 function ReasoningRowMirror(props) {
   const { text: rawText, running = false, preview: settledPreview = true, t: t4 } = props;
-  const [open, setOpen] = (0, import_react81.useState)(false);
+  const [open, setOpen] = (0, import_react80.useState)(false);
   const expanded = open || running;
-  const text2 = (0, import_react81.useMemo)(() => reasoningText(rawText), [rawText]);
+  const text2 = (0, import_react80.useMemo)(() => reasoningText(rawText), [rawText]);
   if (text2 !== rawText && text2.trim() === "")
     return null;
   const summaryText = running ? latestCompletedParagraphFirstLine(text2) : firstLine4(text2);
   const summary = summaryText.split("**").join("");
   const preview = !expanded && summary !== "" && (running || settledPreview);
-  return (0, import_react81.createElement)("div", {
+  return (0, import_react80.createElement)("div", {
     className: officialClass("ReasoningRow", "root") ?? "",
     "data-variant": "think",
     "data-state": running ? "running" : "ok",
     "data-expanded": expanded || void 0,
     "data-preview": preview || void 0
-  }, running ? (0, import_react81.createElement)("span", { className: officialClass("accessibility", "visuallyHidden") ?? "" }, t4("reasoningRunning")) : null, (0, import_react81.createElement)(official_exports.DisclosureRow, {
-    icon: (0, import_react81.createElement)(official_exports.IconThinkOutlineRegular, { size: 14 }),
+  }, running ? (0, import_react80.createElement)("span", { className: officialClass("accessibility", "visuallyHidden") ?? "" }, t4("reasoningRunning")) : null, (0, import_react80.createElement)(official_exports.DisclosureRow, {
+    icon: (0, import_react80.createElement)(official_exports.IconThinkOutlineRegular, { size: 14 }),
     title: t4("thinkLabel"),
     running,
     open: expanded,
@@ -61625,21 +61548,21 @@ function ReasoningRowMirror(props) {
     rowClassName: officialClass("ReasoningRow", "row") ?? "",
     leadingClassName: officialClass("ReasoningRow", "leading") ?? "",
     titleClassName: officialClass("ReasoningRow", "title") ?? "",
-    collapsedContent: (0, import_react81.createElement)(
-      import_react81.Fragment,
+    collapsedContent: (0, import_react80.createElement)(
+      import_react80.Fragment,
       null,
-      (0, import_react81.createElement)("span", {
+      (0, import_react80.createElement)("span", {
         className: officialClass("ReasoningRow", "separator") ?? "",
         "data-shimmer-decoration": true,
         "aria-hidden": true
       }),
       // 官方是 summary > summaryText 两层：外层 nowrap 截断、内层 text-overflow:ellipsis（省略号）。
-      (0, import_react81.createElement)("span", {
+      (0, import_react80.createElement)("span", {
         className: officialClass("ReasoningRow", "summary") ?? "",
         "data-streaming": running || void 0
-      }, (0, import_react81.createElement)("span", { className: officialClass("ReasoningRow", "summaryText") ?? "" }, (0, import_react81.createElement)(official_exports.TextShimmer, null, summary)))
+      }, (0, import_react80.createElement)("span", { className: officialClass("ReasoningRow", "summaryText") ?? "" }, (0, import_react80.createElement)(official_exports.TextShimmer, null, summary)))
     ),
-    children: expanded ? (0, import_react81.createElement)("div", { className: officialClass("ReasoningRow", "thinkBody") ?? "" }, (0, import_react81.createElement)(official_exports.MarkdownText, {
+    children: expanded ? (0, import_react80.createElement)("div", { className: officialClass("ReasoningRow", "thinkBody") ?? "" }, (0, import_react80.createElement)(official_exports.MarkdownText, {
       text: text2,
       streaming: running,
       labels: markdownLabels(),
@@ -61649,22 +61572,22 @@ function ReasoningRowMirror(props) {
 }
 
 // dist/adv/session/mirror/RunningStatus.js
-var import_react82 = require("react");
+var import_react81 = require("react");
 var LIVE_RUN_CLOCK_INTERVAL_MS = 1e3;
 var REST_PATH = "M8.844 13.742C8.967 12.328 8.45 10.4 8.45 9.65C8.45 8.94 8.88 8.43 9.6 8.43C11.285 8.43 12.106 8.281 12.685 8.104C13.71 7.791 14.585 6.768 15.055 5.945C15.137 5.803 14.99 5.641 14.829 5.671C13.829 5.86 12.828 5.376 11.827 4.978C10.659 4.514 9.491 4.707 8.935 4.876C8.805 4.915 8.658 4.819 8.636 4.686C8.468 3.643 7.405 2.615 5.498 2.238C4.54 2.048 3.748 1.574 3.347 1.202C3.252 1.113 3.088 1.125 3.03 1.242C2.628 2.059 2.168 3.82 5.248 6.115C5.82 6.494 6.31 6.785 6.574 7.637C6.72 8.104 6.157 9.168 6.061 9.368C5.157 11.27 5.089 12.19 4.926 13.742";
 function RunningWhaleTail() {
-  return (0, import_react82.createElement)("span", { className: officialClass("ChatView", "runningIcon") ?? "", "aria-hidden": "true" }, (0, import_react82.createElement)("span", { className: officialClass("ChatView", "runningWhaleAnimated") ?? "" }), (0, import_react82.createElement)("svg", {
+  return (0, import_react81.createElement)("span", { className: officialClass("ChatView", "runningIcon") ?? "", "aria-hidden": "true" }, (0, import_react81.createElement)("span", { className: officialClass("ChatView", "runningWhaleAnimated") ?? "" }), (0, import_react81.createElement)("svg", {
     className: officialClass("ChatView", "runningWhaleStill") ?? "",
     width: "100%",
     height: "100%",
     viewBox: "0 0 16 16",
     fill: "none"
-  }, (0, import_react82.createElement)("path", { d: REST_PATH, stroke: "currentColor", strokeWidth: 1 })));
+  }, (0, import_react81.createElement)("path", { d: REST_PATH, stroke: "currentColor", strokeWidth: 1 })));
 }
 function RunningStatusMirror(props) {
   const { startTime, t: t4 } = props;
-  const [now, setNow] = (0, import_react82.useState)(() => Date.now());
-  (0, import_react82.useEffect)(() => {
+  const [now, setNow] = (0, import_react81.useState)(() => Date.now());
+  (0, import_react81.useEffect)(() => {
     if (startTime === void 0)
       return;
     setNow(Date.now());
@@ -61676,22 +61599,22 @@ function RunningStatusMirror(props) {
     };
   }, [startTime]);
   const label = startTime === void 0 ? t4("chatDeepDiving") : t4("chatDeepDivingFor", { duration: durationText(formatRunDuration(Math.max(1e3, now - startTime), t4)) });
-  return (0, import_react82.createElement)("div", {
+  return (0, import_react81.createElement)("div", {
     className: officialClass("ChatView", "running") ?? "",
     "data-chat-running": true
-  }, (0, import_react82.createElement)("span", {
+  }, (0, import_react81.createElement)("span", {
     className: officialClass("accessibility", "visuallyHidden") ?? "",
     role: "status",
     "aria-live": "polite",
     "aria-atomic": "true"
-  }, t4("chatDeepDiving")), (0, import_react82.createElement)("span", { className: officialClass("ChatView", "runningDivider") ?? "", "aria-hidden": "true" }), (0, import_react82.createElement)("span", { className: officialClass("ChatView", "runningContent") ?? "" }, (0, import_react82.createElement)(RunningWhaleTail, null), (0, import_react82.createElement)(official_exports.TextShimmer, {
+  }, t4("chatDeepDiving")), (0, import_react81.createElement)("span", { className: officialClass("ChatView", "runningDivider") ?? "", "aria-hidden": "true" }), (0, import_react81.createElement)("span", { className: officialClass("ChatView", "runningContent") ?? "" }, (0, import_react81.createElement)(RunningWhaleTail, null), (0, import_react81.createElement)(official_exports.TextShimmer, {
     active: true,
     className: officialClass("ChatView", "runningText") ?? ""
   }, label)));
 }
 
 // dist/adv/session/mirror/TurnProcessNodeView.js
-var import_react83 = require("react");
+var import_react82 = require("react");
 function TurnProcessNodeViewMirror(props) {
   const { turn, turnProcess, t: t4 } = props;
   if (turn === void 0 || turn.status !== "closed")
@@ -61705,12 +61628,12 @@ function TurnProcessNodeViewMirror(props) {
   const label = stopped ? t4("turnStopped") : reason === "error" ? t4("turnProcessFailed") : duration === void 0 ? t4("turnProcessWorked") : t4("turnProcessTook");
   const durationNumberClass = officialClass("TurnProcessNodeView", "durationNumber") ?? void 0;
   const spec = turnProcess.spec;
-  return (0, import_react83.createElement)(import_react83.Fragment, null, (0, import_react83.createElement)("span", {
+  return (0, import_react82.createElement)(import_react82.Fragment, null, (0, import_react82.createElement)("span", {
     className: officialClass("accessibility", "visuallyHidden") ?? "",
     role: "status",
     "aria-live": "polite",
     "aria-atomic": "true"
-  }, stopped ? t4("turnStopped") : reason === "error" ? t4("turnProcessFailed") : t4("turnProcessWorked")), (0, import_react83.createElement)("button", {
+  }, stopped ? t4("turnStopped") : reason === "error" ? t4("turnProcessFailed") : t4("turnProcessWorked")), (0, import_react82.createElement)("button", {
     type: "button",
     className: officialClass("TurnProcessNodeView", "root") ?? "",
     "data-open": open || void 0,
@@ -61723,33 +61646,33 @@ function TurnProcessNodeViewMirror(props) {
     onClick: () => {
       turnProcess.setOpen(!open);
     }
-  }, (0, import_react83.createElement)("span", { className: officialClass("TurnProcessNodeView", "label") ?? "" }, label, duration?.map((part, index3) => (0, import_react83.createElement)("span", {
+  }, (0, import_react82.createElement)("span", { className: officialClass("TurnProcessNodeView", "label") ?? "" }, label, duration?.map((part, index3) => (0, import_react82.createElement)("span", {
     key: index3,
     className: part.numeric ? durationNumberClass : void 0
-  }, part.text))), canCollapse ? (0, import_react83.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("TurnProcessNodeView", "chevron") ?? "" }) : null));
+  }, part.text))), canCollapse ? (0, import_react82.createElement)(official_exports.IconChevronDownOutlineRegular, { className: officialClass("TurnProcessNodeView", "chevron") ?? "" }) : null));
 }
 
 // dist/adv/session/mirror/TurnTailNodeView.js
-var import_react86 = require("react");
+var import_react85 = require("react");
 
 // dist/adv/session/mirror/TurnUsagePanel.js
-var import_react85 = require("react");
+var import_react84 = require("react");
 var import_react_dom5 = require("react-dom");
 
 // dist/adv/session/mirror/StatDialog.js
-var import_react84 = require("react");
+var import_react83 = require("react");
 var PANEL_MARGIN = 12;
 var PANEL_GAP = 8;
 var STAT_MEASURE_STYLE = { visibility: "hidden", left: 0, top: 0 };
 function useStatDialog(controlled) {
-  const [ownOpen, setOwnOpen] = (0, import_react84.useState)(false);
+  const [ownOpen, setOwnOpen] = (0, import_react83.useState)(false);
   const open = controlled?.open ?? ownOpen;
   const setOpen = controlled?.setOpen ?? setOwnOpen;
-  const rootRef = (0, import_react84.useRef)(null);
-  const panelRef = (0, import_react84.useRef)(null);
+  const rootRef = (0, import_react83.useRef)(null);
+  const panelRef = (0, import_react83.useRef)(null);
   const pos = (0, official_exports.useAnchoredPosition)({ open, anchorRef: rootRef, panelRef, side: "top", gap: PANEL_GAP, margin: PANEL_MARGIN });
   (0, official_exports.useDismissOnOutsidePointer)(rootRef, open, setOpen, panelRef);
-  (0, import_react84.useEffect)(() => {
+  (0, import_react83.useEffect)(() => {
     if (!open)
       return;
     const onKeyDown = (event) => {
@@ -61776,12 +61699,12 @@ function useStatDialog(controlled) {
 
 // dist/adv/session/mirror/TurnUsagePanel.js
 function TurnUsagePanelMirror(props) {
-  const { usage, t: t4 } = props;
+  const { usage: usage2, t: t4 } = props;
   const { open, setOpen, rootRef, panelRef, pos } = useStatDialog();
-  const cacheHit = usage.cacheReadTokens === void 0 ? null : formatCacheHitPercent(usage.cacheReadTokens, usage.totalTokens - usage.outputTokens, 1);
-  const total = formatCompactCount(usage.totalTokens, t4);
-  const routes = usage.routes?.map((route) => `${route.provider}/${route.model}`).join(", ") ?? "";
-  return (0, import_react85.createElement)("span", { ref: rootRef, className: officialClass("TurnUsagePanel", "root") ?? "" }, (0, import_react85.createElement)("button", {
+  const cacheHit = usage2.cacheReadTokens === void 0 ? null : formatCacheHitPercent(usage2.cacheReadTokens, usage2.totalTokens - usage2.outputTokens, 1);
+  const total = formatCompactCount(usage2.totalTokens, t4);
+  const routes = usage2.routes?.map((route) => `${route.provider}/${route.model}`).join(", ") ?? "";
+  return (0, import_react84.createElement)("span", { ref: rootRef, className: officialClass("TurnUsagePanel", "root") ?? "" }, (0, import_react84.createElement)("button", {
     type: "button",
     className: officialClass("TurnUsagePanel", "trigger") ?? "",
     "aria-haspopup": "dialog",
@@ -61789,15 +61712,15 @@ function TurnUsagePanelMirror(props) {
     onClick: () => {
       setOpen(!open);
     }
-  }, (0, import_react85.createElement)(official_exports.IconDatabaseOutlineRegular, null), (0, import_react85.createElement)("span", { className: officialClass("TurnUsagePanel", "label") ?? "" }, t4("turnUsageConsumed", { total }))), open ? (0, import_react_dom5.createPortal)((0, import_react85.createElement)("div", {
+  }, (0, import_react84.createElement)(official_exports.IconDatabaseOutlineRegular, null), (0, import_react84.createElement)("span", { className: officialClass("TurnUsagePanel", "label") ?? "" }, t4("turnUsageConsumed", { total }))), open ? (0, import_react_dom5.createPortal)((0, import_react84.createElement)("div", {
     ref: panelRef,
     className: officialClass("stat-dialog", "panel") ?? "",
     role: "dialog",
     "aria-label": t4("turnUsageTitle"),
     style: pos ?? STAT_MEASURE_STYLE
-  }, (0, import_react85.createElement)("div", { className: officialClass("stat-dialog", "title") ?? "" }, (0, import_react85.createElement)("span", { className: officialClass("stat-dialog", "titleLabel") ?? "" }, (0, import_react85.createElement)(official_exports.IconDatabaseOutlineRegular, null), t4("turnUsageTitle")), (0, import_react85.createElement)("span", { className: officialClass("stat-dialog", "titleValue") ?? "" }, formatExactCount(usage.totalTokens, t4))), (0, import_react85.createElement)("div", { className: officialClass("stat-dialog", "titleRule") ?? "", "aria-hidden": true }), (0, import_react85.createElement)("dl", { className: officialClass("stat-dialog", "details") ?? "", "data-turn-usage-details": true }, routes === "" ? null : (0, import_react85.createElement)(import_react85.Fragment, null, (0, import_react85.createElement)("dt", null, t4("turnUsageModel")), (0, import_react85.createElement)("dd", { className: officialClass("stat-dialog", "route") ?? "" }, routes)), cacheHit === null ? null : (0, import_react85.createElement)(import_react85.Fragment, null, (0, import_react85.createElement)("dt", null, t4("turnUsageCacheHit")), (0, import_react85.createElement)("dd", null, `${cacheHit}%`)), (0, import_react85.createElement)("dt", null, t4("turnUsageInput")), (0, import_react85.createElement)("dd", null, formatExactCount(usage.uncachedInputTokens, t4)), usage.cacheReadTokens === void 0 ? null : (0, import_react85.createElement)(import_react85.Fragment, null, (0, import_react85.createElement)("dt", null, t4("turnUsageCacheRead")), (0, import_react85.createElement)("dd", null, formatExactCount(usage.cacheReadTokens, t4))), usage.cacheWriteTokens === void 0 ? null : (0, import_react85.createElement)(import_react85.Fragment, null, (0, import_react85.createElement)("dt", null, t4("turnUsageCacheWrite")), (0, import_react85.createElement)("dd", null, formatExactCount(usage.cacheWriteTokens, t4))), (0, import_react85.createElement)("dt", null, t4("turnUsageOutput")), (0, import_react85.createElement)("dd", null, formatExactCount(usage.outputTokens, t4), usage.reasoningTokens === void 0 ? null : (0, import_react85.createElement)("span", {
+  }, (0, import_react84.createElement)("div", { className: officialClass("stat-dialog", "title") ?? "" }, (0, import_react84.createElement)("span", { className: officialClass("stat-dialog", "titleLabel") ?? "" }, (0, import_react84.createElement)(official_exports.IconDatabaseOutlineRegular, null), t4("turnUsageTitle")), (0, import_react84.createElement)("span", { className: officialClass("stat-dialog", "titleValue") ?? "" }, formatExactCount(usage2.totalTokens, t4))), (0, import_react84.createElement)("div", { className: officialClass("stat-dialog", "titleRule") ?? "", "aria-hidden": true }), (0, import_react84.createElement)("dl", { className: officialClass("stat-dialog", "details") ?? "", "data-turn-usage-details": true }, routes === "" ? null : (0, import_react84.createElement)(import_react84.Fragment, null, (0, import_react84.createElement)("dt", null, t4("turnUsageModel")), (0, import_react84.createElement)("dd", { className: officialClass("stat-dialog", "route") ?? "" }, routes)), cacheHit === null ? null : (0, import_react84.createElement)(import_react84.Fragment, null, (0, import_react84.createElement)("dt", null, t4("turnUsageCacheHit")), (0, import_react84.createElement)("dd", null, `${cacheHit}%`)), (0, import_react84.createElement)("dt", null, t4("turnUsageInput")), (0, import_react84.createElement)("dd", null, formatExactCount(usage2.uncachedInputTokens, t4)), usage2.cacheReadTokens === void 0 ? null : (0, import_react84.createElement)(import_react84.Fragment, null, (0, import_react84.createElement)("dt", null, t4("turnUsageCacheRead")), (0, import_react84.createElement)("dd", null, formatExactCount(usage2.cacheReadTokens, t4))), usage2.cacheWriteTokens === void 0 ? null : (0, import_react84.createElement)(import_react84.Fragment, null, (0, import_react84.createElement)("dt", null, t4("turnUsageCacheWrite")), (0, import_react84.createElement)("dd", null, formatExactCount(usage2.cacheWriteTokens, t4))), (0, import_react84.createElement)("dt", null, t4("turnUsageOutput")), (0, import_react84.createElement)("dd", null, formatExactCount(usage2.outputTokens, t4), usage2.reasoningTokens === void 0 ? null : (0, import_react84.createElement)("span", {
     className: officialClass("stat-dialog", "reasoning") ?? ""
-  }, t4("turnUsageReasoning", { tokens: formatExactCount(usage.reasoningTokens, t4) }))))), document.body) : null);
+  }, t4("turnUsageReasoning", { tokens: formatExactCount(usage2.reasoningTokens, t4) }))))), document.body) : null);
 }
 
 // dist/adv/session/mirror/TurnTailNodeView.js
@@ -61865,11 +61788,11 @@ function TurnTailNodeViewMirror(props) {
     return null;
   const text2 = assistantText(closing4.blocks);
   const anchorSeq = closing4.finalNode?.seq ?? data2.seq;
-  return (0, import_react86.createElement)("div", {
+  return (0, import_react85.createElement)("div", {
     className: officialClass("TurnTailNodeView", "root") ?? "",
     "data-turn-tail": data2.turn,
     "data-actions-reveal": facts === void 0 || facts.endsWithResponse(data2.turn) ? "always" : "hover"
-  }, tailSlot === void 0 || tailSlot === null ? null : tailSlot, (0, import_react86.createElement)(MessageIconActionsMirror, {
+  }, tailSlot === void 0 || tailSlot === null ? null : tailSlot, (0, import_react85.createElement)(MessageIconActionsMirror, {
     text: text2,
     time: closing4.time,
     clock: "end",
@@ -61880,13 +61803,13 @@ function TurnTailNodeViewMirror(props) {
     },
     branchUnavailable: data2.branchUnavailable === true || facts?.hasLaterChatNode(data2.turn, anchorSeq),
     className: officialClass("TurnTailNodeView", "actions") ?? "",
-    usageAction: data2.tokenUsage === void 0 ? void 0 : (0, import_react86.createElement)(TurnUsagePanelMirror, { usage: data2.tokenUsage, t: t4 }),
+    usageAction: data2.tokenUsage === void 0 ? void 0 : (0, import_react85.createElement)(TurnUsagePanelMirror, { usage: data2.tokenUsage, t: t4 }),
     t: t4
   }));
 }
 
 // dist/adv/session/mirror/TurnTriggerNodeView.js
-var import_react87 = require("react");
+var import_react86 = require("react");
 var TRIGGER_ICONS = {
   request: official_exports.IconContextInjectionOutlineRegular,
   goal: official_exports.IconGoalOutlineRegular,
@@ -61929,15 +61852,15 @@ function turnTriggerDetails(source) {
 }
 function TurnTriggerNodeViewMirror(props) {
   const { data: data2, t: t4 } = props;
-  const [open, setOpen] = (0, import_react87.useState)(false);
-  const bodyId = (0, import_react87.useId)();
+  const [open, setOpen] = (0, import_react86.useState)(false);
+  const bodyId = (0, import_react86.useId)();
   const details = turnTriggerDetails(data2?.source);
   const TriggerIcon = TRIGGER_ICONS[details.icon] ?? official_exports.IconContextInjectionOutlineRegular;
   const time = typeof data2?.time === "number" ? data2.time : void 0;
-  return (0, import_react87.createElement)("section", {
+  return (0, import_react86.createElement)("section", {
     className: officialClass("TurnTriggerNodeView", "root") ?? "",
     "data-turn-trigger": true
-  }, (0, import_react87.createElement)("button", {
+  }, (0, import_react86.createElement)("button", {
     type: "button",
     className: officialClass("TurnTriggerNodeView", "header") ?? "",
     "aria-expanded": open,
@@ -61945,13 +61868,13 @@ function TurnTriggerNodeViewMirror(props) {
     onClick: () => {
       setOpen((value) => !value);
     }
-  }, (0, import_react87.createElement)("span", { className: officialClass("TurnTriggerNodeView", "icon") ?? "", "aria-hidden": true }, (0, import_react87.createElement)(TriggerIcon, { size: 14 })), (0, import_react87.createElement)("span", { className: officialClass("TurnTriggerNodeView", "title") ?? "" }, t4(details.title)), time === void 0 ? null : (0, import_react87.createElement)("time", {
+  }, (0, import_react86.createElement)("span", { className: officialClass("TurnTriggerNodeView", "icon") ?? "", "aria-hidden": true }, (0, import_react86.createElement)(TriggerIcon, { size: 14 })), (0, import_react86.createElement)("span", { className: officialClass("TurnTriggerNodeView", "title") ?? "" }, t4(details.title)), time === void 0 ? null : (0, import_react86.createElement)("time", {
     className: officialClass("TurnTriggerNodeView", "time") ?? "",
     dateTime: new Date(time).toISOString()
-  }, formatMessageClock(time, t4)), (0, import_react87.createElement)(official_exports.IconChevronDownOutlineRegular, {
+  }, formatMessageClock(time, t4)), (0, import_react86.createElement)(official_exports.IconChevronDownOutlineRegular, {
     size: 12,
     className: open ? officialClass("TurnTriggerNodeView", "openChevron") ?? "" : officialClass("TurnTriggerNodeView", "chevron") ?? ""
-  })), open ? (0, import_react87.createElement)("div", { id: bodyId, className: officialClass("TurnTriggerNodeView", "body") ?? "" }, (0, import_react87.createElement)("p", { className: officialClass("TurnTriggerNodeView", "explanation") ?? "" }, t4("triggerExplanation")), (0, import_react87.createElement)("div", { className: officialClass("TurnTriggerNodeView", "content") ?? "" }, modelFacingRuns(data2?.content, t4).map((text2, index3) => (0, import_react87.createElement)("pre", {
+  })), open ? (0, import_react86.createElement)("div", { id: bodyId, className: officialClass("TurnTriggerNodeView", "body") ?? "" }, (0, import_react86.createElement)("p", { className: officialClass("TurnTriggerNodeView", "explanation") ?? "" }, t4("triggerExplanation")), (0, import_react86.createElement)("div", { className: officialClass("TurnTriggerNodeView", "content") ?? "" }, modelFacingRuns(data2?.content, t4).map((text2, index3) => (0, import_react86.createElement)("pre", {
     key: index3,
     className: officialClass("ContextBody", "text") ?? "",
     "data-context-text": true
@@ -61976,7 +61899,7 @@ function modelFacingRuns(content2, t4) {
 }
 
 // dist/adv/session/mirror/Deliverables.js
-var import_react88 = require("react");
+var import_react87 = require("react");
 var basename = (path) => path.slice(Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\")) + 1);
 function parentOf2(path) {
   const cut = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
@@ -61995,13 +61918,13 @@ function fileNames(raw) {
 }
 function PreparingPresentRow(props) {
   const { t: t4 } = props;
-  return (0, import_react88.createElement)("div", {
+  return (0, import_react87.createElement)("div", {
     "data-tool": "present",
     "data-state": "preparing",
     "aria-label": t4("deliverRowPreparing")
-  }, (0, import_react88.createElement)(official_exports.DisclosureRow, {
+  }, (0, import_react87.createElement)(official_exports.DisclosureRow, {
     title: t4("deliverRowTitle"),
-    icon: (0, import_react88.createElement)(official_exports.IconDeliverDocRegular, { size: 14 }),
+    icon: (0, import_react87.createElement)(official_exports.IconDeliverDocRegular, { size: 14 }),
     open: false,
     expandable: false,
     onToggle: () => {
@@ -62014,19 +61937,19 @@ function PresentRowMirror(props) {
   const b = block2 ?? {};
   const settled = typeof b.kind === "string";
   if (!settled && b.phase === "preparing")
-    return (0, import_react88.createElement)(PreparingPresentRow, { t: t4 });
+    return (0, import_react87.createElement)(PreparingPresentRow, { t: t4 });
   const state = !settled ? "running" : b.error?.code === "interrupted" ? "stopped" : b.isError ? "error" : "ok";
   const argsRaw = (settled ? b.call?.argsRaw : b.argsRaw) ?? "";
   const details = settled ? (b.content ?? []).map((item) => item.type === "text" ? item.text ?? "" : JSON.stringify(item)).join("\n") || (b.error ? `${b.error.name ?? ""}: ${b.error.code ?? ""}` : "") : "";
-  const [expanded, setExpanded] = (0, import_react88.useState)(false);
+  const [expanded, setExpanded] = (0, import_react87.useState)(false);
   const statusKey = state === "running" ? "deliverRowRunning" : state === "error" ? "deliverRowError" : state === "stopped" ? "deliverRowStopped" : "deliverRowOk";
-  return (0, import_react88.createElement)("div", {
+  return (0, import_react87.createElement)("div", {
     // 官方 StartedPresentRow 的 root 不挂任何类（只 data-tool / data-state）。
     "data-tool": "present",
     "data-state": state
-  }, (0, import_react88.createElement)(official_exports.DisclosureRow, {
+  }, (0, import_react87.createElement)(official_exports.DisclosureRow, {
     title: t4("deliverRowTitle"),
-    icon: (0, import_react88.createElement)(official_exports.IconDeliverDocRegular, { size: 14 }),
+    icon: (0, import_react87.createElement)(official_exports.IconDeliverDocRegular, { size: 14 }),
     open: expanded && details !== "",
     expandable: details !== "",
     expandOnRowClick: true,
@@ -62034,9 +61957,9 @@ function PresentRowMirror(props) {
     onToggle: () => {
       setExpanded((value) => !value);
     },
-    collapsedContent: (0, import_react88.createElement)("span", { className: officialClass("PresentRow", "summary") ?? "" }, (0, import_react88.createElement)("span", null, t4(statusKey)), (0, import_react88.createElement)("span", { className: officialClass("PresentRow", "paths") ?? "" }, fileNames(argsRaw))),
+    collapsedContent: (0, import_react87.createElement)("span", { className: officialClass("PresentRow", "summary") ?? "" }, (0, import_react87.createElement)("span", null, t4(statusKey)), (0, import_react87.createElement)("span", { className: officialClass("PresentRow", "paths") ?? "" }, fileNames(argsRaw))),
     // 官方 children 是数组且 pre.output **恒在**（空字符串也渲染）。
-    children: [(0, import_react88.createElement)("pre", { key: "output", className: officialClass("PresentRow", "output") ?? "" }, details)]
+    children: [(0, import_react87.createElement)("pre", { key: "output", className: officialClass("PresentRow", "output") ?? "" }, details)]
   }));
 }
 var COLLAPSED_DELIVERED_COUNT = 4;
@@ -62048,14 +61971,14 @@ function DeliveredFileCard(props) {
   const { file, onPreview, onReveal, t: t4 } = props;
   const name2 = basename(file.path);
   const metadata = (0, official_exports.fileExtension)(name2).toUpperCase() || t4("deliverFileLabel");
-  return (0, import_react88.createElement)(
+  return (0, import_react87.createElement)(
     "div",
     {
       className: officialClass("Deliverables", "file") ?? "",
       "data-presented-file": true
     },
     // 官方 cardPreview 按钮**恒在**（弹窗无预览出口时点击无副作用）。
-    (0, import_react88.createElement)("button", {
+    (0, import_react87.createElement)("button", {
       type: "button",
       className: officialClass("Deliverables", "cardPreview") ?? "",
       "aria-label": t4("deliverPreviewCard", { name: file.path }),
@@ -62064,10 +61987,10 @@ function DeliveredFileCard(props) {
         onPreview?.();
       }
     }),
-    (0, import_react88.createElement)("span", { className: officialClass("Deliverables", "fileIcon") ?? "" }, (0, import_react88.createElement)(official_exports.FileTypeIcon, { path: file.path })),
-    (0, import_react88.createElement)("div", { className: officialClass("Deliverables", "fileBody") ?? "" }, (0, import_react88.createElement)("div", { className: officialClass("Deliverables", "details") ?? "" }, (0, import_react88.createElement)("span", { className: officialClass("Deliverables", "fileName") ?? "" }, name2), (0, import_react88.createElement)("span", { className: officialClass("Deliverables", "description") ?? "", "data-presented-description": true }, (0, import_react88.createElement)("span", { className: officialClass("Deliverables", "secondaryText") ?? "" }, cardDescription(file.description, metadata)), (0, import_react88.createElement)("span", { className: officialClass("Deliverables", "previewHint") ?? "" }, t4("deliverPreviewHint")))), onReveal === void 0 ? null : (0, import_react88.createElement)("div", { className: officialClass("Deliverables", "actions") ?? "" }, (0, import_react88.createElement)(IconButton, {
+    (0, import_react87.createElement)("span", { className: officialClass("Deliverables", "fileIcon") ?? "" }, (0, import_react87.createElement)(official_exports.FileTypeIcon, { path: file.path })),
+    (0, import_react87.createElement)("div", { className: officialClass("Deliverables", "fileBody") ?? "" }, (0, import_react87.createElement)("div", { className: officialClass("Deliverables", "details") ?? "" }, (0, import_react87.createElement)("span", { className: officialClass("Deliverables", "fileName") ?? "" }, name2), (0, import_react87.createElement)("span", { className: officialClass("Deliverables", "description") ?? "", "data-presented-description": true }, (0, import_react87.createElement)("span", { className: officialClass("Deliverables", "secondaryText") ?? "" }, cardDescription(file.description, metadata)), (0, import_react87.createElement)("span", { className: officialClass("Deliverables", "previewHint") ?? "" }, t4("deliverPreviewHint")))), onReveal === void 0 ? null : (0, import_react87.createElement)("div", { className: officialClass("Deliverables", "actions") ?? "" }, (0, import_react87.createElement)(IconButton, {
       size: "sm",
-      icon: (0, import_react88.createElement)(official_exports.IconFolderOpenOutlineRegular),
+      icon: (0, import_react87.createElement)(official_exports.IconFolderOpenOutlineRegular),
       label: t4("deliverReveal"),
       onClick: (event) => {
         event.stopPropagation();
@@ -62078,21 +62001,21 @@ function DeliveredFileCard(props) {
 }
 function DeliverablesGridMirror(props) {
   const { files, onOpen, t: t4 } = props;
-  const [expanded, setExpanded] = (0, import_react88.useState)(false);
+  const [expanded, setExpanded] = (0, import_react87.useState)(false);
   if (files.length === 0)
     return null;
   const collapsible = files.length > COLLAPSED_DELIVERED_COUNT;
   const shown = collapsible && !expanded ? files.slice(0, COLLAPSED_DELIVERED_COUNT) : files;
-  return (0, import_react88.createElement)("div", {
+  return (0, import_react87.createElement)("div", {
     className: officialClass("Deliverables", "root") ?? "",
     "data-after-changes": true,
     "data-presented-files-grid": true
-  }, (0, import_react88.createElement)("div", {
+  }, (0, import_react87.createElement)("div", {
     className: officialClass("Deliverables", "presented") ?? "",
     "data-presented-files-row": true,
     // 官方单文件整行铺满（CSS 依赖 data-single）。
     "data-single": files.length === 1 || void 0
-  }, shown.map((file, index3) => (0, import_react88.createElement)(DeliveredFileCard, {
+  }, shown.map((file, index3) => (0, import_react87.createElement)(DeliveredFileCard, {
     key: `${file.path}:${index3}`,
     file,
     onPreview: onOpen === void 0 ? void 0 : () => {
@@ -62105,7 +62028,7 @@ function DeliverablesGridMirror(props) {
       };
     })(),
     t: t4
-  }))), collapsible ? (0, import_react88.createElement)("button", {
+  }))), collapsible ? (0, import_react87.createElement)("button", {
     type: "button",
     className: officialClass("Deliverables", "toggle") ?? "",
     "aria-expanded": expanded,
@@ -62113,11 +62036,11 @@ function DeliverablesGridMirror(props) {
     onClick: () => {
       setExpanded((value) => !value);
     }
-  }, (0, import_react88.createElement)("span", null, t4(expanded ? "deliverCollapse" : "deliverAll", { count: files.length })), expanded ? (0, import_react88.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react88.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null);
+  }, (0, import_react87.createElement)("span", null, t4(expanded ? "deliverCollapse" : "deliverAll", { count: files.length })), expanded ? (0, import_react87.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react87.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null);
 }
 
 // dist/adv/session/mirror/ChangedFilesCard.js
-var import_react90 = require("react");
+var import_react89 = require("react");
 
 // dist/utils/string.js
 function baseNameOf(path) {
@@ -62224,7 +62147,7 @@ function turnDeliverablesChangesSeq(face) {
 }
 
 // dist/adv/session/mirror/ChangedFileDiff.js
-var import_react89 = require("react");
+var import_react88 = require("react");
 var C3 = (semantic) => officialClass("ChangedFiles", semantic) ?? "";
 var D = (semantic) => officialClass("FileDiff", semantic) ?? "";
 var cache3 = /* @__PURE__ */ new Map();
@@ -62239,21 +62162,21 @@ function highlightedSide(rows, side, highlighter) {
 }
 function DiffText(props) {
   const { text: text2, spans } = props;
-  return (0, import_react89.createElement)("span", { className: D("text"), "data-diff-code": spans === void 0 ? void 0 : "" }, spans === void 0 ? text2 : spans.map((span, index3) => (0, import_react89.createElement)("span", { key: index3, style: span.style }, span.text)));
+  return (0, import_react88.createElement)("span", { className: D("text"), "data-diff-code": spans === void 0 ? void 0 : "" }, spans === void 0 ? text2 : spans.map((span, index3) => (0, import_react88.createElement)("span", { key: index3, style: span.style }, span.text)));
 }
 function DiffLine(props) {
   const { row: row2 } = props;
   const kindClass = row2.kind === "add" ? D("add") : row2.kind === "del" ? D("del") : D("context");
   const spans = row2.kind === "del" ? props.oldSpans : props.newSpans;
-  return (0, import_react89.createElement)("div", { className: `${D("line")} ${kindClass}`, "data-diff-line": row2.kind }, (0, import_react89.createElement)("span", { className: D("number") }, row2.old ?? ""), (0, import_react89.createElement)("span", { className: D("number") }, row2.new ?? ""), (0, import_react89.createElement)("span", { className: D("sign") }, row2.kind === "add" ? "+" : row2.kind === "del" ? "-" : " "), (0, import_react89.createElement)(DiffText, { text: row2.text, spans }));
+  return (0, import_react88.createElement)("div", { className: `${D("line")} ${kindClass}`, "data-diff-line": row2.kind }, (0, import_react88.createElement)("span", { className: D("number") }, row2.old ?? ""), (0, import_react88.createElement)("span", { className: D("number") }, row2.new ?? ""), (0, import_react88.createElement)("span", { className: D("sign") }, row2.kind === "add" ? "+" : row2.kind === "del" ? "-" : " "), (0, import_react88.createElement)(DiffText, { text: row2.text, spans }));
 }
 function ChangedFileDiff(props) {
   const { sessionId, seq, index: index3, display, t: t4 = t, variant = "preview", onClose } = props;
   const url = changesDiffUrl(sessionId, seq, index3);
-  const [state, setState] = (0, import_react89.useState)(void 0);
-  const [attempt, setAttempt] = (0, import_react89.useState)(0);
-  const [wrap, setWrap] = (0, import_react89.useState)(false);
-  (0, import_react89.useEffect)(() => {
+  const [state, setState] = (0, import_react88.useState)(void 0);
+  const [attempt, setAttempt] = (0, import_react88.useState)(0);
+  const [wrap, setWrap] = (0, import_react88.useState)(false);
+  (0, import_react88.useEffect)(() => {
     if (cache3.has(url)) {
       setState(cache3.get(url));
       return;
@@ -62288,23 +62211,23 @@ function ChangedFileDiff(props) {
       alive = false;
     };
   }, [url, attempt]);
-  const retry = (0, import_react89.useCallback)(() => {
+  const retry = (0, import_react88.useCallback)(() => {
     setAttempt((value) => value + 1);
   }, []);
   const path = state === void 0 || state === "error" || state === null ? void 0 : state.path;
   const highlighter = (0, official_exports.useCodeHighlighter)(path === void 0 ? void 0 : (0, official_exports.languageForPath)(path));
-  const body = (0, import_react89.useMemo)(() => {
+  const body = (0, import_react88.useMemo)(() => {
     if (state === void 0)
-      return (0, import_react89.createElement)("p", { className: D("status"), role: "status" }, t4("diffLoading"));
+      return (0, import_react88.createElement)("p", { className: D("status"), role: "status" }, t4("diffLoading"));
     if (state === "error") {
-      return (0, import_react89.createElement)("div", { className: D("status") }, (0, import_react89.createElement)("span", null, t4("diffError")), (0, import_react89.createElement)(official_exports.Button, { size: "sm", onClick: retry }, t4("errorRetry")));
+      return (0, import_react88.createElement)("div", { className: D("status") }, (0, import_react88.createElement)("span", null, t4("diffError")), (0, import_react88.createElement)(official_exports.Button, { size: "sm", onClick: retry }, t4("errorRetry")));
     }
     if (state === null)
-      return (0, import_react89.createElement)("p", { className: D("status") }, t4("diffMissing"));
+      return (0, import_react88.createElement)("p", { className: D("status") }, t4("diffMissing"));
     if (state.kind === "binary")
-      return (0, import_react89.createElement)("p", { className: D("status") }, t4("diffBinary"));
+      return (0, import_react88.createElement)("p", { className: D("status") }, t4("diffBinary"));
     if (state.kind === "oversized")
-      return (0, import_react89.createElement)("p", { className: D("status") }, t4("diffOversized"));
+      return (0, import_react88.createElement)("p", { className: D("status") }, t4("diffOversized"));
     const note = diffNoteKey(state);
     const hunks = state.hunks ?? [];
     let budget = DIFF_MAX_RENDERED_LINES;
@@ -62324,14 +62247,14 @@ function ChangedFileDiff(props) {
       kept.push(hunk);
       budget -= hunk.lines.length;
     }
-    return (0, import_react89.createElement)("div", { className: D("body"), "data-review-view": "unified", "data-review-wrap": wrap ? true : void 0 }, note === void 0 ? null : (0, import_react89.createElement)("p", {
+    return (0, import_react88.createElement)("div", { className: D("body"), "data-review-view": "unified", "data-review-wrap": wrap ? true : void 0 }, note === void 0 ? null : (0, import_react88.createElement)("p", {
       className: D("note"),
       "data-diff-note": hunks.length === 0 ? "empty" : "metadata"
-    }, t4(note)), state.coarse === true ? (0, import_react89.createElement)("p", { className: D("note"), "data-diff-coarse": true }, t4("diffCoarse")) : null, truncated ? (0, import_react89.createElement)("p", { className: D("note"), "data-diff-truncated": true }, t4("diffTruncated", { count: String(DIFF_MAX_RENDERED_LINES) })) : null, kept.map((hunk, position) => {
+    }, t4(note)), state.coarse === true ? (0, import_react88.createElement)("p", { className: D("note"), "data-diff-coarse": true }, t4("diffCoarse")) : null, truncated ? (0, import_react88.createElement)("p", { className: D("note"), "data-diff-truncated": true }, t4("diffTruncated", { count: String(DIFF_MAX_RENDERED_LINES) })) : null, kept.map((hunk, position) => {
       const rows = hunkRows(hunk);
       const oldSpans = highlightedSide(rows, "old", highlighter);
       const newSpans = highlightedSide(rows, "new", highlighter);
-      return (0, import_react89.createElement)("section", { key: position, className: D("hunk") }, (0, import_react89.createElement)("div", { className: D("hunkHeader"), "data-diff-hunk-header": true }, hunkHeader(hunk)), rows.map((row2, at) => (0, import_react89.createElement)(DiffLine, {
+      return (0, import_react88.createElement)("section", { key: position, className: D("hunk") }, (0, import_react88.createElement)("div", { className: D("hunkHeader"), "data-diff-hunk-header": true }, hunkHeader(hunk)), rows.map((row2, at) => (0, import_react88.createElement)(DiffLine, {
         key: at,
         row: row2,
         oldSpans: oldSpans?.get(row2.old ?? -1),
@@ -62340,31 +62263,31 @@ function ChangedFileDiff(props) {
     }));
   }, [state, highlighter, t4, retry, wrap]);
   const preview = variant !== "review";
-  return (0, import_react89.createElement)("div", {
+  return (0, import_react88.createElement)("div", {
     className: preview ? `${D("root")} ${C3("preview")}` : D("root"),
     "data-changes-hover-preview": preview ? true : void 0,
     // review 版式要填满父容器：官方 root 高度 auto 时 body 只撑到内容高，
     // 横向滚动条会停在内容下沿（面板下面空一大截）。hover 预览卡不撑，保持自适应。
     style: preview ? void 0 : { height: "100%" }
-  }, (0, import_react89.createElement)(
+  }, (0, import_react88.createElement)(
     "div",
     { className: D("header") },
-    (0, import_react89.createElement)("span", { className: C3("previewPath"), "data-changes-preview-path": true }, display),
+    (0, import_react88.createElement)("span", { className: C3("previewPath"), "data-changes-preview-path": true }, display),
     // 审阅态右上：换行开关（等价官方 ReviewTab 的 wrap 工具钮；图标语义同官方：开着显示「取消换行」）。
-    preview ? null : (0, import_react89.createElement)(IconButton, {
+    preview ? null : (0, import_react88.createElement)(IconButton, {
       variant: "plain",
       size: "md",
-      icon: (0, import_react89.createElement)(wrap ? official_exports.IconNowrapFillRegular : official_exports.IconWrapFillRegular, { size: 14 }),
+      icon: (0, import_react88.createElement)(wrap ? official_exports.IconNowrapFillRegular : official_exports.IconWrapFillRegular, { size: 14 }),
       label: wrap ? t4("diffNowrap") : t4("diffWrap"),
       onClick: () => {
         setWrap((value) => !value);
       }
     }),
     // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个 IconButton + 官方 ✕，不自绘新样式）。
-    preview || onClose === void 0 ? null : (0, import_react89.createElement)(IconButton, {
+    preview || onClose === void 0 ? null : (0, import_react88.createElement)(IconButton, {
       variant: "plain",
       size: "md",
-      icon: (0, import_react89.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
+      icon: (0, import_react88.createElement)(official_exports.IconCloseOutlineRegular, { size: 14 }),
       label: t4("previewClose"),
       onClick: onClose
     })
@@ -62377,22 +62300,22 @@ var cache4 = /* @__PURE__ */ new Map();
 var COLLAPSED_ROWS = 4;
 function Counts(props) {
   const grouped = new Intl.NumberFormat("en-US");
-  return (0, import_react90.createElement)(import_react90.Fragment, null, (0, import_react90.createElement)("span", { className: C4("added") }, `+${grouped.format(props.added)}`), " ", (0, import_react90.createElement)("span", { className: C4("deleted") }, `-${grouped.format(props.deleted)}`));
+  return (0, import_react89.createElement)(import_react89.Fragment, null, (0, import_react89.createElement)("span", { className: C4("added") }, `+${grouped.format(props.added)}`), " ", (0, import_react89.createElement)("span", { className: C4("deleted") }, `-${grouped.format(props.deleted)}`));
 }
 function countsOf(file, t4) {
   if (file.binary === true)
     return t4("changesBinary");
   if (file.oversized === true)
     return t4("changesOversized");
-  return (0, import_react90.createElement)(Counts, { added: file.added, deleted: file.deleted });
+  return (0, import_react89.createElement)(Counts, { added: file.added, deleted: file.deleted });
 }
 function ChangedFilesCard(props) {
   const { sessionId, seq, onOpenReview, t: t4 } = props;
   const url = changesSummaryUrl(sessionId, seq);
-  const [summary, setSummary] = (0, import_react90.useState)(void 0);
-  const [expanded, setExpanded] = (0, import_react90.useState)(false);
-  const cardRef = (0, import_react90.useRef)(null);
-  (0, import_react90.useEffect)(() => {
+  const [summary, setSummary] = (0, import_react89.useState)(void 0);
+  const [expanded, setExpanded] = (0, import_react89.useState)(false);
+  const cardRef = (0, import_react89.useRef)(null);
+  (0, import_react89.useEffect)(() => {
     if (cache4.has(url)) {
       setSummary(cache4.get(url));
       return;
@@ -62417,22 +62340,22 @@ function ChangedFilesCard(props) {
   if (summary === void 0 || summary === null || summary.total === 0 || summary.files.length === 0)
     return null;
   const single = summary.total === 1 ? summary.files[0] : void 0;
-  const icon2 = single !== void 0 ? (0, import_react90.createElement)(official_exports.FileTypeIcon, { path: single.path }) : (0, import_react90.createElement)(official_exports.FileTypeIcon, { kind: "code" });
+  const icon2 = single !== void 0 ? (0, import_react89.createElement)(official_exports.FileTypeIcon, { path: single.path }) : (0, import_react89.createElement)(official_exports.FileTypeIcon, { kind: "code" });
   const title = single === void 0 ? t4("changesMulti", { count: String(summary.total) }) : t4("changesSingle", { name: baseNameOf(single.path) });
   const foldable2 = summary.files.length > COLLAPSED_ROWS;
   const rows = foldable2 && !expanded ? summary.files.slice(0, COLLAPSED_ROWS) : summary.files;
-  const headerBody = (0, import_react90.createElement)(import_react90.Fragment, null, (0, import_react90.createElement)("span", { className: C4("tile") }, icon2), (0, import_react90.createElement)("span", { className: C4("titles") }, (0, import_react90.createElement)("span", { className: C4("title") }, title), (0, import_react90.createElement)(
+  const headerBody = (0, import_react89.createElement)(import_react89.Fragment, null, (0, import_react89.createElement)("span", { className: C4("tile") }, icon2), (0, import_react89.createElement)("span", { className: C4("titles") }, (0, import_react89.createElement)("span", { className: C4("title") }, title), (0, import_react89.createElement)(
     "span",
     { className: C4("stat") },
     // 官方 deliv:1384-1388：header 恒用 turn 级汇总；binary/oversized 只看单文件那一份。
-    (0, import_react90.createElement)("span", { className: C4("statCounts") }, countsOf({
+    (0, import_react89.createElement)("span", { className: C4("statCounts") }, countsOf({
       added: summary.added,
       deleted: summary.deleted,
       ...single?.binary === true ? { binary: true } : {},
       ...single?.oversized === true ? { oversized: true } : {}
     }, t4)),
     // 官方 previewHint：hover/focus 时替换计数显示（提示这张卡可以 hover 出 diff 预览）。
-    (0, import_react90.createElement)("span", { className: C4("previewHint") }, t4("deliverPreviewHint"))
+    (0, import_react89.createElement)("span", { className: C4("previewHint") }, t4("deliverPreviewHint"))
   )));
   const headerLocator = {
     sessionId,
@@ -62440,25 +62363,25 @@ function ChangedFilesCard(props) {
     index: 0,
     display: single?.display ?? summary.files[0].display
   };
-  const headerNode = onOpenReview === void 0 ? (0, import_react90.createElement)("div", { className: C4("header") }, headerBody) : (0, import_react90.createElement)("button", {
+  const headerNode = onOpenReview === void 0 ? (0, import_react89.createElement)("div", { className: C4("header") }, headerBody) : (0, import_react89.createElement)("button", {
     type: "button",
     className: C4("header"),
     onClick: () => {
       onOpenReview(headerLocator);
     }
   }, headerBody);
-  const previewOf = (index3, display) => (0, import_react90.createElement)(ChangedFileDiff, { sessionId, seq, index: index3, display, t: t4 });
+  const previewOf = (index3, display) => (0, import_react89.createElement)(ChangedFileDiff, { sessionId, seq, index: index3, display, t: t4 });
   const rowOf = (file, index3) => {
-    const body = (0, import_react90.createElement)(import_react90.Fragment, null, (0, import_react90.createElement)("span", { className: C4("path") }, file.display), (0, import_react90.createElement)("span", { className: C4("counts") }, countsOf(file, t4)));
+    const body = (0, import_react89.createElement)(import_react89.Fragment, null, (0, import_react89.createElement)("span", { className: C4("path") }, file.display), (0, import_react89.createElement)("span", { className: C4("counts") }, countsOf(file, t4)));
     const locator = { sessionId, seq, index: index3, display: file.display };
-    const row2 = onOpenReview === void 0 ? (0, import_react90.createElement)("div", { className: C4("row") }, body) : (0, import_react90.createElement)("button", {
+    const row2 = onOpenReview === void 0 ? (0, import_react89.createElement)("div", { className: C4("row") }, body) : (0, import_react89.createElement)("button", {
       type: "button",
       className: C4("row"),
       onClick: () => {
         onOpenReview(locator);
       }
     }, body);
-    return (0, import_react90.createElement)(official_exports.HoverCard, {
+    return (0, import_react89.createElement)(official_exports.HoverCard, {
       key: file.display,
       variant: "preview",
       widthAnchorRef: cardRef,
@@ -62467,11 +62390,11 @@ function ChangedFilesCard(props) {
       content: previewOf(index3, file.display)
     });
   };
-  const list = single === void 0 ? (0, import_react90.createElement)("ul", { className: C4("list") }, rows.map((file) => {
+  const list = single === void 0 ? (0, import_react89.createElement)("ul", { className: C4("list") }, rows.map((file) => {
     const index3 = summary.files.indexOf(file);
-    return (0, import_react90.createElement)("li", { key: file.display }, rowOf(file, index3));
+    return (0, import_react89.createElement)("li", { key: file.display }, rowOf(file, index3));
   })) : null;
-  const toggle = foldable2 ? (0, import_react90.createElement)("button", {
+  const toggle = foldable2 ? (0, import_react89.createElement)("button", {
     type: "button",
     className: C4("toggle"),
     "aria-expanded": expanded,
@@ -62479,15 +62402,15 @@ function ChangedFilesCard(props) {
     onClick: () => {
       setExpanded((value) => !value);
     }
-  }, (0, import_react90.createElement)("span", null, t4(expanded ? "changesCollapse" : "changesAll", { count: summary.files.length })), expanded ? (0, import_react90.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react90.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null;
-  const header = single === void 0 ? headerNode : (0, import_react90.createElement)(official_exports.HoverCard, {
+  }, (0, import_react89.createElement)("span", null, t4(expanded ? "changesCollapse" : "changesAll", { count: summary.files.length })), expanded ? (0, import_react89.createElement)(official_exports.IconChevronUpOutlineRegular, {}) : (0, import_react89.createElement)(official_exports.IconChevronDownOutlineRegular, {})) : null;
+  const header = single === void 0 ? headerNode : (0, import_react89.createElement)(official_exports.HoverCard, {
     variant: "preview",
     widthAnchorRef: cardRef,
     openDelayMs: 500,
     anchor: headerNode,
     content: previewOf(0, single.display)
   });
-  return (0, import_react90.createElement)("div", {
+  return (0, import_react89.createElement)("div", {
     ref: cardRef,
     className: C4("card"),
     "data-changed-files": true,
@@ -62848,9 +62771,9 @@ function presentFiles(root) {
 function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, changesSeq, sessionId, onOpenReview, tailFacts, loadImage, footerSlot, footerKey, sessionRunning, liveKey) {
   switch (node.kind) {
     case "turn-trigger":
-      return (0, import_react91.createElement)(TurnTriggerNodeViewMirror, { data: node.data, t: t4 });
+      return (0, import_react90.createElement)(TurnTriggerNodeViewMirror, { data: node.data, t: t4 });
     case "turn-process":
-      return turnProcess === void 0 ? null : (0, import_react91.createElement)(TurnProcessNodeViewMirror, {
+      return turnProcess === void 0 ? null : (0, import_react90.createElement)(TurnProcessNodeViewMirror, {
         turn: turnLocationOf(node),
         turnProcess,
         t: t4
@@ -62860,10 +62783,10 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
       const turn = data2?.turn ?? turnLocationOf(node)?.turn;
       const atLastTail = turn !== void 0 && lastTailTurn !== void 0 && turn === lastTailTurn;
       const showGrid = deliverFiles !== void 0 && deliverFiles.length > 0 && atLastTail;
-      const changesCard = atLastTail && changesSeq !== void 0 && sessionId !== void 0 ? (0, import_react91.createElement)(ChangedFilesCard, { sessionId, seq: changesSeq, onOpenReview, t: t4 }) : null;
+      const changesCard = atLastTail && changesSeq !== void 0 && sessionId !== void 0 ? (0, import_react90.createElement)(ChangedFilesCard, { sessionId, seq: changesSeq, onOpenReview, t: t4 }) : null;
       const atFooter = footerKey !== void 0 && node.key === footerKey;
-      const tailSlot = changesCard === null && !showGrid && !atFooter ? null : (0, import_react91.createElement)(import_react91.Fragment, null, changesCard, showGrid ? (0, import_react91.createElement)(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t: t4 }) : null, atFooter ? footerSlot : null);
-      return data2 === void 0 || data2.closing === null || data2.closing === void 0 ? null : (0, import_react91.createElement)(TurnTailNodeViewMirror, { data: data2, onBranchAt, tailSlot, facts: tailFacts, t: t4 });
+      const tailSlot = changesCard === null && !showGrid && !atFooter ? null : (0, import_react90.createElement)(import_react90.Fragment, null, changesCard, showGrid ? (0, import_react90.createElement)(DeliverablesGridMirror, { files: deliverFiles, onOpen: fileOpen?.open, t: t4 }) : null, atFooter ? footerSlot : null);
+      return data2 === void 0 || data2.closing === null || data2.closing === void 0 ? null : (0, import_react90.createElement)(TurnTailNodeViewMirror, { data: data2, onBranchAt, tailSlot, facts: tailFacts, t: t4 });
     }
     case "assistant-step": {
       const nodeData = dataOf(node);
@@ -62877,20 +62800,20 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
       const parts = assistantBlocks(visible, t4, fileOpen?.mentions, streaming, loadImage);
       const stopped = interrupted && (groupPart !== "reasoning" || !blocks.some((block2) => block2.kind !== "reasoning" && block2.kind !== "tool-call"));
       if (stopped)
-        parts.push((0, import_react91.createElement)(AssistantStoppedBadge, { key: "stopped", t: t4 }));
-      return parts.length === 0 ? null : (0, import_react91.createElement)("div", { className: "dshpc-sv-assistant" }, parts);
+        parts.push((0, import_react90.createElement)(AssistantStoppedBadge, { key: "stopped", t: t4 }));
+      return parts.length === 0 ? null : (0, import_react90.createElement)("div", { className: "dshpc-sv-assistant" }, parts);
     }
     case "tool-call": {
       const root = dataOf(node).root;
       if (isPresentRoot(root))
-        return (0, import_react91.createElement)(PresentRowMirror, { block: root, t: t4 });
+        return (0, import_react90.createElement)(PresentRowMirror, { block: root, t: t4 });
       const card = toolCallCard(node, t4, fileOpen?.open, loadImage);
       if (card === null)
         return null;
-      return card.name === "bash" || card.name === "pwsh" ? (0, import_react91.createElement)(BashRowMirror, card) : card.name === "skill" ? (0, import_react91.createElement)(SkillRowMirror, card) : (0, import_react91.createElement)(GenericCommandCard, card);
+      return card.name === "bash" || card.name === "pwsh" ? (0, import_react90.createElement)(BashRowMirror, card) : card.name === "skill" ? (0, import_react90.createElement)(SkillRowMirror, card) : (0, import_react90.createElement)(GenericCommandCard, card);
     }
     case "command": {
-      return (0, import_react91.createElement)(ChatCallRow, null, (0, import_react91.createElement)(CommandCard, { node: dataOf(node), t: t4 }));
+      return (0, import_react90.createElement)(ChatCallRow, null, (0, import_react90.createElement)(CommandCard, { node: dataOf(node), t: t4 }));
     }
     case "user":
     case "steering": {
@@ -62900,7 +62823,7 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
       const { files, hadFiles } = contentFiles(blocks);
       if (text2 === "" && !hadFiles && images.length === 0)
         return null;
-      return (0, import_react91.createElement)(UserMessage, {
+      return (0, import_react90.createElement)(UserMessage, {
         text: text2,
         files,
         images,
@@ -62915,32 +62838,32 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
     case "answered-user-question":
     case "question-reply": {
       const data2 = dataOf(node);
-      return data2 === void 0 ? null : (0, import_react91.createElement)(QuestionReplyBubble, { data: data2, t: t4 });
+      return data2 === void 0 ? null : (0, import_react90.createElement)(QuestionReplyBubble, { data: data2, t: t4 });
     }
     case "turn-error":
-      return (0, import_react91.createElement)(TurnErrorItemMirror, { node: dataOf(node), t: t4 });
+      return (0, import_react90.createElement)(TurnErrorItemMirror, { node: dataOf(node), t: t4 });
     case "turn-max-tokens":
-      return (0, import_react91.createElement)(TurnMaxTokensItemMirror, { t: t4 });
+      return (0, import_react90.createElement)(TurnMaxTokensItemMirror, { t: t4 });
     case "model-retry": {
       const data2 = dataOf(node);
       const attempts = Array.isArray(data2.attempts) ? data2.attempts : [];
       const current3 = typeof data2.current === "object" && data2.current !== null ? data2.current : attempts[attempts.length - 1];
       if (current3 === void 0)
         return null;
-      return (0, import_react91.createElement)(ModelRetryItemMirror, { node: current3, active: current3.retryState === "scheduled", t: t4 });
+      return (0, import_react90.createElement)(ModelRetryItemMirror, { node: current3, active: current3.retryState === "scheduled", t: t4 });
     }
     // 决策 28：context（系统注入）/ unknown 仍默认过滤；
     // 0.2.x compaction 节点走官方 CompactionItem（此前漏渲染 ⇒ 压缩段整段消失）。
     case "compaction":
-      return (0, import_react91.createElement)(CompactionItemMirror, { node: dataOf(node), t: t4 });
+      return (0, import_react90.createElement)(CompactionItemMirror, { node: dataOf(node), t: t4 });
     case "manual-compaction":
-      return (0, import_react91.createElement)(ChatCallRow, null, (0, import_react91.createElement)(CompactionItemMirror, { node: dataOf(node), t: t4 }));
+      return (0, import_react90.createElement)(ChatCallRow, null, (0, import_react90.createElement)(CompactionItemMirror, { node: dataOf(node), t: t4 }));
     case "context":
-      return (0, import_react91.createElement)(ContextInjectionRowMirror, { node: dataOf(node), t: t4 });
+      return (0, import_react90.createElement)(ContextInjectionRowMirror, { node: dataOf(node), t: t4 });
     case "unknown":
       return null;
     default:
-      return (0, import_react91.createElement)("div", { className: officialClass("MessageItem", "contextRow") ?? "" }, (0, import_react91.createElement)("details", { className: "dshpc-sv-tool" }, (0, import_react91.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react91.createElement)("pre", null, safeJson(node.data))));
+      return (0, import_react90.createElement)("div", { className: officialClass("MessageItem", "contextRow") ?? "" }, (0, import_react90.createElement)("details", { className: "dshpc-sv-tool" }, (0, import_react90.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react90.createElement)("pre", null, safeJson(node.data))));
   }
 }
 function assistantBlocks(blocks, t4, fileMentions, streaming = false, loadImage) {
@@ -62952,12 +62875,12 @@ function assistantBlocks(blocks, t4, fileMentions, streaming = false, loadImage)
     switch (block2.kind) {
       case "text":
         if (block2.text.trim() !== "") {
-          parts.push((0, import_react91.createElement)(AssistantMarkdown, { key: `t${index3}`, text: block2.text, streaming, fileMentions }));
+          parts.push((0, import_react90.createElement)(AssistantMarkdown, { key: `t${index3}`, text: block2.text, streaming, fileMentions }));
         }
         break;
       case "reasoning":
         if (block2.text.trim() !== "") {
-          parts.push((0, import_react91.createElement)(ReasoningRowMirror, { key: `r${index3}`, text: block2.text, running: streaming && index3 === last2, t: t4 }));
+          parts.push((0, import_react90.createElement)(ReasoningRowMirror, { key: `r${index3}`, text: block2.text, running: streaming && index3 === last2, t: t4 }));
         }
         break;
       case "image": {
@@ -62974,16 +62897,16 @@ function assistantBlocks(blocks, t4, fileMentions, streaming = false, loadImage)
           }
         }
         if (loadImage !== void 0 && images.length > 0) {
-          parts.push((0, import_react91.createElement)(ImageGalleryMirror, { key: `i${index3}`, images, load: loadImage, align: "start", t: t4 }));
+          parts.push((0, import_react90.createElement)(ImageGalleryMirror, { key: `i${index3}`, images, load: loadImage, align: "start", t: t4 }));
         } else {
-          parts.push((0, import_react91.createElement)("div", { key: `i${index3}`, className: "dshpc-sv-image" }, t4("sessionImage")));
+          parts.push((0, import_react90.createElement)("div", { key: `i${index3}`, className: "dshpc-sv-image" }, t4("sessionImage")));
         }
         break;
       }
       case "tool-call":
         break;
       default:
-        parts.push((0, import_react91.createElement)("details", { key: `o${index3}`, className: "dshpc-sv-tool" }, (0, import_react91.createElement)("summary", null, t4("sessionUnknownKind")), (0, import_react91.createElement)("pre", null, safeJson(block2.block))));
+        parts.push((0, import_react90.createElement)("details", { key: `o${index3}`, className: "dshpc-sv-tool" }, (0, import_react90.createElement)("summary", null, t4("sessionUnknownKind")), (0, import_react90.createElement)("pre", null, safeJson(block2.block))));
     }
   });
   return parts;
@@ -62996,16 +62919,16 @@ function renderLegacyNode(node, t4, fileOpen) {
       const { files, hadFiles } = contentFiles(node.content);
       if (text2 === "" && !hadFiles)
         return null;
-      return (0, import_react91.createElement)(UserMessage, { key: node.seq, text: text2, files, t: t4 });
+      return (0, import_react90.createElement)(UserMessage, { key: node.seq, text: text2, files, t: t4 });
     }
     case "assistant": {
       const parts = assistantBlocks(node.blocks, t4, fileOpen?.mentions);
-      return parts.length === 0 ? null : (0, import_react91.createElement)("div", { key: node.seq, className: "dshpc-sv-assistant" }, parts);
+      return parts.length === 0 ? null : (0, import_react90.createElement)("div", { key: node.seq, className: "dshpc-sv-assistant" }, parts);
     }
     case "tool-result": {
       if (node.call?.name === "present")
-        return (0, import_react91.createElement)(PresentRowMirror, { key: node.seq, block: node, t: t4 });
-      return (0, import_react91.createElement)(GenericCommandCard, {
+        return (0, import_react90.createElement)(PresentRowMirror, { key: node.seq, block: node, t: t4 });
+      return (0, import_react90.createElement)(GenericCommandCard, {
         key: node.seq,
         name: node.call?.name ?? "tool",
         argsRaw: node.call?.argsRaw ?? "",
@@ -63020,7 +62943,7 @@ function renderLegacyNode(node, t4, fileOpen) {
       });
     }
     case "command": {
-      return (0, import_react91.createElement)(GenericCommandCard, {
+      return (0, import_react90.createElement)(GenericCommandCard, {
         key: node.seq,
         name: `/${node.name ?? "?"}`,
         argsRaw: node.args ?? "",
@@ -63030,11 +62953,11 @@ function renderLegacyNode(node, t4, fileOpen) {
       });
     }
     case "turn-error":
-      return (0, import_react91.createElement)(TurnErrorItemMirror, { key: node.seq, node, t: t4 });
+      return (0, import_react90.createElement)(TurnErrorItemMirror, { key: node.seq, node, t: t4 });
     case "turn-max-tokens":
-      return (0, import_react91.createElement)(TurnMaxTokensItemMirror, { key: node.seq, t: t4 });
+      return (0, import_react90.createElement)(TurnMaxTokensItemMirror, { key: node.seq, t: t4 });
     case "model-retry":
-      return (0, import_react91.createElement)(ModelRetryItemMirror, { key: node.seq, node, active: node.retryState === "scheduled", t: t4 });
+      return (0, import_react90.createElement)(ModelRetryItemMirror, { key: node.seq, node, active: node.retryState === "scheduled", t: t4 });
     // 决策 28：默认过滤的噪音 kind —— context（系统注入）、compaction（压缩标记）、
     // unknown（未知事件面）。assistant 里的 reasoning 由 mirror/ReasoningRow 折叠渲染。
     // ⚠ ui-map §十一-B：系统提示/上下文注入行（官方 ContextInjectionRow）待实施——届时从这里放行。
@@ -63043,7 +62966,7 @@ function renderLegacyNode(node, t4, fileOpen) {
     case "unknown":
       return null;
     default:
-      return (0, import_react91.createElement)("details", { key: node.seq, className: "dshpc-sv-tool" }, (0, import_react91.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react91.createElement)("pre", null, safeJson(node)));
+      return (0, import_react90.createElement)("details", { key: node.seq, className: "dshpc-sv-tool" }, (0, import_react90.createElement)("summary", { className: "dshpc-sv-notice" }, `${t4("sessionUnknownKind")} ${node.kind}`), (0, import_react90.createElement)("pre", null, safeJson(node)));
   }
 }
 function groupNodes(list) {
@@ -63080,11 +63003,11 @@ function renderLegacyRows(nodes, t4, fileOpen) {
   items.forEach((entry, index3) => {
     const parts = [];
     if (entry.kind === "process") {
-      parts.push((0, import_react91.createElement)("div", { key: "lead", className: "dshpc-sv-notice" }, `${t4("sessionProcess")} \xB7 ${entry.nodes.length}`));
+      parts.push((0, import_react90.createElement)("div", { key: "lead", className: "dshpc-sv-notice" }, `${t4("sessionProcess")} \xB7 ${entry.nodes.length}`));
       entry.nodes.forEach((node, i2) => {
         const rendered = renderLegacyNode(node, t4, fileOpen);
         if (rendered !== null)
-          parts.push((0, import_react91.createElement)("div", { key: `p${i2}` }, rendered));
+          parts.push((0, import_react90.createElement)("div", { key: `p${i2}` }, rendered));
       });
     } else {
       const inner = renderLegacyNode(entry.node, t4, fileOpen);
@@ -63094,12 +63017,12 @@ function renderLegacyRows(nodes, t4, fileOpen) {
         const next = items[index3 + 1];
         const isTurnEnd = next === void 0 || !(next.kind === "node" && next.node.kind === "assistant");
         if (isTurnEnd)
-          parts.push((0, import_react91.createElement)(MessageIconActionsMirror, { key: "act", text: assistantText2(entry.node), clock: "end", t: t4 }));
+          parts.push((0, import_react90.createElement)(MessageIconActionsMirror, { key: "act", text: assistantText2(entry.node), clock: "end", t: t4 }));
       }
     }
     if (parts.length === 0)
       return;
-    rows.push((0, import_react91.createElement)("div", { key: `lg${index3}`, className: officialClass("ChatView", "flowItem") ?? "" }, parts));
+    rows.push((0, import_react90.createElement)("div", { key: `lg${index3}`, className: officialClass("ChatView", "flowItem") ?? "" }, parts));
   });
   return rows;
 }
@@ -63257,31 +63180,31 @@ function SessionViewModal(props) {
   ensureComponentStyles("session", SESSION_CSS);
   const tt = props.t ?? t;
   const { heading: heading2, sessionId, view, onClose, forkSession, openHostSession, onContinue, onOpenFile } = props;
-  const archivedNow = (0, import_react91.useCallback)(() => workspaceList.isSessionArchived(sessionId), [sessionId]);
-  const isArchived = (0, import_react91.useSyncExternalStore)(workspaceList.subscribe, archivedNow, NOT_ARCHIVED);
-  const subscribe = (0, import_react91.useMemo)(() => (onChange) => view.target.subscribe(onChange), [view]);
-  const getSnapshot = (0, import_react91.useMemo)(() => () => view.target.getSnapshot(), [view]);
-  const chat = (0, import_react91.useSyncExternalStore)(subscribe, getSnapshot, getSnapshot);
-  const sessionSub = (0, import_react91.useMemo)(() => (onChange) => view.session.subscribe(onChange), [view]);
-  const sessionGet = (0, import_react91.useMemo)(() => () => view.session.getSnapshot(), [view]);
-  const sessionSnap = (0, import_react91.useSyncExternalStore)(sessionSub, sessionGet, sessionGet);
-  const inboxSub = (0, import_react91.useMemo)(() => (onChange) => view.inbox.subscribe(onChange), [view]);
-  const inboxGet = (0, import_react91.useMemo)(() => () => view.inbox.getSnapshot(), [view]);
-  const inboxSnap = (0, import_react91.useSyncExternalStore)(inboxSub, inboxGet, NO_INBOX);
+  const archivedNow = (0, import_react90.useCallback)(() => workspaceList.isSessionArchived(sessionId), [sessionId]);
+  const isArchived = (0, import_react90.useSyncExternalStore)(workspaceList.subscribe, archivedNow, NOT_ARCHIVED);
+  const subscribe = (0, import_react90.useMemo)(() => (onChange) => view.target.subscribe(onChange), [view]);
+  const getSnapshot = (0, import_react90.useMemo)(() => () => view.target.getSnapshot(), [view]);
+  const chat = (0, import_react90.useSyncExternalStore)(subscribe, getSnapshot, getSnapshot);
+  const sessionSub = (0, import_react90.useMemo)(() => (onChange) => view.session.subscribe(onChange), [view]);
+  const sessionGet = (0, import_react90.useMemo)(() => () => view.session.getSnapshot(), [view]);
+  const sessionSnap = (0, import_react90.useSyncExternalStore)(sessionSub, sessionGet, sessionGet);
+  const inboxSub = (0, import_react90.useMemo)(() => (onChange) => view.inbox.subscribe(onChange), [view]);
+  const inboxGet = (0, import_react90.useMemo)(() => () => view.inbox.getSnapshot(), [view]);
+  const inboxSnap = (0, import_react90.useSyncExternalStore)(inboxSub, inboxGet, NO_INBOX);
   const approvalFace2 = view.pendingApproval;
-  const approvalSub = (0, import_react91.useMemo)(() => approvalFace2 === null ? NO_CARD_SUBSCRIBE : (onChange) => approvalFace2.subscribe(onChange), [approvalFace2]);
-  const approvalGet = (0, import_react91.useMemo)(() => approvalFace2 === null ? NO_APPROVAL : () => approvalFace2.getSnapshot(), [approvalFace2]);
-  const pendingApproval = (0, import_react91.useSyncExternalStore)(approvalSub, approvalGet, NO_APPROVAL);
+  const approvalSub = (0, import_react90.useMemo)(() => approvalFace2 === null ? NO_CARD_SUBSCRIBE : (onChange) => approvalFace2.subscribe(onChange), [approvalFace2]);
+  const approvalGet = (0, import_react90.useMemo)(() => approvalFace2 === null ? NO_APPROVAL : () => approvalFace2.getSnapshot(), [approvalFace2]);
+  const pendingApproval = (0, import_react90.useSyncExternalStore)(approvalSub, approvalGet, NO_APPROVAL);
   const questionFace2 = view.pendingQuestions;
-  const questionSub = (0, import_react91.useMemo)(() => questionFace2 === null ? NO_CARD_SUBSCRIBE : (onChange) => questionFace2.subscribe(onChange), [questionFace2]);
-  const questionGet = (0, import_react91.useMemo)(() => questionFace2 === null ? NO_QUESTIONS : () => questionFace2.getSnapshot(), [questionFace2]);
-  const pendingQuestions = (0, import_react91.useSyncExternalStore)(questionSub, questionGet, NO_QUESTIONS);
+  const questionSub = (0, import_react90.useMemo)(() => questionFace2 === null ? NO_CARD_SUBSCRIBE : (onChange) => questionFace2.subscribe(onChange), [questionFace2]);
+  const questionGet = (0, import_react90.useMemo)(() => questionFace2 === null ? NO_QUESTIONS : () => questionFace2.getSnapshot(), [questionFace2]);
+  const pendingQuestions = (0, import_react90.useSyncExternalStore)(questionSub, questionGet, NO_QUESTIONS);
   const liveQuestionFace = view.pendingQuestion;
-  const liveSub = (0, import_react91.useMemo)(() => liveQuestionFace === null ? NO_CARD_SUBSCRIBE : (onChange) => liveQuestionFace.subscribe(onChange), [liveQuestionFace]);
-  const liveGet = (0, import_react91.useMemo)(() => liveQuestionFace === null ? NO_LIVE_QUESTION : () => liveQuestionFace.getSnapshot(), [liveQuestionFace]);
-  const liveQuestion = (0, import_react91.useSyncExternalStore)(liveSub, liveGet, NO_LIVE_QUESTION);
-  const [openTurns, setOpenTurns] = (0, import_react91.useState)(() => /* @__PURE__ */ new Map());
-  const onSetOpen = (0, import_react91.useCallback)((turn, answerStep, open) => {
+  const liveSub = (0, import_react90.useMemo)(() => liveQuestionFace === null ? NO_CARD_SUBSCRIBE : (onChange) => liveQuestionFace.subscribe(onChange), [liveQuestionFace]);
+  const liveGet = (0, import_react90.useMemo)(() => liveQuestionFace === null ? NO_LIVE_QUESTION : () => liveQuestionFace.getSnapshot(), [liveQuestionFace]);
+  const liveQuestion = (0, import_react90.useSyncExternalStore)(liveSub, liveGet, NO_LIVE_QUESTION);
+  const [openTurns, setOpenTurns] = (0, import_react90.useState)(() => /* @__PURE__ */ new Map());
+  const onSetOpen = (0, import_react90.useCallback)((turn, answerStep, open) => {
     setOpenTurns((prev) => {
       const next = new Map(prev);
       if (open)
@@ -63293,22 +63216,22 @@ function SessionViewModal(props) {
   }, []);
   const canFork = forkSession !== void 0 && openHostSession !== void 0;
   const showContinue = openHostSession !== void 0;
-  const [forkTarget, setForkTarget] = (0, import_react91.useState)(null);
-  const [forking, setForking] = (0, import_react91.useState)(false);
-  const [forkErr, setForkErr] = (0, import_react91.useState)(null);
+  const [forkTarget, setForkTarget] = (0, import_react90.useState)(null);
+  const [forking, setForking] = (0, import_react90.useState)(false);
+  const [forkErr, setForkErr] = (0, import_react90.useState)(null);
   const modalActionClass = officialClass("ChatView", "modalAction") ?? void 0;
-  const aliveRef = (0, import_react91.useRef)(true);
-  (0, import_react91.useEffect)(() => () => {
+  const aliveRef = (0, import_react90.useRef)(true);
+  (0, import_react90.useEffect)(() => () => {
     aliveRef.current = false;
   }, []);
-  (0, import_react91.useEffect)(() => {
+  (0, import_react90.useEffect)(() => {
     if (!isArchived && !forking && forkTarget !== null && forkTarget.atSeq === void 0)
       setForkTarget(null);
   }, [isArchived, forking, forkTarget]);
-  const flowRef = (0, import_react91.useRef)(null);
-  const tailRef = (0, import_react91.useRef)(null);
-  const firstSnapRef = (0, import_react91.useRef)(true);
-  (0, import_react91.useLayoutEffect)(() => {
+  const flowRef = (0, import_react90.useRef)(null);
+  const tailRef = (0, import_react90.useRef)(null);
+  const firstSnapRef = (0, import_react90.useRef)(true);
+  (0, import_react90.useLayoutEffect)(() => {
     const flow = flowRef.current;
     const scroller = flow === null ? null : flow.closest(".dshpc-modal__body");
     if (scroller === null)
@@ -63337,14 +63260,14 @@ function SessionViewModal(props) {
       scroller.removeEventListener("scroll", onScroll);
     };
   }, []);
-  (0, import_react91.useLayoutEffect)(() => {
+  (0, import_react90.useLayoutEffect)(() => {
     if (firstSnapRef.current) {
       firstSnapRef.current = false;
       return;
     }
     tailRef.current?.content();
   }, [chat, sessionSnap, inboxSnap]);
-  const onForkAccept = (0, import_react91.useCallback)(() => {
+  const onForkAccept = (0, import_react90.useCallback)(() => {
     if (forking || forkSession === void 0 || openHostSession === void 0)
       return;
     setForking(true);
@@ -63366,14 +63289,14 @@ function SessionViewModal(props) {
       }
     })();
   }, [forking, forkSession, openHostSession, sessionId, forkTarget, onClose]);
-  const onBranchAt = (0, import_react91.useCallback)((seq) => {
+  const onBranchAt = (0, import_react90.useCallback)((seq) => {
     setForkErr(null);
     setForkTarget({ atSeq: seq });
   }, []);
-  const [draft, setDraft] = (0, import_react91.useState)("");
-  const [sending, setSending] = (0, import_react91.useState)(false);
-  const [sendErr, setSendErr] = (0, import_react91.useState)(null);
-  const onSend = (0, import_react91.useCallback)(() => {
+  const [draft, setDraft] = (0, import_react90.useState)("");
+  const [sending, setSending] = (0, import_react90.useState)(false);
+  const [sendErr, setSendErr] = (0, import_react90.useState)(null);
+  const onSend = (0, import_react90.useCallback)(() => {
     const message = draft.trim();
     if (sending || message === "" || onContinue === void 0)
       return;
@@ -63395,16 +63318,16 @@ function SessionViewModal(props) {
       }
     })();
   }, [draft, sending, onContinue]);
-  const openFile = (0, import_react91.useCallback)((path, options) => {
+  const openFile = (0, import_react90.useCallback)((path, options) => {
     onOpenFile?.(path, sessionId, options);
   }, [onOpenFile, sessionId]);
   const order = chat?.order ?? EMPTY_ORDER;
   const store = chat?.nodes;
   const keyed = order.length > 0 && store !== void 0;
   const turns = chat?.timeline?.turns;
-  const observedRpc = (0, import_react91.useMemo)(() => keyed && store !== void 0 ? observedRpcIds(order, (key) => store.get(key)) : /* @__PURE__ */ new Set(), [keyed, order, store]);
-  const waitingRows = (0, import_react91.useMemo)(() => waitingUserRows(inboxSnap, sessionSnap?.pendingSubmissions, observedRpc), [inboxSnap, sessionSnap, observedRpc]);
-  const pendingRows = waitingRows.map((row2) => (0, import_react91.createElement)(UserMessage, {
+  const observedRpc = (0, import_react90.useMemo)(() => keyed && store !== void 0 ? observedRpcIds(order, (key) => store.get(key)) : /* @__PURE__ */ new Set(), [keyed, order, store]);
+  const waitingRows = (0, import_react90.useMemo)(() => waitingUserRows(inboxSnap, sessionSnap?.pendingSubmissions, observedRpc), [inboxSnap, sessionSnap, observedRpc]);
+  const pendingRows = waitingRows.map((row2) => (0, import_react90.createElement)(UserMessage, {
     key: row2.key,
     text: row2.text,
     files: row2.files,
@@ -63412,7 +63335,7 @@ function SessionViewModal(props) {
     echo: row2.echo,
     t: tt
   }));
-  const fileOpen = (0, import_react91.useMemo)(() => {
+  const fileOpen = (0, import_react90.useMemo)(() => {
     if (onOpenFile === void 0)
       return void 0;
     return {
@@ -63420,7 +63343,7 @@ function SessionViewModal(props) {
       mentions: makeFileMentions(collectFilePaths(order, store, turns), openFile)
     };
   }, [onOpenFile, openFile, order, store, turns]);
-  const openDelegatedFile = (0, import_react91.useMemo)(() => {
+  const openDelegatedFile = (0, import_react90.useMemo)(() => {
     if (fileOpen === void 0)
       return () => {
       };
@@ -63433,8 +63356,8 @@ function SessionViewModal(props) {
       hit.open();
     };
   }, [fileOpen]);
-  const deliveredByTurn = (0, import_react91.useMemo)(() => collectPresentedByTurn(turns), [turns]);
-  const deliverFiles = (0, import_react91.useMemo)(() => {
+  const deliveredByTurn = (0, import_react90.useMemo)(() => collectPresentedByTurn(turns), [turns]);
+  const deliverFiles = (0, import_react90.useMemo)(() => {
     const byPath = /* @__PURE__ */ new Map();
     const add2 = (file) => {
       const key = file.path.trim();
@@ -63447,7 +63370,7 @@ function SessionViewModal(props) {
         add2(file);
     return [...byPath.values()];
   }, [deliveredByTurn]);
-  const lastTailTurn = (0, import_react91.useMemo)(() => {
+  const lastTailTurn = (0, import_react90.useMemo)(() => {
     if (!keyed || store === void 0)
       return void 0;
     for (let i2 = order.length - 1; i2 >= 0; i2--) {
@@ -63464,7 +63387,7 @@ function SessionViewModal(props) {
     }
     return void 0;
   }, [keyed, order, store]);
-  const lastTailChangesSeq = (0, import_react91.useMemo)(() => {
+  const lastTailChangesSeq = (0, import_react90.useMemo)(() => {
     if (turns === null || turns === void 0)
       return void 0;
     const map = turns;
@@ -63482,9 +63405,9 @@ function SessionViewModal(props) {
     }
     return best ?? void 0;
   }, [turns]);
-  const diagChatRef = (0, import_react91.useRef)(void 0);
-  const diagCardRef = (0, import_react91.useRef)(void 0);
-  (0, import_react91.useEffect)(() => {
+  const diagChatRef = (0, import_react90.useRef)(void 0);
+  const diagCardRef = (0, import_react90.useRef)(void 0);
+  (0, import_react90.useEffect)(() => {
     if (diagChatRef.current === chat && diagCardRef.current === pendingApproval)
       return;
     diagChatRef.current = chat;
@@ -63530,8 +63453,8 @@ function SessionViewModal(props) {
     });
     console.log("[preview] turnsDetail", turnsDetail);
   }, [chat, order, turns, lastTailTurn, lastTailChangesSeq, deliverFiles, onOpenFile, fileOpen, store, view, pendingApproval, pendingQuestions]);
-  const tailFacts = (0, import_react91.useMemo)(() => keyed && store !== void 0 ? buildTurnTailFacts({ order, store, lastTurn: lastTailTurn }) : void 0, [keyed, order, store, lastTailTurn]);
-  const footerAnchorKey = (0, import_react91.useMemo)(() => {
+  const tailFacts = (0, import_react90.useMemo)(() => keyed && store !== void 0 ? buildTurnTailFacts({ order, store, lastTurn: lastTailTurn }) : void 0, [keyed, order, store, lastTailTurn]);
+  const footerAnchorKey = (0, import_react90.useMemo)(() => {
     if (!keyed || store === void 0)
       return void 0;
     const lastKey = order[order.length - 1];
@@ -63541,13 +63464,13 @@ function SessionViewModal(props) {
     const closing4 = last2.data?.closing;
     return closing4 === null || closing4 === void 0 ? void 0 : lastKey;
   }, [keyed, order, store]);
-  const bodyHeaderRow = props.bodyHeader === void 0 ? null : (0, import_react91.createElement)("div", { key: "bodyHeader", className: "dshpc-sv-body-header" }, props.bodyHeader);
-  const bodyFooterRow = props.bodyFooter === void 0 ? null : (0, import_react91.createElement)("div", { key: "bodyFooter", className: "dshpc-sv-body-footer" }, props.bodyFooter);
-  const renderNode = (0, import_react91.useCallback)((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage, bodyFooterRow, footerAnchorKey, sessionSnap?.running === true, order[order.length - 1]), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage, bodyFooterRow, footerAnchorKey, sessionSnap?.running, order]);
-  const isTurnClosed = (0, import_react91.useCallback)((turn) => (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== "open", [turns]);
+  const bodyHeaderRow = props.bodyHeader === void 0 ? null : (0, import_react90.createElement)("div", { key: "bodyHeader", className: "dshpc-sv-body-header" }, props.bodyHeader);
+  const bodyFooterRow = props.bodyFooter === void 0 ? null : (0, import_react90.createElement)("div", { key: "bodyFooter", className: "dshpc-sv-body-footer" }, props.bodyFooter);
+  const renderNode = (0, import_react90.useCallback)((node, turnProcess, groupPart) => renderKeyedNode(node, turnProcess, tt, onBranchAt, fileOpen, groupPart, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage, bodyFooterRow, footerAnchorKey, sessionSnap?.running === true, order[order.length - 1]), [tt, onBranchAt, fileOpen, deliverFiles, lastTailTurn, lastTailChangesSeq, sessionId, props.onOpenReview, tailFacts, props.view.loadImage, bodyFooterRow, footerAnchorKey, sessionSnap?.running, order]);
+  const isTurnClosed = (0, import_react90.useCallback)((turn) => (turns?.get(turn) ?? turns?.get(String(turn)))?.status !== "open", [turns]);
   const presentationMode = props.presentationMode ?? DEFAULT_TRANSCRIPT_VIEW_MODE;
-  const groupedView = (0, import_react91.useMemo)(() => keyed ? buildProcessGroups(order, (key) => store?.get(key), isTurnClosed, presentationMode) : void 0, [keyed, order, store, isTurnClosed, presentationMode]);
-  const runningStartTime = (0, import_react91.useMemo)(() => {
+  const groupedView = (0, import_react90.useMemo)(() => keyed ? buildProcessGroups(order, (key) => store?.get(key), isTurnClosed, presentationMode) : void 0, [keyed, order, store, isTurnClosed, presentationMode]);
+  const runningStartTime = (0, import_react90.useMemo)(() => {
     if (!keyed || store === void 0)
       return void 0;
     const last2 = order[order.length - 1];
@@ -63593,11 +63516,11 @@ function SessionViewModal(props) {
   }
   const openState = sessionSnap?.openState;
   const showLoadOlder = sessionSnap?.hasMore !== false;
-  const runningRow = sessionSnap?.running !== true ? null : (0, import_react91.createElement)(RunningStatusMirror, { key: "running", startTime: runningStartTime, t: tt });
+  const runningRow = sessionSnap?.running !== true ? null : (0, import_react90.createElement)(RunningStatusMirror, { key: "running", startTime: runningStartTime, t: tt });
   const body = rendered.length === 0 && pendingRows.length === 0 ? [
     bodyHeaderRow,
     // 官方三态各走各的类：error = openError（错误色），loading / 空 = hint。
-    openState === "error" ? (0, import_react91.createElement)(ChatOpenError, { key: "hint", text: tt("sessionFailed") }) : (0, import_react91.createElement)(ChatHint, {
+    openState === "error" ? (0, import_react90.createElement)(ChatOpenError, { key: "hint", text: tt("sessionFailed") }) : (0, import_react90.createElement)(ChatHint, {
       key: "hint",
       text: openState === "loading" || openState === "cold" ? tt("sessionLoading") : tt("sessionEmpty")
     }),
@@ -63606,7 +63529,7 @@ function SessionViewModal(props) {
     footerAnchorKey === void 0 ? bodyFooterRow : null
   ] : [
     bodyHeaderRow,
-    showLoadOlder ? (0, import_react91.createElement)(ChatOlderButton, { key: "older", label: tt("sessionLoadOlder"), onClick: () => {
+    showLoadOlder ? (0, import_react90.createElement)(ChatOlderButton, { key: "older", label: tt("sessionLoadOlder"), onClick: () => {
       view.loadOlder();
     } }) : null,
     ...rendered,
@@ -63616,12 +63539,12 @@ function SessionViewModal(props) {
   ];
   const flowChildren = Array.isArray(body) ? body : [body];
   const customHeader = props.header !== void 0;
-  const archivedBadge = isArchived ? (0, import_react91.createElement)("span", { className: "dshpc-sv-archived" }, (0, import_react91.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : void 0;
-  const continueAction = showContinue ? (0, import_react91.createElement)(Button, {
+  const archivedBadge = isArchived ? (0, import_react90.createElement)("span", { className: "dshpc-sv-archived" }, (0, import_react90.createElement)(official_exports.IconArchiveOutlineRegular, { size: 12 }), tt("sessionArchived")) : void 0;
+  const continueAction = showContinue ? (0, import_react90.createElement)(Button, {
     variant: "outline",
     size: "sm",
     disabled: forking,
-    icon: isArchived ? (0, import_react91.createElement)(official_exports.IconBranchOutlineRegular, { size: 14 }) : (0, import_react91.createElement)(official_exports.IconNewChatOutlineRegular, { size: 14 }),
+    icon: isArchived ? (0, import_react90.createElement)(official_exports.IconBranchOutlineRegular, { size: 14 }) : (0, import_react90.createElement)(official_exports.IconNewChatOutlineRegular, { size: 14 }),
     onClick: () => {
       if (archivedNow()) {
         setForkErr(null);
@@ -63632,15 +63555,15 @@ function SessionViewModal(props) {
       }
     }
   }, tt("continueBranch")) : void 0;
-  const headActions = continueAction === void 0 && props.headerActions === void 0 && !(customHeader && archivedBadge !== void 0) ? void 0 : (0, import_react91.createElement)(import_react91.Fragment, null, customHeader ? archivedBadge : null, props.headerActions, continueAction);
-  const pendingQuestionsView = (0, import_react91.useMemo)(() => pendingQuestions ?? pendingQuestionsFromNodes(order, (key) => store?.get(key)), [pendingQuestions, order, store]);
+  const headActions = continueAction === void 0 && props.headerActions === void 0 && !(customHeader && archivedBadge !== void 0) ? void 0 : (0, import_react90.createElement)(import_react90.Fragment, null, customHeader ? archivedBadge : null, props.headerActions, continueAction);
+  const pendingQuestionsView = (0, import_react90.useMemo)(() => pendingQuestions ?? pendingQuestionsFromNodes(order, (key) => store?.get(key)), [pendingQuestions, order, store]);
   const questionItems = liveQuestion !== void 0 ? liveQuestion.questions : pendingQuestionsView === null ? null : pendingQuestionsView.questions;
   const revealPendingQuestion = view.revealPendingQuestion;
   const questionCallId = pendingQuestionsView?.callId;
   const questionState = pendingQuestionsView?.state;
-  const revealedQuestionRef = (0, import_react91.useRef)(null);
-  const dismissedQuestionRef = (0, import_react91.useRef)(null);
-  (0, import_react91.useEffect)(() => {
+  const revealedQuestionRef = (0, import_react90.useRef)(null);
+  const dismissedQuestionRef = (0, import_react90.useRef)(null);
+  (0, import_react90.useEffect)(() => {
     if (liveQuestion !== void 0 || questionCallId === void 0)
       return;
     if (dismissedQuestionRef.current === questionCallId || revealedQuestionRef.current === questionCallId)
@@ -63653,7 +63576,7 @@ function SessionViewModal(props) {
   }, [liveQuestion, revealPendingQuestion, questionCallId, pendingQuestions, questionState]);
   const questionWiring = liveQuestion === void 0 ? null : questionPanelWiring(liveQuestion);
   const questionDismissed = liveQuestion === void 0 && questionCallId !== void 0 && dismissedQuestionRef.current === questionCallId;
-  const questionRow = questionItems === null || questionDismissed ? null : (0, import_react91.createElement)("div", { className: "dshpc-sv-question" }, (0, import_react91.createElement)(QuestionPanel, {
+  const questionRow = questionItems === null || questionDismissed ? null : (0, import_react90.createElement)("div", { className: "dshpc-sv-question" }, (0, import_react90.createElement)(QuestionPanel, {
     panelKey: liveQuestion !== void 0 ? liveQuestion.key : questionCallId,
     questions: questionItems,
     // 活体：态现读（倒计时会自己跳）；只读兜底：静态快照。
@@ -63667,27 +63590,27 @@ function SessionViewModal(props) {
     },
     t: tt
   }));
-  const approvalRow = pendingApproval === void 0 ? null : (0, import_react91.createElement)("div", { className: "dshpc-sv-approval" }, (0, import_react91.createElement)(ApprovalPanelMirror, {
+  const approvalRow = pendingApproval === void 0 ? null : (0, import_react90.createElement)("div", { className: "dshpc-sv-approval" }, (0, import_react90.createElement)(ApprovalPanelMirror, {
     approval: pendingApproval,
     command: approvalCommand(order, (key) => store?.get(key), pendingApproval.callId),
     t: tt
   }));
   const hasCard = questionRow !== null || approvalRow !== null;
-  return (0, import_react91.createElement)(
-    import_react91.Fragment,
+  return (0, import_react90.createElement)(
+    import_react90.Fragment,
     null,
-    (0, import_react91.createElement)(Modal, {
+    (0, import_react90.createElement)(Modal, {
       size: "lg",
       // 二级：整块标题区交给调用方（含 sessionId 行）；一级：只换标题行，副标题仍由核心画。
       // 会话 id 是**标识**，放标题下方副标题行，不占正文（用户 2026-10-22：一串 MD5 不该出现在正文里）。
       header: props.header,
       title: customHeader ? void 0 : props.title ?? heading2 ?? tt("sessionHeading"),
-      subtitle: customHeader ? void 0 : (0, import_react91.createElement)(
-        import_react91.Fragment,
+      subtitle: customHeader ? void 0 : (0, import_react90.createElement)(
+        import_react90.Fragment,
         null,
-        (0, import_react91.createElement)("span", null, sessionId),
+        (0, import_react90.createElement)("span", null, sessionId),
         // 可见探针：官方样式未命中时直接显示（省得翻控制台）。命中则不显示。
-        officialCount === 0 ? (0, import_react91.createElement)("span", { className: "dshpc-sv-probe" }, " \u26A0 ", tt("sessionProbeStyle")) : null
+        officialCount === 0 ? (0, import_react90.createElement)("span", { className: "dshpc-sv-probe" }, " \u26A0 ", tt("sessionProbeStyle")) : null
       ),
       // 归档标识（官方归档图标 + 「已归档」）走头部右侧小块；自定义标题区时改挂动作区最前。
       headerExtra: customHeader ? void 0 : archivedBadge,
@@ -63697,7 +63620,7 @@ function SessionViewModal(props) {
       // 官方那两处卡片周围没有分隔线 ⇒ 有卡时关掉弹窗底栏的顶线（否则卡上方多一条）。
       footerDivider: !hasCard,
       // 底栏纵向栈：题卡 / 审批卡（官方输入框接管位）+ 暂存输入框，都不随会话区滚动。
-      footer: onContinue === void 0 && !hasCard ? void 0 : (0, import_react91.createElement)(
+      footer: onContinue === void 0 && !hasCard ? void 0 : (0, import_react90.createElement)(
         "div",
         { className: "dshpc-sv-foot" },
         questionRow,
@@ -63705,7 +63628,7 @@ function SessionViewModal(props) {
         // 暂存输入框：打字 → 确定 → onContinue 带话开分支跳官方视图。
         // 有待审批时**让位**给审批卡：官方是 composer 接管（ui-approval lib/client.js:470-477 注册到
         // `conversation.composer` 且不链到默认输入框）⇒ 卡下方不该再垫一个输入框。
-        onContinue === void 0 || pendingApproval !== void 0 ? null : (0, import_react91.createElement)("div", { className: "dshpc-sv-composer" }, (0, import_react91.createElement)("textarea", {
+        onContinue === void 0 || pendingApproval !== void 0 ? null : (0, import_react90.createElement)("div", { className: "dshpc-sv-composer" }, (0, import_react90.createElement)("textarea", {
           value: draft,
           placeholder: tt("composerPlaceholder"),
           disabled: sending,
@@ -63718,22 +63641,22 @@ function SessionViewModal(props) {
               onSend();
             }
           }
-        }), (0, import_react91.createElement)(Button, {
+        }), (0, import_react90.createElement)(Button, {
           variant: "primary",
           size: "sm",
           disabled: sending || draft.trim() === "",
           onClick: onSend
-        }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react91.createElement)("span", { className: "dshpc-sv-composer-hint" }, "\u2318/Ctrl + \u21B5"), sendErr !== null ? (0, import_react91.createElement)("div", { className: "dshpc-sv-forkerr" }, sendErr) : null)
+        }, sending ? tt("forkWorking") : tt("confirm")), (0, import_react90.createElement)("span", { className: "dshpc-sv-composer-hint" }, "\u2318/Ctrl + \u21B5"), sendErr !== null ? (0, import_react90.createElement)("div", { className: "dshpc-sv-forkerr" }, sendErr) : null)
       )
-    }, (0, import_react91.createElement)(
+    }, (0, import_react90.createElement)(
       "div",
       { className: "dshpc-sv", ref: flowRef },
       // markdown 导航委托：挂上 openFile 后，正文里的本地文件链接才渲成官方
       // `fileMention fileLink` 按钮（不挂 ⇒ 官方自己退回纯文本）。
-      fileOpen === void 0 ? (0, import_react91.createElement)(ChatViewFrame, { children: flowChildren }) : (0, import_react91.createElement)(official_exports.MarkdownDelegateProvider, { openFile: openDelegatedFile }, (0, import_react91.createElement)(ChatViewFrame, { children: flowChildren }))
+      fileOpen === void 0 ? (0, import_react90.createElement)(ChatViewFrame, { children: flowChildren }) : (0, import_react90.createElement)(official_exports.MarkdownDelegateProvider, { openFile: openDelegatedFile }, (0, import_react90.createElement)(ChatViewFrame, { children: flowChildren }))
     )),
     // 开分支确认框（用户拍板：必须先确认再 fork，防误点）——核心 Modal + Button。
-    forkTarget === null ? null : (0, import_react91.createElement)(Modal, {
+    forkTarget === null ? null : (0, import_react90.createElement)(Modal, {
       size: "sm",
       onClose: () => {
         if (!forking)
@@ -63743,17 +63666,17 @@ function SessionViewModal(props) {
       translate: tt,
       // 弹窗脚按钮宽度与官方对话框对齐（官方 ChatView.modalAction：min-width 72px）。
       footer: [
-        (0, import_react91.createElement)(Button, { key: "cancel", variant: "outline", className: modalActionClass, disabled: forking, onClick: () => {
+        (0, import_react90.createElement)(Button, { key: "cancel", variant: "outline", className: modalActionClass, disabled: forking, onClick: () => {
           setForkTarget(null);
         } }, tt("cancel")),
-        (0, import_react91.createElement)(Button, { key: "accept", variant: "primary", className: modalActionClass, disabled: forking || !canFork, onClick: onForkAccept }, forking ? tt("forkWorking") : tt("forkConfirmAccept"))
+        (0, import_react90.createElement)(Button, { key: "accept", variant: "primary", className: modalActionClass, disabled: forking || !canFork, onClick: onForkAccept }, forking ? tt("forkWorking") : tt("forkConfirmAccept"))
       ]
-    }, (0, import_react91.createElement)("p", { className: "dshpc-sv-forktext" }, tt("forkConfirmText")), canFork ? null : (0, import_react91.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkUnavailable")), forkErr !== null ? (0, import_react91.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkFailed", { error: forkErr })) : null)
+    }, (0, import_react90.createElement)("p", { className: "dshpc-sv-forktext" }, tt("forkConfirmText")), canFork ? null : (0, import_react90.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkUnavailable")), forkErr !== null ? (0, import_react90.createElement)("p", { className: "dshpc-sv-forkerr" }, tt("forkFailed", { error: forkErr })) : null)
   );
 }
 
 // dist/adv/session/open-review.js
-var import_react92 = require("react");
+var import_react91 = require("react");
 function openSessionReview(options) {
   const { locator, title, ...panel2 } = options;
   let handle = null;
@@ -63761,7 +63684,7 @@ function openSessionReview(options) {
     ...panel2,
     // 无头面板：标题只用于 aria-label，缺省用改动路径。
     title: title ?? locator.display,
-    content: () => (0, import_react92.createElement)(ChangedFileDiff, {
+    content: () => (0, import_react91.createElement)(ChangedFileDiff, {
       sessionId: locator.sessionId,
       seq: locator.seq,
       index: locator.index,
@@ -64037,7 +63960,7 @@ function connectRealSessions(ctx) {
 }
 
 // packages/demo/src/dock.ts
-var import_react93 = require("react");
+var import_react92 = require("react");
 var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // packages/demo/src/i18n.ts
@@ -64576,24 +64499,24 @@ function t3(key, vars) {
 // packages/demo/src/dock.ts
 var demoDock = createPanelDock({ maxPanels: 3 });
 function Body(props) {
-  return (0, import_react93.createElement)(
+  return (0, import_react92.createElement)(
     "div",
     { style: { padding: "12px 14px", fontSize: "13px", lineHeight: "1.9" } },
-    (0, import_react93.createElement)("div", { style: { fontWeight: 600 } }, props.id),
-    (0, import_react93.createElement)("div", { style: { color: "var(--dshpc-fg-3)" } }, t3("dockPanelBody"))
+    (0, import_react92.createElement)("div", { style: { fontWeight: 600 } }, props.id),
+    (0, import_react92.createElement)("div", { style: { color: "var(--dshpc-fg-3)" } }, t3("dockPanelBody"))
   );
 }
 function CustomHead() {
-  return (0, import_react93.createElement)(
+  return (0, import_react92.createElement)(
     "div",
     { style: { padding: "10px 12px", borderBottom: "1px solid var(--dshpc-border-faint)" } },
-    (0, import_react93.createElement)(
+    (0, import_react92.createElement)(
       "div",
       { style: { display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", fontWeight: 600 } },
-      (0, import_react93.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
+      (0, import_react92.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
       t3("dockCustomHeadTitle")
     ),
-    (0, import_react93.createElement)(
+    (0, import_react92.createElement)(
       "div",
       { style: { marginTop: "6px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
       t3("dockCustomHeadHint")
@@ -64604,20 +64527,20 @@ var PANELS = [
   {
     id: "A",
     title: t3("dockPanelA"),
-    icon: (0, import_react93.createElement)(
+    icon: (0, import_react92.createElement)(
       "span",
       { style: { display: "inline-flex", gap: "4px" } },
-      (0, import_react93.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
-      (0, import_react93.createElement)(import_dsh_client_ui_primitives.IconClockOutlineRegular, null)
+      (0, import_react92.createElement)(import_dsh_client_ui_primitives.IconSparkleRegular, null),
+      (0, import_react92.createElement)(import_dsh_client_ui_primitives.IconClockOutlineRegular, null)
     ),
     // 标题右侧：任意内容，不只按钮。
-    extra: (0, import_react93.createElement)(Chip, { tone: "business", size: "sm" }, t3("dockPanelATag")),
+    extra: (0, import_react92.createElement)(Chip, { tone: "business", size: "sm" }, t3("dockPanelATag")),
     minWidth: 300,
     maxWidth: 620
   },
   {
     id: "B",
-    header: (0, import_react93.createElement)(CustomHead, null),
+    header: (0, import_react92.createElement)(CustomHead, null),
     minWidth: 320
   },
   {
@@ -64630,7 +64553,7 @@ var PANELS = [
 ];
 function demoPanels() {
   return PANELS.map(
-    (pane) => (0, import_react93.createElement)(DockPanel, { ...pane, key: pane.id }, (0, import_react93.createElement)(Body, { id: pane.id }))
+    (pane) => (0, import_react92.createElement)(DockPanel, { ...pane, key: pane.id }, (0, import_react92.createElement)(Body, { id: pane.id }))
   );
 }
 
@@ -64641,10 +64564,10 @@ var pageRow = { element: null };
 var import_react106 = require("react");
 
 // packages/demo/src/sections/start.tsx
-var import_react95 = require("react");
+var import_react94 = require("react");
 
 // packages/demo/src/doc.tsx
-var import_react94 = require("react");
+var import_react93 = require("react");
 
 // packages/demo/src/doc-data.generated.ts
 var docData = {
@@ -69538,25 +69461,29 @@ h(SideSheet, {
   "icons": {
     "id": "icons",
     "heading": {
-      "zh": "\u5B57\u4F53\u56FE\u6807",
-      "en": "Font icons"
+      "zh": "\u56FE\u6807",
+      "en": "Icons"
     },
     "prose": [
       {
-        "zh": "\u56FE\u6807\u5B57\u5F62\u6258\u7BA1\u5728 iconfont \u5E73\u53F0\uFF1A\u672C\u5305**\u53EA\u627F\u8BFA\u300C\u5728\u7EBF\u6837\u5F0F + \u7C7B\u540D\u62FC\u88C5\u300D\u8FD9\u4E00\u5C42**\uFF0C\u6837\u5F0F\u4E0E\u5B57\u4F53\u6587\u4EF6\u90FD\u4E0D\u5165\u5305\u3001\u4E0D\u8FDB\u4EA7\u7269\u3002\u8FD0\u884C\u65F6\u6309\u5E93 id \u6302\u4E00\u6761 `<link>`\uFF0C\u5730\u5740\u5C31\u5728 `ICON_FONTS` \u91CC\uFF1B\u5E73\u53F0\u91CD\u65B0\u53D1\u5E03\u6362\u4E86\u94FE\u63A5\uFF0C\u6539\u90A3\u4E00\u884C\u5373\u53EF\uFF0C\u91CD\u590D\u8C03\u7528\u4E0D\u4F1A\u63D2\u51FA\u7B2C\u4E8C\u6761\u3002",
-        "en": "Glyphs are hosted on the iconfont platform: this package owns only the styling link plus class-name assembly. No style sheet and no font file is shipped. At runtime one `<link>` per library id is mounted, with the address kept in `ICON_FONTS`; republishing on the platform means editing that one line, and repeated calls never add a second link."
+        "zh": "\u4E00\u4E2A `Icon` \u7EC4\u4EF6\u540C\u65F6\u7BA1\u4E24\u7C7B\u6765\u6E90\uFF0C\u5C3A\u5BF8\u56E0\u6B64\u80FD\u7EDF\u4E00\uFF1A**\u5B57\u4F53\u56FE\u6807**\uFF08iconfont \u6258\u7BA1\uFF0C`\u5E93\u540D:\u56FE\u6807\u540D`\uFF09\u4E0E**\u5B98\u65B9 primitives \u56FE\u6807**\uFF08\u65E0\u5192\u53F7\uFF0C\u76F4\u63A5\u5199\u5B98\u65B9\u7EC4\u4EF6\u540D\uFF09\u3002\u5B57\u4F53\u6587\u4EF6\u4E0E\u6837\u5F0F\u90FD\u4E0D\u5165\u5305\uFF0C\u8FD0\u884C\u65F6\u6309\u5E93 id \u6302\u4E00\u6761 `<link>`\uFF0C\u5730\u5740\u5C31\u5728 `ICON_FONTS` \u91CC\uFF1B\u5E73\u53F0\u91CD\u65B0\u53D1\u5E03\u6362\u4E86\u94FE\u63A5\uFF0C\u6539\u90A3\u4E00\u884C\u5373\u53EF\uFF0C\u91CD\u590D\u8C03\u7528\u4E0D\u4F1A\u63D2\u51FA\u7B2C\u4E8C\u6761\u3002",
+        "en": "One `Icon` component covers both sources so sizing stays uniform: **font icons** (hosted on iconfont, written as `library:name`) and **official primitives icons** (no colon, just the official component name). No font file and no style sheet ships with the package; at runtime one `<link>` per library id is mounted from `ICON_FONTS`, and republishing on the platform means editing that one line \u2014 repeated calls never add a second link."
       },
       {
-        "zh": "**\u56FE\u6807\u540D\u5C31\u662F\u5E73\u53F0\u91CC\u7684\u540D\u5B57**\uFF0C\u672C\u5C42\u4E0D\u505A\u8BED\u4E49\u522B\u540D \u2014\u2014 \u6539\u540D\u7684\u552F\u4E00\u771F\u6E90\u662F iconfont \u540E\u53F0\u3002\u52A0\u4E00\u5957\u5E93\uFF08\u793E\u4EA4 / \u529E\u516C \u2026\uFF09\u53EA\u9700\u5F80 `ICON_FONTS` \u52A0\u4E00\u9879\uFF08`url` / `family` / `baseClass` / `prefix`\uFF09\uFF0C\u7EC4\u4EF6\u4E0E\u5C55\u793A\u9875\u90FD\u4E0D\u7528\u6539\uFF1B`loadIconFont(id)` \u4F1A\u5B9E\u65F6\u8BFB\u5728\u7EBF CSS \u539F\u6587\u62FF\u5230\u8BE5\u5E93\u5168\u90E8\u56FE\u6807\u540D\uFF08\u8DE8\u57DF CSSOM \u8BFB\u4E0D\u5230\uFF0C\u53EA\u80FD\u8BFB\u539F\u6587\uFF09\u3002",
-        "en": "**The icon name is the platform name**; this layer adds no semantic aliases \u2014 renaming happens on the iconfont side. Adding another library (social, office \u2026) is one more entry in `ICON_FONTS` (`url` / `family` / `baseClass` / `prefix`); neither the component nor the showcase page changes. `loadIconFont(id)` reads the online CSS text to enumerate that library's names (cross-origin CSSOM is unreadable, so the text is the only source)."
+        "zh": "**\u7EC4\u540D\u4E0D\u53EF\u7701**\uFF1A`base:shanchu` \u91CC\u7684 `base` \u5C31\u662F `ICON_FONTS` \u7684 key\uFF0C\u4E0D\u5E26\u7EC4\u540D\u7684\u540D\u5B57\u53EA\u6309\u5B98\u65B9\u7EC4\u4EF6\u540D\u53BB\u627E\uFF08\u627E\u4E0D\u5230\u5C31\u4E0D\u6E32\u67D3\uFF09\u3002\u56FE\u6807\u540D\u672C\u8EAB\u7167\u6284\u5E73\u53F0\u91CC\u7684\u540D\u5B57\uFF0C\u672C\u5C42\u4E0D\u505A\u8BED\u4E49\u522B\u540D \u2014\u2014 \u6539\u540D\u7684\u552F\u4E00\u771F\u6E90\u662F iconfont \u540E\u53F0\u3002\u52A0\u4E00\u5957\u5E93\uFF08\u793E\u4EA4 / \u529E\u516C \u2026\uFF09\u53EA\u9700\u5F80 `ICON_FONTS` \u52A0\u4E00\u9879\uFF08`url` / `family` / `baseClass` / `prefix`\uFF09\uFF0C\u7EC4\u4EF6\u4E0E\u5C55\u793A\u9875\u90FD\u4E0D\u7528\u6539\uFF1B`loadIconFont(id)` \u4F1A\u8BFB\u5728\u7EBF CSS \u539F\u6587\u62FF\u5230\u8BE5\u5E93\u5168\u90E8\u56FE\u6807\u540D\uFF08\u8DE8\u57DF CSSOM \u8BFB\u4E0D\u5230\uFF0C\u53EA\u80FD\u8BFB\u539F\u6587\uFF09\u3002",
+        "en": "**The library prefix is mandatory**: in `base:shanchu` the `base` part is the key of `ICON_FONTS`, and a name without a prefix is looked up as an official component name (rendered as nothing when absent). The icon name itself is copied from the platform; this layer adds no semantic aliases \u2014 renaming happens on the iconfont side. Adding another library (social, office \u2026) is one more entry in `ICON_FONTS` (`url` / `family` / `baseClass` / `prefix`); neither the component nor the showcase page changes. `loadIconFont(id)` reads the online CSS text to enumerate the library's names (cross-origin CSSOM is unreadable, so the text is the only source)."
       },
       {
-        "zh": "\u5C3A\u5BF8\u9ED8\u8BA4 `1em`\uFF0C\u8DDF\u968F\u6240\u5728\u6587\u5B57\u5B57\u53F7\uFF1B\u8981\u653E\u5927\u4F20 `size`\uFF08\u6570\u5B57\u6309 px\uFF0C\u5B57\u7B26\u4E32\u539F\u6837\uFF09\u3002\u5355\u8272\u5B57\u5F62\u5403 `color`\uFF0C\u660E\u6697\u968F\u4E3B\u9898\u3002\u5B98\u65B9 primitives \u7684\u56FE\u6807**\u4E0D\u8D70\u8FD9\u91CC**\uFF0C\u76F4\u63A5 `import { IconXxxRegular } from 'dsh-plugin-core/ui/official'` \u2014\u2014 \u4E24\u8FB9\u662F\u4E24\u5957\u673A\u5236\uFF1A\u8FD9\u91CC\u662F\u5B57\u4F53\uFF0C\u5B98\u65B9\u662F SVG \u7EC4\u4EF6\u3002",
-        "en": "Size defaults to `1em` so an icon follows the surrounding text; pass `size` to override (numbers as px, strings verbatim). Monochrome glyphs take `color` and follow the theme. Official primitives icons are **not** part of this layer: import them from `dsh-plugin-core/ui/official` \u2014 the two are different mechanisms, a font here and SVG components there."
+        "zh": "**\u627E\u4E0D\u5230\u5C31\u4E0D\u6E32\u67D3**\uFF0C\u5E76\u5728\u63A7\u5236\u53F0\u544A\u8B66\u4E00\u6B21\uFF1A\u5E93\u540D\u5199\u9519\u3001\u5E73\u53F0\u6539\u540D\u3001\u5BBF\u4E3B\u5347\u7EA7\u5220\u4E86\u67D0\u4E2A\u5B98\u65B9\u56FE\u6807\uFF0C\u90FD\u662F\u7A7A\u4F4D\u800C\u4E0D\u662F\u300C\u663E\u793A\u6210\u522B\u7684\u56FE\u6807\u300D\u3002\u4E5F\u4E0D\u8DE8\u5E93\u56DE\u843D \u2014\u2014 \u56DE\u843D\u5230 base \u4F1A\u663E\u793A\u4E00\u4E2A\u9519\u7684\u5B57\u5F62\uFF0C\u6BD4\u7A7A\u767D\u66F4\u96BE\u67E5\u3002",
+        "en": "**An unknown name renders nothing** plus a single console warning: a mistyped library, a renamed glyph on the platform, or an official icon removed by a host upgrade all show as empty space rather than as some other icon. There is deliberately no cross-library fallback \u2014 falling back to base would draw the wrong glyph, which is harder to trace than a gap."
       },
       {
-        "zh": "\u6F14\u793A\u7AD9\u300C\u56FE\u6807\u300D\u9875\u628A\u4E24\u8FB9\u653E\u5728\u540C\u4E00\u9875\uFF1A\u5B98\u65B9\u90A3\u7EC4\u4ECE\u5BBF\u4E3B\u547D\u540D\u7A7A\u95F4\u5B9E\u65F6\u679A\u4E3E\uFF0C\u5B57\u4F53\u90A3\u7EC4\u4ECE\u5728\u7EBF CSS \u5B9E\u65F6\u89E3\u6790\uFF0C\u56E0\u6B64\u5BBF\u4E3B\u5347\u7EA7\u6216\u5E73\u53F0\u52A0\u56FE\u6807\u540E\u5237\u65B0\u5373\u89C1\uFF0C\u4ED3\u5E93\u91CC\u6CA1\u6709\u9700\u8981\u624B\u5DE5\u540C\u6B65\u7684\u6E05\u5355\u3002",
-        "en": "The demo site's Icons page puts both on one page: the official group is enumerated from the host namespace at runtime and the font groups are parsed from the online CSS at runtime, so a host upgrade or a platform upload shows up on refresh \u2014 the repository keeps no list that has to be synced by hand."
+        "zh": "\u5C3A\u5BF8\u9ED8\u8BA4 16px\uFF08`ICON_SIZES.md`\uFF09\uFF0C\u4E5F\u53EF\u4EE5\u4F20\u9884\u8BBE\u540D\uFF0C\u6216\u76F4\u63A5\u7ED9 px \u6570\u5B57\u3002`size` \u53EA\u6536\u6570\u5B57\u4E0E\u9884\u8BBE\u540D\u3001\u4E0D\u6536 `em` \u4E4B\u7C7B\u5B57\u7B26\u4E32 \u2014\u2014 \u5B98\u65B9\u7EC4\u4EF6\u7684 props \u662F `size?: number`\uFF0C\u6536 em \u4F1A\u8BA9\u4E24\u7C7B\u56FE\u6807\u4E00\u534A\u751F\u6548\u4E00\u534A\u5931\u6548\u3002\u9700\u8981\u8DDF\u6240\u5728\u6587\u5B57\u5B57\u53F7\u8054\u52A8\u65F6\uFF0C\u628A\u6570\u5B57\u6309\u8C03\u7528\u70B9\u7B97\u597D\u518D\u4F20\u3002",
+        "en": "Size defaults to 16px (`ICON_SIZES.md`); pass a preset name or a raw px number. `size` accepts numbers and preset names only, never strings like `em` \u2014 official components take `size?: number`, so honouring em would make one source work and the other silently ignore it. When an icon must follow text size, compute the number at the call site."
+      },
+      {
+        "zh": "\u4F20\u5B57\u7B26\u4E32\u7684\u573A\u5408\uFF08\u4F8B\u5982 `taskNotifications` \u7684 `icon` \u5B57\u6BB5\uFF0C\u6838\u5FC3\u53EA\u5B58\u4E0D\u89E3\u91CA\uFF09\u76F4\u63A5\u7528\u540C\u4E00\u6761\u534F\u8BAE\uFF1A`'base:jian'`\u3001`'social:jian'`\u3001`'IconWrapLinesOutlineRegular'`\uFF0C\u6E32\u67D3\u7AEF\u539F\u6837\u5582\u7ED9 `<Icon name={\u2026} />` \u5373\u53EF\uFF0C\u4E0D\u9700\u8981\u81EA\u5DF1\u518D\u62C6\u5192\u53F7\u3002",
+        "en": "Where only a string travels (for example the `icon` field of `taskNotifications`, which the core stores but never interprets), the same convention applies: `'base:jian'`, `'social:jian'`, `'IconWrapLinesOutlineRegular'`. The renderer feeds it straight into `<Icon name={\u2026} />`; nothing has to split on the colon itself."
       }
     ],
     "code": [
@@ -69565,18 +69492,25 @@ h(SideSheet, {
         "lang": "tsx",
         "src": `import { Icon } from 'dsh-plugin-core/ui/icons'
 
-// \u540D\u5B57\u5C31\u662F iconfont \u91CC\u7684\u540D\u5B57\uFF08\u4E0D\u5E26\u7C7B\u540D\u524D\u7F00\uFF09
-<Icon name="shanchu" />
-<Icon name="shaixuan" size={18} />
-<Icon name="guanbi" title="\u5173\u95ED" />
+// \u5B57\u4F53\u56FE\u6807\uFF1A\u7EC4\u540D\u4E0D\u53EF\u7701\uFF08\u7EC4\u540D = ICON_FONTS \u7684 key\uFF09
+<Icon name="base:shanchu" />
+<Icon name="base:shaixuan" size={18} />
+<Icon name="social:jian" />
 
-// \u4EE5\u540E\u6709\u591A\u5957\u5E93\u65F6\uFF0C\u7528 set \u6307\u5B9A\uFF1B\u7F3A\u7701 base
-<Icon set="social" name="github" />`
+// \u5B98\u65B9 primitives \u56FE\u6807\uFF1A\u6CA1\u6709\u5192\u53F7\uFF0C\u76F4\u63A5\u5199\u7EC4\u4EF6\u540D
+<Icon name="IconWrapLinesOutlineRegular" />
+
+// \u5C3A\u5BF8\uFF1A\u9884\u8BBE\u540D\u6216 px \u6570\u5B57\uFF0C\u7F3A\u7701 md\uFF0816\uFF09
+<Icon name="base:guanbi" size="lg" />
+<Icon name="base:guanbi" size={31} />
+
+// \u65E0\u969C\u788D\u540D\uFF08\u540C\u65F6\u4F5C\u539F\u751F tooltip\uFF09\uFF1B\u88C5\u9970\u6027\u56FE\u6807\u4E0D\u4F20
+<Icon name="base:guanbi" title="\u5173\u95ED" />`
       },
       {
         "id": "icons-listing",
         "lang": "ts",
-        "src": "import { ICON_FONTS, ensureIconFont, loadIconFont } from 'dsh-plugin-core/ui/icons'\n\n// \u9700\u8981\u65F6\u624B\u52A8\u6302\u4E00\u6B21\uFF08Icon \u9996\u6B21\u6E32\u67D3\u4E5F\u4F1A\u81EA\u52A8\u6302\uFF0C\u91CD\u590D\u8C03\u7528\u65E0\u526F\u4F5C\u7528\uFF09\nensureIconFont('base')\n\n// \u5217\u51FA\u67D0\u5957\u5E93\u5F53\u524D\u6709\u54EA\u4E9B\u56FE\u6807\uFF1A\u8BFB\u5728\u7EBF CSS \u539F\u6587\uFF0C\u5E73\u53F0\u52A0\u56FE\u6807\u540E\u5237\u65B0\u5373\u89C1\nconst { names, prefix } = await loadIconFont('base')"
+        "src": "import { ICON_FONTS, ICON_SIZES, ensureIconFont, loadIconFont } from 'dsh-plugin-core/ui/icons'\n\n// \u5C3A\u5BF8\u9884\u8BBE\nICON_SIZES   // { sm: 14, md: 16, lg: 20, xl: 24 }\n\n// \u9700\u8981\u65F6\u624B\u52A8\u6302\u4E00\u6B21\uFF08Icon \u9996\u6B21\u6E32\u67D3\u4E5F\u4F1A\u81EA\u52A8\u6302\uFF0C\u91CD\u590D\u8C03\u7528\u65E0\u526F\u4F5C\u7528\uFF09\nensureIconFont('base')\n\n// \u5217\u51FA\u67D0\u5957\u5E93\u5F53\u524D\u6709\u54EA\u4E9B\u56FE\u6807\uFF1A\u8BFB\u5728\u7EBF CSS \u539F\u6587\uFF0C\u5E73\u53F0\u52A0\u56FE\u6807\u540E\u5237\u65B0\u5373\u89C1\nconst { names, prefix } = await loadIconFont('base')"
       }
     ],
     "api": [
@@ -69585,11 +69519,11 @@ h(SideSheet, {
         "rows": [
           {
             "name": "Icon",
-            "type": "(props: IconProps) => JSX.Element",
+            "type": "(props: IconProps) => JSX.Element | null",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5B57\u4F53\u56FE\u6807\u5143\u7D20\u3002props\uFF1A`name`\uFF08\u5FC5\u586B\uFF0C\u5E73\u53F0\u540D\uFF09\u3001`set`\uFF08\u5E93 id\uFF0C\u7F3A\u7701 `base`\uFF09\u3001`size`\uFF08\u7F3A\u7701 `1em`\uFF09\u3001`title`\uFF08\u65E0\u969C\u788D\u540D + \u539F\u751F tooltip\uFF09\u3001`className`\u3001`style`",
-              "en": "The icon element. Props: `name` (required, platform name), `set` (library id, defaults to `base`), `size` (defaults to `1em`), `title` (accessible name plus native tooltip), `className`, `style`"
+              "zh": "\u56FE\u6807\u5143\u7D20\u3002props\uFF1A`name`\uFF08\u5FC5\u586B\uFF0C`\u5E93\u540D:\u56FE\u6807\u540D` \u6216\u5B98\u65B9\u7EC4\u4EF6\u540D\uFF09\u3001`size`\uFF08\u9884\u8BBE\u540D\u6216 px\uFF0C\u7F3A\u7701 16\uFF09\u3001`title`\uFF08\u65E0\u969C\u788D\u540D + \u539F\u751F tooltip\uFF09\u3001`className`\u3001`style`\u3002\u627E\u4E0D\u5230\u56FE\u6807\u65F6\u8FD4\u56DE `null` \u5E76\u544A\u8B66\u4E00\u6B21",
+              "en": "The icon element. Props: `name` (required, `library:name` or an official component name), `size` (preset or px, defaults to 16), `title` (accessible name plus native tooltip), `className`, `style`. Returns `null` with a one-off warning when nothing matches"
             }
           },
           {
@@ -69597,17 +69531,26 @@ h(SideSheet, {
             "type": "Record<string, IconFontFace>",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5E93\u6CE8\u518C\u8868\uFF1A`url`\uFF08\u5728\u7EBF\u6837\u5F0F\u5730\u5740\uFF09\u3001`family`\u3001`baseClass`\u3001`prefix`\u3002\u52A0\u5E93\u53EA\u6539\u8FD9\u91CC",
-              "en": "Library registry: `url` (online style address), `family`, `baseClass`, `prefix`. Adding a library means editing this"
+              "zh": "\u5E93\u6CE8\u518C\u8868\uFF08key \u5C31\u662F `name` \u91CC\u5192\u53F7\u524D\u90A3\u6BB5\uFF09\uFF1A`url`\uFF08\u5728\u7EBF\u6837\u5F0F\u5730\u5740\uFF09\u3001`family`\u3001`baseClass`\u3001`prefix`\u3002\u52A0\u5E93\u53EA\u6539\u8FD9\u91CC",
+              "en": "Library registry (the key is the part before the colon in `name`): `url` (online style address), `family`, `baseClass`, `prefix`. Adding a library means editing this"
+            }
+          },
+          {
+            "name": "ICON_SIZES",
+            "type": "{ sm: 14; md: 16; lg: 20; xl: 24 }",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5C3A\u5BF8\u9884\u8BBE\uFF0C`Icon` \u7684 `size` \u53EF\u76F4\u63A5\u4F20 key",
+              "en": "Size presets; `Icon` accepts the key directly"
             }
           },
           {
             "name": "ensureIconFont",
-            "type": "(id?: IconFontId) => void",
-            "def": "id = 'base'",
+            "type": "(id: IconFontId) => void",
+            "def": "\u2014",
             "desc": {
-              "zh": "\u6309 id \u4FDD\u8BC1\u8BE5\u5E93\u53EA\u6302\u4E00\u6761 `<link>`\uFF1B\u5730\u5740\u53D8\u4E86\u76F4\u63A5\u6539 `href`\u3002`Icon` \u9996\u6B21\u6E32\u67D3\u65F6\u81EA\u52A8\u8C03\u7528\uFF0C\u975E\u6D4F\u89C8\u5668\u73AF\u5883\u9759\u9ED8\u8DF3\u8FC7",
-              "en": "Guarantees exactly one `<link>` per library id; if the address changed it rewrites `href`. Called automatically on first `Icon` render, silently skipped outside a browser"
+              "zh": "\u6309\u5E93 id \u4FDD\u8BC1\u53EA\u6302\u4E00\u6761 `<link>`\uFF1B\u5730\u5740\u53D8\u4E86\u76F4\u63A5\u6539 `href`\u3002`Icon` \u9996\u6B21\u6E32\u67D3\u65F6\u81EA\u52A8\u8C03\u7528\uFF0C\u975E\u6D4F\u89C8\u5668\u73AF\u5883\u9759\u9ED8\u8DF3\u8FC7",
+              "en": "Guarantees exactly one `<link>` per library id, rewriting `href` when the address changed. Called automatically on first `Icon` render and silently skipped outside a browser"
             }
           },
           {
@@ -69640,14 +69583,14 @@ function locale() {
   return getLocale() === "en" ? "en" : "zh";
 }
 function Note(props) {
-  return (0, import_react94.createElement)(
+  return (0, import_react93.createElement)(
     StripCard,
     { accent: "business", className: "dshpc-doc-note" },
-    (0, import_react94.createElement)(
+    (0, import_react93.createElement)(
       "div",
       { className: "dshpc-doc-note__body" },
-      (0, import_react94.createElement)("span", { className: "dshpc-doc-note__mark" }, t3("docNote")),
-      props.children ?? (0, import_react94.createElement)("span", null, props.text ?? "")
+      (0, import_react93.createElement)("span", { className: "dshpc-doc-note__mark" }, t3("docNote")),
+      props.children ?? (0, import_react93.createElement)("span", null, props.text ?? "")
     )
   );
 }
@@ -69655,9 +69598,9 @@ function snippetPath(lang) {
   return `snippet.${lang}`;
 }
 function LazyCode(props) {
-  const holder = (0, import_react94.useRef)(null);
-  const [live, setLive] = (0, import_react94.useState)(false);
-  (0, import_react94.useEffect)(() => {
+  const holder = (0, import_react93.useRef)(null);
+  const [live, setLive] = (0, import_react93.useState)(false);
+  (0, import_react93.useEffect)(() => {
     if (live) return;
     const el = holder.current;
     if (el === null) return;
@@ -69673,10 +69616,10 @@ function LazyCode(props) {
       observer.disconnect();
     };
   }, [live]);
-  return (0, import_react94.createElement)(
+  return (0, import_react93.createElement)(
     "div",
     { ref: holder },
-    live ? (0, import_react94.createElement)(CodeViewer, {
+    live ? (0, import_react93.createElement)(CodeViewer, {
       text: props.code,
       path: snippetPath(props.lang),
       t,
@@ -69684,85 +69627,85 @@ function LazyCode(props) {
       height: "auto",
       // 文档片段不要行号（行号是「看整个文件」时才需要的坐标，片段有了反而干扰）。
       lineNumbers: false
-    }) : (0, import_react94.createElement)("pre", { className: "dshpc-doc-code-ph" }, props.code)
+    }) : (0, import_react93.createElement)("pre", { className: "dshpc-doc-code-ph" }, props.code)
   );
 }
 function CodeOnly(props) {
   const label = props.label ?? (props.labelKey !== void 0 ? t3(props.labelKey) : t3("docCode"));
-  return (0, import_react94.createElement)(
+  return (0, import_react93.createElement)(
     Surface,
     { border: "faint", className: "dshpc-doc-block" },
-    (0, import_react94.createElement)("div", { className: "dshpc-doc-label" }, label),
-    (0, import_react94.createElement)(LazyCode, { code: props.code, lang: props.lang ?? "tsx" })
+    (0, import_react93.createElement)("div", { className: "dshpc-doc-label" }, label),
+    (0, import_react93.createElement)(LazyCode, { code: props.code, lang: props.lang ?? "tsx" })
   );
 }
 function Example(props) {
-  return (0, import_react94.createElement)(
+  return (0, import_react93.createElement)(
     Surface,
     { border: "faint", padding: null, className: "dshpc-doc-example" },
-    (0, import_react94.createElement)(
+    (0, import_react93.createElement)(
       "div",
       { className: "dshpc-doc-example__head" },
-      (0, import_react94.createElement)("div", { className: "dshpc-doc-example__title" }, props.title),
-      props.hint === void 0 ? null : (0, import_react94.createElement)("div", { className: "dshpc-doc-example__hint" }, props.hint)
+      (0, import_react93.createElement)("div", { className: "dshpc-doc-example__title" }, props.title),
+      props.hint === void 0 ? null : (0, import_react93.createElement)("div", { className: "dshpc-doc-example__hint" }, props.hint)
     ),
-    (0, import_react94.createElement)(
+    (0, import_react93.createElement)(
       "div",
       { className: "dshpc-doc-example__body" },
-      (0, import_react94.createElement)(
+      (0, import_react93.createElement)(
         "div",
         { className: "dshpc-doc-example__demo" },
-        (0, import_react94.createElement)("div", { className: "dshpc-doc-label" }, t3("docPreview")),
+        (0, import_react93.createElement)("div", { className: "dshpc-doc-label" }, t3("docPreview")),
         props.children ?? null
       ),
-      props.code === void 0 ? null : (0, import_react94.createElement)(
+      props.code === void 0 ? null : (0, import_react93.createElement)(
         "div",
         { className: "dshpc-doc-example__code" },
-        (0, import_react94.createElement)("div", { className: "dshpc-doc-label" }, t3("docCode")),
-        (0, import_react94.createElement)(
+        (0, import_react93.createElement)("div", { className: "dshpc-doc-label" }, t3("docCode")),
+        (0, import_react93.createElement)(
           "div",
           { className: "dshpc-doc-example__scroll dshpc-scroll-thin dshpc-scroll-thin--both" },
-          (0, import_react94.createElement)(LazyCode, { code: props.code, lang: "tsx" })
+          (0, import_react93.createElement)(LazyCode, { code: props.code, lang: "tsx" })
         )
       )
     )
   );
 }
 function ApiTable(props) {
-  return (0, import_react94.createElement)(
+  return (0, import_react93.createElement)(
     Surface,
     { border: "faint", className: "dshpc-doc-block" },
-    (0, import_react94.createElement)(
+    (0, import_react93.createElement)(
       "div",
       { className: "dshpc-doc-label", style: props.title === void 0 ? void 0 : { textTransform: "none" } },
       props.title ?? t3("docApi")
     ),
-    (0, import_react94.createElement)(
+    (0, import_react93.createElement)(
       "table",
       { className: "dshpc-doc-api" },
-      (0, import_react94.createElement)(
+      (0, import_react93.createElement)(
         "thead",
         null,
-        (0, import_react94.createElement)(
+        (0, import_react93.createElement)(
           "tr",
           null,
-          (0, import_react94.createElement)("th", null, t3("docApiName")),
-          (0, import_react94.createElement)("th", null, t3("docApiType")),
-          (0, import_react94.createElement)("th", null, t3("docApiDefault")),
-          (0, import_react94.createElement)("th", null, t3("docApiDesc"))
+          (0, import_react93.createElement)("th", null, t3("docApiName")),
+          (0, import_react93.createElement)("th", null, t3("docApiType")),
+          (0, import_react93.createElement)("th", null, t3("docApiDefault")),
+          (0, import_react93.createElement)("th", null, t3("docApiDesc"))
         )
       ),
-      (0, import_react94.createElement)(
+      (0, import_react93.createElement)(
         "tbody",
         null,
         props.rows.map(
-          (row2) => (0, import_react94.createElement)(
+          (row2) => (0, import_react93.createElement)(
             "tr",
             { key: row2.name },
-            (0, import_react94.createElement)("td", null, row2.name),
-            (0, import_react94.createElement)("td", null, row2.type),
-            (0, import_react94.createElement)("td", null, row2.def),
-            (0, import_react94.createElement)("td", null, row2.desc ?? t3(row2.descKey ?? "docApiDesc"))
+            (0, import_react93.createElement)("td", null, row2.name),
+            (0, import_react93.createElement)("td", null, row2.type),
+            (0, import_react93.createElement)("td", null, row2.def),
+            (0, import_react93.createElement)("td", null, row2.desc ?? t3(row2.descKey ?? "docApiDesc"))
           )
         )
       )
@@ -69773,13 +69716,13 @@ function DocProse(props) {
   const section = DOC_DATA[props.id];
   if (section?.prose === void 0) return null;
   const l = locale();
-  return (0, import_react94.createElement)(
+  return (0, import_react93.createElement)(
     Note,
     null,
-    (0, import_react94.createElement)(
+    (0, import_react93.createElement)(
       "div",
       { className: "dshpc-doc-note__content" },
-      ...section.prose.map((p, i2) => (0, import_react94.createElement)("div", { key: i2, className: "dshpc-doc-note__p" }, p[l]))
+      ...section.prose.map((p, i2) => (0, import_react93.createElement)("div", { key: i2, className: "dshpc-doc-note__p" }, p[l]))
     )
   );
 }
@@ -69787,11 +69730,11 @@ function DocApi(props) {
   const section = DOC_DATA[props.id];
   if (section?.api === void 0) return null;
   const l = locale();
-  return (0, import_react94.createElement)(
-    import_react94.Fragment,
+  return (0, import_react93.createElement)(
+    import_react93.Fragment,
     null,
     ...section.api.map(
-      (table, i2) => (0, import_react94.createElement)(ApiTable, {
+      (table, i2) => (0, import_react93.createElement)(ApiTable, {
         key: i2,
         rows: table.rows.map((r2) => ({
           name: r2.name,
@@ -69807,32 +69750,32 @@ function DocApi(props) {
 function DocCode(props) {
   const section = DOC_DATA[props.id];
   if (section?.code === void 0) return null;
-  return (0, import_react94.createElement)(
-    import_react94.Fragment,
+  return (0, import_react93.createElement)(
+    import_react93.Fragment,
     null,
-    ...section.code.map((c4, i2) => (0, import_react94.createElement)(CodeOnly, { key: i2, code: c4.src, lang: c4.lang }))
+    ...section.code.map((c4, i2) => (0, import_react93.createElement)(CodeOnly, { key: i2, code: c4.src, lang: c4.lang }))
   );
 }
 function DocContent(props) {
-  return (0, import_react94.createElement)(
-    import_react94.Fragment,
+  return (0, import_react93.createElement)(
+    import_react93.Fragment,
     null,
-    (0, import_react94.createElement)(DocProse, { id: props.id }),
-    (0, import_react94.createElement)(DocApi, { id: props.id }),
-    (0, import_react94.createElement)(DocCode, { id: props.id })
+    (0, import_react93.createElement)(DocProse, { id: props.id }),
+    (0, import_react93.createElement)(DocApi, { id: props.id }),
+    (0, import_react93.createElement)(DocCode, { id: props.id })
   );
 }
 
 // packages/demo/src/sections/start.tsx
 function HelpIndexPage() {
-  return (0, import_react95.createElement)(DocContent, { id: "help-index" });
+  return (0, import_react94.createElement)(DocContent, { id: "help-index" });
 }
 function QuickstartPage() {
-  return (0, import_react95.createElement)(DocContent, { id: "quickstart" });
+  return (0, import_react94.createElement)(DocContent, { id: "quickstart" });
 }
 
 // packages/demo/src/sections/foundation.tsx
-var import_react96 = require("react");
+var import_react95 = require("react");
 var TOKENS = [
   { label: "business", cssVar: "--dshpc-business" },
   { label: "success", cssVar: "--dshpc-success" },
@@ -69855,21 +69798,21 @@ var TOKENS = [
   { label: "fg-4", cssVar: "--dshpc-fg-4" }
 ];
 function FoundationPage() {
-  return (0, import_react96.createElement)(
+  return (0, import_react95.createElement)(
     "div",
     null,
     // Token 色板：颜色全部来自 design 的 token。
-    (0, import_react96.createElement)(
+    (0, import_react95.createElement)(
       Example,
       { title: t3("demoTokenPalette"), hint: t3("tokensHint") },
-      (0, import_react96.createElement)(
+      (0, import_react95.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "10px" } },
         TOKENS.map(
-          (item) => (0, import_react96.createElement)(
+          (item) => (0, import_react95.createElement)(
             "div",
             { key: item.cssVar, style: { width: "104px" } },
-            (0, import_react96.createElement)("div", {
+            (0, import_react95.createElement)("div", {
               style: {
                 height: "40px",
                 borderRadius: "var(--dshpc-radius-sm)",
@@ -69877,25 +69820,25 @@ function FoundationPage() {
                 border: "1px solid var(--dshpc-border-faint)"
               }
             }),
-            (0, import_react96.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
-            (0, import_react96.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
+            (0, import_react95.createElement)("div", { style: { fontSize: "11px", marginTop: "4px" } }, item.label),
+            (0, import_react95.createElement)("div", { style: { fontSize: "10px", color: "var(--dshpc-fg-4)" } }, item.cssVar)
           )
         )
       )
     ),
     // 暗色主题。判据是在**渲染时**读的，宿主改明暗后重开本页才更新。
-    (0, import_react96.createElement)(
+    (0, import_react95.createElement)(
       Example,
       { title: "body[data-ds-dark-theme]", hint: t3("darkHint") },
-      (0, import_react96.createElement)(
+      (0, import_react95.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react96.createElement)(
+        (0, import_react95.createElement)(
           "span",
           { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t3("darkNow")
         ),
-        (0, import_react96.createElement)("code", {
+        (0, import_react95.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -69907,7 +69850,7 @@ function FoundationPage() {
         }, typeof document !== "undefined" && document.body.hasAttribute("data-ds-dark-theme") ? "true\uFF08\u6697\u8272\uFF09" : "false\uFF08\u4EAE\u8272\uFF09")
       )
     ),
-    (0, import_react96.createElement)(
+    (0, import_react95.createElement)(
       Example,
       {
         title: t3("demoStyleInject"),
@@ -69918,15 +69861,129 @@ import { ensureControls, setStyleKit } from 'dsh-plugin-core/ui'
 setStyleKit(createStyleKit({ id: 'dsh-plugin-core-demo-ui' }))
 ensureControls()`
       },
-      (0, import_react96.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t3("designInjectNote"))
+      (0, import_react95.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, t3("designInjectNote"))
     ),
     // 命名契约（原「命名与前缀契约」页）的 API 表 —— 直接吃 docData['foundation'] 的 api 段。
-    (0, import_react96.createElement)(DocApi, { id: "foundation" })
+    (0, import_react95.createElement)(DocApi, { id: "foundation" })
   );
 }
 
 // packages/demo/src/sections/icons.tsx
 var import_react97 = require("react");
+
+// dist/ui/display/Icon.js
+var import_react96 = require("react");
+
+// dist/ui/infra/official-icons.js
+var official_icons_exports = {};
+__export(official_icons_exports, {
+  Official: () => Official2
+});
+var PrimitiveNamespace = __toESM(require("@deepseek-ai/dsh-client-ui-primitives"), 1);
+__reExport(official_icons_exports, require("@deepseek-ai/dsh-client-ui-primitives"));
+var Official2 = PrimitiveNamespace;
+
+// dist/ui/display/icon-parse.js
+function commonPrefix(classes) {
+  let prefix2 = classes[0] ?? "";
+  for (const name2 of classes) {
+    let i2 = 0;
+    while (i2 < prefix2.length && i2 < name2.length && prefix2[i2] === name2[i2])
+      i2 += 1;
+    prefix2 = prefix2.slice(0, i2);
+  }
+  return prefix2.slice(0, prefix2.lastIndexOf("-") + 1);
+}
+function parseFontCss(css3) {
+  const family = /font-family:\s*["']([^"']+)["']/.exec(css3)?.[1];
+  const classes = [...css3.matchAll(/\.([\w-]+):before\s*\{[^}]*content:/g)].map((m) => m[1] ?? "");
+  const baseClass = [...css3.matchAll(/\.([\w-]+)\s*\{([^}]*)\}/g)].find((m) => (m[2] ?? "").includes("font-family"))?.[1];
+  if (family === void 0 || baseClass === void 0 || classes.length === 0) {
+    throw new Error("[dsh-plugin-core:icons] \u56FE\u6807 CSS \u7ED3\u6784\u4E0D\u8BA4\u8BC6\uFF08\u7F3A font-family / \u57FA\u7840\u7C7B / glyph \u7C7B\uFF09");
+  }
+  const prefix2 = commonPrefix(classes);
+  return {
+    family,
+    baseClass,
+    prefix: prefix2,
+    names: classes.map((name2) => name2.slice(prefix2.length))
+  };
+}
+
+// dist/ui/display/Icon.js
+var ICON_FONTS = {
+  base: {
+    url: "https://at.alicdn.com/t/c/font_5252865_mu5upqjaqf.css",
+    family: "dshpc-icons-base",
+    baseClass: "dshpc-icons-base",
+    prefix: "dshpc-i-"
+  }
+};
+var ICON_SIZES = { sm: 14, md: 16, lg: 20, xl: 24 };
+function ensureIconFont(id3) {
+  if (typeof document === "undefined")
+    return;
+  const font = ICON_FONTS[id3];
+  let link = document.querySelector(`link[data-dshpc-icon-font="${id3}"]`);
+  if (link === null) {
+    link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.dataset.dshpcIconFont = id3;
+    link.href = font.url;
+    document.head.appendChild(link);
+  } else if (link.href !== font.url) {
+    link.href = font.url;
+  }
+}
+var loaded = /* @__PURE__ */ new Map();
+function loadIconFont(id3 = "base") {
+  const hit = loaded.get(id3);
+  if (hit !== void 0)
+    return hit;
+  const task = fetch(ICON_FONTS[id3].url).then((res) => res.text()).then(parseFontCss);
+  loaded.set(id3, task);
+  task.catch(() => loaded.delete(id3));
+  return task;
+}
+var warned3 = /* @__PURE__ */ new Set();
+function warnMissing(name2) {
+  if (warned3.has(name2))
+    return;
+  warned3.add(name2);
+  console.warn(`[dsh-plugin-core:icons] \u627E\u4E0D\u5230\u56FE\u6807 "${name2}"\uFF1A\u5B57\u4F53\u56FE\u6807\u5199 "\u5E93\u540D:\u56FE\u6807\u540D"\uFF08\u5982 base:jian\uFF09\uFF0C\u5B98\u65B9\u56FE\u6807\u76F4\u63A5\u5199\u7EC4\u4EF6\u540D\uFF08\u5982 IconCheckOutlineRegular\uFF09`);
+}
+function Icon(props) {
+  const { name: name2, title, className: className2, style: style2 } = props;
+  const size4 = props.size === void 0 ? ICON_SIZES.md : typeof props.size === "number" ? props.size : ICON_SIZES[props.size];
+  const cut = name2.indexOf(":");
+  if (cut > 0) {
+    const id3 = name2.slice(0, cut);
+    const font = ICON_FONTS[id3];
+    if (font === void 0) {
+      warnMissing(name2);
+      return null;
+    }
+    ensureIconFont(id3);
+    return (0, import_react96.createElement)("i", {
+      className: `${font.baseClass} ${font.prefix}${name2.slice(cut + 1)}${className2 === void 0 || className2 === "" ? "" : ` ${className2}`}`,
+      role: title === void 0 ? void 0 : "img",
+      "aria-label": title,
+      title,
+      style: { fontSize: size4, lineHeight: 1, ...style2 }
+    });
+  }
+  const glyph2 = Official2[name2];
+  if (typeof glyph2 !== "function" || !/^Icon[A-Z]/.test(name2)) {
+    warnMissing(name2);
+    return null;
+  }
+  const rendered = (0, import_react96.createElement)(glyph2, { size: size4 });
+  if (title === void 0)
+    return rendered;
+  return (0, import_react96.createElement)("span", { role: "img", "aria-label": title, title, style: { display: "inline-flex", ...style2 } }, rendered);
+}
+
+// packages/demo/src/sections/icons.tsx
 var OFFICIAL_ICONS = Object.entries(Official).filter(([name2, value]) => /^Icon[A-Z]/.test(name2) && typeof value === "function").map(([name2, value]) => ({ name: name2, Comp: value })).sort((a, b) => a.name.localeCompare(b.name));
 var CELL = {
   display: "flex",
@@ -69949,9 +70006,7 @@ var GRID = {
   gap: "6px",
   marginTop: "10px"
 };
-var officialUsage = (name2) => `import { ${name2} } from 'dsh-plugin-core/ui/official'
-<${name2} />`;
-var fontUsage = (name2) => `import { Icon } from 'dsh-plugin-core/ui/icons'
+var usage = (name2) => `import { Icon } from 'dsh-plugin-core/ui/icons'
 <Icon name="${name2}" />`;
 var NAME = {
   fontSize: "11px",
@@ -70032,9 +70087,9 @@ function IconsPage() {
           (item) => (0, import_react97.createElement)(Cell, {
             key: item.name,
             name: item.name,
-            copied: copied === officialUsage(item.name),
+            copied: copied === usage(item.name),
             glyph: (0, import_react97.createElement)(item.Comp, { size: 40 }),
-            onPick: () => pick2(officialUsage(item.name))
+            onPick: () => pick2(usage(item.name))
           })
         )
       )
@@ -70059,9 +70114,9 @@ function IconsPage() {
             (name2) => (0, import_react97.createElement)(Cell, {
               key: name2,
               name: name2,
-              copied: copied === fontUsage(name2),
-              glyph: (0, import_react97.createElement)(Icon, { name: name2, set: id3, size: 40 }),
-              onPick: () => pick2(fontUsage(name2))
+              copied: copied === usage(`${id3}:${name2}`),
+              glyph: (0, import_react97.createElement)(Icon, { name: `${id3}:${name2}`, size: 40 }),
+              onPick: () => pick2(usage(`${id3}:${name2}`))
             })
           )
         )
@@ -73863,10 +73918,6 @@ await notifyTask.run('workspace-scan', () => scanWorkspace(), { group: 'scan' })
 function detailText(detail) {
   return typeof detail === "string" ? detail : JSON.stringify(detail);
 }
-var DEMO_ICONS = { bell: "\u{1F514}", ledger: "\u{1F4D2}", check: "\u2705" };
-function iconText(icon2) {
-  return DEMO_ICONS[icon2] ?? icon2;
-}
 var mono = { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px" };
 var row = { display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" };
 var panel = { display: "flex", flexDirection: "column", gap: "8px", fontSize: "12px" };
@@ -73892,12 +73943,12 @@ function TaskNotificationsPage() {
   const localPending = [...handles.current.values()].filter((handle) => !handle.isSettled).length;
   function register(group, label) {
     serial.current += 1;
-    const handle = notifyTask(`${label} #${serial.current}`, { group, icon: group === SUB_REMINDER ? "bell" : "ledger" });
+    const handle = notifyTask(`${label} #${serial.current}`, { group, icon: group === SUB_REMINDER ? "base:shijian1" : "base:shuju" });
     handles.current.set(handle.id, handle);
   }
   function broadcast() {
     serial.current += 1;
-    notifyMessage(`notice #${serial.current}`, { group: SUB_REMINDER, icon: "check", level: "success" });
+    notifyMessage(`notice #${serial.current}`, { group: SUB_REMINDER, icon: "base:gou", level: "success" });
   }
   function withHandle(task, fn) {
     const handle = handles.current.get(task.id);
@@ -73928,7 +73979,12 @@ function TaskNotificationsPage() {
       (0, import_react103.createElement)(
         "div",
         { style: main },
-        (0, import_react103.createElement)("div", { style: { fontWeight: 600 } }, task.icon === void 0 ? task.title : `${iconText(task.icon)} ${task.title}`),
+        (0, import_react103.createElement)(
+          "div",
+          { style: { fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" } },
+          task.icon === void 0 ? null : (0, import_react103.createElement)(Icon, { name: task.icon }),
+          (0, import_react103.createElement)("span", null, task.title)
+        ),
         (0, import_react103.createElement)(
           "div",
           { style: { ...mono, color: "var(--dshpc-fg-3)" } },
@@ -74178,7 +74234,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.26"}`],
             [t3("buildDemo"), `v${"0.35.26"}`],
-            [t3("buildStamp"), "261113-173158-544"]
+            [t3("buildStamp"), "261113-191824-483"]
           ].map(
             ([label, value]) => (0, import_react105.createElement)(
               "tr",
@@ -74498,7 +74554,7 @@ function DemoPage() {
           },
           (0, import_react107.createElement)("span", null, `core v${"0.35.26"}`),
           (0, import_react107.createElement)("span", null, `demo v${"0.35.26"}`),
-          (0, import_react107.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261113-173158-544")
+          (0, import_react107.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261113-191824-483")
         )
       )
     ),

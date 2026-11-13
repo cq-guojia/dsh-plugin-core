@@ -46,5 +46,4 @@ export { startResizeLayoutWidth, type ResizeOptions } from './layout/resizer.js'
 export { DockPanel, PanelDock, createPanelDock, type DockCloseButton, type DockCloseReason, type DockPanelProps, type PanelDockController, type PanelDockOptions, type PanelDockProps, } from './layout/PanelDock.js';
 export { DEFAULT_PANEL_ID, clampWidth, closePanel, collapsePanel, emptyDock, expandPanel, isCollapsed, isOpen, openPanel, othersWidth, setPanelWidth, type DockState, type OpenResult, } from './layout/panel-dock-logic.js';
 export { FIELD_ANCHOR_STYLE, FIELD_LABEL_STYLE, Input, NumberInput, PrefixedInput, fieldMetricsOf, type EditorOption, type FieldSize, type InputProps, type NumberInputProps, type PrefixedInputProps, } from './inputs/Field.js';
-export { ICON_FONTS, Icon, ensureIconFont, loadIconFont, parseFontCss, type IconFontFace, type IconFontId, type IconProps, type ParsedIconFont, } from './display/Icon.js';
 //# sourceMappingURL=index.d.ts.map
