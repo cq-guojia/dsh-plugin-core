@@ -25,7 +25,7 @@ export { parseFontCss } from './icon-parse.js';
  */
 export const ICON_FONTS = {
     'common.base': {
-        url: 'https://at.alicdn.com/t/c/font_5252971_ku04967wvmq.css',
+        url: 'https://at.alicdn.com/t/c/font_5252971_2g44prlh04r.css',
         family: 'koc-i-common-base',
         baseClass: 'koc-i-common-base',
         prefix: 'koc-i-common-base-',

@@ -16,6 +16,18 @@ export type DemoMessageKey =
   | 'secFoundation'
   | 'secTaskNotifications'
   | 'secIcons'
+  | 'secIconReplace'
+  | 'irNote'
+  | 'irSummary'
+  | 'irCurrent'
+  | 'irSource'
+  | 'irReplace'
+  | 'irWhere'
+  | 'irSrcOfficial'
+  | 'irSrcDrawn'
+  | 'irSrcChar'
+  | 'irMissing'
+  | 'irLoading'
   | 'icNote'
   | 'icSearch'
   | 'icOfficial'
@@ -286,6 +298,18 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secFoundation: '设计基础',
     secTaskNotifications: '通知任务中心',
     secIcons: '图标',
+    secIconReplace: '图标替换',
+    irNote: '本仓还在用「官方 primitives 组件 / 自绘 SVG / 字符」当图标的地方，一行一颗，第三列是对应的候选字形。候选在不在库里按在线 CSS 实时判定：显示「缺」就是平台还没有这颗字形，需要补。会话镜像（src/adv/session）与 Loader 动画不换，个别行会在「用在哪」里注明。',
+    irSummary: '{total} 项里 {ok} 项已有对应字形，其余要补。',
+    irCurrent: '现在的图标',
+    irSource: '来源',
+    irReplace: '替换后',
+    irWhere: '用在哪',
+    irSrcOfficial: '官方',
+    irSrcDrawn: '自绘',
+    irSrcChar: '字符',
+    irMissing: '缺',
+    irLoading: '读取中…',
     icNote: '官方 primitives 与各套字体图标同页。两边都不写死清单：官方从宿主命名空间实时枚举，字体从在线 CSS 实时解析，宿主升级或平台加图标后刷新即见。点任意格子只复制它的名字，完整写法在页面最后。',
     icSearch: '按名字过滤…',
     icOfficial: 'DSH 官方 primitives',
@@ -581,6 +605,18 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secFoundation: 'Foundations',
     secTaskNotifications: 'Task Notification Hub',
     secIcons: 'Icons',
+    secIconReplace: 'Icon migration',
+    irNote: 'Every place in this package still drawing an icon from an official primitives component, a hand-drawn SVG or a character — one row per icon, with the candidate glyph in the third column. Whether the candidate exists is decided by the online CSS at runtime: “missing” means the platform does not have that glyph yet. The session mirror (src/adv/session) and the Loader animations stay as they are; a row says so in “Used in” when it applies.',
+    irSummary: '{ok} of {total} icons already have a matching glyph; the rest still need one.',
+    irCurrent: 'Current',
+    irSource: 'Source',
+    irReplace: 'Replacement',
+    irWhere: 'Used in',
+    irSrcOfficial: 'Official',
+    irSrcDrawn: 'Drawn',
+    irSrcChar: 'Character',
+    irMissing: 'missing',
+    irLoading: 'Loading…',
     icNote: 'Official primitives and every font icon set on one page. Neither list is hard-coded: official icons are enumerated from the host namespace at runtime, font icons are parsed from the online CSS at runtime, so a host upgrade or a new upload in the icon platform shows up on refresh. Clicking a cell copies just its name; the full usage sits at the bottom of the page.',
     icSearch: 'Filter by name…',
     icOfficial: 'DSH official primitives',
