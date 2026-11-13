@@ -27,7 +27,7 @@ import { Example } from '../doc.js'
 
 /**
  * 两级目录：第一层（group）是能力域，不可点；第二层（id）是一个可看页。
- * 分类规则见 docs/design/structure.md（区 → 类 → 控件）；一级固定 5 个，二级按「类」成页。
+ * 分类规则见 docs/architecture/structure.md（区 → 类 → 控件）；一级固定 5 个，二级按「类」成页。
  */
 export type SectionGroup = 'start' | 'infra' | 'components' | 'blocks' | 'utils'
 

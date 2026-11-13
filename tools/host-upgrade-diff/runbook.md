@@ -10,7 +10,7 @@
 - **严禁任何形式安装**：不 `npm install`、不 `npm i -g`、不 `pnpm add`；
   不写 `node_modules`、不改 `package.json` / lockfile。`npm view` / `npm pack` 只是取包。
 - 脚本只做解析 / 抽取 / 差集 / 打印 / gate；**取包、读官方实现本体、判读、改代码归 Agent**。
-- 不改 `docs/design/external/dsh-host.md`、不改 `docs/README.md` 槽位表、不在 `docs/` 下新增文档。
+- 不改 `docs/dependencies/dsh-host.md`、不改 `docs/README.md` 槽位表、不在 `docs/` 下新增文档。
 
 ## 步骤
 

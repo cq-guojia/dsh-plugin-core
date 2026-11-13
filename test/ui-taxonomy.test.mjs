@@ -1,4 +1,4 @@
-// 目录分类自检（2026-11-05）：分类规则写在 docs/design/structure.md，
+// 目录分类自检（2026-11-05）：分类规则写在 docs/architecture/structure.md，
 // 靠目录本身兜住 —— 新控件放错地方 / 又冒出个新类 / 把 ts 与 css 分居，这里直接红。
 import test from 'node:test'
 import assert from 'node:assert/strict'

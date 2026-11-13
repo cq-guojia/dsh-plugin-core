@@ -6,7 +6,7 @@ import { type PageTotalRenderer, type PaginationAlign } from './pagination-logic
  * 分页控件 props。
  *
  * 只收「当前页 / 每页条数 / 总条数」三件事，总页数与省略窗口由控件算 —— 消费方不自己算页数、
- * 也不自己渲染页码（这是通行分页组件的共同约定，见 docs/help/ui）。
+ * 也不自己渲染页码（这是通行分页组件的共同约定，见 docs/ui）。
  */
 export interface PaginationProps {
     /** 当前页（1 起）；越界会被夹回 `[1, 总页数]`。 */

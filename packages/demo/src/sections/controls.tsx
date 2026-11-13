@@ -1281,7 +1281,7 @@ export function TooltipPage(): ReturnType<typeof h> {
             style: { borderBottom: '1px dashed var(--dshpc-border-strong)', cursor: 'pointer', fontSize: '13px' },
           }, t('tooltipName')),
           // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
-          // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
+          // （来源见 docs/dependencies/dsh-host.md §10），卡片又被 portal 到 document.body，
           // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
           // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
           content: h('div', {

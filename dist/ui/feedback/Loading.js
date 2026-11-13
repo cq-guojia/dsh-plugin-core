@@ -18,7 +18,7 @@
  * 配套 also 导出 `<RunningBlocks />`：同样的三个脉动方块（无文案），
  * 用于表格单元格里的「运行中」状态指示。
  *
- * 文档登记：docs/design/ui-foundation.md §二「唯一实现表」。
+ * 文档登记：docs/architecture/structure.md（控件归类与分层）。
  */
 import { createElement as h, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';

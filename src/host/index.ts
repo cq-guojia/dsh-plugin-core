@@ -21,7 +21,7 @@ export interface HostLlmLike {
 
 /**
  * 宿主 `webServer` 交给 handler 的原始 Node 请求的结构化子集。
- * 官方 `WebRoute.handler` 收的是 `IncomingMessage`（docs/design/external/dsh-host.md §11.1.1），
+ * 官方 `WebRoute.handler` 收的是 `IncomingMessage`（docs/dependencies/dsh-host.md §11.1.1），
  * 宿主不做 server-wide 鉴权、闸门由路由方自持 ⇒ 这里必须留出 headers / socket，
  * 否则消费方连自己的同源守卫都接不上。
  */

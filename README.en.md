@@ -107,7 +107,7 @@ Use this subpath alone if you want the palette and the theme switch but write yo
 
 ### ui — the control set
 
-Everything is built from tokens, takes its data through props, and follows the host's theme. Props are the customization surface — compose them instead of forking a component. See the [control reference](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/ui.md) for every prop.
+Everything is built from tokens, takes its data through props, and follows the host's theme. Props are the customization surface — compose them instead of forking a component. See the [control reference](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/ui.md) for every prop.
 
 #### Actions
 
@@ -213,15 +213,15 @@ Its `dist/` is committed to the repository and it bundles core's build output in
 
 | I want to… | Read |
 |---|---|
-| Integrate the package into a plugin | [Integration guide](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/integration.md) |
-| Look up a control and its props | [Control reference](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/ui.md) |
-| Use `createStyleKit`, override tokens, isolate plugins | [design](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/design.md) |
-| Use tokens, colors or a custom skin | [Style guide](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/style.md) |
-| Handle dates, strings, bytes, HTTP | [utils](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/utils.md) — and the shared [method conventions](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/methods.md) |
-| Add workspace browsing and file preview | [explorer](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/explorer.md) |
-| Render a session as a read-only preview | [session](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/session.md) |
-| Understand the architecture | [Architecture](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/design/architecture.md) |
-| See why a decision was made | [Requirements and decisions](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/requirements.md) |
+| Integrate the package into a plugin | [Integration guide](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/guides/integration.md) |
+| Look up a control and its props | [Control reference](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/ui.md) |
+| Use `createStyleKit`, override tokens, isolate plugins | [design](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/design.md) |
+| Use tokens, colors or a custom skin | [Style guide](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/guides/style.md) |
+| Handle dates, strings, bytes, HTTP | [utils](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/utils.md) — and the shared [method conventions](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/methods.md) |
+| Add workspace browsing and file preview | [explorer](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/explorer.md) |
+| Render a session as a read-only preview | [session](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/session.md) |
+| Understand the architecture | [Architecture](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/architecture/overview.md) |
+| See why a decision was made | [Requirements and decisions](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/features/scope.md) |
 
 The help documents are bilingual (Chinese prose, English abstract under each section).
 

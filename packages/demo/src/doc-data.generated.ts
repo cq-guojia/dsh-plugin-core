@@ -12,8 +12,8 @@ export const docData = {
         "en": "This index answers one question: which document to read. Pick the row matching your task."
       },
       {
-        "zh": "文件都在同一目录（`docs/help/`）：`<主题>.md` 给人读，同名的 `.doc.ts` 是真源。改内容请改真源后重跑 `node scripts/gen-docs.mjs`，`.md` 由它生成。",
-        "en": "Everything lives in `docs/help/`: `<topic>.md` is what you read, the `<topic>.doc.ts` beside it is the source. Edit the source, then rerun `node scripts/gen-docs.mjs` — the `.md` is generated."
+        "zh": "索引与接入样例在 `docs/guides/`，各子包的 API 参考在 `docs/api/`：`<主题>.md` 给人读，同目录的 `.doc.ts` 是真源。改内容请改真源后重跑 `node scripts/gen-docs.mjs`，`.md` 由它生成。",
+        "en": "The index and integration guide live in `docs/guides/`; per-package API references live in `docs/api/`. `<topic>.md` is what you read, and the `.doc.ts` beside it is the source. Edit the source, then rerun `node scripts/gen-docs.mjs` — the `.md` is generated."
       }
     ],
     "api": [

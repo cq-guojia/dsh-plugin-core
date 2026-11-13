@@ -133,7 +133,7 @@ test('chip 只有标签一套皮肤，图标按钮走 iconbtn', () => {
   assert.ok(!CHIP_CSS.includes('dshpc-chip--label'), 'dshpc-chip--label 是被删掉的图标语义，勿回潮')
 })
 
-// 2026-10-19 真因（详见 docs/design/external/dsh-host.md §9）：
+// 2026-10-19 真因（详见 docs/dependencies/dsh-host.md §9）：
 // tokens 模板字符串结尾多了一个反斜杠，字符串里因此多出字面反引号。CSS 解析器把它当作
 // 不合格选择器的开头，一路吞到下一个 `{` ⇒ **紧随其后的那条规则**的选择器被污染成
 // 永远匹配不到元素的怪选择器。规则仍在 CSSOM 里，所以不报错、不告警，只是永不生效。

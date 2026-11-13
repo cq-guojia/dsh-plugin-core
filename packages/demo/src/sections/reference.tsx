@@ -8,7 +8,7 @@ declare const __CORE_VERSION__: string
 declare const __DEMO_VERSION__: string
 declare const __BUILD_STAMP__: string
 
-/** 明确不提供的部分。写出来是为了让人不用猜 —— 与 docs/design/features.md 的「不提供什么」同源。 */
+/** 明确不提供的部分。写出来是为了让人不用猜 —— 与 docs/features/overview.md 的「不提供什么」同源。 */
 const OUT_OF_SCOPE: DemoMessageKey[] = ['roadmapOut', 'roadmapMirror', 'roadmapPreview', 'roadmapSkeleton']
 
 /**

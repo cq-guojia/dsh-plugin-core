@@ -19,7 +19,7 @@
  * `role="status"` 承担）；要让它自己承担语义时传 `label`，此时输出 `role="status"`。
  *
  * 扩展新形态：在 `LoaderVariant` 加一个值 + 本文件加一支几何 + `loader.css` 加一段规则，
- * 不新增导出（形态由数据决定时直接传字符串即可，见 docs/help/ui.md）。
+ * 不新增导出（形态由数据决定时直接传字符串即可，见 docs/api/ui.md）。
  */
 import { createElement as h } from 'react';
 /** 尺寸档：只影响 width / height，几何等比缩放。 */

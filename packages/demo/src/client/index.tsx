@@ -151,7 +151,7 @@ interface LocaleRuntimeLike {
 }
 
 /**
- * 明暗皮肤：直接翻 body 的 `data-ds-dark-theme`（宿主亮度判据，见 docs/design/style.md）——
+ * 明暗皮肤：直接翻 body 的 `data-ds-dark-theme`（宿主亮度判据，见 docs/development/style.md）——
  * 做界面要来回切换，去系统设置改太绕。MutationObserver 同步宿主侧自己改的主题
  * （宿主自己的切换器 / 跟随系统），按钮状态不打架。
  */
@@ -247,7 +247,7 @@ function DemoPage(): ReturnType<typeof h> {
         },
       },
       // 导航区：唯一滚动容器；底部操作/版本区固定不动
-      // 细滚动条 + 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/design/style.md §滚动条让位）
+      // 细滚动条 + 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/development/style.md §滚动条让位）
       h('div', { className: 'dshpc-scroll-thin', style: { flex: 1, minHeight: 0, overflowY: 'auto', padding: '14px 10px' } }, nav),
       // 固定底栏：明暗切换 + 版本号 + 编译码（时间戳，一眼看出编译时刻）
       h(
@@ -287,7 +287,7 @@ function DemoPage(): ReturnType<typeof h> {
     ),
     h(
       'main',
-      // 细滚动条与 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/design/style.md §滚动条让位）：
+      // 细滚动条与 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/development/style.md §滚动条让位）：
       // dock 不再让 margin，靠这里让，滚动条与分栏分隔线之间才是 1px。
       { className: 'dshpc-scroll-thin', style: { flex: 1, minWidth: 0, minHeight: 0, height: '100%', boxSizing: 'border-box', overflowY: 'auto', padding: '12px 22px 60px' } },
       h(Sections, { active }),

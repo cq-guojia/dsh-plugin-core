@@ -201,7 +201,7 @@ export { joinPath } from '../../utils/path.js';
 export { extOf, mimeOf };
 /**
  * 工作区锚点的候选结构（官方 `workspaces` 服务快照 `WorkspaceView` 的消费子集，
- * 见 docs/design/external/dsh-host.md §11）。只要够必要的字段，谁都能传。
+ * 见 docs/dependencies/dsh-host.md §11）。只要够必要的字段，谁都能传。
  */
 export interface WorkspaceAnchorItem {
     /** 工作区显示名（面包屑首段 / 传给 FileBrowser 的 rootName）。 */

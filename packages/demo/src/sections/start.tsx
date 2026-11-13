@@ -3,7 +3,7 @@ import { DocContent } from '../doc.js'
 
 /**
  * 帮助索引：先告诉人「读哪一份」，再谈怎么用。内容吃 docData['help-index']，
- * 与随包发布的 docs/help/index.md 同源。
+ * 与随包发布的 docs/guides/index.md 同源。
  */
 export function HelpIndexPage(): ReturnType<typeof h> {
   return h(DocContent, { id: 'help-index' })

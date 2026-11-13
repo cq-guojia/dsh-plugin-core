@@ -17,7 +17,7 @@ import { getLocale, t as coreT } from '../../../dist/utils/index.js'
 import { t, type DemoMessageKey } from './i18n.js'
 import { docData as RAW_DOC_DATA } from './doc-data.generated.js'
 
-/** 文档真源（生成物）的本地镜像类型 —— 与 docs/design/doc-format.ts 保持同形，这里不引那个文件以免 demo 依赖 docs/。 */
+/** 文档真源（生成物）的本地镜像类型 —— 与 docs/development/doc-format.ts 保持同形，这里不引那个文件以免 demo 依赖 docs/。 */
 type Bilingual = { zh: string; en: string }
 type DocApiRow = { name: string; type: string; def: string; required?: string; desc: Bilingual }
 type DocApiTable = { id: string; rows: DocApiRow[] }

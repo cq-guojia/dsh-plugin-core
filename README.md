@@ -109,7 +109,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 
 ### ui——控件
 
-全部由 token 搭出来，数据走 props，配色跟随宿主主题。props 就是定制面——组合 props，不要 fork 源码。每个参数的完整说明见[控件参考](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/ui.md)。
+全部由 token 搭出来，数据走 props，配色跟随宿主主题。props 就是定制面——组合 props，不要 fork 源码。每个参数的完整说明见[控件参考](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/ui.md)。
 
 #### 动作
 
@@ -158,7 +158,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 - `subscribeTaskNotificationEvents`——一次性事件：`registered` / `updated` / `backgrounded` / `settled` / `restored` / `peer-left`，不留存。
 - 跨页只传纯数据，跨页条目能看不能点；数据只在本页与同源标签页内存里，页面或进程关闭即失。
 
-完整契约与用法见[通知任务中心](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/task-notifications.md)。
+完整契约与用法见[通知任务中心](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/task-notifications.md)。
 
 ### utils——纯方法
 
@@ -226,15 +226,15 @@ npm install dsh-plugin-core-demo
 
 | 我想… | 看哪 |
 |---|---|
-| 把包接进插件 | [接入指引](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/integration.md) |
-| 查控件与全部 props | [控件参考](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/ui.md) |
-| 建 style kit、覆盖 token、多插件隔离 | [design](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/design.md) |
-| 用 token、配色或定制皮肤 | [样式说明](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/style.md) |
-| 处理日期、字符串、字节、HTTP | [utils](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/utils.md)，以及[方法统一口径](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/methods.md) |
-| 加工作区文件浏览与预览 | [explorer](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/explorer.md) |
-| 把会话渲染成只读预览 | [session](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/help/session.md) |
-| 理解整体架构 | [架构](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/design/architecture.md) |
-| 查某个决定为什么这么定 | [需求与决策](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/requirements.md) |
+| 把包接进插件 | [接入指引](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/guides/integration.md) |
+| 查控件与全部 props | [控件参考](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/ui.md) |
+| 建 style kit、覆盖 token、多插件隔离 | [design](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/design.md) |
+| 用 token、配色或定制皮肤 | [样式说明](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/guides/style.md) |
+| 处理日期、字符串、字节、HTTP | [utils](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/utils.md)，以及[方法统一口径](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/methods.md) |
+| 加工作区文件浏览与预览 | [explorer](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/explorer.md) |
+| 把会话渲染成只读预览 | [session](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/session.md) |
+| 理解整体架构 | [架构](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/architecture/overview.md) |
+| 查某个决定为什么这么定 | [需求与决策](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/features/scope.md) |
 
 帮助文档为中英双语（正文中文，每节附英文摘要）。
 

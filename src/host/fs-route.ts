@@ -2,7 +2,7 @@
  * 宿主侧只读文件路由（`node:fs` 直读，**不限工作区**）。
  *
  * 为什么需要：官方 `remote.workspaceFiles` 的 `list` 被 `contains(workspaceRoot, target)` 卡死
- * （`docs/design/external/dsh-host.md` §12），工作区外目录列不出来；`directoryPicker.list` 虽不限
+ * （`docs/dependencies/dsh-host.md` §12），工作区外目录列不出来；`directoryPicker.list` 虽不限
  * 工作区，但**只回目录、不回文件**。要一套「单根文件树」，只能自建一条只读路由。
  *
  * 只读：只提供 list / read / readBytes / roots 四个 op，**没有任何写、删、改**入口。

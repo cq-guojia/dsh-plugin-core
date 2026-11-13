@@ -8,5 +8,5 @@
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "include": ["docs/**/*.doc.ts", "docs/design/doc-format.ts"]
+  "include": ["docs/**/*.doc.ts", "docs/development/doc-format.ts"]
 }

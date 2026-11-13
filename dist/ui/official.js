@@ -14,7 +14,7 @@
  *
  * ⚠️ 非宿主消费面（Node 单测、根预览站）需另配 stub：本文件静态 import 平台模块，
  *    在 Node 里直接 import 会 `ERR_MODULE_NOT_FOUND` —— 这正是旧坑（SelectField 曾因依赖官方 Menu 被删）。
- *    该 stub loader 属 P0 待办，见 docs/requirements.md。
+ *    该 stub loader 属 P0 待办，见 docs/features/scope.md。
  */
 import * as Official from '@deepseek-ai/dsh-client-ui-primitives';
 export * from '@deepseek-ai/dsh-client-ui-primitives';

@@ -1,8 +1,7 @@
 // 文档真源 → 双投影。
-//   真源          = docs/help/*.doc.ts（typed 数据模块，手写；帮助文档区）
-//   投影1（发布）  = docs/help/*.md（给引用方 / Agent 读，随包发布，勿手改）
-//   * demo 侧投影        = packages/demo/src/doc-data.generated.ts
-// 本脚本只读取真源、写出投影，绝不修改 .doc.ts。
+//   真源          = docs/api/*.doc.ts 与 docs/guides/*.doc.ts（typed 数据模块，手写）
+//   投影1（发布）  = 与真源同目录的 *.md（给引用方 / Agent 读，随包发布，勿手改）
+//   投影2（demo）  = packages/demo/src/doc-data.generated.ts
 // 本脚本只读取真源、写出投影，绝不修改 .doc.ts。
 //
 // 链路：esbuild 把 .doc.ts 打成 ESM → 临时文件 → import 取 default → 渲染两份投影。
@@ -18,14 +17,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = join(__dirname, '..')
 
 const MAP = [
-  { doc: 'docs/help/index.doc.ts', md: 'docs/help/index.md', name: 'index' },
-  { doc: 'docs/help/explorer.doc.ts', md: 'docs/help/explorer.md', name: 'explorer' },
-  { doc: 'docs/help/design.doc.ts', md: 'docs/help/design.md', name: 'design' },
-  { doc: 'docs/help/session.doc.ts', md: 'docs/help/session.md', name: 'session' },
-  { doc: 'docs/help/utils.doc.ts', md: 'docs/help/utils.md', name: 'utils' },
-  { doc: 'docs/help/integration.doc.ts', md: 'docs/help/integration.md', name: 'integration' },
-  { doc: 'docs/help/ui.doc.ts', md: 'docs/help/ui.md', name: 'ui' },
-  { doc: 'docs/help/task-notifications.doc.ts', md: 'docs/help/task-notifications.md', name: 'task-notifications' },
+  { doc: 'docs/guides/index.doc.ts', md: 'docs/guides/index.md', name: 'index' },
+  { doc: 'docs/api/explorer.doc.ts', md: 'docs/api/explorer.md', name: 'explorer' },
+  { doc: 'docs/api/design.doc.ts', md: 'docs/api/design.md', name: 'design' },
+  { doc: 'docs/api/session.doc.ts', md: 'docs/api/session.md', name: 'session' },
+  { doc: 'docs/api/utils.doc.ts', md: 'docs/api/utils.md', name: 'utils' },
+  { doc: 'docs/guides/integration.doc.ts', md: 'docs/guides/integration.md', name: 'integration' },
+  { doc: 'docs/api/ui.doc.ts', md: 'docs/api/ui.md', name: 'ui' },
+  { doc: 'docs/api/task-notifications.doc.ts', md: 'docs/api/task-notifications.md', name: 'task-notifications' },
 ]
 
 const CHECK = process.argv.includes('--check')
@@ -47,11 +46,11 @@ const cell = (text) => String(text).replaceAll('|', '\\|')
 
 function renderMd(doc) {
   const lines = []
-  lines.push('<!-- 本文件由 scripts/gen-docs.mjs 自动生成，请勿手改；改对应的 .doc.ts 后重跑 node scripts/gen-docs.mjs -->')
-  lines.push('')
   lines.push(`# ${doc.title.zh}`)
   lines.push('')
   lines.push(`> EN: ${doc.title.en}`)
+  lines.push('')
+  lines.push('本文件由 `scripts/gen-docs.mjs` 从同名 `.doc.ts` 生成，请勿手改。')
   lines.push('')
   if (doc.exports?.length) {
     lines.push(`导出：${doc.exports.join('、')}`)
@@ -93,6 +92,10 @@ function renderMd(doc) {
       lines.push('')
     }
   }
+  lines.push('## 更新日志')
+  lines.push('')
+  lines.push('本文件为生成投影，变更记录在同名 `.doc.ts` 真源与本仓 git 历史。')
+  lines.push('')
   return lines.join('\n')
 }
 

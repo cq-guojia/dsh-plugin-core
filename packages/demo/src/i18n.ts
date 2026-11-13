@@ -391,7 +391,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
 
 
-    referenceNote: '参考与约定：无障碍要点、明确不做的部分（与 docs/design/features.md 同源）、版本与构建产物信息。',
+    referenceNote: '参考与约定：无障碍要点、明确不做的部分（与 docs/features/overview.md 同源）、版本与构建产物信息。',
     btnLabelSave: '保存修改',
     btnLabelCancel: '取消',
     btnLabelDelete: '删除',
@@ -674,7 +674,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
 
 
 
-    referenceNote: 'Reference & conventions: accessibility notes, what is explicitly out of scope (same source as docs/design/features.md), and version/build artifact info.',
+    referenceNote: 'Reference & conventions: accessibility notes, what is explicitly out of scope (same source as docs/features/overview.md), and version/build artifact info.',
 
     btnLabelSave: 'Save changes',
     btnLabelCancel: 'Cancel',

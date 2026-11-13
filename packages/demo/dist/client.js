@@ -64072,7 +64072,7 @@ var DICT2 = {
     btnWidthHint: "width / minWidth / maxWidth \u4E09\u8F74\u4E92\u65A5",
     btnIconMatrixTitle: "\u56FE\u6807\u6309\u94AE \xB7 \u5C3A\u5BF8 \xD7 \u5E95\u8272",
     btnIconMatrixHint: "sm 24 / md 28 / lg 32\uFF1B\u7EAF\u56FE\u6807\u4E0E\u56FE\u6807+\u6587\u5B57\u5404\u6709/\u65E0\u5E95\u8272\u4E24\u7EC4\uFF1Bdense \u6863\u56FE\u6807\u66F4\u5927\u3001\u5185\u8DDD\u66F4\u5C0F\uFF08\u9AD8\u5EA6\u4E0D\u53D8\uFF09",
-    referenceNote: "\u53C2\u8003\u4E0E\u7EA6\u5B9A\uFF1A\u65E0\u969C\u788D\u8981\u70B9\u3001\u660E\u786E\u4E0D\u505A\u7684\u90E8\u5206\uFF08\u4E0E docs/design/features.md \u540C\u6E90\uFF09\u3001\u7248\u672C\u4E0E\u6784\u5EFA\u4EA7\u7269\u4FE1\u606F\u3002",
+    referenceNote: "\u53C2\u8003\u4E0E\u7EA6\u5B9A\uFF1A\u65E0\u969C\u788D\u8981\u70B9\u3001\u660E\u786E\u4E0D\u505A\u7684\u90E8\u5206\uFF08\u4E0E docs/features/overview.md \u540C\u6E90\uFF09\u3001\u7248\u672C\u4E0E\u6784\u5EFA\u4EA7\u7269\u4FE1\u606F\u3002",
     btnLabelSave: "\u4FDD\u5B58\u4FEE\u6539",
     btnLabelCancel: "\u53D6\u6D88",
     btnLabelDelete: "\u5220\u9664",
@@ -64321,7 +64321,7 @@ var DICT2 = {
     btnWidthHint: "width / minWidth / maxWidth are exclusive",
     btnIconMatrixTitle: "Icon buttons \xB7 size \xD7 background",
     btnIconMatrixHint: "sm 24 / md 28 / lg 32; icon-only and icon+label, each with / without fill; dense grows the icon and tightens padding at the same height",
-    referenceNote: "Reference & conventions: accessibility notes, what is explicitly out of scope (same source as docs/design/features.md), and version/build artifact info.",
+    referenceNote: "Reference & conventions: accessibility notes, what is explicitly out of scope (same source as docs/features/overview.md), and version/build artifact info.",
     btnLabelSave: "Save changes",
     btnLabelCancel: "Cancel",
     btnLabelDelete: "Delete",
@@ -64565,8 +64565,8 @@ var docData = {
         "en": "This index answers one question: which document to read. Pick the row matching your task."
       },
       {
-        "zh": "\u6587\u4EF6\u90FD\u5728\u540C\u4E00\u76EE\u5F55\uFF08`docs/help/`\uFF09\uFF1A`<\u4E3B\u9898>.md` \u7ED9\u4EBA\u8BFB\uFF0C\u540C\u540D\u7684 `.doc.ts` \u662F\u771F\u6E90\u3002\u6539\u5185\u5BB9\u8BF7\u6539\u771F\u6E90\u540E\u91CD\u8DD1 `node scripts/gen-docs.mjs`\uFF0C`.md` \u7531\u5B83\u751F\u6210\u3002",
-        "en": "Everything lives in `docs/help/`: `<topic>.md` is what you read, the `<topic>.doc.ts` beside it is the source. Edit the source, then rerun `node scripts/gen-docs.mjs` \u2014 the `.md` is generated."
+        "zh": "\u7D22\u5F15\u4E0E\u63A5\u5165\u6837\u4F8B\u5728 `docs/guides/`\uFF0C\u5404\u5B50\u5305\u7684 API \u53C2\u8003\u5728 `docs/api/`\uFF1A`<\u4E3B\u9898>.md` \u7ED9\u4EBA\u8BFB\uFF0C\u540C\u76EE\u5F55\u7684 `.doc.ts` \u662F\u771F\u6E90\u3002\u6539\u5185\u5BB9\u8BF7\u6539\u771F\u6E90\u540E\u91CD\u8DD1 `node scripts/gen-docs.mjs`\uFF0C`.md` \u7531\u5B83\u751F\u6210\u3002",
+        "en": "The index and integration guide live in `docs/guides/`; per-package API references live in `docs/api/`. `<topic>.md` is what you read, and the `.doc.ts` beside it is the source. Edit the source, then rerun `node scripts/gen-docs.mjs` \u2014 the `.md` is generated."
       }
     ],
     "api": [
@@ -71019,7 +71019,7 @@ ${t3("tooltipLongText")}`, side: "top", maxWidth: 260 },
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipName")),
             // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
-            // （来源见 docs/design/external/dsh-host.md §10），卡片又被 portal 到 document.body，
+            // （来源见 docs/dependencies/dsh-host.md §10），卡片又被 portal 到 document.body，
             // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
             // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
             content: (0, import_react96.createElement)(
@@ -73832,7 +73832,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.26"}`],
             [t3("buildDemo"), `v${"0.35.26"}`],
-            [t3("buildStamp"), "261113-135932-685"]
+            [t3("buildStamp"), "261113-162802-893"]
           ].map(
             ([label, value]) => (0, import_react103.createElement)(
               "tr",
@@ -74105,7 +74105,7 @@ function DemoPage() {
         }
       },
       // 导航区：唯一滚动容器；底部操作/版本区固定不动
-      // 细滚动条 + 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/design/style.md §滚动条让位）
+      // 细滚动条 + 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/development/style.md §滚动条让位）
       (0, import_react105.createElement)("div", { className: "dshpc-scroll-thin", style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px" } }, nav2),
       // 固定底栏：明暗切换 + 版本号 + 编译码（时间戳，一眼看出编译时刻）
       (0, import_react105.createElement)(
@@ -74151,13 +74151,13 @@ function DemoPage() {
           },
           (0, import_react105.createElement)("span", null, `core v${"0.35.26"}`),
           (0, import_react105.createElement)("span", null, `demo v${"0.35.26"}`),
-          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261113-135932-685")
+          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261113-162802-893")
         )
       )
     ),
     (0, import_react105.createElement)(
       "main",
-      // 细滚动条与 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/design/style.md §滚动条让位）：
+      // 细滚动条与 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/development/style.md §滚动条让位）：
       // dock 不再让 margin，靠这里让，滚动条与分栏分隔线之间才是 1px。
       { className: "dshpc-scroll-thin", style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px" } },
       (0, import_react105.createElement)(Sections, { active })

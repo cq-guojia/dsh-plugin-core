@@ -50,7 +50,7 @@ declare class ModelCatalogStore {
 }
 /** 模型目录单例（ModelPicker 消费；connectHost 负责喂）。 */
 export declare const modelCatalog: ModelCatalogStore;
-/** 官方 `workspaces` client 服务 `list` 的一行（`WorkspaceView` 的消费子集，见 docs/design/external/dsh-host.md §11）。 */
+/** 官方 `workspaces` client 服务 `list` 的一行（`WorkspaceView` 的消费子集，见 docs/dependencies/dsh-host.md §11）。 */
 export interface HostWorkspaceItem {
     workspaceId: string;
     title: string;

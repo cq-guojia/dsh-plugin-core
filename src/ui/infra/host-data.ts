@@ -68,7 +68,7 @@ export const modelCatalog = new ModelCatalogStore()
 
 // ── 工作区列表 ──────────────────────────────────────────────────────────
 
-/** 官方 `workspaces` client 服务 `list` 的一行（`WorkspaceView` 的消费子集，见 docs/design/external/dsh-host.md §11）。 */
+/** 官方 `workspaces` client 服务 `list` 的一行（`WorkspaceView` 的消费子集，见 docs/dependencies/dsh-host.md §11）。 */
 export interface HostWorkspaceItem {
   workspaceId: string
   title: string

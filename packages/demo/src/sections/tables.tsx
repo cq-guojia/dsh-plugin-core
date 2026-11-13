@@ -14,7 +14,7 @@ import { DocApi, DocCode, Example } from '../doc.js'
 import { t } from '../i18n.js'
 
 /** 表格横滚外壳：细滚动条 + 底边 1px 让位都由 .dshpc-scroll-thin--x 统一给。
-    横滚只让底、不让右（口径见 docs/design/style.md §滚动条让位）。 */
+    横滚只让底、不让右（口径见 docs/development/style.md §滚动条让位）。 */
 const H_SCROLL = {
   className: 'dshpc-scroll-thin dshpc-scroll-thin--x',
   style: { overflowX: 'auto' },

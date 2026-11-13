@@ -1,7 +1,7 @@
 /**
  * CSS 真源 → TS 字符串常量。
  *
- * 为什么存在：DSH 内核不加载 css 资源（docs/design/external/dsh-host.md §1.1），运行时必须是
+ * 为什么存在：DSH 内核不加载 css 资源（docs/dependencies/dsh-host.md §1.1），运行时必须是
  * 字符串注入；但**源码**可以是真的 .css 文件。本脚本负责这一跳，两头都占：
  *   · 真源 `src/**\/*.css` —— 编辑器高亮 / 括号匹配 / 格式化 / CSS lint 全部生效；
  *   · 产物 `*.generated.ts` —— `JSON.stringify` 生成的字符串常量，供 tsc 照旧 1:1 编译。

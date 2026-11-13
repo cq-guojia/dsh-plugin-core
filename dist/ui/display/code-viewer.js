@@ -2,7 +2,7 @@
  * `dsh-plugin-core/ui/code-viewer` 子路径入口。
  *
  * 只读与可编辑是两个控件、一份 CodeMirror 底座；共用同一条子路径，不另开导出口
- * （`docs/design/structure.md` §六：分类归目录，不归导出口）。重依赖只从这条子路径可达。
+ * （`docs/architecture/structure.md` §六：分类归目录，不归导出口）。重依赖只从这条子路径可达。
  */
 export { CodeViewer } from './CodeViewer.js';
 export { CodeEditor } from '../inputs/CodeEditor.js';
