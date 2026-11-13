@@ -19,6 +19,7 @@
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `把这个包接进我的插件` | `integration.md` | — | 装包、初始化样式、最小可用控件与工具函数、清理，一条龙示例 | Install, style init, minimal working controls and helpers, teardown — end to end |
+| `找图标（官方 primitives 与我们的字体库）` | `icons.md` | — | 字体图标的注册、在线样式注入、加一套库只加一行；官方图标为何不走这里 | Registering font icons, the online style link, adding a library in one line, and why official icons stay outside |
 | `用控件（按钮 / 输入 / 选择器 / 弹窗 / 右侧分栏）` | `ui.md` | — | 控件清单与全部 props；弹窗与 PanelDock 的布局约定在此 | Control inventory and every prop; dialog and PanelDock layout contracts are here |
 | `建 style kit、覆盖 token、多插件同页隔离` | `design.md` | — | design 子包的 API：`createStyleKit` / `registerStyle` / 注入机制 | The `design` subpackage API: `createStyleKit` / `registerStyle` / how injection works |
 | `处理日期、字符串、字节、HTTP` | `utils.md` | — | 纯函数清单与参数，含每个函数的失败返回值 | Pure helpers and their arguments, including each one’s failure return |

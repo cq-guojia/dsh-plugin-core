@@ -28,6 +28,15 @@ const doc: DocTopic = {
               desc: { zh: '装包、初始化样式、最小可用控件与工具函数、清理，一条龙示例', en: 'Install, style init, minimal working controls and helpers, teardown — end to end' },
             },
             {
+              name: '找图标（官方 primitives 与我们的字体库）',
+              type: 'icons.md',
+              def: '—',
+              desc: {
+                zh: '字体图标的注册、在线样式注入、加一套库只加一行；官方图标为何不走这里',
+                en: 'Registering font icons, the online style link, adding a library in one line, and why official icons stay outside',
+              },
+            },
+            {
               name: '用控件（按钮 / 输入 / 选择器 / 弹窗 / 右侧分栏）',
               type: 'ui.md',
               def: '—',

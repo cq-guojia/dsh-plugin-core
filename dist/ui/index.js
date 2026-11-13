@@ -53,4 +53,5 @@ export { startResizeLayoutWidth } from './layout/resizer.js';
 export { DockPanel, PanelDock, createPanelDock, } from './layout/PanelDock.js';
 export { DEFAULT_PANEL_ID, clampWidth, closePanel, collapsePanel, emptyDock, expandPanel, isCollapsed, isOpen, openPanel, othersWidth, setPanelWidth, } from './layout/panel-dock-logic.js';
 export { FIELD_ANCHOR_STYLE, FIELD_LABEL_STYLE, Input, NumberInput, PrefixedInput, fieldMetricsOf, } from './inputs/Field.js';
+export { ICON_FONTS, Icon, ensureIconFont, loadIconFont, parseFontCss, } from './display/Icon.js';
 //# sourceMappingURL=index.js.map

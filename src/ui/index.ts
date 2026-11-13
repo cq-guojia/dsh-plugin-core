@@ -303,3 +303,14 @@ export {
   type NumberInputProps,
   type PrefixedInputProps,
 } from './inputs/Field.js'
+export {
+  ICON_FONTS,
+  Icon,
+  ensureIconFont,
+  loadIconFont,
+  parseFontCss,
+  type IconFontFace,
+  type IconFontId,
+  type IconProps,
+  type ParsedIconFont,
+} from './display/Icon.js'

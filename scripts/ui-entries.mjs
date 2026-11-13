@@ -29,6 +29,7 @@ export const UI_ENTRIES = [
   ['./ui/marquee-text', 'ui/display/MarqueeText'],
   ['./ui/flip-text', 'ui/display/FlipText'],
   ['./ui/live-text', 'ui/display/LiveText'],
+  ['./ui/icons', 'ui/display/Icon'],
   ['./ui/modal', 'ui/feedback/Modal'],
   ['./ui/side-sheet', 'ui/feedback/SideSheet'],
   ['./ui/alert-modal', 'ui/feedback/AlertModal'],

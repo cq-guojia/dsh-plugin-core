@@ -32,7 +32,7 @@
 |---|---|---|
 | **动作** `actions` | 点它触发一次操作，本身不产生值 | Button、IconButton |
 | **录入** `inputs` | 产生或修改一个值 | Input、NumberInput、PrefixedInput、Textarea、Checkbox、Segmented、Picker、DateTimePicker、WorkspacePicker、ModelPicker、InputGroup、CodeEditor |
-| **展示** `display` | 只呈现内容，不改变状态 | Card、StripCard、Surface、Chip、Table、ListRow、CodeViewer、MarqueeText、FlipText、LiveText、SectionHead、FieldHint |
+| **展示** `display` | 只呈现内容，不改变状态 | Card、StripCard、Surface、Chip、Table、ListRow、CodeViewer、MarqueeText、FlipText、LiveText、SectionHead、FieldHint、Icon |
 | **反馈** `feedback` | 表达「正在进行 / 刚完成 / 出错了」 | Modal、SideSheet、AlertModal、ConfirmModal、alertModal、confirmModal、Toast、host-toast、Loader、LoaderBar、Loading |
 | **布局** `layout` | 只决定内部元素怎么摆、怎么拼 | SplitGroup、PanelDock、QuickToolbar、resizer |
 | **导航** `navigation` | 在多个视图 / 页之间移动 | Pagination |
@@ -66,6 +66,7 @@ src/
 │   ├── display/               Card · StripCard · Surface · Chip · Table · ListRow（+ table-logic / table-shared）
 │   │                          CodeViewer（+ code-viewer-lang / -theme / 子路径入口 code-viewer）
 │   │                          MarqueeText · FlipText · LiveText · SectionHead · FieldHint
+│   │                          Icon（+ icon-parse：在线 CSS 名字解析）
 │   ├── feedback/              Modal · SideSheet · AlertModal · ConfirmModal（+ modal-host）
 │   │                          Toast（界面，唯一 import sonner）· notify（发送 API，纯 TS）
 │   │                          （+ toast-queue 纯类型与本页队列 / notify-bridge 广播适配 / toast-host 宿主单例）
@@ -135,13 +136,13 @@ utils（谁都不依赖，谁都可以用）
 
 **样式链路不变**：`src/**/*.css` → `scripts/gen-css.mjs` 编译成 `*.generated.ts` 字符串常量 → tsc → 运行时注入。控件直引自己那份生成物，不再经 `infra/controls-css.ts` 这类聚合 barrel（已删除）。
 
-## 七、demo 展示分区（两级，18 页）
+## 七、demo 展示分区（两级，19 页）
 
 侧栏与右侧共用 `packages/demo/src/sections/index.tsx` 的 `ALL_SECTIONS`（单一事实源）。
 
 ```
 ① 入门        start     帮助索引 / 快速开始 / 参考
-② 基础设施  infra      设计基础（token · 明暗） / 通知任务中心（状态池 · 事件 · 跨页）
+② 基础设施  infra      设计基础（token · 明暗） / 图标（官方 primitives + 字体库） / 通知任务中心
 ③ 控件        components
    ├─ 动作    actions       Button · IconButton
    ├─ 录入    inputs        Input · NumberInput · PrefixedInput · Textarea · Checkbox
@@ -168,7 +169,7 @@ utils（谁都不依赖，谁都可以用）
 | ② 基础设施 · 通知任务中心 | `src/ui/infra/task-notifications.ts` | `docs/api/task-notifications.md` |
 | ③ 控件 · 动作 | `src/ui/actions/` | `docs/api/ui.md` |
 | ③ 控件 · 录入 | `src/ui/inputs/` | 同上 |
-| ③ 控件 · 展示 | `src/ui/display/` | 同上 |
+| ③ 控件 · 展示 | `src/ui/display/` | 同上（图标另见 `docs/api/icons.md`） |
 | ③ 控件 · 反馈 | `src/ui/feedback/` | 同上 |
 | ③ 控件 · 布局 | `src/ui/layout/` | 同上 |
 | ③ 控件 · 导航 | `src/ui/navigation/` | 同上 |
@@ -189,3 +190,4 @@ utils（谁都不依赖，谁都可以用）
 - 2026-11-08 23:34:49：按文档库规范建立版本元数据与统一目录索引
 - 2026-11-13：对外入口改为「整包 + 按控件单块」两类；删除 CSS 聚合 barrel，控件直引各自生成物；写明真源唯一与新增登记闸门
 - 2026-11-13 16:22:31：文档库结构迁移：旧路径改指新槽位
+- 2026-11-13 17:30:00：`display` 收 `Icon`（字体图标，注册表 `ICON_FONTS`），demo 增「图标」页（官方 primitives 与字体库同页实时枚举）

@@ -15,6 +15,15 @@ export type DemoMessageKey =
   | 'secQuickstart'
   | 'secFoundation'
   | 'secTaskNotifications'
+  | 'secIcons'
+  | 'icNote'
+  | 'icSearch'
+  | 'icOfficial'
+  | 'icOfficialHint'
+  | 'icLoading'
+  | 'icFailed'
+  | 'icEmpty'
+  | 'icCopied'
   | 'tnNote'
   | 'tnCrossPage'
   | 'tnOpsTitle'
@@ -273,6 +282,15 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secQuickstart: '快速开始',
     secFoundation: '设计基础',
     secTaskNotifications: '通知任务中心',
+    secIcons: '图标',
+    icNote: '官方 primitives 与各套字体图标同页。两边都不写死清单：官方从宿主命名空间实时枚举，字体从在线 CSS 实时解析，宿主升级或平台加图标后刷新即见。点任意格子复制用法。',
+    icSearch: '按名字过滤…',
+    icOfficial: 'DSH 官方 primitives',
+    icOfficialHint: '实时枚举自宿主，宿主升级会自动多出来',
+    icLoading: '读取中…',
+    icFailed: '读取失败：',
+    icEmpty: '没有匹配的图标',
+    icCopied: '已复制',
     tnNote: '本页只演示数据面：状态池、订阅、事件总线、跨页同步与结束句柄。任务、条数、revision、时间与事件全部来自真实 API 调用，没有模拟数据、没有定时器、没有占位行。可收起弹窗与事件查看控件不在这里，由后续任务单独提供。',
     tnCrossPage: '跨页演示：在另一个同源标签页打开本页，两边各自注册或结束任务，列表与事件会即时同步；关掉其中一个标签页可看到 peer-left 事件。跨页条目能看不能点。',
     tnOpsTitle: '真实操作台',
@@ -556,6 +574,15 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secQuickstart: 'Quick start',
     secFoundation: 'Foundations',
     secTaskNotifications: 'Task Notification Hub',
+    secIcons: 'Icons',
+    icNote: 'Official primitives and every font icon set on one page. Neither list is hard-coded: official icons are enumerated from the host namespace at runtime, font icons are parsed from the online CSS at runtime, so a host upgrade or a new upload in the icon platform shows up on refresh. Click any cell to copy its usage.',
+    icSearch: 'Filter by name…',
+    icOfficial: 'DSH official primitives',
+    icOfficialHint: 'enumerated from the host at runtime; a host upgrade adds more',
+    icLoading: 'Loading…',
+    icFailed: 'Failed to load:',
+    icEmpty: 'No matching icons',
+    icCopied: 'Copied',
     tnNote: 'This page demos the data plane only: pool, subscription, event bus, cross-page sync and settlement handles. Rows, counts, revision, timestamps and events all come from real API calls — no mock data, no timers, no placeholder rows. Collapsible dialogs and the event-viewer control are not here; they arrive in separate tasks.',
     tnCrossPage: 'Cross-page demo: open this page in another same-origin tab. Register or settle a task on either side and both lists and event streams update immediately; close one tab to see a peer-left event. Cross-page rows are view-only.',
     tnOpsTitle: 'Live controls',

@@ -28,6 +28,7 @@
     "./adv/session": { "types": "./dist/adv/session/index.d.ts", "default": "./dist/adv/session/index.js" },
     "./ui": { "types": "./dist/ui/index.d.ts", "default": "./dist/ui/index.js" },
     "./ui/official": { "types": "./dist/ui/official.d.ts", "default": "./dist/ui/official.js" },
+    "./ui/icons": { "types": "./dist/ui/display/Icon.d.ts", "default": "./dist/ui/display/Icon.js" },
     "./ui/code-viewer": { "types": "./dist/ui/display/code-viewer.d.ts", "default": "./dist/ui/display/code-viewer.js" },
     "./ui/host-toast": { "types": "./dist/ui/feedback/host-toast.d.ts", "default": "./dist/ui/feedback/host-toast.js" },
     "./ui/button": { "types": "./dist/ui/actions/Button.d.ts", "default": "./dist/ui/actions/Button.js" },

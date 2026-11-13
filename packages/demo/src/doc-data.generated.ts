@@ -30,6 +30,15 @@ export const docData = {
             }
           },
           {
+            "name": "找图标（官方 primitives 与我们的字体库）",
+            "type": "icons.md",
+            "def": "—",
+            "desc": {
+              "zh": "字体图标的注册、在线样式注入、加一套库只加一行；官方图标为何不走这里",
+              "en": "Registering font icons, the online style link, adding a library in one line, and why official icons stay outside"
+            }
+          },
+          {
             "name": "用控件（按钮 / 输入 / 选择器 / 弹窗 / 右侧分栏）",
             "type": "ui.md",
             "def": "—",
@@ -4864,6 +4873,95 @@ export const docData = {
         "id": "bt-lifecycle-example",
         "lang": "ts",
         "src": "import { notifyTask, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// 项目在 app 入口设一次；core 取不到项目名，所以必须有人告诉它\nsetDefaultTaskProject('dsh-task-reminder')\n\n// ① 自己管结束：拿到句柄，随时更新，自己收尾\nconst handle = notifyTask('扫描工作区文件', { group: 'scan', detail: { done: 12, total: 40 } })\nhandle.background()   // 只发 backgrounded 事件，不结算任务\nhandle.done('扫描完成')\n// handle.fail('被用户取消')\n\n// ② 包住一段异步：成功 done、失败 fail，结果与异常原样透传\nawait notifyTask.run('扫描工作区文件', () => runWork(), { group: 'scan' })\n\n// ③ 只想广播一句：不进列表，只发 message 事件，不会闪\nnotifyMessage('已保存', { group: 'notice', icon: 'check', level: 'success' })\n\n// 句柄已经在手时才用得上的兜底：与 run 同一个收尾，不改变原 Promise 的结算语义\n// await handle.track(otherWork())   // otherWork(): Promise<void>，由调用方提供\n// await handle.settled              // 只在真正结束时兑现；收起不兑现"
+      }
+    ]
+  },
+  "icons": {
+    "id": "icons",
+    "heading": {
+      "zh": "字体图标",
+      "en": "Font icons"
+    },
+    "prose": [
+      {
+        "zh": "图标字形托管在 iconfont 平台：本包**只承诺「在线样式 + 类名拼装」这一层**，样式与字体文件都不入包、不进产物。运行时按库 id 挂一条 `<link>`，地址就在 `ICON_FONTS` 里；平台重新发布换了链接，改那一行即可，重复调用不会插出第二条。",
+        "en": "Glyphs are hosted on the iconfont platform: this package owns only the styling link plus class-name assembly. No style sheet and no font file is shipped. At runtime one `<link>` per library id is mounted, with the address kept in `ICON_FONTS`; republishing on the platform means editing that one line, and repeated calls never add a second link."
+      },
+      {
+        "zh": "**图标名就是平台里的名字**，本层不做语义别名 —— 改名的唯一真源是 iconfont 后台。加一套库（社交 / 办公 …）只需往 `ICON_FONTS` 加一项（`url` / `family` / `baseClass` / `prefix`），组件与展示页都不用改；`loadIconFont(id)` 会实时读在线 CSS 原文拿到该库全部图标名（跨域 CSSOM 读不到，只能读原文）。",
+        "en": "**The icon name is the platform name**; this layer adds no semantic aliases — renaming happens on the iconfont side. Adding another library (social, office …) is one more entry in `ICON_FONTS` (`url` / `family` / `baseClass` / `prefix`); neither the component nor the showcase page changes. `loadIconFont(id)` reads the online CSS text to enumerate that library's names (cross-origin CSSOM is unreadable, so the text is the only source)."
+      },
+      {
+        "zh": "尺寸默认 `1em`，跟随所在文字字号；要放大传 `size`（数字按 px，字符串原样）。单色字形吃 `color`，明暗随主题。官方 primitives 的图标**不走这里**，直接 `import { IconXxxRegular } from 'dsh-plugin-core/ui/official'` —— 两边是两套机制：这里是字体，官方是 SVG 组件。",
+        "en": "Size defaults to `1em` so an icon follows the surrounding text; pass `size` to override (numbers as px, strings verbatim). Monochrome glyphs take `color` and follow the theme. Official primitives icons are **not** part of this layer: import them from `dsh-plugin-core/ui/official` — the two are different mechanisms, a font here and SVG components there."
+      },
+      {
+        "zh": "演示站「图标」页把两边放在同一页：官方那组从宿主命名空间实时枚举，字体那组从在线 CSS 实时解析，因此宿主升级或平台加图标后刷新即见，仓库里没有需要手工同步的清单。",
+        "en": "The demo site's Icons page puts both on one page: the official group is enumerated from the host namespace at runtime and the font groups are parsed from the online CSS at runtime, so a host upgrade or a platform upload shows up on refresh — the repository keeps no list that has to be synced by hand."
+      }
+    ],
+    "code": [
+      {
+        "id": "icons-usage",
+        "lang": "tsx",
+        "src": "import { Icon } from 'dsh-plugin-core/ui/icons'\n\n// 名字就是 iconfont 里的名字（不带类名前缀）\n<Icon name=\"shanchu\" />\n<Icon name=\"shaixuan\" size={18} />\n<Icon name=\"guanbi\" title=\"关闭\" />\n\n// 以后有多套库时，用 set 指定；缺省 base\n<Icon set=\"social\" name=\"github\" />"
+      },
+      {
+        "id": "icons-listing",
+        "lang": "ts",
+        "src": "import { ICON_FONTS, ensureIconFont, loadIconFont } from 'dsh-plugin-core/ui/icons'\n\n// 需要时手动挂一次（Icon 首次渲染也会自动挂，重复调用无副作用）\nensureIconFont('base')\n\n// 列出某套库当前有哪些图标：读在线 CSS 原文，平台加图标后刷新即见\nconst { names, prefix } = await loadIconFont('base')"
+      }
+    ],
+    "api": [
+      {
+        "id": "icons-api",
+        "rows": [
+          {
+            "name": "Icon",
+            "type": "(props: IconProps) => JSX.Element",
+            "def": "—",
+            "desc": {
+              "zh": "字体图标元素。props：`name`（必填，平台名）、`set`（库 id，缺省 `base`）、`size`（缺省 `1em`）、`title`（无障碍名 + 原生 tooltip）、`className`、`style`",
+              "en": "The icon element. Props: `name` (required, platform name), `set` (library id, defaults to `base`), `size` (defaults to `1em`), `title` (accessible name plus native tooltip), `className`, `style`"
+            }
+          },
+          {
+            "name": "ICON_FONTS",
+            "type": "Record<string, IconFontFace>",
+            "def": "—",
+            "desc": {
+              "zh": "库注册表：`url`（在线样式地址）、`family`、`baseClass`、`prefix`。加库只改这里",
+              "en": "Library registry: `url` (online style address), `family`, `baseClass`, `prefix`. Adding a library means editing this"
+            }
+          },
+          {
+            "name": "ensureIconFont",
+            "type": "(id?: IconFontId) => void",
+            "def": "id = 'base'",
+            "desc": {
+              "zh": "按 id 保证该库只挂一条 `<link>`；地址变了直接改 `href`。`Icon` 首次渲染时自动调用，非浏览器环境静默跳过",
+              "en": "Guarantees exactly one `<link>` per library id; if the address changed it rewrites `href`. Called automatically on first `Icon` render, silently skipped outside a browser"
+            }
+          },
+          {
+            "name": "loadIconFont",
+            "type": "(id?: IconFontId) => Promise<ParsedIconFont>",
+            "def": "id = 'base'",
+            "desc": {
+              "zh": "拉取并解析该库在线 CSS（同会话只请求一次），返回 `family` / `baseClass` / `prefix` / `names`；结构不认识时抛错",
+              "en": "Fetches and parses the library's online CSS (once per session) and returns `family` / `baseClass` / `prefix` / `names`; throws when the structure is unrecognised"
+            }
+          },
+          {
+            "name": "parseFontCss",
+            "type": "(css: string) => ParsedIconFont",
+            "def": "—",
+            "desc": {
+              "zh": "纯函数解析器（`loadIconFont` 用的就是它），给需要自己解析的场景",
+              "en": "The pure parser behind `loadIconFont`, exported for callers that already hold the CSS text"
+            }
+          }
+        ]
       }
     ]
   }

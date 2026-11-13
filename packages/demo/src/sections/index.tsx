@@ -4,6 +4,7 @@ import type { DemoMessageKey } from '../i18n.js'
 import { t } from '../i18n.js'
 import { QuickstartPage, HelpIndexPage } from './start.js'
 import { FoundationPage } from './foundation.js'
+import { IconsPage } from './icons.js'
 import {
   ButtonPage,
   CardPage,
@@ -36,6 +37,7 @@ export type SectionId =
   | 'quickstart'
   | 'reference'
   | 'foundation'
+  | 'icons'
   | 'task-notifications'
   | 'actions'
   | 'inputs'
@@ -80,6 +82,7 @@ export const ALL_SECTIONS: SectionDef[] = [
 
   // ② 基础设施
   { id: 'foundation', group: 'infra', titleKey: 'secFoundation', render: () => h(FoundationPage, null) },
+  { id: 'icons', group: 'infra', titleKey: 'secIcons', render: () => h(IconsPage, null) },
   { id: 'task-notifications', group: 'infra', titleKey: 'secTaskNotifications', render: () => h(TaskNotificationsPage, null) },
 
   // ③ 控件：一页一类，页内按控件族顺序排列
