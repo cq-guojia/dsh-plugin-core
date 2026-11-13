@@ -5,6 +5,8 @@
 // 全局符号办一个单例：先到场的副本建宿主（唯一容器 + 唯一 Toaster），之后所有副本
 // （含跨版本）都把 payload 交给已注册的宿主渲染。
 // 纯逻辑、零 DOM / React 依赖 ⇒ Node 单测可直接断言单例语义。
+// shortcut: 单例不校验形状、也不提供注销路径；出现跨版本宿主或插件需要卸载清理时，
+// 再加 isValid 校验与 disposer（订阅退订 + root.unmount + observer.disconnect）。
 /** 全局注册表键：Symbol.for 跨 bundle 副本天然共享同一个符号。 */
 export const TOAST_HOST_KEY = Symbol.for('dsh-plugin-core/toast-host');
 /** 全局单例：已注册则直接返回（不触发 create），否则建一个并注册。 */

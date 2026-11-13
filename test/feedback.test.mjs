@@ -10,14 +10,52 @@ import {
   loadingOverlayClass,
   showLoading,
   showToast,
+  notify,
+  mountToasts,
+  connectToasts,
 } from '../dist/ui/index.js'
 import { LOADING_CSS } from '../dist/ui/feedback/loading-css.generated.js'
+import { TOAST_QUEUE_KEY, subscribeToasts } from '../dist/ui/feedback/toast-queue.js'
+import { disconnectNotifyBridge } from '../dist/ui/feedback/notify-bridge.js'
 import { setLocale, t } from '../dist/utils/index.js'
 
-test('showToast 在无 DOM 环境静默跳过，不抛', () => {
+test('showToast 在无 DOM 环境只投递，不抛', () => {
   assert.equal(typeof document, 'undefined')
   assert.doesNotThrow(() => showToast('hello'))
   assert.doesNotThrow(() => showToast('hello', { variant: 'error', durationMs: 10 }))
+})
+
+test('notify 是纯投递：无 DOM 也能拿到载荷（不建界面）；广播的 actions 例外', () => {
+  assert.equal(typeof document, 'undefined')
+  delete globalThis[TOAST_QUEUE_KEY]
+  const seen = []
+  const off = subscribeToasts((payload) => seen.push(payload))
+
+  notify('hello', { variant: 'success', description: '附注', position: 'top-center' })
+  assert.equal(seen.length, 1)
+  assert.equal(seen[0].message, 'hello')
+  assert.equal(seen[0].style, 'card')
+  assert.equal(seen[0].variant, 'success')
+  assert.equal(seen[0].description, '附注')
+  assert.equal(seen[0].position, 'top-center', '定位随载荷交给界面，投递侧不自己设')
+
+  assert.doesNotThrow(() => notify('hello', { broadcast: true }))
+  assert.equal(seen.length, 2, '无 DOM / 没设默认项目时广播降级成本页提示，消息不丢')
+  assert.equal(seen[1].style, 'card')
+  // 广播带 actions：函数跨不了页，绕过类型的 JS 调用方当场抛错，不静默丢按钮
+  assert.throws(
+    () => notify('hello', { broadcast: true, actions: [{ text: '看看', onClick: () => {} }] }),
+    /cannot carry actions/,
+  )
+
+  // 两个初始化入口在无 DOM 环境都只是跳过，不炸
+  assert.doesNotThrow(() => mountToasts())
+  assert.doesNotThrow(() => connectToasts())
+  // 桥是全局单例：真正退订事件订阅，别把 listener 残留给同文件后续用例
+  disconnectNotifyBridge()
+
+  off()
+  delete globalThis[TOAST_QUEUE_KEY]
 })
 
 test('showLoading 在无 DOM 环境返回空句柄，不抛', () => {

@@ -1343,6 +1343,7 @@ var TASK_NOTIFICATIONS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-no
 var TASK_NOTIFICATIONS_EVENTS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/events/v2");
 var TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v2";
 var TASK_NOTIFICATIONS_PROJECT_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/project/v2");
+var TASK_NOTIFICATIONS_HIDDEN_TTL_MS = 5 * 6e4;
 var EMPTY_TASKS = Object.freeze([]);
 var EMPTY_SNAPSHOT = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 });
 function projectSlot() {
@@ -1394,7 +1395,7 @@ function selectTaskNotifications(snapshot, groups, options = {}) {
   const allProjects = groups === "*" && options.project === void 0;
   const project = allProjects ? null : requireProject(options.project);
   const groupKey = groups === void 0 || groups === "*" ? "" : groups.length === 0 ? "" : [...groups].sort().join("\0");
-  const cacheKey = `${project ?? "*"}${groups === "*" ? "*" : groupKey}`;
+  const cacheKey = `${project ?? "*"}${groups === "*" ? "*" : groupKey}${options.includeHidden === true ? "hidden" : ""}`;
   let perSnapshot = SELECT_CACHE.get(snapshot);
   if (perSnapshot === void 0) {
     perSnapshot = /* @__PURE__ */ new Map();
@@ -1405,6 +1406,8 @@ function selectTaskNotifications(snapshot, groups, options = {}) {
     return cached;
   const wanted = groupKey === "" ? null : new Set(groupKey.split("\0"));
   const result = Object.freeze(snapshot.tasks.filter((task) => {
+    if (options.includeHidden !== true && task.hidden === true)
+      return false;
     if (project !== null && task.project !== project)
       return false;
     if (wanted === null)
@@ -1606,9 +1609,34 @@ function createTaskNotificationPool(options = {}) {
   let everPublished = false;
   function collect() {
     const all = [];
-    for (const shard of shards.values())
-      all.push(...shard.tasks);
+    const now = Date.now();
+    for (const shard of shards.values()) {
+      for (const task of shard.tasks) {
+        if (task.timeoutMs !== void 0 && now - task.updatedAt > task.timeoutMs)
+          continue;
+        all.push(task);
+      }
+    }
     return Object.freeze(all.sort(compareTasks));
+  }
+  let expiring = false;
+  function expireLocal() {
+    if (expiring)
+      return;
+    const now = Date.now();
+    for (const task of [...localShard()]) {
+      if (task.timeoutMs === void 0 || now - task.updatedAt <= task.timeoutMs)
+        continue;
+      const finish = finishers.get(task.id);
+      if (finish === void 0)
+        continue;
+      expiring = true;
+      try {
+        finish("failed", "timed out");
+      } finally {
+        expiring = false;
+      }
+    }
   }
   function post(message) {
     if (channel === null)
@@ -1627,6 +1655,7 @@ function createTaskNotificationPool(options = {}) {
     post(message);
   }
   function publish(nextTasks, notice) {
+    expireLocal();
     seq += 1;
     revision += 1;
     shards.set(origin, { origin, seq, tasks: Object.freeze([...nextTasks]) });
@@ -1788,6 +1817,10 @@ function createTaskNotificationPool(options = {}) {
       throw new Error("task notification project cannot be null when registering");
     const group = normalizeGroup(input.group);
     const detail = cloneDetail(input.detail);
+    const hidden = input.hidden === true;
+    const timeoutMs = input.timeoutMs ?? (hidden ? TASK_NOTIFICATIONS_HIDDEN_TTL_MS : 0);
+    if (timeoutMs < 0)
+      throw new Error("task notification timeoutMs must be >= 0");
     connect();
     const now = Date.now();
     const id3 = `${origin}:${String(++idSeq2)}`;
@@ -1805,7 +1838,9 @@ function createTaskNotificationPool(options = {}) {
       startedAt: now,
       updatedAt: now,
       origin,
-      backgrounded: false
+      backgrounded: false,
+      ...hidden ? { hidden: true } : {},
+      ...timeoutMs > 0 ? { timeoutMs } : {}
     };
     let isSettled = false;
     let resolveSettled = () => {
@@ -1856,6 +1891,8 @@ function createTaskNotificationPool(options = {}) {
           ...patch.groupLabel === void 0 ? {} : { groupLabel: patch.groupLabel },
           ...patch.icon === void 0 ? {} : { icon: patch.icon },
           ...patch.iconSvg === void 0 ? {} : { iconSvg: patch.iconSvg },
+          ...patch.hidden === void 0 ? {} : patch.hidden ? { hidden: true } : {},
+          // updatedAt 前移即「续期」：回收窗口从最后一次活动起算。
           updatedAt: Date.now()
         };
         publish(replace2(localShard(), next), { type: "updated", task: next });
@@ -1980,7 +2017,9 @@ function notifyTaskBase(title, options = {}) {
     ...options.projectLabel === void 0 ? {} : { projectLabel: options.projectLabel },
     ...options.groupLabel === void 0 ? {} : { groupLabel: options.groupLabel },
     ...options.icon === void 0 ? {} : { icon: options.icon },
-    ...options.iconSvg === void 0 ? {} : { iconSvg: options.iconSvg }
+    ...options.iconSvg === void 0 ? {} : { iconSvg: options.iconSvg },
+    ...options.hidden === void 0 ? {} : { hidden: options.hidden },
+    ...options.timeoutMs === void 0 ? {} : { timeoutMs: options.timeoutMs }
   });
 }
 function notifyMessage(title, options = {}) {
@@ -7953,6 +7992,146 @@ function Table(props) {
   );
 }
 
+// dist/ui/feedback/toast-queue.js
+var TOAST_QUEUE_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/toast-queue");
+var MAX_PENDING = 20;
+function queue() {
+  const g = globalThis;
+  let q = g[TOAST_QUEUE_KEY];
+  if (q === void 0) {
+    q = { listeners: /* @__PURE__ */ new Set(), pending: [] };
+    g[TOAST_QUEUE_KEY] = q;
+  }
+  return q;
+}
+function enqueue(q, payload) {
+  q.pending.push({ payload, at: Date.now() });
+  if (q.pending.length > MAX_PENDING)
+    q.pending.splice(0, q.pending.length - MAX_PENDING);
+}
+function deliver(listener, payload) {
+  try {
+    listener(payload);
+    return true;
+  } catch (error) {
+    console.warn(`[dsh-plugin-core] toast \u6E32\u67D3\u5931\u8D25\uFF1A${String(error)}`);
+    return false;
+  }
+}
+function pushToast(payload) {
+  const q = queue();
+  if (q.listeners.size === 0) {
+    enqueue(q, payload);
+    return;
+  }
+  let shown = false;
+  for (const listener of q.listeners) {
+    if (deliver(listener, payload))
+      shown = true;
+  }
+  if (!shown)
+    enqueue(q, payload);
+}
+function subscribeToasts(listener) {
+  const q = queue();
+  q.listeners.add(listener);
+  const now = Date.now();
+  for (const item of q.pending.splice(0)) {
+    if (now - item.at > item.payload.durationMs)
+      continue;
+    if (!deliver(listener, item.payload))
+      enqueue(q, item.payload);
+  }
+  return () => {
+    q.listeners.delete(listener);
+  };
+}
+
+// dist/ui/feedback/notify-bridge.js
+var NOTIFY_BRIDGE_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/notify-bridge");
+var BROADCAST_TOAST_MS = 2600;
+function isNotifyBridgeConnected() {
+  return globalThis[NOTIFY_BRIDGE_KEY] !== void 0;
+}
+function toPayload(message) {
+  const detail = message.detail;
+  return {
+    message: message.title,
+    variant: message.level,
+    style: "card",
+    ...typeof detail === "string" ? { description: detail } : {},
+    durationMs: BROADCAST_TOAST_MS
+  };
+}
+function ensureNotifyBridge(render) {
+  const g = globalThis;
+  if (g[NOTIFY_BRIDGE_KEY] !== void 0)
+    return;
+  let unsubscribe;
+  try {
+    taskNotifications.connect();
+    unsubscribe = subscribeTaskNotificationEvents((event) => {
+      if (event.type !== "message")
+        return;
+      render(toPayload(event.message));
+    });
+    g[NOTIFY_BRIDGE_KEY] = { unsubscribe };
+  } catch (error) {
+    console.warn(`[dsh-plugin-core] \u5E7F\u64AD\u63A5\u6536\u7AEF\u63A5\u7EBF\u5931\u8D25\uFF1A${String(error)}`);
+  }
+}
+
+// dist/ui/feedback/notify.js
+var DEFAULT_MS = 2600;
+function connectToasts() {
+  ensureNotifyBridge((payload) => {
+    pushToast(payload);
+  });
+}
+function cardPayload(message, opts) {
+  return {
+    message,
+    variant: opts?.variant ?? "info",
+    style: "card",
+    description: opts?.description,
+    durationMs: opts?.durationMs ?? DEFAULT_MS,
+    actions: opts?.actions,
+    position: opts?.position
+  };
+}
+function notify(message, opts) {
+  if (opts?.broadcast === true) {
+    broadcastNotify(message, opts);
+    return;
+  }
+  pushToast(cardPayload(message, opts));
+}
+function broadcastNotify(message, opts) {
+  if (opts.actions !== void 0) {
+    throw new Error("notify({ broadcast: true }) cannot carry actions: functions cannot cross pages (pass a plain-data message, or use a local toast)");
+  }
+  if (opts.description !== void 0 && typeof opts.description !== "string") {
+    throw new TypeError("notify({ broadcast: true }) description must be a string: only plain data crosses pages");
+  }
+  if (typeof document === "undefined") {
+    pushToast(cardPayload(message, opts));
+    return;
+  }
+  if (getDefaultTaskProject() === void 0 || !isNotifyBridgeConnected()) {
+    console.warn("[dsh-plugin-core] \u5E7F\u64AD\u6761\u4EF6\u4E0D\u6EE1\u8DB3\uFF0C\u964D\u7EA7\u4E3A\u672C\u9875\u63D0\u793A\uFF08\u9700\u8BBE\u9ED8\u8BA4\u9879\u76EE\u5E76\u5728\u9875\u9762\u52A0\u8F7D\u65F6\u8C03 connectToasts()\uFF09");
+    pushToast(cardPayload(message, opts));
+    return;
+  }
+  try {
+    notifyMessage(message, {
+      level: opts.variant ?? "info",
+      ...opts.description === void 0 ? {} : { detail: opts.description }
+    });
+  } catch (error) {
+    console.warn(`[dsh-plugin-core] notify({ broadcast: true }) \u5E7F\u64AD\u672A\u5B8C\u5168\u9001\u8FBE\uFF1A${String(error)}`);
+  }
+}
+
 // dist/ui/feedback/Toast.js
 var import_react33 = require("react");
 var import_client2 = require("react-dom/client");
@@ -9096,19 +9275,14 @@ function claimToastHost(create) {
 }
 
 // dist/ui/feedback/Toast.js
-var DEFAULT_MS = 2600;
 var ROOT_ID = "dshpc-toast-root";
 function currentTheme() {
   return document.body.hasAttribute("data-ds-dark-theme") ? "dark" : "light";
 }
-var sharedHost = null;
-function toasterHost() {
-  if (sharedHost !== null)
-    return sharedHost;
+function mountToasts() {
   if (typeof document === "undefined" || typeof MutationObserver === "undefined")
-    return null;
-  sharedHost = claimToastHost(createToasterHost);
-  return sharedHost;
+    return;
+  claimToastHost(createToasterHost);
 }
 function createToasterHost() {
   let root = null;
@@ -9225,8 +9399,10 @@ function createToasterHost() {
       }, a.text);
     })) : null), { duration, unstyled: true });
   }
-  return {
+  const host = {
     show(payload) {
+      if (payload.position !== void 0)
+        position = payload.position;
       ensureToaster();
       renderToaster();
       if (payload.style === "card")
@@ -9239,6 +9415,10 @@ function createToasterHost() {
       renderToaster();
     }
   };
+  subscribeToasts((payload) => {
+    host.show(payload);
+  });
+  return host;
 }
 function notifyPalette(variant, theme2) {
   switch (variant) {
@@ -9253,23 +9433,6 @@ function notifyPalette(variant, theme2) {
     default:
       return theme2 === "dark" ? { bg: "#3f3f46", fg: "#fafafa", glyph: "i" } : { bg: "#f4f4f5", fg: "#18181b", glyph: "i" };
   }
-}
-function notify(message, opts) {
-  if (typeof document === "undefined")
-    return;
-  const host = toasterHost();
-  if (host === null)
-    return;
-  if (opts?.position !== void 0)
-    host.setPosition(opts.position);
-  host.show({
-    message,
-    variant: opts?.variant ?? "info",
-    style: "card",
-    description: opts?.description,
-    durationMs: opts?.durationMs ?? DEFAULT_MS,
-    actions: opts?.actions
-  });
 }
 
 // dist/ui/inputs/Segmented.js
@@ -24911,8 +25074,8 @@ function showDialog(view, config2) {
   }
   let close = closeDialogEffect.of(panelCtor);
   return { close, result: promise.then((form) => {
-    let queue = view.win.queueMicrotask || ((f) => view.win.setTimeout(f, 10));
-    queue(() => {
+    let queue2 = view.win.queueMicrotask || ((f) => view.win.setTimeout(f, 10));
+    queue2(() => {
       if (view.state.field(dialogField).indexOf(panelCtor) > -1)
         view.dispatch({ effects: close });
     });
@@ -63986,7 +64149,7 @@ var DICT2 = {
     exHostModalTitle: "\u539F\u751F\u5F39\u7A97\uFF08\u5BBF\u4E3B\uFF09",
     exHostModalHint: "\u5BBF\u4E3B\u5B98\u65B9 Modal \u76AE\u80A4\uFF0C\u6B63\u6587\u81EA\u5B9A",
     exToastNotifyTitle: "Toast \xB7 \u6211\u4EEC\u5C01\u88C5 notify",
-    exToastNotifyHint: "notify()\uFF1A\u56DB\u8272 + \u53F3\u4FA7\u81EA\u5B9A\u4E49\u6309\u94AE",
+    exToastNotifyHint: "notify()\uFF1A\u56DB\u8272 + \u81EA\u5B9A\u4E49\u6309\u94AE\uFF1B\u5E26 broadcast: true \u53EF\u8DE8\u9875\u5E7F\u64AD",
     exLoaderTitle: "\u52A0\u8F7D\u56FE\u6807 \xB7 Loader",
     exLoaderHint: "\u53EA\u753B\u56FE\u6807\uFF1A\u80CC\u666F\u4E0E\u4F4D\u7F6E\u5F52\u8C03\u7528\u65B9",
     exLoadingTitle: "\u52A0\u8F7D\u63D0\u793A \xB7 \u4E24\u79CD\u6837\u5F0F",
@@ -64235,7 +64398,7 @@ var DICT2 = {
     exHostModalTitle: "Native dialogs (host)",
     exHostModalHint: "Host Modal skin with a custom body",
     exToastNotifyTitle: "Toast \xB7 our notify wrapper",
-    exToastNotifyHint: "notify(): four tones plus a custom action",
+    exToastNotifyHint: "notify(): four tones plus a custom action; broadcast: true reaches every page",
     exLoaderTitle: "Loader \xB7 icon only",
     exLoaderHint: "Icon only; background and placement are yours",
     exLoadingTitle: "Loading \xB7 two styles",
@@ -67766,8 +67929,8 @@ var docData = {
             "type": "",
             "def": "",
             "desc": {
-              "zh": "\u5B98\u65B9 Sonner \u539F\u5473\uFF08\u8F7B\u91CF\u539F\u751F\u89C2\u611F\uFF1Bdemo \u7EDF\u4E00\u7528 notify\uFF09\u3002opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`\uFF0C6 \u5411\u5B9A\u4F4D\uFF0C\u660E\u6697\u8DDF\u968F\u5BBF\u4E3B",
-              "en": "Raw official Sonner flavour (lightweight, native look; the demo standardises on notify). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host"
+              "zh": "\u5B98\u65B9 Sonner \u539F\u5473\uFF08\u8F7B\u91CF\u539F\u751F\u89C2\u611F\uFF1Bdemo \u7EDF\u4E00\u7528 notify\uFF09\u3002\u53EA\u6295\u9012\uFF0C\u754C\u9762\u7531 `mountToasts()` \u6302\u3002opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`\uFF0C6 \u5411\u5B9A\u4F4D\uFF0C\u660E\u6697\u8DDF\u968F\u5BBF\u4E3B",
+              "en": "Raw official Sonner flavour (lightweight, native look; the demo standardises on notify). Delivers only \u2014 `mountToasts()` owns the UI. opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host"
             }
           },
           {
@@ -67775,8 +67938,26 @@ var docData = {
             "type": "",
             "def": "",
             "desc": {
-              "zh": "\u9ED8\u8BA4\u7528\u8FD9\u4E2A\u3002opts: `{ variant?, description?, durationMs?, position?, actions? }`\uFF0Cactions \u7528\u81EA\u5E26 Button\uFF081\u20132 \u4E2A\uFF09",
-              "en": "Use this by default. opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1\u20132)"
+              "zh": "\u9ED8\u8BA4\u7528\u8FD9\u4E2A\u3002\u7EAF\u6295\u9012\u3001\u4E0D\u78B0 DOM\uFF1Aopts: `{ variant?, description?, durationMs?, position?, actions? }`\uFF0Cactions \u7528\u81EA\u5E26 Button\uFF081\u20132 \u4E2A\uFF09\uFF1B`{ broadcast: true }` \u65F6\u4E0D\u80FD\u5E26 actions",
+              "en": "Use this by default. Pure delivery, no DOM: opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1\u20132); `{ broadcast: true }` cannot carry actions"
+            }
+          },
+          {
+            "name": "mountToasts()",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u6302\u4E0A\u63D0\u793A\u754C\u9762\uFF1A\u552F\u4E00\u5BB9\u5668 + Toaster\uFF0C\u5E76\u8BA2\u9605\u6295\u9012\u961F\u5217\u3002\u9875\u9762\u52A0\u8F7D\u8C03\u4E00\u6B21\uFF08apply \u91CC\uFF09\uFF0C\u65E0 DOM \u73AF\u5883\u81EA\u52A8\u8DF3\u8FC7",
+              "en": "Mounts the toast UI: one container + Toaster subscribed to the queue. Call once per page (in apply); skipped without a DOM"
+            }
+          },
+          {
+            "name": "connectToasts()",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "\u63A5\u4E0A\u5E7F\u64AD\u63A5\u6536\u7AEF\uFF08\u7EAF\u903B\u8F91\u3001\u96F6 DOM\uFF09\uFF1A\u6B64\u540E\u522B\u7684\u9875\u9762\u5E7F\u64AD\u7684\u63D0\u793A\u8FDB\u5165\u6295\u9012\u961F\u5217\u3002\u9875\u9762\u52A0\u8F7D\u8C03\u4E00\u6B21",
+              "en": "Wires the broadcast receiver (pure logic, no DOM): toasts broadcast by other pages land in the queue. Call once per page"
             }
           },
           {
@@ -68902,6 +69083,10 @@ h(SideSheet, {
       {
         "zh": "\u4E24\u6761\u8DEF\uFF0C\u522B\u6DF7\u7528\uFF1A\u8981\u8FDB\u5217\u8868\u3001\u8981\u76D1\u63A7\u3001\u8981\u80FD\u88AB\u7ED3\u675F\u7684\uFF0C\u7528 `notifyTask`\uFF1B\u53EA\u60F3\u5E7F\u64AD\u4E00\u53E5\u3001\u4E0D\u9700\u8981\u7559\u5728\u5217\u8868\u91CC\u7684\uFF0C\u7528 `notifyMessage(title, options?)`\u3002\u540E\u8005**\u4E0D\u5199\u6C60\u3001\u4E0D\u52A8\u5FEB\u7167**\uFF08`revision` \u4E0D\u53D8\uFF09\uFF0C\u53EA\u53D1\u4E00\u4E2A `message` \u4E8B\u4EF6\uFF0C\u6240\u4EE5\u4E0D\u4F1A\u51FA\u73B0\u300C\u5217\u8868\u95EA\u4E00\u4E0B\u300D\u3002\u53CD\u8FC7\u6765\uFF0C\u7528 `notifyTask(...).done()` \u5192\u5145\u5E7F\u64AD\u4F1A\u5148 `registered` \u518D `settled`\uFF0C\u5FC5\u95EA\u4E00\u5E27\u3002",
         "en": "Two paths, not interchangeable: use `notifyTask` when the row must appear in the list, be monitored and be endable; use `notifyMessage(title, options?)` when you only need to announce something and it should not stay in the list. The latter writes nothing to the pool and does not touch the snapshot (`revision` stays put) \u2014 it only emits a `message` event, so the list cannot flash. Faking a broadcast with `notifyTask(...).done()` emits `registered` then `settled` and always flashes one frame."
+      },
+      {
+        "zh": "\u60F3\u8BA9\u63D0\u793A\u5728\u6240\u6709\u9875\u9762\u90FD\u5F39\uFF1A`notify(msg, { broadcast: true })`\u3002\u672C\u9875**\u4E0D\u5355\u72EC\u5F39**\uFF0C\u53EA\u53D1\u5E7F\u64AD\uFF0C\u518D\u7531\u5185\u7F6E\u63A5\u6536\u7AEF\u6E32\u67D3 \u2014\u2014 \u4E00\u6761\u63D0\u793A\u53EA\u51FA\u73B0\u4E00\u6B21\uFF0C\u5F00\u51E0\u4E2A\u6807\u7B7E\u9875\u5C31\u5404\u5F39\u4E00\u6B21\uFF1B\u505C\u7559\u65F6\u957F\u4E0E\u672C\u9875\u63D0\u793A\u4E00\u81F4\uFF082600ms\uFF09\uFF0C\u4E0D\u968F\u6D88\u606F\u8D70\u3002\u63A5\u6536\u7AEF\u4E0D\u6302\u5728\u63D0\u793A\u754C\u9762\u4E0A\uFF1A\u9875\u9762\u52A0\u8F7D\u65F6\u8C03\u4E00\u6B21 `connectToasts()`\uFF08\u7EAF\u903B\u8F91\u3001\u96F6 DOM\uFF09\u5C31\u63A5\u597D\uFF0C\u754C\u9762\u7531 `mountToasts()` \u5355\u72EC\u6302 \u2014\u2014 \u5426\u5219\u300C\u6CA1\u5F39\u8FC7\u63D0\u793A\u7684\u9875\u9762\u300D\u6536\u4E0D\u5230\u5E7F\u64AD\u3002\u8DE8\u9875\u53EA\u80FD\u4F20\u7EAF\u6570\u636E\uFF0C\u6240\u4EE5\u5E26 `actions`\uFF08\u51FD\u6570\uFF09\u7684\u63D0\u793A\u65E0\u6CD5\u5E7F\u64AD\uFF1A\u7C7B\u578B\u4E0A `broadcast: true` \u5206\u652F\u628A `actions` \u58F0\u660E\u6210 `never`\uFF0C\u5199\u4E86\u5C31\u7F16\u8BD1\u4E0D\u8FC7\uFF1B\u7ED5\u8FC7\u7C7B\u578B\u7684 JS \u8C03\u7528\u65B9\u5728\u8FD0\u884C\u671F\u5F53\u573A\u629B\u9519\uFF0C\u4E0D\u9759\u9ED8\u4E22\u6309\u94AE\uFF08\u4E0E `detail` \u4F20\u51FD\u6570\u540C\u4E00\u53E3\u5F84\uFF09\u3002\u5E7F\u64AD\u53D1\u4E0D\u51FA\u53BB\u65F6\uFF08\u5982\u6CA1\u8BBE\u9ED8\u8BA4\u9879\u76EE\uFF09\u964D\u7EA7\u4E3A\u672C\u9875\u63D0\u793A\uFF0C\u6D88\u606F\u4E0D\u4E22\u3002\u53EA\u7528\u672C\u9875\u63D0\u793A\u7684\uFF0C\u76F4\u63A5 `notify(msg)`\uFF0C\u5B8C\u5168\u4E0D\u7ECF\u8FC7\u901A\u77E5\u4E2D\u5FC3\u3002",
+        "en": "To make a toast appear on every page, use `notify(msg, { broadcast: true })`. The current page does not render it directly \u2014 it broadcasts, and the built-in receiver renders, so one message shows once and every open tab shows its own copy; duration matches local toasts (2600ms) and is not carried by the message. The receiver is not tied to the toast UI: call `connectToasts()` once per page (pure logic, no DOM) and it is wired; `mountToasts()` mounts the UI separately \u2014 without it a page that never showed a toast would miss every broadcast. Only plain data crosses pages, so `actions` (functions) cannot be broadcast: on the `broadcast: true` branch `actions` is typed as `never`, so passing it does not compile, and a JS caller that bypasses types gets a runtime throw instead of a silently dropped button (same rule as passing a function as `detail`). If the broadcast cannot be sent (e.g. no default project set) it degrades to a local toast so the message is not lost. For a local toast, call `notify(msg)` \u2014 it never touches the hub."
       },
       {
         "zh": "\u56FE\u6807\uFF1A`icon`\uFF08\u56FE\u6807\u540D / \u56FE\u6807\u5B57\u4F53\u7C7B\u540D\uFF09\u4E0E `iconSvg`\uFF08\u539F\u59CB SVG \u6E90\uFF09\u90FD\u53EA\u662F\u5B57\u7B26\u4E32\uFF0C\u6838\u5FC3\u53EA\u5B58\u4E0D\u89E3\u91CA\uFF0C\u6E32\u67D3\u4E0E\u6CE8\u5165\u5B89\u5168\u7531\u6D88\u8D39\u7AEF\u8D1F\u8D23 \u2014\u2014 \u7EC4\u4EF6\u548C ReactNode \u8DE8\u9875\u4F20\u4E0D\u4E86\u3002",
@@ -71665,6 +71850,14 @@ notify('\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F', {
     { text: '\u53D6\u6D88', variant: 'info', onClick: () => {} },
     { text: '\u63D0\u4EA4', variant: 'primary', onClick: () => {} },
   ],
+})
+
+// \u5E7F\u64AD\uFF1A\u540C\u6E90\u6BCF\u4E2A\u9875\u9762\u5404\u5F39\u4E00\u6761\uFF08\u672C\u9875\u4E5F\u5728\u5176\u4E2D\uFF0C\u4E0D\u91CD\u590D\u5F39\uFF09
+// \u4E0D\u80FD\u5E26 actions \u2014\u2014 \u51FD\u6570\u8DE8\u4E0D\u4E86\u9875\uFF0C\u7C7B\u578B\u5C42\u76F4\u63A5\u62A5\u9519
+notify('\u6784\u5EFA\u5B8C\u6210\uFF0C\u6240\u6709\u9875\u9762\u90FD\u5DF2\u540C\u6B65', {
+  broadcast: true,
+  variant: 'success',
+  description: '\u5F00\u51E0\u4E2A\u6807\u7B7E\u9875\u5C31\u5404\u5F39\u4E00\u6B21',
 })`;
 var LOADER_VARIANTS = ["ring", "blocks"];
 var LOADER_SIZES = ["xs", "sm", "md", "lg", "xl"];
@@ -72182,6 +72375,19 @@ function FeedbackPage() {
             })
           },
           "\u53CC\u6309\u94AE"
+        ),
+        // 广播：交给通知中心，同源每个页面各弹一条（本页也靠接收端弹，不会重复）
+        (0, import_react96.createElement)(
+          Button,
+          {
+            variant: "outline",
+            onClick: () => notify(`\u5E7F\u64AD \xB7 ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}`, {
+              broadcast: true,
+              variant: "success",
+              description: "\u540C\u6E90\u6BCF\u4E2A\u6253\u5F00\u7684\u9875\u9762\u5404\u5F39\u4E00\u6761\uFF08\u672C\u9875\u4E5F\u5728\u5176\u4E2D\uFF09"
+            })
+          },
+          "\u5E7F\u64AD\uFF08\u6240\u6709\u9875\u9762\uFF09"
         )
       )
     ),
@@ -73618,7 +73824,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.25"}`],
             [t3("buildDemo"), `v${"0.35.25"}`],
-            [t3("buildStamp"), "261112-204426-956"]
+            [t3("buildStamp"), "261113-120743-047"]
           ].map(
             ([label, value]) => (0, import_react103.createElement)(
               "tr",
@@ -73937,7 +74143,7 @@ function DemoPage() {
           },
           (0, import_react105.createElement)("span", null, `core v${"0.35.25"}`),
           (0, import_react105.createElement)("span", null, `demo v${"0.35.25"}`),
-          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261112-204426-956")
+          (0, import_react105.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261113-120743-047")
         )
       )
     ),
@@ -74048,6 +74254,8 @@ function apply(ctx) {
   kit.registerStyle("demo", DEMO_CSS);
   kit.ensureStyles();
   setTooltipRenderer((props) => (0, import_react105.createElement)(import_dsh_client_ui_primitives6.Tooltip, props));
+  connectToasts();
+  mountToasts();
   ctx.inject(["layout"], (sub) => {
     const layout = sub?.layout;
     if (layout?.selectPanel === void 0) return;

@@ -2008,6 +2008,14 @@ notify('确认提交吗？', {
     { text: '取消', variant: 'info', onClick: () => {} },
     { text: '提交', variant: 'primary', onClick: () => {} },
   ],
+})
+
+// 广播：同源每个页面各弹一条（本页也在其中，不重复弹）
+// 不能带 actions —— 函数跨不了页，类型层直接报错
+notify('构建完成，所有页面都已同步', {
+  broadcast: true,
+  variant: 'success',
+  description: '开几个标签页就各弹一次',
 })`
 
 /** Loader 的两条轴：形态两档、尺寸五档（demo 只用来铺矩阵）。 */
@@ -2503,6 +2511,20 @@ export function FeedbackPage(): ReturnType<typeof h> {
               }),
           },
           '双按钮',
+        ),
+        // 广播：交给通知中心，同源每个页面各弹一条（本页也靠接收端弹，不会重复）
+        h(
+          Button,
+          {
+            variant: 'outline',
+            onClick: () =>
+              notify(`广播 · ${new Date().toLocaleTimeString()}`, {
+                broadcast: true,
+                variant: 'success',
+                description: '同源每个打开的页面各弹一条（本页也在其中）',
+              }),
+          },
+          '广播（所有页面）',
         ),
       ),
     ),

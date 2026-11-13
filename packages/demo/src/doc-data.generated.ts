@@ -3384,8 +3384,8 @@ export const docData = {
             "type": "",
             "def": "",
             "desc": {
-              "zh": "官方 Sonner 原味（轻量原生观感；demo 统一用 notify）。opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`，6 向定位，明暗跟随宿主",
-              "en": "Raw official Sonner flavour (lightweight, native look; the demo standardises on notify). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host"
+              "zh": "官方 Sonner 原味（轻量原生观感；demo 统一用 notify）。只投递，界面由 `mountToasts()` 挂。opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`，6 向定位，明暗跟随宿主",
+              "en": "Raw official Sonner flavour (lightweight, native look; the demo standardises on notify). Delivers only — `mountToasts()` owns the UI. opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host"
             }
           },
           {
@@ -3393,8 +3393,26 @@ export const docData = {
             "type": "",
             "def": "",
             "desc": {
-              "zh": "默认用这个。opts: `{ variant?, description?, durationMs?, position?, actions? }`，actions 用自带 Button（1–2 个）",
-              "en": "Use this by default. opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1–2)"
+              "zh": "默认用这个。纯投递、不碰 DOM：opts: `{ variant?, description?, durationMs?, position?, actions? }`，actions 用自带 Button（1–2 个）；`{ broadcast: true }` 时不能带 actions",
+              "en": "Use this by default. Pure delivery, no DOM: opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1–2); `{ broadcast: true }` cannot carry actions"
+            }
+          },
+          {
+            "name": "mountToasts()",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "挂上提示界面：唯一容器 + Toaster，并订阅投递队列。页面加载调一次（apply 里），无 DOM 环境自动跳过",
+              "en": "Mounts the toast UI: one container + Toaster subscribed to the queue. Call once per page (in apply); skipped without a DOM"
+            }
+          },
+          {
+            "name": "connectToasts()",
+            "type": "",
+            "def": "",
+            "desc": {
+              "zh": "接上广播接收端（纯逻辑、零 DOM）：此后别的页面广播的提示进入投递队列。页面加载调一次",
+              "en": "Wires the broadcast receiver (pure logic, no DOM): toasts broadcast by other pages land in the queue. Call once per page"
             }
           },
           {
@@ -4509,6 +4527,10 @@ export const docData = {
       {
         "zh": "两条路，别混用：要进列表、要监控、要能被结束的，用 `notifyTask`；只想广播一句、不需要留在列表里的，用 `notifyMessage(title, options?)`。后者**不写池、不动快照**（`revision` 不变），只发一个 `message` 事件，所以不会出现「列表闪一下」。反过来，用 `notifyTask(...).done()` 冒充广播会先 `registered` 再 `settled`，必闪一帧。",
         "en": "Two paths, not interchangeable: use `notifyTask` when the row must appear in the list, be monitored and be endable; use `notifyMessage(title, options?)` when you only need to announce something and it should not stay in the list. The latter writes nothing to the pool and does not touch the snapshot (`revision` stays put) — it only emits a `message` event, so the list cannot flash. Faking a broadcast with `notifyTask(...).done()` emits `registered` then `settled` and always flashes one frame."
+      },
+      {
+        "zh": "想让提示在所有页面都弹：`notify(msg, { broadcast: true })`。本页**不单独弹**，只发广播，再由内置接收端渲染 —— 一条提示只出现一次，开几个标签页就各弹一次；停留时长与本页提示一致（2600ms），不随消息走。接收端不挂在提示界面上：页面加载时调一次 `connectToasts()`（纯逻辑、零 DOM）就接好，界面由 `mountToasts()` 单独挂 —— 否则「没弹过提示的页面」收不到广播。跨页只能传纯数据，所以带 `actions`（函数）的提示无法广播：类型上 `broadcast: true` 分支把 `actions` 声明成 `never`，写了就编译不过；绕过类型的 JS 调用方在运行期当场抛错，不静默丢按钮（与 `detail` 传函数同一口径）。广播发不出去时（如没设默认项目）降级为本页提示，消息不丢。只用本页提示的，直接 `notify(msg)`，完全不经过通知中心。",
+        "en": "To make a toast appear on every page, use `notify(msg, { broadcast: true })`. The current page does not render it directly — it broadcasts, and the built-in receiver renders, so one message shows once and every open tab shows its own copy; duration matches local toasts (2600ms) and is not carried by the message. The receiver is not tied to the toast UI: call `connectToasts()` once per page (pure logic, no DOM) and it is wired; `mountToasts()` mounts the UI separately — without it a page that never showed a toast would miss every broadcast. Only plain data crosses pages, so `actions` (functions) cannot be broadcast: on the `broadcast: true` branch `actions` is typed as `never`, so passing it does not compile, and a JS caller that bypasses types gets a runtime throw instead of a silently dropped button (same rule as passing a function as `detail`). If the broadcast cannot be sent (e.g. no default project set) it degrades to a local toast so the message is not lost. For a local toast, call `notify(msg)` — it never touches the hub."
       },
       {
         "zh": "图标：`icon`（图标名 / 图标字体类名）与 `iconSvg`（原始 SVG 源）都只是字符串，核心只存不解释，渲染与注入安全由消费端负责 —— 组件和 ReactNode 跨页传不了。",

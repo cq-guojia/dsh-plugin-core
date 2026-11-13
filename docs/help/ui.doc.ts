@@ -324,7 +324,7 @@ const doc: DocTopic = {
   exports: [
     'Button', 'IconButton', 'Segmented', 'SplitGroup', 'Input', 'PrefixedInput', 'NumberInput', 'Textarea',
     'Checkbox', 'fieldMetricsOf', 'Picker', 'WorkspacePicker', 'ModelPicker', 'DateTimePicker', 'Surface', 'Card', 'StripCard',
-    'Chip', 'Table', 'ListRow', 'Pagination', 'Modal', 'SideSheet', 'FieldHint', 'setTooltipRenderer', 'showToast', 'notify', 'showHostToast',
+    'Chip', 'Table', 'ListRow', 'Pagination', 'Modal', 'SideSheet', 'FieldHint', 'setTooltipRenderer', 'showToast', 'notify', 'mountToasts', 'connectToasts', 'ToastActionVariant',
     'Loader', 'LoaderBar', 'Loading', 'RunningBlocks', 'SectionHead', 'MarqueeText', 'FlipText', 'LiveText',
     'QuickToolbar', 'startResizeLayoutWidth', 'PanelDock', 'createPanelDock', 'DockPanel',
     'ensureControls', 'setStyleKit',
@@ -997,8 +997,10 @@ h(CodeViewer, { text: draft, path: 'notes.md', t })`,
         {
           id: 'ui-feedback',
           rows: [
-            { name: 'showToast(message, opts?)', type: '', def: '', desc: { zh: '官方 Sonner 原味（轻量原生观感；demo 统一用 notify）。opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`，6 向定位，明暗跟随宿主', en: 'Raw official Sonner flavour (lightweight, native look; the demo standardises on notify). opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host' } },
-            { name: 'notify(message, opts?)', type: '', def: '', desc: { zh: '默认用这个。opts: `{ variant?, description?, durationMs?, position?, actions? }`，actions 用自带 Button（1–2 个）', en: 'Use this by default. opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1–2)' } },
+            { name: 'showToast(message, opts?)', type: '', def: '', desc: { zh: '官方 Sonner 原味（轻量原生观感；demo 统一用 notify）。只投递，界面由 `mountToasts()` 挂。opts: `{ variant?, durationMs?, color?, onDismiss?, position? }`，6 向定位，明暗跟随宿主', en: 'Raw official Sonner flavour (lightweight, native look; the demo standardises on notify). Delivers only — `mountToasts()` owns the UI. opts `{ variant?, durationMs?, color?, onDismiss?, position? }`, 6-way placement, theme follows host' } },
+            { name: 'notify(message, opts?)', type: '', def: '', desc: { zh: '默认用这个。纯投递、不碰 DOM：opts: `{ variant?, description?, durationMs?, position?, actions? }`，actions 用自带 Button（1–2 个）；`{ broadcast: true }` 时不能带 actions', en: 'Use this by default. Pure delivery, no DOM: opts `{ variant?, description?, durationMs?, position?, actions? }`, actions use our own Button (1–2); `{ broadcast: true }` cannot carry actions' } },
+            { name: 'mountToasts()', type: '', def: '', desc: { zh: '挂上提示界面：唯一容器 + Toaster，并订阅投递队列。页面加载调一次（apply 里），无 DOM 环境自动跳过', en: 'Mounts the toast UI: one container + Toaster subscribed to the queue. Call once per page (in apply); skipped without a DOM' } },
+            { name: 'connectToasts()', type: '', def: '', desc: { zh: '接上广播接收端（纯逻辑、零 DOM）：此后别的页面广播的提示进入投递队列。页面加载调一次', en: 'Wires the broadcast receiver (pure logic, no DOM): toasts broadcast by other pages land in the queue. Call once per page' } },
             { name: 'showHostToast(message, opts?)', type: '', def: '', desc: { zh: '宿主原生 Toast，走 `dsh-plugin-core/ui/host-toast` 子路径。opts: `{ tone?, holdMs?, actions?, onDismiss? }`', en: 'Host-native Toast from the `dsh-plugin-core/ui/host-toast` subpath. opts `{ tone?, holdMs?, actions?, onDismiss? }`' } },
             { name: 'showLoading(opts?)', type: '', def: '', desc: { zh: '全局加载提示（全局唯一一处），返回 `{ close() }`。opts: `{ text?, variant?: \'toast\' | \'block\', position?, mask?, maskOpacity?, translate? }`；position 默认 bottom-center', en: 'Global loading hint (one spot globally) returning `{ close() }`. opts `{ text?, variant?: \'toast\' | \'block\', position?, mask?, maskOpacity?, translate? }`; position defaults to bottom-center' } },
             { name: 'Loader({ variant?, size?, label?, className? })', type: '', def: '', desc: { zh: '通用加载图标：variant 两形态 × size 五档；无背景无定位，颜色走 currentColor', en: 'Generic loading icon: two variants × five sizes; no background or positioning, colour via currentColor' } },

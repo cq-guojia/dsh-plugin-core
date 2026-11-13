@@ -19,7 +19,7 @@ import type { SettingsFormScope } from '@deepseek-ai/dsh-client-ui-primitives'
 // ⚠️ 从**仓库内 dsh-plugin-core 的构建产物**引入（不是源码），构建时打进本包：
 //    这样本包自包含（发布不依赖 core 先发版），且预览的就是当前这份代码。
 import { createStyleKit } from '../../../../dist/design/index.js'
-import { Button, Card, PanelDock, Segmented, connectHost, ensureControls, setStyleKit, setTooltipRenderer, useLocale } from '../../../../dist/ui/index.js'
+import { Button, Card, PanelDock, Segmented, connectHost, connectToasts, ensureControls, mountToasts, setStyleKit, setTooltipRenderer, useLocale } from '../../../../dist/ui/index.js'
 import { connectFs } from '../../../../dist/adv/explorer/index.js'
 import { connectFileServices } from '../host-files.js'
 import { connectRealSessions } from '../real-sessions.js'
@@ -428,6 +428,10 @@ export function apply(ctx: {
   // 把官方 Tooltip 交给 core：此后 FieldHint（问号提示）的气泡就是官方组件本体，
   // 与 Tooltip 展示区里的是同一个（core 零官方依赖 ⇒ 只能由插件侧注入，见 src/ui/infra/tooltip.ts）。
   setTooltipRenderer((props) => h(Tooltip, props as never))
+
+  // 提示：接收端（纯逻辑）+ 界面各挂一次 —— 页面加载即就绪，不靠「先弹过一条」。
+  connectToasts()
+  mountToasts()
 
   // 跳整页：宿主 layout 服务（拿不到就降级为不跳转，绝不让插件起不来）。
   // ⚠️ 必须保留 `layout` 对象再调它的方法：`selectPanel` 是 class 方法，抽出来单存会丢 this，

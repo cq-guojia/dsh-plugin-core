@@ -5,8 +5,10 @@
 // 全局符号办一个单例：先到场的副本建宿主（唯一容器 + 唯一 Toaster），之后所有副本
 // （含跨版本）都把 payload 交给已注册的宿主渲染。
 // 纯逻辑、零 DOM / React 依赖 ⇒ Node 单测可直接断言单例语义。
+// shortcut: 单例不校验形状、也不提供注销路径；出现跨版本宿主或插件需要卸载清理时，
+// 再加 isValid 校验与 disposer（订阅退订 + root.unmount + observer.disconnect）。
 
-import type { ToastAction, ToastPosition, ToastVariant } from './Toast.js'
+import type { ToastPayload, ToastPosition } from './toast-queue.js'
 
 /** 全局注册表键：Symbol.for 跨 bundle 副本天然共享同一个符号。 */
 export const TOAST_HOST_KEY = Symbol.for('dsh-plugin-core/toast-host')
@@ -19,20 +21,6 @@ export function claimToastHost<T>(create: () => T): T {
   const created = create()
   g[TOAST_HOST_KEY] = created
   return created
-}
-
-export interface ToastPayload {
-  message: string
-  variant: ToastVariant
-  /** native = showToast（sonner 原味）；card = notify（我们的卡）。 */
-  style: 'native' | 'card'
-  description?: string
-  durationMs: number
-  /** showToast 的整条自定义色（仅 native 有意义）。 */
-  color?: string
-  onDismiss?: () => void
-  /** notify 的右侧按钮（仅 card，1–2 个）。 */
-  actions?: ToastAction[]
 }
 
 export interface ToastHost {

@@ -1,50 +1,21 @@
+/**
+ * Toast 的界面（**唯一允许 import sonner / React 的一层**）。
+ *
+ * 它订阅 `toast-queue` 的投递并绘制；不发送提示、不认识通知中心的内部结构。
+ * 页面加载时调一次 `mountToasts()` 挂上界面，之后 `notify()` / `showToast()` 只投递数据。
+ */
 import { createElement as h } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { Toaster, toast } from 'sonner'
-import { Button, type ButtonVariant } from '../actions/Button.js'
-import { claimToastHost, type ToastHost, type ToastPayload } from './toast-host.js'
+import { Button } from '../actions/Button.js'
+import { claimToastHost, type ToastHost } from './toast-host.js'
+import {
+  subscribeToasts,
+  type ToastPayload,
+  type ToastPosition,
+  type ToastVariant,
+} from './toast-queue.js'
 
-export type ToastVariant = 'info' | 'success' | 'error' | 'warning'
-
-export type ToastPosition =
-  | 'top-left'
-  | 'top-center'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-center'
-  | 'bottom-right'
-
-export interface ToastOptions {
-  variant?: ToastVariant
-  /** 停留时长（毫秒），默认 2600。 */
-  durationMs?: number
-  /** 整条自定义颜色（背景色）。传了就走 unstyled 自定义卡，覆盖默认语义色。 */
-  color?: string
-  /** toast 消失（自动或手动关闭）后触发。 */
-  onDismiss?: () => void
-  /** 出现位置（作用于全局唯一 Toaster），默认 'bottom-center'。 */
-  position?: ToastPosition
-}
-
-/** 封装好的提示：右侧动作按钮（用我们自己的 Button 样式）。 */
-export interface ToastAction {
-  text: string
-  /** 按钮样式（我们的 ButtonVariant），默认 'info'（实心无边框）。 */
-  variant?: ButtonVariant
-  onClick: () => void
-}
-
-export interface NotifyOptions {
-  variant?: ToastVariant
-  /** 次要说明文字（标题下方）。 */
-  description?: string
-  durationMs?: number
-  position?: ToastPosition
-  /** 右侧 1–2 个动作按钮；传了就走我们封装的卡片样式并渲染按钮。 */
-  actions?: ToastAction[]
-}
-
-const DEFAULT_MS = 2600
 const ROOT_ID = 'dshpc-toast-root'
 
 // 宿主暗色判据是 body[data-ds-dark-theme]（不是 prefers-color-scheme），
@@ -53,18 +24,13 @@ function currentTheme(): 'light' | 'dark' {
   return document.body.hasAttribute('data-ds-dark-theme') ? 'dark' : 'light'
 }
 
-// ── 跨副本共享宿主 ──
-// core 被打进每个插件 bundle，本模块的 root / position 等状态各副本一份；同页多插件
-// 会各挂一个同 id 容器 + 一个 Toaster，叠在同一屏位。sonner 的 toast() / toast.custom()
-// 是模块级 store（B 副本调自己 bundle 的 sonner，事件只进 B 的 store），所以只能共享
-// 「命令式入口」、不能共享 React root：由先到场的副本建宿主，其余副本交给它渲染。
-let sharedHost: ToastHost | null = null
+// core 被打进每个插件 bundle，sonner 的 store 是模块级（各副本一份），所以只能共享
+// 「宿主」：先到场的副本建，其余副本把 payload 交给它渲染。
 
-function toasterHost(): ToastHost | null {
-  if (sharedHost !== null) return sharedHost
-  if (typeof document === 'undefined' || typeof MutationObserver === 'undefined') return null
-  sharedHost = claimToastHost(createToasterHost)
-  return sharedHost
+/** 挂上提示界面：建唯一容器 + Toaster，并订阅投递队列。无 DOM 环境直接跳过。 */
+export function mountToasts(): void {
+  if (typeof document === 'undefined' || typeof MutationObserver === 'undefined') return
+  claimToastHost(createToasterHost)
 }
 
 function createToasterHost(): ToastHost {
@@ -230,8 +196,9 @@ function createToasterHost(): ToastHost {
     )
   }
 
-  return {
+  const host: ToastHost = {
     show(payload: ToastPayload): void {
+      if (payload.position !== undefined) position = payload.position
       ensureToaster()
       renderToaster() // 应用最新 position / theme（root 已存在时也要重渲染）
       if (payload.style === 'card') showCard(payload)
@@ -242,26 +209,11 @@ function createToasterHost(): ToastHost {
       renderToaster()
     },
   }
-}
 
-/**
- * 官方 Sonner 原生提示（**命令式**）。用于「官方的」对比 demo 与需要 Sonner 原味的场景。
- * 变体：info（中性卡）/ success（绿）/ error（红）/ warning（黄，richColors）。
- * 无 `document` 时静默跳过（Node 单测 / SSR 不炸）。
- */
-export function showToast(message: string, opts?: ToastOptions): void {
-  if (typeof document === 'undefined') return
-  const host = toasterHost()
-  if (host === null) return
-  if (opts?.position !== undefined) host.setPosition(opts.position)
-  host.show({
-    message,
-    variant: opts?.variant ?? 'info',
-    style: 'native',
-    durationMs: opts?.durationMs ?? DEFAULT_MS,
-    color: opts?.color,
-    onDismiss: opts?.onDismiss,
-  })
+  // 容器只建一次 ⇒ 订阅也只挂一次（多副本共享同一个宿主，不会一条消息弹多次）。
+  subscribeToasts((payload: ToastPayload) => { host.show(payload) })
+
+  return host
 }
 
 // 我们封装卡片的配色：info 走灰（不是纯黑，随明暗切换）；其余用整条语义色。
@@ -284,26 +236,4 @@ function notifyPalette(variant: ToastVariant, theme: 'light' | 'dark'): {
         ? { bg: '#3f3f46', fg: '#fafafa', glyph: 'i' }
         : { bg: '#f4f4f5', fg: '#18181b', glyph: 'i' }
   }
-}
-
-/**
- * 我们封装好的提示（**推荐项目内使用**）：统一卡片样式（灰/绿/红/黄，跟随明暗皮肤），
- * 右侧可挂 1–2 个**我们自己的 Button** 动作按钮，点击后自动关闭并调用你的事件。
- *
- * 底层仍是 Sonner（动画 / 定位 / 堆叠），但视觉与交互是我们定制的。
- * 无 `document` 时静默跳过。
- */
-export function notify(message: string, opts?: NotifyOptions): void {
-  if (typeof document === 'undefined') return
-  const host = toasterHost()
-  if (host === null) return
-  if (opts?.position !== undefined) host.setPosition(opts.position)
-  host.show({
-    message,
-    variant: opts?.variant ?? 'info',
-    style: 'card',
-    description: opts?.description,
-    durationMs: opts?.durationMs ?? DEFAULT_MS,
-    actions: opts?.actions,
-  })
 }

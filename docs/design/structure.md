@@ -67,13 +67,16 @@ src/
 │   │                          CodeViewer（+ code-viewer-lang / -theme / 子路径入口 code-viewer）
 │   │                          MarqueeText · FlipText · LiveText · SectionHead · FieldHint
 │   ├── feedback/              Modal · SideSheet · AlertModal · ConfirmModal（+ modal-host）
-│   │                          Toast（+ toast-host）· host-toast · Loader · LoaderBar · Loading
+│   │                          Toast（界面，唯一 import sonner）· notify（发送 API，纯 TS）
+│   │                          （+ toast-queue 纯类型与本页队列 / notify-bridge 广播适配 / toast-host 宿主单例）
+│   │                          host-toast · Loader · LoaderBar · Loading
 │   ├── layout/                SplitGroup · PanelDock（+ panel-dock-logic）· QuickToolbar
 │   │                          （+ quick-toolbar-logic）· resizer
 │   ├── navigation/            Pagination（+ pagination-logic）
 │   └── infra/                 css · controls-css · locale · tooltip · host-data
 │                              overlay / panel（跨类共用浮层底座 + 皮肤）· thenable · ticker · chevron
 │                              code-mirror-surface（只读 / 可编辑共用的渲染底座）
+│                              task-notifications（通知中心：任务池 + 事件总线 + 跨页广播，零 UI）
 │
 ├── utils/                  ③ 纯方法 —— 零 React / 零 DOM（谁都能用，它不依赖谁）
 │   ├── date                   日期 / 相对时间 / 时间区间

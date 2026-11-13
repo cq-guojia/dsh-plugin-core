@@ -191,15 +191,19 @@ export {
   type TableRow,
   type TableTone,
 } from './display/table-logic.js'
-export {
-  showToast,
-  notify,
-  type ToastVariant,
-  type ToastPosition,
-  type ToastOptions,
-  type ToastAction,
-  type NotifyOptions,
-} from './feedback/Toast.js'
+export { showToast, notify, connectToasts } from './feedback/notify.js'
+export { mountToasts } from './feedback/Toast.js'
+export type {
+  ToastVariant,
+  ToastPosition,
+  ToastOptions,
+  ToastAction,
+  ToastActionVariant,
+  NotifyBaseOptions,
+  LocalNotifyOptions,
+  BroadcastNotifyOptions,
+  NotifyOptions,
+} from './feedback/toast-queue.js'
 
 export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './actions/Button.js'
 export { Segmented, type SegmentedProps, type SegmentedTone } from './inputs/Segmented.js'
