@@ -1,10 +1,11 @@
 /**
- * 官方 Tooltip 的注入位 —— core 不许静态依赖 `@deepseek-ai/*`（硬约束：官方包只在宿主内核可解析，
- * 静态 import 会让整个入口在宿主外直接崩），但「问号提示」的气泡又必须和官方悬停提示**用同一个**。
+ * 官方 Tooltip 的注入位 —— 本文件不 import 官方包（全仓只有 `ui/official.ts` 能静态 import），
+ * 但「问号提示」的气泡必须和官方悬停提示**用同一个**。
  *
  * 解法 = 依赖注入：插件启动时调一次 {@link setTooltipRenderer}，把官方 Tooltip 交给 core；
- * FieldHint 渲染气泡时走注入的 renderer（即官方组件本体），没注入的环境（node 自检、
- * 非宿主预览）自动降级为自绘气泡（HINT_CSS，皮肤与官方对齐）。
+ * FieldHint 有 renderer 就交给它渲染官方气泡本体。宿主内 renderer 恒被注入（demo 与各插件
+ * 启动时各做一次）；没注入的环境（node 自检、非宿主预览）**只画 `?` 图标、不画气泡** ——
+ * 官方组件缺失不做自绘兜底。
  */
 import type { ReactElement } from 'react';
 /** 传给注入 renderer 的参数：与官方 Tooltip 的 props 同名同义，注入方可以直接展开透传。 */
@@ -22,8 +23,8 @@ export interface TooltipRenderProps {
 }
 /** 注入方签名：`h(OfficialTooltip, props)` 的薄包装。 */
 export type TooltipRenderer = (props: TooltipRenderProps) => ReactElement;
-/** 注入官方 Tooltip（插件启动时调一次；传 undefined 撤销，回到自绘降级）。 */
+/** 注入官方 Tooltip（插件启动时调一次；传 undefined 撤销，FieldHint 回到只画图标）。 */
 export declare function setTooltipRenderer(fn: TooltipRenderer | undefined): void;
-/** 当前注入的 renderer；未注入返回 undefined（FieldHint 据此走降级路径）。 */
+/** 当前注入的 renderer；未注入返回 undefined（FieldHint 据此只画图标）。 */
 export declare function getTooltipRenderer(): TooltipRenderer | undefined;
 //# sourceMappingURL=tooltip.d.ts.map
