@@ -5,6 +5,7 @@ import { register } from 'node:module'
 // Icon 会从 official.js 取官方图标 ⇒ 宿主平台包要用本地替身，否则 node 里链接不上。
 register(new URL('./primitives-hooks.mjs', import.meta.url))
 const { ICON_FONTS, ICON_SIZES, Icon, parseFontCss } = await import('../dist/ui/display/Icon.js')
+const { darkGlyphName } = await import('../dist/ui/display/icon-runtime.js')
 
 // iconfont 在线 CSS 的最小对照样本（结构与平台产物一致）。
 const CSS = `@font-face {
@@ -56,22 +57,44 @@ test('注册表每套库的字段齐全、地址是绝对 https', () => {
 })
 
 test('字体图标：组名不可省，拼「基础类 + 前缀 + 名字」', () => {
-  const el = Icon({ name: 'base:gou' })
-  assert.equal(el.props.className, 'dshpc-icons-base dshpc-i-gou')
+  const el = Icon({ name: 'common.base:gou' })
+  assert.equal(el.props.className, 'koc-i-common-base koc-i-common-base-gou')
   assert.equal(el.props.style.fontSize, ICON_SIZES.md)
 })
 
 test('尺寸：预设名与自定义 px 都认', () => {
-  assert.equal(Icon({ name: 'base:gou', size: 'lg' }).props.style.fontSize, ICON_SIZES.lg)
-  assert.equal(Icon({ name: 'base:gou', size: 31 }).props.style.fontSize, 31)
+  assert.equal(Icon({ name: 'common.base:gou', size: 'lg' }).props.style.fontSize, ICON_SIZES.lg)
+  assert.equal(Icon({ name: 'common.base:gou', size: 31 }).props.style.fontSize, 31)
+})
+
+test('多色库标了 color、单色库没标', () => {
+  assert.equal(ICON_FONTS['common.base.color'].color, true)
+  assert.equal(ICON_FONTS['common.logo.color'].color, true)
+  assert.equal(ICON_FONTS['common.base'].color, undefined)
+  assert.equal(ICON_FONTS['common.logo'].color, undefined)
+  assert.equal(ICON_FONTS['dsh-plugin-core.base'].color, undefined)
+})
+
+test('多色库：深色下拿不到名字清单时仍用原字形', () => {
+  const el = Icon({ name: 'common.base.color:jia' })
+  assert.equal(typeof el.type, 'function', '多色库走 ColorGlyph 组件')
+  assert.equal(el.props.glyph, 'jia')
+  assert.equal(el.props.font.color, true)
+})
+
+test('深色换字形：有 -dark 就用它，没有就原名字', () => {
+  const names = new Set(['jia', 'jia-dark', 'jian'])
+  assert.equal(darkGlyphName('jia', names), 'jia-dark')
+  assert.equal(darkGlyphName('jian', names), 'jian')
+  assert.equal(darkGlyphName('jia', null), 'jia')
 })
 
 test('没有组名的名字不当字体图标（只有官方那条路）', () => {
-  // 'gou' 既没有冒号、也不是官方图标名 ⇒ 不渲染，也不回落 base
+  // 'gou' 既没有冒号、也不是官方图标名 ⇒ 不渲染，也不回落任何库
   assert.equal(quiet(() => Icon({ name: 'gou' })), null)
 })
 
-test('未知库不渲染（不回落 base）', () => {
+test('未知库不渲染（不回落 common.base）', () => {
   assert.equal(quiet(() => Icon({ name: 'social:gou' })), null)
 })
 

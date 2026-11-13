@@ -2,14 +2,15 @@
  * 图标：字体图标与官方 primitives 图标**同一个组件**，尺寸统一。
  *
  * `name` 的写法（2026-11-13 用户定，组名不可省）：
- *  - `base:sort-down` / `social:jian` —— 字体图标：`库名:图标名`，库名是 {@link ICON_FONTS} 的 key；
+ *  - `common.base:sort-down` / `common.logo:github` —— 字体图标：`库名:图标名`，库名是
+ *    {@link ICON_FONTS} 的 key（`所属域.库名[.变体]`，库名本身可以带点）；
  *  - `IconWrapLinesOutlineRegular` —— 官方图标：没有冒号，直接写官方组件名。
  *
  * 找不到就**不渲染**（不回落别的库 —— 显示错图标比空白更难查），并一次性告警。
  * 字体样式仍是运行时 `<link>` 远程加载，字体文件与样式都不入包。
  */
 import { createElement as h, type CSSProperties } from 'react';
-import { type ParsedIconFont } from './icon-parse.js';
+import type { ParsedIconFont } from './icon-parse.js';
 export { parseFontCss, type ParsedIconFont } from './icon-parse.js';
 /** 一套字体库的接入事实。 */
 export interface IconFontFace {
@@ -21,10 +22,51 @@ export interface IconFontFace {
     baseClass: string;
     /** glyph 类名前缀，后面直接接图标名。 */
     prefix: string;
+    /**
+     * 多色库（iconfont 的 Color fonts）：颜色随字形走、CSS `color` 改不动。
+     * 标了它的库在宿主深色下会改用 `<名字>-dark` 字形（库里没有就仍用原名字）。
+     * 单色库不标 —— 单色靠 `color` 跟着文字走，本来就能适应明暗。
+     */
+    color?: boolean;
 }
-/** 图标库注册表：加一套库 = 加一项，组件与展示页都不用改。 */
+/**
+ * 图标库注册表：加一套库 = 加一项，组件与展示页都不用改。
+ *
+ * key = `<所属域>.<库名>[.变体]`，就是 `name` 里冒号前那整段：
+ *  - `common.*` —— 所有开源框架共用的基础库（跨项目，不限于本仓）；
+ *  - `dsh-plugin-core.*` —— 本框架在 DSH 平台上对外提供的库。
+ *
+ * 每项必须与 iconfont 在线 CSS 里的实际值逐字一致（family / baseClass / prefix 三项），
+ * 平台重发布换的哈希只影响 `url`，但改了前缀就得同步这里 —— 写错的表现是「图标位空白」。
+ */
 export declare const ICON_FONTS: {
-    base: {
+    'common.base': {
+        url: string;
+        family: string;
+        baseClass: string;
+        prefix: string;
+    };
+    'common.base.color': {
+        url: string;
+        family: string;
+        baseClass: string;
+        prefix: string;
+        color: true;
+    };
+    'common.logo': {
+        url: string;
+        family: string;
+        baseClass: string;
+        prefix: string;
+    };
+    'common.logo.color': {
+        url: string;
+        family: string;
+        baseClass: string;
+        prefix: string;
+        color: true;
+    };
+    'dsh-plugin-core.base': {
         url: string;
         family: string;
         baseClass: string;
@@ -52,7 +94,7 @@ export type IconSize = keyof typeof ICON_SIZES;
  */
 export declare function ensureIconFont(id: IconFontId): void;
 /**
- * 拉取并解析一套库的在线 CSS（同一次会话只发一次请求）。
+ * 拉取并解析一套库的在线 CSS（同一次会话只发一次请求，与多色字形判断共用缓存）。
  *
  * 给「列出这套库有哪些图标」用：远程 CSS 的 CSSOM 跨域读不到，只能读原文。
  *

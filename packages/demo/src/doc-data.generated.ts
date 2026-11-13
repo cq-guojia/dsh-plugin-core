@@ -4888,32 +4888,40 @@ export const docData = {
         "en": "One `Icon` component covers both sources so sizing stays uniform: **font icons** (hosted on iconfont, written as `library:name`) and **official primitives icons** (no colon, just the official component name). No font file and no style sheet ships with the package; at runtime one `<link>` per library id is mounted from `ICON_FONTS`, and republishing on the platform means editing that one line — repeated calls never add a second link."
       },
       {
-        "zh": "**组名不可省**：`base:shanchu` 里的 `base` 就是 `ICON_FONTS` 的 key，不带组名的名字只按官方组件名去找（找不到就不渲染）。图标名本身照抄平台里的名字，本层不做语义别名 —— 改名的唯一真源是 iconfont 后台。加一套库（社交 / 办公 …）只需往 `ICON_FONTS` 加一项（`url` / `family` / `baseClass` / `prefix`），组件与展示页都不用改；`loadIconFont(id)` 会读在线 CSS 原文拿到该库全部图标名（跨域 CSSOM 读不到，只能读原文）。",
-        "en": "**The library prefix is mandatory**: in `base:shanchu` the `base` part is the key of `ICON_FONTS`, and a name without a prefix is looked up as an official component name (rendered as nothing when absent). The icon name itself is copied from the platform; this layer adds no semantic aliases — renaming happens on the iconfont side. Adding another library (social, office …) is one more entry in `ICON_FONTS` (`url` / `family` / `baseClass` / `prefix`); neither the component nor the showcase page changes. `loadIconFont(id)` reads the online CSS text to enumerate the library's names (cross-origin CSSOM is unreadable, so the text is the only source)."
+        "zh": "**注册的库**（key 就是 `name` 里冒号前那整段，写法 `域.库名[.变体]`）：`common.base`、`common.base.color`、`common.logo`、`common.logo.color` 是跨所有开源框架共用的基础库；`dsh-plugin-core.base` 是本框架在 DSH 平台上对外提供的库。加库 = 往 `ICON_FONTS` 加一项（`url` / `family` / `baseClass` / `prefix`），组件与展示页都不用改。",
+        "en": "**Registered libraries** (the key is the whole part before the colon in `name`, shaped `domain.library[.variant]`): `common.base`, `common.base.color`, `common.logo` and `common.logo.color` are shared across every open-source framework; `dsh-plugin-core.base` is the library this framework ships on the DSH platform. Adding a library means one more entry in `ICON_FONTS` (`url` / `family` / `baseClass` / `prefix`); neither the component nor the showcase page changes."
       },
       {
-        "zh": "**找不到就不渲染**，并在控制台告警一次：库名写错、平台改名、宿主升级删了某个官方图标，都是空位而不是「显示成别的图标」。也不跨库回落 —— 回落到 base 会显示一个错的字形，比空白更难查。",
-        "en": "**An unknown name renders nothing** plus a single console warning: a mistyped library, a renamed glyph on the platform, or an official icon removed by a host upgrade all show as empty space rather than as some other icon. There is deliberately no cross-library fallback — falling back to base would draw the wrong glyph, which is harder to trace than a gap."
+        "zh": "**组名不可省**：`common.base:shanchu` 里的 `common.base` 就是 `ICON_FONTS` 的 key，库名本身允许带点；不带组名的名字只按官方组件名去找（找不到就不渲染）。图标名本身照抄平台里的名字，本层不做语义别名 —— 改名的唯一真源是 iconfont 后台。`loadIconFont(id)` 会读在线 CSS 原文拿到该库全部图标名（跨域 CSSOM 读不到，只能读原文）。",
+        "en": "**The library prefix is mandatory**: in `common.base:shanchu` the `common.base` part is the key of `ICON_FONTS` (library names may contain dots), and a name without a prefix is looked up as an official component name (rendered as nothing when absent). The icon name itself is copied from the platform; this layer adds no semantic aliases — renaming happens on the iconfont side. `loadIconFont(id)` reads the online CSS text to enumerate the library's names (cross-origin CSSOM is unreadable, so the text is the only source)."
+      },
+      {
+        "zh": "**多色库与深色**：`.color` 结尾的库是多色字体（iconfont 的 Color fonts），颜色随字形走、CSS `color` 改不动，所以 `ICON_FONTS` 里给它们标了 `color: true`。宿主切到深色时，组件会改用同名 `<图标名>-dark` 字形；库里没有这个变体就继续用原字形（说明该图标明暗通用）。判断依据是整库在线 CSS 的名字清单（CSS 无法表达「如果存在则覆盖」），清单到达前先按原字形渲染。单色库不受影响 —— 它们本来就跟 `color` 走。",
+        "en": "**Color libraries and dark mode**: libraries ending in `.color` are multicolour fonts (iconfont Color fonts) whose colours live in the glyph, so CSS `color` cannot change them — `ICON_FONTS` marks them with `color: true`. When the host switches to dark, the component swaps to the same-named `<name>-dark` glyph; if that variant is absent it keeps the original glyph (meaning it works in both modes). The decision needs the library's name list from the online CSS (CSS cannot express \"override if present\"), and the original glyph is drawn until that list arrives. Monochrome libraries are unaffected — they already follow `color`."
+      },
+      {
+        "zh": "**找不到就不渲染**，并在控制台告警一次：库名写错、平台改名、宿主升级删了某个官方图标，都是空位而不是「显示成别的图标」。也不跨库回落 —— 回落到别的库会显示一个错的字形，比空白更难查。",
+        "en": "**An unknown name renders nothing** plus a single console warning: a mistyped library, a renamed glyph on the platform, or an official icon removed by a host upgrade all show as empty space rather than as some other icon. There is deliberately no cross-library fallback — falling back to another library would draw the wrong glyph, which is harder to trace than a gap."
       },
       {
         "zh": "尺寸默认 16px（`ICON_SIZES.md`），也可以传预设名，或直接给 px 数字。`size` 只收数字与预设名、不收 `em` 之类字符串 —— 官方组件的 props 是 `size?: number`，收 em 会让两类图标一半生效一半失效。需要跟所在文字字号联动时，把数字按调用点算好再传。",
         "en": "Size defaults to 16px (`ICON_SIZES.md`); pass a preset name or a raw px number. `size` accepts numbers and preset names only, never strings like `em` — official components take `size?: number`, so honouring em would make one source work and the other silently ignore it. When an icon must follow text size, compute the number at the call site."
       },
       {
-        "zh": "传字符串的场合（例如 `taskNotifications` 的 `icon` 字段，核心只存不解释）直接用同一条协议：`'base:jian'`、`'social:jian'`、`'IconWrapLinesOutlineRegular'`，渲染端原样喂给 `<Icon name={…} />` 即可，不需要自己再拆冒号。",
-        "en": "Where only a string travels (for example the `icon` field of `taskNotifications`, which the core stores but never interprets), the same convention applies: `'base:jian'`, `'social:jian'`, `'IconWrapLinesOutlineRegular'`. The renderer feeds it straight into `<Icon name={…} />`; nothing has to split on the colon itself."
+        "zh": "传字符串的场合（例如 `taskNotifications` 的 `icon` 字段，核心只存不解释）直接用同一条协议：`'common.base:jian'`、`'common.logo:github'`、`'IconWrapLinesOutlineRegular'`，渲染端原样喂给 `<Icon name={…} />` 即可，不需要自己再拆冒号。",
+        "en": "Where only a string travels (for example the `icon` field of `taskNotifications`, which the core stores but never interprets), the same convention applies: `'common.base:jian'`, `'common.logo:github'`, `'IconWrapLinesOutlineRegular'`. The renderer feeds it straight into `<Icon name={…} />`; nothing has to split on the colon itself."
       }
     ],
     "code": [
       {
         "id": "icons-usage",
         "lang": "tsx",
-        "src": "import { Icon } from 'dsh-plugin-core/ui/icons'\n\n// 字体图标：组名不可省（组名 = ICON_FONTS 的 key）\n<Icon name=\"base:shanchu\" />\n<Icon name=\"base:shaixuan\" size={18} />\n<Icon name=\"social:jian\" />\n\n// 官方 primitives 图标：没有冒号，直接写组件名\n<Icon name=\"IconWrapLinesOutlineRegular\" />\n\n// 尺寸：预设名或 px 数字，缺省 md（16）\n<Icon name=\"base:guanbi\" size=\"lg\" />\n<Icon name=\"base:guanbi\" size={31} />\n\n// 无障碍名（同时作原生 tooltip）；装饰性图标不传\n<Icon name=\"base:guanbi\" title=\"关闭\" />"
+        "src": "import { Icon } from 'dsh-plugin-core/ui/icons'\n\n// 字体图标：库名不可省，写法是「域.库名:图标名」\n<Icon name=\"common.base:shanchu\" />\n<Icon name=\"common.base:shaixuan\" size={18} />\n<Icon name=\"common.logo:github\" />\n\n// 官方 primitives 图标：没有冒号，直接写组件名\n<Icon name=\"IconWrapLinesOutlineRegular\" />\n\n// 尺寸：预设名或 px 数字，缺省 md（16）\n<Icon name=\"common.base:guanbi\" size=\"lg\" />\n<Icon name=\"common.base:guanbi\" size={31} />\n\n// 无障碍名（同时作原生 tooltip）；装饰性图标不传\n<Icon name=\"common.base:guanbi\" title=\"关闭\" />"
       },
       {
         "id": "icons-listing",
         "lang": "ts",
-        "src": "import { ICON_FONTS, ICON_SIZES, ensureIconFont, loadIconFont } from 'dsh-plugin-core/ui/icons'\n\n// 尺寸预设\nICON_SIZES   // { sm: 14, md: 16, lg: 20, xl: 24 }\n\n// 需要时手动挂一次（Icon 首次渲染也会自动挂，重复调用无副作用）\nensureIconFont('base')\n\n// 列出某套库当前有哪些图标：读在线 CSS 原文，平台加图标后刷新即见\nconst { names, prefix } = await loadIconFont('base')"
+        "src": "import { ICON_FONTS, ICON_SIZES, ensureIconFont, loadIconFont } from 'dsh-plugin-core/ui/icons'\n\n// 尺寸预设\nICON_SIZES   // { sm: 14, md: 16, lg: 20, xl: 24 }\n\n// 需要时手动挂一次（Icon 首次渲染也会自动挂，重复调用无副作用）\nensureIconFont('common.base')\n\n// 列出某套库当前有哪些图标：读在线 CSS 原文，平台加图标后刷新即见\nconst { names, prefix } = await loadIconFont('common.base')"
       }
     ],
     "api": [
@@ -4925,8 +4933,8 @@ export const docData = {
             "type": "(props: IconProps) => JSX.Element | null",
             "def": "—",
             "desc": {
-              "zh": "图标元素。props：`name`（必填，`库名:图标名` 或官方组件名）、`size`（预设名或 px，缺省 16）、`title`（无障碍名 + 原生 tooltip）、`className`、`style`。找不到图标时返回 `null` 并告警一次",
-              "en": "The icon element. Props: `name` (required, `library:name` or an official component name), `size` (preset or px, defaults to 16), `title` (accessible name plus native tooltip), `className`, `style`. Returns `null` with a one-off warning when nothing matches"
+              "zh": "图标元素。props：`name`（必填，`库名:图标名` 或官方组件名）、`size`（预设名或 px，缺省 16）、`title`（无障碍名 + 原生 tooltip）、`className`、`style`。找不到图标时返回 `null` 并告警一次；多色库在深色下自动改用 `-dark` 字形",
+              "en": "The icon element. Props: `name` (required, `library:name` or an official component name), `size` (preset or px, defaults to 16), `title` (accessible name plus native tooltip), `className`, `style`. Returns `null` with a one-off warning when nothing matches; colour libraries switch to the `-dark` glyph in dark mode"
             }
           },
           {
@@ -4934,8 +4942,8 @@ export const docData = {
             "type": "Record<string, IconFontFace>",
             "def": "—",
             "desc": {
-              "zh": "库注册表（key 就是 `name` 里冒号前那段）：`url`（在线样式地址）、`family`、`baseClass`、`prefix`。加库只改这里",
-              "en": "Library registry (the key is the part before the colon in `name`): `url` (online style address), `family`, `baseClass`, `prefix`. Adding a library means editing this"
+              "zh": "库注册表（key 就是 `name` 里冒号前那段，如 `common.base`）：`url`（在线样式地址）、`family`、`baseClass`、`prefix`，多色库另有 `color: true`。加库只改这里",
+              "en": "Library registry (the key is the part before the colon in `name`, e.g. `common.base`): `url` (online style address), `family`, `baseClass`, `prefix`, plus `color: true` for multicolour libraries. Adding a library means editing this"
             }
           },
           {
@@ -4952,17 +4960,17 @@ export const docData = {
             "type": "(id: IconFontId) => void",
             "def": "—",
             "desc": {
-              "zh": "按库 id 保证只挂一条 `<link>`；地址变了直接改 `href`。`Icon` 首次渲染时自动调用，非浏览器环境静默跳过",
-              "en": "Guarantees exactly one `<link>` per library id, rewriting `href` when the address changed. Called automatically on first `Icon` render and silently skipped outside a browser"
+              "zh": "按库 id 保证只挂一条 `<link>`；地址变了直接改 `href`。`Icon` 首次渲染时自动调用，非浏览器环境静默跳过；多色库同时预取名字清单（供深色换字形用）",
+              "en": "Guarantees exactly one `<link>` per library id, rewriting `href` when the address changed. Called automatically on first `Icon` render and silently skipped outside a browser; colour libraries also prefetch the name list used for the dark swap"
             }
           },
           {
             "name": "loadIconFont",
             "type": "(id?: IconFontId) => Promise<ParsedIconFont>",
-            "def": "id = 'base'",
+            "def": "id = 'common.base'",
             "desc": {
-              "zh": "拉取并解析该库在线 CSS（同会话只请求一次），返回 `family` / `baseClass` / `prefix` / `names`；结构不认识时抛错",
-              "en": "Fetches and parses the library's online CSS (once per session) and returns `family` / `baseClass` / `prefix` / `names`; throws when the structure is unrecognised"
+              "zh": "拉取并解析该库在线 CSS（同会话只请求一次，与深色字形判断共用缓存），返回 `family` / `baseClass` / `prefix` / `names`；结构不认识时抛错",
+              "en": "Fetches and parses the library's online CSS (once per session, sharing the cache with the dark-glyph lookup) and returns `family` / `baseClass` / `prefix` / `names`; throws when the structure is unrecognised"
             }
           },
           {
