@@ -11,7 +11,23 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import * as controls from '../dist/ui/infra/controls-css.js'
+// 控件 CSS 生成物各自一个文件；这里显式列全集，只为拼出「注入文本」做契约自检。
+// 运行时不再有聚合 barrel（src/ui/infra/controls-css.ts 已删），各控件直引自己那份。
+import { SEGMENTED_CSS } from '../dist/ui/inputs/segmented-css.generated.js'
+import { BUTTON_CSS } from '../dist/ui/actions/button-css.generated.js'
+import { FIELD_CSS } from '../dist/ui/inputs/field-css.generated.js'
+import { LOADING_CSS } from '../dist/ui/feedback/loading-css.generated.js'
+import { LOADER_CSS } from '../dist/ui/feedback/loader-css.generated.js'
+import { LOADER_BAR_CSS } from '../dist/ui/feedback/loader-bar-css.generated.js'
+import { QUICK_TOOLBAR_CSS } from '../dist/ui/layout/quick-toolbar-css.generated.js'
+import { HINT_CSS } from '../dist/ui/display/hint-css.generated.js'
+import { DATETIME_CSS } from '../dist/ui/inputs/datetime-css.generated.js'
+import { SPLIT_GROUP_CSS } from '../dist/ui/layout/split-group-css.generated.js'
+import { INPUT_GROUP_CSS } from '../dist/ui/inputs/input-group-css.generated.js'
+import { TABLE_BASE_CSS } from '../dist/ui/display/table-css.generated.js'
+import { TABLE_PLAIN_CSS } from '../dist/ui/display/table-plain-css.generated.js'
+import { PAGINATION_CSS } from '../dist/ui/navigation/pagination-css.generated.js'
+import { SECTION_HEAD_CSS } from '../dist/ui/display/section-head-css.generated.js'
 import { PICKER_CSS } from '../dist/ui/inputs/picker-css.js'
 import { PANEL_CSS } from '../dist/ui/infra/panel-css.js'
 import { FEEDBACK_CSS } from '../dist/ui/feedback/feedback-css.js'
@@ -32,6 +48,11 @@ import { transform } from 'lightningcss'
 import { TOKENS_CSS_TEMPLATE } from '../dist/design/tokens-css.js'
 
 /** 参与注入的全部 CSS 常量（新增 CSS 常量时同步加进来）。 */
+const controls = {
+  SEGMENTED_CSS, BUTTON_CSS, FIELD_CSS, LOADING_CSS, LOADER_CSS, LOADER_BAR_CSS,
+  QUICK_TOOLBAR_CSS, HINT_CSS, DATETIME_CSS, SPLIT_GROUP_CSS, INPUT_GROUP_CSS,
+  TABLE_BASE_CSS, TABLE_PLAIN_CSS, PAGINATION_CSS, SECTION_HEAD_CSS,
+}
 const CONSTANTS = {
   ...Object.fromEntries(
     Object.entries(controls).filter(([key, value]) => key.endsWith('_CSS') && typeof value === 'string'),

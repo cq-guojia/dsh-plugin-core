@@ -16,7 +16,7 @@
  */
 import { createElement as h } from 'react';
 import { ensureComponentStyles } from '../infra/css.js';
-import { SPLIT_GROUP_CSS } from '../infra/controls-css.js';
+import { SPLIT_GROUP_CSS } from './split-group-css.generated.js';
 /**
  * 渲染一个两格拼接外壳。
  *

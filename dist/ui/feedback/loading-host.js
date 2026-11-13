@@ -5,7 +5,7 @@
 // 先到场的副本建浮层，其余副本把请求交给它 —— 所有调用落在**同一个屏幕位置**。
 // 纯逻辑、零 DOM / React 依赖 ⇒ Node 单测可直接断言单例语义。
 import { ensureComponentStyles } from '../infra/css.js';
-import { LOADING_CSS } from '../infra/controls-css.js';
+import { LOADING_CSS } from './loading-css.generated.js';
 /** 全局注册表键：Symbol.for 跨 bundle 副本天然共享同一个符号。 */
 export const LOADING_HOST_KEY = Symbol.for('dsh-plugin-core/loading-host');
 /** 全局单例：已注册则直接返回（不触发 create），否则建一个并注册。 */

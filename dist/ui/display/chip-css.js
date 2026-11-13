@@ -1,7 +1,7 @@
 // Chip（标签）样式 —— **chip 只有「胶囊标签」这一个语义**。
 //
 // 语义边界（2026-10-19 收敛）：只给图标的小按钮属于 `IconButton`
-// （`.dshpc-iconbtn`，见 controls-css）；此前 `.dshpc-chip` 在 controls-css 里
+// （`.dshpc-iconbtn`，见 button.css）；此前 `.dshpc-chip` 曾与图标钮皮肤混在一处
 // 被定义成 28×28 方角图标底板、在 card-css 里被定义成胶囊标签，两份皮肤同页注入
 // ⇒ 后者覆盖前者：Chip 组件被锁成 28px 宽（文字挤压）、图标按钮被撑成胶囊。
 // 现在只保留这一份。

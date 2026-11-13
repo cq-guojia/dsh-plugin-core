@@ -21,7 +21,9 @@ import { createElement as h, useRef, useState, type CSSProperties, type ReactNod
 import { Button, IconButton, type ButtonVariant } from '../actions/Button.js'
 import { Input, withHint, type FieldSize } from './Field.js'
 import { ensureComponentStyles } from '../infra/css.js'
-import { BUTTON_CSS, FIELD_CSS, INPUT_GROUP_CSS } from '../infra/controls-css.js'
+import { BUTTON_CSS } from '../actions/button-css.generated.js'
+import { FIELD_CSS } from './field-css.generated.js'
+import { INPUT_GROUP_CSS } from './input-group-css.generated.js'
 import { t } from '../../utils/i18n.js'
 
 /** 后置按钮：只给 icon = 纯图标钮（正方形）；给 label = 文字钮；两个都给 = 图标 + 文字。 */

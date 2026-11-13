@@ -8,7 +8,7 @@
 
 | | 包 | 角色 |
 |---|---|---|
-| 库 | `dsh-plugin-core` | 各插件按子路径引用（`/ui`、`/design`、`/utils`、`/explorer`、`/session`） |
+| 库 | `dsh-plugin-core` | 各插件按子路径引用（`/ui`、`/design`、`/utils`、`/adv/explorer`、`/adv/session`） |
 | 插件 | `dsh-plugin-core-demo`（本包） | 装进 DSH，就地渲染这套库 |
 
 ## 安装

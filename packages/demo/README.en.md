@@ -8,7 +8,7 @@ Install it into a real DSH host and every base control and composed module rende
 
 | | Package | Role |
 |---|---|---|
-| Library | `dsh-plugin-core` | Imported by plugins by subpath (`/ui`, `/design`, `/utils`, `/explorer`, `/session`) |
+| Library | `dsh-plugin-core` | Imported by plugins by subpath (`/ui`, `/design`, `/utils`, `/adv/explorer`, `/adv/session`) |
 | Plugin | `dsh-plugin-core-demo` (this package) | Installed into DSH, renders the library in place |
 
 ## Install

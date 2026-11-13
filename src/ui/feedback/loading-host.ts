@@ -7,7 +7,7 @@
 
 import type { Translate } from '../../utils/i18n.js'
 import { ensureComponentStyles } from '../infra/css.js'
-import { LOADING_CSS } from '../infra/controls-css.js'
+import { LOADING_CSS } from './loading-css.generated.js'
 
 /** 全局注册表键：Symbol.for 跨 bundle 副本天然共享同一个符号。 */
 export const LOADING_HOST_KEY = Symbol.for('dsh-plugin-core/loading-host')

@@ -5,8 +5,8 @@
 
 ## 定位与边界
 
-`ui` 的 `infra` 层模块，从 `dsh-plugin-core/ui` 扁平导出，不新增子路径
-（`docs/design/structure.md` §六「不再新增子路径」）。零 React、零 DOM 依赖，
+`ui` 的 `infra` 层模块：整包 `dsh-plugin-core/ui` 有它的纯 re-export 转发表，另开单块入口
+`dsh-plugin-core/ui/task-notifications`（见 `docs/design/structure.md` §六）。零 React、零 DOM 依赖，
 import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单测与 SSR 可直接加载。
 
 适用范围：

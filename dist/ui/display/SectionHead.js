@@ -11,7 +11,7 @@
  */
 import { createElement as h } from 'react';
 import { ensureComponentStyles } from '../infra/css.js';
-import { SECTION_HEAD_CSS } from '../infra/controls-css.js';
+import { SECTION_HEAD_CSS } from './section-head-css.generated.js';
 /** 内置色名与 token 一一同名；其余值一律按 CSS 色值原样落地。 */
 const ACCENT_TONES = [
     'business', 'success', 'warning', 'danger',

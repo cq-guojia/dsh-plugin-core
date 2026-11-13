@@ -101,19 +101,22 @@ optional.
 
 > EN: What to avoid
 
-1. **不要 `import * as core from 'dsh-plugin-core/ui'` / `require('dsh-plugin-core/ui')`** —— 打包器无法摇树，
-   所有控件 CSS 全进你的包（实测差 62.3 KB）。一律**具名导入**。
+1. **只想用一两个控件时不要引整包** —— 按控件入口引（`dsh-plugin-core/ui/input`）。
+   整包 `dsh-plugin-core/ui` 是给「要全套」用的；对它 `import *` / `require` 会全量进包
+   （实测差 62.3 KB）。
 2. **不要把多份 CSS 自己拼起来注册成一个域** —— 那等于重建全量注入，按需收益归零。
    要加自己的皮肤，用 `kit.registerStyle('你的域', css)` 单独注册。
 3. **不要写「靠注入顺序才对」的规则** —— 顺序 = 控件首次渲染顺序，不固定。
    要覆盖就用更高特异性（多加一个类限定），跨来源的层次用 `@layer`。
-4. **不要退回 `import './x.css'`** —— 客户端产物是 JS 闭包，`.css` 内核不加载；且在
-   `sideEffects: false` 下会被连样式一起摇掉。
+4. **不要退回 `import './x.css'`** —— 客户端产物是 JS 闭包，`.css` 内核不加载；
+   且副作用式导入会被连样式一起摇掉。
 
-EN: (1) Never namespace-import or `require` the barrel − it defeats tree-shaking (62.3 KB difference); use named
-imports. (2) Do not concatenate several CSS constants into one domain − that rebuilds full injection. (3) Never
-rely on injection order; override with higher specificity. (4) Never go back to `import './x.css'`.
+EN: (1) Import the per-control entry when you only need one or two controls; the whole-package entry
+`dsh-plugin-core/ui` is for "give me everything" and `import *` / `require` pulls it all in (62.3 KB
+difference). (2) Do not concatenate several CSS constants into one domain − that rebuilds full injection.
+(3) Never rely on injection order; override with higher specificity. (4) Never go back to `import './x.css'`.
 
 ## 更新日志
 
 - 2026-11-08 23:34:50：按文档库规范建立版本元数据与统一目录索引
+- 2026-11-13：改按控件入口引用口径；`sideEffects` 由全量 false 改为精确数组

@@ -11,7 +11,7 @@
  */
 import { createElement as h, type CSSProperties, type ReactNode } from 'react'
 import { ensureComponentStyles } from '../infra/css.js'
-import { SECTION_HEAD_CSS } from '../infra/controls-css.js'
+import { SECTION_HEAD_CSS } from './section-head-css.generated.js'
 
 /**
  * 标题前固定标签（画出来的短竖线）的颜色：内置语义色名映射到 `--dshpc-*` token、随主题自动成立；

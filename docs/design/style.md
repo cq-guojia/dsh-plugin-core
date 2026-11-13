@@ -34,10 +34,9 @@ during render (idempotent); CSS of controls you never use never reaches your bun
 2. **跨控件的修饰一律用更高特异性表达**（`.dshpc-split .dshpc-seg`），由提供上下文的那个控件
    负责它自己那份；**绝不靠注入顺序** —— 顺序 = 控件首次渲染顺序，不固定。
    有自检盯着：`test/css-contract.test.mjs` 禁止跨常量出现同名选择器（含 `@media` 内）。
-3. **CSS 必须是 `export const X_CSS` 的字符串常量**（被显式引用的值）：`package.json` 的
-   `sideEffects: false` 既不会误删它、又能让用不到的那份被摇掉。
-   **绝不能退回 `import './x.css'`** —— 那是副作用式导入，webpack 官方点名它会在 `sideEffects:false`
-   下被连样式一起摇掉（组件渲染出来没样式）。
+3. **CSS 必须是 `export const X_CSS` 的字符串常量**（被显式引用的值）：`package.json` 用
+   `sideEffects` 精确数组，只把顶层注册文件标成有副作用；其余常量靠显式引用，用不到的那份可摇掉。
+   **绝不能退回 `import './x.css'`** —— 那是副作用式导入，会被连样式一起摇掉（组件渲染出来没样式）。
 
 EN: (1) never bundle someone else's CSS into your call; (2) express cross-control overrides with higher
 specificity, never with injection order (order = first-render order, not fixed) — the contract test forbids

@@ -14,7 +14,7 @@
  *
  * 内容轴：`icon`（前置）/ `iconRight`（后置）/ `loading`（前置小圈并自动禁用）。
  * 颜色轴：任一档都可以再用 `color` 传任意 CSS 色值 —— 只覆盖 `--btn-*` 几个变量，
- * 不新增皮肤（皮肤仍只在 `controls-css.ts` 里）。
+ * 不新增皮肤（皮肤只在自己的 `button.css` 真源里，构建期编译成字符串常量）。
  *
  * `IconButton` 是纯图标钮：`plain`（默认无底无边，hover 起灰底）/ `outline`（描边）/ `danger`（红）。
  * 兼容别名：`danger-ink` 仍是 `danger-outline` 的旧类名，可直接挂 className。
@@ -26,7 +26,7 @@ import { Loader } from '../feedback/Loader.js';
 import { createElement as h, useEffect, useLayoutEffect, useRef, useState, } from 'react';
 import { ensureComponentStyles } from '../infra/css.js';
 import { useOverlayLocked } from '../infra/overlay.js';
-import { BUTTON_CSS } from '../infra/controls-css.js';
+import { BUTTON_CSS } from './button-css.generated.js';
 import { isThenable } from '../infra/thenable.js';
 /**
  * 有 DOM 时用 layout effect（绘制前锁宽，用户看不到中间态），SSR 退化成 useEffect（服务端本就不跑）。
@@ -63,7 +63,7 @@ function buttonClass(variant, size, block, hasIcon, dense, extra) {
     return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}`
         + `${dense ? ' dshpc-btn--dense' : ''}`
         + `${block ? ' dshpc-btn--block' : ''}`
-        // 前置图标标记：block 时靠它把文字拉回视觉中心（见 controls-css 的 --icon-start 规则）
+        // 前置图标标记：block 时靠它把文字拉回视觉中心（见 button.css 的 --icon-start 规则）
         + `${hasIcon ? ' dshpc-btn--icon-start' : ''}`
         + `${extra !== undefined && extra !== '' ? ` ${extra}` : ''}`;
 }
@@ -209,7 +209,7 @@ export function IconButton(props) {
     const asyncClick = useAsyncClick(onClick, onBusyChange);
     const loading = loadingProp || asyncClick.busy;
     const locked = useOverlayLocked();
-    // 只覆盖 4 个局部变量：图标色 / 底色及其 hover 派生（不新增皮肤，皮肤仍在 controls-css.ts）。
+    // 只覆盖 4 个局部变量：图标色 / 底色及其 hover 派生（不新增皮肤，皮肤仍在 button.css）。
     const accent = {};
     if (color !== undefined && color !== '') {
         accent['--icb-fg'] = color;

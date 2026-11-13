@@ -4,7 +4,7 @@ import { ensureControls, getStyleKit, setStyleKit } from '../dist/ui/infra/css.j
 import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/inputs/segmented-css.generated.js'
 import { FIELD_CSS } from '../dist/ui/inputs/field-css.generated.js'
-import { BUTTON_CSS } from '../dist/ui/infra/controls-css.js'
+import { BUTTON_CSS } from '../dist/ui/actions/button-css.generated.js'
 import { AlertModal, Button, Chip, ConfirmModal, IconButton, Input, InputGroup, Modal, Segmented, SideSheet, SplitGroup } from '../dist/ui/index.js'
 import { isSuccess, isThenable } from '../dist/ui/infra/thenable.js'
 import { createElement } from 'react'
@@ -16,7 +16,7 @@ test('setStyleKit 生效，getStyleKit 拿得到', () => {
   assert.equal(getStyleKit().id, 'probe-ui')
 })
 
-test('ensureControls 在无 DOM 环境不抛，并登记 tokens + controls 两个域', () => {
+test('ensureControls 在无 DOM 环境不抛，只登记 tokens 一个域', () => {
   const kit = createStyleKit({ id: 'probe-ui' })
   assert.doesNotThrow(() => ensureControls(kit))
   assert.ok(kit.tokensCss.includes('--dshpc-fg'))

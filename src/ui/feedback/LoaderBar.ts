@@ -18,7 +18,7 @@
  */
 import { createElement as h, useId } from 'react'
 import { ensureComponentStyles } from '../infra/css.js'
-import { LOADER_BAR_CSS } from '../infra/controls-css.js'
+import { LOADER_BAR_CSS } from './loader-bar-css.generated.js'
 import { BAR_PATHS, type LogoPath } from './loader-bar-art.js'
 import type { LoaderSize } from './Loader.js'
 

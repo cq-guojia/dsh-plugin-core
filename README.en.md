@@ -71,7 +71,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 Three things worth knowing on day one:
 
 1. **Call `setStyleKit` once.** Styles reach the page as a runtime-injected `<style>` string, because a plugin's client bundle is a CJS closure and the kernel never loads `.css` assets. The `id` must be unique per plugin — several plugins share one page, and the id is what keeps their style tags from overwriting each other.
-2. **Import by name.** Each control registers only its own CSS the first time it renders (idempotent), so an unused control costs nothing in your bundle. That only holds with named imports (`import { Button } from 'dsh-plugin-core/ui'`); `import * as core` or a CJS `require` disables tree-shaking and silently gives the saving back.
+2. **Two ways to import.** Need one or two controls? Use a per-control entry (`import { Input } from 'dsh-plugin-core/ui/input'`) — the bundler pulls in that file and its real dependency closure only. Need everything? Import the whole-package entry `dsh-plugin-core/ui` and accept a larger bundle. That entry is a pure re-export list: it copies no implementation, so each control has exactly one source of truth.
 3. **Dialogs are promises.** `await confirmModal({...})` resolves to `true` / `false`, `alertModal({...})` resolves when dismissed. There are no callback-style variants.
 
 ## What's inside
@@ -79,7 +79,8 @@ Three things worth knowing on day one:
 | Import | What you get | React required |
 |---|---|---|
 | `dsh-plugin-core/design` | Token variables (light + dark), `createStyleKit` injector factory, dark-mode predicate | no |
-| `dsh-plugin-core/ui` | The whole control set — actions, inputs, display, feedback, layout, navigation | yes |
+| `dsh-plugin-core/ui` | Whole package: every control + notification task center (a re-export list; larger bundle) | yes |
+| `dsh-plugin-core/ui/<control>` | One block: e.g. `/ui/button`, `/ui/input`, `/ui/picker`, `/ui/table` — only that block and its dependency closure | yes |
 | `dsh-plugin-core/ui/official` | Direct re-exports of the host's official primitives, for the rare case you need one | yes |
 | `dsh-plugin-core/ui/code-viewer` | Read-only `CodeViewer` + editable `CodeEditor`, sharing one CodeMirror surface (file preview uses the viewer) | yes |
 | `dsh-plugin-core/ui/host-toast` | Bridge to the host's own toast | yes |
@@ -181,7 +182,7 @@ Zero React, zero DOM, zero dependency on `design`.
 | Theme | Follows the host: `body[data-ds-dark-theme]`. Never `prefers-color-scheme`. Tokens fall back to built-in values when the host does not provide them. |
 | Naming | Variables `--dshpc-*`, class names `dshpc-*` — fixed, shared by the whole ecosystem. Nothing touches the host's own `--dsw-*` / `--dsh-*`. |
 | Official primitives | Reachable only through `dsh-plugin-core/ui/official`, and only inside the host. The main entries stay free of `@deepseek-ai/*`, so importing `ui` in Node or in a test does not explode. |
-| Bundling | ESM with `sideEffects: false` and per-control CSS domains — named imports keep unused controls (and their CSS) out of your bundle. |
+| Bundling | ESM with a precise `sideEffects` array and per-control CSS domains — per-control entries keep unused controls (and their CSS) out of your bundle. |
 | Data | Never fetched by a component. Workspaces, models, files and sessions come from the caller or from an interface you inject once. |
 
 This is a **library, not a plugin**: no `main`, no `dsh` field. Whoever wants to *see* it running installs the demo plugin below.

@@ -36,7 +36,7 @@
 | **反馈** `feedback` | 表达「正在进行 / 刚完成 / 出错了」 | Modal、SideSheet、AlertModal、ConfirmModal、alertModal、confirmModal、Toast、host-toast、Loader、LoaderBar、Loading |
 | **布局** `layout` | 只决定内部元素怎么摆、怎么拼 | SplitGroup、PanelDock、QuickToolbar、resizer |
 | **导航** `navigation` | 在多个视图 / 页之间移动 | Pagination |
-| **基础设施** `infra` | **不是控件**：宿主桥、注入器、纯逻辑、跨类共用底座 | official、css、controls-css、locale、tooltip、host-data、modal-host、loading-host、toast-host、overlay、panel + 皮肤、thenable、ticker、chevron |
+| **基础设施** `infra` | **不是控件**：宿主桥、注入器、纯逻辑、跨类共用底座 | official、css、locale、tooltip、host-data、modal-host、loading-host、toast-host、overlay、panel、thenable、ticker、chevron（皮肤各归控件自己的 `*-css.generated.ts`） |
 
 三条边界裁决（按顺序用）：
 
@@ -56,7 +56,7 @@ src/
 │   └── style-kit              运行时注入 <style>，createStyleKit({ id })
 │
 ├── ui/                     ② 控件（依赖 design）
-│   ├── index.ts               对外唯一入口（导出面扁平，不按类开子路径）
+│   ├── index.ts               整包入口（纯 re-export 转发表，不复制实现）
 │   ├── official.ts            L1 官方 adapter —— 全仓唯一 import 官方 primitives 的地方
 │   ├── actions/               Button · IconButton（+ button.css / generated）
 │   ├── inputs/                Field（Input/NumberInput/PrefixedInput）· Textarea · Checkbox
@@ -73,7 +73,7 @@ src/
 │   ├── layout/                SplitGroup · PanelDock（+ panel-dock-logic）· QuickToolbar
 │   │                          （+ quick-toolbar-logic）· resizer
 │   ├── navigation/            Pagination（+ pagination-logic）
-│   └── infra/                 css · controls-css · locale · tooltip · host-data
+│   └── infra/                 css · locale · tooltip · host-data
 │                              overlay / panel（跨类共用浮层底座 + 皮肤）· thenable · ticker · chevron
 │                              code-mirror-surface（只读 / 可编辑共用的渲染底座）
 │                              task-notifications（通知中心：任务池 + 事件总线 + 跨页广播，零 UI）
@@ -113,18 +113,27 @@ utils（谁都不依赖，谁都可以用）
 
 ## 六、对外入口
 
+**一个 npm 包、一个版本、一次安装不变。** 变的是门牌：整包一张清单，单块各自直达真源。
+
 | 子路径 | 用途 | 为什么单独开 |
 |---|---|---|
-| `dsh-plugin-core/ui` | 全部控件（唯一主入口，扁平导出） | 单入口是业界共识（AntD / MUI 同）；按类开 7 条子路径只增加记忆成本 |
+| `dsh-plugin-core/ui` | 整包：全部控件 + 通知任务中心 | 纯 re-export 转发表（零实现、不复制）；想全引就用它，接受产物变大 |
+| `dsh-plugin-core/ui/<控件>` | 单块：如 `/ui/button` `/ui/input` `/ui/picker` `/ui/table` | 一条 `exports` 指向一个独立 `dist/ui/**.js`；打包器从哪个文件进就只带那个文件及其 import 闭包 |
 | `dsh-plugin-core/ui/official` | L1 官方 adapter | `adv/*` 要直接取官方件，属结构性第二入口 |
 | `dsh-plugin-core/ui/code-viewer` | CodeViewer（只读）· CodeEditor（可编辑） | 直接引 `@uiw/react-codemirror`，重依赖必须可选；两个控件共用 `infra/code-mirror-surface`，不另开导出口 |
 | `dsh-plugin-core/ui/host-toast` | 宿主原生 Toast | 入口静态 import 官方件会让 Node 单测崩（旧坑） |
 | `dsh-plugin-core/adv/explorer` | 文件浏览 | 应用模块独立子路径 |
 | `dsh-plugin-core/adv/session` | 会话预览 | 同上 |
 
-**不再新增子路径**：想加，先问「是重依赖，还是只是分类？」—— 分类归目录，不归导出口。
+**真源唯一**：`src/ui/index.ts` 与整包产物 `dist/ui/index.js` 只做转发，每个控件的实现只在自己那个 `.js` 里（如 `inputs/Field.js` 是 Input / NumberInput / PrefixedInput 的全站唯一实现）；每份 CSS 字符串常量也只有一个 `*-css.generated.js`，多个入口 import 同一个文件，打包器按路径去重。不存在复制出去的第二份。
+
+**新增子路径的判据**：旧条款「不再新增子路径」针对的是「按分类开入口」—— 分类仍归目录，不归导出口。但**一个控件一个入口属物理切割，不是分类**，故按控件开放。新增控件必须同时登记 `package.json` 的 `exports` 与 `test/entry-surface.test.mjs` 的清单，漏一个自检即红；`test/entry-isolation.test.mjs` 再对每个入口验产物闭包，防聚合点回潮。
+
+对标 MUI：`@mui/material` 的根入口同样是纯 re-export 转发表，官方默认写法是 `@mui/material/Button` 这类按组件路径导入；Rad UI 的《Barrel export policy》禁止 mega-barrel。本仓与之同构。
 
 只读 / 可编辑是同一份 CodeMirror 能力的两种用法，属分类不属新依赖，故共用 `ui/code-viewer` 一条子路径：可编辑件归 `inputs`、只读件归 `display`，两个控件都不进主入口（否则重依赖会拖进所有插件的包）。
+
+**样式链路不变**：`src/**/*.css` → `scripts/gen-css.mjs` 编译成 `*.generated.ts` 字符串常量 → tsc → 运行时注入。控件直引自己那份生成物，不再经 `infra/controls-css.ts` 这类聚合 barrel（已删除）。
 
 ## 七、demo 展示分区（两级，18 页）
 
@@ -178,3 +187,4 @@ utils（谁都不依赖，谁都可以用）
 ## 更新日志
 
 - 2026-11-08 23:34:49：按文档库规范建立版本元数据与统一目录索引
+- 2026-11-13：对外入口改为「整包 + 按控件单块」两类；删除 CSS 聚合 barrel，控件直引各自生成物；写明真源唯一与新增登记闸门

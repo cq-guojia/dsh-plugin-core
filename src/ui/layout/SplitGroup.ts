@@ -16,7 +16,7 @@
  */
 import { createElement as h, type CSSProperties, type ReactNode } from 'react'
 import { ensureComponentStyles } from '../infra/css.js'
-import { SPLIT_GROUP_CSS } from '../infra/controls-css.js'
+import { SPLIT_GROUP_CSS } from './split-group-css.generated.js'
 
 export interface SplitGroupProps {
   /** 两格内容（左、右）。元素顺序即布局顺序；固定两格，不做多格。 */

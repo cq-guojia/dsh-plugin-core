@@ -12,7 +12,7 @@
 import { getTooltipRenderer } from '../infra/tooltip.js'
 import { createElement as h, type CSSProperties } from 'react'
 import { ensureComponentStyles } from '../infra/css.js'
-import { HINT_CSS } from '../infra/controls-css.js'
+import { HINT_CSS } from './hint-css.generated.js'
 
 export interface FieldHintProps {
   /** 气泡里的说明文字（也是读屏播报的 aria-label）；`\n` 是真实换行。 */

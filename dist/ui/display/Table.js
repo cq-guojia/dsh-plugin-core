@@ -1,6 +1,6 @@
 import { createElement as h, useEffect, useRef } from 'react';
 import { ensureComponentStyles } from '../infra/css.js';
-import { TABLE_PLAIN_CSS } from '../infra/controls-css.js';
+import { TABLE_PLAIN_CSS } from './table-plain-css.generated.js';
 import { Pagination } from '../navigation/Pagination.js';
 import { clampPage, pageCountOf } from '../navigation/pagination-logic.js';
 import { tableShell } from './table-shared.js';

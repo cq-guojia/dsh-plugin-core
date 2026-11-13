@@ -71,22 +71,25 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 第一天就该知道的三件事：
 
 1. **`setStyleKit` 只调一次。** 样式只能以字符串在运行时注入 `<style>`——插件 client 产物是 CJS 闭包，内核不加载 `.css` 资源。`id` 必须插件内唯一：多个插件同页时，靠它让自己的 `<style>` 不被别人覆盖。
-2. **具名引入。** 每个控件在首次渲染时才登记自己那份 CSS（幂等），用不到的控件其 CSS 不进你的包。这条收益只在具名引入时成立（`import { Button } from 'dsh-plugin-core/ui'`）；写成 `import * as core` 或 CJS `require`，打包器无法摇树，收益静默归零。
+2. **两种引用方式，按需要选。** 只用一两个控件 → 按控件入口引（`import { Input } from 'dsh-plugin-core/ui/input'`），打包器只带这一块和它真实依赖的块；要全套 → 引整包 `dsh-plugin-core/ui`，接受产物变大。整包入口是一张纯转发清单，不复制实现，真源只有一份。
 3. **弹窗是 Promise 形态。** `await confirmModal({...})` 拿 `true` / `false`，`alertModal({...})` 关闭即 resolve。没有回调式写法。
+
+按控件引用时，每块自带自己那份已编译成 JS 字符串的 CSS；控件真实依赖的零件（如会话预览自带文件预览与侧边栏）会自动一起进来，不需要再单独引。
 
 ## 包里有什么
 
 | 引入路径 | 给你什么 | 需要 React |
 |---|---|---|
 | `dsh-plugin-core/design` | token 变量（明 + 暗）、`createStyleKit` 注入器工厂、明暗判据 | 否 |
-| `dsh-plugin-core/ui` | 全套控件：动作、录入、展示、反馈、布局、导航，外加通知任务中心 | 是 |
+| `dsh-plugin-core/ui` | 整包：全部控件 + 通知任务中心（一张 re-export 清单，接受产物变大） | 是 |
+| `dsh-plugin-core/ui/<控件>` | 单块：如 `/ui/button`、`/ui/input`、`/ui/picker`、`/ui/table`，只带这一块及其依赖闭包 | 是 |
 | `dsh-plugin-core/ui/official` | 官方 primitives 的直接再导出（少数确实要用官方原件的场景） | 是 |
 | `dsh-plugin-core/ui/code-viewer` | 只读 `CodeViewer` + 可编辑 `CodeEditor`，共用一份 CodeMirror 底座（文件预览源码态用查看器） | 是 |
-| `dsh-plugin-core/ui/host` | 宿主自带 toast 的桥接 | 是 |
+| `dsh-plugin-core/ui/host-toast` | 宿主自带 toast 的桥接 | 是 |
 | `dsh-plugin-core/utils` | 纯方法：日期、字符串、字节、HTTP，外加内置中英字典 | 否 |
-| `dsh-plugin-core/explorer` | 文件浏览、文件选择、右侧停靠的文件预览 | 是 |
-| `dsh-plugin-core/explorer/preview` | 预览体：图片、PDF、Markdown、HTML、Office、文本 / 代码 | 是 |
-| `dsh-plugin-core/session` | 只读会话预览弹窗 + 变更文件 diff | 是 |
+| `dsh-plugin-core/adv/explorer` | 文件浏览、文件选择、右侧停靠的文件预览 | 是 |
+| `dsh-plugin-core/adv/explorer/preview` | 预览体：图片、PDF、Markdown、HTML、Office、文本 / 代码 | 是 |
+| `dsh-plugin-core/adv/session` | 只读会话预览弹窗 + 变更文件 diff | 是 |
 | `dsh-plugin-core/host` | 宿主侧路由：只读 FS 路由、模型目录 | 否 |
 
 依赖方向单向：`design` ← `ui` ← `explorer` / `session`，`utils` 谁也不依赖。
@@ -192,7 +195,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 | 主题 | 跟随宿主 `body[data-ds-dark-theme]`，绝不使用 `prefers-color-scheme`。宿主没给 token 时回落到内置值。 |
 | 命名 | 变量 `--dshpc-*`、类名 `dshpc-*`，全生态固定；不碰宿主的 `--dsw-*` / `--dsh-*`。 |
 | 官方 primitives | 只从 `dsh-plugin-core/ui/official` 走，且只在宿主内可解析。主入口零 `@deepseek-ai/*`，因此在 Node / 单测里 import `ui` 不会失败。 |
-| 打包 | ESM、`sideEffects: false`、控件各带自己的 CSS 域——具名引入可让用不到的控件连同其 CSS 都不进包。 |
+| 打包 | ESM、`sideEffects` 精确数组、控件各带自己的 CSS 域；按控件入口引用时，用不到的控件连同其 CSS 都不进包。 |
 | 数据 | 组件从不取数。工作区、模型、文件、会话由调用方给，或来自一次性注入的接口。 |
 
 这是一个**库，不是插件**：没有 `main`、没有 `dsh` 字段。想看它跑起来，装下面的预览插件。

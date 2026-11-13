@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-core",
-  "version": "0.35.25",
+  "version": "0.35.26",
   "packageManager": "pnpm@12.3.4",
   "description": "Shared base for DSH plugins: design tokens, UI controls, utils, workspace explorer, session preview",
   "keywords": [
@@ -17,49 +17,70 @@
   "author": "cq-guojia",
   "license": "MIT",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": ["./dist/ui/official.js"],
   "exports": {
     "./package.json": "./package.json",
-    "./design": {
-      "types": "./dist/design/index.d.ts",
-      "default": "./dist/design/index.js"
-    },
-    "./ui": {
-      "types": "./dist/ui/index.d.ts",
-      "default": "./dist/ui/index.js"
-    },
-    "./ui/official": {
-      "types": "./dist/ui/official.d.ts",
-      "default": "./dist/ui/official.js"
-    },
-    "./ui/code-viewer": {
-      "types": "./dist/ui/display/code-viewer.d.ts",
-      "default": "./dist/ui/display/code-viewer.js"
-    },
-    "./ui/host-toast": {
-      "types": "./dist/ui/feedback/host-toast.d.ts",
-      "default": "./dist/ui/feedback/host-toast.js"
-    },
-    "./utils": {
-      "types": "./dist/utils/index.d.ts",
-      "default": "./dist/utils/index.js"
-    },
-    "./adv/explorer": {
-      "types": "./dist/adv/explorer/index.d.ts",
-      "default": "./dist/adv/explorer/index.js"
-    },
-    "./adv/explorer/preview": {
-      "types": "./dist/adv/explorer/preview/index.d.ts",
-      "default": "./dist/adv/explorer/preview/index.js"
-    },
-    "./adv/session": {
-      "types": "./dist/adv/session/index.d.ts",
-      "default": "./dist/adv/session/index.js"
-    },
-    "./host": {
-      "types": "./dist/host/index.d.ts",
-      "default": "./dist/host/index.js"
-    }
+    "./design": { "types": "./dist/design/index.d.ts", "default": "./dist/design/index.js" },
+    "./utils": { "types": "./dist/utils/index.d.ts", "default": "./dist/utils/index.js" },
+    "./host": { "types": "./dist/host/index.d.ts", "default": "./dist/host/index.js" },
+    "./adv/explorer": { "types": "./dist/adv/explorer/index.d.ts", "default": "./dist/adv/explorer/index.js" },
+    "./adv/explorer/preview": { "types": "./dist/adv/explorer/preview/index.d.ts", "default": "./dist/adv/explorer/preview/index.js" },
+    "./adv/session": { "types": "./dist/adv/session/index.d.ts", "default": "./dist/adv/session/index.js" },
+    "./ui": { "types": "./dist/ui/index.d.ts", "default": "./dist/ui/index.js" },
+    "./ui/official": { "types": "./dist/ui/official.d.ts", "default": "./dist/ui/official.js" },
+    "./ui/code-viewer": { "types": "./dist/ui/display/code-viewer.d.ts", "default": "./dist/ui/display/code-viewer.js" },
+    "./ui/host-toast": { "types": "./dist/ui/feedback/host-toast.d.ts", "default": "./dist/ui/feedback/host-toast.js" },
+    "./ui/button": { "types": "./dist/ui/actions/Button.d.ts", "default": "./dist/ui/actions/Button.js" },
+    "./ui/input": { "types": "./dist/ui/inputs/Field.d.ts", "default": "./dist/ui/inputs/Field.js" },
+    "./ui/textarea": { "types": "./dist/ui/inputs/Textarea.d.ts", "default": "./dist/ui/inputs/Textarea.js" },
+    "./ui/checkbox": { "types": "./dist/ui/inputs/Checkbox.d.ts", "default": "./dist/ui/inputs/Checkbox.js" },
+    "./ui/segmented": { "types": "./dist/ui/inputs/Segmented.d.ts", "default": "./dist/ui/inputs/Segmented.js" },
+    "./ui/picker": { "types": "./dist/ui/inputs/Picker.d.ts", "default": "./dist/ui/inputs/Picker.js" },
+    "./ui/datetime-picker": { "types": "./dist/ui/inputs/DateTimePicker.d.ts", "default": "./dist/ui/inputs/DateTimePicker.js" },
+    "./ui/input-group": { "types": "./dist/ui/inputs/InputGroup.d.ts", "default": "./dist/ui/inputs/InputGroup.js" },
+    "./ui/model-picker": { "types": "./dist/ui/inputs/ModelPicker.d.ts", "default": "./dist/ui/inputs/ModelPicker.js" },
+    "./ui/workspace-picker": { "types": "./dist/ui/inputs/WorkspacePicker.d.ts", "default": "./dist/ui/inputs/WorkspacePicker.js" },
+    "./ui/code-editor": { "types": "./dist/ui/inputs/CodeEditor.d.ts", "default": "./dist/ui/inputs/CodeEditor.js" },
+    "./ui/picker-logic": { "types": "./dist/ui/inputs/picker-logic.d.ts", "default": "./dist/ui/inputs/picker-logic.js" },
+    "./ui/datetime-logic": { "types": "./dist/ui/inputs/datetime-logic.d.ts", "default": "./dist/ui/inputs/datetime-logic.js" },
+    "./ui/card": { "types": "./dist/ui/display/Card.d.ts", "default": "./dist/ui/display/Card.js" },
+    "./ui/surface": { "types": "./dist/ui/display/Surface.d.ts", "default": "./dist/ui/display/Surface.js" },
+    "./ui/chip": { "types": "./dist/ui/display/Chip.d.ts", "default": "./dist/ui/display/Chip.js" },
+    "./ui/list-row": { "types": "./dist/ui/display/ListRow.d.ts", "default": "./dist/ui/display/ListRow.js" },
+    "./ui/table": { "types": "./dist/ui/display/Table.d.ts", "default": "./dist/ui/display/Table.js" },
+    "./ui/table-logic": { "types": "./dist/ui/display/table-logic.d.ts", "default": "./dist/ui/display/table-logic.js" },
+    "./ui/section-head": { "types": "./dist/ui/display/SectionHead.d.ts", "default": "./dist/ui/display/SectionHead.js" },
+    "./ui/field-hint": { "types": "./dist/ui/display/FieldHint.d.ts", "default": "./dist/ui/display/FieldHint.js" },
+    "./ui/marquee-text": { "types": "./dist/ui/display/MarqueeText.d.ts", "default": "./dist/ui/display/MarqueeText.js" },
+    "./ui/flip-text": { "types": "./dist/ui/display/FlipText.d.ts", "default": "./dist/ui/display/FlipText.js" },
+    "./ui/live-text": { "types": "./dist/ui/display/LiveText.d.ts", "default": "./dist/ui/display/LiveText.js" },
+    "./ui/modal": { "types": "./dist/ui/feedback/Modal.d.ts", "default": "./dist/ui/feedback/Modal.js" },
+    "./ui/side-sheet": { "types": "./dist/ui/feedback/SideSheet.d.ts", "default": "./dist/ui/feedback/SideSheet.js" },
+    "./ui/alert-modal": { "types": "./dist/ui/feedback/AlertModal.d.ts", "default": "./dist/ui/feedback/AlertModal.js" },
+    "./ui/confirm-modal": { "types": "./dist/ui/feedback/ConfirmModal.d.ts", "default": "./dist/ui/feedback/ConfirmModal.js" },
+    "./ui/dialogs": { "types": "./dist/ui/feedback/modal-host.d.ts", "default": "./dist/ui/feedback/modal-host.js" },
+    "./ui/loader": { "types": "./dist/ui/feedback/Loader.d.ts", "default": "./dist/ui/feedback/Loader.js" },
+    "./ui/loader-bar": { "types": "./dist/ui/feedback/LoaderBar.d.ts", "default": "./dist/ui/feedback/LoaderBar.js" },
+    "./ui/loading": { "types": "./dist/ui/feedback/Loading.d.ts", "default": "./dist/ui/feedback/Loading.js" },
+    "./ui/toast": { "types": "./dist/ui/feedback/Toast.d.ts", "default": "./dist/ui/feedback/Toast.js" },
+    "./ui/notify": { "types": "./dist/ui/feedback/notify.d.ts", "default": "./dist/ui/feedback/notify.js" },
+    "./ui/toast-queue": { "types": "./dist/ui/feedback/toast-queue.d.ts", "default": "./dist/ui/feedback/toast-queue.js" },
+    "./ui/loading-host": { "types": "./dist/ui/feedback/loading-host.d.ts", "default": "./dist/ui/feedback/loading-host.js" },
+    "./ui/styles": { "types": "./dist/ui/infra/css.d.ts", "default": "./dist/ui/infra/css.js" },
+    "./ui/locale": { "types": "./dist/ui/infra/locale.d.ts", "default": "./dist/ui/infra/locale.js" },
+    "./ui/tooltip": { "types": "./dist/ui/infra/tooltip.d.ts", "default": "./dist/ui/infra/tooltip.js" },
+    "./ui/host-data": { "types": "./dist/ui/infra/host-data.d.ts", "default": "./dist/ui/infra/host-data.js" },
+    "./ui/task-notifications": { "types": "./dist/ui/infra/task-notifications.d.ts", "default": "./dist/ui/infra/task-notifications.js" },
+    "./ui/overlay": { "types": "./dist/ui/infra/overlay.d.ts", "default": "./dist/ui/infra/overlay.js" },
+    "./ui/panel": { "types": "./dist/ui/infra/panel.d.ts", "default": "./dist/ui/infra/panel.js" },
+    "./ui/split-group": { "types": "./dist/ui/layout/SplitGroup.d.ts", "default": "./dist/ui/layout/SplitGroup.js" },
+    "./ui/panel-dock": { "types": "./dist/ui/layout/PanelDock.d.ts", "default": "./dist/ui/layout/PanelDock.js" },
+    "./ui/quick-toolbar": { "types": "./dist/ui/layout/QuickToolbar.d.ts", "default": "./dist/ui/layout/QuickToolbar.js" },
+    "./ui/resizer": { "types": "./dist/ui/layout/resizer.d.ts", "default": "./dist/ui/layout/resizer.js" },
+    "./ui/panel-dock-logic": { "types": "./dist/ui/layout/panel-dock-logic.d.ts", "default": "./dist/ui/layout/panel-dock-logic.js" },
+    "./ui/quick-toolbar-logic": { "types": "./dist/ui/layout/quick-toolbar-logic.d.ts", "default": "./dist/ui/layout/quick-toolbar-logic.js" },
+    "./ui/pagination": { "types": "./dist/ui/navigation/Pagination.d.ts", "default": "./dist/ui/navigation/Pagination.js" },
+    "./ui/pagination-logic": { "types": "./dist/ui/navigation/pagination-logic.d.ts", "default": "./dist/ui/navigation/pagination-logic.js" }
   },
   "files": [
     "dist",

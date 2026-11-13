@@ -62,6 +62,10 @@ jobs:
         # dist 随包发布且宿主安装不跑构建，CI 内重建保证产物新鲜
         run: pnpm run build
 
+      - name: Test
+        # 单块入口与产物隔离自检必须随发布链执行，否则回归无人拦
+        run: pnpm test
+
       - name: Publish
         # 不设置 NODE_AUTH_TOKEN：GitHub Actions 中 npm 自动用 OIDC 凭证；provenance 也自动生成
         run: npm publish --access public

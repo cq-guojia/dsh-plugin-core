@@ -1,7 +1,7 @@
 import { createElement as h } from 'react';
 import { t } from '../../utils/i18n.js';
 import { ensureComponentStyles } from '../infra/css.js';
-import { TABLE_BASE_CSS } from '../infra/controls-css.js';
+import { TABLE_BASE_CSS } from './table-css.generated.js';
 import { Loader } from '../feedback/Loader.js';
 import { SectionHead } from './SectionHead.js';
 import { headerRows, isTableCellSpec, leafColumns, } from './table-logic.js';

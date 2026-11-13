@@ -13,7 +13,7 @@ import { IconButton } from '../actions/Button.js'
 import { FieldHint } from '../display/FieldHint.js'
 import { useOverlayLocked } from '../infra/overlay.js'
 import { ensureComponentStyles } from '../infra/css.js'
-import { FIELD_CSS } from '../infra/controls-css.js'
+import { FIELD_CSS } from './field-css.generated.js'
 import { t } from '../../utils/i18n.js'
 
 /**

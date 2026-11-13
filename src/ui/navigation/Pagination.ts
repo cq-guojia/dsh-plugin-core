@@ -1,7 +1,7 @@
 import { createElement as h, type CSSProperties, type ReactNode } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
 import { ensureComponentStyles } from '../infra/css.js'
-import { PAGINATION_CSS } from '../infra/controls-css.js'
+import { PAGINATION_CSS } from './pagination-css.generated.js'
 import { Picker, type PickerSize } from '../inputs/Picker.js'
 import { Button } from '../actions/Button.js'
 import { Chevron } from '../infra/chevron.js'

@@ -8,7 +8,8 @@ import { getLocale, t } from '../../utils/i18n.js';
 import { formatDateTimePrecision } from '../../utils/date.js';
 import { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecision, formatDateTimeIso, monthCaption, nowParts, nowTimeFor, parseDateTime, partsOf, rangeIsValid, resolvePresetExpr, stepUnit, toEndDraft, weekdayLabels, } from './datetime-logic.js';
 import { ensureComponentStyles } from '../infra/css.js';
-import { DATETIME_CSS, FIELD_CSS } from '../infra/controls-css.js';
+import { DATETIME_CSS } from './datetime-css.generated.js';
+import { FIELD_CSS } from './field-css.generated.js';
 import { PANEL_CSS } from '../infra/panel-css.js';
 const UNIT_LABEL = {
     hour: 'dtHour',

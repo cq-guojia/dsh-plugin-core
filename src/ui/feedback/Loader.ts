@@ -23,7 +23,7 @@
  */
 import { createElement as h } from 'react'
 import { ensureComponentStyles } from '../infra/css.js'
-import { LOADER_CSS } from '../infra/controls-css.js'
+import { LOADER_CSS } from './loader-css.generated.js'
 
 /** 尺寸档：只影响 width / height，几何等比缩放。 */
 export type LoaderSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'

@@ -1,5 +1,5 @@
 /**
- * 多行文本输入（P3 输入类家族唯一实现；皮肤见 controls-css.ts 的 `.dshpc-textarea`）。
+ * 多行文本输入（P3 输入类家族唯一实现；皮肤见 `field.css` 的 `.dshpc-textarea`）。
  *
  * 以前提示词框是 `task-editor.tsx` 里手写的 `<textarea>` + 业务 CSS `.dshpc-ed-prompt`；
  * 现上提为基础层件（U20 #6，2026-10-05），业务文件只 `import { Textarea }`。
@@ -8,7 +8,7 @@ import { createElement as h } from 'react';
 import { FieldHint } from '../display/FieldHint.js';
 import { useOverlayLocked } from '../infra/overlay.js';
 import { ensureComponentStyles } from '../infra/css.js';
-import { FIELD_CSS } from '../infra/controls-css.js';
+import { FIELD_CSS } from './field-css.generated.js';
 /** 多行文本输入。 */
 export function Textarea(props) {
     ensureComponentStyles('field', FIELD_CSS);

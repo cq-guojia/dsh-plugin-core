@@ -35,7 +35,7 @@ import {
 import { getTooltipRenderer } from '../infra/tooltip.js'
 import { useOverlayLocked } from '../infra/overlay.js'
 import { ensureComponentStyles } from '../infra/css.js'
-import { SEGMENTED_CSS } from '../infra/controls-css.js'
+import { SEGMENTED_CSS } from './segmented-css.generated.js'
 
 /**
  * 角标 / 计数要不要显示，返回要显示的文本。
@@ -186,7 +186,7 @@ export function Segmented<T extends string>(props: SegmentedProps<T>): ReturnTyp
     'aria-label': props.label,
     id: props.id,
     ref: rootRef,
-    // 结构一套、皮肤只在 controls-css 里；此处只拼「轴」类名，不写任何颜色 / 尺寸字面值。
+    // 结构一套、皮肤只在 `segmented.css` 里；此处只拼「轴」类名，不写任何颜色 / 尺寸字面值。
     className: `dshpc-seg dshpc-seg--${size}${sliding ? ' dshpc-seg--slide' : ''}${multiple ? ' dshpc-seg--multiple' : ''}${props.block === true ? ' dshpc-seg--block' : ''}${props.bordered === true ? ' dshpc-seg--bordered' : ''}${toneClass}${props.className !== undefined ? ` ${props.className}` : ''}`,
     style: toneStyle === undefined ? props.style : { ...toneStyle, ...props.style },
   }, [

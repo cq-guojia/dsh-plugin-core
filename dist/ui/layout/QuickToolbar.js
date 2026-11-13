@@ -26,7 +26,7 @@
 import { createElement as h, useEffect, useRef, useState } from 'react';
 import { Chevron } from '../infra/chevron.js';
 import { ensureComponentStyles } from '../infra/css.js';
-import { QUICK_TOOLBAR_CSS } from '../infra/controls-css.js';
+import { QUICK_TOOLBAR_CSS } from './quick-toolbar-css.generated.js';
 import { DEFAULT_SCROLL_THRESHOLD, isToolbarEntryVisible, resolveToolbarLeft, sortToolbarEntries, } from './quick-toolbar-logic.js';
 import { t } from '../../utils/i18n.js';
 /** 默认贴边距离（px）。 */

@@ -18,7 +18,7 @@
  */
 import { createElement as h, useId } from 'react';
 import { ensureComponentStyles } from '../infra/css.js';
-import { LOADER_BAR_CSS } from '../infra/controls-css.js';
+import { LOADER_BAR_CSS } from './loader-bar-css.generated.js';
 import { BAR_PATHS } from './loader-bar-art.js';
 /** 源图三条路径的固定顺序：轨道 / 蓝色段 / 斜纹。 */
 const TRACK_INDEX = 0;

@@ -34,7 +34,7 @@ import {
   type LoadingVariant,
 } from './loading-host.js'
 import { ensureComponentStyles, getStyleKit } from '../infra/css.js'
-import { LOADING_CSS } from '../infra/controls-css.js'
+import { LOADING_CSS } from './loading-css.generated.js'
 import { Loader } from './Loader.js'
 
 const pillStyle: Record<string, string | number> = {

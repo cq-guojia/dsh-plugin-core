@@ -1,7 +1,7 @@
 import { createElement as h, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
 import { ensureComponentStyles } from '../infra/css.js'
-import { TABLE_BASE_CSS } from '../infra/controls-css.js'
+import { TABLE_BASE_CSS } from './table-css.generated.js'
 import type { TablePaginationConfig } from '../navigation/Pagination.js'
 import { Loader } from '../feedback/Loader.js'
 import { SectionHead, type SectionHeadAccent } from './SectionHead.js'

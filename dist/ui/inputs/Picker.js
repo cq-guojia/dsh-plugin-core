@@ -9,7 +9,7 @@ import { ensureComponentStyles } from '../infra/css.js';
 import { useOverlayLocked } from '../infra/overlay.js';
 import { PANEL_CSS } from '../infra/panel-css.js';
 import { PICKER_CSS } from './picker-css.js';
-import { FIELD_CSS } from '../infra/controls-css.js';
+import { FIELD_CSS } from './field-css.generated.js';
 /**
  * 通用选择器：单选 / 多选 / 上限 / 搜索 / 分组 / 空态 / 降级。
  *

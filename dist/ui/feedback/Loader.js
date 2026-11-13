@@ -23,7 +23,7 @@
  */
 import { createElement as h } from 'react';
 import { ensureComponentStyles } from '../infra/css.js';
-import { LOADER_CSS } from '../infra/controls-css.js';
+import { LOADER_CSS } from './loader-css.generated.js';
 /** 形态一：约 265° 的开口弧（周长 59.7，画 44 的空缺留 15.7）。 */
 function ringNode() {
     return h('circle', {

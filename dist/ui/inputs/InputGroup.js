@@ -21,7 +21,9 @@ import { createElement as h, useRef, useState } from 'react';
 import { Button, IconButton } from '../actions/Button.js';
 import { Input, withHint } from './Field.js';
 import { ensureComponentStyles } from '../infra/css.js';
-import { BUTTON_CSS, FIELD_CSS, INPUT_GROUP_CSS } from '../infra/controls-css.js';
+import { BUTTON_CSS } from '../actions/button-css.generated.js';
+import { FIELD_CSS } from './field-css.generated.js';
+import { INPUT_GROUP_CSS } from './input-group-css.generated.js';
 import { t } from '../../utils/i18n.js';
 /**
  * 渲染一个「输入框 + 按钮组」组合控件。

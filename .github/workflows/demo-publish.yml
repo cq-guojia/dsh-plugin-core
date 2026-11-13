@@ -63,6 +63,9 @@ jobs:
       - name: Build demo plugin bundle
         run: node packages/demo/build.mjs
 
+      - name: Test
+        run: pnpm test
+
       - name: Publish
         working-directory: packages/demo
         run: npm publish --access public

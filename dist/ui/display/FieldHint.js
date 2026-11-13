@@ -12,7 +12,7 @@
 import { getTooltipRenderer } from '../infra/tooltip.js';
 import { createElement as h } from 'react';
 import { ensureComponentStyles } from '../infra/css.js';
-import { HINT_CSS } from '../infra/controls-css.js';
+import { HINT_CSS } from './hint-css.generated.js';
 /** 问号提示图标：hover / focus 浮出说明气泡（官方 Tooltip 渲染）。 */
 export function FieldHint(props) {
     ensureComponentStyles('hint', HINT_CSS);

@@ -5,7 +5,7 @@
  * 测宽用 ResizeObserver + 文本变化重测；滚动距离 0 时不启用 hover 动画（`.dshpc-mq-run` 才有动画）。
  *
  * **双层结构**：外层 `.dshpc-mq` 只负责裁剪（overflow:hidden），内层 `.dshpc-mq-in` 才做
- * transform 滚动——文字永远在自己那一块里跑，不会压到相邻文字。皮肤在 `controls-css.ts`。
+ * transform 滚动——文字永远在自己那一块里跑，不会压到相邻文字。皮肤在 `marquee.css`。
  */
 import { type CSSProperties, type ReactElement } from 'react';
 /** 跑马灯文本。 */
