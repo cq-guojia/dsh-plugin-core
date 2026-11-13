@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261113-0422-80f7-合成控件物理切割": {"category": "重构", "created": "2026-11-13 04:22:25", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-13 04:22:25", "status": "doing", "tags": ["包结构", "按需打包", "UI控件", "重构"], "title": "合成控件物理切割", "updated": "2026-11-13 05:45:26", "worklog": "worklog/202611/13-0422-80f7-合成控件物理切割.md"}
+    "20261113-0422-80f7-合成控件物理切割": {"category": "重构", "created": "2026-11-13 04:22:25", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-13 04:22:25", "status": "doing", "tags": ["包结构", "按需打包", "UI控件", "重构"], "title": "合成控件物理切割", "updated": "2026-11-13 06:02:04", "worklog": "worklog/202611/13-0422-80f7-合成控件物理切割.md"}
   },
   "version": "20261022000000"
 }
