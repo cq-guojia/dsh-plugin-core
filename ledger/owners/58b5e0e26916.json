@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261114-1721-1c7b-workspacepicker-支持对象返回与取值口径": {"category": "接口设计", "created": "2026-11-14 17:21:56", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-14 17:21:56", "status": "doing", "tags": ["选择器", "工作区", "接口"], "title": "WorkspacePicker 支持对象返回与取值口径", "updated": "2026-11-14 17:21:56", "worklog": "worklog/202611/14-1721-1c7b-workspacepicker-支持对象返回与取值口径.md"}
+    "20261114-1721-1c7b-workspacepicker-支持对象返回与取值口径": {"category": "接口设计", "created": "2026-11-14 17:21:56", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-14 17:21:56", "status": "doing", "tags": ["选择器", "工作区", "接口"], "title": "WorkspacePicker 支持对象返回与取值口径", "updated": "2026-11-14 17:22:30", "worklog": "worklog/202611/14-1721-1c7b-workspacepicker-支持对象返回与取值口径.md"}
   },
   "version": "20261022000000"
 }
