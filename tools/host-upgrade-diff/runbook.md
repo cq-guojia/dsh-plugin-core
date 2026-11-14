@@ -17,10 +17,12 @@
 
 ### 1. 定版本
 
-看本仓单一真源 `src/adv/session/official-classes.ts` 的 `ALIGNED_HOST_VERSION`（这是「我们上次对齐到哪」，
-只作参照，不限制取哪一版）。用户指定了版本就用指定版本；没指定就取 `latest`——
-**先解析成一个具体版本号，再让所有包用同一个号**，否则各包的 `latest` 可能不同。
-脚本 gate ① 对**全部 13 个包**校验版本一致性，混版会拦下。
+版本由人定，**不问 npm 的 `latest` / `next`**：官方随时会改 tag 指向（`latest` 现在仍停在
+`0.1.2-alpha.2`），按 tag 猜只会猜错，还会取到没发同号包的版本。默认值取本仓单一真源
+`src/adv/session/official-classes.ts` 的 `ALIGNED_HOST_VERSION` —— 那一版我们上次跑过，必然存在、
+必然下得到；要核别的版本就在步骤 2 显式填 `HOST_VERSION`（不知道有哪些版本时先
+`npm view @deepseek-ai/dsh-client-ui-chat dist-tags` 看一眼）。
+**版本必须是一个具体号、所有包共用**，混版 gate ① 会拦。
 
 本轮宿主的包名清单写在步骤 2 的 `PKGS=` 里，只维护这一份，共 13 个；包数不要在别处再写死，
 步骤 2 的 tgz 检查按 `PKGS` 的词数自动核对。
@@ -43,8 +45,10 @@ approval / user-questions）由本仓 `src/adv/session/official-classes.ts` 的 
 ```bash
 set -euo pipefail
 npm --version
-HOST_VERSION=""   # 用户指定了版本就填这里，例如 0.2.2-rc.3；留空取 latest
-VERS="${HOST_VERSION:-$(npm view @deepseek-ai/dsh-client-ui-chat dist-tags.latest 2>/dev/null | tr -d '"' | tr -d '\r' | head -n1)}"
+HOST_VERSION=""   # 要核别的版本就填这里（例如 0.2.2-rc.4）；留空 = 取源码里的 ALIGNED_HOST_VERSION
+ALIGNED="$(awk -F"'" '/ALIGNED_HOST_VERSION *=/{print $2; exit}' src/adv/session/official-classes.ts 2>/dev/null || true)"
+VERS="${HOST_VERSION:-$ALIGNED}"
+if [ -z "$VERS" ]; then echo "取不到版本：在仓库根执行本段，或显式填 HOST_VERSION"; exit 1; fi
 echo "本次核对版本：$VERS"
 WORK="$(mktemp -d)"
 mkdir -p "$WORK/dl" "$WORK/unpack"
