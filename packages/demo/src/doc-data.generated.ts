@@ -1330,8 +1330,8 @@ export const docData = {
         "en": "Customization: props are the surface — compose them instead of forking source; appended class/style may only patch layout, skins go through token overrides; raise a request before writing a missing control yourself."
       },
       {
-        "zh": "代码编辑走独立子路径 `dsh-plugin-core/ui/code-viewer`：`CodeViewer` 只读（文件预览源码态用的也是它），`CodeEditor` 可编辑，两者共用一份 CodeMirror 底座。重依赖只挂在这条子路径上，不进 `ui` 主入口，所以不用编辑器的插件不会背上它。",
-        "en": "Code editing lives on the separate `dsh-plugin-core/ui/code-viewer` subpath: `CodeViewer` is read-only (also used by file preview source mode) and `CodeEditor` is editable; both share one CodeMirror surface. The heavy dependency stays on this subpath, off the main `ui` entry, so plugins that never edit code do not carry it."
+        "zh": "代码编辑走独立子路径 `dsh-plugin-core/ui/code-viewer`：`CodeViewer` 只读（文件预览源码态用的也是它），`CodeEditor` 可编辑，两者共用一份 CodeMirror 底座。只要编辑器可以从更窄的 `dsh-plugin-core/ui/code-editor` 引（同一个控件，不是另一份实现）。重依赖只挂在这两条子路径上，不进 `ui` 主入口，所以不用编辑器的插件不会背上它。",
+        "en": "Code editing lives on the separate `dsh-plugin-core/ui/code-viewer` subpath: `CodeViewer` is read-only (also used by file preview source mode) and `CodeEditor` is editable; both share one CodeMirror surface. If you only need the editor, import it from the narrower `dsh-plugin-core/ui/code-editor` (same control, not a second implementation). The heavy dependency stays on these subpaths, off the main `ui` entry, so plugins that never edit code do not carry it."
       }
     ],
     "code": [

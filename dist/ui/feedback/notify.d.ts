@@ -7,6 +7,7 @@
  * 通知中心不认识这里任何字段，只管把纯数据传出去；时长 / 位置 / 按钮的解释权全在 toast 层。
  */
 import { type NotifyOptions, type ToastOptions } from './toast-queue.js';
+export type { NotifyOptions, ToastOptions } from './toast-queue.js';
 /**
  * 接上广播接收端（纯逻辑，零 DOM）：此后别的页面广播的提示进入本页队列。
  * 页面加载时调一次即可；不挂在界面上，界面还没挂也能先收下。

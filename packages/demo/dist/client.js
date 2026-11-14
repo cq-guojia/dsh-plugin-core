@@ -66295,8 +66295,8 @@ var docData = {
         "en": "Customization: props are the surface \u2014 compose them instead of forking source; appended class/style may only patch layout, skins go through token overrides; raise a request before writing a missing control yourself."
       },
       {
-        "zh": "\u4EE3\u7801\u7F16\u8F91\u8D70\u72EC\u7ACB\u5B50\u8DEF\u5F84 `dsh-plugin-core/ui/code-viewer`\uFF1A`CodeViewer` \u53EA\u8BFB\uFF08\u6587\u4EF6\u9884\u89C8\u6E90\u7801\u6001\u7528\u7684\u4E5F\u662F\u5B83\uFF09\uFF0C`CodeEditor` \u53EF\u7F16\u8F91\uFF0C\u4E24\u8005\u5171\u7528\u4E00\u4EFD CodeMirror \u5E95\u5EA7\u3002\u91CD\u4F9D\u8D56\u53EA\u6302\u5728\u8FD9\u6761\u5B50\u8DEF\u5F84\u4E0A\uFF0C\u4E0D\u8FDB `ui` \u4E3B\u5165\u53E3\uFF0C\u6240\u4EE5\u4E0D\u7528\u7F16\u8F91\u5668\u7684\u63D2\u4EF6\u4E0D\u4F1A\u80CC\u4E0A\u5B83\u3002",
-        "en": "Code editing lives on the separate `dsh-plugin-core/ui/code-viewer` subpath: `CodeViewer` is read-only (also used by file preview source mode) and `CodeEditor` is editable; both share one CodeMirror surface. The heavy dependency stays on this subpath, off the main `ui` entry, so plugins that never edit code do not carry it."
+        "zh": "\u4EE3\u7801\u7F16\u8F91\u8D70\u72EC\u7ACB\u5B50\u8DEF\u5F84 `dsh-plugin-core/ui/code-viewer`\uFF1A`CodeViewer` \u53EA\u8BFB\uFF08\u6587\u4EF6\u9884\u89C8\u6E90\u7801\u6001\u7528\u7684\u4E5F\u662F\u5B83\uFF09\uFF0C`CodeEditor` \u53EF\u7F16\u8F91\uFF0C\u4E24\u8005\u5171\u7528\u4E00\u4EFD CodeMirror \u5E95\u5EA7\u3002\u53EA\u8981\u7F16\u8F91\u5668\u53EF\u4EE5\u4ECE\u66F4\u7A84\u7684 `dsh-plugin-core/ui/code-editor` \u5F15\uFF08\u540C\u4E00\u4E2A\u63A7\u4EF6\uFF0C\u4E0D\u662F\u53E6\u4E00\u4EFD\u5B9E\u73B0\uFF09\u3002\u91CD\u4F9D\u8D56\u53EA\u6302\u5728\u8FD9\u4E24\u6761\u5B50\u8DEF\u5F84\u4E0A\uFF0C\u4E0D\u8FDB `ui` \u4E3B\u5165\u53E3\uFF0C\u6240\u4EE5\u4E0D\u7528\u7F16\u8F91\u5668\u7684\u63D2\u4EF6\u4E0D\u4F1A\u80CC\u4E0A\u5B83\u3002",
+        "en": "Code editing lives on the separate `dsh-plugin-core/ui/code-viewer` subpath: `CodeViewer` is read-only (also used by file preview source mode) and `CodeEditor` is editable; both share one CodeMirror surface. If you only need the editor, import it from the narrower `dsh-plugin-core/ui/code-editor` (same control, not a second implementation). The heavy dependency stays on these subpaths, off the main `ui` entry, so plugins that never edit code do not carry it."
       }
     ],
     "code": [
@@ -74598,9 +74598,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.28"}`],
-            [t3("buildDemo"), `v${"0.35.28"}`],
-            [t3("buildStamp"), "261115-001448-105"]
+            [t3("buildCore"), `v${"0.35.29"}`],
+            [t3("buildDemo"), `v${"0.35.29"}`],
+            [t3("buildStamp"), "261115-011313-573"]
           ].map(
             ([label, value]) => (0, import_react107.createElement)(
               "tr",
@@ -74918,9 +74918,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react109.createElement)("span", null, `core v${"0.35.28"}`),
-          (0, import_react109.createElement)("span", null, `demo v${"0.35.28"}`),
-          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-001448-105")
+          (0, import_react109.createElement)("span", null, `core v${"0.35.29"}`),
+          (0, import_react109.createElement)("span", null, `demo v${"0.35.29"}`),
+          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-011313-573")
         )
       )
     ),

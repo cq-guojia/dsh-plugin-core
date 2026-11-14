@@ -37,6 +37,9 @@ import { ensureComponentStyles, getStyleKit } from '../infra/css.js'
 import { LOADING_CSS } from './loading-css.generated.js'
 import { Loader } from './Loader.js'
 
+// 句柄类型随使用面一起给：调 `showLoading` 的人不必再引 `ui/loading-host`（那里是跨副本单例等内部机制）。
+export type { LoadingHandle } from './loading-host.js'
+
 const pillStyle: Record<string, string | number> = {
   position: 'fixed',
   bottom: '16px',

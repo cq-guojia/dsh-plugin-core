@@ -18,6 +18,9 @@ import {
 import { ensureNotifyBridge, isNotifyBridgeConnected } from './notify-bridge.js'
 import { getDefaultTaskProject, notifyMessage } from '../infra/task-notifications.js'
 
+// 选项类型随使用面一起给：调 `notify` / `showToast` 的人不必再引 `ui/toast-queue`（那里是队列内部机制）。
+export type { NotifyOptions, ToastOptions } from './toast-queue.js'
+
 const DEFAULT_MS = 2600
 
 /**

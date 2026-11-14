@@ -121,7 +121,8 @@ utils（谁都不依赖，谁都可以用）
 | `dsh-plugin-core/ui` | 整包：全部控件 + 通知任务中心 | 纯 re-export 转发表（零实现、不复制）；想全引就用它，接受产物变大 |
 | `dsh-plugin-core/ui/<控件>` | 单块：如 `/ui/button` `/ui/input` `/ui/picker` `/ui/table` | 一条 `exports` 指向一个独立 `dist/ui/**.js`；打包器从哪个文件进就只带那个文件及其 import 闭包 |
 | `dsh-plugin-core/ui/official` | L1 官方 adapter | `adv/*` 要直接取官方件，属结构性第二入口 |
-| `dsh-plugin-core/ui/code-viewer` | CodeViewer（只读）· CodeEditor（可编辑） | 直接引 `@uiw/react-codemirror`，重依赖必须可选；两个控件共用 `infra/code-mirror-surface`，不另开导出口 |
+| `dsh-plugin-core/ui/code-viewer` | 合集：CodeViewer（只读）+ CodeEditor（可编辑） | 直接引 `@uiw/react-codemirror`，重依赖必须可选；两个控件共用 `infra/code-mirror-surface` |
+| `dsh-plugin-core/ui/code-editor` | 只要可编辑件（`inputs/CodeEditor`） | 更窄的入口，免得「只要编辑器却引合集」；与合集指同一实现文件，不是第二份 |
 | `dsh-plugin-core/ui/host-toast` | 宿主原生 Toast | 入口静态 import 官方件会让 Node 单测崩（旧坑） |
 | `dsh-plugin-core/adv/explorer` | 文件浏览 | 应用模块独立子路径 |
 | `dsh-plugin-core/adv/session` | 会话预览 | 同上 |
@@ -132,7 +133,7 @@ utils（谁都不依赖，谁都可以用）
 
 对标 MUI：`@mui/material` 的根入口同样是纯 re-export 转发表，官方默认写法是 `@mui/material/Button` 这类按组件路径导入；Rad UI 的《Barrel export policy》禁止 mega-barrel。本仓与之同构。
 
-只读 / 可编辑是同一份 CodeMirror 能力的两种用法，属分类不属新依赖，故共用 `ui/code-viewer` 一条子路径：可编辑件归 `inputs`、只读件归 `display`，两个控件都不进主入口（否则重依赖会拖进所有插件的包）。
+只读 / 可编辑是同一份 CodeMirror 能力的两种用法，属分类不属新依赖，故 `ui/code-viewer` 一条子路径同时给两个控件：可编辑件归 `inputs`、只读件归 `display`，两个控件都不进主入口（否则重依赖会拖进所有插件的包）。只要编辑器可走更窄的单块入口 `ui/code-editor`（指向 `inputs/CodeEditor.js`，与合集同一个实现文件）；合集入口是纯 re-export，打包器会摇掉没引到的那个控件。
 
 **样式链路不变**：`src/**/*.css` → `scripts/gen-css.mjs` 编译成 `*.generated.ts` 字符串常量 → tsc → 运行时注入。控件直引自己那份生成物，不再经 `infra/controls-css.ts` 这类聚合 barrel（已删除）。
 

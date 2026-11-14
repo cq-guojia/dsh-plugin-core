@@ -23,6 +23,7 @@
 import { createElement as h } from 'react';
 import { type Translate } from '../../utils/i18n.js';
 import { type LoadingHandle, type LoadingPosition, type LoadingVariant } from './loading-host.js';
+export type { LoadingHandle } from './loading-host.js';
 export interface LoadingProps {
     /** 主内容容器 id，loading 贴到它的右下角；默认 `dshpc-main`。 */
     anchorId?: string;
