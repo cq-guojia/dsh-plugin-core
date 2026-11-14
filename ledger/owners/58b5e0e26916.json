@@ -1,6 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
+    "20261114-1148-8d58-核对-rc-3-宿主升级差异": {"category": "宿主适配", "created": "2026-11-14 11:48:35", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-14 11:49:25", "status": "doing", "tags": ["宿主升级", "差异核对", "会话预览", "0.2.2-RC.3"], "title": "核对 RC.3 宿主升级差异", "updated": "2026-11-14 11:49:25", "worklog": "worklog/202611/14-1148-8d58-核对-rc-3-宿主升级差异.md"}
   },
   "version": "20261022000000"
 }
