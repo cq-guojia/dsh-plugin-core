@@ -1,6 +1,7 @@
 import { createElement as h, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useFloating, FloatingPortal, flip, shift, offset, autoUpdate, size as floatingSize } from '@floating-ui/react'
 import { Chevron } from '../infra/chevron.js'
+import { FontIcon } from '../display/font-icon.js'
 import { t, type Translate } from '../../utils/i18n.js'
 import { FieldHint } from '../display/FieldHint.js'
 import { MarqueeText } from '../display/MarqueeText.js'
@@ -261,7 +262,7 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
       : null,
     // 文字吃掉剩余宽度并靠左（默认）；超长时外层省略号、hover 跑马灯（MarqueeText 自带）。
     h(MarqueeText, { text: summary, className: 'dshpc-picker__label' }),
-    h(Chevron, { size: 12, className: 'dshpc-picker__caret' }),
+    h(Chevron, { size: 6, className: 'dshpc-picker__caret' }),
   )
   // hint 给了就把触发器与 FieldHint 包进同一行（间距/对齐收进组件）。
   const triggerRow =
@@ -363,7 +364,7 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
                             ? h(
                                 'span',
                                 { className: 'dshpc-picker__tick' },
-                                selected.includes(o.value) ? '✓' : '',
+                                selected.includes(o.value) ? h(FontIcon, { name: 'common.base:gou', size: 12 }) : null,
                               )
                             : null,
                           o.icon !== undefined && o.icon !== null

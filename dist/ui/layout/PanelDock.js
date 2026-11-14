@@ -14,6 +14,7 @@ import { Children, createElement as h, isValidElement, useEffect, useRef, useSta
 import { createPortal } from 'react-dom';
 import { t } from '../../utils/i18n.js';
 import { startResizeLayoutWidth } from './resizer.js';
+import { FontIcon } from '../display/font-icon.js';
 import { DEFAULT_PANEL_ID, clampWidth, closePanel, collapsePanel, emptyDock, expandPanel, isCollapsed as isCollapsedState, isOpen, openPanel, othersWidth, setPanelWidth, } from './panel-dock-logic.js';
 import { ensureComponentStyles } from '../infra/css.js';
 import { PANEL_DOCK_CSS } from './panel-dock-css.js';
@@ -327,7 +328,7 @@ export function PanelDock(props) {
             className: 'dshpc-dock__close dshpc-dock__close--abs',
             'aria-label': tt('dockClose'),
             onClick: () => props.dock.close(pane.id, 'button'),
-        }, pane.closeIcon ?? '✕');
+        }, pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }));
     };
     const renderHeader = (pane) => {
         if (pane.header === null)
@@ -350,7 +351,7 @@ export function PanelDock(props) {
             className: 'dshpc-dock__close dshpc-dock__close--floating',
             'aria-label': tt('dockClose'),
             onClick: () => props.dock.close(pane.id, 'button'),
-        }, pane.closeIcon ?? '✕');
+        }, pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }));
     };
     // 开着时根元素带 --open：CSS 据此给主区滚动条让出一条缝（全关即无缝，不留白边）。
     const rootClass = `dshpc-dock${state.ids.length > 0 ? ' dshpc-dock--open' : ''}${props.className === undefined ? '' : ` ${props.className}`}`;
@@ -368,8 +369,8 @@ export function PanelDock(props) {
             'aria-label': `${label} · ${tt('dockExpand')}`,
             onClick: () => props.dock.expand(id),
         }, 
-        // 只有一个箭头，与收起钮同尺寸反向：收起钮 ›（往右收），耳朵 ‹（往左拉回来）。
-        h('span', { className: 'dshpc-dock__ear-arrow', 'aria-hidden': true }, '‹'));
+        // 只有一个箭头，与收起钮同尺寸反向：收起钮往右收，耳朵往左拉回来。
+        h('span', { className: 'dshpc-dock__ear-arrow', 'aria-hidden': true }, h(FontIcon, { name: 'common.base:move-left', size: 8 })));
     });
     const earHost = ears.length === 0 ? null : earsHost();
     return h('div', {
@@ -407,6 +408,6 @@ export function PanelDock(props) {
         className: 'dshpc-dock__collapse',
         'aria-label': tt('dockCollapse'),
         onClick: () => collapseWithAnim(pane.id),
-    }, '›'), renderHeader(pane), headerCloseOf(pane), floatingCloseOf(pane), h('div', { className: 'dshpc-dock__body dshpc-scroll-thin' }, pane.children ?? null))), earHost === null ? null : createPortal(ears, earHost));
+    }, h(FontIcon, { name: 'common.base:move-right', size: 8 })), renderHeader(pane), headerCloseOf(pane), floatingCloseOf(pane), h('div', { className: 'dshpc-dock__body dshpc-scroll-thin' }, pane.children ?? null))), earHost === null ? null : createPortal(ears, earHost));
 }
 //# sourceMappingURL=PanelDock.js.map

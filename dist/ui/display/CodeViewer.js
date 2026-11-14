@@ -17,7 +17,8 @@
  */
 import { createElement as h, useState } from 'react';
 import { IconButton } from '../actions/Button.js';
-import { IconCheckOutlineRegular, IconCopyOutlineRegular, writeClipboard } from '../official.js';
+import { writeClipboard } from '../official.js';
+import { FontIcon } from './font-icon.js';
 import { ensureComponentStyles } from '../infra/css.js';
 import { CODE_VIEWER_CSS } from './code-viewer-css.js';
 import { CodeMirrorSurface } from '../infra/code-mirror-surface.js';
@@ -46,7 +47,7 @@ export function CodeViewer(props) {
         overlay: h(IconButton, {
             variant: 'outline',
             size: 'md',
-            icon: copied ? h(IconCheckOutlineRegular) : h(IconCopyOutlineRegular),
+            icon: h(FontIcon, { name: copied ? 'common.base:gou' : 'common.base:fuzhi', size: 14 }),
             label: copied ? t('codeCopied') : t('codeCopy'),
             className: 'dshpc-cv__copy',
             onClick: copy,

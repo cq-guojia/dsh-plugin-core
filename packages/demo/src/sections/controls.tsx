@@ -1,4 +1,10 @@
-import { createElement as h, useState, useSyncExternalStore, type ComponentType } from 'react'
+import { Icon } from '../../../../dist/ui/display/Icon.js'
+
+import {
+  createElement as h,
+  useState,
+  useSyncExternalStore,
+} from 'react'
 import type { AlertSeverity, ButtonSize, ButtonVariant, ConfirmTone, LoaderSize, LoadingOptions } from '../../../../dist/ui/index.js'
 import {
   Button,
@@ -38,52 +44,66 @@ import {
   confirmModal,
 } from '../../../../dist/ui/index.js'
 // 宿主原生弹窗：经官方适配层 official.js 取（全仓唯一 import 平台模块处），保持本包 ui 入口零官方依赖。
-import { Official } from '../../../../dist/ui/official.js'
+import {
+  Official,
+} from '../../../../dist/ui/official.js'
 import {
   HoverCard,
-  IconCheckOutlineRegular,
-  IconChevronDownOutlineRegular,
-  IconClockOutlineRegular,
-  IconCloseOutlineRegular,
-  IconCopyOutlineRegular,
-  IconEditOutlineRegular,
-  IconPaperPlaneOutlineRegular,
-  IconPlayOutlineRegular,
-  IconPlusOutlineRegular,
-  IconRefreshOutlineRegular,
-  IconSearchOutlineRegular,
-  IconSparkleRegular,
   Switch,
   Tooltip,
 } from '@deepseek-ai/dsh-client-ui-primitives'
-import { Placeholder } from './index.js'
-import { DocApi, DocCode, Example } from '../doc.js'
-import { demoDock } from '../dock.js'
-import { t, type DemoMessageKey } from '../i18n.js'
+import {
+  Placeholder,
+} from './index.js'
+import {
+  DocApi,
+  DocCode,
+  Example,
+} from '../doc.js'
+import {
+  demoDock,
+} from '../dock.js'
+import {
+  getLocale,
+} from '../../../../dist/utils/index.js'
+import {
+  t,
+} from '../i18n.js'
+
+/**
+ * 星期方块的标签：纯演示文案，写在本页里、不进 demo 字典（2026-11-14 用户）。
+ * 方块是固定宽的，所以两种语言都用短词；英文用三字母缩写。
+ */
+function weekdayLabel(n: number): string {
+  const labels = getLocale() === 'en'
+    ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    : ['一', '二', '三', '四', '五', '六', '日']
+  return labels[n - 1] ?? ''
+}
 
 /**
  * 按钮图标集：**先给每颗 icon 起个名字，再按名字取用**。
  * 演示里不写死某个图标组件，而是遍历这份数组 —— 换成官方 / 业务自有图标只改这一处。
  */
-const BUTTON_ICONS: readonly { name: string; Icon: ComponentType<{ size?: number }> }[] = [
-  { name: 'plus', Icon: IconPlusOutlineRegular },
-  { name: 'check', Icon: IconCheckOutlineRegular },
-  { name: 'close', Icon: IconCloseOutlineRegular },
-  { name: 'refresh', Icon: IconRefreshOutlineRegular },
-  { name: 'copy', Icon: IconCopyOutlineRegular },
-  { name: 'search', Icon: IconSearchOutlineRegular },
-  { name: 'edit', Icon: IconEditOutlineRegular },
-  { name: 'play', Icon: IconPlayOutlineRegular },
-  { name: 'send', Icon: IconPaperPlaneOutlineRegular },
-  { name: 'clock', Icon: IconClockOutlineRegular },
-  { name: 'sparkle', Icon: IconSparkleRegular },
-  { name: 'chevron', Icon: IconChevronDownOutlineRegular },
+const BUTTON_ICONS: readonly { name: string; glyph: string }[] = [
+  { name: 'plus', glyph: 'common.base:jia' },
+  { name: 'check', glyph: 'common.base:gou' },
+  { name: 'close', glyph: 'common.base:guanbi' },
+  { name: 'refresh', glyph: 'common.base:shuaxin' },
+  { name: 'copy', glyph: 'common.base:fuzhi' },
+  { name: 'search', glyph: 'common.base:chazhao' },
+  { name: 'edit', glyph: 'common.base:xiugai' },
+  { name: 'play', glyph: 'common.base:move-right' },
+  { name: 'send', glyph: 'common.base:youxiangshuangjiantou' },
+  { name: 'clock', glyph: 'common.base:shijian1' },
+  { name: 'sparkle', glyph: 'common.base:AIdamoxing' },
+  { name: 'chevron', glyph: 'common.base:move-down' },
 ]
 
 /** 按名字取一颗图标（找不到返回 null，不抛）。尺寸由核心 button.css 的 1em 接管，不传 size。 */
 function iconOf(name: string): ReturnType<typeof h> | null {
   const found = BUTTON_ICONS.find((item) => item.name === name)
-  return found === undefined ? null : h(found.Icon, null)
+  return found === undefined ? null : h(Icon, { name: found.glyph })
 }
 
 /** 自绘 SVG：演示 icon 参数不认「名字」——这里直接传一个普通的 React 元素进去。 */
@@ -160,52 +180,52 @@ function Labeled(props: { label: string; children?: ReturnType<typeof h>[] | Ret
 // ── 按钮 ────────────────────────────────────────────────────────────────
 
 // 示例右侧的代码：与左边渲染的一点不差，复制出去就能跑（改样式时必须两边一起改）。
-const CODE_BTN_TEXT = `<Button variant="primary" icon={<IconCheckOutlineRegular />}>保存</Button>
+const CODE_BTN_TEXT = `<Button variant="primary" icon={<Icon name="common.base:gou"  />}>保存</Button>
 <Button variant="outline">取消</Button>
-<Button variant="danger" icon={<IconCloseOutlineRegular />}>删除</Button>`
+<Button variant="danger" icon={<Icon name="common.base:guanbi"  />}>删除</Button>`
 
 const CODE_BTN_VARIANT = `// 主行动
-<Button variant="primary" icon={<IconCheckOutlineRegular />}>primary</Button>
-<Button variant="secondary" icon={<IconCopyOutlineRegular />}>secondary</Button>
+<Button variant="primary" icon={<Icon name="common.base:gou"  />}>primary</Button>
+<Button variant="secondary" icon={<Icon name="common.base:fuzhi"  />}>secondary</Button>
 
 // 中性
-<Button variant="outline" icon={<IconEditOutlineRegular />}>outline</Button>
-<Button variant="ghost" icon={<IconRefreshOutlineRegular />}>ghost</Button>
+<Button variant="outline" icon={<Icon name="common.base:xiugai"  />}>outline</Button>
+<Button variant="ghost" icon={<Icon name="common.base:shuaxin"  />}>ghost</Button>
 
 // 语义色
-<Button variant="danger" icon={<IconCloseOutlineRegular />}>danger</Button>
-<Button variant="success" icon={<IconPlayOutlineRegular />}>success</Button>
-<Button variant="warning" icon={<IconClockOutlineRegular />}>warning</Button>
-<Button variant="info" icon={<IconPaperPlaneOutlineRegular />}>info</Button>
+<Button variant="danger" icon={<Icon name="common.base:guanbi"  />}>danger</Button>
+<Button variant="success" icon={<Icon name="common.base:move-right"  />}>success</Button>
+<Button variant="warning" icon={<Icon name="common.base:shijian1"  />}>warning</Button>
+<Button variant="info" icon={<Icon name="common.base:youxiangshuangjiantou"  />}>info</Button>
 
 // 弱化 / 行内
-<Button variant="danger-outline" icon={<IconCloseOutlineRegular />}>danger-outline</Button>
-<Button variant="link" icon={<IconSearchOutlineRegular />}>link</Button>
+<Button variant="danger-outline" icon={<Icon name="common.base:guanbi"  />}>danger-outline</Button>
+<Button variant="link" icon={<Icon name="common.base:chazhao"  />}>link</Button>
 
 // 任意一档都能再给 size（这里 sm 24 高）
-<Button variant="danger" size="sm" icon={<IconCloseOutlineRegular />}>danger</Button>`
+<Button variant="danger" size="sm" icon={<Icon name="common.base:guanbi"  />}>danger</Button>`
 
-const CODE_BTN_SIZE = `<Button size="sm" variant="outline" icon={<IconPlusOutlineRegular />}>sm</Button>
+const CODE_BTN_SIZE = `<Button size="sm" variant="outline" icon={<Icon name="common.base:jia"  />}>sm</Button>
 <Button size="md" variant="outline">md</Button>
 <Button size="lg" variant="outline">lg</Button>
 
 // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种都能进
-<Button variant="primary" icon={<IconSendOutlineRegular />}>官方图标</Button>
+<Button variant="primary" icon={<Icon name="common.base:youxiangshuangjiantou"  />}>官方图标</Button>
 <Button variant="outline" icon={<StarSvg />}>自绘 SVG</Button>
 <Button variant="ghost" icon="+">一个字符</Button>
 
 // iconRight 后置；block 撑满父宽（有前置图标时文字仍在视觉中心）
-<Button variant="outline" iconRight={<IconChevronDownOutlineRegular />}>更多</Button>
-<Button variant="primary" block icon={<IconCheckOutlineRegular />}>撑满父宽</Button>
+<Button variant="outline" iconRight={<Icon name="common.base:move-down"  />}>更多</Button>
+<Button variant="primary" block icon={<Icon name="common.base:gou"  />}>撑满父宽</Button>
 
 // 纯图标钮：label 是必填的无障碍名（同时作 title）
-<IconButton icon={<IconPlusOutlineRegular />} label="plus" />`
+<IconButton icon={<Icon name="common.base:jia"  />} label="plus" />`
 
 const CODE_BTN_STATE = `<Button variant="primary">默认</Button>
 <Button variant="primary" disabled>禁用</Button>
-<Button variant="danger" disabled icon={<IconCloseOutlineRegular />}>禁用</Button>
+<Button variant="danger" disabled icon={<Icon name="common.base:guanbi"  />}>禁用</Button>
 <Button variant="outline" loading>加载中</Button>
-<Button variant="primary" loading icon={<IconRefreshOutlineRegular />}>提交中</Button>
+<Button variant="primary" loading icon={<Icon name="common.base:shuaxin"  />}>提交中</Button>
 
 // 异步：onClick 返回 Promise ⇒ 自己转圈 + 禁用，settle 后恢复（reject 也恢复）
 <Button variant="primary" onClick={async () => { await save() }}>保存</Button>
@@ -237,17 +257,17 @@ const CODE_BTN_WIDTH = `// 固定宽：写死宽度
 
 /** 图标按钮「尺寸 × 底色 × 图标档」一溜展示：右边代码与左边渲染逐条一致。 */
 const CODE_ICON_BTN_MATRIX = `// 纯图标：无底（plain） / 有底（background），size 三档同样适用
-<IconButton size="sm" icon={<IconPlusOutlineRegular />} label="add" />
+<IconButton size="sm" icon={<Icon name="common.base:jia"  />} label="add" />
 <IconButton size="sm" background="var(--dshpc-business)" color="var(--dshpc-on-signal)"
-  icon={<IconPlusOutlineRegular />} label="add" />
+  icon={<Icon name="common.base:jia"  />} label="add" />
 
 // 图标 + 文字：无底（ghost） / 有底（info），size 三档同样适用
-<Button size="sm" variant="ghost" icon={<IconPlusOutlineRegular />}>sm</Button>
-<Button size="sm" variant="info" icon={<IconPlusOutlineRegular />}>sm</Button>
+<Button size="sm" variant="ghost" icon={<Icon name="common.base:jia"  />}>sm</Button>
+<Button size="sm" variant="info" icon={<Icon name="common.base:jia"  />}>sm</Button>
 
 // dense：全站唯一的放大档（1.25em），size 与高度不变、内距收紧；别给图标传 size 来放大
-<IconButton size="sm" dense icon={<IconPlusOutlineRegular />} label="add" />
-<Button size="sm" dense variant="info" icon={<IconPlusOutlineRegular />}>sm</Button>`
+<IconButton size="sm" dense icon={<Icon name="common.base:jia"  />} label="add" />
+<Button size="sm" dense variant="info" icon={<Icon name="common.base:jia"  />}>sm</Button>`
 
 /** 图标按钮表格的列：行标签 + sm/md/lg 三档（表头与数据行共用，列才对得齐）。 */
 const ICON_BTN_COLS = '100px repeat(3, minmax(58px,1fr))'
@@ -361,16 +381,16 @@ export function ButtonPage(): ReturnType<typeof h> {
             h(Button, { variant: 'outline', block: true }, '无图标对照'))),
         h(Labeled, { label: t('btnIconOnly') },
           BUTTON_ICONS.slice(0, 6).map((item) =>
-            h(IconButton, { key: item.name, icon: h(item.Icon, null), label: item.name }))),
+            h(IconButton, { key: item.name, icon: h(Icon, { name: item.glyph }), label: item.name }))),
         // 纯图标钮的配色轴：默认无底色；color 改图标色，background 给底色（用户 2026-11-02）
         h(Labeled, { label: 'IconButton · color / background' },
-          h(IconButton, { icon: h(BUTTON_ICONS[0].Icon, null), label: '默认无底色' }),
-          h(IconButton, { icon: h(BUTTON_ICONS[1].Icon, null), label: '自定义图标色', color: '#7c3aed' }),
-          h(IconButton, { icon: h(BUTTON_ICONS[2].Icon, null), label: '自定义底色', color: '#fff', background: '#7c3aed' })),
+          h(IconButton, { icon: h(Icon, { name: BUTTON_ICONS[0].glyph }), label: '默认无底色' }),
+          h(IconButton, { icon: h(Icon, { name: BUTTON_ICONS[1].glyph }), label: '自定义图标色', color: '#7c3aed' }),
+          h(IconButton, { icon: h(Icon, { name: BUTTON_ICONS[2].glyph }), label: '自定义底色', color: '#fff', background: '#7c3aed' })),
         // 纯图标钮也吃同一套 loading：图标位换成小圈，文字本来就没有
         h(Labeled, { label: 'IconButton · loading' },
-          h(IconButton, { icon: h(BUTTON_ICONS[0].Icon, null), label: '刷新', onClick: async () => { await demoWait() } }),
-          h(IconButton, { variant: 'outline', icon: h(BUTTON_ICONS[0].Icon, null), label: '加载中', loading: true }))),
+          h(IconButton, { icon: h(Icon, { name: BUTTON_ICONS[0].glyph }), label: '刷新', onClick: async () => { await demoWait() } }),
+          h(IconButton, { variant: 'outline', icon: h(Icon, { name: BUTTON_ICONS[0].glyph }), label: '加载中', loading: true }))),
     ),
 
     // 图标按钮：常规 / dense 两组，每组 4 行（纯图标 / 图标+文字 × 无底 / 有底），列是 sm/md/lg
@@ -457,7 +477,7 @@ const [kw, setKw] = useState('')
 <Input value={text} onChange={setText} placeholder="请输入用户名" hint="用户名只能包含字母、数字与连字符。" />
 // 搜索框：type="search" ⇒ 有内容时，鼠标移上去或聚焦都会显示右侧清除钮（数字框加减号同款 plain IconButton，原生那枚已隐掉）
 // icon 是左侧图标槽（不吃点击，点在图标上照样聚焦）；图标尺寸按档取 fieldMetricsOf(size).icon
-<Input type="search" icon={<IconSearchOutlineRegular />} value={kw} onChange={setKw} placeholder="搜索" />
+<Input type="search" icon={<Icon name="common.base:chazhao"  />} value={kw} onChange={setKw} placeholder="搜索" />
 // 校验失败态：描红
 <Input value={text} onChange={setText} error placeholder="校验失败态" />
 // 数字框：超出 min / max 自动收回到边界
@@ -469,7 +489,7 @@ const [kw, setKw] = useState('')
 const CODE_SEARCH_CLEAR = `const [kw, setKw] = useState('示例文本')
 
 // type="search" ⇒ 有内容时，鼠标移上去或聚焦都会显示尾部清除钮（×）
-<Input type="search" icon={<IconSearchOutlineRegular />} value={kw} onChange={setKw} placeholder="搜索" />
+<Input type="search" icon={<Icon name="common.base:chazhao"  />} value={kw} onChange={setKw} placeholder="搜索" />
 // 移上去 / 聚焦 → 右侧 × 出现，点击即清空（不必先点输入框聚焦）`
 
 const CODE_INPUT_GROUP = `// 输入框 + 按钮组焊成一体；label 是前置标题（同格灰底），undoable 在最前面加撤销钮
@@ -492,8 +512,8 @@ const CODE_INPUT_GROUP = `// 输入框 + 按钮组焊成一体；label 是前置
   value={kw}
   onChange={setKw}
   actions={[
-  { icon: <IconRefreshOutlineRegular size={14} />, ariaLabel: '重置', onClick: reset },
-  { icon: <IconSearchOutlineRegular size={14} />, label: '搜索', onClick: search },
+  { icon: <Icon name="common.base:shuaxin" size={14}  />, ariaLabel: '重置', onClick: reset },
+  { icon: <Icon name="common.base:chazhao" size={14}  />, label: '搜索', onClick: search },
   ]}
   />
 
@@ -535,13 +555,13 @@ const CODE_SWITCH_SEG = `// 开关语义用官方 Switch：label 只是无障碍
 
 // 段内图标：icon 在前、文字居中、count 在后
 <Segmented
-  items={[{ value: 'all', icon: h(IconSearchOutlineRegular, { size: 14 }), label: '全部', count: 11 }]}
+  items={[{ value: 'all', icon: h(Icon, { name: 'common.base:chazhao',  size: 14 }), label: '全部', count: 11 }]}
   value={filter}
   onChange={setFilter}
 />
 // 只有图标（无文字 / 计数）：段自动变成正方形，读屏名走 ariaLabel
 <Segmented
-  items={[{ value: 'search', icon: h(IconSearchOutlineRegular, { size: 14 }), ariaLabel: '搜索' }]}
+  items={[{ value: 'search', icon: h(Icon, { name: 'common.base:chazhao',  size: 14 }), ariaLabel: '搜索' }]}
   value={iconSeg}
   onChange={setIconSeg}
 />
@@ -618,7 +638,7 @@ export function InputPage(): ReturnType<typeof h> {
           { style: { display: 'flex', alignItems: 'center', gap: '6px' } },
           h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px', flex: 'none' } }, '搜索'),
           // 左侧图标槽（icon）+ 有内容时移上去或聚焦即出清除钮（type="search"）
-          h(Input, { type: 'search', icon: h(IconSearchOutlineRegular, null), value: kw, onChange: setKw, placeholder: '搜索' }),
+          h(Input, { type: 'search', icon: h(Icon, { name: 'common.base:chazhao' }), value: kw, onChange: setKw, placeholder: '搜索' }),
         ),
         h(Input, { value: 'bad value', onChange: () => {}, error: true, placeholder: '校验失败态' }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
@@ -635,7 +655,7 @@ export function InputPage(): ReturnType<typeof h> {
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '380px' } },
-        h(Input, { type: 'search', icon: h(IconSearchOutlineRegular, null), value: kwClear, onChange: setKwClear, placeholder: '搜索' }),
+        h(Input, { type: 'search', icon: h(Icon, { name: 'common.base:chazhao' }), value: kwClear, onChange: setKwClear, placeholder: '搜索' }),
         h('span', { style: { color: 'var(--dshpc-fg-2)', fontSize: '13px' } }, '上面已预填内容：鼠标移到框上，尾部 × 即出现，可直接清除。'),
       ),
     ),
@@ -665,8 +685,8 @@ export function InputPage(): ReturnType<typeof h> {
           onChange: setIgValue,
           placeholder: '纯图标 / 图标 + 文字 / 纯文字',
           actions: [
-            { icon: h(IconRefreshOutlineRegular, { size: 14 }), ariaLabel: '重置', onClick: () => { setIgValue('') } },
-            { icon: h(IconSearchOutlineRegular, { size: 14 }), label: '搜索', onClick: () => {} },
+            { icon: h(Icon, { name: 'common.base:shuaxin',  size: 14 }), ariaLabel: '重置', onClick: () => { setIgValue('') } },
+            { icon: h(Icon, { name: 'common.base:chazhao',  size: 14 }), label: '搜索', onClick: () => {} },
             { label: '提交', onClick: () => {} },
           ],
         }),
@@ -812,7 +832,7 @@ export function InputPage(): ReturnType<typeof h> {
           label: '星期',
           items: ([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
             value: String(n),
-            label: t(`weekday${n}` as DemoMessageKey),
+            label: weekdayLabel(n),
           })),
           value: multi,
           onChange: setMulti,
@@ -824,7 +844,7 @@ export function InputPage(): ReturnType<typeof h> {
           label: '星期（带外框）',
           items: ([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
             value: String(n),
-            label: t(`weekday${n}` as DemoMessageKey),
+            label: weekdayLabel(n),
           })),
           value: multi,
           onChange: setMulti,
@@ -832,18 +852,18 @@ export function InputPage(): ReturnType<typeof h> {
         // 段内图标：icon 在前、文字居中、count 在后；只有图标（无文字 / 计数）时自动正方形
         h(Segmented, {
           items: [
-            { value: 'search', icon: h(IconSearchOutlineRegular, { size: 14 }), ariaLabel: '搜索' },
-            { value: 'clock', icon: h(IconClockOutlineRegular, { size: 14 }), ariaLabel: '时间' },
-            { value: 'play', icon: h(IconPlayOutlineRegular, { size: 14 }), ariaLabel: '运行' },
+            { value: 'search', icon: h(Icon, { name: 'common.base:chazhao',  size: 14 }), ariaLabel: '搜索' },
+            { value: 'clock', icon: h(Icon, { name: 'common.base:shijian1',  size: 14 }), ariaLabel: '时间' },
+            { value: 'play', icon: h(Icon, { name: 'common.base:move-right',  size: 14 }), ariaLabel: '运行' },
           ],
           value: iconSeg,
           onChange: setIconSeg,
         }),
         h(Segmented, {
           items: [
-            { value: 'all', icon: h(IconSearchOutlineRegular, { size: 14 }), label: t('segAll'), count: 11 },
-            { value: 'doing', icon: h(IconClockOutlineRegular, { size: 14 }), label: t('segDoing'), count: 5 },
-            { value: 'done', icon: h(IconCheckOutlineRegular, { size: 14 }), label: t('segClaimed'), count: 11 },
+            { value: 'all', icon: h(Icon, { name: 'common.base:chazhao',  size: 14 }), label: t('segAll'), count: 11 },
+            { value: 'doing', icon: h(Icon, { name: 'common.base:shijian1',  size: 14 }), label: t('segDoing'), count: 5 },
+            { value: 'done', icon: h(Icon, { name: 'common.base:gou',  size: 14 }), label: t('segClaimed'), count: 11 },
           ],
           value: iconSeg2,
           onChange: setIconSeg2,
@@ -876,7 +896,7 @@ export function InputPage(): ReturnType<typeof h> {
             label: '星期',
             items: ([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
               value: String(n),
-              label: t(`weekday${n}` as DemoMessageKey),
+              label: weekdayLabel(n),
             })),
             value: multi,
             onChange: setMulti,
@@ -900,9 +920,9 @@ const PAGED_OPTIONS = Array.from({ length: 25 }, (_, i) => ({
 }))
 
 const ICON_OPTIONS = [
-  { value: 'a', label: '选项 A', icon: h(IconSparkleRegular, { size: 14 }) },
-  { value: 'b', label: '选项 B', icon: h(IconClockOutlineRegular, { size: 14 }) },
-  { value: 'c', label: '选项 C', icon: h(IconPlayOutlineRegular, { size: 14 }) },
+  { value: 'a', label: '选项 A', icon: h(Icon, { name: 'common.base:AIdamoxing',  size: 14 }) },
+  { value: 'b', label: '选项 B', icon: h(Icon, { name: 'common.base:shijian1',  size: 14 }) },
+  { value: 'c', label: '选项 C', icon: h(Icon, { name: 'common.base:move-right',  size: 14 }) },
 ]
 
 const CODE_PICKER = `// 单选：icon + 可搜索 / 可清除
@@ -1029,7 +1049,7 @@ export function PickerPage(): ReturnType<typeof h> {
         { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-start' } },
         h(Picker, {
           options: ICON_OPTIONS,
-          icon: h(IconSparkleRegular, { size: 14 }),
+          icon: h(Icon, { name: 'common.base:AIdamoxing',  size: 14 }),
           value: single,
           onChange: (v) => setSingle(v as string),
           searchable: true,
@@ -1057,8 +1077,8 @@ export function PickerPage(): ReturnType<typeof h> {
               value: 'g2',
               label: '组二',
               options: [
-                { value: 'd', label: '选项 D', icon: h(IconRefreshOutlineRegular, { size: 14 }) },
-                { value: 'e', label: '选项 E', icon: h(IconPlusOutlineRegular, { size: 14 }) },
+                { value: 'd', label: '选项 D', icon: h(Icon, { name: 'common.base:shuaxin',  size: 14 }) },
+                { value: 'e', label: '选项 E', icon: h(Icon, { name: 'common.base:jia',  size: 14 }) },
               ],
             },
           ],
@@ -1333,7 +1353,7 @@ h(ListRow, {
   actions: h(Button, { size: 'sm', variant: 'ghost', onClick: () => remove(item) }, '移除'),
 },
   h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 } },
-    h(IconCopyOutlineRegular, { size: 14 }),
+    h(Icon, { name: 'common.base:fuzhi',  size: 14 }),
     h('span', null, item.name),
     h(Chip, null, 'TS'),
   ),
@@ -1358,7 +1378,7 @@ const CODE_STRIP_CARD = `// StripCard：同色系浅底 + 方角 + 左缘 4px �
 const CODE_SECTION_HEAD = `// 分区标题：标签（可选，画出来的短竖线）+ icon + 标题 + 右侧操作区
 <SectionHead
   accent="success"        // 固定标签颜色：内置色名 / 任意色值；default = 主题默认；false = 不画
-  icon={<IconSparkleRegular />}
+  icon={<Icon name="common.base:AIdamoxing"  />}
   title={<span>全部待办 <span style={{ fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)' }}>22</span></span>}
   right={[
     <Segmented items={[{ value: 'all', label: '全部', count: 22 }]} value={seg} onChange={setSeg} />,
@@ -1412,7 +1432,7 @@ export function CardPage(): ReturnType<typeof h> {
             }, '移除'),
           },
             h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } },
-              h(IconCopyOutlineRegular, { size: 14 }),
+              h(Icon, { name: 'common.base:fuzhi',  size: 14 }),
               h('span', null, item.name),
               h(Chip, null, item.bordered ? '带边' : '无边'),
             ),
@@ -1424,7 +1444,7 @@ export function CardPage(): ReturnType<typeof h> {
         // 两槽对称居中回归：主内容故意用 inline-flex 的 span（旧版会按基线偏上）
         h(ListRow, { hoverable: false },
           h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } },
-            h(IconCopyOutlineRegular, { size: 14 }),
+            h(Icon, { name: 'common.base:fuzhi',  size: 14 }),
             '主内容是 inline-flex 也垂直居中',
           ),
         ),
@@ -1644,7 +1664,7 @@ export function CardPage(): ReturnType<typeof h> {
       h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } },
         // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
         h(SectionHead, {
-          icon: h(IconSparkleRegular, null),
+          icon: h(Icon, { name: 'common.base:AIdamoxing' }),
           title: h('span', { style: { display: 'inline-flex', alignItems: 'baseline', gap: '6px' } },
             '全部待办',
             h('span', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', fontWeight: 400 } }, '22'),
@@ -1666,7 +1686,7 @@ export function CardPage(): ReturnType<typeof h> {
         }),
         // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
         h(SectionHead, {
-          icon: h(IconClockOutlineRegular, null),
+          icon: h(Icon, { name: 'common.base:shijian1' }),
           title: h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } },
             '我的待办',
             h(Chip, { tone: 'success', size: 'xs' }, '最新'),
@@ -1675,7 +1695,7 @@ export function CardPage(): ReturnType<typeof h> {
         }),
         // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
         h(SectionHead, {
-          icon: h(IconRefreshOutlineRegular, null),
+          icon: h(Icon, { name: 'common.base:shuaxin' }),
           title: h('span', { style: { display: 'inline-flex', alignItems: 'baseline', gap: '6px' } },
             '已归档',
             h('span', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', fontWeight: 400 } }, '共 8 条'),
@@ -1878,7 +1898,9 @@ export function FlipTextPage(): ReturnType<typeof h> {
 // ── 反馈 ────────────────────────────────────────────────────────────────
 
 const CODE_HOST_MODAL = `// 宿主原生弹窗：组件直接用官方 Modal（遮罩/头部/关闭叉全归宿主管）
-import { Modal } from '@deepseek-ai/dsh-client-ui-primitives'
+import {
+  Modal,
+} from '@deepseek-ai/dsh-client-ui-primitives'
 
 <Modal
   open={open}

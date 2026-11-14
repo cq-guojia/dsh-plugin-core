@@ -1,15 +1,24 @@
-import { createElement as h, useState } from 'react'
-import { QuickToolbar, Segmented, Surface } from '../../../../dist/ui/index.js'
+import { Icon } from '../../../../dist/ui/display/Icon.js'
 import {
-  IconCopyOutlineRegular,
-  IconSearchOutlineRegular,
-  IconSparkleRegular,
-} from '@deepseek-ai/dsh-client-ui-primitives'
-import { DocApi, Example } from '../doc.js'
+  createElement as h,
+  useState,
+} from 'react'
+import {
+  QuickToolbar,
+  Segmented,
+  Surface,
+} from '../../../../dist/ui/index.js'
+
+import {
+  DocApi,
+  Example,
+} from '../doc.js'
 
 const ANCHOR_ID = 'dshpc-demo-quick-toolbar-anchor'
 
-const CODE_TOOLBAR = `import { QuickToolbar } from 'dsh-plugin-core/ui'
+const CODE_TOOLBAR = `import {
+  QuickToolbar,
+} from 'dsh-plugin-core/ui'
 
 h(QuickToolbar, {
   anchorId: 'my-content',          // 不传 = 跟随屏幕右缘
@@ -91,11 +100,11 @@ export function ToolbarPage(): ReturnType<typeof h> {
       anchorId: mode === 'box' ? ANCHOR_ID : undefined,
       onAction: (id) => setLast(id),
       items: [
-        { id: 'search', icon: h(IconSearchOutlineRegular, null), label: '搜索' },
-        { id: 'copy', icon: h(IconCopyOutlineRegular, null), label: '复制' },
+        { id: 'search', icon: h(Icon, { name: 'common.base:chazhao' }), label: '搜索' },
+        { id: 'copy', icon: h(Icon, { name: 'common.base:fuzhi' }), label: '复制' },
         {
           id: 'sparkle',
-          icon: h(IconSparkleRegular, null),
+          icon: h(Icon, { name: 'common.base:AIdamoxing' }),
           label: 'AI 助手',
           color: 'var(--dshpc-business)',
           fgColor: '#fff',

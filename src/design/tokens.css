@@ -158,6 +158,9 @@ body{
      否则整条 background:var(--seg-track) 作废 ⇒ 分段轨道透明（真踩过：预览站轨道消失）。 */
   --dshpc-hover:rgba(15,15,15,.10);
   --dshpc-active:rgba(15,15,15,.18);
+  /* 极淡填充底：步进器的加减钮要「看得出是按钮、但几乎不抢眼」（2026-11-14 用户：
+     只要一点点，特别特别淡）。比 hover 淡两档，不要再拿 hover 冒充。 */
+  --dshpc-fill-faint:rgba(15,15,15,.04);
   /* 分段控件轨道底：专用 token（rgba 字面量、不借 --dshpc-hover 中转）——
      2026-10-19 教训：变量链中间任何一环 invalid ⇒ background 整条作废、轨道全透明。
      亮色：黑 7%（比 hover 的 10% 淡一档，选中白片才跳得出）。 */
@@ -304,6 +307,8 @@ body[data-ds-dark-theme]{
   /* 暗色 hover 掺白 14% / active 24%（对齐上面 2026-10-18 的加重拍板）。rgba 兜底行同上。 */
   --dshpc-hover:rgba(255,255,255,.14);
   --dshpc-active:rgba(255,255,255,.24);
+  /* 极淡填充底（暗色版）：白 5%，与亮色版同档观感。 */
+  --dshpc-fill-faint:rgba(255,255,255,.05);
   /* 分段轨道（暗色版）：白 10%——比 hover 淡一档，选中亮片才跳得出。 */
   --dshpc-seg-track:rgba(255,255,255,.10);
   --dshpc-plate:var(--dsw-static-neutral-850,#212123);

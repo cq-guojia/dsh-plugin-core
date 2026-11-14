@@ -16,7 +16,8 @@
  * 浮层外壳与表皮在 FileBrowser（`panel.css` 的 menu 档），互不掺。
  */
 import { createElement as h, Fragment } from 'react';
-import { IconChevronRightOutlineRegular, IconFolderCloseRegular, IconFolderOpenOutlineRegular, } from '../../ui/official.js';
+import { IconFolderCloseRegular, IconFolderOpenOutlineRegular } from '../../ui/official.js';
+import { Chevron } from '../../ui/infra/chevron.js';
 import { ensureComponentStyles } from '../../ui/infra/css.js';
 import { EXPLORER_CSS } from './explorer-css.js';
 /** 菜单条目（根层 → 当前工作区 + 其下路径 → 其他工作区）。 */
@@ -63,7 +64,7 @@ export function crumbsMenuEntries(params) {
             onLoadDir?.(crumb.path);
         },
     }, withArrow
-        ? h(Fragment, null, Array.from({ length: depth }, (_, s) => h('span', { key: `s${s}`, className: 'dshpc-fb__menu-chev-slot', 'aria-hidden': true })), h('span', { className: 'dshpc-fb__menu-chev' }, h(IconChevronRightOutlineRegular, { size: 11 })))
+        ? h(Fragment, null, Array.from({ length: depth }, (_, s) => h('span', { key: `s${s}`, className: 'dshpc-fb__menu-chev-slot', 'aria-hidden': true })), h('span', { className: 'dshpc-fb__menu-chev' }, h(Chevron, { dir: 'right', size: 8 })))
         : null, h('span', { className: 'dshpc-fb__menu-label' }, crumb.label));
     if (workspaces.length === 0) {
         // 宿主还没给工作区快照 ⇒ 只出路径段（不出空的工作区组）。

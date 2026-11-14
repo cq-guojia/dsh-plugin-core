@@ -3,16 +3,18 @@ import { Modal, type ModalSize } from './Modal.js'
 import { Button } from '../actions/Button.js'
 import { t, type Translate } from '../../utils/i18n.js'
 import { ensureComponentStyles } from '../infra/css.js'
+import { FontIcon } from '../display/font-icon.js'
 import { FEEDBACK_CSS } from './feedback-css.js'
 
 /** Alert 信号档（图标 + 配色由头部 severity 图标承载）。 */
 export type AlertSeverity = 'info' | 'success' | 'warning' | 'error'
 
+/** 档位 → 字体库字形（2026-11-14 从字符 ⓘ✓⚠✕ 换成 iconfont）。 */
 const SEVERITY_GLYPH: Record<AlertSeverity, string> = {
-  info: 'ⓘ',
-  success: '✓',
-  warning: '⚠',
-  error: '✕',
+  info: 'common.base:info',
+  success: 'common.base:gou',
+  warning: 'common.base:warn',
+  error: 'common.base:guanbi',
 }
 
 export interface AlertModalProps {
@@ -60,7 +62,8 @@ export function AlertModal(props: AlertModalProps): ReturnType<typeof h> {
   return h(
     Modal,
     {
-      icon: h('span', { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, SEVERITY_GLYPH[severity]),
+      icon: h('span', { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` },
+        h(FontIcon, { name: SEVERITY_GLYPH[severity], size: 12 })),
       title: props.title,
       size: props.size ?? 'sm',
       hideHeader: props.title === undefined,

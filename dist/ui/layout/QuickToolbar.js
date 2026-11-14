@@ -217,7 +217,7 @@ export function QuickToolbar(props) {
                 style: { width: size, height: size },
                 'aria-label': label,
                 onClick: () => scrollToTop(resolveScrollTarget(props.scrollContainer, ref.current)),
-            }, h(Chevron, { dir: 'up' }));
+            }, h(Chevron, { dir: 'up', size: 8 }));
         }
         const item = entry.item;
         if (item === undefined)

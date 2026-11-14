@@ -1,21 +1,21 @@
 /**
- * 全站唯一的箭头：**自绘 chevron**（就是下拉框右侧那颗）。
+ * 全站唯一的箭头：现在就是图标库的 `move-*` 字形（2026-11-14 用户定：图标统一走新图标库，
+ * 自绘那条路径删掉）。四向各有一颗字形，不再旋转同一个图形。
  *
- * 为什么自绘：`ui` 层零官方依赖（官方图标只在宿主内可解析），官方件在这个包里 import 不到。
- * 为什么不再写字形：'▾' / '↑' 这类字符在各系统字体下粗细、角度、基线都不一样，
- * 同一套界面里会出现两种箭头 —— 2026-10-26 用户点名 ▾ 太丑 ⇒ 一律换成这颗 chevron。
+ * 用法不变：`h(Chevron, { dir: 'up' })`（默认 12px）。要动画就在外层套一个带 transform 的类
+ * （如卡片折叠的 `.dshpc-card__caret.is-open`），不要在组件里写死。
  *
- * 用法：`h(Chevron, { dir: 'up' })`（默认 12px；要放大用核心 dense 档，别在这里写死大尺寸）；
- * 要动画就在外层套一个带 transform 的类
- * （如卡片折叠的 `.dshpc-card__caret.is-open`），不要给每个方向另画一条路径。
+ * 为什么用 `FontIcon` 而不是 `Icon`：控件层不许把官方 primitives 拖进产物闭包
+ * （`test/entry-isolation.test.mjs`），字体那条路本来也不需要它。
  */
 import { createElement as h } from 'react';
-/** 箭头方向：同一个图形转出来，四向共用一条路径。 */
+/** 箭头方向：一个方向一颗字形。 */
 export type ChevronDir = 'down' | 'up' | 'left' | 'right';
+/** 箭头。 */
 export declare function Chevron(props: {
     /** 方向（默认 down）。 */
     dir?: ChevronDir;
-    /** 边长 px（默认 12）。 */
+    /** 字号 px（默认 12）。 */
     size?: number;
     /** 追加类名（皮肤 / 定位）。 */
     className?: string;

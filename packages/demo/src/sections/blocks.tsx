@@ -1,5 +1,11 @@
-import { createElement as h, useMemo, useState, useSyncExternalStore } from 'react'
-import { IconArchiveOutlineRegular } from '@deepseek-ai/dsh-client-ui-primitives'
+import { Icon } from '../../../../dist/ui/display/Icon.js'
+import {
+  createElement as h,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from 'react'
+
 import {
   openFilePreview,
   pickWorkspaceAnchor,
@@ -7,19 +13,49 @@ import {
   type OfficeToPdfFace,
   type WorkspaceFilesFace,
 } from '../../../../dist/adv/explorer/index.js'
-import { workspaceList } from '../../../../dist/ui/index.js'
-import { Chip, ListRow } from '../../../../dist/ui/index.js'
-import { openSessionReview, SessionViewModal, type ChangedFileReviewLocator } from '../../../../dist/adv/session/index.js'
-import { formatDateTime } from '../../../../dist/utils/index.js'
-import { Button } from '../../../../dist/ui/index.js'
-import { openRealSessionView, realForkSession, realOpenHostSession, realSessions } from '../real-sessions.js'
-import { Example, CodeOnly, DocApi } from '../doc.js'
-import { pageRow } from '../layout-mount.js'
-import { fileServices } from '../host-files.js'
-import { t } from '../i18n.js'
+import {
+  workspaceList,
+} from '../../../../dist/ui/index.js'
+import {
+  Chip,
+  ListRow,
+} from '../../../../dist/ui/index.js'
+import {
+  openSessionReview,
+  SessionViewModal,
+  type ChangedFileReviewLocator,
+} from '../../../../dist/adv/session/index.js'
+import {
+  formatDateTime,
+} from '../../../../dist/utils/index.js'
+import {
+  Button,
+} from '../../../../dist/ui/index.js'
+import {
+  openRealSessionView,
+  realForkSession,
+  realOpenHostSession,
+  realSessions,
+} from '../real-sessions.js'
+import {
+  Example,
+  CodeOnly,
+  DocApi,
+} from '../doc.js'
+import {
+  pageRow,
+} from '../layout-mount.js'
+import {
+  fileServices,
+} from '../host-files.js'
+import {
+  t,
+} from '../i18n.js'
 
 const CODE_OPEN = `// 右侧分栏预览（占宽度、挤窄主区；不是浮层）
-import { openFilePreview } from 'dsh-plugin-core/adv/explorer'
+import {
+  openFilePreview,
+} from 'dsh-plugin-core/adv/explorer'
 
 // apply 里 connectHost(ctx) 接线一次，之后只要一个容器 + 一个路径：
 openFilePreview({
@@ -31,7 +67,9 @@ openFilePreview({
 // 要覆盖快照才传 workspaceAnchors，要指定会话才传 sessionId。`
 
 const CODE_PICK = `// 锚定按钮旁弹模态选文件（Promise 返回工作区相对路径，不自己挂 dock）
-import { pickWorkspaceFile } from 'dsh-plugin-core/adv/explorer'
+import {
+  pickWorkspaceFile,
+} from 'dsh-plugin-core/adv/explorer'
 
 const r = await pickWorkspaceFile({ anchor: btn, filter: { exts: ['js', 'md'] } })
 // r = { path, isDir }`
@@ -40,9 +78,16 @@ const CODE_SESSION_REAL = `// 真实宿主：sessions.list 快照（冷安全，
 // 服务来自 package.json dsh.client.inject 的三个官方包：
 //   dsh-api-session-controller（sessions）/ dsh-client-ui-conversation（uiConversation）
 //   / dsh-client-ui-workspace（uiWorkspace）
-import { useSyncExternalStore } from 'react'
-import { openSessionView, SessionViewModal } from 'dsh-plugin-core/adv/session'
-import { openFilePreview } from 'dsh-plugin-core/adv/explorer'
+import {
+  useSyncExternalStore,
+} from 'react'
+import {
+  openSessionView,
+  SessionViewModal,
+} from 'dsh-plugin-core/adv/session'
+import {
+  openFilePreview,
+} from 'dsh-plugin-core/adv/explorer'
 
 const state = useSyncExternalStore(realSessions.subscribe, realSessions.getSnapshot)
 // state.rows：宿主 sessions.list 的 displayTitle / updatedAt / running（按活动降序前 20）
@@ -67,8 +112,14 @@ h(SessionViewModal, {
 
 const CODE_BLOCKS_USAGE = `pnpm add dsh-plugin-core
 
-import { openFilePreview, pickWorkspaceFile } from 'dsh-plugin-core/adv/explorer'
-import { openSessionView, SessionViewModal } from 'dsh-plugin-core/adv/session'`
+import {
+  openFilePreview,
+  pickWorkspaceFile,
+} from 'dsh-plugin-core/adv/explorer'
+import {
+  openSessionView,
+  SessionViewModal,
+} from 'dsh-plugin-core/adv/session'`
 
 /** 真实数据面：remote.workspaceFiles + 官方 workspaces 快照 + 真会话锚点。
  *  服务/会话缺席即如实说「未就位」，绝不造假数据顶替（与原页口径一致）。 */
@@ -243,7 +294,7 @@ function RealSessionListDemo(): ReturnType<typeof h> {
           archivedIds.includes(row.sessionId)
             ? h(Chip, { size: 'xs' },
                 h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '4px' } },
-                  h(IconArchiveOutlineRegular, { size: 12 }),
+                  h(Icon, { name: 'common.base:shoucang',  size: 12 }),
                   t('sessionListArchived'),
                 ),
               )

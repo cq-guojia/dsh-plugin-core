@@ -4,7 +4,7 @@
 
 本文件由 `scripts/gen-docs.mjs` 从同名 `.doc.ts` 生成，请勿手改。
 
-导出：Icon、ICON_FONTS、ICON_SIZES、ensureIconFont、loadIconFont
+导出：Icon、FontIcon、ICON_FONTS、ICON_SIZES、ensureIconFont、loadIconFont
 
 ## 图标
 
@@ -38,9 +38,14 @@
 
 > EN: Where only a string travels (for example the `icon` field of `taskNotifications`, which the core stores but never interprets), the same convention applies: `'common.base:jian'`, `'common.logo:github'`, `'IconWrapLinesOutlineRegular'`. The renderer feeds it straight into `<Icon name={…} />`; nothing has to split on the colon itself.
 
+**`Icon` 与 `FontIcon` 的分工**：`Icon` 两类来源都管，代价是它静态引官方 primitives；纯控件入口不许带这份重依赖（`test/entry-isolation.test.mjs`），所以库内部的控件画字体图标一律走 `FontIcon` —— 它只渲染字体字形，props 与 `Icon` 相同（库名不得省略）。插件界面按普通场景用 `Icon` 即可；只有在写「不该拖进官方包」的入口时才需要 `FontIcon`。
+
+> EN: **`Icon` vs `FontIcon`**: `Icon` handles both sources, at the cost of statically importing the official primitives package. Pure-control entries must not carry that weight (`test/entry-isolation.test.mjs`), so controls inside this package draw font icons through `FontIcon` — same props as `Icon` (library prefix still mandatory), but it only renders font glyphs. Plugin UIs normally use `Icon`; `FontIcon` is for entries that must stay free of the official package.
+
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `Icon` | `(props: IconProps) => JSX.Element \| null` | — | 图标元素。props：`name`（必填，`库名:图标名` 或官方组件名）、`size`（预设名或 px，缺省 16）、`title`（无障碍名 + 原生 tooltip）、`className`、`style`。找不到图标时返回 `null` 并告警一次；多色库在深色下自动改用 `-dark` 字形 | The icon element. Props: `name` (required, `library:name` or an official component name), `size` (preset or px, defaults to 16), `title` (accessible name plus native tooltip), `className`, `style`. Returns `null` with a one-off warning when nothing matches; colour libraries switch to the `-dark` glyph in dark mode |
+| `FontIcon` | `(props: FontIconProps) => JSX.Element \| null` | — | 只画字体图标的版本（props 同 `Icon`，`name` 必须是 `库名:图标名`）：**不吃官方 primitives**，供本包内的纯控件入口使用。插件界面一般用 `Icon` 就够 | Font-only variant (same props as `Icon`, but `name` must be `library:name`): it does **not** pull the official primitives package, so pure-control entries inside this package can draw font icons without it. Plugin UIs normally just use `Icon` |
 | `ICON_FONTS` | `Record<string, IconFontFace>` | — | 库注册表（key 就是 `name` 里冒号前那段，如 `common.base`）：`url`（在线样式地址）、`family`、`baseClass`、`prefix`，多色库另有 `color: true`。加库只改这里 | Library registry (the key is the part before the colon in `name`, e.g. `common.base`): `url` (online style address), `family`, `baseClass`, `prefix`, plus `color: true` for multicolour libraries. Adding a library means editing this |
 | `ICON_SIZES` | `{ sm: 14; md: 16; lg: 20; xl: 24 }` | — | 尺寸预设，`Icon` 的 `size` 可直接传 key | Size presets; `Icon` accepts the key directly |
 | `ensureIconFont` | `(id: IconFontId) => void` | — | 按库 id 保证只挂一条 `<link>`；地址变了直接改 `href`。`Icon` 首次渲染时自动调用，非浏览器环境静默跳过；多色库同时预取名字清单（供深色换字形用） | Guarantees exactly one `<link>` per library id, rewriting `href` when the address changed. Called automatically on first `Icon` render and silently skipped outside a browser; colour libraries also prefetch the name list used for the dark swap |

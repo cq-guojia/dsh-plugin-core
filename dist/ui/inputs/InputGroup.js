@@ -20,6 +20,7 @@
 import { createElement as h, useRef, useState } from 'react';
 import { Button, IconButton } from '../actions/Button.js';
 import { Input, withHint } from './Field.js';
+import { FontIcon } from '../display/font-icon.js';
 import { ensureComponentStyles } from '../infra/css.js';
 import { BUTTON_CSS } from '../actions/button-css.generated.js';
 import { FIELD_CSS } from './field-css.generated.js';
@@ -79,7 +80,7 @@ export function InputGroup(props) {
             key: 'undo',
             variant: 'plain',
             size,
-            icon: '↶',
+            icon: h(FontIcon, { name: 'common.base:chexiao', size: 14 }),
             label: undoLabel,
             disabled: disabled === true || undoStack.length === 0,
             onClick: undo,

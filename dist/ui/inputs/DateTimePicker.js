@@ -1,6 +1,7 @@
 import { createElement as h, useCallback, useEffect, useRef, useState, } from 'react';
 import { FloatingPortal, autoUpdate, flip, offset, shift, size as floatingSize, useFloating, } from '@floating-ui/react';
 import { Chevron } from '../infra/chevron.js';
+import { FontIcon } from '../display/font-icon.js';
 import { Button } from '../actions/Button.js';
 import { FieldHint } from '../display/FieldHint.js';
 import { useOverlayLocked } from '../infra/overlay.js';
@@ -58,26 +59,13 @@ function dayIso(d) {
 function fmtParts(p, precision) {
     return formatDateTimePrecision(formatDateTimeIso(p), precision);
 }
-/** 内联 SVG 图标（ui 零官方依赖，与 Picker 的 caret 同口径自绘）。 */
-function icon(paths, size) {
-    return h('svg', { width: size, height: size, viewBox: '0 0 16 16', fill: 'none', 'aria-hidden': true }, ...paths.map((d) => h('path', {
-        d,
-        stroke: 'currentColor',
-        'stroke-width': 1.5,
-        'stroke-linecap': 'round',
-        'stroke-linejoin': 'round',
-    })));
-}
-const ICON_CAL = icon([
-    'M2 4.5A1.5 1.5 0 0 1 3.5 3h9A1.5 1.5 0 0 1 14 4.5V6H2V4.5z',
-    'M2 6h12v8.5A1.5 1.5 0 0 1 12.5 16h-9A1.5 1.5 0 0 1 2 14.5V6z',
-    'M2 9.5h12',
-    'M5.5 1.5v3M10.5 1.5v3',
-], 14);
-const ICON_PREV_YEAR = icon(['M9 5L5.5 8 9 11', 'M12.5 5L9 8l3.5 3'], 14);
-const ICON_PREV_MONTH = icon(['M9.5 5L6 8l3.5 3'], 14);
-const ICON_NEXT_MONTH = icon(['M6.5 5L10 8l-3.5 3'], 14);
-const ICON_NEXT_YEAR = icon(['M7 5l3.5 3L7 11', 'M3.5 5L7 8l-3.5 3'], 14);
+/** 触发器上的日历（图标库字形，2026-11-14 换掉自绘路径）。 */
+const ICON_CAL = h(FontIcon, { name: 'common.base:riqi', size: 14 });
+// 年月前后：图标库字形（2026-11-14 换掉自绘路径），双箭头 = 年、单箭头 = 月。
+const ICON_PREV_YEAR = h(FontIcon, { name: 'common.base:zuoxiangshuangjiantou', size: 8 });
+const ICON_PREV_MONTH = h(FontIcon, { name: 'common.base:move-left', size: 8 });
+const ICON_NEXT_MONTH = h(FontIcon, { name: 'common.base:move-right', size: 8 });
+const ICON_NEXT_YEAR = h(FontIcon, { name: 'common.base:youxiangshuangjiantou', size: 8 });
 const ICON_UP = h(Chevron, { dir: 'up', size: 12 });
 const ICON_DOWN = h(Chevron, { size: 12 });
 /**

@@ -14,7 +14,8 @@
 // 核心没有的那一项 = ▾ 选层浮层，按兄弟项目 dsh-task-dispatch-table 的 `.dsh-tdt-sv-crumbs-*`
 // 逐像素照抄（间距 / 圆角 / 最大高度 / 空态），不自创度量。
 import { createElement as h, Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, } from 'react';
-import { IconChevronRightOutlineRegular, writeClipboard, FileTypeIcon, } from '../../ui/official.js';
+import { writeClipboard, FileTypeIcon } from '../../ui/official.js';
+import { Chevron } from '../../ui/infra/chevron.js';
 import { Button, IconButton } from '../../ui/actions/Button.js';
 import { workspaceList } from '../../ui/infra/host-data.js';
 import { useLocale } from '../../ui/infra/locale.js';
@@ -471,7 +472,7 @@ export function FileBrowser(props) {
             variant: 'plain',
             size: 'sm',
             className: `dshpc-fb__row-toggle${isOpen ? ' dshpc-fb__row-toggle--open' : ''}`,
-            icon: h(IconChevronRightOutlineRegular, null),
+            icon: h(Chevron, { dir: 'right', size: 8 }),
             label: isOpen ? tt('explorerCollapse') : tt('explorerExpand'),
             'aria-expanded': isOpen,
             onClick: (event) => {

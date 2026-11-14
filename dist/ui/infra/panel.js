@@ -11,6 +11,7 @@
  */
 import { createElement as h } from 'react';
 import { ensureComponentStyles } from './css.js';
+import { FontIcon } from '../display/font-icon.js';
 import { PANEL_CSS } from './panel-css.js';
 /** 皮肤载体：`dshpc-panel` + 档位类，别的地方不要手拼这两个类。 */
 export function PanelSurface(props) {
@@ -32,6 +33,6 @@ export function PanelClose(props) {
         className: `dshpc-panel__close${props.className === undefined ? '' : ` ${props.className}`}`,
         'aria-label': props.label,
         onClick: () => props.onClick(),
-    }, props.icon ?? '✕');
+    }, props.icon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }));
 }
 //# sourceMappingURL=panel.js.map

@@ -2,18 +2,21 @@
 //
 // 用法示范的就是规范形态 —— **结构写在页面里**（`<DockPanel` 声明），
 // `open()/close()` 只负责显隐，不把内容塞进调用里。
-import { createElement as h } from 'react'
+import { Icon } from '../../../dist/ui/display/Icon.js'
+
+import {
+  createElement as h,
+} from 'react'
 import {
   Chip,
   DockPanel,
   createPanelDock,
   type DockPanelProps,
 } from '../../../dist/ui/index.js'
+
 import {
-  IconClockOutlineRegular,
-  IconSparkleRegular,
-} from '@deepseek-ai/dsh-client-ui-primitives'
-import { t } from './i18n.js'
+  t,
+} from './i18n.js'
 
 export const demoDock = createPanelDock({ maxPanels: 3 })
 
@@ -34,7 +37,7 @@ function CustomHead(): ReturnType<typeof h> {
     h(
       'div',
       { style: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600 } },
-      h(IconSparkleRegular, null),
+      h(Icon, { name: 'common.base:AIdamoxing' }),
       t('dockCustomHeadTitle'),
     ),
     h(
@@ -52,8 +55,8 @@ const PANELS: DockPanelProps[] = [
     icon: h(
       'span',
       { style: { display: 'inline-flex', gap: '4px' } },
-      h(IconSparkleRegular, null),
-      h(IconClockOutlineRegular, null),
+      h(Icon, { name: 'common.base:AIdamoxing' }),
+      h(Icon, { name: 'common.base:shijian1' }),
     ),
     // 标题右侧：任意内容，不只按钮。
     extra: h(Chip, { tone: 'business', size: 'sm' }, t('dockPanelATag')),

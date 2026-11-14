@@ -11,6 +11,7 @@
  */
 import { createElement as h, type CSSProperties, type ReactNode } from 'react'
 import { ensureComponentStyles } from './css.js'
+import { FontIcon } from '../display/font-icon.js'
 import { PANEL_CSS } from './panel-css.js'
 
 /** 面板档位：居中模态 / 贴锚点面板 / 下拉菜单。 */
@@ -68,6 +69,6 @@ export function PanelClose(props: PanelCloseProps): ReactNode {
       'aria-label': props.label,
       onClick: () => props.onClick(),
     },
-    props.icon ?? '✕',
+    props.icon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }),
   )
 }

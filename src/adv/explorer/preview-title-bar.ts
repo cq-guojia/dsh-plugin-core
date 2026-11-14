@@ -8,11 +8,7 @@ import { createElement as h, type ReactNode } from 'react'
 import { IconButton } from '../../ui/actions/Button.js'
 import { MarqueeText } from '../../ui/display/MarqueeText.js'
 import { Segmented } from '../../ui/inputs/Segmented.js'
-import {
-  IconCheckOutlineRegular,
-  IconCopyOutlineRegular,
-  IconRefreshOutlineRegular,
-} from '../../ui/official.js'
+import { FontIcon } from '../../ui/display/font-icon.js'
 import { ensureComponentStyles } from '../../ui/infra/css.js'
 import type { Translate } from '../../utils/i18n.js'
 import { EXPLORER_CSS } from './explorer-css.js'
@@ -64,14 +60,14 @@ export function PreviewTitleBar(props: PreviewTitleBarProps): ReactNode {
     h(IconButton, {
       variant: 'plain',
       size: 'md',
-      icon: copied ? h(IconCheckOutlineRegular, { size: 14 }) : h(IconCopyOutlineRegular, { size: 14 }),
+      icon: h(FontIcon, { name: copied ? 'common.base:gou' : 'common.base:fuzhi', size: 14 }),
       label: tt('previewCopyPath'),
       onClick: onCopyPath,
     }),
     h(IconButton, {
       variant: 'plain',
       size: 'md',
-      icon: h(IconRefreshOutlineRegular, { size: 14 }),
+      icon: h(FontIcon, { name: 'common.base:shuaxin', size: 14 }),
       label: tt('previewRefresh'),
       onClick: onReload,
     }),

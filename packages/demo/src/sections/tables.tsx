@@ -1,5 +1,9 @@
-import { createElement as h, useState } from 'react'
-import { IconChevronDownOutlineRegular } from '@deepseek-ai/dsh-client-ui-primitives'
+import { Icon } from '../../../../dist/ui/display/Icon.js'
+import {
+  createElement as h,
+  useState,
+} from 'react'
+
 import {
   Checkbox,
   Chip,
@@ -10,8 +14,14 @@ import {
   type TableGroup,
   type TableRow,
 } from '../../../../dist/ui/index.js'
-import { DocApi, DocCode, Example } from '../doc.js'
-import { t } from '../i18n.js'
+import {
+  DocApi,
+  DocCode,
+  Example,
+} from '../doc.js'
+import {
+  t,
+} from '../i18n.js'
 
 /** 表格横滚外壳：细滚动条 + 底边 1px 让位都由 .dshpc-scroll-thin--x 统一给。
     横滚只让底、不让右（口径见 docs/development/style.md §滚动条让位）。 */
@@ -123,7 +133,7 @@ function personCell(person: Person): ReturnType<typeof h> {
 
 function rowsOf(): TableRow[] {
   const actions = h(IconButton, {
-    icon: h(IconChevronDownOutlineRegular, null),
+    icon: h(Icon, { name: 'common.base:move-down' }),
     label: 'Open study',
   })
   return PEOPLE.map((person) => ({

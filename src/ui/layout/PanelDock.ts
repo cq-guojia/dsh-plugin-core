@@ -14,6 +14,7 @@ import { Children, createElement as h, isValidElement, useEffect, useRef, useSta
 import { createPortal } from 'react-dom'
 import { t, type Translate } from '../../utils/i18n.js'
 import { startResizeLayoutWidth } from './resizer.js'
+import { FontIcon } from '../display/font-icon.js'
 import {
   DEFAULT_PANEL_ID,
   clampWidth,
@@ -426,7 +427,7 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
         'aria-label': tt('dockClose'),
         onClick: () => props.dock.close(pane.id, 'button'),
       },
-      pane.closeIcon ?? '✕',
+      pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }),
     )
   }
 
@@ -458,7 +459,7 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
         'aria-label': tt('dockClose'),
         onClick: () => props.dock.close(pane.id, 'button'),
       },
-      pane.closeIcon ?? '✕',
+      pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }),
     )
   }
 
@@ -483,8 +484,9 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
         'aria-label': `${label} · ${tt('dockExpand')}`,
         onClick: () => props.dock.expand(id),
       },
-      // 只有一个箭头，与收起钮同尺寸反向：收起钮 ›（往右收），耳朵 ‹（往左拉回来）。
-      h('span', { className: 'dshpc-dock__ear-arrow', 'aria-hidden': true }, '‹'),
+      // 只有一个箭头，与收起钮同尺寸反向：收起钮往右收，耳朵往左拉回来。
+      h('span', { className: 'dshpc-dock__ear-arrow', 'aria-hidden': true },
+        h(FontIcon, { name: 'common.base:move-left', size: 8 })),
     )
   })
   const earHost = ears.length === 0 ? null : earsHost()
@@ -534,7 +536,7 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
               'aria-label': tt('dockCollapse'),
               onClick: () => collapseWithAnim(pane.id),
             },
-            '›',
+            h(FontIcon, { name: 'common.base:move-right', size: 8 }),
           ),
           renderHeader(pane),
           headerCloseOf(pane),

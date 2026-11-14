@@ -12,6 +12,7 @@
 import { getTooltipRenderer } from '../infra/tooltip.js';
 import { createElement as h } from 'react';
 import { ensureComponentStyles } from '../infra/css.js';
+import { FontIcon } from './font-icon.js';
 import { HINT_CSS } from './hint-css.generated.js';
 /** 问号提示图标：hover / focus 浮出说明气泡（官方 Tooltip 渲染）。 */
 export function FieldHint(props) {
@@ -24,7 +25,7 @@ export function FieldHint(props) {
         tabIndex: 0,
         role: 'note',
         'aria-label': text,
-    }, '?');
+    }, h(FontIcon, { name: 'common.base:qm', size: 8 }));
     const renderer = getTooltipRenderer();
     // 宿主内 renderer 恒被注入（demo 与各插件启动时做一次）；未注入 ⇒ 非宿主环境，只出图标。
     if (renderer === undefined)

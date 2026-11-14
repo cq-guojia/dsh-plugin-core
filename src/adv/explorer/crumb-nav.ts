@@ -9,10 +9,7 @@
  */
 import { createElement as h, Fragment, type ReactNode, type RefObject } from 'react'
 import { Button, IconButton } from '../../ui/actions/Button.js'
-import {
-  IconChevronDownOutlineRegular,
-  IconChevronRightOutlineRegular,
-} from '../../ui/official.js'
+import { Chevron } from '../../ui/infra/chevron.js'
 import { MarqueeText } from '../../ui/display/MarqueeText.js'
 import { PanelClose } from '../../ui/infra/panel.js'
 import { ensureComponentStyles } from '../../ui/infra/css.js'
@@ -85,7 +82,7 @@ export function CrumbNav(props: CrumbNavProps): ReactNode {
           h(
             Fragment,
             { key: crumb.path },
-            index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null,
+            index > 0 ? h(Chevron, { dir: 'right', className: 'dshpc-fb__crumb-sep', size: 8 }) : null,
             crumbButton(crumb.label, () => onLoadDir(crumb.path)),
           ),
         )
@@ -99,7 +96,7 @@ export function CrumbNav(props: CrumbNavProps): ReactNode {
       h(IconButton, {
         variant: 'plain',
         size: 'md',
-        icon: h(IconChevronDownOutlineRegular, { size: 14 }),
+        icon: h(Chevron, { dir: 'down', size: 8 }),
         label: tt('explorerLevels'),
         'aria-expanded': menuOpen,
         onClick: onToggleMenu,
@@ -131,7 +128,7 @@ export function CrumbNav(props: CrumbNavProps): ReactNode {
                   h(
                     Fragment,
                     { key: crumb.path },
-                    index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null,
+                    index > 0 ? h(Chevron, { dir: 'right', className: 'dshpc-fb__crumb-sep', size: 8 }) : null,
                     crumbButton(crumb.label),
                   ),
                 ),

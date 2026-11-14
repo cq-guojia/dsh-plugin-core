@@ -9,7 +9,7 @@
  */
 import { createElement as h, Fragment } from 'react';
 import { Button, IconButton } from '../../ui/actions/Button.js';
-import { IconChevronDownOutlineRegular, IconChevronRightOutlineRegular, } from '../../ui/official.js';
+import { Chevron } from '../../ui/infra/chevron.js';
 import { MarqueeText } from '../../ui/display/MarqueeText.js';
 import { PanelClose } from '../../ui/infra/panel.js';
 import { ensureComponentStyles } from '../../ui/infra/css.js';
@@ -41,11 +41,11 @@ export function CrumbNav(props) {
         ? crumbButton(crumbs.length > 0 ? crumbs[crumbs.length - 1]?.label ?? tt('explorerRootName') : tt('explorerRootName'), undefined, true)
         : crumbs.length === 0
             ? crumbButton(tt('explorerRootName'), undefined, true)
-            : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null, crumbButton(crumb.label, () => onLoadDir(crumb.path))));
+            : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(Chevron, { dir: 'right', className: 'dshpc-fb__crumb-sep', size: 8 }) : null, crumbButton(crumb.label, () => onLoadDir(crumb.path))));
     return h('nav', { className: 'dshpc-fb__bar', 'aria-label': tt('explorerCrumbsAria') }, h('div', { className: 'dshpc-fb__menu-wrap' }, h(IconButton, {
         variant: 'plain',
         size: 'md',
-        icon: h(IconChevronDownOutlineRegular, { size: 14 }),
+        icon: h(Chevron, { dir: 'down', size: 8 }),
         label: tt('explorerLevels'),
         'aria-expanded': menuOpen,
         onClick: onToggleMenu,
@@ -62,7 +62,7 @@ export function CrumbNav(props) {
         // 隐藏测量条：与可见态完全同构的 crumb 按钮，确保溢出判定精确。
         h('span', { ref: measureRef, className: 'dshpc-fb__crumbs-measure', 'aria-hidden': true }, crumbs.length === 0
             ? crumbButton(tt('explorerRootName'))
-            : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(IconChevronRightOutlineRegular, { className: 'dshpc-fb__crumb-sep', size: 12 }) : null, crumbButton(crumb.label)))), visibleCrumbs), actions(pickNow, tt, onClose));
+            : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(Chevron, { dir: 'right', className: 'dshpc-fb__crumb-sep', size: 8 }) : null, crumbButton(crumb.label)))), visibleCrumbs), actions(pickNow, tt, onClose));
 }
 /** 越界（工作区外）：第一排整条换成只读完整路径，不给任何会失败的入口。 */
 export function PlainNav(props) {

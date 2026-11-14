@@ -32,7 +32,7 @@ const { names, prefix } = await loadIconFont('common.base')`
 
 const doc: DocTopic = {
   title: { zh: '图标', en: 'Icons' },
-  exports: ['Icon', 'ICON_FONTS', 'ICON_SIZES', 'ensureIconFont', 'loadIconFont'],
+  exports: ['Icon', 'FontIcon', 'ICON_FONTS', 'ICON_SIZES', 'ensureIconFont', 'loadIconFont'],
   sections: [
     {
       id: 'icons',
@@ -66,6 +66,10 @@ const doc: DocTopic = {
           zh: '传字符串的场合（例如 `taskNotifications` 的 `icon` 字段，核心只存不解释）直接用同一条协议：`\'common.base:jian\'`、`\'common.logo:github\'`、`\'IconWrapLinesOutlineRegular\'`，渲染端原样喂给 `<Icon name={…} />` 即可，不需要自己再拆冒号。',
           en: 'Where only a string travels (for example the `icon` field of `taskNotifications`, which the core stores but never interprets), the same convention applies: `\'common.base:jian\'`, `\'common.logo:github\'`, `\'IconWrapLinesOutlineRegular\'`. The renderer feeds it straight into `<Icon name={…} />`; nothing has to split on the colon itself.',
         },
+        {
+          zh: '**`Icon` 与 `FontIcon` 的分工**：`Icon` 两类来源都管，代价是它静态引官方 primitives；纯控件入口不许带这份重依赖（`test/entry-isolation.test.mjs`），所以库内部的控件画字体图标一律走 `FontIcon` —— 它只渲染字体字形，props 与 `Icon` 相同（库名不得省略）。插件界面按普通场景用 `Icon` 即可；只有在写「不该拖进官方包」的入口时才需要 `FontIcon`。',
+          en: '**`Icon` vs `FontIcon`**: `Icon` handles both sources, at the cost of statically importing the official primitives package. Pure-control entries must not carry that weight (`test/entry-isolation.test.mjs`), so controls inside this package draw font icons through `FontIcon` — same props as `Icon` (library prefix still mandatory), but it only renders font glyphs. Plugin UIs normally use `Icon`; `FontIcon` is for entries that must stay free of the official package.',
+        },
       ],
       code: [
         { id: 'icons-usage', lang: 'tsx', src: usageExample },
@@ -80,6 +84,12 @@ const doc: DocTopic = {
               type: '(props: IconProps) => JSX.Element | null',
               def: '—',
               desc: { zh: '图标元素。props：`name`（必填，`库名:图标名` 或官方组件名）、`size`（预设名或 px，缺省 16）、`title`（无障碍名 + 原生 tooltip）、`className`、`style`。找不到图标时返回 `null` 并告警一次；多色库在深色下自动改用 `-dark` 字形', en: 'The icon element. Props: `name` (required, `library:name` or an official component name), `size` (preset or px, defaults to 16), `title` (accessible name plus native tooltip), `className`, `style`. Returns `null` with a one-off warning when nothing matches; colour libraries switch to the `-dark` glyph in dark mode' },
+            },
+            {
+              name: 'FontIcon',
+              type: '(props: FontIconProps) => JSX.Element | null',
+              def: '—',
+              desc: { zh: '只画字体图标的版本（props 同 `Icon`，`name` 必须是 `库名:图标名`）：**不吃官方 primitives**，供本包内的纯控件入口使用。插件界面一般用 `Icon` 就够', en: 'Font-only variant (same props as `Icon`, but `name` must be `library:name`): it does **not** pull the official primitives package, so pure-control entries inside this package can draw font icons without it. Plugin UIs normally just use `Icon`' },
             },
             {
               name: 'ICON_FONTS',

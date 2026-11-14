@@ -13,6 +13,7 @@
 import { createElement as h, useEffect, useRef, useState, type ReactNode } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
 import { ensureComponentStyles } from '../infra/css.js'
+import { FontIcon } from '../display/font-icon.js'
 import { SIDE_PANEL_CSS } from '../infra/side-panel-css.js'
 import { SIDE_SHEET_CSS } from './side-sheet-css.js'
 import { OverlayLockCatcher, OverlayLockedProvider, OverlayMask, useEscapeClose, useLockGuards } from '../infra/overlay.js'
@@ -146,7 +147,7 @@ export function SideSheet(props: SideSheetProps): ReactNode {
             'aria-label': tt('dockClose'),
             onClick: () => props.onClose?.(),
           },
-          props.closeIcon ?? '✕',
+          props.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }),
         )
 
   const renderHeader = (): ReactNode => {

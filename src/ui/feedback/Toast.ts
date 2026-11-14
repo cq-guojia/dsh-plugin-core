@@ -8,6 +8,7 @@ import { createElement as h } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { Toaster, toast } from 'sonner'
 import { Button } from '../actions/Button.js'
+import { FontIcon } from '../display/font-icon.js'
 import { claimToastHost, type ToastHost } from './toast-host.js'
 import {
   subscribeToasts,
@@ -152,7 +153,7 @@ function createToasterHost(): ToastHost {
                 fontWeight: 700,
               },
             },
-            palette.glyph,
+            h(FontIcon, { name: palette.glyph, size: 13 }),
           ),
           h(
             'div',
@@ -224,16 +225,16 @@ function notifyPalette(variant: ToastVariant, theme: 'light' | 'dark'): {
 } {
   switch (variant) {
     case 'success':
-      return { bg: '#16a34a', fg: '#ffffff', glyph: '✓' }
+      return { bg: '#16a34a', fg: '#ffffff', glyph: 'common.base:gou' }
     // error / warning 用哑光降饱和档：实心卡上加透明度会透出底层内容、伤可读性，
     // 故改为压暗一档的色相（设计师口径：冷静的严重度，而非警报荧光）。
     case 'error':
-      return { bg: '#c0392b', fg: '#ffffff', glyph: '✕' }
+      return { bg: '#c0392b', fg: '#ffffff', glyph: 'common.base:guanbi' }
     case 'warning':
-      return { bg: '#e0922f', fg: '#1f2937', glyph: '!' }
+      return { bg: '#e0922f', fg: '#1f2937', glyph: 'common.base:warn' }
     default:
       return theme === 'dark'
-        ? { bg: '#3f3f46', fg: '#fafafa', glyph: 'i' }
-        : { bg: '#f4f4f5', fg: '#18181b', glyph: 'i' }
+        ? { bg: '#3f3f46', fg: '#fafafa', glyph: 'common.base:info' }
+        : { bg: '#f4f4f5', fg: '#18181b', glyph: 'common.base:info' }
   }
 }

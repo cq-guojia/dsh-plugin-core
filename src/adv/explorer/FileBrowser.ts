@@ -26,11 +26,8 @@ import {
   type CSSProperties,
   type ReactNode,
 } from 'react'
-import {
-  IconChevronRightOutlineRegular,
-  writeClipboard,
-  FileTypeIcon,
-} from '../../ui/official.js'
+import { writeClipboard, FileTypeIcon } from '../../ui/official.js'
+import { Chevron } from '../../ui/infra/chevron.js'
 import { Button, IconButton } from '../../ui/actions/Button.js'
 import { workspaceList } from '../../ui/infra/host-data.js'
 import { useLocale } from '../../ui/infra/locale.js'
@@ -603,7 +600,7 @@ export function FileBrowser(props: FileBrowserProps): ReturnType<typeof h> {
               variant: 'plain',
               size: 'sm',
               className: `dshpc-fb__row-toggle${isOpen ? ' dshpc-fb__row-toggle--open' : ''}`,
-              icon: h(IconChevronRightOutlineRegular, null),
+              icon: h(Chevron, { dir: 'right', size: 8 }),
               label: isOpen ? tt('explorerCollapse') : tt('explorerExpand'),
               'aria-expanded': isOpen,
               onClick: (event: { stopPropagation: () => void }) => {
