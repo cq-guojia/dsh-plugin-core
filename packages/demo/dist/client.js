@@ -251,7 +251,7 @@ function darkGlyphName(glyph, names) {
 // dist/ui/display/font-icon.js
 var ICON_FONTS = {
   "common.base": {
-    url: "https://at.alicdn.com/t/c/font_5252971_1lzmstl432b.css",
+    url: "https://at.alicdn.com/t/c/font_5252971_jpekkiqjy2.css",
     family: "koc-i-common-base",
     baseClass: "koc-i-common-base",
     prefix: "koc-i-common-base-"
@@ -74598,9 +74598,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.27"}`],
-            [t3("buildDemo"), `v${"0.35.27"}`],
-            [t3("buildStamp"), "261115-001029-726"]
+            [t3("buildCore"), `v${"0.35.28"}`],
+            [t3("buildDemo"), `v${"0.35.28"}`],
+            [t3("buildStamp"), "261115-001448-105"]
           ].map(
             ([label, value]) => (0, import_react107.createElement)(
               "tr",
@@ -74918,9 +74918,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react109.createElement)("span", null, `core v${"0.35.27"}`),
-          (0, import_react109.createElement)("span", null, `demo v${"0.35.27"}`),
-          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-001029-726")
+          (0, import_react109.createElement)("span", null, `core v${"0.35.28"}`),
+          (0, import_react109.createElement)("span", null, `demo v${"0.35.28"}`),
+          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-001448-105")
         )
       )
     ),

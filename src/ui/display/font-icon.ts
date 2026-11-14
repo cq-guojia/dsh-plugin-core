@@ -53,7 +53,7 @@ export interface IconFontFace {
  */
 export const ICON_FONTS = {
   'common.base': {
-    url: 'https://at.alicdn.com/t/c/font_5252971_1lzmstl432b.css',
+    url: 'https://at.alicdn.com/t/c/font_5252971_jpekkiqjy2.css',
     family: 'koc-i-common-base',
     baseClass: 'koc-i-common-base',
     prefix: 'koc-i-common-base-',
