@@ -1,7 +1,7 @@
 # 20261114-1721-1c7b-workspacepicker-支持对象返回与取值口径: WorkspacePicker 支持对象返回与取值口径
 
 - **Tags**: 选择器, 工作区, 接口
-- **Status**: doing · 2026-11-14 17:22:30 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-14 17:30:08 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-14 17:21:56 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -21,14 +21,14 @@
 
 ## To Do
 
-- 与用户敲定 API 形态（字符串口径 + 对象怎么给），未定前不改代码。
-- 定了之后：改 `src/ui/inputs/WorkspacePicker.ts`、同目录导出类型、`docs/api/ui.doc.ts`、
-  demo 示例、单测、`pnpm run build` / `pnpm test` / `typecheck` / `build:demo`。
+- `docs/api/ui.doc.ts` 的 props 表还没写 `valueKey` 与 onChange 第二参（用户明确说对外页面先不改）；
+  真要对外写的时候再补这一处。
+- 消费方升级时按新签名改调用（用户：兼容不做，升级时让他们改）。
 
 ## Next
 
-先出方案给用户选（见下轮对话），落点 `src/ui/inputs/WorkspacePicker.ts:13-43`（props）
-与 `:50`（`value: w.workspaceId` 唯一取值处）。
+交用户验收：`valueKey="path"` + `onChange={(v, ws) => …}` 是目标用法；
+验收看 `src/ui/inputs/WorkspacePicker.ts:36-48` 的 props 注释与 `test/workspace-picker.test.mjs`。
 
 ## Process
 
@@ -47,7 +47,18 @@
 
 ## Conclusion
 
-<!-- What got done, what got left behind -->
+按方案 B 落地（用户 2026-11-15 拍板，明确不做兼容、对外页面先不导出）：
+
+- `src/ui/inputs/WorkspacePicker.ts`：新增 `valueKey?: 'id' | 'path' | 'title'`（默认 `id`），
+  `value` / `onChange` 第一参按该口径发字符串；`onChange` **第二参**给完整 `HostWorkspaceItem`
+  （多选给数组、与第一参同序；「所有工作区」与清空给 `undefined`）。消费方想用哪个字段自己取。
+- 新增 `workspaceOptionsOf(items, key)`：缺字段（宿主没给 path）或与前面撞值的行**置灰保留**，
+  不静默丢、也不回落别的口径。`onChange` 的「值 → 对象」只查当前快照，查不到给 `undefined`，不编造。
+- `src/ui/index.ts` 追加导出 `type WorkspaceKey`；未传 `valueKey` 的调用方行为与旧版完全一致。
+- 新增 `test/workspace-picker.test.mjs`（置灰规则 + `valueKey="path"` 受控值匹配）。
+- 验证：`pnpm run build` → `pnpm test`（519 全过）→ `pnpm run typecheck` → `pnpm run build:demo` →
+  `codelint.py`（L0-L5 全过）。
+- 未做：`docs/api/ui.doc.ts` 文档页、demo 示例（用户说不改）。
 
 ## Execution Log
 
@@ -55,3 +66,4 @@
      Backfill with: progress log --id 20261114-1721-1c7b-workspacepicker-支持对象返回与取值口径 --note "...". -->
 - 2026-11-14 17:21:56 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-11-14 17:22:30 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 接单并落实现状：WorkspacePicker.ts:50 只发 workspaceId，host-data.ts:72-85 已握有 path/title/sessionIds，Picker 只能吃 string；待与用户敲定 API 形态
+- 2026-11-14 17:30:08 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已交付待验收：WorkspacePicker 加 valueKey(id/path/title) + onChange 第二参给完整工作区对象；workspaceOptionsOf 缺字段/撞值置灰；新测 workspace-picker.test.mjs，build/test 519/typecheck/build:demo/codelint 全过；docs 与 demo 按用户要求未改
