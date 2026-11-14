@@ -1,8 +1,9 @@
 # 20261114-1721-1c7b-workspacepicker-支持对象返回与取值口径: WorkspacePicker 支持对象返回与取值口径
 
 - **Tags**: 选择器, 工作区, 接口
-- **Status**: doing · 2026-11-14 17:33:15 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: done · 2026-11-14 17:35:22 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-14 17:21:56 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-14 17:35:22 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -68,3 +69,4 @@
 - 2026-11-14 17:22:30 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 接单并落实现状：WorkspacePicker.ts:50 只发 workspaceId，host-data.ts:72-85 已握有 path/title/sessionIds，Picker 只能吃 string；待与用户敲定 API 形态
 - 2026-11-14 17:30:08 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已交付待验收：WorkspacePicker 加 valueKey(id/path/title) + onChange 第二参给完整工作区对象；workspaceOptionsOf 缺字段/撞值置灰；新测 workspace-picker.test.mjs，build/test 519/typecheck/build:demo/codelint 全过；docs 与 demo 按用户要求未改
 - 2026-11-14 17:33:15 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 文档已补 valueKey/onChange 第二参并重新生成 docs/api/ui.md；build/test 519/typecheck/build:demo/codelint 全过；核心+demo 同升 0.35.30，commit 14338332 已推 main，tag v0.35.30 已推；任务仍在办待结案
+- 2026-11-14 17:35:22 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed: WorkspacePicker 新增 valueKey(id/path/title) 和 onChange 第二参完整工作区对象，补置灰逻辑与测试，发布 v0.35.30
