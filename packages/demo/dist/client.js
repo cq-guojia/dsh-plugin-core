@@ -53,6 +53,100 @@ var Official = PrimitiveNamespace;
 // dist/ui/display/font-icon.js
 var import_react2 = require("react");
 
+// dist/design/tokens-css.generated.js
+var TOKENS_CSS_TEMPLATE = '\n/* \u2500\u2500 \u6587\u5B57\uFF08\u5BBF\u4E3B label \u56DB\u6863 + \u53CD\u8272\u9762\u7528\u5B57\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\nbody{\n  --dshpc-fg:var(--dsw-alias-label-primary,#1f2328);\n  --dshpc-fg-2:var(--dsw-alias-label-secondary,#5c6370);\n  --dshpc-fg-3:var(--dsw-alias-label-tertiary,#767d87);\n  --dshpc-fg-4:var(--dsw-alias-label-caption,#9aa1ab);\n  --dshpc-fg-dim:var(--dsw-alias-label-dimmed,#b9bfc7);\n  /* \u53CD\u8272\u9762\u4E0A\u7684\u5B57\uFF08\u5B9E\u5FC3\u94AE / \u89D2\u6807\uFF09\uFF1A\u6697\u8272\u4E0B\u662F bluish-1000\uFF0C\u6545\u7528 -foreground \u800C\u975E -inverted */\n  --dshpc-fg-inverse:var(--dsw-alias-label-primary-foreground,#fff);\n\n  /* \u2500\u2500 \u9762\uFF08\u5BBF\u4E3B bg-layer \u4E09\u6863 + \u4E0B\u6C89\u8F68\u9053\u5E95\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-surface-1:var(--dsw-alias-bg-layer-1,#fff);\n  --dshpc-surface-2:var(--dsw-alias-bg-layer-2,#fff);\n  --dshpc-surface-3:var(--dsw-alias-bg-layer-3,#fff);\n  /* \u300C\u9009\u4E2D\u4EAE\u7247\u300D\u7684\u5E95\u76D8\u8272\uFF08\u914D --dshpc-shadow-raised \u7528\uFF09 */\n  --dshpc-surface-raised:var(--dsw-alias-bg-layer-1,#fff);\n  /* \u8F68\u9053 / \u4E0B\u6C89\u5E95\uFF08\u5B98\u65B9\u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u7528\u7684\u5C31\u662F\u8FD9\u6761\uFF09 */\n  --dshpc-surface-sunken:var(--dsw-alias-interactive-bg-hover,rgba(38,49,72,.06));\n  /* \u6574\u9875 / \u7F16\u8F91\u5668\u5E95\uFF08bg-base\uFF09 */\n  --dshpc-surface-base:var(--dsw-alias-bg-base,#fff);\n  /* \u81EA\u7ED8\u6D6E\u5C42 / \u83DC\u5355\u5361\u7684\u4E0D\u900F\u660E\u5E95\uFF08= base\uFF1B\u4E0D\u8981\u7528\u534A\u900F\u660E\u7684 specific-menu\uFF09 */\n  --dshpc-surface-menu:var(--dshpc-surface-base);\n  /* markdown \u4EE3\u7801\u5757\u9762 / \u5B57\u4F53\uFF08\u4F1A\u8BDD\u955C\u50CF\u91CC\u7528\u5230\uFF09 */\n  --dshpc-code-surface:var(--dsw-alias-markdown-code-block,rgba(128,128,128,.10));\n  --dshpc-code-font:var(--dsw-font-markdown-code-block-small,12px/18px var(--ds-font-family-code,monospace));\n  /* \u8B66\u544A\u6587\u5B57\u8272\uFF08\u5BBF\u4E3B state-warn-label\uFF09 */\n  --dshpc-warning-label:var(--dsw-alias-state-warn-label,#f5a623);\n  /* \u56FA\u5B9A\u4E2D\u6027\u5B9E\u9762\uFF08\u81EA\u7ED8\u6D6E\u5C42\u3001\u6DF1\u8272\u4E3B\u9898\u4E0B\u5FC5\u987B\u81EA\u5DF1\u53D8\u7684\u90A3\u51E0\u4E2A\uFF09\u2014\u2014\u53EA\u6709\u5B83\u9700\u8981\u6697\u8272\u8986\u76D6 */\n  --dshpc-solid:var(--dsw-static-neutral-00,#fff);\n  --dshpc-on-solid:var(--dsw-alias-label-primary,#1f2328);\n  /* \u4EA4\u4ED8\u6587\u4EF6\u5361\u90A3\u79CD\u300C\u6D45\u5E95\u76D8 + hover \u52A0\u6DF1\u300D\u4E24\u62CD */\n  --dshpc-plate:var(--dsw-static-neutral-50,#fafafa);\n  --dshpc-plate-hover:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u26A0\uFE0F \u8FD9\u4E9B**\u56FA\u5B9A\u4E2D\u6027\u9762\u4E00\u5F8B\u7528 rgba \u5B57\u9762\u91CF**\uFF082026-10-19 \u771F\u673A\u6559\u8BAD\uFF09\uFF1A\u4E0D\u8981\u5199\u6210\n     \u300Crgba \u56DE\u9000\u884C + \u5D4C --dsw-static-* \u7684 color-mix \u884C\u300D\u4E24\u6761\u540C\u540D\u58F0\u660E\u2014\u2014\u81EA\u5B9A\u4E49\u5C5E\u6027**\u540E\u8005\u6052\u80DC**\uFF0C\n     \u54EA\u6015\u5B83\u7684\u503C\u5728\u5BBF\u4E3B\u91CC\u7B97\u4E0D\u51FA\u6765\uFF08static \u53D8\u91CF invalid\uFF09\u21D2 \u6574\u6761 token \u4F5C\u5E9F\u3001rgba \u515C\u5E95\u4E00\u8D77\u88AB\u5E9F\uFF0C\n     0.2.6 \u91CC Segmented \u8F68\u9053\u5168\u900F\u660E\u5C31\u662F\u8FD9\u4E48\u6765\u7684\u3002\u8981\u8DDF\u5BBF\u4E3B\u4E3B\u9898\u8054\u52A8\u7684\u9762\u7528 alias token\uFF08\u90A3\u4E9B\u5B9E\u6D4B\u6709\u6548\uFF09\u3002 */\n  --dshpc-icon-plate:rgba(255,255,255,.5);\n  /* \u8868\u5934\u5E95\uFF1A\u6D45\u8272\u4E3B\u9898**\u504F\u6DF1**\uFF0C\u4E14\u5FC5\u987B**\u6BD4\u6591\u9A6C\u7EB9\uFF08--dshpc-plate\uFF09\u518D\u6DF1\u4E00\u6863**\u2014\u2014\n     \u4E24\u8005\u4E0D\u80FD\u649E\u8272\uFF08\u7528\u6237 2026-10-02\uFF1A\u8868\u5934\u8DDF\u6591\u9A6C\u7EB9\u4E00\u6A21\u4E00\u6837\uFF09\u3002 */\n  --dshpc-head-bg:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u8868\u683C\u5E95 / \u884C hover\uFF082026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u8868\u5934\u4E0E\u901A\u680F**\u4E92\u6362**\u5E95\u8272\uFF09\uFF1A\n     \u8868\u5934\u9ED8\u8BA4\u5E95 = \u901A\u680F\u539F\u6765\u90A3\u5C42\u7070\uFF08--dshpc-surface-sunken\uFF0C\u8DDF\u7740\u5BBF\u4E3B\u4EA4\u4E92\u9762\u8D70\uFF09\uFF1B\n     \u901A\u680F\u9ED8\u8BA4\u5E95 = \u8868\u5934\u539F\u6765\u90A3\u8272\uFF08\u4EAE #f6f8fa / \u6697 #151b23\uFF0C\u53C2\u8003\u56FE\u5B9E\u6D4B\uFF0C\u4E0E\u6DF1\u8272\u6BB5\u540C\u6E90\uFF09\uFF1B\n     \u884C hover \u662F\u300C\u4E00\u5C42\u6781\u6DE1\u7684\u9ED1\u300D\u22481.5%\uFF08\u7528\u6237\uFF1A\u518D\u6D45\u4E00\u534A\uFF0C\u8981\u7279\u522B\u6DE1\uFF09\u3002 */\n  --dshpc-table-head-bg:var(--dshpc-surface-sunken);\n  --dshpc-table-banner-bg:#f6f8fa;\n  --dshpc-table-row-hover:rgba(15,15,15,.015);\n  /* \u56FE\u6807\u5C0F\u5E95\u677F\uFF08\u4EA7\u51FA\u7269\uFF09\uFF1A\u6D45\u8272\u4E0B\u8981**\u770B\u5F97\u89C1**\uFF08\u539F\u5148\u53D6 plate \u21D2 \u5728\u767D\u5E95\u4E0A\u7B49\u4E8E\u6CA1\u6709\uFF09\uFF1Bhover \u52A0\u500D\u3002 */\n  --dshpc-chip-bg:rgba(15,15,15,.07);\n  --dshpc-chip-bg-hover:rgba(15,15,15,.14);\n  /* \u5C55\u5F00\u884C\uFF1A**\u5E26\u900F\u660E\u5EA6\u7684\u84DD**\u2014\u2014\u4E0D\u662F\u7070\u3001\u4E5F\u4E0D\u662F\u7EAF\u8272\uFF0C\u900F\u51FA\u5361\u7247\u5E95\u8272\uFF0C\u4E00\u773C\u770B\u51FA\u300C\u8FD9\u662F\u5C55\u5F00\u7684\u300D\n     \uFF08\u7528\u6237 2026-10-02\uFF1A\u7070\u8272\u8DDF\u6591\u9A6C\u7EB9\u5206\u4E0D\u51FA\u6765\uFF09\u3002\u5185\u5BB9\u533A\u518D\u6DE1\u4E00\u6863\uFF0C\u5F62\u6210\u300C\u884C\u6DF1 / \u5185\u5BB9\u6D45\u300D\u7684\u533A\u9694\u3002 */\n  --dshpc-open-bg:rgba(37,99,235,.10);\n  --dshpc-open-bg-soft:rgba(37,99,235,.05);\n  --dshpc-card-hover:rgba(37,99,235,.07);\n\n  /* \u2500\u2500 \u63CF\u8FB9\u56DB\u6863\uFF08\u5BBF\u4E3B\u771F\u503C\uFF1Al1 4% / l2 10% / l3 12% / l4 16%\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-border-faint:var(--dsw-alias-border-l1,#0000000a);\n  --dshpc-border:var(--dsw-alias-border-l2,#0000001a);\n  --dshpc-border-strong:var(--dsw-alias-border-l3,#0000001f);\n  --dshpc-border-heavy:var(--dsw-alias-border-l4,#00000029);\n\n  /* \u2500\u2500 \u54C1\u724C / \u8BED\u4E49\u8272 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u54C1\u724C\u300C\u9762\u300D\u8272\uFF1A\u660E\u8272\u8FD1\u9ED1\u3001\u6697\u8272\u8FD1\u767D\uFF08\u5B98\u65B9 Switch \u9009\u4E2D\u6001\u5373\u6B64\uFF09\uFF0C**\u4E0D\u662F\u84DD\u8272** */\n  --dshpc-accent:var(--dsw-alias-brand-primary,#0f1115);\n  /* \u84DD\u8272\uFF1A\u5F3A\u8C03 / \u9009\u4E2D / \u7126\u70B9\uFF0C\u4E00\u5F8B\u8D70\u8FD9\u6761 */\n  --dshpc-business:var(--dsw-alias-state-business-primary,#3b5bdb);\n  --dshpc-success:var(--dsw-alias-state-success-primary,#22c55e);\n  /* \u26A0\uFE0F \u662F state-warn\uFF08\u4E0D\u662F state-warning\uFF0C\u540E\u8005\u5BBF\u4E3B\u65E0\u6B64\u5B9A\u4E49\uFF09 */\n  --dshpc-warning:var(--dsw-alias-state-warn-primary,#f59e0b);\n  --dshpc-danger:var(--dsw-alias-state-error-primary,#ec1313);\n  --dshpc-link:var(--dsw-alias-link,#3b5bdb);\n  /* \u8BED\u4E49\u8272**\u5B9E\u9762**\u4E0A\u7684\u5B57\uFF08\u89D2\u6807 / \u5B9E\u5FC3\u63D0\u793A\uFF09\uFF1A\u5BBF\u4E3B\u7EA2\u7EFF\u9EC4\u4E09\u8272\u90FD\u662F\u4E2D\u8C03 \u21D2 \u767D\u5B57\u4E24\u4E2A\u4E3B\u9898\u90FD\u53EF\u8BFB\uFF0C\n     \u6545\u8FD9\u662F\u4E00\u6761\u4E0E\u4E3B\u9898\u65E0\u5173\u7684\u5E38\u91CF\uFF1B\u4E0D\u8981\u62FF --dshpc-fg-inverse \u9876\u2014\u2014\u5B83\u5728\u6697\u8272\u4E0B\u662F\u8FD1\u9ED1\uFF0C\u538B\u5728\u7EA2\u5E95\u4E0A\u770B\u4E0D\u6E05\u3002 */\n  --dshpc-on-signal:#fff;\n  /* \u9EC4\u5E95\u4E0A\u7684\u5B57\uFF1A\u9EC4\u8272\u662F\u4E2D\u9AD8\u660E\u5EA6\uFF0C\u767D\u5B57\u770B\u4E0D\u6E05 \u21D2 \u56FA\u5B9A\u6DF1\u8272\uFF08\u4E0E\u4E3B\u9898\u65E0\u5173\uFF09\u3002 */\n  --dshpc-on-warning:#1f2328;\n  /* \u544A\u8B66\u4E25\u91CD\u5EA6\u7684\u5706\u70B9\u5E95\u8272\uFF082026-11-03 \u4ECE feedback.css \u6536\u5230\u8FD9\u91CC\uFF09\u3002\n     \u4E0E\u4E3B\u9898\u65E0\u5173\u7684\u4E00\u7EC4\u5E38\u91CF\uFF1A\u8FD9\u51E0\u4E2A\u8272\u8981\u5728\u4EFB\u610F\u5E95\u8272\u4E0A\u90FD\u8BA4\u5F97\u51FA\u6765\uFF0C\u6240\u4EE5**\u4E0D\u8DDF\u5BBF\u4E3B state \u8272\u8D70**\n     \uFF08\u5BBF\u4E3B state-warn-primary \u504F\u4EAE\uFF0C\u538B\u767D \u2715 \u770B\u4E0D\u6E05\uFF09\u3002\u8BED\u4E49\u8272\u6539\u52A8\u8BF7\u53EA\u6539\u8FD9\u91CC\u3002 */\n  --dshpc-sev-info:#2563eb;\n  --dshpc-sev-success:#16a34a;\n  --dshpc-sev-warning:#d97706;\n  --dshpc-sev-error:#dc2626;\n\n  /* \u2500\u2500 \u5B9E\u5FC3\u6309\u94AE\u7684 hover / active \u6D3E\u751F\u6001\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     \u539F\u5B9E\u73B0\u662F :hover \u76F4\u63A5\u538B opacity .9\uFF1A\u9ED1\u5E95\u538B 10% \u51E0\u4E4E\u770B\u4E0D\u51FA\u6765\uFF0C\u7528\u6237\u539F\u8BDD\u300C\u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\u3002\n     \u21D2 \u6539\u6210\u5BF9\u5E95\u8272\u505A**\u660E\u786E\u7684\u6DF7\u8272**\uFF08\u538B 22% / 34%\uFF09\uFF0C\u4E0D\u7528 opacity\uFF1A\n       \xB7 \u4EAE\u8272\u4E3B\u9898\uFF1A\u9ED1\u5E95\uFF08--dshpc-accent\uFF09\u63BA\u767D\u63D0\u4EAE\uFF1B\u7EA2 / \u7EFF / \u9EC4 / \u84DD\u5E95\u63BA\u9ED1\u538B\u6DF1\uFF1B\n       \xB7 \u6697\u8272\u4E3B\u9898\uFF1A\u53CD\u8FC7\u6765\uFF08\u6697\u5E95\u63BA\u767D\u3001\u4EAE\u5E95\u63BA\u9ED1\uFF09\u3002\n     \u6DF7\u8272\u5BF9\u8C61\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272\u5B57\u9762\u91CF**\uFF08#fff / #000\uFF09\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B static-neutral \u662F\u5426\u5B58\u5728\uFF1B\n     \u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u6574\u6761\u58F0\u660E\u4F5C\u5E9F \u21D2 \u56DE\u843D\u5404\u6863\u539F\u8272\uFF08\u53EF\u63A5\u53D7\uFF1A\u4ECD\u53EF\u70B9\uFF0C\u53EA\u662F\u6CA1\u6709 hover \u53CD\u9988\uFF09\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 78%,#ffffff);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 64%,#ffffff);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#000000);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#000000);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#000000);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#000000);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#000000);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#000000);\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#000000);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#000000);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF1A\u72B6\u6001\u8272\u7CFB\u7684\u300C\u4E00\u5757\u5E95\u8272\u300D\u2014\u2014\u6267\u884C\u8BB0\u5F55\u9875\u6BCF\u6761\u6D41\u6C34\u8D26\u7684\u5757\u5E95\u5C31\u662F\u5B83\n     \uFF08\u7528\u6237 2026-10-04\uFF1A\u6B63\u5E38\u6001\u7ED9\u540C\u8272\u7CFB\u5F88\u6D45\u7684\u900F\u660E\u5E95\u3001\u5931\u8D25\u7528\u7EA2\u5E95\u900F\u51FA\u6765\uFF09\u3002\n     \u7528 \u300Ccolor-mix\u300D \u73B0\u7B97\u800C\u4E0D\u5199\u6B7B rgba\uFF1A\u72B6\u6001\u8272\u672C\u8EAB\u8DDF\u968F\u5BBF\u4E3B alias\uFF0C\u4E3B\u9898\u4E00\u6362\u81EA\u52A8\u6210\u7ACB\u3002\n     \u26A0\uFE0F **\u6DF1\u8272\u4E0B\u8981\u66F4\u6DE1**\uFF1A\u7528\u6237 2026-10-04\u300C\u6DF1\u8272\u98CE\u683C\u7684\u7EFF\u8272\u548C\u7EA2\u8272\u597D\u50CF\u90FD\u6709\u70B9\u6DF1\u300D\u21D2 dark \u6BB5\n     \u628A\u8FD9\u56DB\u6761\u538B\u5230 5%\uFF08\u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF09\uFF1B\u6D45\u8272\u6BB5\u7EF4\u6301 8%\u3002\u4E24\u7AEF\u5404\u81EA\u7ED9\u503C\uFF0C\u4E0D\u5171\u7528\u4E00\u6761\u66F2\u7EBF\u3002\n     \u547D\u540D\u6536\u5728 tokens.ts \u5355\u70B9\uFF08\u672C\u4ED3\u786C\u89C4\u77E9\uFF1A\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u81EA\u9020 --dshpc-*\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 8%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 8%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 8%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 8%,transparent);\n\n  /* \u2500\u2500 \u6269\u5C55\u8BED\u4E49\u8272\uFF082026-10-29 \u7528\u6237\u62CD\u677F\uFF1A\u5206\u7C7B / \u56FE\u8868\u5E38\u7528\u8272\u516B\u652F\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     \u5BBF\u4E3B\u65E0\u5BF9\u5E94 alias \u21D2 \u5199\u6B7B hex\uFF08\u4E0D\u8DDF\u968F\u5BBF\u4E3B\u6362\u80A4\uFF09\uFF1B\u5B9E\u5FC3\u9762\u5B57\u8272\u7EDF\u4E00\u8D70 --dshpc-on-signal\uFF08\u767D\uFF09\uFF0C\n     \u56E0\u516B\u652F\u660E\u5EA6\u90FD\u4F4E\u4E8E\u9EC4 / \u9752\u67E0\uFF0C\u767D\u5B57\u4E24\u4E3B\u9898\u5747 \u22654.5:1 \u53EF\u8BFB\u3002\u6BCF\u6761\u81EA\u5E26 hover/active/soft \u6D3E\u751F\uFF1B\n     \u6697\u8272\u6BB5\u53EA\u8986\u76D6\u6D3E\u751F\uFF08base \u5199\u6B7B\u3001\u4E24\u4E3B\u9898\u540C\u503C\uFF09\u3002 */\n  --dshpc-purple:#9333ea;\n  --dshpc-purple-hover:color-mix(in srgb,var(--dshpc-purple) 78%,#000000);\n  --dshpc-purple-active:color-mix(in srgb,var(--dshpc-purple) 64%,#000000);\n  --dshpc-purple-soft:color-mix(in srgb,var(--dshpc-purple) 8%,transparent);\n  --dshpc-pink:#db2777;\n  --dshpc-pink-hover:color-mix(in srgb,var(--dshpc-pink) 78%,#000000);\n  --dshpc-pink-active:color-mix(in srgb,var(--dshpc-pink) 64%,#000000);\n  --dshpc-pink-soft:color-mix(in srgb,var(--dshpc-pink) 8%,transparent);\n  --dshpc-cyan:#0e7490;\n  --dshpc-cyan-hover:color-mix(in srgb,var(--dshpc-cyan) 78%,#000000);\n  --dshpc-cyan-active:color-mix(in srgb,var(--dshpc-cyan) 64%,#000000);\n  --dshpc-cyan-soft:color-mix(in srgb,var(--dshpc-cyan) 8%,transparent);\n  --dshpc-teal:#0f766e;\n  --dshpc-teal-hover:color-mix(in srgb,var(--dshpc-teal) 78%,#000000);\n  --dshpc-teal-active:color-mix(in srgb,var(--dshpc-teal) 64%,#000000);\n  --dshpc-teal-soft:color-mix(in srgb,var(--dshpc-teal) 8%,transparent);\n  --dshpc-orange:#c2410c;\n  --dshpc-orange-hover:color-mix(in srgb,var(--dshpc-orange) 78%,#000000);\n  --dshpc-orange-active:color-mix(in srgb,var(--dshpc-orange) 64%,#000000);\n  --dshpc-orange-soft:color-mix(in srgb,var(--dshpc-orange) 8%,transparent);\n  --dshpc-indigo:#4f46e5;\n  --dshpc-indigo-hover:color-mix(in srgb,var(--dshpc-indigo) 78%,#000000);\n  --dshpc-indigo-active:color-mix(in srgb,var(--dshpc-indigo) 64%,#000000);\n  --dshpc-indigo-soft:color-mix(in srgb,var(--dshpc-indigo) 8%,transparent);\n  --dshpc-rose:#e11d48;\n  --dshpc-rose-hover:color-mix(in srgb,var(--dshpc-rose) 78%,#000000);\n  --dshpc-rose-active:color-mix(in srgb,var(--dshpc-rose) 64%,#000000);\n  --dshpc-rose-soft:color-mix(in srgb,var(--dshpc-rose) 8%,transparent);\n  --dshpc-slate:#475569;\n  --dshpc-slate-hover:color-mix(in srgb,var(--dshpc-slate) 78%,#000000);\n  --dshpc-slate-active:color-mix(in srgb,var(--dshpc-slate) 64%,#000000);\n  --dshpc-slate-soft:color-mix(in srgb,var(--dshpc-slate) 8%,transparent);\n\n  /* \u26A0\uFE0F 2026-10-18 \u7528\u6237\u62CD\u677F\uFF1A\u5BBF\u4E3B alias \u7684 hover\uFF08\u6697\u8272\u767D 8% / \u4EAE\u8272 6%\uFF09**\u592A\u5F31**\uFF0C\n     \u300C\u79FB\u4E0A\u53BB\u8981\u4ED4\u7EC6\u770B\u624D\u770B\u5F97\u51FA\u6765\u300D\u21D2 \u4E0D\u518D\u59D4\u6258\u5BBF\u4E3B hover \u522B\u540D\uFF0C\u6539\u4E3A\u81EA\u63BA\u4E2D\u6027\u8272\u5E76\u52A0\u91CD\uFF1A\n     \u4EAE\u8272\u63BA\u9ED1 10%\u3001\u6697\u8272\u63BA\u767D 14%\uFF08active \u518D\u52A0\u4E00\u6863\uFF09\u3002\u6309\u94AE / \u5206\u6BB5\u8F68\u9053 / \u5404\u7C7B hover \u5E95\u540C\u65F6\u53D7\u76CA\u3002\n     \u26A0\uFE0F \u5FC5\u987B\u4FDD\u7559 rgba \u515C\u5E95\u884C\u5728\u524D\uFF08\u672C\u6587\u4EF6\u60EF\u4F8B\uFF0C\u89C1 icon-plate \u6CE8\u91CA\uFF09\uFF1A\u63BA\u7684\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272**\n     \uFF08neutral-900=#0f0f0f / neutral-00=#fff\uFF09\uFF0C\u9884\u8BA1\u7B97\u65E0\u635F\uFF1B\u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u8D70\u515C\u5E95\uFF0C\n     \u5426\u5219\u6574\u6761 background:var(--seg-track) \u4F5C\u5E9F \u21D2 \u5206\u6BB5\u8F68\u9053\u900F\u660E\uFF08\u771F\u8E29\u8FC7\uFF1A\u9884\u89C8\u7AD9\u8F68\u9053\u6D88\u5931\uFF09\u3002 */\n  --dshpc-hover:rgba(15,15,15,.10);\n  --dshpc-active:rgba(15,15,15,.18);\n  /* \u6781\u6DE1\u586B\u5145\u5E95\uFF1A\u6B65\u8FDB\u5668\u7684\u52A0\u51CF\u94AE\u8981\u300C\u770B\u5F97\u51FA\u662F\u6309\u94AE\u3001\u4F46\u51E0\u4E4E\u4E0D\u62A2\u773C\u300D\uFF082026-11-14 \u7528\u6237\uFF1A\n     \u53EA\u8981\u4E00\u70B9\u70B9\uFF0C\u7279\u522B\u7279\u522B\u6DE1\uFF09\u3002\u6BD4 hover \u6DE1\u4E24\u6863\uFF0C\u4E0D\u8981\u518D\u62FF hover \u5192\u5145\u3002 */\n  --dshpc-fill-faint:rgba(15,15,15,.04);\n  /* \u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u5E95\uFF1A\u4E13\u7528 token\uFF08rgba \u5B57\u9762\u91CF\u3001\u4E0D\u501F --dshpc-hover \u4E2D\u8F6C\uFF09\u2014\u2014\n     2026-10-19 \u6559\u8BAD\uFF1A\u53D8\u91CF\u94FE\u4E2D\u95F4\u4EFB\u4F55\u4E00\u73AF invalid \u21D2 background \u6574\u6761\u4F5C\u5E9F\u3001\u8F68\u9053\u5168\u900F\u660E\u3002\n     \u4EAE\u8272\uFF1A\u9ED1 7%\uFF08\u6BD4 hover \u7684 10% \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u767D\u7247\u624D\u8DF3\u5F97\u51FA\uFF09\u3002 */\n  --dshpc-seg-track:rgba(15,15,15,.07);\n  --dshpc-mask:var(--dsw-alias-bg-mask-1,#0000003d);\n  /* \u5F39\u7A97\u9501\u5B9A\u6001\u7ED9**\u81EA\u7ED8\u63A7\u4EF6**\u7684\u964D\u900F\u660E\u5EA6\u6863\uFF082026-11-05\uFF09\u3002\u653E\u5728 token \u91CC\u662F\u4E3A\u4E86\u8BA9\u6D88\u8D39\u65B9\n     \u5728\u81EA\u5DF1\u5143\u7D20\u4E0A\u5199 --dshpc-lock-dim: 1 \u5C31\u80FD\u9000\u51FA\u8FD9\u6761\u6548\u679C\uFF0C\u4E0D\u7528 !important \u6253\u67B6\u3002 */\n  --dshpc-lock-dim:.5;\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF082026-10-06\uFF0C\u4EFB\u52A1\u65E5\u7A0B\u9875\u9996\u521B\uFF09= \u5F53\u524D\u5E95\u8272**\u671D\u66F4\u6DF1\u63BA 12% \u6587\u5B57\u8272**\uFF1A\n     \u6D45\u8272\u4E3B\u9898\u4E0B\u6587\u5B57\u8272\u662F\u9ED1 \u21D2 \u9009\u4E2D\u9762\u6BD4\u5E38\u6001\u5E95\u8272**\u6DF1\u4E00\u6863**\u3002\u6DF1\u8272\u5206\u652F\u89C1 body[data-ds-dark-theme]\uFF08\u671D\u80CC\u666F\u8272\u63BA\uFF09\u3002\n     \u8BED\u4E49\uFF1A\u6807\u8BB0\u300C\u6B63\u5728\u770B\u7684\u4E1C\u897F\u300D\uFF0C\u6BD4\u5E38\u6001\u660E\u663E\u3001\u53C8\u4E0D\u8BB8\u76D6\u4F4F\u5185\u5BB9\uFF08\u4E0D\u8BB8\u7528\u534A\u900F\u660E\u53E0\u72B6\u6001\u8272\uFF09\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 88%,var(--dshpc-fg));\n  /* ListRow \u9009\u4E2D\u9762\uFF082026-11-07 \u7528\u6237\u5B9A\uFF09\uFF1Aslate \u7684**\u6781\u6D45\u84DD\u7070**\uFF0C\u4E0D\u7528\u4E0A\u9762\u90A3\u6761\u901A\u7528\u300C\u9009\u4E2D\u9762\u300D\u3002\n     \u901A\u7528\u503C\u4EAE\u8272\u662F\u63BA\u6587\u5B57\u8272\u7684\u4E2D\u6027\u7070\u3001\u6697\u8272\u662F\u4E24\u4E2A\u6DF1\u8272\u9762\u4E92\u63BA \u21D2 \u6DF1\u8272\u4E0B\u9009\u4E2D\u884C\u53D1\u9ED1\uFF08\u7528\u6237\u5B9E\u6D4B\uFF09\u3002\n     \u8FD9\u91CC\u4ECE --dshpc-slate \u6D3E\u751F\u534A\u900F\u660E\u6D45\u8272\uFF1A\u4EAE\u8272 14% \u53E0\u767D \u2248 #e5e7ea\uFF0C\u6BD4\u5E38\u6001 tone-sunken\n     \u6DF1\u4E00\u6863\u624D\u770B\u5F97\u51FA\u300C\u9009\u4E2D\u300D\uFF1B\u6697\u8272\u6D53\u5EA6\u89C1 body[data-ds-dark-theme] \u6BB5\u3002 */\n  --dshpc-listrow-selected-bg:color-mix(in srgb,var(--dshpc-slate) 14%,transparent);\n  /* ListRow hover\uFF082026-11-07 \u7528\u6237\uFF1A\u539F\u6765\u53D6 --dshpc-active \u592A\u5938\u5F20\uFF0C\u300C\u6709\u4E00\u70B9\u53D8\u5316\u5C31\u884C\u300D\uFF09\uFF1A\n     \u5E38\u6001 tone-sunken \u662F 6% \u84DD\u7070\u53E0\u767D \u2248 #f0f1f3\uFF0C\u8FD9\u91CC\u53EA\u52A0\u6DF1\u5230 9% \u4E2D\u6027\u9ED1 \u2248 #e8e8e8\uFF0C\n     \u80FD\u770B\u51FA\u79FB\u4E0A\u53BB\u4E86\uFF0C\u53C8\u4E0D\u4F1A\u628A\u6574\u884C\u5185\u5BB9\u548C\u6587\u5B57\u5BF9\u6BD4\u5EA6\u4E00\u8D77\u6539\u6389\u3002\u6697\u8272\u6863\u89C1 body[data-ds-dark-theme]\u3002 */\n  --dshpc-listrow-hover-bg:rgba(15,15,15,.09);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u9ED8\u8BA4\u5E95\uFF082026-10-06 \u2192 \u7EED2\uFF09\uFF1A\u6D45\u8272\u4E0B\u7ED9**\u6DE1\u84DD**\uFF08business 8% \u900F\u767D\u5E95\uFF09\u2014\u2014\n     \u53C2\u7167\u7528\u6237\u53C2\u8003\u7A3F\u91CC\u672A\u9009\u4E2D\u65E5\u7A0B\u5757 / Tuesday \u5217\u7684\u90A3\u79CD\u84DD\u3001\u518D\u6D45\u4E00\u70B9\u70B9\uFF1B\n     \u76F8\u90BB\u6708\u8865\u4F4D\u683C\u4ECD\u8D70 --dshpc-surface-2\uFF08\u66F4\u7070\uFF09\uFF0C\u4E0D\u53D7\u5F71\u54CD\u3002\n     \u6DF1\u8272\u6BB5\u7EF4\u6301 #23262e\uFF08\u7528\u6237\uFF1A\u6DF1\u8272 UI \u5DF2\u5DEE\u4E0D\u591A\uFF0C\u4E0D\u52A8\uFF09\u3002 */\n  --dshpc-cal-cell-bg:color-mix(in srgb,var(--dshpc-business) 8%,var(--dshpc-surface-1));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u300C\u70B9\u5F00\u67D0\u5929\u300D\u5C55\u5F00\u7684\u9762\u677F\u5E95\uFF082026-10-06 \u7EED\uFF09\uFF1A\u6D45\u8272\u4E0B**\u65E0\u9650\u63A5\u8FD1\u767D\u3001\u53EA\u5E26\u4E00\u4E01\u70B9\u7070**\n     \uFF08neutral-50 = #fafafa\uFF09\u2014\u2014\u9762\u677F\u91CC\u88C5\u534A\u900F\u660E\u6267\u884C\u8BB0\u5F55\u5217\u8868\uFF0C\u5E95\u518D\u6DF1\u6574\u7247\u5C31\u53D1\u7CCA\u53D1\u7070\uFF1B\n     \u6DF1\u8272\u6BB5\u6CBF\u7528\u539F selected-bg \u6697\u503C\uFF0C\u4FDD\u6301\u4E0D\u52A8\u3002 */\n  --dshpc-cal-panel-bg:var(--dsw-static-neutral-50,#fafafa);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6D45\u8272\u6BB5\uFF0C2026-10-06 \u7EED3\uFF09\uFF1A\u4E0D\u518D\u8D70\u7070\u8272\u901A\u7528\u4EA4\u4E92\u5E95\u2014\u2014\n     \u9F20\u6807\u79FB\u4E0A\u53BB\u5E94\u662F\u300C\u66F4\u4EAE\u4E00\u70B9\u70B9\u7684\u84DD\u300D\uFF08\u4E0E\u6DF1\u8272\u6BB5\u540C\u8BED\u4E49\uFF1Ahover = \u63D0\u4EAE\u7684\u84DD\uFF0C\u4E0D\u662F\u7070\u4E0B\u53BB\uFF09\u3002\n     \u6D53\u5EA6**\u4ECB\u4E8E**\u8868\u5934\u84DD\uFF0814%\uFF09\u4E0E\u672A\u9009\u4E2D\u683C\u84DD\uFF088%\uFF09\u4E4B\u95F4\u3001\u7565\u504F\u8868\u5934\u4E00\u4FA7\uFF1Abusiness 12% \u900F\u767D\u5E95\n     \uFF08\u6BD4\u8868\u5934\u6D45\u4E00\u70B9\u3001\u6BD4\u672A\u9009\u4E2D\u683C\u6DF1\u4E00\u70B9\uFF09\u3002 */\n  --dshpc-cal-cell-hover:color-mix(in srgb,var(--dshpc-business) 12%,var(--dshpc-surface-1));\n\n  /* \u2500\u2500 \u6295\u5F71 / \u7126\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-shadow-1:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  /* \u4EAE\u7247\u81EA\u5E26\u7684\u6D6E\u8D77\u611F\uFF08\u9009\u4E2D\u6001\u7528\uFF1B\u4E0E --dshpc-surface-raised \u914D\u5BF9\uFF09 */\n  --dshpc-shadow-raised:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  --dshpc-shadow-2:var(--dsw-shadow-lv3,0 12px 32px 0 #00000014);\n  /* \u952E\u76D8\u7126\u70B9\u73AF\u3002\u26A0\uFE0F \u4E0D\u7528\u5BBF\u4E3B --dsw-focus-ring-color\uFF1A\u5B83\u9ED8\u8BA4\u503C\u662F transparent\uFF08\u515C\u5E95\u4E0D\u751F\u6548\u3001\u4F1A\u9690\u8EAB\uFF09 */\n  --dshpc-focus:var(--dsw-alias-state-business-primary,#3b5bdb);\n\n  /* \u2500\u2500 \u5706\u89D2\uFF08\u5BBF\u4E3B\u771F\u503C 4 / 8 / 12 / 16 / 20 / 28\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-radius-xs:var(--dsw-radius-xs,4px);\n  --dshpc-radius-sm:var(--dsw-radius-sm,8px);\n  --dshpc-radius-md:var(--dsw-radius-md,12px);\n  --dshpc-radius-lg:var(--dsw-radius-lg,16px);\n  --dshpc-radius-xl:var(--dsw-radius-xl,20px);\n  --dshpc-radius-panel:var(--dsw-radius-panel,28px);\n  /* \u5168\u5706\uFF08\u80F6\u56CA\u6807\u7B7E\uFF09\uFF1A\u5BBF\u4E3B\u7684 radius \u6863\u6700\u5927\u53EA\u6709 28px\uFF0C\u6491\u4E0D\u6EE1 24px \u9AD8\u7684 chip */\n  --dshpc-radius-pill:999px;\n\n  /* \u2500\u2500 \u95F4\u8DDD\u56DB\u62CD\uFF08\u53EA\u8BB8\u7528\u8FD9\u56DB\u6863\uFF0C\u4E0D\u8BB8\u51FA\u73B0 5 / 7 / 9px\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-space-1:4px;\n  --dshpc-space-2:8px;\n  --dshpc-space-3:12px;\n  --dshpc-space-4:16px;\n\n  /* \u2500\u2500 \u63A7\u4EF6\u9AD8\u5EA6\uFF1A\u79BB\u6563\u4E09\u6863\uFF08\u63A7\u4EF6\u7528 size="sm|md|lg" \u9009\uFF1B\u8C03\u7528\u70B9\u4E0D\u8BB8\u81EA\u5B9A\u4E49\u9AD8\u5EA6\uFF0C\n       \u771F\u4E0D\u591F\u7528\u624D\u5141\u8BB8\u5728\u8C03\u7528\u70B9\u672C\u5730\u8986\u76D6 --dshpc-control-h-*\uFF0C\u5C5E\u4F8B\u5916\u800C\u975E\u5E38\u6001\uFF09\u2500\u2500 */\n  --dshpc-control-h-sm:24px;\n  --dshpc-control-h-md:28px;\n  --dshpc-control-h-lg:32px;\n\n  /* \u2500\u2500 \u5B57\u53F7 / \u884C\u9AD8\uFF1A\u76F4\u7ED1\u5BBF\u4E3B\u5B57\u53F7\u65CF\uFF08\u5BBF\u4E3B\u771F\u503C 11 / 12 / 13 / 14 / 16\uFF09\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-font-xs:var(--dsw-font-xxxs-11-font-size,11px);\n  --dshpc-font-sm:var(--dsw-font-xxs-12-font-size,12px);\n  --dshpc-font-md:var(--dsw-font-xs-13-font-size,13px);\n  --dshpc-font-lg:var(--dsw-font-s-14-font-size,14px);\n  --dshpc-font-xl:var(--dsw-font-base-16-font-size,16px);\n  --dshpc-line-xs:var(--dsw-font-xxxs-11-line-height,14px);\n  --dshpc-line-sm:var(--dsw-font-xxs-12-line-height,18px);\n  --dshpc-line-md:var(--dsw-font-xs-13-line-height,20px);\n  --dshpc-line-lg:var(--dsw-font-s-14-line-height,22px);\n  --dshpc-line-xl:var(--dsw-font-base-16-line-height,24px);\n  --dshpc-font-mono:var(--ds-font-family-code,monospace);\n\n  /* \u2500\u2500 \u7EC6\u6EDA\u52A8\u6761\u7684\u8BA9\u4F4D\u503C\uFF08\u7EBF\u5BBD\u4E0D\u80FD\u653E token\uFF0C\u89C1\u6587\u4EF6\u672B\u5C3E\u7684\u6CE8\u91CA\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     1px\u21922px \u53EA\u6539\u8FD9\u4E00\u884C\uFF1B\u5B83\u7528\u5728\u666E\u901A\u5143\u7D20\u4E0A\uFF0Cvar() \u80FD\u6B63\u5E38\u89E3\u6790\u3002 */\n  --dshpc-scroll-inset:1px;\n\n  /* \u2500\u2500 \u5C42\u7EA7\u9636\u68AF\uFF08\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u518D\u5199\u88F8 z-index\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u9875\u9762\u7EA7\u9884\u89C8\u5206\u680F \u2192 \u62BD\u5C49\uFF08\u65B0\u5EFA/\u7F16\u8F91\uFF09\u2192 \u5F39\u7A97/\u786E\u8BA4\u6846 \u2192 \u6D6E\u5C42\u83DC\u5355 \u2192 \u6D6E\u5C42\u63D0\u793A */\n  /* **\u6574\u6761\u9636\u68AF\u90FD\u5FC5\u987B\u4F4E\u4E8E\u5B98\u65B9\u6D6E\u70B9 1000 \u6863**\uFF082026-11-06 \u7528\u6237\u62CD\u677F\uFF09\uFF1A\u5B98\u65B9\u539F\u8BED\n     Modal / ImageLightbox \u662F z-index 1000\uFF08body portal\uFF09\uFF0CMenu / Toast \u662F 1100\u3002\n     \u6211\u4EEC\u53EA\u662F\u5BBF\u4E3B\u91CC\u7684\u4E00\u4E2A\u9875\u9762 \u21D2 \u5BBF\u4E3B\u6D6E\u70B9\u6052\u5728\u6211\u4EEC\u4E4B\u4E0A\uFF1B\u4EE5\u540E\u5F39\u7A97\u91CC\u518D\u5F00\u5B98\u65B9\u6A21\u6001/\u9884\u89C8\uFF0C\n     \u4E0D\u5FC5\u9010\u4E2A\u573A\u666F\u300C\u4E34\u65F6\u8BA9\u4F4D\u300D\uFF08\u6B64\u524D 1070 \u538B\u4F4F\u5B98\u65B9\u539F\u56FE\u9884\u89C8\u5C31\u662F\u8FD9\u4E48\u8E29\u51FA\u6765\u7684\uFF09\u3002 */\n  /* \u5185\u5BB9\u5C42\u5438\u9876\uFF08\u5929\u6807\u7B7E / \u8868\u5934\u8FD9\u7C7B\u300C\u8DDF\u7740\u6EDA\u4F46\u538B\u4F4F\u540C\u5C42\u5185\u5BB9\u300D\u7684\u5143\u7D20\uFF09\uFF1A\u53EA\u538B\u540C\u5C42\u5144\u5F1F\uFF0C\n     \u5FC5\u987B\u4F4E\u4E8E\u4E0B\u9762\u6240\u6709\u6D6E\u5C42\u6863 \u2014\u2014 \u6240\u4EE5\u5B83\u4E0D\u662F\u300C\u5F00\u65B0\u6D6E\u5C42\u6863\u300D\uFF0C\u800C\u662F\u5185\u5BB9\u5C42\u5185\u90E8\u7684\u6392\u5E8F\u4F4D\u3002 */\n  --dshpc-z-sticky:10;\n  --dshpc-z-dock:900;\n  --dshpc-z-drawer:920;\n  --dshpc-z-modal:940;\n  /* \u6536\u8D77\u540E\u7684\u8033\u6735\uFF1A\u5FC5\u987B\u9AD8\u4E8E\u5F39\u7A97\u906E\u7F69\uFF0C\u5426\u5219\u5F39\u7A97\u4E00\u5F00\u5C31\u70B9\u4E0D\u5230\u5B83\uFF082026-11-04 \u7528\u6237\u771F\u673A\uFF09\u3002\n     \u53EA\u7ED9\u8033\u6735\u7528\uFF0C\u9875\u9762\u7EA7\u5206\u680F\u672C\u4F53\u4ECD\u662F\u5E03\u5C40\u6210\u5458\uFF0C\u4E0D\u8DDF\u7740\u62AC\u9AD8\u3002 */\n  --dshpc-z-ear:950;\n  --dshpc-z-menu:960;\n  --dshpc-z-tip:970;\n  /* \u8BED\u4E49\u522B\u540D\uFF082026-11-03 \u9762\u677F\u76AE\u80A4\u7EDF\u4E00\uFF09\uFF1A\u4E1A\u52A1\u6587\u4EF6\u53EA\u8BB8\u7528\u8FD9\u4E24\u4E2A\u8BF4\u300C\u6211\u8981\u4E00\u5C42\u6D6E\u5C42\u300D\uFF0C\n     \u4E0D\u518D\u5404\u81EA\u5199\u6D6E\u5C42\u5B57\u9762\u91CF\u3002\n       panel   = \u6D6E\u5C42\u9762\u677F\u672C\u4F53\uFF08picker \u5F39\u7A97\u3001\u951A\u5B9A\u9762\u677F\uFF09\uFF1B\n       popmenu = \u53E0\u5728\u9762\u677F\u4E4B\u4E0A\u7684\u83DC\u5355\uFF08\u25BE \u9009\u5C42\u3001Picker \u4E0B\u62C9\uFF09\u4E0E\u5176\u900F\u660E\u906E\u7F69\u3002 */\n  --dshpc-z-panel:var(--dshpc-z-menu);\n  --dshpc-z-popmenu:var(--dshpc-z-tip);\n\n  /* \u2500\u2500 \u52A8\u6548 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-dur:var(--ds-transition-duration,.2s);\n  --dshpc-dur-fast:var(--ds-transition-duration-fast,.12s);\n  --dshpc-ease:var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1));\n  /* \u8FD0\u884C\u4E2D\u72B6\u6001\u7684\u8109\u52A8\u65F6\u957F\uFF082026-10-06 \u7EDF\u4E00\u524D\u540E\u4E24\u7AEF\uFF1A\u4EFB\u52A1\u914D\u7F6E\u91CC\u7684\u7EFF\u547C\u5438 \u2192 \u84DD\u3001\u653E\u6162\uFF1B\n     \u6267\u884C\u8BB0\u5F55\u91CC\u7684\u84DD\u95EA \u2192 \u653E\u6162\u4E00\u70B9\u3002\u4E24\u8005\u7528\u540C\u4E00\u4E2A\u503C\uFF0C\u52A8\u753B\u5F62\u72B6\u672C\u5C31\u4E00\u81F4\uFF09\u3002 */\n  --dshpc-dur-run:500ms;\n}\n\n/* \u2500\u2500 \u660E\u6697\u5DEE\u5F02\u7684**\u552F\u4E00**\u843D\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5224\u636E = body[data-ds-dark-theme]\uFF08\u5BBF\u4E3B 0.2.0-rc.2 \u6E90\u7801\u6838\u5B9E\uFF1A\u542F\u52A8\u811A\u672C toggleAttribute \u5199\u5165\uFF0C\n   \u552F\u4E00\u660E\u6697\u5224\u636E\uFF1B\u63D2\u4EF6\u7981\u6B62\u7528 prefers-color-scheme \u2014\u2014 \u5B83\u8DDF\u7684\u662F\u7CFB\u7EDF\u3001\u4E0D\u662F\u7528\u6237\u5728\u5BBF\u4E3B\u91CC\u7684\u9009\u62E9\uFF09\u3002\n   \u4E0B\u9762\u53EA\u653E alias \u8868\u8FBE\u4E0D\u4E86\u7684\u300C\u56FA\u5B9A\u4E2D\u6027\u9762\u300D\uFF1B\u989C\u8272\u82E5\u80FD\u9760 alias \u81EA\u52A8\u8DDF\u968F\uFF0C\u4E00\u5F8B\u4E0D\u8981\u5199\u5728\u8FD9\u91CC\u3002 */\nbody[data-ds-dark-theme]{\n  /* \u6DF1\u8272\u6BB5\u7684\u84DD**\u523B\u610F\u4E0D\u8DDF\u968F\u5BBF\u4E3B alias**\uFF08\u552F\u4E00\u4F8B\u5916\uFF09\uFF1A\u5BBF\u4E3B\u6697\u8272 alias \u7ED9\u7684\u662F #60a5fa \u4E00\u6863\u7684\u9AD8\u4EAE\u84DD\uFF0C\n     \u5B9E\u5FC3\u9762\uFF08Chip / Button info / \u65E5\u671F\u9009\u4E2D\u683C\uFF09\u538B\u767D\u5B57\u4F1A\u53D1\u7CCA \u2014\u2014 \u7528\u6237 2026-10-29 \u5B9E\u6D4B\u53CD\u9988\u3002\n     \u21D2 \u6DF1\u8272\u4E0B\u6539\u5B9A\u5411\u6D45\u8272\u72B6\u6001\u7684\u84DD\uFF08#3b5bdb\uFF09\u9760\uFF0C\u53EA\u5728\u660E\u5EA6\u4E0A\u62AC\u4E00\u70B9\u70B9\uFF0C\u4FDD\u8BC1\u5B83\u5728\u6697\u5E95\u4E0A\u4ECD\u770B\u5F97\u89C1\uFF1A\n     #4c6bd8 \u5BF9\u767D\u5B57 \u22484.8:1\uFF08\u539F\u4EAE\u84DD\u53EA\u6709 ~2.3:1\uFF09\uFF0C\u5BF9\u65E5\u5386\u683C\u5E95 \u22483.2:1 \u4ECD\u8FC7 UI \u4EF6\u7684 3:1 \u7EBF\u3002\n     \u4EE3\u4EF7\uFF1A\u5BBF\u4E3B\u6362\u54C1\u724C\u8272\u65F6\u6DF1\u8272\u4E0D\u518D\u81EA\u52A8\u8DDF\u7740\u53D8\uFF0C\u9700\u8981\u8FD9\u91CC\u624B\u52A8\u540C\u6B65\u3002 */\n  --dshpc-business:#4c6bd8;\n  --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);\n  --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);\n  /* \u5B9E\u5FC3\u6309\u94AE hover / active\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u9ED1\u5E95\uFF08\u6D45\u8272\u4E3B\u9898\u7684\u8FD1\u9ED1 \u2192 \u6697\u8272\u4E0B\u7684\u8FD1\u767D\uFF09\u63BA\u9ED1\u538B\u6DF1\uFF1B\n     \u7EA2 / \u7EFF / \u9EC4 / \u84DD\u63BA\u767D\u63D0\u4EAE\u3002\u4E0E\u4EAE\u8272\u6BB5\u65B9\u5411\u76F8\u53CD\uFF0C\u4FDD\u8BC1\u4E24\u79CD\u4E3B\u9898\u4E0B\u300C\u4E00\u773C\u770B\u51FA\u53D8\u4E86\u300D\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 80%,#000000);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 66%,#000000);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#ffffff);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#ffffff);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#ffffff);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#ffffff);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#ffffff);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#ffffff);\n  /* \u540C\u4E0A\uFF1A\u63BA\u767D\u6BD4\u4F8B\u4ECE 22% / 36% \u6536\u5230 12% / 22% \u2014\u2014 \u5E95\u8272\u5DF2\u53D8\u6DF1\uFF0C\u7167\u65E7\u6BD4\u4F8B\u63D0\u4EAE\u4F1A\u5728 hover \u77AC\u95F4\n     \u628A\u767D\u5B57\u5BF9\u6BD4\u6253\u56DE ~3:1\uFF08\u6B63\u662F\u7528\u6237\u5ACC\u7CCA\u7684\u90A3\u4E00\u6863\uFF09\uFF1B\u6536\u7A84\u540E hover \u4ECD\u53EF\u611F\u77E5\u3001\u5B57\u4ECD\u6E05\u6670\u3002 */\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 88%,#ffffff);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 78%,#ffffff);\n  /* \u6697\u8272 hover \u63BA\u767D 14% / active 24%\uFF08\u5BF9\u9F50\u4E0A\u9762 2026-10-18 \u7684\u52A0\u91CD\u62CD\u677F\uFF09\u3002rgba \u515C\u5E95\u884C\u540C\u4E0A\u3002 */\n  --dshpc-hover:rgba(255,255,255,.14);\n  --dshpc-active:rgba(255,255,255,.24);\n  /* \u6781\u6DE1\u586B\u5145\u5E95\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u767D 5%\uFF0C\u4E0E\u4EAE\u8272\u7248\u540C\u6863\u89C2\u611F\u3002 */\n  --dshpc-fill-faint:rgba(255,255,255,.05);\n  /* \u5206\u6BB5\u8F68\u9053\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u767D 10%\u2014\u2014\u6BD4 hover \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u4EAE\u7247\u624D\u8DF3\u5F97\u51FA\u3002 */\n  --dshpc-seg-track:rgba(255,255,255,.10);\n  --dshpc-plate:var(--dsw-static-neutral-850,#212123);\n  --dshpc-plate-hover:var(--dsw-static-neutral-800,#292929);\n  --dshpc-icon-plate:rgba(255,255,255,.05);\n  /* \u6697\u8272\u4E3B\u9898**\u53CD\u8FC7\u6765**\uFF1A\u8868\u5934\u8981\u6BD4\u5361\u7247\u9762**\u4EAE**\u3001\u6BD4\u6591\u9A6C\u7EB9\u518D**\u6D45\u4E00\u6863**\uFF08\u7528\u6237\uFF1A\u7EAF\u9ED1\u80CC\u666F\u6CA1\u6CD5\u770B\uFF09\u3002 */\n  --dshpc-head-bg:var(--dshpc-surface-2);\n  /* \u8868\u683C\uFF082026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u4E0E\u901A\u680F\u4E92\u6362\u5E95\u8272\uFF09\uFF1A\u901A\u680F\u5E95\u53D6\u8868\u5934\u539F\u6765\u90A3\u8272 #151b23\n     \uFF08\u4EAE\u8272\u6BB5\u5BF9\u5E94 #f6f8fa\uFF09\uFF1B\u8868\u5934\u9ED8\u8BA4\u5E95\u6CBF\u7528\u4EAE\u8272\u6BB5\u5B9A\u4E49\u7684 --dshpc-surface-sunken\uFF0C\u4E0D\u5728\u6697\u8272\u6BB5\u91CD\u5199\uFF1B\n     \u884C hover \u662F\u300C\u4E00\u5C42\u6781\u6DE1\u7684\u767D\u300D\u22483% \u2014\u2014 \u6697\u5E95\u4E0A\u7528\u9ED1\u4F1A\u8D8A\u60AC\u8D8A\u6697\uFF0C\u770B\u4E0D\u51FA\u300C\u6D45\u7070\u300D\u53CD\u9988\u3002 */\n  --dshpc-table-banner-bg:#151b23;\n  --dshpc-table-row-hover:rgba(255,255,255,.03);\n  /* \u6697\u8272\u5E95\u677F**\u5FAE\u4EAE**\uFF1Bhover **\u66F4\u4EAE**\uFF08\u539F\u5148 hover \u53D6 plate-hover \u53CD\u800C\u66F4\u6DE1 \u21D2 \u9F20\u6807\u79FB\u4E0A\u53BB\u5C31\u6CA1\u4E86\uFF09\u3002 */\n  --dshpc-chip-bg:rgba(255,255,255,.08);\n  --dshpc-chip-bg-hover:rgba(255,255,255,.16);\n  /* \u6697\u8272\u4E0B\u84DD\u8272\u8981\u66F4\u4EAE\u3001\u900F\u660E\u5EA6\u7565\u9AD8\u624D\u538B\u5F97\u4F4F\u6DF1\u5E95\u3002 */\n  --dshpc-open-bg:rgba(96,165,250,.18);\n  --dshpc-open-bg-soft:rgba(96,165,250,.08);\n  --dshpc-card-hover:rgba(96,165,250,.13);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF08\u6DF1\u8272\u7248\uFF09\uFF1A\u7528\u6237\u5ACC\u6DF1\u8272\u7684\u7EFF / \u7EA2\u300C\u6709\u70B9\u6DF1\u300D\u21D2 \u538B\u5230 **5%**\uFF08\u6D45\u8272\u6BB5\u662F 8%\uFF09\uFF0C\n     \u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u8272\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF1B\u5757\u5E95\u4E0E\u72B6\u6001\u8272\u7AD6\u6761\u4ECD\u540C\u6E90\uFF08\u7AD6\u6761\u662F\u5B9E\u8272\uFF0C\u4E0D\u53D7\u8FD9\u6761\u5F71\u54CD\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 5%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 5%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 5%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 5%,transparent);\n  /* \u6269\u5C55\u8272\u6DF1\u8272\u6D3E\u751F\uFF1A\u5E95\u8272\u5199\u6B7B\u3001hover \u63BA\u767D 12%/22%\uFF08\u540C business\uFF0C\u9632\u767D\u5B57\u53D1\u7CCA\uFF09\uFF0Csoft 5%\u3002 */\n  --dshpc-purple-hover:color-mix(in srgb,var(--dshpc-purple) 88%,#ffffff);\n  --dshpc-purple-active:color-mix(in srgb,var(--dshpc-purple) 78%,#ffffff);\n  --dshpc-purple-soft:color-mix(in srgb,var(--dshpc-purple) 5%,transparent);\n  --dshpc-pink-hover:color-mix(in srgb,var(--dshpc-pink) 88%,#ffffff);\n  --dshpc-pink-active:color-mix(in srgb,var(--dshpc-pink) 78%,#ffffff);\n  --dshpc-pink-soft:color-mix(in srgb,var(--dshpc-pink) 5%,transparent);\n  --dshpc-cyan-hover:color-mix(in srgb,var(--dshpc-cyan) 88%,#ffffff);\n  --dshpc-cyan-active:color-mix(in srgb,var(--dshpc-cyan) 78%,#ffffff);\n  --dshpc-cyan-soft:color-mix(in srgb,var(--dshpc-cyan) 5%,transparent);\n  --dshpc-teal-hover:color-mix(in srgb,var(--dshpc-teal) 88%,#ffffff);\n  --dshpc-teal-active:color-mix(in srgb,var(--dshpc-teal) 78%,#ffffff);\n  --dshpc-teal-soft:color-mix(in srgb,var(--dshpc-teal) 5%,transparent);\n  --dshpc-orange-hover:color-mix(in srgb,var(--dshpc-orange) 88%,#ffffff);\n  --dshpc-orange-active:color-mix(in srgb,var(--dshpc-orange) 78%,#ffffff);\n  --dshpc-orange-soft:color-mix(in srgb,var(--dshpc-orange) 5%,transparent);\n  --dshpc-indigo-hover:color-mix(in srgb,var(--dshpc-indigo) 88%,#ffffff);\n  --dshpc-indigo-active:color-mix(in srgb,var(--dshpc-indigo) 78%,#ffffff);\n  --dshpc-indigo-soft:color-mix(in srgb,var(--dshpc-indigo) 5%,transparent);\n  --dshpc-rose-hover:color-mix(in srgb,var(--dshpc-rose) 88%,#ffffff);\n  --dshpc-rose-active:color-mix(in srgb,var(--dshpc-rose) 78%,#ffffff);\n  --dshpc-rose-soft:color-mix(in srgb,var(--dshpc-rose) 5%,transparent);\n  --dshpc-slate-hover:color-mix(in srgb,var(--dshpc-slate) 88%,#ffffff);\n  --dshpc-slate-active:color-mix(in srgb,var(--dshpc-slate) 78%,#ffffff);\n  --dshpc-slate-soft:color-mix(in srgb,var(--dshpc-slate) 5%,transparent);\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u63BA **~40% \u80CC\u666F\u8272**\uFF08--dshpc-surface-base\uFF09\u21D2 \u65E0\u9650\u63A5\u8FD1\u9875\u9762\u80CC\u666F\u7684\u9ED1\u3001\n     \u53EA\u6BD4\u80CC\u666F\u7565\u6DF1\u4E00\u70B9\u70B9\uFF08\u7528\u6237\uFF1A\u6DF1\u8272\u4E0B\u5C55\u5F00\u533A\u538B\u7740\u4EFB\u52A1\u900F\u660E\u7EFF\u4F1A\u53D1\u7070\uFF0C\u5E95\u8272\u8981\u5C3D\u91CF\u8D34\u8FD1\u80CC\u666F\u624D\u4E0D\u663E\u7070\uFF09\u3002\n     \u26A0\uFE0F \u6DF1\u8272\u4E0B\u4E0D\u80FD\u63BA\u6587\u5B57\u8272 \u2014\u2014 \u90A3\u662F\u767D\uFF0C\u4F1A\u53D8\u4EAE\uFF0C\u9009\u4E2D\u53CD\u800C\u6BD4\u672C\u6708\u65E5\u671F\u6D45\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n  /* ListRow \u9009\u4E2D\u9762\uFF08\u6697\u8272\u7248\uFF09\uFF1Aslate \u63BA\u5230 26% \u2014\u2014 \u6DF1\u5E95\u4E0A\u6CDB\u84DD\u7070\uFF0C\u7EDD\u4E0D\u9000\u56DE\u63A5\u8FD1\u80CC\u666F\u7684\u9ED1\u3002\n     slate \u662F\u4E2D\u660E\u5EA6\u84DD\u7070\uFF0C\u6697\u5E95\u4E0A\u8981\u6BD4\u4EAE\u8272\u63BA\u5F97\u66F4\u6D53\u624D\u770B\u5F97\u51FA\uFF08\u4EAE\u8272 14% / \u6697\u8272 26%\uFF09\u3002 */\n  --dshpc-listrow-selected-bg:color-mix(in srgb,var(--dshpc-slate) 26%,transparent);\n  /* \u6697\u8272 hover\uFF1A\u5E38\u6001 6% \u767D \u2192 10% \u767D\uFF0C\u53EA\u63D0\u4EAE\u4E00\u70B9\u70B9\uFF08\u539F\u6765\u662F active \u7684 24% \u767D\uFF0C\u592A\u8DF3\uFF09\u3002 */\n  --dshpc-listrow-hover-bg:rgba(255,255,255,.10);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u7684\u9ED8\u8BA4\u5E95\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u6DF1\u7684\u3001\u5E26\u70B9\u7070\u84DD\u7684\u6697\u8272\uFF08\u7528\u6237\u7ED9\u7684\u53C2\u8003\u56FE \u2248 #23262e\uFF09\uFF0C\n     \u6BD4\u539F\u6765\u7684\u5361\u7247\u9762\u66F4\u6C89\u3001\u66F4\u504F\u84DD\u7070\uFF1B\u9009\u4E2D\u683C\u4ECD\u8D70 --dshpc-selected-bg\uFF08\u66F4\u6697\u4E00\u6863\uFF09\uFF0C\u5C42\u7EA7\u4E0D\u53D8\u3002 */\n  --dshpc-cal-cell-bg:#23262e;\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06\uFF09\uFF1A\u539F\u5148\u8D70 --dshpc-hover\uFF08\u5BBF\u4E3B\u6D45\u8272\u53E0\u52A0\uFF09\u5728\u6DF1\u5E95\u4E0A\u663E\u5F97\n     \u300C\u7070\u53D1\u4EAE\u300D\uFF0C\u4E0D\u597D\u770B \u21D2 \u6362\u6210\u66F4\u8D34\u5E95\u7684\u84DD\u8C03\u5FAE\u4EAE\uFF08\u4E0E open-bg-soft \u540C\u65CF\uFF09\uFF0Chover \u65F6\u4E0D\u523A\u773C\u3001\u53C8\u6709\u53CD\u9988\u3002 */\n  --dshpc-cal-cell-hover:rgba(96,165,250,.12);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u5C55\u5F00\u9762\u677F\u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06 \u7EED\uFF09\uFF1A\u4E0E\u539F selected-bg \u6697\u503C\u4E00\u81F4\uFF0C\u6DF1\u8272 UI \u4E0D\u52A8 */\n  --dshpc-cal-panel-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n}\n\n/* \u2500\u2500 \u7EC6\u6EDA\u52A8\u6761 + \u79BB\u8FB9 1px\uFF1A\u5168\u5E93\u552F\u4E00\u771F\u6E90 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u653E\u5728 tokens \u57DF\uFF08ensureComponentStyles \u6BCF\u6B21\u5FC5\u6CE8\u518C\u3001\u4E14\u6392\u5728\u6240\u6709\u63A7\u4EF6\u57DF\u4E4B\u524D\uFF09\uFF1A\n   \u4EFB\u4F55\u7EC4\u4EF6\u53EA\u8981\u7ED9\u6EDA\u52A8\u5BB9\u5668\u6302 .dshpc-scroll-thin \u5C31\u751F\u6548\uFF0C\u4E0D\u5FC5\u53E6\u884C\u6CE8\u5165 panel \u57DF\u3002\n   \u6539\u7EBF\u5BBD / \u8BA9\u4F4D / \u5706\u89D2 / \u989C\u8272\u53EA\u6539\u8FD9\u4E00\u5904\uFF1B\u522B\u5728\u522B\u7684 CSS \u91CC\u518D\u6284\u4E00\u4EFD\u3002\n\n   \u53EA\u7528 ::-webkit-scrollbar\uFF1A\u4E00\u65E6\u5199 scrollbar-width\uFF0CChrome \u4F1A\u5207\u5230\u89C4\u8303\u5316\u6EDA\u52A8\u6761\u3001\n   \u5FFD\u7565\u8FD9\u91CC\u7684\u5BBD\u5EA6\uFF082026-11-06 \u5B9E\u6D4B\uFF1A\u7559\u7740 scrollbar-width:thin \u65F6\u5BBD\u5EA6\u56DE\u5230 ~10px\uFF09\u3002\n   2026-11-06 \u7528\u6237\u53E3\u5F84\uFF1A1px \u592A\u7EC6 \u21D2 \u7EBF\u5BBD\u8D77\u6B65 2px\u3001thumb \u4E0A\u4E0B\u7AEF\u5706\u89D2\uFF1B\u73B0\u884C\u503C\u89C1\u4E0B\u9762\u4E09\u884C\u3002\n\n   \u8BA9\u4F4D\uFF08\u6EDA\u52A8\u6761\u4E0E\u5BB9\u5668\u53EF\u89C1\u8FB9\u7F18\u9694 1px\uFF09\u4E5F\u7531\u8FD9\u4E2A\u7C7B\u8D1F\u8D23\uFF1A\u539F\u751F\u6EDA\u52A8\u6761\u753B\u5728 padding box \u4E4B\u5916\u3001\n   border \u4E4B\u5185\uFF0C\u53EA\u6709 border \u80FD\u628A\u5B83\u63A8\u79BB\u8FB9\u7F18\uFF08\u52A0 padding \u65E0\u6548\uFF09\u3002\u6302\u7C7B\u5373\u81EA\u52A8\u8BA9\u4F4D\uFF0C\n   \u5BB9\u5668\u4E0D\u5FC5\u81EA\u5DF1\u518D\u5199\u900F\u660E\u8FB9\u6846\u3002\u65B9\u5411\u6863\uFF08CSS \u6CA1\u6709 :scrollable\uFF0C\u63A8\u4E0D\u51FA\u6EDA\u52A8\u65B9\u5411\uFF0C\u987B\u663E\u5F0F\u58F0\u660E\uFF09\uFF1A\n     .dshpc-scroll-thin          \u7AD6\u6EDA\uFF08\u9ED8\u8BA4\uFF09\uFF1A\u53F3\u8BA9\u4F4D\n     .dshpc-scroll-thin--x       \u6A2A\u6EDA\uFF1A\u5E95\u8BA9\u4F4D\uFF0C\u4E14\u4E0D\u53E0\u53F3\n     .dshpc-scroll-thin--both    \u53CC\u5411\uFF1A\u53F3 + \u5E95\u90FD\u8BA9\u4F4D\n   --x / --both \u5FC5\u987B\u4E0E\u57FA\u7C7B\u540C\u6302\uFF08\u7EBF\u5BBD\u89C4\u5219\u53EA\u8BA4\u57FA\u7C7B\uFF09\u3002\n\n   \u6302 .dshpc-panel \u7684\u5BB9\u5668\u672C\u8EAB\u5DF2\u6709\u5B9E\u8272\u8FB9\u6846 \u21D2 :not(.dshpc-panel) \u8DF3\u8FC7\u8BA9\u4F4D\uFF1A\u6EDA\u52A8\u6761\u8D34\u90A3\u6761\n   \u5B9E\u8272\u7EBF\u5373\u7B97\u8BA9\u4F4D\uFF0C\u65E0\u6761\u4EF6\u53E0\u900F\u660E\u8FB9\u6846\u4F1A\u628A\u5B9E\u8272\u53F3\u8FB9\u6846\u8986\u76D6\u6210\u900F\u660E\u3002\n   CodeMirror \u7684 .cm-scroller \u7531\u5B98\u65B9\u751F\u6210\u3001\u6302\u4E0D\u4E0A\u7C7B \u21D2 \u540E\u4EE3\u9009\u62E9\u5668\u4E00\u5E76\u547D\u4E2D\u7EBF\u5BBD\u4E0E\u8BA9\u4F4D\uFF1B\n   \u5B83\u53EA\u8BA9\u53F3\u4E0D\u8BA9\u5E95\uFF1A\u7ED9\u5E95\u4F1A\u6539 scroller \u9AD8\u5EA6\uFF0CCodeMirror \u7684\u6D4B\u91CF\u5FAA\u73AF\u4F1A\u591A\u7B97\u4E00\u6761\u6A2A\u6EDA\u6761\u3002\n   \u5916\u5C42\u82E5\u81EA\u5DF1\u4E0D\u6EDA\uFF08\u5982 CodeViewer\uFF09\uFF0C\u628A --dshpc-scroll-inset-right \u8BBE 0px \u5173\u6389\u81EA\u8EAB\u8BA9\u4F4D\uFF0C\n   \u514D\u5F97\u5916\u5C42\u4E0E .cm-scroller \u4E24\u5C42\u5404 1px \u53E0\u6210 2px\u3002 */\n/* \u26A0\uFE0F \u4E0B\u9762\u4E09\u884C\u7684\u7EBF\u5BBD / \u5706\u89D2**\u5FC5\u987B\u662F\u5B57\u9762\u91CF**\uFF1AWebKit \u7684 ::-webkit-scrollbar \u7CFB\u5217\u4F2A\u5143\u7D20\n   \u4E0D\u89E3\u6790 var()\uFF0C\u5E26\u53D8\u91CF\u7684\u58F0\u660E\u4F1A\u88AB\u9759\u9ED8\u4E22\u5F03 \u21D2 \u5BBD\u5EA6\u6574\u6761\u4F5C\u5E9F\u3001\u9000\u56DE\u9ED8\u8BA4\u503C\u30022026-11-06 \u628A\n   width:2px \u6539\u6210 var(--dshpc-scroll-w) \u540E\u771F\u673A\u5F53\u573A\u6253\u56DE\uFF08\u7528\u6237\u53D1\u73B0\uFF09\uFF0C\u6545\u7EBF\u5BBD\u4E0D\u653E token\u3002\n   \u6539\u7EBF\u5BBD\u53EA\u6539\u8FD9\u4E00\u5757\u7684\u4E09\u5904\u6570\u5B57\uFF08\u4E09\u5904\u5FC5\u987B\u540C\u503C\uFF09\uFF1B\u8BA9\u4F4D\u4ECD\u8D70 --dshpc-scroll-inset\u3002 */\n.dshpc-scroll-thin::-webkit-scrollbar,\n.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar{width:3px;height:3px}\n.dshpc-scroll-thin::-webkit-scrollbar-thumb,\n.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar-thumb{background:var(--dshpc-border-heavy);border-radius:3px}\n.dshpc-scroll-thin::-webkit-scrollbar-track,\n.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar-track{background:transparent}\n.dshpc-scroll-thin:not(.dshpc-panel){border-right:var(--dshpc-scroll-inset-right,var(--dshpc-scroll-inset)) solid transparent}\n.dshpc-scroll-thin--x:not(.dshpc-panel){border-right:0;border-bottom:var(--dshpc-scroll-inset) solid transparent}\n.dshpc-scroll-thin--both:not(.dshpc-panel){border-bottom:var(--dshpc-scroll-inset) solid transparent}\n.dshpc-scroll-thin .cm-scroller{border-right:var(--dshpc-scroll-inset) solid transparent}\n';
+
+// dist/design/style-kit.js
+var CSS_PREFIX = "dshpc";
+var TOKENS_DOMAIN = "tokens";
+function createStyleKit(options) {
+  const { id: id3 } = options;
+  if (id3 === "")
+    throw new Error("dsh-plugin-core/design: id \u4E0D\u80FD\u4E3A\u7A7A");
+  const tokensCss = TOKENS_CSS_TEMPLATE;
+  const domains = /* @__PURE__ */ new Map();
+  let tag2 = null;
+  let dirty = true;
+  const composeCss = () => {
+    const entries2 = [...domains.entries()];
+    entries2.sort((a, b) => a[0] === TOKENS_DOMAIN ? -1 : b[0] === TOKENS_DOMAIN ? 1 : 0);
+    return entries2.map(([, css3]) => css3).join("\n");
+  };
+  const flush2 = () => {
+    if (tag2 === null)
+      return;
+    tag2.textContent = composeCss();
+    dirty = false;
+  };
+  const ensureStyles = () => {
+    if (typeof document === "undefined")
+      return;
+    if (tag2 === null || !tag2.isConnected) {
+      const head = document.head;
+      if (head === null)
+        return;
+      const found = document.getElementById(id3);
+      if (found !== null)
+        tag2 = found;
+      else {
+        const el = document.createElement("style");
+        el.id = id3;
+        head.appendChild(el);
+        tag2 = el;
+      }
+      dirty = true;
+    }
+    if (dirty)
+      flush2();
+  };
+  const registerStyle = (domain, css3) => {
+    if (domains.get(domain) === css3)
+      return;
+    domains.set(domain, css3);
+    dirty = true;
+    if (tag2?.isConnected === true)
+      flush2();
+  };
+  const dispose = () => {
+    if (tag2?.isConnected === true)
+      tag2.remove();
+    tag2 = null;
+    domains.clear();
+    dirty = true;
+  };
+  return {
+    id: id3,
+    tokensCss,
+    cssVar: (name2) => `--${CSS_PREFIX}-${name2}`,
+    registerStyle,
+    ensureStyles,
+    dispose,
+    applyStyle: (domain, css3) => {
+      registerStyle(domain, css3);
+      ensureStyles();
+    }
+  };
+}
+
+// dist/ui/infra/css.js
+var current = createStyleKit({ id: "dsh-plugin-core-ui" });
+function setStyleKit(kit) {
+  current = kit;
+}
+function getStyleKit() {
+  return current;
+}
+function ensureControls(kit = current) {
+  kit.registerStyle("tokens", kit.tokensCss);
+}
+function ensureComponentStyles(domain, css3, kit = current) {
+  kit.registerStyle("tokens", kit.tokensCss);
+  kit.applyStyle(domain, css3);
+}
+
+// dist/ui/display/icon-css.generated.js
+var ICON_CSS = "/* \u5B57\u4F53\u56FE\u6807\u7684\u81EA\u6709\u57FA\u7840\u7C7B\uFF1A\u5C3A\u5BF8\u5951\u7EA6\u5F52\u6211\u4EEC\uFF0C\u5B57\u5F62\u5F52\u5E73\u53F0\u3002\n *\n * \u80CC\u666F\uFF1Aiconfont \u5E73\u53F0\u751F\u6210\u7684\u5728\u7EBF CSS \u91CC\uFF0C\u57FA\u7840\u7C7B\uFF08\u5404\u5E93\u7684 baseClass\uFF09\u4F1A\u5199\u6B7B font-size:16px\uFF0C\n * \u76F4\u63A5\u547D\u4E2D <i>\u3002\u7EE7\u627F\u503C\u5728\u5C42\u53E0\u91CC\u4F18\u5148\u7EA7\u6700\u4F4E\uFF0C\u63A7\u4EF6\u5B57\u53F7\u518D\u600E\u4E48\u8BBE\u4E5F\u76D6\u4E0D\u4F4F\u5B83\uFF0C\u4E8E\u662F\u56FE\u6807\u6052 16px\u3002\n * \u6210\u719F\u56FE\u6807\u5E93\u7684\u57FA\u7840\u7C7B\u4E0D\u5E26\u8FD9\u4E2A\u58F0\u660E\uFF1AFont Awesome \u7684 .fa \u4E0E Bootstrap Icons \u7684 .bi \u90FD\u53EA\u7ED9\n * font-family / font-style / line-height\uFF0C\u5C3A\u5BF8\u9ED8\u8BA4\u7EE7\u627F\u7236\u7EA7\u6587\u5B57\uFF08Font Awesome Sizing Icons \u6587\u6863\n * \u539F\u6587\u300CBy default, icons inherit the font-size of their parent container\u300D\uFF09\u3002\n *\n * \u5E73\u53F0\u90A3\u5F20 CSS \u6211\u4EEC\u662F\u8FDC\u7A0B <link> \u52A0\u8F7D\u7684\uFF0C\u6539\u4E0D\u4E86\uFF1B\u8FD9\u91CC\u7528\u4E00\u6761\u81EA\u6709\u89C4\u5219\u628A 16px \u4E2D\u548C\u6389\uFF0C\n * \u6062\u590D\u300C\u56FE\u6807\u8DDF\u540C\u4E00\u884C\u6587\u5B57\u7B49\u5927\u300D\u7684\u8BED\u4E49\u3002\u9009\u62E9\u5668\u7279\u5F02\u6027 (0,1,1) \u9AD8\u4E8E\u5E73\u53F0\u57FA\u7840\u7C7B (0,1,0)\uFF0C\n * \u56E0\u6B64\u4E0D\u4F9D\u8D56 <link> \u4E0E\u672C <style> \u7684\u6302\u8F7D\u5148\u540E\u3002\n *\n * \u53EA\u63A5\u7BA1 font-size / line-height\uFF1Afont-family\u3001\u5B57\u5F62\u3001\u989C\u8272\u3001\u6DF1\u8272 -dark \u5B57\u5F62\u4ECD\u5F52\u5E73\u53F0\u57FA\u7840\u7C7B\u3002\n * \u663E\u5F0F\u4F20 size \u7684\u56FE\u6807\u5E26\u5185\u8054 font-size\uFF0C\u4F18\u5148\u7EA7\u6700\u9AD8\uFF0C\u4E0D\u53D7\u672C\u89C4\u5219\u5F71\u54CD\u3002\n * \u653E\u5927\u6863\uFF08\u6309\u94AE dense\uFF09\u7531 button.css \u7684 .dshpc-iconbtn--dense \u89C4\u5219\u7ED9\u51FA em \u7CFB\u6570\u3002\n */\ni.dshpc-icon{font-size:inherit;line-height:1;}\n";
+
 // dist/ui/display/icon-runtime.js
 var import_react = require("react");
 
@@ -157,7 +251,7 @@ function darkGlyphName(glyph, names) {
 // dist/ui/display/font-icon.js
 var ICON_FONTS = {
   "common.base": {
-    url: "https://at.alicdn.com/t/c/font_5252971_ep4b9h86kka.css",
+    url: "https://at.alicdn.com/t/c/font_5252971_1lzmstl432b.css",
     family: "koc-i-common-base",
     baseClass: "koc-i-common-base",
     prefix: "koc-i-common-base-"
@@ -224,9 +318,10 @@ function resolveIconName(name2) {
   const font = ICON_FONTS[name2.slice(0, cut)];
   return font === void 0 ? void 0 : { id: name2.slice(0, cut), font, glyph: name2.slice(cut + 1) };
 }
+var ICON_BASE_CLASS = "dshpc-icon";
 function glyphClass(font, glyph, className2) {
   const extra = className2 === void 0 || className2 === "" ? "" : ` ${className2}`;
-  return `${font.baseClass} ${font.prefix}${glyph}${extra}`;
+  return `${ICON_BASE_CLASS} ${font.baseClass} ${font.prefix}${glyph}${extra}`;
 }
 function pxOf(size4) {
   if (size4 === void 0)
@@ -258,6 +353,7 @@ function FontIcon(props) {
   }
   const { id: id3, font, glyph } = hit;
   ensureIconFont(id3);
+  ensureComponentStyles("icon", ICON_CSS);
   if (font.color === true) {
     return (0, import_react2.createElement)(ColorGlyph, { id: id3, font, glyph, size: size4, title, className: className2, style: style2 });
   }
@@ -293,99 +389,8 @@ function Icon(props) {
 }
 
 // packages/demo/src/client/index.tsx
-var import_react110 = require("react");
+var import_react109 = require("react");
 var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
-
-// dist/design/tokens-css.generated.js
-var TOKENS_CSS_TEMPLATE = '\n/* \u2500\u2500 \u6587\u5B57\uFF08\u5BBF\u4E3B label \u56DB\u6863 + \u53CD\u8272\u9762\u7528\u5B57\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\nbody{\n  --dshpc-fg:var(--dsw-alias-label-primary,#1f2328);\n  --dshpc-fg-2:var(--dsw-alias-label-secondary,#5c6370);\n  --dshpc-fg-3:var(--dsw-alias-label-tertiary,#767d87);\n  --dshpc-fg-4:var(--dsw-alias-label-caption,#9aa1ab);\n  --dshpc-fg-dim:var(--dsw-alias-label-dimmed,#b9bfc7);\n  /* \u53CD\u8272\u9762\u4E0A\u7684\u5B57\uFF08\u5B9E\u5FC3\u94AE / \u89D2\u6807\uFF09\uFF1A\u6697\u8272\u4E0B\u662F bluish-1000\uFF0C\u6545\u7528 -foreground \u800C\u975E -inverted */\n  --dshpc-fg-inverse:var(--dsw-alias-label-primary-foreground,#fff);\n\n  /* \u2500\u2500 \u9762\uFF08\u5BBF\u4E3B bg-layer \u4E09\u6863 + \u4E0B\u6C89\u8F68\u9053\u5E95\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-surface-1:var(--dsw-alias-bg-layer-1,#fff);\n  --dshpc-surface-2:var(--dsw-alias-bg-layer-2,#fff);\n  --dshpc-surface-3:var(--dsw-alias-bg-layer-3,#fff);\n  /* \u300C\u9009\u4E2D\u4EAE\u7247\u300D\u7684\u5E95\u76D8\u8272\uFF08\u914D --dshpc-shadow-raised \u7528\uFF09 */\n  --dshpc-surface-raised:var(--dsw-alias-bg-layer-1,#fff);\n  /* \u8F68\u9053 / \u4E0B\u6C89\u5E95\uFF08\u5B98\u65B9\u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u7528\u7684\u5C31\u662F\u8FD9\u6761\uFF09 */\n  --dshpc-surface-sunken:var(--dsw-alias-interactive-bg-hover,rgba(38,49,72,.06));\n  /* \u6574\u9875 / \u7F16\u8F91\u5668\u5E95\uFF08bg-base\uFF09 */\n  --dshpc-surface-base:var(--dsw-alias-bg-base,#fff);\n  /* \u81EA\u7ED8\u6D6E\u5C42 / \u83DC\u5355\u5361\u7684\u4E0D\u900F\u660E\u5E95\uFF08= base\uFF1B\u4E0D\u8981\u7528\u534A\u900F\u660E\u7684 specific-menu\uFF09 */\n  --dshpc-surface-menu:var(--dshpc-surface-base);\n  /* markdown \u4EE3\u7801\u5757\u9762 / \u5B57\u4F53\uFF08\u4F1A\u8BDD\u955C\u50CF\u91CC\u7528\u5230\uFF09 */\n  --dshpc-code-surface:var(--dsw-alias-markdown-code-block,rgba(128,128,128,.10));\n  --dshpc-code-font:var(--dsw-font-markdown-code-block-small,12px/18px var(--ds-font-family-code,monospace));\n  /* \u8B66\u544A\u6587\u5B57\u8272\uFF08\u5BBF\u4E3B state-warn-label\uFF09 */\n  --dshpc-warning-label:var(--dsw-alias-state-warn-label,#f5a623);\n  /* \u56FA\u5B9A\u4E2D\u6027\u5B9E\u9762\uFF08\u81EA\u7ED8\u6D6E\u5C42\u3001\u6DF1\u8272\u4E3B\u9898\u4E0B\u5FC5\u987B\u81EA\u5DF1\u53D8\u7684\u90A3\u51E0\u4E2A\uFF09\u2014\u2014\u53EA\u6709\u5B83\u9700\u8981\u6697\u8272\u8986\u76D6 */\n  --dshpc-solid:var(--dsw-static-neutral-00,#fff);\n  --dshpc-on-solid:var(--dsw-alias-label-primary,#1f2328);\n  /* \u4EA4\u4ED8\u6587\u4EF6\u5361\u90A3\u79CD\u300C\u6D45\u5E95\u76D8 + hover \u52A0\u6DF1\u300D\u4E24\u62CD */\n  --dshpc-plate:var(--dsw-static-neutral-50,#fafafa);\n  --dshpc-plate-hover:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u26A0\uFE0F \u8FD9\u4E9B**\u56FA\u5B9A\u4E2D\u6027\u9762\u4E00\u5F8B\u7528 rgba \u5B57\u9762\u91CF**\uFF082026-10-19 \u771F\u673A\u6559\u8BAD\uFF09\uFF1A\u4E0D\u8981\u5199\u6210\n     \u300Crgba \u56DE\u9000\u884C + \u5D4C --dsw-static-* \u7684 color-mix \u884C\u300D\u4E24\u6761\u540C\u540D\u58F0\u660E\u2014\u2014\u81EA\u5B9A\u4E49\u5C5E\u6027**\u540E\u8005\u6052\u80DC**\uFF0C\n     \u54EA\u6015\u5B83\u7684\u503C\u5728\u5BBF\u4E3B\u91CC\u7B97\u4E0D\u51FA\u6765\uFF08static \u53D8\u91CF invalid\uFF09\u21D2 \u6574\u6761 token \u4F5C\u5E9F\u3001rgba \u515C\u5E95\u4E00\u8D77\u88AB\u5E9F\uFF0C\n     0.2.6 \u91CC Segmented \u8F68\u9053\u5168\u900F\u660E\u5C31\u662F\u8FD9\u4E48\u6765\u7684\u3002\u8981\u8DDF\u5BBF\u4E3B\u4E3B\u9898\u8054\u52A8\u7684\u9762\u7528 alias token\uFF08\u90A3\u4E9B\u5B9E\u6D4B\u6709\u6548\uFF09\u3002 */\n  --dshpc-icon-plate:rgba(255,255,255,.5);\n  /* \u8868\u5934\u5E95\uFF1A\u6D45\u8272\u4E3B\u9898**\u504F\u6DF1**\uFF0C\u4E14\u5FC5\u987B**\u6BD4\u6591\u9A6C\u7EB9\uFF08--dshpc-plate\uFF09\u518D\u6DF1\u4E00\u6863**\u2014\u2014\n     \u4E24\u8005\u4E0D\u80FD\u649E\u8272\uFF08\u7528\u6237 2026-10-02\uFF1A\u8868\u5934\u8DDF\u6591\u9A6C\u7EB9\u4E00\u6A21\u4E00\u6837\uFF09\u3002 */\n  --dshpc-head-bg:var(--dsw-static-neutral-100,#f5f5f5);\n  /* \u8868\u683C\u5E95 / \u884C hover\uFF082026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u8868\u5934\u4E0E\u901A\u680F**\u4E92\u6362**\u5E95\u8272\uFF09\uFF1A\n     \u8868\u5934\u9ED8\u8BA4\u5E95 = \u901A\u680F\u539F\u6765\u90A3\u5C42\u7070\uFF08--dshpc-surface-sunken\uFF0C\u8DDF\u7740\u5BBF\u4E3B\u4EA4\u4E92\u9762\u8D70\uFF09\uFF1B\n     \u901A\u680F\u9ED8\u8BA4\u5E95 = \u8868\u5934\u539F\u6765\u90A3\u8272\uFF08\u4EAE #f6f8fa / \u6697 #151b23\uFF0C\u53C2\u8003\u56FE\u5B9E\u6D4B\uFF0C\u4E0E\u6DF1\u8272\u6BB5\u540C\u6E90\uFF09\uFF1B\n     \u884C hover \u662F\u300C\u4E00\u5C42\u6781\u6DE1\u7684\u9ED1\u300D\u22481.5%\uFF08\u7528\u6237\uFF1A\u518D\u6D45\u4E00\u534A\uFF0C\u8981\u7279\u522B\u6DE1\uFF09\u3002 */\n  --dshpc-table-head-bg:var(--dshpc-surface-sunken);\n  --dshpc-table-banner-bg:#f6f8fa;\n  --dshpc-table-row-hover:rgba(15,15,15,.015);\n  /* \u56FE\u6807\u5C0F\u5E95\u677F\uFF08\u4EA7\u51FA\u7269\uFF09\uFF1A\u6D45\u8272\u4E0B\u8981**\u770B\u5F97\u89C1**\uFF08\u539F\u5148\u53D6 plate \u21D2 \u5728\u767D\u5E95\u4E0A\u7B49\u4E8E\u6CA1\u6709\uFF09\uFF1Bhover \u52A0\u500D\u3002 */\n  --dshpc-chip-bg:rgba(15,15,15,.07);\n  --dshpc-chip-bg-hover:rgba(15,15,15,.14);\n  /* \u5C55\u5F00\u884C\uFF1A**\u5E26\u900F\u660E\u5EA6\u7684\u84DD**\u2014\u2014\u4E0D\u662F\u7070\u3001\u4E5F\u4E0D\u662F\u7EAF\u8272\uFF0C\u900F\u51FA\u5361\u7247\u5E95\u8272\uFF0C\u4E00\u773C\u770B\u51FA\u300C\u8FD9\u662F\u5C55\u5F00\u7684\u300D\n     \uFF08\u7528\u6237 2026-10-02\uFF1A\u7070\u8272\u8DDF\u6591\u9A6C\u7EB9\u5206\u4E0D\u51FA\u6765\uFF09\u3002\u5185\u5BB9\u533A\u518D\u6DE1\u4E00\u6863\uFF0C\u5F62\u6210\u300C\u884C\u6DF1 / \u5185\u5BB9\u6D45\u300D\u7684\u533A\u9694\u3002 */\n  --dshpc-open-bg:rgba(37,99,235,.10);\n  --dshpc-open-bg-soft:rgba(37,99,235,.05);\n  --dshpc-card-hover:rgba(37,99,235,.07);\n\n  /* \u2500\u2500 \u63CF\u8FB9\u56DB\u6863\uFF08\u5BBF\u4E3B\u771F\u503C\uFF1Al1 4% / l2 10% / l3 12% / l4 16%\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-border-faint:var(--dsw-alias-border-l1,#0000000a);\n  --dshpc-border:var(--dsw-alias-border-l2,#0000001a);\n  --dshpc-border-strong:var(--dsw-alias-border-l3,#0000001f);\n  --dshpc-border-heavy:var(--dsw-alias-border-l4,#00000029);\n\n  /* \u2500\u2500 \u54C1\u724C / \u8BED\u4E49\u8272 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u54C1\u724C\u300C\u9762\u300D\u8272\uFF1A\u660E\u8272\u8FD1\u9ED1\u3001\u6697\u8272\u8FD1\u767D\uFF08\u5B98\u65B9 Switch \u9009\u4E2D\u6001\u5373\u6B64\uFF09\uFF0C**\u4E0D\u662F\u84DD\u8272** */\n  --dshpc-accent:var(--dsw-alias-brand-primary,#0f1115);\n  /* \u84DD\u8272\uFF1A\u5F3A\u8C03 / \u9009\u4E2D / \u7126\u70B9\uFF0C\u4E00\u5F8B\u8D70\u8FD9\u6761 */\n  --dshpc-business:var(--dsw-alias-state-business-primary,#3b5bdb);\n  --dshpc-success:var(--dsw-alias-state-success-primary,#22c55e);\n  /* \u26A0\uFE0F \u662F state-warn\uFF08\u4E0D\u662F state-warning\uFF0C\u540E\u8005\u5BBF\u4E3B\u65E0\u6B64\u5B9A\u4E49\uFF09 */\n  --dshpc-warning:var(--dsw-alias-state-warn-primary,#f59e0b);\n  --dshpc-danger:var(--dsw-alias-state-error-primary,#ec1313);\n  --dshpc-link:var(--dsw-alias-link,#3b5bdb);\n  /* \u8BED\u4E49\u8272**\u5B9E\u9762**\u4E0A\u7684\u5B57\uFF08\u89D2\u6807 / \u5B9E\u5FC3\u63D0\u793A\uFF09\uFF1A\u5BBF\u4E3B\u7EA2\u7EFF\u9EC4\u4E09\u8272\u90FD\u662F\u4E2D\u8C03 \u21D2 \u767D\u5B57\u4E24\u4E2A\u4E3B\u9898\u90FD\u53EF\u8BFB\uFF0C\n     \u6545\u8FD9\u662F\u4E00\u6761\u4E0E\u4E3B\u9898\u65E0\u5173\u7684\u5E38\u91CF\uFF1B\u4E0D\u8981\u62FF --dshpc-fg-inverse \u9876\u2014\u2014\u5B83\u5728\u6697\u8272\u4E0B\u662F\u8FD1\u9ED1\uFF0C\u538B\u5728\u7EA2\u5E95\u4E0A\u770B\u4E0D\u6E05\u3002 */\n  --dshpc-on-signal:#fff;\n  /* \u9EC4\u5E95\u4E0A\u7684\u5B57\uFF1A\u9EC4\u8272\u662F\u4E2D\u9AD8\u660E\u5EA6\uFF0C\u767D\u5B57\u770B\u4E0D\u6E05 \u21D2 \u56FA\u5B9A\u6DF1\u8272\uFF08\u4E0E\u4E3B\u9898\u65E0\u5173\uFF09\u3002 */\n  --dshpc-on-warning:#1f2328;\n  /* \u544A\u8B66\u4E25\u91CD\u5EA6\u7684\u5706\u70B9\u5E95\u8272\uFF082026-11-03 \u4ECE feedback.css \u6536\u5230\u8FD9\u91CC\uFF09\u3002\n     \u4E0E\u4E3B\u9898\u65E0\u5173\u7684\u4E00\u7EC4\u5E38\u91CF\uFF1A\u8FD9\u51E0\u4E2A\u8272\u8981\u5728\u4EFB\u610F\u5E95\u8272\u4E0A\u90FD\u8BA4\u5F97\u51FA\u6765\uFF0C\u6240\u4EE5**\u4E0D\u8DDF\u5BBF\u4E3B state \u8272\u8D70**\n     \uFF08\u5BBF\u4E3B state-warn-primary \u504F\u4EAE\uFF0C\u538B\u767D \u2715 \u770B\u4E0D\u6E05\uFF09\u3002\u8BED\u4E49\u8272\u6539\u52A8\u8BF7\u53EA\u6539\u8FD9\u91CC\u3002 */\n  --dshpc-sev-info:#2563eb;\n  --dshpc-sev-success:#16a34a;\n  --dshpc-sev-warning:#d97706;\n  --dshpc-sev-error:#dc2626;\n\n  /* \u2500\u2500 \u5B9E\u5FC3\u6309\u94AE\u7684 hover / active \u6D3E\u751F\u6001\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     \u539F\u5B9E\u73B0\u662F :hover \u76F4\u63A5\u538B opacity .9\uFF1A\u9ED1\u5E95\u538B 10% \u51E0\u4E4E\u770B\u4E0D\u51FA\u6765\uFF0C\u7528\u6237\u539F\u8BDD\u300C\u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\u3002\n     \u21D2 \u6539\u6210\u5BF9\u5E95\u8272\u505A**\u660E\u786E\u7684\u6DF7\u8272**\uFF08\u538B 22% / 34%\uFF09\uFF0C\u4E0D\u7528 opacity\uFF1A\n       \xB7 \u4EAE\u8272\u4E3B\u9898\uFF1A\u9ED1\u5E95\uFF08--dshpc-accent\uFF09\u63BA\u767D\u63D0\u4EAE\uFF1B\u7EA2 / \u7EFF / \u9EC4 / \u84DD\u5E95\u63BA\u9ED1\u538B\u6DF1\uFF1B\n       \xB7 \u6697\u8272\u4E3B\u9898\uFF1A\u53CD\u8FC7\u6765\uFF08\u6697\u5E95\u63BA\u767D\u3001\u4EAE\u5E95\u63BA\u9ED1\uFF09\u3002\n     \u6DF7\u8272\u5BF9\u8C61\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272\u5B57\u9762\u91CF**\uFF08#fff / #000\uFF09\uFF0C\u4E0D\u4F9D\u8D56\u5BBF\u4E3B static-neutral \u662F\u5426\u5B58\u5728\uFF1B\n     \u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u6574\u6761\u58F0\u660E\u4F5C\u5E9F \u21D2 \u56DE\u843D\u5404\u6863\u539F\u8272\uFF08\u53EF\u63A5\u53D7\uFF1A\u4ECD\u53EF\u70B9\uFF0C\u53EA\u662F\u6CA1\u6709 hover \u53CD\u9988\uFF09\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 78%,#ffffff);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 64%,#ffffff);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#000000);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#000000);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#000000);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#000000);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#000000);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#000000);\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 78%,#000000);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 64%,#000000);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF1A\u72B6\u6001\u8272\u7CFB\u7684\u300C\u4E00\u5757\u5E95\u8272\u300D\u2014\u2014\u6267\u884C\u8BB0\u5F55\u9875\u6BCF\u6761\u6D41\u6C34\u8D26\u7684\u5757\u5E95\u5C31\u662F\u5B83\n     \uFF08\u7528\u6237 2026-10-04\uFF1A\u6B63\u5E38\u6001\u7ED9\u540C\u8272\u7CFB\u5F88\u6D45\u7684\u900F\u660E\u5E95\u3001\u5931\u8D25\u7528\u7EA2\u5E95\u900F\u51FA\u6765\uFF09\u3002\n     \u7528 \u300Ccolor-mix\u300D \u73B0\u7B97\u800C\u4E0D\u5199\u6B7B rgba\uFF1A\u72B6\u6001\u8272\u672C\u8EAB\u8DDF\u968F\u5BBF\u4E3B alias\uFF0C\u4E3B\u9898\u4E00\u6362\u81EA\u52A8\u6210\u7ACB\u3002\n     \u26A0\uFE0F **\u6DF1\u8272\u4E0B\u8981\u66F4\u6DE1**\uFF1A\u7528\u6237 2026-10-04\u300C\u6DF1\u8272\u98CE\u683C\u7684\u7EFF\u8272\u548C\u7EA2\u8272\u597D\u50CF\u90FD\u6709\u70B9\u6DF1\u300D\u21D2 dark \u6BB5\n     \u628A\u8FD9\u56DB\u6761\u538B\u5230 5%\uFF08\u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF09\uFF1B\u6D45\u8272\u6BB5\u7EF4\u6301 8%\u3002\u4E24\u7AEF\u5404\u81EA\u7ED9\u503C\uFF0C\u4E0D\u5171\u7528\u4E00\u6761\u66F2\u7EBF\u3002\n     \u547D\u540D\u6536\u5728 tokens.ts \u5355\u70B9\uFF08\u672C\u4ED3\u786C\u89C4\u77E9\uFF1A\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u81EA\u9020 --dshpc-*\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 8%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 8%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 8%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 8%,transparent);\n\n  /* \u2500\u2500 \u6269\u5C55\u8BED\u4E49\u8272\uFF082026-10-29 \u7528\u6237\u62CD\u677F\uFF1A\u5206\u7C7B / \u56FE\u8868\u5E38\u7528\u8272\u516B\u652F\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     \u5BBF\u4E3B\u65E0\u5BF9\u5E94 alias \u21D2 \u5199\u6B7B hex\uFF08\u4E0D\u8DDF\u968F\u5BBF\u4E3B\u6362\u80A4\uFF09\uFF1B\u5B9E\u5FC3\u9762\u5B57\u8272\u7EDF\u4E00\u8D70 --dshpc-on-signal\uFF08\u767D\uFF09\uFF0C\n     \u56E0\u516B\u652F\u660E\u5EA6\u90FD\u4F4E\u4E8E\u9EC4 / \u9752\u67E0\uFF0C\u767D\u5B57\u4E24\u4E3B\u9898\u5747 \u22654.5:1 \u53EF\u8BFB\u3002\u6BCF\u6761\u81EA\u5E26 hover/active/soft \u6D3E\u751F\uFF1B\n     \u6697\u8272\u6BB5\u53EA\u8986\u76D6\u6D3E\u751F\uFF08base \u5199\u6B7B\u3001\u4E24\u4E3B\u9898\u540C\u503C\uFF09\u3002 */\n  --dshpc-purple:#9333ea;\n  --dshpc-purple-hover:color-mix(in srgb,var(--dshpc-purple) 78%,#000000);\n  --dshpc-purple-active:color-mix(in srgb,var(--dshpc-purple) 64%,#000000);\n  --dshpc-purple-soft:color-mix(in srgb,var(--dshpc-purple) 8%,transparent);\n  --dshpc-pink:#db2777;\n  --dshpc-pink-hover:color-mix(in srgb,var(--dshpc-pink) 78%,#000000);\n  --dshpc-pink-active:color-mix(in srgb,var(--dshpc-pink) 64%,#000000);\n  --dshpc-pink-soft:color-mix(in srgb,var(--dshpc-pink) 8%,transparent);\n  --dshpc-cyan:#0e7490;\n  --dshpc-cyan-hover:color-mix(in srgb,var(--dshpc-cyan) 78%,#000000);\n  --dshpc-cyan-active:color-mix(in srgb,var(--dshpc-cyan) 64%,#000000);\n  --dshpc-cyan-soft:color-mix(in srgb,var(--dshpc-cyan) 8%,transparent);\n  --dshpc-teal:#0f766e;\n  --dshpc-teal-hover:color-mix(in srgb,var(--dshpc-teal) 78%,#000000);\n  --dshpc-teal-active:color-mix(in srgb,var(--dshpc-teal) 64%,#000000);\n  --dshpc-teal-soft:color-mix(in srgb,var(--dshpc-teal) 8%,transparent);\n  --dshpc-orange:#c2410c;\n  --dshpc-orange-hover:color-mix(in srgb,var(--dshpc-orange) 78%,#000000);\n  --dshpc-orange-active:color-mix(in srgb,var(--dshpc-orange) 64%,#000000);\n  --dshpc-orange-soft:color-mix(in srgb,var(--dshpc-orange) 8%,transparent);\n  --dshpc-indigo:#4f46e5;\n  --dshpc-indigo-hover:color-mix(in srgb,var(--dshpc-indigo) 78%,#000000);\n  --dshpc-indigo-active:color-mix(in srgb,var(--dshpc-indigo) 64%,#000000);\n  --dshpc-indigo-soft:color-mix(in srgb,var(--dshpc-indigo) 8%,transparent);\n  --dshpc-rose:#e11d48;\n  --dshpc-rose-hover:color-mix(in srgb,var(--dshpc-rose) 78%,#000000);\n  --dshpc-rose-active:color-mix(in srgb,var(--dshpc-rose) 64%,#000000);\n  --dshpc-rose-soft:color-mix(in srgb,var(--dshpc-rose) 8%,transparent);\n  --dshpc-slate:#475569;\n  --dshpc-slate-hover:color-mix(in srgb,var(--dshpc-slate) 78%,#000000);\n  --dshpc-slate-active:color-mix(in srgb,var(--dshpc-slate) 64%,#000000);\n  --dshpc-slate-soft:color-mix(in srgb,var(--dshpc-slate) 8%,transparent);\n\n  /* \u26A0\uFE0F 2026-10-18 \u7528\u6237\u62CD\u677F\uFF1A\u5BBF\u4E3B alias \u7684 hover\uFF08\u6697\u8272\u767D 8% / \u4EAE\u8272 6%\uFF09**\u592A\u5F31**\uFF0C\n     \u300C\u79FB\u4E0A\u53BB\u8981\u4ED4\u7EC6\u770B\u624D\u770B\u5F97\u51FA\u6765\u300D\u21D2 \u4E0D\u518D\u59D4\u6258\u5BBF\u4E3B hover \u522B\u540D\uFF0C\u6539\u4E3A\u81EA\u63BA\u4E2D\u6027\u8272\u5E76\u52A0\u91CD\uFF1A\n     \u4EAE\u8272\u63BA\u9ED1 10%\u3001\u6697\u8272\u63BA\u767D 14%\uFF08active \u518D\u52A0\u4E00\u6863\uFF09\u3002\u6309\u94AE / \u5206\u6BB5\u8F68\u9053 / \u5404\u7C7B hover \u5E95\u540C\u65F6\u53D7\u76CA\u3002\n     \u26A0\uFE0F \u5FC5\u987B\u4FDD\u7559 rgba \u515C\u5E95\u884C\u5728\u524D\uFF08\u672C\u6587\u4EF6\u60EF\u4F8B\uFF0C\u89C1 icon-plate \u6CE8\u91CA\uFF09\uFF1A\u63BA\u7684\u662F**\u56FA\u5B9A\u4E2D\u6027\u8272**\n     \uFF08neutral-900=#0f0f0f / neutral-00=#fff\uFF09\uFF0C\u9884\u8BA1\u7B97\u65E0\u635F\uFF1B\u65E7\u5185\u6838\u4E0D\u8BA4 color-mix \u65F6\u8D70\u515C\u5E95\uFF0C\n     \u5426\u5219\u6574\u6761 background:var(--seg-track) \u4F5C\u5E9F \u21D2 \u5206\u6BB5\u8F68\u9053\u900F\u660E\uFF08\u771F\u8E29\u8FC7\uFF1A\u9884\u89C8\u7AD9\u8F68\u9053\u6D88\u5931\uFF09\u3002 */\n  --dshpc-hover:rgba(15,15,15,.10);\n  --dshpc-active:rgba(15,15,15,.18);\n  /* \u6781\u6DE1\u586B\u5145\u5E95\uFF1A\u6B65\u8FDB\u5668\u7684\u52A0\u51CF\u94AE\u8981\u300C\u770B\u5F97\u51FA\u662F\u6309\u94AE\u3001\u4F46\u51E0\u4E4E\u4E0D\u62A2\u773C\u300D\uFF082026-11-14 \u7528\u6237\uFF1A\n     \u53EA\u8981\u4E00\u70B9\u70B9\uFF0C\u7279\u522B\u7279\u522B\u6DE1\uFF09\u3002\u6BD4 hover \u6DE1\u4E24\u6863\uFF0C\u4E0D\u8981\u518D\u62FF hover \u5192\u5145\u3002 */\n  --dshpc-fill-faint:rgba(15,15,15,.04);\n  /* \u5206\u6BB5\u63A7\u4EF6\u8F68\u9053\u5E95\uFF1A\u4E13\u7528 token\uFF08rgba \u5B57\u9762\u91CF\u3001\u4E0D\u501F --dshpc-hover \u4E2D\u8F6C\uFF09\u2014\u2014\n     2026-10-19 \u6559\u8BAD\uFF1A\u53D8\u91CF\u94FE\u4E2D\u95F4\u4EFB\u4F55\u4E00\u73AF invalid \u21D2 background \u6574\u6761\u4F5C\u5E9F\u3001\u8F68\u9053\u5168\u900F\u660E\u3002\n     \u4EAE\u8272\uFF1A\u9ED1 7%\uFF08\u6BD4 hover \u7684 10% \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u767D\u7247\u624D\u8DF3\u5F97\u51FA\uFF09\u3002 */\n  --dshpc-seg-track:rgba(15,15,15,.07);\n  --dshpc-mask:var(--dsw-alias-bg-mask-1,#0000003d);\n  /* \u5F39\u7A97\u9501\u5B9A\u6001\u7ED9**\u81EA\u7ED8\u63A7\u4EF6**\u7684\u964D\u900F\u660E\u5EA6\u6863\uFF082026-11-05\uFF09\u3002\u653E\u5728 token \u91CC\u662F\u4E3A\u4E86\u8BA9\u6D88\u8D39\u65B9\n     \u5728\u81EA\u5DF1\u5143\u7D20\u4E0A\u5199 --dshpc-lock-dim: 1 \u5C31\u80FD\u9000\u51FA\u8FD9\u6761\u6548\u679C\uFF0C\u4E0D\u7528 !important \u6253\u67B6\u3002 */\n  --dshpc-lock-dim:.5;\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF082026-10-06\uFF0C\u4EFB\u52A1\u65E5\u7A0B\u9875\u9996\u521B\uFF09= \u5F53\u524D\u5E95\u8272**\u671D\u66F4\u6DF1\u63BA 12% \u6587\u5B57\u8272**\uFF1A\n     \u6D45\u8272\u4E3B\u9898\u4E0B\u6587\u5B57\u8272\u662F\u9ED1 \u21D2 \u9009\u4E2D\u9762\u6BD4\u5E38\u6001\u5E95\u8272**\u6DF1\u4E00\u6863**\u3002\u6DF1\u8272\u5206\u652F\u89C1 body[data-ds-dark-theme]\uFF08\u671D\u80CC\u666F\u8272\u63BA\uFF09\u3002\n     \u8BED\u4E49\uFF1A\u6807\u8BB0\u300C\u6B63\u5728\u770B\u7684\u4E1C\u897F\u300D\uFF0C\u6BD4\u5E38\u6001\u660E\u663E\u3001\u53C8\u4E0D\u8BB8\u76D6\u4F4F\u5185\u5BB9\uFF08\u4E0D\u8BB8\u7528\u534A\u900F\u660E\u53E0\u72B6\u6001\u8272\uFF09\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 88%,var(--dshpc-fg));\n  /* ListRow \u9009\u4E2D\u9762\uFF082026-11-07 \u7528\u6237\u5B9A\uFF09\uFF1Aslate \u7684**\u6781\u6D45\u84DD\u7070**\uFF0C\u4E0D\u7528\u4E0A\u9762\u90A3\u6761\u901A\u7528\u300C\u9009\u4E2D\u9762\u300D\u3002\n     \u901A\u7528\u503C\u4EAE\u8272\u662F\u63BA\u6587\u5B57\u8272\u7684\u4E2D\u6027\u7070\u3001\u6697\u8272\u662F\u4E24\u4E2A\u6DF1\u8272\u9762\u4E92\u63BA \u21D2 \u6DF1\u8272\u4E0B\u9009\u4E2D\u884C\u53D1\u9ED1\uFF08\u7528\u6237\u5B9E\u6D4B\uFF09\u3002\n     \u8FD9\u91CC\u4ECE --dshpc-slate \u6D3E\u751F\u534A\u900F\u660E\u6D45\u8272\uFF1A\u4EAE\u8272 14% \u53E0\u767D \u2248 #e5e7ea\uFF0C\u6BD4\u5E38\u6001 tone-sunken\n     \u6DF1\u4E00\u6863\u624D\u770B\u5F97\u51FA\u300C\u9009\u4E2D\u300D\uFF1B\u6697\u8272\u6D53\u5EA6\u89C1 body[data-ds-dark-theme] \u6BB5\u3002 */\n  --dshpc-listrow-selected-bg:color-mix(in srgb,var(--dshpc-slate) 14%,transparent);\n  /* ListRow hover\uFF082026-11-07 \u7528\u6237\uFF1A\u539F\u6765\u53D6 --dshpc-active \u592A\u5938\u5F20\uFF0C\u300C\u6709\u4E00\u70B9\u53D8\u5316\u5C31\u884C\u300D\uFF09\uFF1A\n     \u5E38\u6001 tone-sunken \u662F 6% \u84DD\u7070\u53E0\u767D \u2248 #f0f1f3\uFF0C\u8FD9\u91CC\u53EA\u52A0\u6DF1\u5230 9% \u4E2D\u6027\u9ED1 \u2248 #e8e8e8\uFF0C\n     \u80FD\u770B\u51FA\u79FB\u4E0A\u53BB\u4E86\uFF0C\u53C8\u4E0D\u4F1A\u628A\u6574\u884C\u5185\u5BB9\u548C\u6587\u5B57\u5BF9\u6BD4\u5EA6\u4E00\u8D77\u6539\u6389\u3002\u6697\u8272\u6863\u89C1 body[data-ds-dark-theme]\u3002 */\n  --dshpc-listrow-hover-bg:rgba(15,15,15,.09);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u9ED8\u8BA4\u5E95\uFF082026-10-06 \u2192 \u7EED2\uFF09\uFF1A\u6D45\u8272\u4E0B\u7ED9**\u6DE1\u84DD**\uFF08business 8% \u900F\u767D\u5E95\uFF09\u2014\u2014\n     \u53C2\u7167\u7528\u6237\u53C2\u8003\u7A3F\u91CC\u672A\u9009\u4E2D\u65E5\u7A0B\u5757 / Tuesday \u5217\u7684\u90A3\u79CD\u84DD\u3001\u518D\u6D45\u4E00\u70B9\u70B9\uFF1B\n     \u76F8\u90BB\u6708\u8865\u4F4D\u683C\u4ECD\u8D70 --dshpc-surface-2\uFF08\u66F4\u7070\uFF09\uFF0C\u4E0D\u53D7\u5F71\u54CD\u3002\n     \u6DF1\u8272\u6BB5\u7EF4\u6301 #23262e\uFF08\u7528\u6237\uFF1A\u6DF1\u8272 UI \u5DF2\u5DEE\u4E0D\u591A\uFF0C\u4E0D\u52A8\uFF09\u3002 */\n  --dshpc-cal-cell-bg:color-mix(in srgb,var(--dshpc-business) 8%,var(--dshpc-surface-1));\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u300C\u70B9\u5F00\u67D0\u5929\u300D\u5C55\u5F00\u7684\u9762\u677F\u5E95\uFF082026-10-06 \u7EED\uFF09\uFF1A\u6D45\u8272\u4E0B**\u65E0\u9650\u63A5\u8FD1\u767D\u3001\u53EA\u5E26\u4E00\u4E01\u70B9\u7070**\n     \uFF08neutral-50 = #fafafa\uFF09\u2014\u2014\u9762\u677F\u91CC\u88C5\u534A\u900F\u660E\u6267\u884C\u8BB0\u5F55\u5217\u8868\uFF0C\u5E95\u518D\u6DF1\u6574\u7247\u5C31\u53D1\u7CCA\u53D1\u7070\uFF1B\n     \u6DF1\u8272\u6BB5\u6CBF\u7528\u539F selected-bg \u6697\u503C\uFF0C\u4FDD\u6301\u4E0D\u52A8\u3002 */\n  --dshpc-cal-panel-bg:var(--dsw-static-neutral-50,#fafafa);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6D45\u8272\u6BB5\uFF0C2026-10-06 \u7EED3\uFF09\uFF1A\u4E0D\u518D\u8D70\u7070\u8272\u901A\u7528\u4EA4\u4E92\u5E95\u2014\u2014\n     \u9F20\u6807\u79FB\u4E0A\u53BB\u5E94\u662F\u300C\u66F4\u4EAE\u4E00\u70B9\u70B9\u7684\u84DD\u300D\uFF08\u4E0E\u6DF1\u8272\u6BB5\u540C\u8BED\u4E49\uFF1Ahover = \u63D0\u4EAE\u7684\u84DD\uFF0C\u4E0D\u662F\u7070\u4E0B\u53BB\uFF09\u3002\n     \u6D53\u5EA6**\u4ECB\u4E8E**\u8868\u5934\u84DD\uFF0814%\uFF09\u4E0E\u672A\u9009\u4E2D\u683C\u84DD\uFF088%\uFF09\u4E4B\u95F4\u3001\u7565\u504F\u8868\u5934\u4E00\u4FA7\uFF1Abusiness 12% \u900F\u767D\u5E95\n     \uFF08\u6BD4\u8868\u5934\u6D45\u4E00\u70B9\u3001\u6BD4\u672A\u9009\u4E2D\u683C\u6DF1\u4E00\u70B9\uFF09\u3002 */\n  --dshpc-cal-cell-hover:color-mix(in srgb,var(--dshpc-business) 12%,var(--dshpc-surface-1));\n\n  /* \u2500\u2500 \u6295\u5F71 / \u7126\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-shadow-1:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  /* \u4EAE\u7247\u81EA\u5E26\u7684\u6D6E\u8D77\u611F\uFF08\u9009\u4E2D\u6001\u7528\uFF1B\u4E0E --dshpc-surface-raised \u914D\u5BF9\uFF09 */\n  --dshpc-shadow-raised:var(--dsw-elevation-soft,0 4px 16px 0 #00000008);\n  --dshpc-shadow-2:var(--dsw-shadow-lv3,0 12px 32px 0 #00000014);\n  /* \u952E\u76D8\u7126\u70B9\u73AF\u3002\u26A0\uFE0F \u4E0D\u7528\u5BBF\u4E3B --dsw-focus-ring-color\uFF1A\u5B83\u9ED8\u8BA4\u503C\u662F transparent\uFF08\u515C\u5E95\u4E0D\u751F\u6548\u3001\u4F1A\u9690\u8EAB\uFF09 */\n  --dshpc-focus:var(--dsw-alias-state-business-primary,#3b5bdb);\n\n  /* \u2500\u2500 \u5706\u89D2\uFF08\u5BBF\u4E3B\u771F\u503C 4 / 8 / 12 / 16 / 20 / 28\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-radius-xs:var(--dsw-radius-xs,4px);\n  --dshpc-radius-sm:var(--dsw-radius-sm,8px);\n  --dshpc-radius-md:var(--dsw-radius-md,12px);\n  --dshpc-radius-lg:var(--dsw-radius-lg,16px);\n  --dshpc-radius-xl:var(--dsw-radius-xl,20px);\n  --dshpc-radius-panel:var(--dsw-radius-panel,28px);\n  /* \u5168\u5706\uFF08\u80F6\u56CA\u6807\u7B7E\uFF09\uFF1A\u5BBF\u4E3B\u7684 radius \u6863\u6700\u5927\u53EA\u6709 28px\uFF0C\u6491\u4E0D\u6EE1 24px \u9AD8\u7684 chip */\n  --dshpc-radius-pill:999px;\n\n  /* \u2500\u2500 \u95F4\u8DDD\u56DB\u62CD\uFF08\u53EA\u8BB8\u7528\u8FD9\u56DB\u6863\uFF0C\u4E0D\u8BB8\u51FA\u73B0 5 / 7 / 9px\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-space-1:4px;\n  --dshpc-space-2:8px;\n  --dshpc-space-3:12px;\n  --dshpc-space-4:16px;\n\n  /* \u2500\u2500 \u63A7\u4EF6\u9AD8\u5EA6\uFF1A\u79BB\u6563\u4E09\u6863\uFF08\u63A7\u4EF6\u7528 size="sm|md|lg" \u9009\uFF1B\u8C03\u7528\u70B9\u4E0D\u8BB8\u81EA\u5B9A\u4E49\u9AD8\u5EA6\uFF0C\n       \u771F\u4E0D\u591F\u7528\u624D\u5141\u8BB8\u5728\u8C03\u7528\u70B9\u672C\u5730\u8986\u76D6 --dshpc-control-h-*\uFF0C\u5C5E\u4F8B\u5916\u800C\u975E\u5E38\u6001\uFF09\u2500\u2500 */\n  --dshpc-control-h-sm:24px;\n  --dshpc-control-h-md:28px;\n  --dshpc-control-h-lg:32px;\n\n  /* \u2500\u2500 \u5B57\u53F7 / \u884C\u9AD8\uFF1A\u76F4\u7ED1\u5BBF\u4E3B\u5B57\u53F7\u65CF\uFF08\u5BBF\u4E3B\u771F\u503C 11 / 12 / 13 / 14 / 16\uFF09\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-font-xs:var(--dsw-font-xxxs-11-font-size,11px);\n  --dshpc-font-sm:var(--dsw-font-xxs-12-font-size,12px);\n  --dshpc-font-md:var(--dsw-font-xs-13-font-size,13px);\n  --dshpc-font-lg:var(--dsw-font-s-14-font-size,14px);\n  --dshpc-font-xl:var(--dsw-font-base-16-font-size,16px);\n  --dshpc-line-xs:var(--dsw-font-xxxs-11-line-height,14px);\n  --dshpc-line-sm:var(--dsw-font-xxs-12-line-height,18px);\n  --dshpc-line-md:var(--dsw-font-xs-13-line-height,20px);\n  --dshpc-line-lg:var(--dsw-font-s-14-line-height,22px);\n  --dshpc-line-xl:var(--dsw-font-base-16-line-height,24px);\n  --dshpc-font-mono:var(--ds-font-family-code,monospace);\n\n  /* \u2500\u2500 \u7EC6\u6EDA\u52A8\u6761\u7684\u8BA9\u4F4D\u503C\uFF08\u7EBF\u5BBD\u4E0D\u80FD\u653E token\uFF0C\u89C1\u6587\u4EF6\u672B\u5C3E\u7684\u6CE8\u91CA\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n     1px\u21922px \u53EA\u6539\u8FD9\u4E00\u884C\uFF1B\u5B83\u7528\u5728\u666E\u901A\u5143\u7D20\u4E0A\uFF0Cvar() \u80FD\u6B63\u5E38\u89E3\u6790\u3002 */\n  --dshpc-scroll-inset:1px;\n\n  /* \u2500\u2500 \u5C42\u7EA7\u9636\u68AF\uFF08\u4E1A\u52A1\u6587\u4EF6\u4E0D\u8BB8\u518D\u5199\u88F8 z-index\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  /* \u9875\u9762\u7EA7\u9884\u89C8\u5206\u680F \u2192 \u62BD\u5C49\uFF08\u65B0\u5EFA/\u7F16\u8F91\uFF09\u2192 \u5F39\u7A97/\u786E\u8BA4\u6846 \u2192 \u6D6E\u5C42\u83DC\u5355 \u2192 \u6D6E\u5C42\u63D0\u793A */\n  /* **\u6574\u6761\u9636\u68AF\u90FD\u5FC5\u987B\u4F4E\u4E8E\u5B98\u65B9\u6D6E\u70B9 1000 \u6863**\uFF082026-11-06 \u7528\u6237\u62CD\u677F\uFF09\uFF1A\u5B98\u65B9\u539F\u8BED\n     Modal / ImageLightbox \u662F z-index 1000\uFF08body portal\uFF09\uFF0CMenu / Toast \u662F 1100\u3002\n     \u6211\u4EEC\u53EA\u662F\u5BBF\u4E3B\u91CC\u7684\u4E00\u4E2A\u9875\u9762 \u21D2 \u5BBF\u4E3B\u6D6E\u70B9\u6052\u5728\u6211\u4EEC\u4E4B\u4E0A\uFF1B\u4EE5\u540E\u5F39\u7A97\u91CC\u518D\u5F00\u5B98\u65B9\u6A21\u6001/\u9884\u89C8\uFF0C\n     \u4E0D\u5FC5\u9010\u4E2A\u573A\u666F\u300C\u4E34\u65F6\u8BA9\u4F4D\u300D\uFF08\u6B64\u524D 1070 \u538B\u4F4F\u5B98\u65B9\u539F\u56FE\u9884\u89C8\u5C31\u662F\u8FD9\u4E48\u8E29\u51FA\u6765\u7684\uFF09\u3002 */\n  /* \u5185\u5BB9\u5C42\u5438\u9876\uFF08\u5929\u6807\u7B7E / \u8868\u5934\u8FD9\u7C7B\u300C\u8DDF\u7740\u6EDA\u4F46\u538B\u4F4F\u540C\u5C42\u5185\u5BB9\u300D\u7684\u5143\u7D20\uFF09\uFF1A\u53EA\u538B\u540C\u5C42\u5144\u5F1F\uFF0C\n     \u5FC5\u987B\u4F4E\u4E8E\u4E0B\u9762\u6240\u6709\u6D6E\u5C42\u6863 \u2014\u2014 \u6240\u4EE5\u5B83\u4E0D\u662F\u300C\u5F00\u65B0\u6D6E\u5C42\u6863\u300D\uFF0C\u800C\u662F\u5185\u5BB9\u5C42\u5185\u90E8\u7684\u6392\u5E8F\u4F4D\u3002 */\n  --dshpc-z-sticky:10;\n  --dshpc-z-dock:900;\n  --dshpc-z-drawer:920;\n  --dshpc-z-modal:940;\n  /* \u6536\u8D77\u540E\u7684\u8033\u6735\uFF1A\u5FC5\u987B\u9AD8\u4E8E\u5F39\u7A97\u906E\u7F69\uFF0C\u5426\u5219\u5F39\u7A97\u4E00\u5F00\u5C31\u70B9\u4E0D\u5230\u5B83\uFF082026-11-04 \u7528\u6237\u771F\u673A\uFF09\u3002\n     \u53EA\u7ED9\u8033\u6735\u7528\uFF0C\u9875\u9762\u7EA7\u5206\u680F\u672C\u4F53\u4ECD\u662F\u5E03\u5C40\u6210\u5458\uFF0C\u4E0D\u8DDF\u7740\u62AC\u9AD8\u3002 */\n  --dshpc-z-ear:950;\n  --dshpc-z-menu:960;\n  --dshpc-z-tip:970;\n  /* \u8BED\u4E49\u522B\u540D\uFF082026-11-03 \u9762\u677F\u76AE\u80A4\u7EDF\u4E00\uFF09\uFF1A\u4E1A\u52A1\u6587\u4EF6\u53EA\u8BB8\u7528\u8FD9\u4E24\u4E2A\u8BF4\u300C\u6211\u8981\u4E00\u5C42\u6D6E\u5C42\u300D\uFF0C\n     \u4E0D\u518D\u5404\u81EA\u5199\u6D6E\u5C42\u5B57\u9762\u91CF\u3002\n       panel   = \u6D6E\u5C42\u9762\u677F\u672C\u4F53\uFF08picker \u5F39\u7A97\u3001\u951A\u5B9A\u9762\u677F\uFF09\uFF1B\n       popmenu = \u53E0\u5728\u9762\u677F\u4E4B\u4E0A\u7684\u83DC\u5355\uFF08\u25BE \u9009\u5C42\u3001Picker \u4E0B\u62C9\uFF09\u4E0E\u5176\u900F\u660E\u906E\u7F69\u3002 */\n  --dshpc-z-panel:var(--dshpc-z-menu);\n  --dshpc-z-popmenu:var(--dshpc-z-tip);\n\n  /* \u2500\u2500 \u52A8\u6548 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */\n  --dshpc-dur:var(--ds-transition-duration,.2s);\n  --dshpc-dur-fast:var(--ds-transition-duration-fast,.12s);\n  --dshpc-ease:var(--ds-ease-in-out,cubic-bezier(.4,0,.2,1));\n  /* \u8FD0\u884C\u4E2D\u72B6\u6001\u7684\u8109\u52A8\u65F6\u957F\uFF082026-10-06 \u7EDF\u4E00\u524D\u540E\u4E24\u7AEF\uFF1A\u4EFB\u52A1\u914D\u7F6E\u91CC\u7684\u7EFF\u547C\u5438 \u2192 \u84DD\u3001\u653E\u6162\uFF1B\n     \u6267\u884C\u8BB0\u5F55\u91CC\u7684\u84DD\u95EA \u2192 \u653E\u6162\u4E00\u70B9\u3002\u4E24\u8005\u7528\u540C\u4E00\u4E2A\u503C\uFF0C\u52A8\u753B\u5F62\u72B6\u672C\u5C31\u4E00\u81F4\uFF09\u3002 */\n  --dshpc-dur-run:500ms;\n}\n\n/* \u2500\u2500 \u660E\u6697\u5DEE\u5F02\u7684**\u552F\u4E00**\u843D\u70B9 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5224\u636E = body[data-ds-dark-theme]\uFF08\u5BBF\u4E3B 0.2.0-rc.2 \u6E90\u7801\u6838\u5B9E\uFF1A\u542F\u52A8\u811A\u672C toggleAttribute \u5199\u5165\uFF0C\n   \u552F\u4E00\u660E\u6697\u5224\u636E\uFF1B\u63D2\u4EF6\u7981\u6B62\u7528 prefers-color-scheme \u2014\u2014 \u5B83\u8DDF\u7684\u662F\u7CFB\u7EDF\u3001\u4E0D\u662F\u7528\u6237\u5728\u5BBF\u4E3B\u91CC\u7684\u9009\u62E9\uFF09\u3002\n   \u4E0B\u9762\u53EA\u653E alias \u8868\u8FBE\u4E0D\u4E86\u7684\u300C\u56FA\u5B9A\u4E2D\u6027\u9762\u300D\uFF1B\u989C\u8272\u82E5\u80FD\u9760 alias \u81EA\u52A8\u8DDF\u968F\uFF0C\u4E00\u5F8B\u4E0D\u8981\u5199\u5728\u8FD9\u91CC\u3002 */\nbody[data-ds-dark-theme]{\n  /* \u6DF1\u8272\u6BB5\u7684\u84DD**\u523B\u610F\u4E0D\u8DDF\u968F\u5BBF\u4E3B alias**\uFF08\u552F\u4E00\u4F8B\u5916\uFF09\uFF1A\u5BBF\u4E3B\u6697\u8272 alias \u7ED9\u7684\u662F #60a5fa \u4E00\u6863\u7684\u9AD8\u4EAE\u84DD\uFF0C\n     \u5B9E\u5FC3\u9762\uFF08Chip / Button info / \u65E5\u671F\u9009\u4E2D\u683C\uFF09\u538B\u767D\u5B57\u4F1A\u53D1\u7CCA \u2014\u2014 \u7528\u6237 2026-10-29 \u5B9E\u6D4B\u53CD\u9988\u3002\n     \u21D2 \u6DF1\u8272\u4E0B\u6539\u5B9A\u5411\u6D45\u8272\u72B6\u6001\u7684\u84DD\uFF08#3b5bdb\uFF09\u9760\uFF0C\u53EA\u5728\u660E\u5EA6\u4E0A\u62AC\u4E00\u70B9\u70B9\uFF0C\u4FDD\u8BC1\u5B83\u5728\u6697\u5E95\u4E0A\u4ECD\u770B\u5F97\u89C1\uFF1A\n     #4c6bd8 \u5BF9\u767D\u5B57 \u22484.8:1\uFF08\u539F\u4EAE\u84DD\u53EA\u6709 ~2.3:1\uFF09\uFF0C\u5BF9\u65E5\u5386\u683C\u5E95 \u22483.2:1 \u4ECD\u8FC7 UI \u4EF6\u7684 3:1 \u7EBF\u3002\n     \u4EE3\u4EF7\uFF1A\u5BBF\u4E3B\u6362\u54C1\u724C\u8272\u65F6\u6DF1\u8272\u4E0D\u518D\u81EA\u52A8\u8DDF\u7740\u53D8\uFF0C\u9700\u8981\u8FD9\u91CC\u624B\u52A8\u540C\u6B65\u3002 */\n  --dshpc-business:#4c6bd8;\n  --dshpc-solid:var(--dsw-static-neutral-900,#0f0f0f);\n  --dshpc-on-solid:var(--dsw-static-neutral-00,#fff);\n  /* \u5B9E\u5FC3\u6309\u94AE hover / active\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u9ED1\u5E95\uFF08\u6D45\u8272\u4E3B\u9898\u7684\u8FD1\u9ED1 \u2192 \u6697\u8272\u4E0B\u7684\u8FD1\u767D\uFF09\u63BA\u9ED1\u538B\u6DF1\uFF1B\n     \u7EA2 / \u7EFF / \u9EC4 / \u84DD\u63BA\u767D\u63D0\u4EAE\u3002\u4E0E\u4EAE\u8272\u6BB5\u65B9\u5411\u76F8\u53CD\uFF0C\u4FDD\u8BC1\u4E24\u79CD\u4E3B\u9898\u4E0B\u300C\u4E00\u773C\u770B\u51FA\u53D8\u4E86\u300D\u3002 */\n  --dshpc-accent-hover:color-mix(in srgb,var(--dshpc-accent) 80%,#000000);\n  --dshpc-accent-active:color-mix(in srgb,var(--dshpc-accent) 66%,#000000);\n  --dshpc-danger-hover:color-mix(in srgb,var(--dshpc-danger) 78%,#ffffff);\n  --dshpc-danger-active:color-mix(in srgb,var(--dshpc-danger) 64%,#ffffff);\n  --dshpc-success-hover:color-mix(in srgb,var(--dshpc-success) 78%,#ffffff);\n  --dshpc-success-active:color-mix(in srgb,var(--dshpc-success) 64%,#ffffff);\n  --dshpc-warning-hover:color-mix(in srgb,var(--dshpc-warning) 78%,#ffffff);\n  --dshpc-warning-active:color-mix(in srgb,var(--dshpc-warning) 64%,#ffffff);\n  /* \u540C\u4E0A\uFF1A\u63BA\u767D\u6BD4\u4F8B\u4ECE 22% / 36% \u6536\u5230 12% / 22% \u2014\u2014 \u5E95\u8272\u5DF2\u53D8\u6DF1\uFF0C\u7167\u65E7\u6BD4\u4F8B\u63D0\u4EAE\u4F1A\u5728 hover \u77AC\u95F4\n     \u628A\u767D\u5B57\u5BF9\u6BD4\u6253\u56DE ~3:1\uFF08\u6B63\u662F\u7528\u6237\u5ACC\u7CCA\u7684\u90A3\u4E00\u6863\uFF09\uFF1B\u6536\u7A84\u540E hover \u4ECD\u53EF\u611F\u77E5\u3001\u5B57\u4ECD\u6E05\u6670\u3002 */\n  --dshpc-business-hover:color-mix(in srgb,var(--dshpc-business) 88%,#ffffff);\n  --dshpc-business-active:color-mix(in srgb,var(--dshpc-business) 78%,#ffffff);\n  /* \u6697\u8272 hover \u63BA\u767D 14% / active 24%\uFF08\u5BF9\u9F50\u4E0A\u9762 2026-10-18 \u7684\u52A0\u91CD\u62CD\u677F\uFF09\u3002rgba \u515C\u5E95\u884C\u540C\u4E0A\u3002 */\n  --dshpc-hover:rgba(255,255,255,.14);\n  --dshpc-active:rgba(255,255,255,.24);\n  /* \u6781\u6DE1\u586B\u5145\u5E95\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u767D 5%\uFF0C\u4E0E\u4EAE\u8272\u7248\u540C\u6863\u89C2\u611F\u3002 */\n  --dshpc-fill-faint:rgba(255,255,255,.05);\n  /* \u5206\u6BB5\u8F68\u9053\uFF08\u6697\u8272\u7248\uFF09\uFF1A\u767D 10%\u2014\u2014\u6BD4 hover \u6DE1\u4E00\u6863\uFF0C\u9009\u4E2D\u4EAE\u7247\u624D\u8DF3\u5F97\u51FA\u3002 */\n  --dshpc-seg-track:rgba(255,255,255,.10);\n  --dshpc-plate:var(--dsw-static-neutral-850,#212123);\n  --dshpc-plate-hover:var(--dsw-static-neutral-800,#292929);\n  --dshpc-icon-plate:rgba(255,255,255,.05);\n  /* \u6697\u8272\u4E3B\u9898**\u53CD\u8FC7\u6765**\uFF1A\u8868\u5934\u8981\u6BD4\u5361\u7247\u9762**\u4EAE**\u3001\u6BD4\u6591\u9A6C\u7EB9\u518D**\u6D45\u4E00\u6863**\uFF08\u7528\u6237\uFF1A\u7EAF\u9ED1\u80CC\u666F\u6CA1\u6CD5\u770B\uFF09\u3002 */\n  --dshpc-head-bg:var(--dshpc-surface-2);\n  /* \u8868\u683C\uFF082026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u4E0E\u901A\u680F\u4E92\u6362\u5E95\u8272\uFF09\uFF1A\u901A\u680F\u5E95\u53D6\u8868\u5934\u539F\u6765\u90A3\u8272 #151b23\n     \uFF08\u4EAE\u8272\u6BB5\u5BF9\u5E94 #f6f8fa\uFF09\uFF1B\u8868\u5934\u9ED8\u8BA4\u5E95\u6CBF\u7528\u4EAE\u8272\u6BB5\u5B9A\u4E49\u7684 --dshpc-surface-sunken\uFF0C\u4E0D\u5728\u6697\u8272\u6BB5\u91CD\u5199\uFF1B\n     \u884C hover \u662F\u300C\u4E00\u5C42\u6781\u6DE1\u7684\u767D\u300D\u22483% \u2014\u2014 \u6697\u5E95\u4E0A\u7528\u9ED1\u4F1A\u8D8A\u60AC\u8D8A\u6697\uFF0C\u770B\u4E0D\u51FA\u300C\u6D45\u7070\u300D\u53CD\u9988\u3002 */\n  --dshpc-table-banner-bg:#151b23;\n  --dshpc-table-row-hover:rgba(255,255,255,.03);\n  /* \u6697\u8272\u5E95\u677F**\u5FAE\u4EAE**\uFF1Bhover **\u66F4\u4EAE**\uFF08\u539F\u5148 hover \u53D6 plate-hover \u53CD\u800C\u66F4\u6DE1 \u21D2 \u9F20\u6807\u79FB\u4E0A\u53BB\u5C31\u6CA1\u4E86\uFF09\u3002 */\n  --dshpc-chip-bg:rgba(255,255,255,.08);\n  --dshpc-chip-bg-hover:rgba(255,255,255,.16);\n  /* \u6697\u8272\u4E0B\u84DD\u8272\u8981\u66F4\u4EAE\u3001\u900F\u660E\u5EA6\u7565\u9AD8\u624D\u538B\u5F97\u4F4F\u6DF1\u5E95\u3002 */\n  --dshpc-open-bg:rgba(96,165,250,.18);\n  --dshpc-open-bg-soft:rgba(96,165,250,.08);\n  --dshpc-card-hover:rgba(96,165,250,.13);\n  /* \u8BED\u4E49\u8272**\u6D45\u5E95**\uFF08\u6DF1\u8272\u7248\uFF09\uFF1A\u7528\u6237\u5ACC\u6DF1\u8272\u7684\u7EFF / \u7EA2\u300C\u6709\u70B9\u6DF1\u300D\u21D2 \u538B\u5230 **5%**\uFF08\u6D45\u8272\u6BB5\u662F 8%\uFF09\uFF0C\n     \u66F4\u8D34\u8FD1\u9762\u677F\u5E95\u8272\u3001\u5B58\u5728\u611F\u66F4\u5F31\uFF1B\u5757\u5E95\u4E0E\u72B6\u6001\u8272\u7AD6\u6761\u4ECD\u540C\u6E90\uFF08\u7AD6\u6761\u662F\u5B9E\u8272\uFF0C\u4E0D\u53D7\u8FD9\u6761\u5F71\u54CD\uFF09\u3002 */\n  --dshpc-success-soft:color-mix(in srgb,var(--dshpc-success) 5%,transparent);\n  --dshpc-warning-soft:color-mix(in srgb,var(--dshpc-warning) 5%,transparent);\n  --dshpc-danger-soft:color-mix(in srgb,var(--dshpc-danger) 5%,transparent);\n  --dshpc-business-soft:color-mix(in srgb,var(--dshpc-business) 5%,transparent);\n  /* \u6269\u5C55\u8272\u6DF1\u8272\u6D3E\u751F\uFF1A\u5E95\u8272\u5199\u6B7B\u3001hover \u63BA\u767D 12%/22%\uFF08\u540C business\uFF0C\u9632\u767D\u5B57\u53D1\u7CCA\uFF09\uFF0Csoft 5%\u3002 */\n  --dshpc-purple-hover:color-mix(in srgb,var(--dshpc-purple) 88%,#ffffff);\n  --dshpc-purple-active:color-mix(in srgb,var(--dshpc-purple) 78%,#ffffff);\n  --dshpc-purple-soft:color-mix(in srgb,var(--dshpc-purple) 5%,transparent);\n  --dshpc-pink-hover:color-mix(in srgb,var(--dshpc-pink) 88%,#ffffff);\n  --dshpc-pink-active:color-mix(in srgb,var(--dshpc-pink) 78%,#ffffff);\n  --dshpc-pink-soft:color-mix(in srgb,var(--dshpc-pink) 5%,transparent);\n  --dshpc-cyan-hover:color-mix(in srgb,var(--dshpc-cyan) 88%,#ffffff);\n  --dshpc-cyan-active:color-mix(in srgb,var(--dshpc-cyan) 78%,#ffffff);\n  --dshpc-cyan-soft:color-mix(in srgb,var(--dshpc-cyan) 5%,transparent);\n  --dshpc-teal-hover:color-mix(in srgb,var(--dshpc-teal) 88%,#ffffff);\n  --dshpc-teal-active:color-mix(in srgb,var(--dshpc-teal) 78%,#ffffff);\n  --dshpc-teal-soft:color-mix(in srgb,var(--dshpc-teal) 5%,transparent);\n  --dshpc-orange-hover:color-mix(in srgb,var(--dshpc-orange) 88%,#ffffff);\n  --dshpc-orange-active:color-mix(in srgb,var(--dshpc-orange) 78%,#ffffff);\n  --dshpc-orange-soft:color-mix(in srgb,var(--dshpc-orange) 5%,transparent);\n  --dshpc-indigo-hover:color-mix(in srgb,var(--dshpc-indigo) 88%,#ffffff);\n  --dshpc-indigo-active:color-mix(in srgb,var(--dshpc-indigo) 78%,#ffffff);\n  --dshpc-indigo-soft:color-mix(in srgb,var(--dshpc-indigo) 5%,transparent);\n  --dshpc-rose-hover:color-mix(in srgb,var(--dshpc-rose) 88%,#ffffff);\n  --dshpc-rose-active:color-mix(in srgb,var(--dshpc-rose) 78%,#ffffff);\n  --dshpc-rose-soft:color-mix(in srgb,var(--dshpc-rose) 5%,transparent);\n  --dshpc-slate-hover:color-mix(in srgb,var(--dshpc-slate) 88%,#ffffff);\n  --dshpc-slate-active:color-mix(in srgb,var(--dshpc-slate) 78%,#ffffff);\n  --dshpc-slate-soft:color-mix(in srgb,var(--dshpc-slate) 5%,transparent);\n  /* \u300C\u9009\u4E2D\u9762\u300D\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u63BA **~40% \u80CC\u666F\u8272**\uFF08--dshpc-surface-base\uFF09\u21D2 \u65E0\u9650\u63A5\u8FD1\u9875\u9762\u80CC\u666F\u7684\u9ED1\u3001\n     \u53EA\u6BD4\u80CC\u666F\u7565\u6DF1\u4E00\u70B9\u70B9\uFF08\u7528\u6237\uFF1A\u6DF1\u8272\u4E0B\u5C55\u5F00\u533A\u538B\u7740\u4EFB\u52A1\u900F\u660E\u7EFF\u4F1A\u53D1\u7070\uFF0C\u5E95\u8272\u8981\u5C3D\u91CF\u8D34\u8FD1\u80CC\u666F\u624D\u4E0D\u663E\u7070\uFF09\u3002\n     \u26A0\uFE0F \u6DF1\u8272\u4E0B\u4E0D\u80FD\u63BA\u6587\u5B57\u8272 \u2014\u2014 \u90A3\u662F\u767D\uFF0C\u4F1A\u53D8\u4EAE\uFF0C\u9009\u4E2D\u53CD\u800C\u6BD4\u672C\u6708\u65E5\u671F\u6D45\u3002 */\n  --dshpc-selected-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n  /* ListRow \u9009\u4E2D\u9762\uFF08\u6697\u8272\u7248\uFF09\uFF1Aslate \u63BA\u5230 26% \u2014\u2014 \u6DF1\u5E95\u4E0A\u6CDB\u84DD\u7070\uFF0C\u7EDD\u4E0D\u9000\u56DE\u63A5\u8FD1\u80CC\u666F\u7684\u9ED1\u3002\n     slate \u662F\u4E2D\u660E\u5EA6\u84DD\u7070\uFF0C\u6697\u5E95\u4E0A\u8981\u6BD4\u4EAE\u8272\u63BA\u5F97\u66F4\u6D53\u624D\u770B\u5F97\u51FA\uFF08\u4EAE\u8272 14% / \u6697\u8272 26%\uFF09\u3002 */\n  --dshpc-listrow-selected-bg:color-mix(in srgb,var(--dshpc-slate) 26%,transparent);\n  /* \u6697\u8272 hover\uFF1A\u5E38\u6001 6% \u767D \u2192 10% \u767D\uFF0C\u53EA\u63D0\u4EAE\u4E00\u70B9\u70B9\uFF08\u539F\u6765\u662F active \u7684 24% \u767D\uFF0C\u592A\u8DF3\uFF09\u3002 */\n  --dshpc-listrow-hover-bg:rgba(255,255,255,.10);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C\u7684\u9ED8\u8BA4\u5E95\uFF08\u6DF1\u8272\u7248\uFF0C2026-10-06\uFF09\uFF1A\u6DF1\u7684\u3001\u5E26\u70B9\u7070\u84DD\u7684\u6697\u8272\uFF08\u7528\u6237\u7ED9\u7684\u53C2\u8003\u56FE \u2248 #23262e\uFF09\uFF0C\n     \u6BD4\u539F\u6765\u7684\u5361\u7247\u9762\u66F4\u6C89\u3001\u66F4\u504F\u84DD\u7070\uFF1B\u9009\u4E2D\u683C\u4ECD\u8D70 --dshpc-selected-bg\uFF08\u66F4\u6697\u4E00\u6863\uFF09\uFF0C\u5C42\u7EA7\u4E0D\u53D8\u3002 */\n  --dshpc-cal-cell-bg:#23262e;\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u672C\u6708\u683C hover \u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06\uFF09\uFF1A\u539F\u5148\u8D70 --dshpc-hover\uFF08\u5BBF\u4E3B\u6D45\u8272\u53E0\u52A0\uFF09\u5728\u6DF1\u5E95\u4E0A\u663E\u5F97\n     \u300C\u7070\u53D1\u4EAE\u300D\uFF0C\u4E0D\u597D\u770B \u21D2 \u6362\u6210\u66F4\u8D34\u5E95\u7684\u84DD\u8C03\u5FAE\u4EAE\uFF08\u4E0E open-bg-soft \u540C\u65CF\uFF09\uFF0Chover \u65F6\u4E0D\u523A\u773C\u3001\u53C8\u6709\u53CD\u9988\u3002 */\n  --dshpc-cal-cell-hover:rgba(96,165,250,.12);\n  /* \u4EFB\u52A1\u65E5\u7A0B\u9875\u5C55\u5F00\u9762\u677F\u5E95\uFF08\u6DF1\u8272\u6BB5\uFF0C2026-10-06 \u7EED\uFF09\uFF1A\u4E0E\u539F selected-bg \u6697\u503C\u4E00\u81F4\uFF0C\u6DF1\u8272 UI \u4E0D\u52A8 */\n  --dshpc-cal-panel-bg:color-mix(in srgb,var(--dshpc-surface-1) 60%,var(--dshpc-surface-base));\n}\n\n/* \u2500\u2500 \u7EC6\u6EDA\u52A8\u6761 + \u79BB\u8FB9 1px\uFF1A\u5168\u5E93\u552F\u4E00\u771F\u6E90 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u653E\u5728 tokens \u57DF\uFF08ensureComponentStyles \u6BCF\u6B21\u5FC5\u6CE8\u518C\u3001\u4E14\u6392\u5728\u6240\u6709\u63A7\u4EF6\u57DF\u4E4B\u524D\uFF09\uFF1A\n   \u4EFB\u4F55\u7EC4\u4EF6\u53EA\u8981\u7ED9\u6EDA\u52A8\u5BB9\u5668\u6302 .dshpc-scroll-thin \u5C31\u751F\u6548\uFF0C\u4E0D\u5FC5\u53E6\u884C\u6CE8\u5165 panel \u57DF\u3002\n   \u6539\u7EBF\u5BBD / \u8BA9\u4F4D / \u5706\u89D2 / \u989C\u8272\u53EA\u6539\u8FD9\u4E00\u5904\uFF1B\u522B\u5728\u522B\u7684 CSS \u91CC\u518D\u6284\u4E00\u4EFD\u3002\n\n   \u53EA\u7528 ::-webkit-scrollbar\uFF1A\u4E00\u65E6\u5199 scrollbar-width\uFF0CChrome \u4F1A\u5207\u5230\u89C4\u8303\u5316\u6EDA\u52A8\u6761\u3001\n   \u5FFD\u7565\u8FD9\u91CC\u7684\u5BBD\u5EA6\uFF082026-11-06 \u5B9E\u6D4B\uFF1A\u7559\u7740 scrollbar-width:thin \u65F6\u5BBD\u5EA6\u56DE\u5230 ~10px\uFF09\u3002\n   2026-11-06 \u7528\u6237\u53E3\u5F84\uFF1A1px \u592A\u7EC6 \u21D2 \u7EBF\u5BBD\u8D77\u6B65 2px\u3001thumb \u4E0A\u4E0B\u7AEF\u5706\u89D2\uFF1B\u73B0\u884C\u503C\u89C1\u4E0B\u9762\u4E09\u884C\u3002\n\n   \u8BA9\u4F4D\uFF08\u6EDA\u52A8\u6761\u4E0E\u5BB9\u5668\u53EF\u89C1\u8FB9\u7F18\u9694 1px\uFF09\u4E5F\u7531\u8FD9\u4E2A\u7C7B\u8D1F\u8D23\uFF1A\u539F\u751F\u6EDA\u52A8\u6761\u753B\u5728 padding box \u4E4B\u5916\u3001\n   border \u4E4B\u5185\uFF0C\u53EA\u6709 border \u80FD\u628A\u5B83\u63A8\u79BB\u8FB9\u7F18\uFF08\u52A0 padding \u65E0\u6548\uFF09\u3002\u6302\u7C7B\u5373\u81EA\u52A8\u8BA9\u4F4D\uFF0C\n   \u5BB9\u5668\u4E0D\u5FC5\u81EA\u5DF1\u518D\u5199\u900F\u660E\u8FB9\u6846\u3002\u65B9\u5411\u6863\uFF08CSS \u6CA1\u6709 :scrollable\uFF0C\u63A8\u4E0D\u51FA\u6EDA\u52A8\u65B9\u5411\uFF0C\u987B\u663E\u5F0F\u58F0\u660E\uFF09\uFF1A\n     .dshpc-scroll-thin          \u7AD6\u6EDA\uFF08\u9ED8\u8BA4\uFF09\uFF1A\u53F3\u8BA9\u4F4D\n     .dshpc-scroll-thin--x       \u6A2A\u6EDA\uFF1A\u5E95\u8BA9\u4F4D\uFF0C\u4E14\u4E0D\u53E0\u53F3\n     .dshpc-scroll-thin--both    \u53CC\u5411\uFF1A\u53F3 + \u5E95\u90FD\u8BA9\u4F4D\n   --x / --both \u5FC5\u987B\u4E0E\u57FA\u7C7B\u540C\u6302\uFF08\u7EBF\u5BBD\u89C4\u5219\u53EA\u8BA4\u57FA\u7C7B\uFF09\u3002\n\n   \u6302 .dshpc-panel \u7684\u5BB9\u5668\u672C\u8EAB\u5DF2\u6709\u5B9E\u8272\u8FB9\u6846 \u21D2 :not(.dshpc-panel) \u8DF3\u8FC7\u8BA9\u4F4D\uFF1A\u6EDA\u52A8\u6761\u8D34\u90A3\u6761\n   \u5B9E\u8272\u7EBF\u5373\u7B97\u8BA9\u4F4D\uFF0C\u65E0\u6761\u4EF6\u53E0\u900F\u660E\u8FB9\u6846\u4F1A\u628A\u5B9E\u8272\u53F3\u8FB9\u6846\u8986\u76D6\u6210\u900F\u660E\u3002\n   CodeMirror \u7684 .cm-scroller \u7531\u5B98\u65B9\u751F\u6210\u3001\u6302\u4E0D\u4E0A\u7C7B \u21D2 \u540E\u4EE3\u9009\u62E9\u5668\u4E00\u5E76\u547D\u4E2D\u7EBF\u5BBD\u4E0E\u8BA9\u4F4D\uFF1B\n   \u5B83\u53EA\u8BA9\u53F3\u4E0D\u8BA9\u5E95\uFF1A\u7ED9\u5E95\u4F1A\u6539 scroller \u9AD8\u5EA6\uFF0CCodeMirror \u7684\u6D4B\u91CF\u5FAA\u73AF\u4F1A\u591A\u7B97\u4E00\u6761\u6A2A\u6EDA\u6761\u3002\n   \u5916\u5C42\u82E5\u81EA\u5DF1\u4E0D\u6EDA\uFF08\u5982 CodeViewer\uFF09\uFF0C\u628A --dshpc-scroll-inset-right \u8BBE 0px \u5173\u6389\u81EA\u8EAB\u8BA9\u4F4D\uFF0C\n   \u514D\u5F97\u5916\u5C42\u4E0E .cm-scroller \u4E24\u5C42\u5404 1px \u53E0\u6210 2px\u3002 */\n/* \u26A0\uFE0F \u4E0B\u9762\u4E09\u884C\u7684\u7EBF\u5BBD / \u5706\u89D2**\u5FC5\u987B\u662F\u5B57\u9762\u91CF**\uFF1AWebKit \u7684 ::-webkit-scrollbar \u7CFB\u5217\u4F2A\u5143\u7D20\n   \u4E0D\u89E3\u6790 var()\uFF0C\u5E26\u53D8\u91CF\u7684\u58F0\u660E\u4F1A\u88AB\u9759\u9ED8\u4E22\u5F03 \u21D2 \u5BBD\u5EA6\u6574\u6761\u4F5C\u5E9F\u3001\u9000\u56DE\u9ED8\u8BA4\u503C\u30022026-11-06 \u628A\n   width:2px \u6539\u6210 var(--dshpc-scroll-w) \u540E\u771F\u673A\u5F53\u573A\u6253\u56DE\uFF08\u7528\u6237\u53D1\u73B0\uFF09\uFF0C\u6545\u7EBF\u5BBD\u4E0D\u653E token\u3002\n   \u6539\u7EBF\u5BBD\u53EA\u6539\u8FD9\u4E00\u5757\u7684\u4E09\u5904\u6570\u5B57\uFF08\u4E09\u5904\u5FC5\u987B\u540C\u503C\uFF09\uFF1B\u8BA9\u4F4D\u4ECD\u8D70 --dshpc-scroll-inset\u3002 */\n.dshpc-scroll-thin::-webkit-scrollbar,\n.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar{width:3px;height:3px}\n.dshpc-scroll-thin::-webkit-scrollbar-thumb,\n.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar-thumb{background:var(--dshpc-border-heavy);border-radius:3px}\n.dshpc-scroll-thin::-webkit-scrollbar-track,\n.dshpc-scroll-thin .cm-scroller::-webkit-scrollbar-track{background:transparent}\n.dshpc-scroll-thin:not(.dshpc-panel){border-right:var(--dshpc-scroll-inset-right,var(--dshpc-scroll-inset)) solid transparent}\n.dshpc-scroll-thin--x:not(.dshpc-panel){border-right:0;border-bottom:var(--dshpc-scroll-inset) solid transparent}\n.dshpc-scroll-thin--both:not(.dshpc-panel){border-bottom:var(--dshpc-scroll-inset) solid transparent}\n.dshpc-scroll-thin .cm-scroller{border-right:var(--dshpc-scroll-inset) solid transparent}\n';
-
-// dist/design/style-kit.js
-var CSS_PREFIX = "dshpc";
-var TOKENS_DOMAIN = "tokens";
-function createStyleKit(options) {
-  const { id: id3 } = options;
-  if (id3 === "")
-    throw new Error("dsh-plugin-core/design: id \u4E0D\u80FD\u4E3A\u7A7A");
-  const tokensCss = TOKENS_CSS_TEMPLATE;
-  const domains = /* @__PURE__ */ new Map();
-  let tag2 = null;
-  let dirty = true;
-  const composeCss = () => {
-    const entries2 = [...domains.entries()];
-    entries2.sort((a, b) => a[0] === TOKENS_DOMAIN ? -1 : b[0] === TOKENS_DOMAIN ? 1 : 0);
-    return entries2.map(([, css3]) => css3).join("\n");
-  };
-  const flush2 = () => {
-    if (tag2 === null)
-      return;
-    tag2.textContent = composeCss();
-    dirty = false;
-  };
-  const ensureStyles = () => {
-    if (typeof document === "undefined")
-      return;
-    if (tag2 === null || !tag2.isConnected) {
-      const head = document.head;
-      if (head === null)
-        return;
-      const found = document.getElementById(id3);
-      if (found !== null)
-        tag2 = found;
-      else {
-        const el = document.createElement("style");
-        el.id = id3;
-        head.appendChild(el);
-        tag2 = el;
-      }
-      dirty = true;
-    }
-    if (dirty)
-      flush2();
-  };
-  const registerStyle = (domain, css3) => {
-    if (domains.get(domain) === css3)
-      return;
-    domains.set(domain, css3);
-    dirty = true;
-    if (tag2?.isConnected === true)
-      flush2();
-  };
-  const dispose = () => {
-    if (tag2?.isConnected === true)
-      tag2.remove();
-    tag2 = null;
-    domains.clear();
-    dirty = true;
-  };
-  return {
-    id: id3,
-    tokensCss,
-    cssVar: (name2) => `--${CSS_PREFIX}-${name2}`,
-    registerStyle,
-    ensureStyles,
-    dispose,
-    applyStyle: (domain, css3) => {
-      registerStyle(domain, css3);
-      ensureStyles();
-    }
-  };
-}
-
-// dist/ui/infra/css.js
-var current = createStyleKit({ id: "dsh-plugin-core-ui" });
-function setStyleKit(kit) {
-  current = kit;
-}
-function getStyleKit() {
-  return current;
-}
-function ensureControls(kit = current) {
-  kit.registerStyle("tokens", kit.tokensCss);
-}
-function ensureComponentStyles(domain, css3, kit = current) {
-  kit.registerStyle("tokens", kit.tokensCss);
-  kit.applyStyle(domain, css3);
-}
 
 // dist/ui/infra/locale.js
 var import_react4 = require("react");
@@ -5607,7 +5612,7 @@ function Loader(props) {
 var import_react15 = require("react");
 
 // dist/ui/actions/button-css.generated.js
-var BUTTON_CSS = "\n/* \u2500\u2500 \u6309\u94AE / \u56FE\u6807\u94AE P2 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E0E Segmented \u540C\u4E00\u6761\u9AD8\u5EA6\u7EAA\u5F8B\uFF1A--dshpc-control-h-sm(24) / -md(28) / -lg(32)\uFF0C\n   \u6709\u8FB9\u6846\u7684 variant \u7528 1px \u771F\u8FB9\u6846 + \u5185\u90E8 padding \u8865\u56DE\uFF0C**\u6709\u8FB9 / \u65E0\u8FB9\u540C\u9AD8**\u3002\n\n   \u4E09\u6761\u53D7\u63A7\u8F74\uFF082026-10-19 \u91CD\u5199\uFF0C\u5BF9\u9F50\u4E3B\u6D41 UI \u6846\u67B6\u7684\u5206\u7C7B\u53E3\u5F84\uFF09\uFF1A\n     \xB7 variant \u2014\u2014 \u5916\u89C2\u6863 = \u5F62\u6001 + \u8BED\u4E49\u8272\uFF0C\u5171 10 \u6863\uFF1A\n         primary / secondary / outline / ghost / danger / success / warning / info /\n         danger-outline\uFF08\u7EA2\u5B57\u63CF\u8FB9\uFF09/ link\uFF08\u884C\u5185\u94FE\u63A5\uFF09\n     \xB7 size \u2014\u2014 sm / md / lg\n     \xB7 block \u2014\u2014 \u6491\u6EE1\u7236\u5BBD\n   \u6BCF\u4E00\u6863**\u53EA\u586B 5 \u4E2A\u5C40\u90E8\u53D8\u91CF**\uFF08--btn-bg / -fg / -border / -bg-hover / -bg-active\uFF09\uFF0C\n   \u7ED3\u6784\u4E0E\u4EA4\u4E92\u53EA\u6709\u4E0A\u9762\u8FD9\u4E00\u4EFD\uFF1B\u4EFB\u4F55\u6863\u4F4D\u90FD\u4E0D\u8BB8\u518D\u5199\u4E00\u904D display/height/padding\u3002\n   \u81EA\u5B9A\u4E49\u989C\u8272\uFF08Button \u7684 color \u53C2\u6570\uFF09\u540C\u6837\u53EA\u8986\u76D6\u8FD9 5 \u4E2A\u53D8\u91CF\uFF08token \u8986\u76D6\uFF0C\u4E0D\u662F\u65B0\u76AE\u80A4\uFF09\u3002\n\n   \u26A0\uFE0F hover \u4E0D\u518D\u7528 opacity \u538B\u4E00\u5C42\uFF08\u7528\u6237 2026-10-19\uFF1A\u300C\u9ED1\u8272\u548C\u7EA2\u8272\u7684\u6309\u94AE\u79FB\u4E0A\u53BB\u53D8\u5316\u592A\u5C0F\uFF0C\n   \u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\uFF09\u21D2 \u8D70 --dshpc-*-hover / -active \u7684\u660E\u786E\u6DF7\u8272\uFF0C\u89C1 tokens-css.ts\u3002 */\n.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;--btn-pad:12px;\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);--btn-fg-hover:var(--btn-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;\n  box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);\n  background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}\n.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n/* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u5E95\u680F / \u62BD\u5C49\u5E95\u90E8\u7684\u4E3B\u64CD\u4F5C\uFF09 */\n.dshpc-btn--block{display:flex;width:100%;}\n/* block + \u524D\u7F6E\u56FE\u6807 \u21D2 \u6587\u5B57\u89C6\u89C9\u5C45\u4E2D\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\uFF1A\n   \u5185\u5BB9\u7EC4 [\u56FE\u6807 + \u95F4\u8DDD + \u6587\u5B57] \u6574\u4F53\u5728\u76D2\u5185\u5C45\u4E2D\u65F6\uFF0C**\u6587\u5B57**\u7684\u4E2D\u5FC3\u4F1A\u88AB\u56FE\u6807\u63A8\u53F3\u534A\u683C\u3002\n   \u628A\u53F3\u5185\u8FB9\u8DDD\u8865\u4E0A\u300C\u56FE\u6807\u5BBD + \u95F4\u8DDD\u300D\uFF0C\u53EF\u7528\u76D2\u968F\u4E4B\u5DE6\u79FB\u540C\u91CF \u21D2 \u6587\u5B57\u843D\u56DE\u89C6\u89C9\u4E2D\u5FC3\uFF0C\u56FE\u6807\u8D34\u5DE6\u4FA7\u3002\n   \u56FE\u6807\u5BBD = 1em\uFF08\u4E0E\u6587\u5B57\u7B49\u5927\uFF09\uFF0Cem \u968F\u5B57\u53F7\u6863\u81EA\u52A8\u7F29\u653E\u3002 */\n.dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1em + 6px);}\n/* \u56FE\u6807\u4E0E\u540C\u4E00\u884C\u6587\u5B57\u7B49\u5927\uFF082026-11-14\uFF09\uFF1A\u5B57\u4F53 <i> \u4E0D\u5199\u5185\u8054 fontSize \u5C31\u7EE7\u627F\u8FD9\u91CC\uFF0C\n   \u5B98\u65B9 SVG \u7531\u4E0B\u9762\u7684 1em \u63A5\u7BA1 \u2014\u2014 \u4E24\u7C7B\u90FD\u8DDF\u6587\u5B57 font-size 1:1\uFF0C\u4E0D\u7531\u63A7\u4EF6\u9AD8\u5EA6\u6863\u51B3\u5B9A\u3002\n   \u7EDD\u5BF9 px\uFF08size={16} \u4E4B\u7C7B\uFF09\u53EA\u7559\u7ED9\u72EC\u7ACB\u6446\u653E\u4E0E\u88C5\u9970\u6027\u5C0F\u7BAD\u5934\u3002 */\n.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;font-size:1em;}\n.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;width:1em;height:1em;}\n/* maxWidth \u5305 MarqueeText \u65F6\uFF1A\u6807\u7B7E\u4F5C\u4E3A flex \u5B50\u9879\u5FC5\u987B\u80FD\u6536\u7F29\u5230\u5185\u5BB9\u4EE5\u4E0B\uFF0C\u5426\u5219\u7701\u7565\u53F7 / \u8DD1\u9A6C\u706F\u6D4B\u4E0D\u51C6 */\n.dshpc-btn .dshpc-btn__label{min-width:0;}\n/* loading\uFF1A\u4E0D\u6362 DOM \u7ED3\u6784\uFF0C\u53EA\u5728\u6587\u6848\u524D\u63D2\u4E00\u679A Loader\uFF08size=xs\uFF0C12px\uFF09\u3002\n   \u73AF\u7684\u753B\u6CD5\u4E0E\u52A8\u753B\u7EDF\u4E00\u5728 controls/loader.css\uFF08\u672C\u6587\u4EF6\u4E0D\u518D\u7EF4\u62A4\u7B2C\u4E8C\u4EFD SVG \u5F27 / keyframes\uFF09\u3002 */\n\n/* \u4EA4\u4E92\u6001\uFF1A\u989C\u8272\u53D8\u5316\u5199\u5728\u53D8\u91CF\u4E0A \u21D2 \u6240\u6709\u6863\u4F4D\u4E00\u6B21\u751F\u6548\uFF0C\u4E14\u53D8\u5316\u5E45\u5EA6\u7531 token \u51B3\u5B9A\uFF08\u591F\u660E\u663E\uFF09 */\n.dshpc-btn:hover:not(:disabled){background-color:var(--btn-bg-hover);color:var(--btn-fg-hover);}\n.dshpc-btn:active:not(:disabled){background-color:var(--btn-bg-active);transform:translateY(1px);}\n.dshpc-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-btn:disabled{cursor:default;opacity:.5;}\n/* dense\uFF1A\u5C3A\u5BF8\u6863 / \u9AD8\u5EA6\u4E00\u5F8B\u4E0D\u53D8\uFF0C\u53EA\u628A\u56FE\u6807\u653E\u5927\u4E00\u6863\u3001\u5185\u8DDD\u6536\u7D27\uFF08\u63CF\u8FB9\u7EC6\u7684\u6587\u4EF6\u7C7B\u578B\u56FE\u6807\u7528\uFF09\u3002\n   \u53EA\u8986\u76D6\u5C40\u90E8\u53D8\u91CF\u4E0E\u56FE\u6807\u5B57\u53F7\uFF0C\u4E0D\u53E6\u5199\u4E00\u5957\u76AE\u80A4\uFF1B\u5FC5\u987B\u5199\u5728\u5C3A\u5BF8\u6863\u4E0E\u56FE\u6807\u89C4\u5219\u4E4B\u540E\u624D\u538B\u5F97\u8FC7\u9ED8\u8BA4\u503C\u3002 */\n.dshpc-btn--dense{--btn-pad:6px;}\n.dshpc-btn--dense .dshpc-btn__icon,.dshpc-btn--dense .dshpc-btn__icon-end{font-size:1.25em;}\n\n.dshpc-btn--primary{--btn-bg:var(--dshpc-accent);--btn-fg:var(--dshpc-fg-inverse);\n  --btn-bg-hover:var(--dshpc-accent-hover);--btn-bg-active:var(--dshpc-accent-active);}\n/* secondary\uFF1A\u4E2D\u6027\u5B9E\u5FC3\uFF08\u7070\u9762\uFF09\uFF0C\u7528\u4E8E\u300C\u53D6\u6D88 / \u6B21\u8981\u300D\u8FD9\u7C7B\u4E0E\u4E3B\u64CD\u4F5C\u5E76\u6392\u7684\u6309\u94AE */\n.dshpc-btn--secondary{--btn-bg:var(--dshpc-hover);--btn-fg:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-active);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--outline{--btn-bg:var(--dshpc-surface-1);--btn-border:var(--dshpc-border-strong);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--ghost{--btn-fg:var(--dshpc-fg-2);--btn-fg-hover:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--danger{--btn-bg:var(--dshpc-danger);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-danger-hover);--btn-bg-active:var(--dshpc-danger-active);}\n.dshpc-btn--success{--btn-bg:var(--dshpc-success);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-success-hover);--btn-bg-active:var(--dshpc-success-active);}\n.dshpc-btn--warning{--btn-bg:var(--dshpc-warning);--btn-fg:var(--dshpc-on-warning);\n  --btn-bg-hover:var(--dshpc-warning-hover);--btn-bg-active:var(--dshpc-warning-active);}\n.dshpc-btn--info{--btn-bg:var(--dshpc-business);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-business-hover);--btn-bg-active:var(--dshpc-business-active);}\n/* \u6269\u5C55\u516B\u8272\u5B9E\u5FC3\uFF082026-10-29\uFF09\uFF1A\u767D\u5B57\u4E24\u4E3B\u9898\u5747 \u22654.5:1\uFF1Bhover/active \u8D70\u5404\u81EA token \u6D3E\u751F\u3002 */\n.dshpc-btn--purple{--btn-bg:var(--dshpc-purple);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-purple-hover);--btn-bg-active:var(--dshpc-purple-active);}\n.dshpc-btn--pink{--btn-bg:var(--dshpc-pink);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-pink-hover);--btn-bg-active:var(--dshpc-pink-active);}\n.dshpc-btn--cyan{--btn-bg:var(--dshpc-cyan);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-cyan-hover);--btn-bg-active:var(--dshpc-cyan-active);}\n.dshpc-btn--teal{--btn-bg:var(--dshpc-teal);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-teal-hover);--btn-bg-active:var(--dshpc-teal-active);}\n.dshpc-btn--orange{--btn-bg:var(--dshpc-orange);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-orange-hover);--btn-bg-active:var(--dshpc-orange-active);}\n.dshpc-btn--indigo{--btn-bg:var(--dshpc-indigo);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-indigo-hover);--btn-bg-active:var(--dshpc-indigo-active);}\n.dshpc-btn--rose{--btn-bg:var(--dshpc-rose);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-rose-hover);--btn-bg-active:var(--dshpc-rose-active);}\n.dshpc-btn--slate{--btn-bg:var(--dshpc-slate);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-slate-hover);--btn-bg-active:var(--dshpc-slate-active);}\n/* danger-outline\uFF1A\u7EA2\u5B57\u63CF\u8FB9\uFF08\u7834\u574F\u6027\u6B21\u8981\u64CD\u4F5C\uFF0C\u5982\u5361\u7247\u4E0A\u7684\u300C\u5220\u9664\u300D\uFF09\u3002\n   \u26A0\uFE0F \u65E7\u4FEE\u9970\u7C7B danger-ink \u4FDD\u7559\u4E3A\u522B\u540D\uFF08\u6D88\u8D39\u65B9\u53EF\u80FD\u8FD8\u5728\u6302\uFF09\uFF0C\u4E24\u8005\u540C\u4E00\u5957\u76AE\u80A4\u3002 */\n.dshpc-btn--danger-outline,.dshpc-btn--danger-ink{--btn-border:var(--dshpc-danger);--btn-fg:var(--dshpc-danger);\n  --btn-fg-hover:var(--dshpc-danger);--btn-bg-hover:var(--dshpc-danger-soft);--btn-bg-active:var(--dshpc-danger-soft);}\n/* link\uFF1A\u884C\u5185\u6587\u5B57\u94FE\u63A5\u578B\uFF08\u4F1A\u8BDD / \u4EA7\u51FA\u6587\u4EF6\u540D\uFF09\uFF0C\u65E0\u5E95\u65E0\u8FB9\u3001\u54C1\u724C\u84DD\u3001hover \u4E0B\u5212\u7EBF */\n.dshpc-btn--link{--btn-fg:var(--dshpc-link);--btn-fg-hover:var(--dshpc-link);\n  --btn-bg-hover:transparent;--btn-bg-active:transparent;\n  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}\n.dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}\n\n/* \u56FE\u6807\u94AE\uFF1A\u7EAF\u56FE\u6807\uFF0C\u65B9\u5F62\uFF1B\u5C3A\u5BF8\u6863\u7684\u5BBD\u9AD8\u4E0E\u540C\u6863\u6587\u5B57\u6309\u94AE\u7B49\u9AD8\u3001\u5706\u89D2\u7EDF\u4E00\u5403 md\uFF08\u4E0E .dshpc-btn \u540C\u6B3E\uFF0C2026-10-28 \u62CD\u677F\uFF09\n   \u5E95\u8272 / \u56FE\u6807\u8272\u5168\u8D70\u5C40\u90E8\u53D8\u91CF\uFF1A\u9ED8\u8BA4**\u65E0\u5E95\u8272**\uFF0C\u6D88\u8D39\u65B9\u53EF\u4F20 color\uFF08\u56FE\u6807\u8272\uFF09/ background\uFF08\u5E95\u8272\uFF09\u8986\u76D6\uFF08\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-iconbtn{--icb-bg:transparent;--icb-bg-hover:var(--dshpc-hover);--icb-fg:var(--dshpc-fg-2);--icb-fg-hover:var(--dshpc-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0;\n  border:1px solid var(--icb-border,transparent);border-radius:var(--dshpc-radius-md);\n  background:var(--icb-bg);color:var(--icb-fg);\n  font-family:inherit;cursor:pointer;flex:none;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}\n.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}\n.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}\n/* \u56FE\u6807\u4E0E\u6587\u5B57\u6309\u94AE\u540C\u53E3\u5F84\uFF1A\u5B98\u65B9 SVG \u7531 1em \u63A5\u7BA1\uFF0C\u5B57\u4F53 <i> \u76F4\u63A5\u7EE7\u627F\u6309\u94AE\u5B57\u53F7\uFF0C\u4E24\u8005 1:1\u3002\n   \u26A0\uFE0F flex:none \u662F\u786C\u7EA6\u675F\uFF1Asvg \u662F\u6309\u94AE\u7684\u76F4\u63A5 flex item\uFF0C\u9ED8\u8BA4 flex-shrink:1 \u4F1A\u88AB\u6309\u94AE\u5185\u8DDD\n   \u6324\u6210 10px \u7A84\u6761\uFF1B\u90A3\u662F\u5E03\u5C40\u6536\u7F29\uFF0C\u4E0D\u662F\u5C42\u53E0\u4F18\u5148\u7EA7 \u2014\u2014 \u6539 width\u3001\u52A0 !important \u90FD\u6551\u4E0D\u56DE\u6765\uFF0C\n   \u800C height \u5728\u4EA4\u53C9\u8F74\u4E0D\u53D7\u5F71\u54CD\uFF0C\u4E8E\u662F\u56FE\u6807\u88AB\u538B\u6241\u53D8\u5F62\u3002\u540E\u4EE3\u9009\u62E9\u5668\u517C\u5BB9\u5B98\u65B9\u56FE\u6807\u5916\u7684 wrapper\u3002 */\n.dshpc-iconbtn svg{display:block;width:1em;height:1em;flex:none;}\n/* dense\uFF1A\u53EA\u653E\u5927\u56FE\u6807\u7684 em \u503C\uFF0C\u6B63\u65B9\u5F62\u5BBD\u9AD8\u4E0E\u9AD8\u5EA6\u6863\u90FD\u4E0D\u52A8\uFF1B\n   1.25em \u76F8\u5BF9\u6309\u94AE\u5B57\u53F7 12/13 \u21D2 15/16.25px\uFF0C\u4E0E .dshpc-btn--dense \u4E00\u81F4\u3002\n   \u5B57\u4F53\u56FE\u6807\u662F <i> \u76F4\u63A5\u5B50\u5143\u7D20\uFF0C\u5F97\u5355\u72EC\u7ED9\u5B83\u540C\u4E00\u7CFB\u6570\uFF08svg \u90A3\u6761\u9009\u62E9\u5668\u7BA1\u4E0D\u5230\uFF09\u3002 */\n.dshpc-iconbtn.dshpc-iconbtn--dense svg{width:1.25em;height:1.25em;}\n.dshpc-iconbtn.dshpc-iconbtn--dense > i{font-size:1.25em;}\n.dshpc-iconbtn--outline{--icb-bg:var(--dshpc-surface-1);--icb-border:var(--dshpc-border);}\n.dshpc-iconbtn--danger{--icb-fg:var(--dshpc-danger);--icb-bg-hover:var(--dshpc-danger-soft);--icb-fg-hover:var(--dshpc-danger);}\n.dshpc-iconbtn:hover:not(:disabled){background:var(--icb-bg-hover);color:var(--icb-fg-hover);}\n.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}\n\n/* \u2500\u2500 \u884C\u5F0F\u6587\u4EF6\u6309\u94AE\uFF08\u56FE\u6807 + \u6587\u4EF6\u540D\uFF09P2\uFF1A**\u5168\u7AD9\u552F\u4E00\u5B9E\u73B0**\uFF082026-10-04 \u6536\u7F16\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7528\u9014\uFF1A\u300C\u4EA7\u51FA\u7269 / \u9644\u4EF6\u300D\u90A3\u79CD**\u4E00\u884C\u4E00\u4E2A\u6587\u4EF6**\u7684\u6E05\u5355\u9879\uFF08\u57FA\u7840\u4FE1\u606F\u53F3\u680F\u4EA7\u51FA\u7269\u6E05\u5355\u3001\u9644\u4EF6\u533A\u3001\n   \u6267\u884C\u8BB0\u5F55\u9875\u7684\u5C55\u5F00\u533A\uFF09\u3002\u5E73\u65F6\u900F\u660E\u3001**\u9F20\u6807\u79FB\u4E0A\u53BB\u624D\u51FA\u6D45\u5E95**\uFF08\u6CBF\u7528\u7528\u6237 2026-10-03 \u5B9A\u7684\u89C2\u611F\uFF09\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4FEE\u9970\u7C7B\uFF1A\n     --block   \u6491\u6EE1\u7236\u5BBD\uFF08\u6E05\u5355\u91CC\u4E00\u9879\u4E00\u884C\uFF09\n     --inline  \u5185\u5BB9\u5BBD\uFF08\u8DDF\u5728\u6587\u5B57\u540E\u5934\uFF0C\u5982\u9644\u4EF6\u884C\uFF09\n   \u6536\u7F16\u539F\u56E0\uFF1A\u8FD9\u4EFD\u76AE\u80A4\u6B64\u524D\u53EA\u5199\u5728 task-list.tsx \u7684 TASK_LIST_CSS \u91CC\uFF08\u65E7\u540D .dshpc-info-out\uFF09\uFF0C\n   \u6267\u884C\u8BB0\u5F55\u9875\u5C55\u5F00\u533A\u8981\u7528\u540C\u4E00\u79CD\u89C2\u611F \u21D2 \u4E0A\u63D0\u57FA\u7840\u5C42\uFF0C\u907F\u514D\u518D\u51FA\u73B0\u300C\u5404\u5199\u4E00\u4EFD\u5916\u89C2\u300D\uFF08\u540C\u540D\u4E0D\u540C\u76AE\u7684\u5751\u521A\u8E29\u8FC7\uFF09\u3002 */\n.dshpc-filechip{appearance:none;-webkit-appearance:none;border:0;border-radius:var(--dshpc-radius-xs);\n  background:transparent;color:var(--dshpc-fg);font:inherit;text-align:left;cursor:pointer;min-width:0;\n  transition:background-color var(--dshpc-dur) var(--dshpc-ease);}\n.dshpc-filechip:hover:not(:disabled){background:var(--dshpc-chip-bg);}\n.dshpc-filechip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-filechip:disabled{cursor:default;background:transparent;color:var(--dshpc-fg-3);}\n.dshpc-filechip--block{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;\n  padding:4px 6px;font-size:var(--dshpc-font-xs);}\n.dshpc-filechip--inline{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;font-size:var(--dshpc-font-sm);}\n\n@media (prefers-reduced-motion: reduce){.dshpc-btn,.dshpc-iconbtn,.dshpc-filechip{transition:none;}}\n";
+var BUTTON_CSS = "\n/* \u2500\u2500 \u6309\u94AE / \u56FE\u6807\u94AE P2 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E0E Segmented \u540C\u4E00\u6761\u9AD8\u5EA6\u7EAA\u5F8B\uFF1A--dshpc-control-h-sm(24) / -md(28) / -lg(32)\uFF0C\n   \u6709\u8FB9\u6846\u7684 variant \u7528 1px \u771F\u8FB9\u6846 + \u5185\u90E8 padding \u8865\u56DE\uFF0C**\u6709\u8FB9 / \u65E0\u8FB9\u540C\u9AD8**\u3002\n\n   \u4E09\u6761\u53D7\u63A7\u8F74\uFF082026-10-19 \u91CD\u5199\uFF0C\u5BF9\u9F50\u4E3B\u6D41 UI \u6846\u67B6\u7684\u5206\u7C7B\u53E3\u5F84\uFF09\uFF1A\n     \xB7 variant \u2014\u2014 \u5916\u89C2\u6863 = \u5F62\u6001 + \u8BED\u4E49\u8272\uFF0C\u5171 10 \u6863\uFF1A\n         primary / secondary / outline / ghost / danger / success / warning / info /\n         danger-outline\uFF08\u7EA2\u5B57\u63CF\u8FB9\uFF09/ link\uFF08\u884C\u5185\u94FE\u63A5\uFF09\n     \xB7 size \u2014\u2014 sm / md / lg\n     \xB7 block \u2014\u2014 \u6491\u6EE1\u7236\u5BBD\n   \u6BCF\u4E00\u6863**\u53EA\u586B 5 \u4E2A\u5C40\u90E8\u53D8\u91CF**\uFF08--btn-bg / -fg / -border / -bg-hover / -bg-active\uFF09\uFF0C\n   \u7ED3\u6784\u4E0E\u4EA4\u4E92\u53EA\u6709\u4E0A\u9762\u8FD9\u4E00\u4EFD\uFF1B\u4EFB\u4F55\u6863\u4F4D\u90FD\u4E0D\u8BB8\u518D\u5199\u4E00\u904D display/height/padding\u3002\n   \u81EA\u5B9A\u4E49\u989C\u8272\uFF08Button \u7684 color \u53C2\u6570\uFF09\u540C\u6837\u53EA\u8986\u76D6\u8FD9 5 \u4E2A\u53D8\u91CF\uFF08token \u8986\u76D6\uFF0C\u4E0D\u662F\u65B0\u76AE\u80A4\uFF09\u3002\n\n   \u26A0\uFE0F hover \u4E0D\u518D\u7528 opacity \u538B\u4E00\u5C42\uFF08\u7528\u6237 2026-10-19\uFF1A\u300C\u9ED1\u8272\u548C\u7EA2\u8272\u7684\u6309\u94AE\u79FB\u4E0A\u53BB\u53D8\u5316\u592A\u5C0F\uFF0C\n   \u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\uFF09\u21D2 \u8D70 --dshpc-*-hover / -active \u7684\u660E\u786E\u6DF7\u8272\uFF0C\u89C1 tokens-css.ts\u3002 */\n.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;--btn-pad:12px;\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);--btn-fg-hover:var(--btn-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;\n  box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);\n  background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}\n.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n/* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u5E95\u680F / \u62BD\u5C49\u5E95\u90E8\u7684\u4E3B\u64CD\u4F5C\uFF09 */\n.dshpc-btn--block{display:flex;width:100%;}\n/* block + \u524D\u7F6E\u56FE\u6807 \u21D2 \u6587\u5B57\u89C6\u89C9\u5C45\u4E2D\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\uFF1A\n   \u5185\u5BB9\u7EC4 [\u56FE\u6807 + \u95F4\u8DDD + \u6587\u5B57] \u6574\u4F53\u5728\u76D2\u5185\u5C45\u4E2D\u65F6\uFF0C**\u6587\u5B57**\u7684\u4E2D\u5FC3\u4F1A\u88AB\u56FE\u6807\u63A8\u53F3\u534A\u683C\u3002\n   \u628A\u53F3\u5185\u8FB9\u8DDD\u8865\u4E0A\u300C\u56FE\u6807\u5BBD + \u95F4\u8DDD\u300D\uFF0C\u53EF\u7528\u76D2\u968F\u4E4B\u5DE6\u79FB\u540C\u91CF \u21D2 \u6587\u5B57\u843D\u56DE\u89C6\u89C9\u4E2D\u5FC3\uFF0C\u56FE\u6807\u8D34\u5DE6\u4FA7\u3002\n   \u56FE\u6807\u5BBD = 1em\uFF08\u4E0E\u6587\u5B57\u7B49\u5927\uFF09\uFF0Cem \u968F\u5B57\u53F7\u6863\u81EA\u52A8\u7F29\u653E\u3002 */\n.dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1em + 6px);}\n/* \u56FE\u6807\u4E0E\u540C\u4E00\u884C\u6587\u5B57\u7B49\u5927\uFF082026-11-14\uFF09\uFF1A\u5B57\u4F53 <i> \u4E0D\u5199\u5185\u8054 fontSize \u5C31\u7EE7\u627F\u8FD9\u91CC\uFF0C\n   \u5B98\u65B9 SVG \u7531\u4E0B\u9762\u7684 1em \u63A5\u7BA1 \u2014\u2014 \u4E24\u7C7B\u90FD\u8DDF\u6587\u5B57 font-size 1:1\uFF0C\u4E0D\u7531\u63A7\u4EF6\u9AD8\u5EA6\u6863\u51B3\u5B9A\u3002\n   \u7EDD\u5BF9 px\uFF08size={16} \u4E4B\u7C7B\uFF09\u53EA\u7559\u7ED9\u72EC\u7ACB\u6446\u653E\u4E0E\u88C5\u9970\u6027\u5C0F\u7BAD\u5934\u3002 */\n.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;font-size:1em;}\n.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;width:1em;height:1em;}\n/* maxWidth \u5305 MarqueeText \u65F6\uFF1A\u6807\u7B7E\u4F5C\u4E3A flex \u5B50\u9879\u5FC5\u987B\u80FD\u6536\u7F29\u5230\u5185\u5BB9\u4EE5\u4E0B\uFF0C\u5426\u5219\u7701\u7565\u53F7 / \u8DD1\u9A6C\u706F\u6D4B\u4E0D\u51C6 */\n.dshpc-btn .dshpc-btn__label{min-width:0;}\n/* loading\uFF1A\u4E0D\u6362 DOM \u7ED3\u6784\uFF0C\u53EA\u5728\u6587\u6848\u524D\u63D2\u4E00\u679A Loader\uFF08size=xs\uFF0C12px\uFF09\u3002\n   \u73AF\u7684\u753B\u6CD5\u4E0E\u52A8\u753B\u7EDF\u4E00\u5728 controls/loader.css\uFF08\u672C\u6587\u4EF6\u4E0D\u518D\u7EF4\u62A4\u7B2C\u4E8C\u4EFD SVG \u5F27 / keyframes\uFF09\u3002 */\n\n/* \u4EA4\u4E92\u6001\uFF1A\u989C\u8272\u53D8\u5316\u5199\u5728\u53D8\u91CF\u4E0A \u21D2 \u6240\u6709\u6863\u4F4D\u4E00\u6B21\u751F\u6548\uFF0C\u4E14\u53D8\u5316\u5E45\u5EA6\u7531 token \u51B3\u5B9A\uFF08\u591F\u660E\u663E\uFF09 */\n.dshpc-btn:hover:not(:disabled){background-color:var(--btn-bg-hover);color:var(--btn-fg-hover);}\n.dshpc-btn:active:not(:disabled){background-color:var(--btn-bg-active);transform:translateY(1px);}\n.dshpc-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-btn:disabled{cursor:default;opacity:.5;}\n/* dense\uFF1A\u5C3A\u5BF8\u6863 / \u9AD8\u5EA6\u4E00\u5F8B\u4E0D\u53D8\uFF0C\u53EA\u628A\u56FE\u6807\u653E\u5927\u4E00\u6863\u3001\u5185\u8DDD\u6536\u7D27\uFF08\u63CF\u8FB9\u7EC6\u7684\u6587\u4EF6\u7C7B\u578B\u56FE\u6807\u7528\uFF09\u3002\n   \u53EA\u8986\u76D6\u5C40\u90E8\u53D8\u91CF\u4E0E\u56FE\u6807\u5B57\u53F7\uFF0C\u4E0D\u53E6\u5199\u4E00\u5957\u76AE\u80A4\uFF1B\u5FC5\u987B\u5199\u5728\u5C3A\u5BF8\u6863\u4E0E\u56FE\u6807\u89C4\u5219\u4E4B\u540E\u624D\u538B\u5F97\u8FC7\u9ED8\u8BA4\u503C\u3002 */\n.dshpc-btn--dense{--btn-pad:6px;}\n.dshpc-btn--dense .dshpc-btn__icon,.dshpc-btn--dense .dshpc-btn__icon-end{font-size:1.25em;}\n\n.dshpc-btn--primary{--btn-bg:var(--dshpc-accent);--btn-fg:var(--dshpc-fg-inverse);\n  --btn-bg-hover:var(--dshpc-accent-hover);--btn-bg-active:var(--dshpc-accent-active);}\n/* secondary\uFF1A\u4E2D\u6027\u5B9E\u5FC3\uFF08\u7070\u9762\uFF09\uFF0C\u7528\u4E8E\u300C\u53D6\u6D88 / \u6B21\u8981\u300D\u8FD9\u7C7B\u4E0E\u4E3B\u64CD\u4F5C\u5E76\u6392\u7684\u6309\u94AE */\n.dshpc-btn--secondary{--btn-bg:var(--dshpc-hover);--btn-fg:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-active);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--outline{--btn-bg:var(--dshpc-surface-1);--btn-border:var(--dshpc-border-strong);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--ghost{--btn-fg:var(--dshpc-fg-2);--btn-fg-hover:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--danger{--btn-bg:var(--dshpc-danger);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-danger-hover);--btn-bg-active:var(--dshpc-danger-active);}\n.dshpc-btn--success{--btn-bg:var(--dshpc-success);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-success-hover);--btn-bg-active:var(--dshpc-success-active);}\n.dshpc-btn--warning{--btn-bg:var(--dshpc-warning);--btn-fg:var(--dshpc-on-warning);\n  --btn-bg-hover:var(--dshpc-warning-hover);--btn-bg-active:var(--dshpc-warning-active);}\n.dshpc-btn--info{--btn-bg:var(--dshpc-business);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-business-hover);--btn-bg-active:var(--dshpc-business-active);}\n/* \u6269\u5C55\u516B\u8272\u5B9E\u5FC3\uFF082026-10-29\uFF09\uFF1A\u767D\u5B57\u4E24\u4E3B\u9898\u5747 \u22654.5:1\uFF1Bhover/active \u8D70\u5404\u81EA token \u6D3E\u751F\u3002 */\n.dshpc-btn--purple{--btn-bg:var(--dshpc-purple);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-purple-hover);--btn-bg-active:var(--dshpc-purple-active);}\n.dshpc-btn--pink{--btn-bg:var(--dshpc-pink);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-pink-hover);--btn-bg-active:var(--dshpc-pink-active);}\n.dshpc-btn--cyan{--btn-bg:var(--dshpc-cyan);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-cyan-hover);--btn-bg-active:var(--dshpc-cyan-active);}\n.dshpc-btn--teal{--btn-bg:var(--dshpc-teal);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-teal-hover);--btn-bg-active:var(--dshpc-teal-active);}\n.dshpc-btn--orange{--btn-bg:var(--dshpc-orange);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-orange-hover);--btn-bg-active:var(--dshpc-orange-active);}\n.dshpc-btn--indigo{--btn-bg:var(--dshpc-indigo);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-indigo-hover);--btn-bg-active:var(--dshpc-indigo-active);}\n.dshpc-btn--rose{--btn-bg:var(--dshpc-rose);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-rose-hover);--btn-bg-active:var(--dshpc-rose-active);}\n.dshpc-btn--slate{--btn-bg:var(--dshpc-slate);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-slate-hover);--btn-bg-active:var(--dshpc-slate-active);}\n/* danger-outline\uFF1A\u7EA2\u5B57\u63CF\u8FB9\uFF08\u7834\u574F\u6027\u6B21\u8981\u64CD\u4F5C\uFF0C\u5982\u5361\u7247\u4E0A\u7684\u300C\u5220\u9664\u300D\uFF09\u3002\n   \u26A0\uFE0F \u65E7\u4FEE\u9970\u7C7B danger-ink \u4FDD\u7559\u4E3A\u522B\u540D\uFF08\u6D88\u8D39\u65B9\u53EF\u80FD\u8FD8\u5728\u6302\uFF09\uFF0C\u4E24\u8005\u540C\u4E00\u5957\u76AE\u80A4\u3002 */\n.dshpc-btn--danger-outline,.dshpc-btn--danger-ink{--btn-border:var(--dshpc-danger);--btn-fg:var(--dshpc-danger);\n  --btn-fg-hover:var(--dshpc-danger);--btn-bg-hover:var(--dshpc-danger-soft);--btn-bg-active:var(--dshpc-danger-soft);}\n/* link\uFF1A\u884C\u5185\u6587\u5B57\u94FE\u63A5\u578B\uFF08\u4F1A\u8BDD / \u4EA7\u51FA\u6587\u4EF6\u540D\uFF09\uFF0C\u65E0\u5E95\u65E0\u8FB9\u3001\u54C1\u724C\u84DD\u3001hover \u4E0B\u5212\u7EBF\u3002\n   2026-11-14 \u4E8C\u6B21\u4FEE\uFF1A\u5916\u5C42 button \u6302 text-decoration \u8FD9\u6761\u8DEF\u8D70\u4E0D\u901A \u2014\u2014 W3C css-text-decor-3 \xA72\n   \u660E\u786E\u300C\u88C5\u9970\u7EBF\u4E0D\u4F20\u64AD\u5230 atomic inline-level \u540E\u4EE3\u7684\u5185\u5BB9\u300D\uFF0C\u5185\u5BB9\u5C42\u53EA\u8981\u662F inline-flex \u5C31\u662F\n   atomic inline\uFF0C\u7EBF\u8FDB\u4E0D\u53BB\uFF1B\u5185\u5C42\u9760 inherit \u81EA\u5DF1\u753B\u7684\u90A3\u6761\u53C8\u65AD\u5728 flex gap \u4E0A\uFF08\u771F\u673A\u5B9E\u6D4B\u4ECD\u65AD\uFF09\u3002\n   \u6210\u719F\u89E3\u6CD5\u662F\u907F\u5F00\u88C5\u9970\u7EBF\u3001\u6539\u753B\u76D2\u7EA7\u7EBF\uFF1A\u5185\u5BB9\u5C42\u76F8\u5BF9\u5B9A\u4F4D\uFF0Chover \u7528 ::after \u94FA\u6EE1 100% \u5BBD\uFF0C\n   \u7EBF\u5FC5\u7136\u6A2A\u8DE8\u56FE\u6807\u3001\u95F4\u8DDD\u4E0E\u6587\u5B57\u3002GitHub Primer \u7684 Link \u9760 text-decoration \u662F\u56E0\u4E3A\u5916\u5C42\u662F a\uFF0C\n   \u6211\u4EEC\u8FD9\u91CC\u662F button\uFF0C\u4E0D\u80FD\u7167\u6284\u90A3\u4E00\u6761\u3002\u5782\u76F4\u5C45\u4E2D\u4E0E\u56FE\u6807 1:1 \u5C3A\u5BF8\u53E3\u5F84\u4E0D\u53D8\u3002 */\n.dshpc-btn--link{--btn-fg:var(--dshpc-link);--btn-fg-hover:var(--dshpc-link);\n  --btn-bg-hover:transparent;--btn-bg-active:transparent;\n  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;text-decoration:none;}\n/* block \u6863\u4ECD\u8981\u6491\u6EE1\u7236\u5BBD\uFF0C\u4E0D\u80FD\u88AB link \u7684 inline-block \u5403\u6389\u3002 */\n.dshpc-btn--link:not(.dshpc-btn--block){display:inline-block;}\n.dshpc-btn--link > .dshpc-btn__content{position:relative;display:inline-flex;align-items:center;gap:6px;}\n.dshpc-btn--link:hover:not(:disabled) > .dshpc-btn__content::after{\n  content:'';position:absolute;left:0;right:0;bottom:1px;height:1px;background:currentColor;}\n\n/* \u56FE\u6807\u94AE\uFF1A\u7EAF\u56FE\u6807\uFF0C\u65B9\u5F62\uFF1B\u5C3A\u5BF8\u6863\u7684\u5BBD\u9AD8\u4E0E\u540C\u6863\u6587\u5B57\u6309\u94AE\u7B49\u9AD8\u3001\u5706\u89D2\u7EDF\u4E00\u5403 md\uFF08\u4E0E .dshpc-btn \u540C\u6B3E\uFF0C2026-10-28 \u62CD\u677F\uFF09\n   \u5E95\u8272 / \u56FE\u6807\u8272\u5168\u8D70\u5C40\u90E8\u53D8\u91CF\uFF1A\u9ED8\u8BA4**\u65E0\u5E95\u8272**\uFF0C\u6D88\u8D39\u65B9\u53EF\u4F20 color\uFF08\u56FE\u6807\u8272\uFF09/ background\uFF08\u5E95\u8272\uFF09\u8986\u76D6\uFF08\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-iconbtn{--icb-bg:transparent;--icb-bg-hover:var(--dshpc-hover);--icb-fg:var(--dshpc-fg-2);--icb-fg-hover:var(--dshpc-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0;\n  border:1px solid var(--icb-border,transparent);border-radius:var(--dshpc-radius-md);\n  background:var(--icb-bg);color:var(--icb-fg);\n  font-family:inherit;cursor:pointer;flex:none;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}\n.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}\n.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}\n/* \u56FE\u6807\u4E0E\u6587\u5B57\u6309\u94AE\u540C\u53E3\u5F84\uFF1A\u5B98\u65B9 SVG \u7531 1em \u63A5\u7BA1\uFF0C\u5B57\u4F53 <i> \u76F4\u63A5\u7EE7\u627F\u6309\u94AE\u5B57\u53F7\uFF0C\u4E24\u8005 1:1\u3002\n   \u26A0\uFE0F flex:none \u662F\u786C\u7EA6\u675F\uFF1Asvg \u662F\u6309\u94AE\u7684\u76F4\u63A5 flex item\uFF0C\u9ED8\u8BA4 flex-shrink:1 \u4F1A\u88AB\u6309\u94AE\u5185\u8DDD\n   \u6324\u6210 10px \u7A84\u6761\uFF1B\u90A3\u662F\u5E03\u5C40\u6536\u7F29\uFF0C\u4E0D\u662F\u5C42\u53E0\u4F18\u5148\u7EA7 \u2014\u2014 \u6539 width\u3001\u52A0 !important \u90FD\u6551\u4E0D\u56DE\u6765\uFF0C\n   \u800C height \u5728\u4EA4\u53C9\u8F74\u4E0D\u53D7\u5F71\u54CD\uFF0C\u4E8E\u662F\u56FE\u6807\u88AB\u538B\u6241\u53D8\u5F62\u3002\u540E\u4EE3\u9009\u62E9\u5668\u517C\u5BB9\u5B98\u65B9\u56FE\u6807\u5916\u7684 wrapper\u3002 */\n.dshpc-iconbtn svg{display:block;width:1em;height:1em;flex:none;}\n/* dense\uFF1A\u53EA\u653E\u5927\u56FE\u6807\u7684 em \u503C\uFF0C\u6B63\u65B9\u5F62\u5BBD\u9AD8\u4E0E\u9AD8\u5EA6\u6863\u90FD\u4E0D\u52A8\uFF1B\n   1.25em \u76F8\u5BF9\u6309\u94AE\u5B57\u53F7 12/13 \u21D2 15/16.25px\uFF0C\u4E0E .dshpc-btn--dense \u4E00\u81F4\u3002\n   \u5B57\u4F53\u56FE\u6807\u662F <i> \u76F4\u63A5\u5B50\u5143\u7D20\uFF0C\u5F97\u5355\u72EC\u7ED9\u5B83\u540C\u4E00\u7CFB\u6570\uFF08svg \u90A3\u6761\u9009\u62E9\u5668\u7BA1\u4E0D\u5230\uFF09\u3002 */\n.dshpc-iconbtn.dshpc-iconbtn--dense svg{width:1.25em;height:1.25em;}\n.dshpc-iconbtn.dshpc-iconbtn--dense > .dshpc-icon{font-size:1.25em;}\n.dshpc-iconbtn--outline{--icb-bg:var(--dshpc-surface-1);--icb-border:var(--dshpc-border);}\n.dshpc-iconbtn--danger{--icb-fg:var(--dshpc-danger);--icb-bg-hover:var(--dshpc-danger-soft);--icb-fg-hover:var(--dshpc-danger);}\n.dshpc-iconbtn:hover:not(:disabled){background:var(--icb-bg-hover);color:var(--icb-fg-hover);}\n.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}\n\n/* \u2500\u2500 \u884C\u5F0F\u6587\u4EF6\u6309\u94AE\uFF08\u56FE\u6807 + \u6587\u4EF6\u540D\uFF09P2\uFF1A**\u5168\u7AD9\u552F\u4E00\u5B9E\u73B0**\uFF082026-10-04 \u6536\u7F16\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7528\u9014\uFF1A\u300C\u4EA7\u51FA\u7269 / \u9644\u4EF6\u300D\u90A3\u79CD**\u4E00\u884C\u4E00\u4E2A\u6587\u4EF6**\u7684\u6E05\u5355\u9879\uFF08\u57FA\u7840\u4FE1\u606F\u53F3\u680F\u4EA7\u51FA\u7269\u6E05\u5355\u3001\u9644\u4EF6\u533A\u3001\n   \u6267\u884C\u8BB0\u5F55\u9875\u7684\u5C55\u5F00\u533A\uFF09\u3002\u5E73\u65F6\u900F\u660E\u3001**\u9F20\u6807\u79FB\u4E0A\u53BB\u624D\u51FA\u6D45\u5E95**\uFF08\u6CBF\u7528\u7528\u6237 2026-10-03 \u5B9A\u7684\u89C2\u611F\uFF09\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4FEE\u9970\u7C7B\uFF1A\n     --block   \u6491\u6EE1\u7236\u5BBD\uFF08\u6E05\u5355\u91CC\u4E00\u9879\u4E00\u884C\uFF09\n     --inline  \u5185\u5BB9\u5BBD\uFF08\u8DDF\u5728\u6587\u5B57\u540E\u5934\uFF0C\u5982\u9644\u4EF6\u884C\uFF09\n   \u6536\u7F16\u539F\u56E0\uFF1A\u8FD9\u4EFD\u76AE\u80A4\u6B64\u524D\u53EA\u5199\u5728 task-list.tsx \u7684 TASK_LIST_CSS \u91CC\uFF08\u65E7\u540D .dshpc-info-out\uFF09\uFF0C\n   \u6267\u884C\u8BB0\u5F55\u9875\u5C55\u5F00\u533A\u8981\u7528\u540C\u4E00\u79CD\u89C2\u611F \u21D2 \u4E0A\u63D0\u57FA\u7840\u5C42\uFF0C\u907F\u514D\u518D\u51FA\u73B0\u300C\u5404\u5199\u4E00\u4EFD\u5916\u89C2\u300D\uFF08\u540C\u540D\u4E0D\u540C\u76AE\u7684\u5751\u521A\u8E29\u8FC7\uFF09\u3002 */\n.dshpc-filechip{appearance:none;-webkit-appearance:none;border:0;border-radius:var(--dshpc-radius-xs);\n  background:transparent;color:var(--dshpc-fg);font:inherit;text-align:left;cursor:pointer;min-width:0;\n  transition:background-color var(--dshpc-dur) var(--dshpc-ease);}\n.dshpc-filechip:hover:not(:disabled){background:var(--dshpc-chip-bg);}\n.dshpc-filechip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-filechip:disabled{cursor:default;background:transparent;color:var(--dshpc-fg-3);}\n.dshpc-filechip--block{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;\n  padding:4px 6px;font-size:var(--dshpc-font-xs);}\n.dshpc-filechip--inline{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;font-size:var(--dshpc-font-sm);}\n\n@media (prefers-reduced-motion: reduce){.dshpc-btn,.dshpc-iconbtn,.dshpc-filechip{transition:none;}}\n";
 
 // dist/ui/infra/thenable.js
 function isThenable(value) {
@@ -5748,14 +5753,13 @@ function Button(props) {
     className: buttonClass(variant, size4, block2, icon !== void 0 && icon !== null && !loading, dense, className2),
     style: { ...colorVars(variant, color), ...widthStyle, ...style2 }
   };
-  return (0, import_react15.createElement)(
-    "button",
-    attrs2,
+  const kids = [
     loading ? (0, import_react15.createElement)("span", { className: "dshpc-btn__icon" }, (0, import_react15.createElement)(Loader, { size: "xs" })) : icon !== void 0 && icon !== null ? (0, import_react15.createElement)("span", { className: "dshpc-btn__icon" }, icon) : null,
     hideText ? null : marqueeLabel ? (0, import_react15.createElement)(MarqueeText, { text: children, className: "dshpc-btn__label" }) : children,
     // 转圈期间所有图标位都让位：前置位被 Loader 顶替，后置位（展开 / 外链）留在禁用态里只会挤版面
     iconRight !== void 0 && iconRight !== null && !loading ? (0, import_react15.createElement)("span", { className: "dshpc-btn__icon-end" }, iconRight) : null
-  );
+  ];
+  return variant === "link" ? (0, import_react15.createElement)("button", attrs2, (0, import_react15.createElement)("span", { className: "dshpc-btn__content" }, ...kids)) : (0, import_react15.createElement)("button", attrs2, ...kids);
 }
 function IconButton(props) {
   ensureComponentStyles("button", BUTTON_CSS);
@@ -5834,10 +5838,10 @@ function formatDurationHms(ms) {
   if (!Number.isFinite(ms) || ms < 0)
     return "-";
   const totalSec = Math.round(ms / 1e3);
-  const h99 = Math.floor(totalSec / 3600);
+  const h98 = Math.floor(totalSec / 3600);
   const m = Math.floor(totalSec % 3600 / 60);
   const s = totalSec % 60;
-  return h99 > 0 ? `${h99}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  return h98 > 0 ? `${h98}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 function sameCalendarDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -6063,8 +6067,8 @@ function daysInMonth(year, month0) {
 function shiftByUnit(ms, n, unit) {
   const d2 = new Date(ms);
   const Y = d2.getFullYear(), M = d2.getMonth(), D2 = d2.getDate();
-  const h99 = d2.getHours(), mi = d2.getMinutes(), s = d2.getSeconds(), x = d2.getMilliseconds();
-  const at = (y, mo, day, hh = h99, mm = mi, ss = s) => new Date(y, mo, day, hh, mm, ss, x).getTime();
+  const h98 = d2.getHours(), mi = d2.getMinutes(), s = d2.getSeconds(), x = d2.getMilliseconds();
+  const at = (y, mo, day, hh = h98, mm = mi, ss = s) => new Date(y, mo, day, hh, mm, ss, x).getTime();
   switch (unit) {
     case "y":
       return at(Y + n, M, Math.min(D2, daysInMonth(Y + n, M)));
@@ -6079,17 +6083,17 @@ function shiftByUnit(ms, n, unit) {
     case "d":
       return at(Y, M, D2 + n);
     case "h":
-      return at(Y, M, D2, h99 + n);
+      return at(Y, M, D2, h98 + n);
     case "m":
-      return at(Y, M, D2, h99, mi + n);
+      return at(Y, M, D2, h98, mi + n);
     case "s":
-      return at(Y, M, D2, h99, mi, s + n);
+      return at(Y, M, D2, h98, mi, s + n);
   }
 }
 function unitBounds(ms, unit) {
   const d2 = new Date(ms);
   const Y = d2.getFullYear(), M = d2.getMonth(), D2 = d2.getDate();
-  const h99 = d2.getHours(), mi = d2.getMinutes(), s = d2.getSeconds();
+  const h98 = d2.getHours(), mi = d2.getMinutes(), s = d2.getSeconds();
   const at = (y, mo, day, hh = 0, mm = 0, ss = 0) => new Date(y, mo, day, hh, mm, ss).getTime();
   switch (unit) {
     case "y":
@@ -6107,11 +6111,11 @@ function unitBounds(ms, unit) {
     case "d":
       return [at(Y, M, D2), at(Y, M, D2 + 1) - 1];
     case "h":
-      return [at(Y, M, D2, h99), at(Y, M, D2, h99 + 1) - 1];
+      return [at(Y, M, D2, h98), at(Y, M, D2, h98 + 1) - 1];
     case "m":
-      return [at(Y, M, D2, h99, mi), at(Y, M, D2, h99, mi + 1) - 1];
+      return [at(Y, M, D2, h98, mi), at(Y, M, D2, h98, mi + 1) - 1];
     case "s":
-      return [at(Y, M, D2, h99, mi, s), at(Y, M, D2, h99, mi, s + 1) - 1];
+      return [at(Y, M, D2, h98, mi, s), at(Y, M, D2, h98, mi, s + 1) - 1];
   }
 }
 function resolvePresetExpr(expr, precision, now = nowParts()) {
@@ -7829,9 +7833,9 @@ function isTableCellSpec(value) {
     return false;
   return "content" in value;
 }
-function leafColumns(columns2) {
+function leafColumns(columns) {
   const out = [];
-  for (const column of columns2) {
+  for (const column of columns) {
     const children = column.children;
     if (children === void 0 || children.length === 0)
       out.push(column);
@@ -7840,9 +7844,9 @@ function leafColumns(columns2) {
   }
   return out;
 }
-function tableDepth(columns2) {
+function tableDepth(columns) {
   let depth = 1;
-  for (const column of columns2) {
+  for (const column of columns) {
     const children = column.children;
     if (children === void 0 || children.length === 0)
       continue;
@@ -7850,9 +7854,9 @@ function tableDepth(columns2) {
   }
   return depth;
 }
-function headerRows(columns2) {
+function headerRows(columns) {
   const rows = [];
-  const depth = tableDepth(columns2);
+  const depth = tableDepth(columns);
   for (let level = 0; level < depth; level += 1)
     rows.push([]);
   const visit = (column, level) => {
@@ -7867,7 +7871,7 @@ function headerRows(columns2) {
     rows[level].push({ column, colSpan: keys2.length, rowSpan: 1, leafKeys: keys2 });
     return keys2;
   };
-  for (const column of columns2)
+  for (const column of columns)
     visit(column, 0);
   return rows;
 }
@@ -8791,15 +8795,15 @@ var Toast = (props) => {
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
       setInitialHeight(height);
-      setHeights((h99) => [
+      setHeights((h98) => [
         {
           toastId: toast2.id,
           height,
           position: toast2.position
         },
-        ...h99
+        ...h98
       ]);
-      return () => setHeights((h99) => h99.filter((height2) => height2.toastId !== toast2.id));
+      return () => setHeights((h98) => h98.filter((height2) => height2.toastId !== toast2.id));
     }
   }, [
     setHeights,
@@ -8844,7 +8848,7 @@ var Toast = (props) => {
   const deleteToast = import_react35.default.useCallback(() => {
     setRemoved(true);
     setOffsetBeforeRemove(offset4.current);
-    setHeights((h99) => h99.filter((height) => height.toastId !== toast2.id));
+    setHeights((h98) => h98.filter((height) => height.toastId !== toast2.id));
     setTimeout(() => {
       removeToast(toast2);
     }, TIME_BEFORE_UNMOUNT);
@@ -9371,7 +9375,7 @@ var Toaster = /* @__PURE__ */ import_react35.default.forwardRef(function Toaster
           closeButtonAriaLabel: toastOptions == null ? void 0 : toastOptions.closeButtonAriaLabel,
           removeToast,
           toasts: filteredToasts.filter((t4) => t4.position == toast2.position),
-          heights: heights.filter((h99) => h99.position == toast2.position),
+          heights: heights.filter((h98) => h98.position == toast2.position),
           setHeights,
           expandByDefault: expand,
           gap,
@@ -19162,7 +19166,7 @@ function applyDOMChangeInner(view, change, newSel, lastKey = -1) {
     view.inputState.composing++;
   let defaultTr;
   let defaultInsert = () => defaultTr || (defaultTr = applyDefaultInsert(view, change, newSel));
-  if (!view.state.facet(inputHandler).some((h99) => h99(view, change.from, change.to, text2, defaultInsert)))
+  if (!view.state.facet(inputHandler).some((h98) => h98(view, change.from, change.to, text2, defaultInsert)))
     view.dispatch(defaultInsert());
   return true;
 }
@@ -20100,12 +20104,12 @@ var HeightOracle = class {
   mustRefreshForHeights(lineHeights) {
     let newHeight = false;
     for (let i2 = 0; i2 < lineHeights.length; i2++) {
-      let h99 = lineHeights[i2];
-      if (h99 < 0) {
+      let h98 = lineHeights[i2];
+      if (h98 < 0) {
         i2++;
-      } else if (!this.heightSamples[Math.floor(h99 * 10)]) {
+      } else if (!this.heightSamples[Math.floor(h98 * 10)]) {
         newHeight = true;
-        this.heightSamples[Math.floor(h99 * 10)] = true;
+        this.heightSamples[Math.floor(h98 * 10)] = true;
       }
     }
     return newHeight;
@@ -20121,11 +20125,11 @@ var HeightOracle = class {
     if (changed) {
       this.heightSamples = {};
       for (let i2 = 0; i2 < knownHeights.length; i2++) {
-        let h99 = knownHeights[i2];
-        if (h99 < 0)
+        let h98 = knownHeights[i2];
+        if (h98 < 0)
           i2++;
         else
-          this.heightSamples[Math.floor(h99 * 10)] = true;
+          this.heightSamples[Math.floor(h98 * 10)] = true;
       }
     }
     return changed;
@@ -28172,7 +28176,7 @@ var HighlightBuilder = class {
     if (start >= to || end <= from2)
       return;
     if (type3.isTop)
-      highlighters = this.highlighters.filter((h99) => !h99.scope || h99.scope(type3));
+      highlighters = this.highlighters.filter((h98) => !h98.scope || h98.scope(type3));
     let cls4 = inheritedClass;
     let rule = getStyleTags(cursor2) || Rule.empty;
     let tagCls = highlightTags(highlighters, rule.tags);
@@ -28189,7 +28193,7 @@ var HighlightBuilder = class {
     let mounted = cursor2.tree && cursor2.tree.prop(NodeProp.mounted);
     if (mounted && mounted.overlay) {
       let inner = cursor2.node.enter(mounted.overlay[0].from + start, 1);
-      let innerHighlighters = this.highlighters.filter((h99) => !h99.scope || h99.scope(mounted.tree.type));
+      let innerHighlighters = this.highlighters.filter((h98) => !h98.scope || h98.scope(mounted.tree.type));
       let hasChild2 = cursor2.firstChild();
       for (let i2 = 0, pos = start; ; i2++) {
         let next = i2 < mounted.overlay.length ? mounted.overlay[i2] : null;
@@ -57830,15 +57834,15 @@ function readPresentation(store, key) {
   }
 }
 function turnOf(node) {
-  const location2 = node?.location;
-  return location2?.kind === "turn" || location2?.kind === "step" ? location2.turn?.turn : void 0;
+  const location = node?.location;
+  return location?.kind === "turn" || location?.kind === "step" ? location.turn?.turn : void 0;
 }
 function turnProcessAlwaysOpen(node) {
-  const location2 = node?.location;
-  if (location2?.kind !== "turn" && location2?.kind !== "step")
+  const location = node?.location;
+  if (location?.kind !== "turn" && location?.kind !== "step")
     return false;
-  const reason = location2.turn?.end?.data?.reason?.kind;
-  return location2.turn?.status === "open" || reason === "aborted" || reason === "interrupted" || reason === "error";
+  const reason = location.turn?.end?.data?.reason?.kind;
+  return location.turn?.status === "open" || reason === "aborted" || reason === "interrupted" || reason === "error";
 }
 function ChatNodeSeatMirror(props) {
   const { node, groupPart, store, openState, onSetOpen, foldCompleted, renderNode } = props;
@@ -57915,8 +57919,8 @@ function groupedOf(mode, live) {
   return true;
 }
 function turnOfNode(node) {
-  const location2 = node.location;
-  return location2?.kind === "turn" || location2?.kind === "step" ? location2.turn?.turn : void 0;
+  const location = node.location;
+  return location?.kind === "turn" || location?.kind === "step" ? location.turn?.turn : void 0;
 }
 function hasReasoning(node) {
   const blocks = node.data?.blocks;
@@ -58127,8 +58131,8 @@ function ChatGroupSeatMirror(props) {
   const firstNode = first === void 0 ? void 0 : store?.get(first.key);
   const presentation = first === void 0 ? void 0 : readPresentation(store, first.key);
   const spec = presentation?.spec ?? void 0;
-  const location2 = firstNode?.location;
-  const reason = location2?.kind === "turn" || location2?.kind === "step" ? location2.turn?.end?.data?.reason?.kind : void 0;
+  const location = firstNode?.location;
+  const reason = location?.kind === "turn" || location?.kind === "step" ? location.turn?.end?.data?.reason?.kind : void 0;
   const alwaysOpen = presentation?.turnClosed === false || group.data.live === true || presentation?.hasInterleavedInput === true || reason === "aborted" || reason === "interrupted" || reason === "error";
   const storedAnswerStep = openState.get(group.data.turn);
   const outerHidden = foldCompleted && presentation?.turnClosed === true && spec !== void 0 && !alwaysOpen && storedAnswerStep !== (spec.answerStep ?? 0);
@@ -59443,12 +59447,12 @@ function DetailItem({ item, t: t4, onOpenFile }) {
     className: cls4("path"),
     type: "button",
     onClick: () => {
-      const location2 = item.location;
-      if (location2 !== void 0) {
-        if (location2.line === void 0)
-          onOpenFile(location2.path);
+      const location = item.location;
+      if (location !== void 0) {
+        if (location.line === void 0)
+          onOpenFile(location.path);
         else
-          onOpenFile(location2.path, { line: location2.line });
+          onOpenFile(location.path, { line: location.line });
       }
     }
   }, item.title) : (0, import_react70.createElement)("span", { className: cls4("text") }, item.title), item.badge !== void 0 ? (0, import_react70.createElement)("span", { className: cls4("badge"), "data-tone": item.badge.tone }, item.badge.label) : null, status !== void 0 ? (0, import_react70.createElement)("span", { className: cls4("statusText") }, item.previousStatus !== void 0 ? (0, import_react70.createElement)("span", null, (0, import_react70.createElement)("span", { className: cls4("previous") }, item.previousStatus), (0, import_react70.createElement)("span", null, " \u2192 ")) : null, (0, import_react70.createElement)("span", null, status.label), item.change?.value === "updated" && item.previousStatus === void 0 ? (0, import_react70.createElement)("span", null, " \xB7 ", item.change.label) : null) : null) : null, item.subtitle !== void 0 ? (0, import_react70.createElement)("div", { className: cls4("subtitle") }, item.subtitle) : null, item.description !== void 0 ? (0, import_react70.createElement)("p", { className: cls4("description") }, item.description) : null, item.fields.length > 0 ? (0, import_react70.createElement)("dl", { className: cls4("fields") }, item.fields.map((field) => (0, import_react70.createElement)("div", { key: field.label, className: cls4("field") }, (0, import_react70.createElement)("dt", null, field.label), (0, import_react70.createElement)("dd", null, field.value)))) : null, item.lines !== void 0 ? (0, import_react70.createElement)("ul", { className: cls4("lines") }, item.lines.map((line, index3) => (0, import_react70.createElement)("li", { key: index3 }, line))) : null, item.markdown !== void 0 ? (0, import_react70.createElement)("div", { className: cls4("prose") }, (0, import_react70.createElement)(official_exports.MarkdownText, { text: item.markdown, labels: markdownLabels() })) : null, item.code !== void 0 ? (0, import_react70.createElement)(official_exports.CodeBlock, {
@@ -62918,8 +62922,8 @@ function dataOf(node) {
   return node.data ?? {};
 }
 function turnLocationOf(node) {
-  const location2 = node.location;
-  return location2?.kind === "turn" || location2?.kind === "step" ? location2.turn : void 0;
+  const location = node.location;
+  return location?.kind === "turn" || location?.kind === "step" ? location.turn : void 0;
 }
 function blocksOf(value) {
   return Array.isArray(value) ? value : void 0;
@@ -63697,10 +63701,10 @@ function SessionViewModal(props) {
     if (!keyed || store === void 0)
       return void 0;
     const last2 = order[order.length - 1];
-    const location2 = last2 === void 0 ? void 0 : store.get(last2)?.location;
-    if (location2?.kind !== "turn" && location2?.kind !== "step")
+    const location = last2 === void 0 ? void 0 : store.get(last2)?.location;
+    if (location?.kind !== "turn" && location?.kind !== "step")
       return void 0;
-    return location2.turn?.status === "open" ? location2.turn.start?.time : void 0;
+    return location.turn?.status === "open" ? location.turn.start?.time : void 0;
   }, [keyed, order, store]);
   const rows = keyed ? ChatNodeListMirror({
     order,
@@ -64198,18 +64202,6 @@ var DICT2 = {
     secFoundation: "\u8BBE\u8BA1\u57FA\u7840",
     secTaskNotifications: "\u901A\u77E5\u4EFB\u52A1\u4E2D\u5FC3",
     secIcons: "\u56FE\u6807",
-    secIconReplace: "\u56FE\u6807\u66FF\u6362",
-    irNote: "\u672C\u4ED3\u8FD8\u5728\u7528\u300C\u5B98\u65B9 primitives \u7EC4\u4EF6 / \u81EA\u7ED8 SVG / \u5B57\u7B26\u300D\u5F53\u56FE\u6807\u7684\u5730\u65B9\uFF0C\u4E00\u884C\u4E00\u9897\u3002\u7B2C\u4E09\u5217\u662F\u5BF9\u5E94\u7684\u5019\u9009\u5B57\u5F62\uFF0C\u5728\u4E0D\u5728\u5E93\u91CC\u6309\u5728\u7EBF CSS \u5B9E\u65F6\u5224\u5B9A \u2014\u2014 \u663E\u793A\u300C\u7F3A\u300D\u5C31\u662F\u5E73\u53F0\u8FD8\u6CA1\u6709\u8FD9\u9897\u5B57\u5F62\uFF0C\u9700\u8981\u8865\u3002\u6700\u540E\u4E00\u5217\u662F**\u70B9\u5F97\u8FDB\u53BB\u7684\u6F14\u793A\u9875\u94FE\u63A5**\uFF0C\u70B9\u5F00\u5C31\u662F\u90A3\u9897\u56FE\u6807\u5728\u771F\u5B9E\u63A7\u4EF6\u91CC\u7684\u6837\u5B50\u3002\u4F1A\u8BDD\u955C\u50CF\uFF08src/adv/session\uFF09\u4E0E Loader \u52A8\u753B\u4E0D\u6362\uFF0C\u6587\u4EF6\u7C7B\u578B\u56FE\u6807\uFF08FileTypeIcon\uFF09\u7EDF\u4E00\u7528\u5B98\u65B9\uFF0C\u90FD\u4E0D\u8FDB\u8868\u3002",
-    irSummary: "{total} \u9879\u91CC {ok} \u9879\u5DF2\u6709\u5BF9\u5E94\u5B57\u5F62\uFF0C\u5176\u4F59\u8981\u8865\u3002",
-    irCurrent: "\u73B0\u5728\u7684\u56FE\u6807",
-    irSource: "\u6765\u6E90",
-    irReplace: "\u66FF\u6362\u540E",
-    irWhere: "\u6F14\u793A\u9875",
-    irSrcOfficial: "\u5B98\u65B9",
-    irSrcDrawn: "\u81EA\u7ED8",
-    irSrcChar: "\u5B57\u7B26",
-    irMissing: "\u7F3A",
-    irLoading: "\u8BFB\u53D6\u4E2D\u2026",
     icNote: "\u5B98\u65B9 primitives \u4E0E\u5404\u5957\u5B57\u4F53\u56FE\u6807\u540C\u9875\u3002\u4E24\u8FB9\u90FD\u4E0D\u5199\u6B7B\u6E05\u5355\uFF1A\u5B98\u65B9\u4ECE\u5BBF\u4E3B\u547D\u540D\u7A7A\u95F4\u5B9E\u65F6\u679A\u4E3E\uFF0C\u5B57\u4F53\u4ECE\u5728\u7EBF CSS \u5B9E\u65F6\u89E3\u6790\uFF0C\u5BBF\u4E3B\u5347\u7EA7\u6216\u5E73\u53F0\u52A0\u56FE\u6807\u540E\u5237\u65B0\u5373\u89C1\u3002\u70B9\u4EFB\u610F\u683C\u5B50\u53EA\u590D\u5236\u5B83\u7684\u540D\u5B57\uFF0C\u5B8C\u6574\u5199\u6CD5\u5728\u9875\u9762\u6700\u540E\u3002",
     icSearch: "\u6309\u540D\u5B57\u8FC7\u6EE4\u2026",
     icOfficial: "DSH \u5B98\u65B9 primitives",
@@ -64471,18 +64463,6 @@ var DICT2 = {
     secFoundation: "Foundations",
     secTaskNotifications: "Task Notification Hub",
     secIcons: "Icons",
-    secIconReplace: "Icon migration",
-    irNote: "Every place in this package still drawing an icon from an official primitives component, a hand-drawn SVG or a character \u2014 one row per icon. The third column is the candidate glyph, decided by the online CSS at runtime: \u201Cmissing\u201D means the platform does not have that glyph yet. The last column links straight into the demo pages, where you see the icon inside the real control. The session mirror (src/adv/session), the Loader animations and file-type icons (FileTypeIcon, which stay official) are out of the table.",
-    irSummary: "{ok} of {total} icons already have a matching glyph; the rest still need one.",
-    irCurrent: "Current",
-    irSource: "Source",
-    irReplace: "Replacement",
-    irWhere: "Demo",
-    irSrcOfficial: "Official",
-    irSrcDrawn: "Drawn",
-    irSrcChar: "Character",
-    irMissing: "missing",
-    irLoading: "Loading\u2026",
     icNote: "Official primitives and every font icon set on one page. Neither list is hard-coded: official icons are enumerated from the host namespace at runtime, font icons are parsed from the online CSS at runtime, so a host upgrade or a new upload in the icon platform shows up on refresh. Clicking a cell copies just its name; the full usage sits at the bottom of the page.",
     icSearch: "Filter by name\u2026",
     icOfficial: "DSH official primitives",
@@ -64813,7 +64793,7 @@ function demoPanels() {
 var pageRow = { element: null };
 
 // packages/demo/src/sections/index.tsx
-var import_react109 = require("react");
+var import_react108 = require("react");
 
 // packages/demo/src/sections/start.tsx
 var import_react97 = require("react");
@@ -69742,6 +69722,10 @@ h(SideSheet, {
         "en": "**Size follows text, not the control size tier** (2026-11-14): with no `size`, the font `<i>` inherits its parent `font-size` and official SVGs are taken over by the control's `svg{width:1em;height:1em}` \u2014 both track the adjacent text 1:1. `size` accepts numbers and preset names only (no `em` strings, since official components take `size?: number`); passing one is an explicit absolute-px override."
       },
       {
+        "zh": "**\u81EA\u6709\u57FA\u7840\u7C7B `dshpc-icon`**\uFF082026-11-14\uFF09\uFF1Aiconfont \u5E73\u53F0\u751F\u6210\u7684\u5728\u7EBF CSS \u57FA\u7840\u7C7B\u4F1A\u5199\u6B7B `font-size:16px`\uFF0C\u76F4\u63A5\u547D\u4E2D `<i>`\uFF0C\u7EE7\u627F\u503C\u76D6\u4E0D\u4F4F\u5B83\u3002\u6240\u4EE5\u6240\u6709\u5B57\u4F53\u56FE\u6807\u90FD\u5E26\u4E00\u4E2A\u81EA\u6709\u7C7B\uFF0C\u5C3A\u5BF8\u5951\u7EA6\u653E\u5728\u6838\u5FC3 `icon.css` \u771F\u6E90\u91CC\uFF08`i.dshpc-icon{font-size:inherit;line-height:1}`\uFF09\uFF0C\u53EA\u63A5\u7BA1\u5B57\u53F7\u4E0E\u884C\u9AD8\uFF1B\u5B57\u5F62\u3001`font-family`\u3001\u989C\u8272\u3001\u6DF1\u8272 `-dark` \u4ECD\u5F52\u5E73\u53F0\u57FA\u7840\u7C7B\u3002\u6210\u719F\u56FE\u6807\u5E93\u540C\u6784\uFF1AFont Awesome \u7684 `.fa` \u4E0E Bootstrap Icons \u7684 `.bi` \u57FA\u7840\u7C7B\u90FD\u4E0D\u5E26 `font-size`\uFF0C\u5C3A\u5BF8\u9ED8\u8BA4\u7EE7\u627F\u7236\u7EA7\u6587\u5B57\uFF08Font Awesome Sizing Icons \u6587\u6863\uFF1ABy default, icons inherit the font-size of their parent container\uFF09\u3002\u5E73\u53F0\u7C7B\u540D\u7531\u5728\u7EBF CSS \u52A8\u6001\u89E3\u6790\u30015 \u4E2A\u5E93\u524D\u7F00\u8FD8\u4E0D\u7EDF\u4E00\uFF0C\u9760\u5E73\u53F0\u7C7B\u540D\u505A\u5C3A\u5BF8\u89C4\u5219\u5FC5\u7136\u6F0F\u5E93\u3002",
+        "en": '**Own base class `dshpc-icon`** (2026-11-14): the iconfont platform CSS sets `font-size:16px` on its generated base class, which matches `<i>` directly and beats any inherited value. Every font icon therefore carries our own base class, and the size contract lives in the core `icon.css` source (`i.dshpc-icon{font-size:inherit;line-height:1}`), owning only font-size and line-height; glyph, font-family, colour and dark `-dark` variants stay with the platform base class. Mature icon libraries are built the same way: neither Font Awesome `.fa` nor Bootstrap Icons `.bi` sets font-size on its base class, so icons inherit the parent text size by default (Font Awesome Sizing Icons: "By default, icons inherit the font-size of their parent container"). Platform class names are parsed dynamically from remote CSS and the five libraries use different prefixes, so keying size rules off them would always miss a library.'
+      },
+      {
         "zh": "**\u4E09\u7C7B\u7528\u6CD5**\uFF1A\u2460 \u8DDF\u6587\u5B57\u5E76\u6392\u7684\u8BED\u4E49\u56FE\u6807\uFF08\u6309\u94AE\u91CC\u7684\u52FE\u3001\u8F93\u5165\u6846\u7684\u6E05\u9664\u53C9\uFF09\u4E00\u5F8B\u4E0D\u4F20 `size`\uFF0C\u7531 `sm|md|lg` \u51B3\u5B9A\u7684\u6587\u5B57\u5B57\u53F7\u81EA\u52A8\u5E26\u51FA\u56FE\u6807\u5C3A\u5BF8\uFF08`sm` 12px \u5B57 \u2192 12px \u56FE\u6807\uFF0C`md`/`lg` 13px \u5B57 \u2192 13px \u56FE\u6807\uFF09\uFF1B\u2461 \u88C5\u9970\u6027\u5FAE\u7BAD\u5934\uFF08\u9009\u62E9\u5668 caret\u3001\u6298\u53E0\u3001\u9762\u5305\u5C51\uFF09\u7528\u663E\u5F0F\u5C0F px\uFF0C\u5B83\u4EEC\u4E0D\u4E0E\u6587\u5B57\u7B49\u5927\uFF1B\u2462 \u72EC\u7ACB\u6446\u653E\u6216\u56FE\u6807\u5C55\u793A\u9875\u7528 `ICON_SIZES` \u7684\u663E\u5F0F\u6863\u3002`dense` \u662F\u552F\u4E00\u7684\u653E\u5927\u6863\uFF0C\u8D70 `1.25em` \u7CFB\u6570\u800C\u4E0D\u662F\u65B0\u6863\u4F4D\u3002",
         "en": "**Three cases**: (1) semantic icons next to text (a check in a button, the clear cross in an input) omit `size` and inherit the text size chosen by `sm|md|lg` (`sm` 12px text \u2192 12px icon, `md`/`lg` 13px text \u2192 13px icon); (2) decorative micro-arrows (picker caret, collapse, breadcrumbs) take an explicit small px value because they are deliberately smaller than text; (3) standalone icons and the showcase page use the explicit `ICON_SIZES` tiers. `dense` is the only magnification step, expressed as a `1.25em` ratio rather than a new tier."
       },
@@ -70323,343 +70307,8 @@ function IconsPage() {
   );
 }
 
-// packages/demo/src/sections/icon-replace.tsx
-var import_react100 = require("react");
-var OFFICIAL = Official2;
-var PAGE_TITLE = {
-  inputs: "secInputs",
-  display: "secDisplay",
-  feedback: "secFeedback",
-  layout: "secLayout",
-  navigation: "secNavigation",
-  explorer: "secExplorer"
-};
-var ROWS = [
-  // ── 官方 primitives 图标：这几颗都在 `src/adv/explorer` 与代码查看器里 ──────────
-  {
-    used: { kind: "official", name: "IconCheckOutlineRegular" },
-    source: "official",
-    pages: ["explorer"],
-    note: "\u4EE3\u7801\u9884\u89C8\u6807\u9898\u680F\uFF1A\u590D\u5236\u6210\u529F\u6001",
-    replace: "common.base:gou"
-  },
-  {
-    used: { kind: "official", name: "IconCopyOutlineRegular" },
-    source: "official",
-    pages: ["explorer"],
-    note: "\u4EE3\u7801\u9884\u89C8\u6807\u9898\u680F\uFF1A\u590D\u5236",
-    replace: "common.base:fuzhi"
-  },
-  {
-    used: { kind: "official", name: "IconRefreshOutlineRegular" },
-    source: "official",
-    pages: ["explorer"],
-    note: "\u4EE3\u7801\u9884\u89C8\u6807\u9898\u680F\uFF1A\u91CD\u65B0\u53D6\u5185\u5BB9",
-    replace: "common.base:shuaxin"
-  },
-  {
-    used: { kind: "official", name: "IconChevronDownOutlineRegular" },
-    source: "official",
-    pages: ["explorer"],
-    note: "\u9762\u5305\u5C51\u300C\u66F4\u591A\u5C42\u7EA7\u300D\u83DC\u5355\u6309\u94AE",
-    replace: "common.base:move-down"
-  },
-  {
-    used: { kind: "official", name: "IconChevronRightOutlineRegular" },
-    source: "official",
-    pages: ["explorer"],
-    note: "\u9762\u5305\u5C51\u5206\u9694\u7B26 / \u6587\u4EF6\u5217\u8868\u5C55\u5F00",
-    replace: "common.base:move-right"
-  },
-  {
-    used: { kind: "official", name: "IconFolderCloseRegular" },
-    source: "official",
-    pages: ["explorer"],
-    note: "\u6587\u4EF6\u5939\uFF08\u7528\u6237\u5B9A\uFF1A\u8FD9\u4E24\u9897\u4FDD\u7559\u5B98\u65B9\uFF09",
-    replace: null
-  },
-  {
-    used: { kind: "official", name: "IconFolderOpenOutlineRegular" },
-    source: "official",
-    pages: ["explorer"],
-    note: "\u5F53\u524D\u76EE\u5F55\u7684\u6587\u4EF6\u5939\uFF08\u7528\u6237\u5B9A\uFF1A\u8FD9\u4E24\u9897\u4FDD\u7559\u5B98\u65B9\uFF09",
-    replace: null
-  },
-  // ── 自绘 SVG ──────────────────────────────────────────────────────────────
-  {
-    used: { kind: "path", d: "M4 6l4 4 4-4", strokeWidth: 1.5 },
-    source: "drawn",
-    pages: ["display", "inputs", "navigation", "layout"],
-    note: "\u5361\u7247\u6298\u53E0 / \u9009\u62E9\u5668 / \u65E5\u671F\u5BFC\u822A / \u5206\u9875 / \u5DE5\u5177\u680F\uFF0C\u56DB\u5411\u5171\u7528\u4E00\u6761\u8DEF\u5F84\uFF1B\u66FF\u6362\u65F6\u6309\u65B9\u5411\u53D6 move-up/right/down/left",
-    replace: "common.base:move-down"
-  },
-  {
-    used: { kind: "path", d: "M2 4.5A1.5 1.5 0 0 1 3.5 3h2.6l1.2 1.5h5.2A1.5 1.5 0 0 1 14 6v5.5A1.5 1.5 0 0 1 12.5 13h-9A1.5 1.5 0 0 1 2 11.5z", strokeWidth: 1.3 },
-    source: "drawn",
-    pages: ["inputs"],
-    note: "folderIcon\uFF1A\u5DE5\u4F5C\u533A\u9009\u62E9\u5668\u7684\u9ED8\u8BA4\u524D\u7F6E\u56FE\u6807",
-    replace: "common.base:gongzuoqu"
-  },
-  {
-    used: { kind: "path", d: "M8 1.8l1.6 4.1 4.1 1.6-4.1 1.6L8 13.2 6.4 9.1 2.3 7.5l4.1-1.6z", strokeWidth: 1.2 },
-    source: "drawn",
-    pages: ["inputs"],
-    note: "sparkleIcon\uFF1A\u6A21\u578B\u9009\u62E9\u5668\u7684\u9ED8\u8BA4\u524D\u7F6E\u56FE\u6807",
-    replace: "common.base:AIdamoxing"
-  },
-  // ── 字符当图标 ────────────────────────────────────────────────────────────
-  {
-    used: { kind: "char", char: "\u2713" },
-    source: "char",
-    pages: ["inputs", "feedback"],
-    note: "Picker \u591A\u9009\u52FE / \u5F39\u7A97\u6210\u529F\u6863 / \u5361\u7247\u63D0\u793A\u6210\u529F",
-    replace: "common.base:gou"
-  },
-  {
-    used: { kind: "char", char: "\u2715" },
-    source: "char",
-    pages: ["feedback", "layout"],
-    note: "\u5F39\u7A97\u3001\u62BD\u5C49\u3001\u63D0\u793A\u5361\u7684\u5173\u95ED\uFF0C\u4EE5\u53CA\u9762\u677F\u5173\u95ED",
-    replace: "common.base:guanbi"
-  },
-  {
-    used: { kind: "char", char: "\xD7" },
-    source: "char",
-    pages: ["inputs"],
-    note: "\u641C\u7D22\u6846\u6E05\u7A7A",
-    replace: "common.base:guanbi"
-  },
-  {
-    used: { kind: "char", char: "+" },
-    source: "char",
-    pages: ["inputs"],
-    note: "\u6570\u5B57\u6846\u589E\u52A0",
-    replace: "common.base:jia"
-  },
-  {
-    used: { kind: "char", char: "\u2212" },
-    source: "char",
-    pages: ["inputs"],
-    note: "\u6570\u5B57\u6846\u51CF\u5C11",
-    replace: "common.base:jian"
-  },
-  {
-    used: { kind: "char", char: "!" },
-    source: "char",
-    pages: ["feedback"],
-    note: "\u5361\u7247\u63D0\u793A\u7684\u8B66\u544A\u8BED\u6C14",
-    replace: "common.base:warn"
-  },
-  {
-    used: { kind: "char", char: "i" },
-    source: "char",
-    pages: ["feedback"],
-    note: "\u5361\u7247\u63D0\u793A\u7684\u4FE1\u606F\u8BED\u6C14",
-    replace: "common.base:info"
-  },
-  {
-    used: { kind: "char", char: "\u21B6" },
-    source: "char",
-    pages: ["inputs"],
-    note: "\u8F93\u5165\u7EC4\u7684\u64A4\u9500",
-    replace: "common.base:chexiao"
-  },
-  {
-    used: { kind: "char", char: "\u2039" },
-    source: "char",
-    pages: ["layout"],
-    note: "\u9762\u677F\u6536\u8D77\u540E\u7684\u6D6E\u52A8\u8033\u6735\uFF08\u5F80\u5DE6\u62C9\u56DE\u6765\uFF09",
-    replace: "common.base:move-left"
-  },
-  {
-    used: { kind: "char", char: "\u24D8" },
-    source: "char",
-    pages: ["feedback"],
-    note: "\u5F39\u7A97 info \u6863",
-    replace: "common.base:info"
-  },
-  {
-    used: { kind: "char", char: "\u26A0" },
-    source: "char",
-    pages: ["feedback"],
-    note: "\u5F39\u7A97 warning \u6863",
-    replace: "common.base:warn"
-  },
-  {
-    used: { kind: "char", char: "\u203A" },
-    source: "char",
-    pages: ["layout"],
-    note: "\u9762\u677F\u6536\u8D77\u94AE\uFF08\u4E0E 19 \u884C\u8033\u6735\u53CD\u5411\uFF09",
-    replace: "common.base:move-right"
-  },
-  {
-    used: { kind: "char", char: "?" },
-    source: "char",
-    pages: ["inputs"],
-    note: "\u5B57\u6BB5\u95EE\u53F7\u63D0\u793A\uFF1B\u5706\u5708\u662F hint.css \u7684 border-radius \u753B\u7684\uFF0C\u4E0D\u662F\u5B57\u5F62",
-    replace: "common.base:qm"
-  },
-  {
-    used: { kind: "official", name: "IconSearchOutlineRegular" },
-    source: "official",
-    pages: ["inputs", "layout"],
-    note: "\u641C\u7D22\u56FE\u6807\u793A\u4F8B\uFF08demo \u5C55\u793A\u9875\uFF1B\u4F1A\u8BDD\u955C\u50CF\u90A3\u51E0\u5904\u4E0D\u52A8\uFF09",
-    replace: "common.base:chazhao"
-  },
-  {
-    used: { kind: "path", d: "M9.5 5L6 8l3.5 3", strokeWidth: 1.5 },
-    source: "drawn",
-    pages: ["inputs"],
-    note: "\u65E5\u671F\u9009\u62E9\u5668\u5E74\u6708\u524D\u540E\u7684\u56DB\u9897\u7BAD\u5934\uFF08\u4E0A\u4E00\u6708/\u4E0B\u4E00\u6708 move-left\u3001move-right\uFF1B\u4E0A\u4E00\u5E74/\u4E0B\u4E00\u5E74 zuoxiang-/youxiangshuangjiantou\uFF09",
-    replace: "common.base:move-left"
-  },
-  {
-    used: { kind: "path", d: "M2 4.5A1.5 1.5 0 0 1 3.5 3h9A1.5 1.5 0 0 1 14 4.5V6H2V4.5z M2 6h12v8.5A1.5 1.5 0 0 1 12.5 16h-9A1.5 1.5 0 0 1 2 14.5V6z", strokeWidth: 1.5 },
-    source: "drawn",
-    pages: ["inputs"],
-    note: "\u65E5\u671F\u9009\u62E9\u5668\u89E6\u53D1\u5668\u4E0A\u7684\u65E5\u5386\u56FE\u6807",
-    replace: "common.base:riqi"
-  }
-];
-function columns() {
-  return [
-    { key: "no", title: "#", width: 44, align: "center" },
-    { key: "current", title: t3("irCurrent"), width: 96, align: "center" },
-    { key: "source", title: t3("irSource"), width: 76 },
-    { key: "replace", title: t3("irReplace"), width: 96, align: "center" },
-    { key: "where", title: t3("irWhere") }
-  ];
-}
-var GLYPH_BOX = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  minWidth: "24px",
-  height: "24px",
-  lineHeight: 1
-};
-var WHERE = {
-  display: "flex",
-  flexWrap: "wrap",
-  alignItems: "center",
-  gap: "4px 10px",
-  fontSize: "12px",
-  lineHeight: "17px"
-};
-var LINK = {
-  color: "var(--dshpc-business)",
-  textDecoration: "underline",
-  whiteSpace: "nowrap"
-};
-var NOTE = {
-  width: "100%",
-  fontSize: "11px",
-  lineHeight: "16px",
-  color: "var(--dshpc-fg-4)",
-  whiteSpace: "normal"
-};
-var NO = {
-  fontFamily: "var(--dshpc-font-mono)",
-  fontSize: "11px",
-  color: "var(--dshpc-fg-4)"
-};
-var MISSING = {
-  fontSize: "11px",
-  color: "var(--dshpc-danger)",
-  whiteSpace: "nowrap"
-};
-function Current(props) {
-  const used = props.used;
-  if (used.kind === "official") {
-    const Comp = OFFICIAL[used.name];
-    return (0, import_react100.createElement)(
-      "span",
-      { style: GLYPH_BOX, title: used.name },
-      typeof Comp === "function" ? (0, import_react100.createElement)(Comp, { size: 20 }) : used.name
-    );
-  }
-  if (used.kind === "char") {
-    return (0, import_react100.createElement)("span", { style: { ...GLYPH_BOX, fontSize: "18px" }, title: used.char }, used.char);
-  }
-  return (0, import_react100.createElement)(
-    "span",
-    { style: GLYPH_BOX },
-    (0, import_react100.createElement)(
-      "svg",
-      { width: 20, height: 20, viewBox: "0 0 16 16", fill: "none", "aria-hidden": true },
-      (0, import_react100.createElement)("path", {
-        d: used.d,
-        stroke: "currentColor",
-        "stroke-width": used.strokeWidth,
-        "stroke-linecap": "round",
-        "stroke-linejoin": "round"
-      })
-    )
-  );
-}
-function IconReplacePage() {
-  const [names, setNames] = (0, import_react100.useState)({});
-  (0, import_react100.useEffect)(() => {
-    let alive = true;
-    const ids = [...new Set(ROWS.map((row2) => row2.replace?.split(":")[0]).filter((id3) => id3 !== void 0))];
-    for (const id3 of ids) {
-      loadIconFont(id3).then(
-        (parsed) => {
-          if (alive) setNames((prev) => ({ ...prev, [id3]: parsed.names }));
-        },
-        () => {
-          if (alive) setNames((prev) => ({ ...prev, [id3]: [] }));
-        }
-      );
-    }
-    return () => {
-      alive = false;
-    };
-  }, []);
-  const glyphState = (replace2) => {
-    if (replace2 === null) return "missing";
-    const cut = replace2.indexOf(":");
-    const list = names[replace2.slice(0, cut)];
-    if (list === void 0) return "loading";
-    return list.includes(replace2.slice(cut + 1)) ? "ready" : "missing";
-  };
-  const ready = ROWS.filter((row2) => glyphState(row2.replace) === "ready").length;
-  const rows = ROWS.map((row2, index3) => ({
-    key: index3,
-    cells: {
-      no: (0, import_react100.createElement)("span", { style: NO }, String(index3 + 1)),
-      current: (0, import_react100.createElement)(Current, { used: row2.used }),
-      source: t3(row2.source === "official" ? "irSrcOfficial" : row2.source === "drawn" ? "irSrcDrawn" : "irSrcChar"),
-      replace: glyphState(row2.replace) === "ready" && row2.replace !== null ? (0, import_react100.createElement)(Icon, { name: row2.replace, size: 20 }) : (0, import_react100.createElement)("span", { style: MISSING }, glyphState(row2.replace) === "loading" ? t3("irLoading") : t3("irMissing")),
-      where: (0, import_react100.createElement)(
-        "div",
-        { style: WHERE },
-        ...row2.pages.map(
-          (page) => (0, import_react100.createElement)("a", { key: page, href: `#${page}`, style: LINK }, t3(PAGE_TITLE[page] ?? "irWhere"))
-        ),
-        row2.note === void 0 ? null : (0, import_react100.createElement)("div", { style: NOTE }, row2.note)
-      )
-    }
-  }));
-  return (0, import_react100.createElement)(
-    "div",
-    null,
-    (0, import_react100.createElement)(
-      "p",
-      { style: { margin: "0 0 12px", fontSize: "13px", lineHeight: "1.8", color: "var(--dshpc-fg-3)" } },
-      t3("irNote")
-    ),
-    (0, import_react100.createElement)(
-      "p",
-      { style: { margin: "0 0 12px", fontSize: "12px", color: "var(--dshpc-fg-4)" } },
-      t3("irSummary", { ok: ready, total: ROWS.length })
-    ),
-    (0, import_react100.createElement)(Table, { columns: columns(), rows })
-  );
-}
-
 // packages/demo/src/sections/controls.tsx
-var import_react101 = require("react");
+var import_react100 = require("react");
 var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 function weekdayLabel(n) {
   const labels = getLocale() === "en" ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] : ["\u4E00", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u65E5"];
@@ -70681,13 +70330,13 @@ var BUTTON_ICONS = [
 ];
 function iconOf(name2) {
   const found = BUTTON_ICONS.find((item) => item.name === name2);
-  return found === void 0 ? null : (0, import_react101.createElement)(Icon, { name: found.glyph });
+  return found === void 0 ? null : (0, import_react100.createElement)(Icon, { name: found.glyph });
 }
 function StarSvg() {
-  return (0, import_react101.createElement)(
+  return (0, import_react100.createElement)(
     "svg",
     { width: "1em", height: "1em", viewBox: "0 0 16 16", fill: "none", "aria-hidden": true },
-    (0, import_react101.createElement)("path", {
+    (0, import_react100.createElement)("path", {
       d: "M8 1.6l1.9 4 4.4.6-3.2 3 .8 4.3L8 11.4l-3.9 2.1.8-4.3-3.2-3 4.4-.6z",
       stroke: "currentColor",
       strokeWidth: 1.2,
@@ -70726,7 +70375,7 @@ var CUSTOM_COLORS = ["#7c3aed", "#0ea5e9", "#f97316", "#16a34a"];
 function tipAnchor(text2, side, align) {
   const props = { label: text2, side };
   if (align !== void 0) props.align = align;
-  return (0, import_react101.createElement)(import_dsh_client_ui_primitives.Tooltip, props, (0, import_react101.createElement)("button", {
+  return (0, import_react100.createElement)(import_dsh_client_ui_primitives.Tooltip, props, (0, import_react100.createElement)("button", {
     type: "button",
     style: {
       padding: "4px 10px",
@@ -70740,13 +70389,13 @@ function tipAnchor(text2, side, align) {
   }, text2));
 }
 function Row(props) {
-  return (0, import_react101.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
+  return (0, import_react100.createElement)("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" } }, props.children);
 }
 function Labeled(props) {
-  return (0, import_react101.createElement)(
+  return (0, import_react100.createElement)(
     "div",
     { style: { display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" } },
-    (0, import_react101.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
+    (0, import_react100.createElement)("span", { style: { width: "auto", minWidth: "64px", flex: "none", whiteSpace: "normal", color: "var(--dshpc-fg-3)", fontSize: "12px" } }, props.label),
     props.children
   );
 }
@@ -70843,7 +70492,7 @@ function iconBtnTier(title, dense) {
   const cell = (withText, filled, size4) => {
     const key = `${filled}-${size4}`;
     if (withText) {
-      return (0, import_react101.createElement)(Button, {
+      return (0, import_react100.createElement)(Button, {
         key,
         size: size4,
         dense,
@@ -70851,7 +70500,7 @@ function iconBtnTier(title, dense) {
         icon: iconOf("plus")
       }, size4);
     }
-    return (0, import_react101.createElement)(IconButton, {
+    return (0, import_react100.createElement)(IconButton, {
       key,
       size: size4,
       dense,
@@ -70861,14 +70510,14 @@ function iconBtnTier(title, dense) {
       label: `add ${size4} ${filled ? "solid" : "plain"}`
     });
   };
-  const dataRow = (label, withText, filled) => (0, import_react101.createElement)(
+  const dataRow = (label, withText, filled) => (0, import_react100.createElement)(
     "div",
     { key: `${title}-${label}`, style: rowStyle },
-    (0, import_react101.createElement)("span", { style: { fontSize: "12px", color: "var(--dshpc-fg-2)", justifySelf: "start", whiteSpace: "nowrap" } }, label),
+    (0, import_react100.createElement)("span", { style: { fontSize: "12px", color: "var(--dshpc-fg-2)", justifySelf: "start", whiteSpace: "nowrap" } }, label),
     ...["sm", "md", "lg"].map((size4) => cell(withText, filled, size4))
   );
   return [
-    (0, import_react101.createElement)("div", { key: `${title}-head`, style: { fontSize: "12px", fontWeight: 600, color: "var(--dshpc-fg)", marginTop: "10px" } }, title),
+    (0, import_react100.createElement)("div", { key: `${title}-head`, style: { fontSize: "12px", fontWeight: 600, color: "var(--dshpc-fg)", marginTop: "10px" } }, title),
     dataRow("\u7EAF\u56FE\u6807 \xB7 \u65E0\u5E95", false, false),
     dataRow("\u7EAF\u56FE\u6807 \xB7 \u6709\u5E95", false, true),
     dataRow("\u56FE\u6807 + \u6587\u5B57 \xB7 \u65E0\u5E95", true, false),
@@ -70876,246 +70525,246 @@ function iconBtnTier(title, dense) {
   ];
 }
 function ButtonPage() {
-  const [extLoading, setExtLoading] = (0, import_react101.useState)(false);
-  return (0, import_react101.createElement)(
+  const [extLoading, setExtLoading] = (0, import_react100.useState)(false);
+  return (0, import_react100.createElement)(
     "div",
     null,
     // 文案与语言
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("btnTextTitle"), hint: t3("btnTextHint"), code: CODE_BTN_TEXT },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "locale" },
-          (0, import_react101.createElement)(Button, { variant: "primary", icon: iconOf("check") }, t3("btnLabelSave")),
-          (0, import_react101.createElement)(Button, { variant: "outline" }, t3("btnLabelCancel")),
-          (0, import_react101.createElement)(Button, { variant: "danger", icon: iconOf("close") }, t3("btnLabelDelete"))
+          (0, import_react100.createElement)(Button, { variant: "primary", icon: iconOf("check") }, t3("btnLabelSave")),
+          (0, import_react100.createElement)(Button, { variant: "outline" }, t3("btnLabelCancel")),
+          (0, import_react100.createElement)(Button, { variant: "danger", icon: iconOf("close") }, t3("btnLabelDelete"))
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "en" },
-          (0, import_react101.createElement)(Button, { variant: "primary" }, "Save"),
-          (0, import_react101.createElement)(Button, { variant: "outline" }, "Cancel"),
-          (0, import_react101.createElement)(Button, { variant: "ghost" }, "Learn more")
+          (0, import_react100.createElement)(Button, { variant: "primary" }, "Save"),
+          (0, import_react100.createElement)(Button, { variant: "outline" }, "Cancel"),
+          (0, import_react100.createElement)(Button, { variant: "ghost" }, "Learn more")
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "zh" },
-          (0, import_react101.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
-          (0, import_react101.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
-          (0, import_react101.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
+          (0, import_react100.createElement)(Button, { variant: "primary" }, "\u4FDD\u5B58"),
+          (0, import_react100.createElement)(Button, { variant: "outline" }, "\u53D6\u6D88"),
+          (0, import_react100.createElement)(Button, { variant: "ghost" }, "\u4E86\u89E3\u66F4\u591A")
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "zh + en" },
-          (0, import_react101.createElement)(Button, { variant: "primary", icon: iconOf("sparkle") }, t3("btnLabelMixed")),
-          (0, import_react101.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
-          (0, import_react101.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
+          (0, import_react100.createElement)(Button, { variant: "primary", icon: iconOf("sparkle") }, t3("btnLabelMixed")),
+          (0, import_react100.createElement)(Button, { variant: "outline" }, "\u590D\u5236 Copy"),
+          (0, import_react100.createElement)(Button, { variant: "secondary" }, "\u91CD\u8BD5 Retry")
         )
       )
     ),
     // 10 档外观
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("btnVariantTitle"), hint: t3("btnVariantHint"), code: CODE_BTN_VARIANT },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        VARIANT_GROUPS.map((group) => (0, import_react101.createElement)(
+        VARIANT_GROUPS.map((group) => (0, import_react100.createElement)(
           Labeled,
           { key: group.label, label: group.label },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "6px", alignItems: "flex-start" } },
-            (0, import_react101.createElement)(Row, null, group.items.map((variant) => (0, import_react101.createElement)(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant]) }, variant))),
-            (0, import_react101.createElement)(Row, null, group.items.map((variant) => (0, import_react101.createElement)(Button, { key: variant, variant, size: "sm", icon: iconOf(VARIANT_ICON[variant]) }, variant)))
+            (0, import_react100.createElement)(Row, null, group.items.map((variant) => (0, import_react100.createElement)(Button, { key: variant, variant, icon: iconOf(VARIANT_ICON[variant]) }, variant))),
+            (0, import_react100.createElement)(Row, null, group.items.map((variant) => (0, import_react100.createElement)(Button, { key: variant, variant, size: "sm", icon: iconOf(VARIANT_ICON[variant]) }, variant)))
           )
         ))
       )
     ),
     // 尺寸 / 图标位置 / block
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("btnSizeTitle"), hint: t3("btnSizeHint"), code: CODE_BTN_SIZE },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "size" },
-          ["sm", "md", "lg"].map((size4) => (0, import_react101.createElement)(Button, { key: size4, size: size4, variant: "outline", icon: iconOf("plus") }, size4))
+          ["sm", "md", "lg"].map((size4) => (0, import_react100.createElement)(Button, { key: size4, size: size4, variant: "outline", icon: iconOf("plus") }, size4))
         ),
         // icon 收的是 ReactNode：官方图标组件 / 自绘 SVG / 一个字符，三种来源各一颗
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "icon" },
-          (0, import_react101.createElement)(Button, { variant: "primary", icon: iconOf("send") }, "\u5B98\u65B9\u56FE\u6807"),
-          (0, import_react101.createElement)(Button, { variant: "outline", icon: (0, import_react101.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
-          (0, import_react101.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
+          (0, import_react100.createElement)(Button, { variant: "primary", icon: iconOf("send") }, "\u5B98\u65B9\u56FE\u6807"),
+          (0, import_react100.createElement)(Button, { variant: "outline", icon: (0, import_react100.createElement)(StarSvg, null) }, "\u81EA\u7ED8 SVG"),
+          (0, import_react100.createElement)(Button, { variant: "ghost", icon: "+" }, "\u4E00\u4E2A\u5B57\u7B26")
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "iconRight" },
-          (0, import_react101.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron") }, "\u66F4\u591A"),
-          (0, import_react101.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
+          (0, import_react100.createElement)(Button, { variant: "outline", iconRight: iconOf("chevron") }, "\u66F4\u591A"),
+          (0, import_react100.createElement)(Button, { variant: "primary" }, "\u4E0B\u4E00\u6B65")
         ),
         // block + 前置图标：文字要在视觉中心，不能整组内容居中（那样文字会被图标推右）
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "block" },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { width: "260px" } },
-            (0, import_react101.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check") }, "\u6491\u6EE1\u7236\u5BBD"),
-            (0, import_react101.createElement)("div", { style: { height: "8px" } }),
-            (0, import_react101.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
+            (0, import_react100.createElement)(Button, { variant: "primary", block: true, icon: iconOf("check") }, "\u6491\u6EE1\u7236\u5BBD"),
+            (0, import_react100.createElement)("div", { style: { height: "8px" } }),
+            (0, import_react100.createElement)(Button, { variant: "outline", block: true }, "\u65E0\u56FE\u6807\u5BF9\u7167")
           )
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: t3("btnIconOnly") },
-          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react101.createElement)(IconButton, { key: item.name, icon: (0, import_react101.createElement)(Icon, { name: item.glyph }), label: item.name }))
+          BUTTON_ICONS.slice(0, 6).map((item) => (0, import_react100.createElement)(IconButton, { key: item.name, icon: (0, import_react100.createElement)(Icon, { name: item.glyph }), label: item.name }))
         ),
         // 纯图标钮的配色轴：默认无底色；color 改图标色，background 给底色（用户 2026-11-02）
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "IconButton \xB7 color / background" },
-          (0, import_react101.createElement)(IconButton, { icon: (0, import_react101.createElement)(Icon, { name: BUTTON_ICONS[0].glyph }), label: "\u9ED8\u8BA4\u65E0\u5E95\u8272" }),
-          (0, import_react101.createElement)(IconButton, { icon: (0, import_react101.createElement)(Icon, { name: BUTTON_ICONS[1].glyph }), label: "\u81EA\u5B9A\u4E49\u56FE\u6807\u8272", color: "#7c3aed" }),
-          (0, import_react101.createElement)(IconButton, { icon: (0, import_react101.createElement)(Icon, { name: BUTTON_ICONS[2].glyph }), label: "\u81EA\u5B9A\u4E49\u5E95\u8272", color: "#fff", background: "#7c3aed" })
+          (0, import_react100.createElement)(IconButton, { icon: (0, import_react100.createElement)(Icon, { name: BUTTON_ICONS[0].glyph }), label: "\u9ED8\u8BA4\u65E0\u5E95\u8272" }),
+          (0, import_react100.createElement)(IconButton, { icon: (0, import_react100.createElement)(Icon, { name: BUTTON_ICONS[1].glyph }), label: "\u81EA\u5B9A\u4E49\u56FE\u6807\u8272", color: "#7c3aed" }),
+          (0, import_react100.createElement)(IconButton, { icon: (0, import_react100.createElement)(Icon, { name: BUTTON_ICONS[2].glyph }), label: "\u81EA\u5B9A\u4E49\u5E95\u8272", color: "#fff", background: "#7c3aed" })
         ),
         // 纯图标钮也吃同一套 loading：图标位换成小圈，文字本来就没有
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "IconButton \xB7 loading" },
-          (0, import_react101.createElement)(IconButton, { icon: (0, import_react101.createElement)(Icon, { name: BUTTON_ICONS[0].glyph }), label: "\u5237\u65B0", onClick: async () => {
+          (0, import_react100.createElement)(IconButton, { icon: (0, import_react100.createElement)(Icon, { name: BUTTON_ICONS[0].glyph }), label: "\u5237\u65B0", onClick: async () => {
             await demoWait();
           } }),
-          (0, import_react101.createElement)(IconButton, { variant: "outline", icon: (0, import_react101.createElement)(Icon, { name: BUTTON_ICONS[0].glyph }), label: "\u52A0\u8F7D\u4E2D", loading: true })
+          (0, import_react100.createElement)(IconButton, { variant: "outline", icon: (0, import_react100.createElement)(Icon, { name: BUTTON_ICONS[0].glyph }), label: "\u52A0\u8F7D\u4E2D", loading: true })
         )
       )
     ),
     // 图标按钮：常规 / dense 两组，每组 4 行（纯图标 / 图标+文字 × 无底 / 有底），列是 sm/md/lg
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("btnIconMatrixTitle"), hint: t3("btnIconMatrixHint"), code: CODE_ICON_BTN_MATRIX },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { className: "dshpc-scroll-thin dshpc-scroll-thin--x", style: { display: "flex", flexDirection: "column", gap: "6px", overflowX: "auto" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "grid", gridTemplateColumns: ICON_BTN_COLS, gap: "8px", justifyItems: "center" } },
-          (0, import_react101.createElement)("span", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", justifySelf: "start" } }, "\u5C3A\u5BF8"),
-          ...["sm", "md", "lg"].map((size4) => (0, import_react101.createElement)("span", { key: size4, style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } }, size4))
+          (0, import_react100.createElement)("span", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", justifySelf: "start" } }, "\u5C3A\u5BF8"),
+          ...["sm", "md", "lg"].map((size4) => (0, import_react100.createElement)("span", { key: size4, style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } }, size4))
         ),
         ...iconBtnTier("\u5E38\u89C4", false),
         ...iconBtnTier("dense", true)
       )
     ),
     // 状态
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("btnStateTitle"), hint: t3("btnStateHint"), code: CODE_BTN_STATE },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "\u7981\u7528" },
-          (0, import_react101.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
-          (0, import_react101.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
-          (0, import_react101.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close") }, "\u7981\u7528")
+          (0, import_react100.createElement)(Button, { variant: "primary" }, "\u9ED8\u8BA4"),
+          (0, import_react100.createElement)(Button, { variant: "primary", disabled: true }, "\u7981\u7528"),
+          (0, import_react100.createElement)(Button, { variant: "danger", disabled: true, icon: iconOf("close") }, "\u7981\u7528")
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "loading" },
-          (0, import_react101.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
-          (0, import_react101.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh") }, "\u63D0\u4EA4\u4E2D")
+          (0, import_react100.createElement)(Button, { variant: "outline", loading: true }, "\u52A0\u8F7D\u4E2D"),
+          (0, import_react100.createElement)(Button, { variant: "primary", loading: true, icon: iconOf("refresh") }, "\u63D0\u4EA4\u4E2D")
         ),
         // 异步：onClick 返回 Promise 就自己转圈；外部 loading 与它取或（别处刷新也能点亮同一颗按钮）
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "\u5F02\u6B65 / \u5916\u90E8 loading" },
-          (0, import_react101.createElement)(Button, { variant: "primary", onClick: async () => {
+          (0, import_react100.createElement)(Button, { variant: "primary", onClick: async () => {
             await demoWait();
           } }, "\u70B9\u4E86\u81EA\u5DF1\u8F6C\u5708\uFF081.4s\uFF09"),
-          (0, import_react101.createElement)(Button, { variant: "outline", loading: extLoading, onClick: () => setExtLoading((v) => !v) }, extLoading ? "\u5916\u90E8\u5237\u65B0\u4E2D\u2026" : "\u70B9\u6211\u70B9\u4EAE\u53F3\u8FB9"),
-          (0, import_react101.createElement)(Button, { variant: "outline", loading: extLoading }, "\u88AB\u522B\u5904\u5237\u65B0\u5E26\u6210 loading")
+          (0, import_react100.createElement)(Button, { variant: "outline", loading: extLoading, onClick: () => setExtLoading((v) => !v) }, extLoading ? "\u5916\u90E8\u5237\u65B0\u4E2D\u2026" : "\u70B9\u6211\u70B9\u4EAE\u53F3\u8FB9"),
+          (0, import_react100.createElement)(Button, { variant: "outline", loading: extLoading }, "\u88AB\u522B\u5904\u5237\u65B0\u5E26\u6210 loading")
         ),
         // 文案长又不想被圈撑宽 ⇒ loadingText={false}：清文案、锁住有文案时的宽度，只留一圈
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "loading \u53EA\u7559\u5708\uFF08\u5BBD\u5EA6\u4E0D\u8DF3\uFF09" },
-          (0, import_react101.createElement)(Button, { variant: "outline", loadingText: false, onClick: async () => {
+          (0, import_react100.createElement)(Button, { variant: "outline", loadingText: false, onClick: async () => {
             await demoWait();
           } }, "\u70B9\u6211\u8F6C\u5708\uFF081.4s\uFF09"),
-          (0, import_react101.createElement)(Button, { variant: "primary", loadingText: false, loading: true }, "\u8BA4\u9886"),
-          (0, import_react101.createElement)(Button, { variant: "outline", loading: true }, "\u5BF9\u7167\uFF1A\u52A0\u8F7D\u4E2D")
+          (0, import_react100.createElement)(Button, { variant: "primary", loadingText: false, loading: true }, "\u8BA4\u9886"),
+          (0, import_react100.createElement)(Button, { variant: "outline", loading: true }, "\u5BF9\u7167\uFF1A\u52A0\u8F7D\u4E2D")
         )
       )
     ),
     // 自定义颜色
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("btnColorTitle"), hint: t3("btnColorHint"), code: CODE_BTN_COLOR },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "\u5B9E\u5FC3" },
-          (0, import_react101.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react101.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle") }, color)))
+          (0, import_react100.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react100.createElement)(Button, { key: color, variant: "primary", color, icon: iconOf("sparkle") }, color)))
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "\u63CF\u8FB9" },
-          (0, import_react101.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react101.createElement)(Button, { key: color, variant: "outline", color }, color)))
+          (0, import_react100.createElement)(Row, null, CUSTOM_COLORS.map((color) => (0, import_react100.createElement)(Button, { key: color, variant: "outline", color }, color)))
         )
       )
     ),
     // 宽度三轴
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("btnWidthTitle"), hint: t3("btnWidthHint"), code: CODE_BTN_WIDTH },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "width\uFF08\u56FA\u5B9A\u5BBD\uFF09" },
-          (0, import_react101.createElement)(Button, { variant: "outline", width: 120 }, "120px \u56FA\u5B9A\u5BBD")
+          (0, import_react100.createElement)(Button, { variant: "outline", width: 120 }, "120px \u56FA\u5B9A\u5BBD")
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "minWidth\uFF08\u6700\u5C0F\u5BBD\uFF1A\u77ED / \u957F\u540C\u5BBD\uFF09" },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", gap: "8px" } },
-            (0, import_react101.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u77ED"),
-            (0, import_react101.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
+            (0, import_react100.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u77ED"),
+            (0, import_react100.createElement)(Button, { variant: "outline", minWidth: 120 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
           )
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "maxWidth\uFF08\u6700\u5927\u5BBD\uFF1A\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\uFF09" },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { width: "320px" } },
-            (0, import_react101.createElement)(Button, { variant: "outline", maxWidth: 160 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6309\u94AE\u6587\u5B57\u6807\u7B7E")
+            (0, import_react100.createElement)(Button, { variant: "outline", maxWidth: 160 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6309\u94AE\u6587\u5B57\u6807\u7B7E")
           )
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "\u4E09\u8005\u540C\u8BBE \u21D2 width \u4F18\u5148" },
-          (0, import_react101.createElement)(Button, { variant: "outline", width: 120, minWidth: 200, maxWidth: 160 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
+          (0, import_react100.createElement)(Button, { variant: "outline", width: 120, minWidth: 200, maxWidth: 160 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
         )
       )
     ),
-    (0, import_react101.createElement)(DocCode, { id: "button" }),
-    (0, import_react101.createElement)(DocApi, { id: "button" })
+    (0, import_react100.createElement)(DocCode, { id: "button" }),
+    (0, import_react100.createElement)(DocApi, { id: "button" })
   );
 }
 var CODE_INPUT_FAMILY = `const [text, setText] = useState('')
@@ -71234,68 +70883,68 @@ var PERIODS = [
   { value: "month", label: "\u6708" }
 ];
 function InputPage() {
-  const [text2, setText] = (0, import_react101.useState)("");
-  const [num, setNum] = (0, import_react101.useState)(3);
-  const [checked, setChecked] = (0, import_react101.useState)(true);
-  const [seg, setSeg] = (0, import_react101.useState)("week");
-  const [filter2, setFilter] = (0, import_react101.useState)("all");
-  const [multi, setMulti] = (0, import_react101.useState)(["1"]);
-  const [iconSeg, setIconSeg] = (0, import_react101.useState)("search");
-  const [iconSeg2, setIconSeg2] = (0, import_react101.useState)("all");
-  const [kw, setKw] = (0, import_react101.useState)("");
-  const [kwClear, setKwClear] = (0, import_react101.useState)("\u793A\u4F8B\u6587\u672C");
-  const [igValue, setIgValue] = (0, import_react101.useState)("");
-  return (0, import_react101.createElement)(
+  const [text2, setText] = (0, import_react100.useState)("");
+  const [num, setNum] = (0, import_react100.useState)(3);
+  const [checked, setChecked] = (0, import_react100.useState)(true);
+  const [seg, setSeg] = (0, import_react100.useState)("week");
+  const [filter2, setFilter] = (0, import_react100.useState)("all");
+  const [multi, setMulti] = (0, import_react100.useState)(["1"]);
+  const [iconSeg, setIconSeg] = (0, import_react100.useState)("search");
+  const [iconSeg2, setIconSeg2] = (0, import_react100.useState)("all");
+  const [kw, setKw] = (0, import_react100.useState)("");
+  const [kwClear, setKwClear] = (0, import_react100.useState)("\u793A\u4F8B\u6587\u672C");
+  const [igValue, setIgValue] = (0, import_react100.useState)("");
+  return (0, import_react100.createElement)(
     "div",
     null,
     // Input 家族
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("demoInputFamily"), hint: t3("inputHint"), code: CODE_INPUT_FAMILY },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react101.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u7528\u6237\u540D"),
+          (0, import_react100.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u7528\u6237\u540D"),
           // hint 参数版：问号提示由组件自己挂（不再手动拼 FieldHint）
-          (0, import_react101.createElement)(Input, { value: text2, onChange: setText, placeholder: "\u8BF7\u8F93\u5165\u7528\u6237\u540D", hint: "\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" })
+          (0, import_react100.createElement)(Input, { value: text2, onChange: setText, placeholder: "\u8BF7\u8F93\u5165\u7528\u6237\u540D", hint: "\u7528\u6237\u540D\u53EA\u80FD\u5305\u542B\u5B57\u6BCD\u3001\u6570\u5B57\u4E0E\u8FDE\u5B57\u7B26\u3002" })
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "6px" } },
-          (0, import_react101.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u641C\u7D22"),
+          (0, import_react100.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px", flex: "none" } }, "\u641C\u7D22"),
           // 左侧图标槽（icon）+ 有内容时移上去或聚焦即出清除钮（type="search"）
-          (0, import_react101.createElement)(Input, { type: "search", icon: (0, import_react101.createElement)(Icon, { name: "common.base:chazhao" }), value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+          (0, import_react100.createElement)(Input, { type: "search", icon: (0, import_react100.createElement)(Icon, { name: "common.base:chazhao" }), value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
         ),
-        (0, import_react101.createElement)(Input, { value: "bad value", onChange: () => {
+        (0, import_react100.createElement)(Input, { value: "bad value", onChange: () => {
         }, error: true, placeholder: "\u6821\u9A8C\u5931\u8D25\u6001" }),
         // ⚠️ 外层是 flex column（默认 align-items:stretch）会把 .dshpc-num 拉到全宽；
         //    组件本身是内容自适应宽（inline-flex 无 width），演示区还原成它本来的短宽。
-        (0, import_react101.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
-        (0, import_react101.createElement)(Textarea, { value: text2, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
+        (0, import_react100.createElement)(NumberInput, { value: num, onChange: setNum, min: 0, max: 10, suffix: "\u6B21", style: { alignSelf: "flex-start" }, hint: "\u8D85\u51FA\u8303\u56F4\u4F1A\u81EA\u52A8\u6536\u56DE\u5230 min / max\u3002" }),
+        (0, import_react100.createElement)(Textarea, { value: text2, onChange: setText, placeholder: "\u591A\u884C\u8F93\u5165", hint: "\u591A\u884C\u8F93\u5165\u4E5F\u652F\u6301 hint \u53C2\u6570\u3002" })
       )
     ),
     // 搜索框清除钮：有内容时，鼠标移上去或聚焦都会显示尾部 ×，点一下即清空（不必先聚焦）
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("demoSearchClear"), hint: t3("demoSearchClearHint"), code: CODE_SEARCH_CLEAR },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px" } },
-        (0, import_react101.createElement)(Input, { type: "search", icon: (0, import_react101.createElement)(Icon, { name: "common.base:chazhao" }), value: kwClear, onChange: setKwClear, placeholder: "\u641C\u7D22" }),
-        (0, import_react101.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px" } }, "\u4E0A\u9762\u5DF2\u9884\u586B\u5185\u5BB9\uFF1A\u9F20\u6807\u79FB\u5230\u6846\u4E0A\uFF0C\u5C3E\u90E8 \xD7 \u5373\u51FA\u73B0\uFF0C\u53EF\u76F4\u63A5\u6E05\u9664\u3002")
+        (0, import_react100.createElement)(Input, { type: "search", icon: (0, import_react100.createElement)(Icon, { name: "common.base:chazhao" }), value: kwClear, onChange: setKwClear, placeholder: "\u641C\u7D22" }),
+        (0, import_react100.createElement)("span", { style: { color: "var(--dshpc-fg-2)", fontSize: "13px" } }, "\u4E0A\u9762\u5DF2\u9884\u586B\u5185\u5BB9\uFF1A\u9F20\u6807\u79FB\u5230\u6846\u4E0A\uFF0C\u5C3E\u90E8 \xD7 \u5373\u51FA\u73B0\uFF0C\u53EF\u76F4\u63A5\u6E05\u9664\u3002")
       )
     ),
     // 组合输入框：输入框 + 按钮组焊成一体（前置标题 / 撤销 / 图标按钮 / 自定义高度）
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("inputGroupTitle"), hint: t3("inputGroupHint"), code: CODE_INPUT_GROUP },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px", maxWidth: "460px" } },
-        (0, import_react101.createElement)(InputGroup, {
+        (0, import_react100.createElement)(InputGroup, {
           label: "\u4EFB\u52A1\u540D",
           value: igValue,
           onChange: setIgValue,
@@ -71311,23 +70960,23 @@ function InputPage() {
             } }
           ]
         }),
-        (0, import_react101.createElement)(InputGroup, {
+        (0, import_react100.createElement)(InputGroup, {
           size: "md",
           value: igValue,
           onChange: setIgValue,
           placeholder: "\u7EAF\u56FE\u6807 / \u56FE\u6807 + \u6587\u5B57 / \u7EAF\u6587\u5B57",
           actions: [
-            { icon: (0, import_react101.createElement)(Icon, { name: "common.base:shuaxin", size: 14 }), ariaLabel: "\u91CD\u7F6E", onClick: () => {
+            { icon: (0, import_react100.createElement)(Icon, { name: "common.base:shuaxin", size: 14 }), ariaLabel: "\u91CD\u7F6E", onClick: () => {
               setIgValue("");
             } },
-            { icon: (0, import_react101.createElement)(Icon, { name: "common.base:chazhao", size: 14 }), label: "\u641C\u7D22", onClick: () => {
+            { icon: (0, import_react100.createElement)(Icon, { name: "common.base:chazhao", size: 14 }), label: "\u641C\u7D22", onClick: () => {
             } },
             { label: "\u63D0\u4EA4", onClick: () => {
             } }
           ]
         }),
         // 转圈会变宽 ⇒ 下面两条对照：不定宽时按钮变宽、输入框被挤；定宽 / 只留圈时纹丝不动
-        (0, import_react101.createElement)(InputGroup, {
+        (0, import_react100.createElement)(InputGroup, {
           value: igValue,
           onChange: setIgValue,
           placeholder: "\u4E0D\u5B9A\u5BBD\uFF1A\u70B9\u300C\u521B\u5EFA\u7528\u6237\u300D\uFF0C\u6309\u94AE\u8F6C\u5708\u540C\u65F6\u53D8\u5BBD\u3001\u8F93\u5165\u6846\u88AB\u6324\u7A84",
@@ -71335,7 +70984,7 @@ function InputPage() {
             await demoWait();
           } }]
         }),
-        (0, import_react101.createElement)(InputGroup, {
+        (0, import_react100.createElement)(InputGroup, {
           value: igValue,
           onChange: setIgValue,
           placeholder: "\u5B9A\u5BBD 116 / \u53EA\u7559\u5708\uFF1A\u8F6C\u5708\u65F6\u6309\u94AE\u5BBD\u5EA6\u4E0D\u52A8",
@@ -71348,7 +70997,7 @@ function InputPage() {
             } }
           ]
         }),
-        (0, import_react101.createElement)(InputGroup, {
+        (0, import_react100.createElement)(InputGroup, {
           value: igValue,
           onChange: setIgValue,
           height: 44,
@@ -71360,62 +71009,62 @@ function InputPage() {
       )
     ),
     // 问号提示：证明它不属于 Input 家族，随处可挂
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("btnHintTitle"), hint: t3("btnHintHint"), code: CODE_FIELD_HINT },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Row,
           null,
-          (0, import_react101.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
-          (0, import_react101.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
+          (0, import_react100.createElement)("b", { style: { fontSize: "13px" } }, "\u4E00\u4E2A\u6807\u9898"),
+          (0, import_react100.createElement)(FieldHint, { text: "\u6302\u5728\u6807\u9898\u540E\u9762\uFF1A\u8BF4\u660E\u8FD9\u4E00\u5757\u662F\u5E72\u4EC0\u4E48\u7684\u3002" })
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Row,
           null,
-          (0, import_react101.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
-          (0, import_react101.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
+          (0, import_react100.createElement)(Button, { variant: "outline" }, "\u4E00\u4E2A\u6309\u94AE"),
+          (0, import_react100.createElement)(FieldHint, { text: "\u6302\u5728\u6309\u94AE\u540E\u9762\uFF1A\u89E3\u91CA\u8FD9\u4E2A\u64CD\u4F5C\u4F1A\u53D1\u751F\u4EC0\u4E48\u3002" })
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Row,
           null,
-          (0, import_react101.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
-          (0, import_react101.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
+          (0, import_react100.createElement)("span", { style: { fontSize: "13px" } }, "\u4E00\u6BB5\u666E\u901A\u6587\u5B57"),
+          (0, import_react100.createElement)(FieldHint, { text: "\u6302\u5728\u4EFB\u4F55\u6587\u5B57\u540E\u9762\u90FD\u884C\uFF0C\u5B83\u53EA\u662F\u4E00\u4E2A 14px \u7684\u5185\u8054\u5143\u7D20\u3002" })
         )
       )
     ),
     // Switch / Checkbox / Segmented
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("switchTip"), hint: t3("checkboxHint"), code: CODE_SWITCH_SEG },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px", alignItems: "flex-start" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
           // 「启用」是开关语义，用官方 Switch（用户 2026-10-20：不要用勾去启用）。
           // 官方 Switch 只画胶囊本体，label 是 aria-label，可见文案由调用方自己画在旁边 ——
           // 文案单独挂 onClick 使其可点（不能挂外层：点胶囊会冒泡触发两次翻转）。
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "8px" } },
-            (0, import_react101.createElement)(import_dsh_client_ui_primitives.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
-            (0, import_react101.createElement)("span", {
+            (0, import_react100.createElement)(import_dsh_client_ui_primitives.Switch, { checked, onChange: setChecked, label: "\u542F\u7528" }),
+            (0, import_react100.createElement)("span", {
               style: { fontSize: "13px", cursor: "pointer", userSelect: "none" },
               onClick: () => {
                 setChecked(!checked);
               }
             }, "\u542F\u7528")
           ),
-          (0, import_react101.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" })
+          (0, import_react100.createElement)(Checkbox, { checked, onChange: setChecked, label: "\u591A\u9009" })
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", gap: "20px", alignItems: "center", flexWrap: "wrap" } },
-          (0, import_react101.createElement)(Segmented, {
+          (0, import_react100.createElement)(Segmented, {
             items: [
               { value: "day", label: "\u65E5" },
               { value: "week", label: "\u5468" },
@@ -71424,7 +71073,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react101.createElement)(Segmented, {
+          (0, import_react100.createElement)(Segmented, {
             bordered: true,
             items: [
               { value: "day", label: "\u65E5" },
@@ -71434,7 +71083,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react101.createElement)(Segmented, {
+          (0, import_react100.createElement)(Segmented, {
             size: "sm",
             items: [
               { value: "day", label: "\u65E5" },
@@ -71444,7 +71093,7 @@ function InputPage() {
             value: seg,
             onChange: setSeg
           }),
-          (0, import_react101.createElement)(Segmented, {
+          (0, import_react100.createElement)(Segmented, {
             size: "sm",
             bordered: true,
             items: [
@@ -71457,7 +71106,7 @@ function InputPage() {
           })
         ),
         // 筛选条形态（真实插件同款）：中性计数 + 灰底轨道
-        (0, import_react101.createElement)(Segmented, {
+        (0, import_react100.createElement)(Segmented, {
           items: [
             { value: "all", label: t3("segAll"), count: 11 },
             { value: "doing", label: t3("segDoing"), count: 5 },
@@ -71468,7 +71117,7 @@ function InputPage() {
           value: filter2,
           onChange: setFilter
         }),
-        (0, import_react101.createElement)(Segmented, {
+        (0, import_react100.createElement)(Segmented, {
           bordered: true,
           items: [
             { value: "all", label: t3("segAll"), count: 11 },
@@ -71481,7 +71130,7 @@ function InputPage() {
           onChange: setFilter
         }),
         // 星期多选方块（蓝底选中、近似方形）
-        (0, import_react101.createElement)(Segmented, {
+        (0, import_react100.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           label: "\u661F\u671F",
@@ -71492,7 +71141,7 @@ function InputPage() {
           value: multi,
           onChange: setMulti
         }),
-        (0, import_react101.createElement)(Segmented, {
+        (0, import_react100.createElement)(Segmented, {
           multiple: true,
           className: "dshpc-seg--weekday",
           bordered: true,
@@ -71505,20 +71154,20 @@ function InputPage() {
           onChange: setMulti
         }),
         // 段内图标：icon 在前、文字居中、count 在后；只有图标（无文字 / 计数）时自动正方形
-        (0, import_react101.createElement)(Segmented, {
+        (0, import_react100.createElement)(Segmented, {
           items: [
-            { value: "search", icon: (0, import_react101.createElement)(Icon, { name: "common.base:chazhao", size: 14 }), ariaLabel: "\u641C\u7D22" },
-            { value: "clock", icon: (0, import_react101.createElement)(Icon, { name: "common.base:shijian1", size: 14 }), ariaLabel: "\u65F6\u95F4" },
-            { value: "play", icon: (0, import_react101.createElement)(Icon, { name: "common.base:move-right", size: 14 }), ariaLabel: "\u8FD0\u884C" }
+            { value: "search", icon: (0, import_react100.createElement)(Icon, { name: "common.base:chazhao", size: 14 }), ariaLabel: "\u641C\u7D22" },
+            { value: "clock", icon: (0, import_react100.createElement)(Icon, { name: "common.base:shijian1", size: 14 }), ariaLabel: "\u65F6\u95F4" },
+            { value: "play", icon: (0, import_react100.createElement)(Icon, { name: "common.base:move-right", size: 14 }), ariaLabel: "\u8FD0\u884C" }
           ],
           value: iconSeg,
           onChange: setIconSeg
         }),
-        (0, import_react101.createElement)(Segmented, {
+        (0, import_react100.createElement)(Segmented, {
           items: [
-            { value: "all", icon: (0, import_react101.createElement)(Icon, { name: "common.base:chazhao", size: 14 }), label: t3("segAll"), count: 11 },
-            { value: "doing", icon: (0, import_react101.createElement)(Icon, { name: "common.base:shijian1", size: 14 }), label: t3("segDoing"), count: 5 },
-            { value: "done", icon: (0, import_react101.createElement)(Icon, { name: "common.base:gou", size: 14 }), label: t3("segClaimed"), count: 11 }
+            { value: "all", icon: (0, import_react100.createElement)(Icon, { name: "common.base:chazhao", size: 14 }), label: t3("segAll"), count: 11 },
+            { value: "doing", icon: (0, import_react100.createElement)(Icon, { name: "common.base:shijian1", size: 14 }), label: t3("segDoing"), count: 5 },
+            { value: "done", icon: (0, import_react100.createElement)(Icon, { name: "common.base:gou", size: 14 }), label: t3("segClaimed"), count: 11 }
           ],
           value: iconSeg2,
           onChange: setIconSeg2
@@ -71526,36 +71175,36 @@ function InputPage() {
       )
     ),
     // 选中片配色（tone，2026-10-29）：内置色名 / 自定义一对颜色
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("segToneTitle"), hint: t3("segToneHint"), code: CODE_SEG_TONE },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: 'tone="teal"' },
-          (0, import_react101.createElement)(Segmented, { tone: "teal", items: PERIODS, value: seg, onChange: setSeg })
+          (0, import_react100.createElement)(Segmented, { tone: "teal", items: PERIODS, value: seg, onChange: setSeg })
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: 'tone="danger"' },
-          (0, import_react101.createElement)(Segmented, { tone: "danger", items: PERIODS, value: seg, onChange: setSeg })
+          (0, import_react100.createElement)(Segmented, { tone: "danger", items: PERIODS, value: seg, onChange: setSeg })
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "{ bg, fg }" },
-          (0, import_react101.createElement)(Segmented, {
+          (0, import_react100.createElement)(Segmented, {
             tone: { bg: "#0b3d2e", fg: "#d1fae5" },
             items: PERIODS,
             value: seg,
             onChange: setSeg
           })
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "tone + weekday" },
-          (0, import_react101.createElement)(Segmented, {
+          (0, import_react100.createElement)(Segmented, {
             multiple: true,
             tone: "purple",
             className: "dshpc-seg--weekday",
@@ -71570,10 +71219,10 @@ function InputPage() {
         )
       )
     ),
-    (0, import_react101.createElement)(DocCode, { id: "input" }),
-    (0, import_react101.createElement)(DocApi, { id: "input" }),
-    (0, import_react101.createElement)(DocApi, { id: "input-group" }),
-    (0, import_react101.createElement)(Placeholder2, { descKey: "inputMissingDesc" })
+    (0, import_react100.createElement)(DocCode, { id: "input" }),
+    (0, import_react100.createElement)(DocApi, { id: "input" }),
+    (0, import_react100.createElement)(DocApi, { id: "input-group" }),
+    (0, import_react100.createElement)(Placeholder2, { descKey: "inputMissingDesc" })
   );
 }
 var PAGED_OPTIONS = Array.from({ length: 25 }, (_, i2) => ({
@@ -71582,9 +71231,9 @@ var PAGED_OPTIONS = Array.from({ length: 25 }, (_, i2) => ({
   keywords: `uuid-${String(i2).padStart(4, "0")}`
 }));
 var ICON_OPTIONS = [
-  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react101.createElement)(Icon, { name: "common.base:AIdamoxing", size: 14 }) },
-  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react101.createElement)(Icon, { name: "common.base:shijian1", size: 14 }) },
-  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react101.createElement)(Icon, { name: "common.base:move-right", size: 14 }) }
+  { value: "a", label: "\u9009\u9879 A", icon: (0, import_react100.createElement)(Icon, { name: "common.base:AIdamoxing", size: 14 }) },
+  { value: "b", label: "\u9009\u9879 B", icon: (0, import_react100.createElement)(Icon, { name: "common.base:shijian1", size: 14 }) },
+  { value: "c", label: "\u9009\u9879 C", icon: (0, import_react100.createElement)(Icon, { name: "common.base:move-right", size: 14 }) }
 ];
 var CODE_PICKER = `// \u5355\u9009\uFF1Aicon + \u53EF\u641C\u7D22 / \u53EF\u6E05\u9664
 <Picker
@@ -71667,44 +71316,44 @@ var SPLIT_MEMBERS = {
   ]
 };
 function PickerPage() {
-  const [single, setSingle] = (0, import_react101.useState)(void 0);
-  const [multi, setMulti] = (0, import_react101.useState)([]);
-  const [model, setModel] = (0, import_react101.useState)("");
-  const [model2, setModel2] = (0, import_react101.useState)("");
-  const [model3, setModel3] = (0, import_react101.useState)("");
-  const [ws, setWs] = (0, import_react101.useState)(void 0);
-  const [period2, setPeriod] = (0, import_react101.useState)("formal");
-  const [bucket, setBucket] = (0, import_react101.useState)("");
-  const [scope, setScope] = (0, import_react101.useState)("project");
-  const [member, setMember] = (0, import_react101.useState)("");
-  const [groups, setGroups] = (0, import_react101.useState)(["a"]);
-  const [groupValue, setGroupValue] = (0, import_react101.useState)("");
-  const [paged, setPaged] = (0, import_react101.useState)("");
-  return (0, import_react101.createElement)(
+  const [single, setSingle] = (0, import_react100.useState)(void 0);
+  const [multi, setMulti] = (0, import_react100.useState)([]);
+  const [model, setModel] = (0, import_react100.useState)("");
+  const [model2, setModel2] = (0, import_react100.useState)("");
+  const [model3, setModel3] = (0, import_react100.useState)("");
+  const [ws, setWs] = (0, import_react100.useState)(void 0);
+  const [period2, setPeriod] = (0, import_react100.useState)("formal");
+  const [bucket, setBucket] = (0, import_react100.useState)("");
+  const [scope, setScope] = (0, import_react100.useState)("project");
+  const [member, setMember] = (0, import_react100.useState)("");
+  const [groups, setGroups] = (0, import_react100.useState)(["a"]);
+  const [groupValue, setGroupValue] = (0, import_react100.useState)("");
+  const [paged, setPaged] = (0, import_react100.useState)("");
+  return (0, import_react100.createElement)(
     "div",
     null,
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: "Picker", hint: t3("pickerHint"), code: CODE_PICKER },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react101.createElement)(Picker, {
+        (0, import_react100.createElement)(Picker, {
           options: ICON_OPTIONS,
-          icon: (0, import_react101.createElement)(Icon, { name: "common.base:AIdamoxing", size: 14 }),
+          icon: (0, import_react100.createElement)(Icon, { name: "common.base:AIdamoxing", size: 14 }),
           value: single,
           onChange: (v) => setSingle(v),
           searchable: true,
           clearable: true,
           placeholder: "\u5355\u9009\uFF08icon + \u53EF\u641C\u7D22/\u53EF\u6E05\u9664\uFF09"
         }),
-        (0, import_react101.createElement)(Picker, {
+        (0, import_react100.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
           placeholder: "\u5355\u9009\uFF08\u65E0\u641C\u7D22\u6846\uFF09"
         }),
-        (0, import_react101.createElement)(Picker, {
+        (0, import_react100.createElement)(Picker, {
           options: PAGED_OPTIONS,
           value: paged,
           onChange: (v) => setPaged(v),
@@ -71712,15 +71361,15 @@ function PickerPage() {
           limit: 10,
           placeholder: "\u9996\u5C4F 10 \u6761\uFF08\u8D34 uuid-0007 \u53EF\u641C\u5230\u4EFB\u52A1 8\uFF09"
         }),
-        (0, import_react101.createElement)(Picker, {
+        (0, import_react100.createElement)(Picker, {
           groups: [
             { value: "g1", label: "\u7EC4\u4E00", options: ICON_OPTIONS },
             {
               value: "g2",
               label: "\u7EC4\u4E8C",
               options: [
-                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react101.createElement)(Icon, { name: "common.base:shuaxin", size: 14 }) },
-                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react101.createElement)(Icon, { name: "common.base:jia", size: 14 }) }
+                { value: "d", label: "\u9009\u9879 D", icon: (0, import_react100.createElement)(Icon, { name: "common.base:shuaxin", size: 14 }) },
+                { value: "e", label: "\u9009\u9879 E", icon: (0, import_react100.createElement)(Icon, { name: "common.base:jia", size: 14 }) }
               ]
             }
           ],
@@ -71731,13 +71380,13 @@ function PickerPage() {
           searchable: true,
           placeholder: "\u591A\u9009\uFF08\u4E0A\u9650 2\uFF0C\u53EF\u53CD\u9009\uFF09"
         }),
-        (0, import_react101.createElement)(Picker, {
+        (0, import_react100.createElement)(Picker, {
           options: [{ value: "x", label: "\u964D\u7EA7\u793A\u4F8B" }],
           degraded: true,
           disabled: true,
           placeholder: "\u964D\u7EA7 + \u7981\u7528"
         }),
-        (0, import_react101.createElement)(Picker, {
+        (0, import_react100.createElement)(Picker, {
           options: ICON_OPTIONS,
           value: single,
           onChange: (v) => setSingle(v),
@@ -71746,18 +71395,18 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("exModelPickerTitle"), hint: t3("modelPickerHint"), code: CODE_MODEL_PICKER },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // ① 分组形态：一个下拉、完全独立，供应商做组头（带「默认模型」选项）
-        (0, import_react101.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
+        (0, import_react100.createElement)(ModelPicker, { value: model, onChange: setModel, variant: "grouped" }),
         // ② 平铺形态：一个下拉，「厂商-模型」全部列出来，带搜索
-        (0, import_react101.createElement)(ModelPicker, { value: model3, onChange: setModel3, variant: "flat" }),
+        (0, import_react100.createElement)(ModelPicker, { value: model3, onChange: setModel3, variant: "flat" }),
         // ③ 联动形态：两个下拉联动，都带搜索；两个框分别设宽，搜索框另设宽
-        (0, import_react101.createElement)(ModelPicker, {
+        (0, import_react100.createElement)(ModelPicker, {
           value: model2,
           onChange: setModel2,
           variant: "cascade",
@@ -71768,14 +71417,14 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("exWorkspacePickerTitle"), hint: t3("workspacePickerHint"), code: CODE_WORKSPACE_PICKER },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap" } },
         // 默认即我们给的名字（「工作区」）和文件夹图标；自定义文案 / 图标是可选能力，不在演示里铺
-        (0, import_react101.createElement)(WorkspacePicker, {
+        (0, import_react100.createElement)(WorkspacePicker, {
           value: ws,
           onChange: (v) => setWs(v),
           clearable: true,
@@ -71783,18 +71432,18 @@ function PickerPage() {
         })
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("exSplitGroupTitle"), hint: t3("splitGroupHint"), code: CODE_SPLIT_GROUP },
       // 形态一（单选滑块 + 下拉）：左滑块选「正式组 / 测试组」，右格下拉联动换源、且略长；sm/md/lg 三档
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
         ["sm", "md", "lg"].map(
-          (sz) => (0, import_react101.createElement)(
+          (sz) => (0, import_react100.createElement)(
             SplitGroup,
             { key: sz, label: `\u5355\u9009 \xB7 ${sz}` },
-            (0, import_react101.createElement)(Segmented, {
+            (0, import_react100.createElement)(Segmented, {
               size: sz,
               items: SPLIT_SINGLE_OPTS,
               value: period2,
@@ -71803,7 +71452,7 @@ function PickerPage() {
                 setBucket("");
               }
             }),
-            (0, import_react101.createElement)(Picker, {
+            (0, import_react100.createElement)(Picker, {
               size: sz,
               options: SPLIT_TARGETS[period2] ?? [],
               value: bucket,
@@ -71816,14 +71465,14 @@ function PickerPage() {
         )
       ),
       // 形态二（下拉 + 下拉）：左格「范围」、右格「值」，三个尺寸各来一个
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start", marginTop: "12px" } },
         ["sm", "md", "lg"].map(
-          (sz) => (0, import_react101.createElement)(
+          (sz) => (0, import_react100.createElement)(
             SplitGroup,
             { key: sz, label: `\u4E0B\u62C9 \xB7 ${sz}` },
-            (0, import_react101.createElement)(Picker, {
+            (0, import_react100.createElement)(Picker, {
               size: sz,
               options: SPLIT_SCOPES,
               value: scope,
@@ -71833,7 +71482,7 @@ function PickerPage() {
               },
               minWidth: 110
             }),
-            (0, import_react101.createElement)(Picker, {
+            (0, import_react100.createElement)(Picker, {
               size: sz,
               options: SPLIT_MEMBERS[scope] ?? [],
               value: member,
@@ -71846,20 +71495,20 @@ function PickerPage() {
         )
       ),
       // 多选：左滑块 A/B/C 三组可多选，右格一个下拉
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start", marginTop: "12px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           SplitGroup,
           { label: "\u591A\u9009" },
-          (0, import_react101.createElement)(Segmented, {
+          (0, import_react100.createElement)(Segmented, {
             size: "lg",
             multiple: true,
             items: SPLIT_GROUPS,
             value: groups,
             onChange: setGroups
           }),
-          (0, import_react101.createElement)(Picker, {
+          (0, import_react100.createElement)(Picker, {
             size: "lg",
             options: SPLIT_FIXED,
             value: groupValue,
@@ -71870,10 +71519,10 @@ function PickerPage() {
         )
       )
     ),
-    (0, import_react101.createElement)(DocApi, { id: "split-group" }),
-    (0, import_react101.createElement)(DocCode, { id: "picker" }),
-    (0, import_react101.createElement)(DocApi, { id: "picker" }),
-    (0, import_react101.createElement)(Placeholder2, { descKey: "pickerLogicDesc" })
+    (0, import_react100.createElement)(DocApi, { id: "split-group" }),
+    (0, import_react100.createElement)(DocCode, { id: "picker" }),
+    (0, import_react100.createElement)(DocApi, { id: "picker" }),
+    (0, import_react100.createElement)(Placeholder2, { descKey: "pickerLogicDesc" })
   );
 }
 var CODE_TOOLTIP = `// label + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80FD\u6302 ref \u7684\u771F\u5B9E DOM\uFF08\u51FD\u6570\u7EC4\u4EF6\u6302\u4E0D\u4E0A \u21D2 \u65E0\u6C14\u6CE1\uFF09
@@ -71897,16 +71546,16 @@ var CODE_TOOLTIP = `// label + side / align\uFF1Bchildren \u5FC5\u987B\u662F\u80
   content={<div style={{ color: 'var(--dsw-static-neutral-bluish-00,#fff)' }}>\u2026</div>}
 />`;
 function TooltipPage() {
-  return (0, import_react101.createElement)(
+  return (0, import_react100.createElement)(
     "div",
     null,
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("tooltipTitle"), hint: t3("tooltipHint"), code: CODE_TOOLTIP },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: t3("tooltipAnchorButton") },
           tipAnchor("top \xB7 center", "top", "center"),
@@ -71915,52 +71564,52 @@ function TooltipPage() {
           tipAnchor("bottom \xB7 end", "bottom", "end"),
           tipAnchor("right", "right")
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: t3("tooltipAnchorText") },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             import_dsh_client_ui_primitives.Tooltip,
             { label: t3("tooltipHint"), side: "top" },
-            (0, import_react101.createElement)("span", {
+            (0, import_react100.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipAnchorText"))
           ),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             import_dsh_client_ui_primitives.Tooltip,
             { label: t3("tooltipLongText"), side: "bottom", maxWidth: 240 },
-            (0, import_react101.createElement)("span", {
+            (0, import_react100.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipLong"))
           )
         ),
         // 两段式：第一行名字（短）、\n 真实换行、第二行正文（长，受 maxWidth 折行）
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: t3("tooltipMultiline") },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             import_dsh_client_ui_primitives.Tooltip,
             { label: `${t3("tooltipName")}
 ${t3("tooltipLongText")}`, side: "top", maxWidth: 260 },
-            (0, import_react101.createElement)("span", {
+            (0, import_react100.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipName"))
           )
         ),
         // 富卡片：官方 HoverCard（宿主工作区列表那种「标题 + 正文」卡就是它）；content 收任意 ReactNode
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: t3("tooltipRich") },
-          (0, import_react101.createElement)(import_dsh_client_ui_primitives.HoverCard, {
+          (0, import_react100.createElement)(import_dsh_client_ui_primitives.HoverCard, {
             variant: "compact",
             openDelayMs: 200,
-            anchor: (0, import_react101.createElement)("span", {
+            anchor: (0, import_react100.createElement)("span", {
               style: { borderBottom: "1px dashed var(--dshpc-border-strong)", cursor: "pointer", fontSize: "13px" }
             }, t3("tooltipName")),
             // ⚠️ 官方 HoverCard 的 compact 变体（.card）背景是硬编码 `#2C2C2E` 且**不设 color**
             // （来源见 docs/dependencies/dsh-host.md §10），卡片又被 portal 到 document.body，
             // 文字色因此退化成继承：亮色下继承到近黑 ⇒ 黑字压深底。背景恒深 ⇒ 内容色必须由调用方给，
             // 这里取官方 Tooltip 在同一个深底场景用的常量 `--dsw-static-neutral-bluish-00`（#fff）。
-            content: (0, import_react101.createElement)(
+            content: (0, import_react100.createElement)(
               "div",
               {
                 style: {
@@ -71969,15 +71618,15 @@ ${t3("tooltipLongText")}`, side: "top", maxWidth: 260 },
                   color: "var(--dsw-static-neutral-bluish-00,#fff)"
                 }
               },
-              (0, import_react101.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t3("tooltipName")),
-              (0, import_react101.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t3("tooltipLongText"))
+              (0, import_react100.createElement)("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "4px" } }, t3("tooltipName")),
+              (0, import_react100.createElement)("div", { style: { fontSize: "12px", lineHeight: 1.6, whiteSpace: "pre-line", opacity: 0.78 } }, t3("tooltipLongText"))
             )
           })
         )
       )
     ),
-    (0, import_react101.createElement)(DocCode, { id: "tooltip" }),
-    (0, import_react101.createElement)(DocApi, { id: "tooltip" })
+    (0, import_react100.createElement)(DocCode, { id: "tooltip" }),
+    (0, import_react100.createElement)(DocApi, { id: "tooltip" })
   );
 }
 var CODE_CARD = `// Card\uFF1A\u590D\u7528 Surface \u5916\u6846\uFF08\u5E95 + 1px \u8FB9\u6846 + \u5706\u89D2 12\uFF09\uFF1B\u8272\u6761\u65B9\u4F4D\u4E0E\u95F4\u8DDD\u90FD\u53EF\u914D
@@ -72040,32 +71689,32 @@ var CODE_SECTION_HEAD = `// \u5206\u533A\u6807\u9898\uFF1A\u6807\u7B7E\uFF08\u53
   ]}
 />`;
 function CardPage() {
-  const [seg, setSeg] = (0, import_react101.useState)("all");
-  const [kw, setKw] = (0, import_react101.useState)("");
-  const [rowSel, setRowSel] = (0, import_react101.useState)("b");
-  return (0, import_react101.createElement)(
+  const [seg, setSeg] = (0, import_react100.useState)("all");
+  const [kw, setKw] = (0, import_react100.useState)("");
+  const [rowSel, setRowSel] = (0, import_react100.useState)("b");
+  return (0, import_react100.createElement)(
     "div",
     null,
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("demoSurfaceTitle"), hint: t3("surfaceHint"), code: CODE_SURFACE },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", maxWidth: "640px" } },
         ["plain", "raised", "sunken", "subtle"].map(
-          (tone) => (0, import_react101.createElement)(
+          (tone) => (0, import_react100.createElement)(
             Surface,
             { key: tone, tone, padding: "md", style: { flex: "1 1 140px" } },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `tone="${tone}"`),
-            (0, import_react101.createElement)("div", { style: { marginTop: "6px" } }, (0, import_react101.createElement)(Button, { size: "sm", variant: "outline" }, "Button"))
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `tone="${tone}"`),
+            (0, import_react100.createElement)("div", { style: { marginTop: "6px" } }, (0, import_react100.createElement)(Button, { size: "sm", variant: "outline" }, "Button"))
           )
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("demoListRowTitle"), hint: t3("listRowHint"), code: CODE_LIST_ROW },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "6px", maxWidth: "640px" } },
         ...[
@@ -72073,87 +71722,87 @@ function CardPage() {
           { key: "b", name: "src/ui/display/ListRow.ts", bordered: false },
           { key: "c", name: "packages/demo/src/i18n.ts", bordered: true }
         ].map(
-          (item) => (0, import_react101.createElement)(
+          (item) => (0, import_react100.createElement)(
             ListRow,
             {
               key: item.key,
               bordered: item.bordered,
               selected: rowSel === item.key,
               onClick: () => setRowSel(item.key),
-              actions: (0, import_react101.createElement)(Button, {
+              actions: (0, import_react100.createElement)(Button, {
                 size: "sm",
                 variant: "ghost",
                 onClick: () => notify("\u53F3\u4FA7\u64CD\u4F5C\uFF0C\u4E0D\u8FDE\u5E26\u6574\u884C")
               }, "\u79FB\u9664")
             },
-            (0, import_react101.createElement)(
+            (0, import_react100.createElement)(
               "div",
               { style: { display: "flex", alignItems: "center", gap: "8px" } },
-              (0, import_react101.createElement)(Icon, { name: "common.base:fuzhi", size: 14 }),
-              (0, import_react101.createElement)("span", null, item.name),
-              (0, import_react101.createElement)(Chip, null, item.bordered ? "\u5E26\u8FB9" : "\u65E0\u8FB9")
+              (0, import_react100.createElement)(Icon, { name: "common.base:fuzhi", size: 14 }),
+              (0, import_react100.createElement)("span", null, item.name),
+              (0, import_react100.createElement)(Chip, null, item.bordered ? "\u5E26\u8FB9" : "\u65E0\u8FB9")
             )
           )
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           ListRow,
           { bordered: true, hoverable: false },
-          (0, import_react101.createElement)("span", { style: { color: "var(--dshpc-fg-3)" } }, "\u53EA\u8BFB\u4E00\u884C\uFF08\u4E0D\u53EF\u70B9 \xB7 \u5173\u6389 hover\uFF09")
+          (0, import_react100.createElement)("span", { style: { color: "var(--dshpc-fg-3)" } }, "\u53EA\u8BFB\u4E00\u884C\uFF08\u4E0D\u53EF\u70B9 \xB7 \u5173\u6389 hover\uFF09")
         ),
         // 两槽对称居中回归：主内容故意用 inline-flex 的 span（旧版会按基线偏上）
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           ListRow,
           { hoverable: false },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
-            (0, import_react101.createElement)(Icon, { name: "common.base:fuzhi", size: 14 }),
+            (0, import_react100.createElement)(Icon, { name: "common.base:fuzhi", size: 14 }),
             "\u4E3B\u5185\u5BB9\u662F inline-flex \u4E5F\u5782\u76F4\u5C45\u4E2D"
           )
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("demoCardTitle"), hint: t3("cardHint"), code: CODE_CARD },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px", maxWidth: "640px" } },
         // 真实形态示例（任务卡同款排版）：右侧元信息走 action 槽 ⇒ 外壳自动垂直居中
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react101.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
+            action: (0, import_react100.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u521B\u5EFA")
           },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { fontWeight: 600, flex: "1 1 auto", minWidth: 0, fontSize: "var(--dshpc-font-md)" } },
             "\u5C06 OpenSSH \u4E0A\u6240\u6709 NPM \u5B89\u88C5\u8FC1\u79FB\u5230 PNPM"
           ),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "6px", flexWrap: "wrap" } },
-            (0, import_react101.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react101.createElement)(Chip, null, "#npm"),
-            (0, import_react101.createElement)(Chip, null, "#pnpm"),
-            (0, import_react101.createElement)(Chip, null, "#OpenSSH"),
-            (0, import_react101.createElement)(Chip, null, "#\u8FC1\u79FB")
+            (0, import_react100.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react100.createElement)(Chip, null, "#npm"),
+            (0, import_react100.createElement)(Chip, null, "#pnpm"),
+            (0, import_react100.createElement)(Chip, null, "#OpenSSH"),
+            (0, import_react100.createElement)(Chip, null, "#\u8FC1\u79FB")
           )
         ),
         // action 里裸放一个 button：不套容器也垂直居中；框内排版由调用方自定
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Card,
           {
             accent: "business",
-            action: (0, import_react101.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
+            action: (0, import_react100.createElement)(Button, { size: "sm", variant: "ghost" }, "\u67E5\u770B\u4F1A\u8BDD")
           },
-          (0, import_react101.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react101.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
+          (0, import_react100.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react100.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "NAS-Docker \xB7 \u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02")
         ),
         // 外观轴四档：带底（默认）/ 透明 / 整卡 hover / 透明 + 整卡 hover
         // 外层垫一层 sunken 底，白面与透明面的差别才看得出来
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           {
             style: {
@@ -72165,142 +71814,142 @@ function CardPage() {
               borderRadius: "var(--dshpc-radius-md)"
             }
           },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             Card,
             { accent: "business", filled: true },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u6709\u5E95\u8272\uFF08\u9ED8\u8BA4\uFF09"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "filled: true \xB7 \u5E38\u6001\u5C31\u662F surface-1 \u5B9E\u5E95")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u6709\u5E95\u8272\uFF08\u9ED8\u8BA4\uFF09"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "filled: true \xB7 \u5E38\u6001\u5C31\u662F surface-1 \u5B9E\u5E95")
           ),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             Card,
             { accent: "business", filled: false },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u65E0\u5E95\u8272"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "filled: false \xB7 \u5E38\u6001\u900F\u660E\uFF0C\u8FB9\u6846\u548C\u8272\u6761\u8FD8\u5728")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u65E0\u5E95\u8272"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "filled: false \xB7 \u5E38\u6001\u900F\u660E\uFF0C\u8FB9\u6846\u548C\u8272\u6761\u8FD8\u5728")
           ),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             Card,
             { accent: "business", hoverable: true },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u79FB\u4E0A\u53BB\u53D8\u8272"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "hoverable: true \xB7 \u5934\u90E8\u6574\u5757\u53D8\u8272 + \u624B\u52BF")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u79FB\u4E0A\u53BB\u53D8\u8272"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "hoverable: true \xB7 \u5934\u90E8\u6574\u5757\u53D8\u8272 + \u624B\u52BF")
           ),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             Card,
             { accent: "business", hoverable: true, filled: false },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u65E0\u5E95\u8272 + \u79FB\u4E0A\u53BB\u53D8\u8272"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u9F20\u6807\u79FB\u5F00\u662F\u900F\u660E\u7684\uFF0C\u79FB\u4E0A\u53BB\u624D\u94FA\u8272\uFF08hoverable + filled: false\uFF09")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u65E0\u5E95\u8272 + \u79FB\u4E0A\u53BB\u53D8\u8272"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u9F20\u6807\u79FB\u5F00\u662F\u900F\u660E\u7684\uFF0C\u79FB\u4E0A\u53BB\u624D\u94FA\u8272\uFF08hoverable + filled: false\uFF09")
           )
         ),
         // hover 作用域对照：展开内容必须放进 panel（children 属于头部区）
         // head（默认）= 上面那一整块边到边变色，下面展开区不受影响
         // card = 整卡含展开区一起变色，由消费端显式选
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           {
             style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginTop: "4px" }
           },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             Card,
             {
               accent: "business",
               hoverable: true,
               expanded: true,
-              panel: (0, import_react101.createElement)(
+              panel: (0, import_react100.createElement)(
                 "div",
                 { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
                 "\u5C55\u5F00\u533A\uFF1A\u9F20\u6807\u5728\u8FD9\u91CC\u64CD\u4F5C\uFF0C\u6574\u5361\u4E0D\u4F1A\u53D8\u8272",
-                (0, import_react101.createElement)("br"),
+                (0, import_react100.createElement)("br"),
                 "\u5C55\u5F00\u533A\uFF1A\u4E0A\u9762\u53D8\u8272\u7684\u540C\u65F6\uFF0C\u8FD9\u91CC\u5B8C\u5168\u4E0D\u53C2\u4E0E"
               )
             },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "hoverScope: 'head'\uFF08\u9ED8\u8BA4\uFF09"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u4E0A\u9762\u6574\u5757\u8FB9\u5230\u8FB9\u53D8\u8272 \xB7 \u4E0A\u4E0B\u7559\u767D\u5BF9\u79F0 \xB7 \u4E0B\u9762\u4E0D\u53D7\u5F71\u54CD")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "hoverScope: 'head'\uFF08\u9ED8\u8BA4\uFF09"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u4E0A\u9762\u6574\u5757\u8FB9\u5230\u8FB9\u53D8\u8272 \xB7 \u4E0A\u4E0B\u7559\u767D\u5BF9\u79F0 \xB7 \u4E0B\u9762\u4E0D\u53D7\u5F71\u54CD")
           ),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             Card,
             {
               accent: "business",
               hoverable: true,
               hoverScope: "card",
               expanded: true,
-              panel: (0, import_react101.createElement)(
+              panel: (0, import_react100.createElement)(
                 "div",
                 { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
                 "hoverScope: 'card'\uFF1A\u5C55\u5F00\u533A\u4E5F\u8DDF\u7740\u6574\u5361\u53D8\u8272",
-                (0, import_react101.createElement)("br"),
+                (0, import_react100.createElement)("br"),
                 "\u7531\u6D88\u8D39\u7AEF\u663E\u5F0F\u9009\u62E9\uFF0C\u9ED8\u8BA4\u4E0D\u542F\u7528"
               )
             },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "hoverScope: 'card'"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u6574\u5361\u542B\u5C55\u5F00\u533A\u4E00\u8D77\u53D8\u8272")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "hoverScope: 'card'"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u6574\u5361\u542B\u5C55\u5F00\u533A\u4E00\u8D77\u53D8\u8272")
           )
         ),
         // accent 速览：单行紧凑卡，只看色条档位
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral", "purple", "pink", "cyan", "teal", "orange", "indigo", "rose", "slate"].map(
-            (a) => (0, import_react101.createElement)(
+            (a) => (0, import_react100.createElement)(
               Card,
               { key: a, accent: a, style: { padding: "8px 12px" } },
-              (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("demoBarTitle"), hint: t3("barHint"), code: CODE_BAR },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", maxWidth: "640px" } },
         ["left", "right", "top", "bottom"].map(
-          (side) => (0, import_react101.createElement)(
+          (side) => (0, import_react100.createElement)(
             Card,
             { key: side, accent: "business", bar: { side } },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)", fontWeight: 600 } }, `bar.side="${side}"`),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "inset 12 \xB7 gap 12")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)", fontWeight: 600 } }, `bar.side="${side}"`),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "inset 12 \xB7 gap 12")
           )
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("demoStripTitle"), hint: t3("stripHint"), code: CODE_STRIP_CARD },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "4px", maxWidth: "640px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           StripCard,
           {
             accent: "business",
-            action: (0, import_react101.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
+            action: (0, import_react100.createElement)("span", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", flex: "none" } }, "2026-10-18 \u5F00\u59CB \xB7 \u4ECA\u5929")
           },
-          (0, import_react101.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "DAY:1 - Docker \u955C\u50CF\u7248\u672C\u68C0\u67E5\u5668"),
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", alignItems: "center", gap: "6px", marginTop: "4px", flexWrap: "wrap" } },
-            (0, import_react101.createElement)(Chip, null, "NAS-Docker"),
-            (0, import_react101.createElement)(
+            (0, import_react100.createElement)(Chip, null, "NAS-Docker"),
+            (0, import_react100.createElement)(
               "span",
               { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               "\u8BA1\u5212 02:00 \xB7 \u5B9E\u9645 02:00 \xB7 \u65F6\u957F 04:02 \xB7 2.4M"
             )
           )
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           StripCard,
           {
             accent: "success",
             // 右侧裸放一个描边钮（outline, sm=24px）：不套容器也垂直居中
-            action: (0, import_react101.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
+            action: (0, import_react100.createElement)(Button, { size: "sm", variant: "outline" }, "Cancel")
           },
-          (0, import_react101.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
-          (0, import_react101.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
+          (0, import_react100.createElement)("div", { style: { fontWeight: 600, fontSize: "var(--dshpc-font-md)" } }, "\u6267\u884C\u6210\u529F"),
+          (0, import_react100.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)", marginTop: "4px" } }, "\u8017\u65F6 12s \xB7 3 \u4E2A\u6587\u4EF6\u53D8\u66F4")
         ),
         // 外观轴四档：带浅底（默认）/ 透明 / 整卡 hover / 透明 + 整卡 hover
         // 浅底同样走 --surface-bg，hover / 透明档才盖得住
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           {
             style: {
@@ -72312,104 +71961,104 @@ function CardPage() {
               borderRadius: "var(--dshpc-radius-md)"
             }
           },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             StripCard,
             { accent: "business", filled: true },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u6709\u6D45\u5E95\uFF08\u9ED8\u8BA4\uFF09"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "filled: true \xB7 \u5E38\u6001\u5C31\u662F accent \u6D45\u5E95")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u6709\u6D45\u5E95\uFF08\u9ED8\u8BA4\uFF09"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "filled: true \xB7 \u5E38\u6001\u5C31\u662F accent \u6D45\u5E95")
           ),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             StripCard,
             { accent: "business", filled: false },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u65E0\u5E95\u8272"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "filled: false \xB7 \u5E38\u6001\u900F\u660E\uFF0C\u901A\u9AD8\u8272\u6761\u8FD8\u5728")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u65E0\u5E95\u8272"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "filled: false \xB7 \u5E38\u6001\u900F\u660E\uFF0C\u901A\u9AD8\u8272\u6761\u8FD8\u5728")
           ),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             StripCard,
             { accent: "business", hoverable: true },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u79FB\u4E0A\u53BB\u53D8\u8272"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "hoverable: true \xB7 \u5934\u90E8\u6574\u5757\u53D8\u8272 + \u624B\u52BF")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u79FB\u4E0A\u53BB\u53D8\u8272"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "hoverable: true \xB7 \u5934\u90E8\u6574\u5757\u53D8\u8272 + \u624B\u52BF")
           ),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             StripCard,
             { accent: "business", hoverable: true, filled: false },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u65E0\u5E95\u8272 + \u79FB\u4E0A\u53BB\u53D8\u8272"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u9F20\u6807\u79FB\u5F00\u662F\u900F\u660E\u7684\uFF0C\u79FB\u4E0A\u53BB\u624D\u94FA\u8272\uFF08hoverable + filled: false\uFF09")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u65E0\u5E95\u8272 + \u79FB\u4E0A\u53BB\u53D8\u8272"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "\u9F20\u6807\u79FB\u5F00\u662F\u900F\u660E\u7684\uFF0C\u79FB\u4E0A\u53BB\u624D\u94FA\u8272\uFF08hoverable + filled: false\uFF09")
           )
         ),
         // 展开态对照：通高色条一路贯穿整卡（含展开区），hover 仍只作用头部区
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           {
             style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginTop: "4px" }
           },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             StripCard,
             {
               accent: "business",
               hoverable: true,
               expanded: true,
-              panel: (0, import_react101.createElement)(
+              panel: (0, import_react100.createElement)(
                 "div",
                 { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
                 "\u5C55\u5F00\u533A\uFF1A\u5DE6\u8FB9\u90A3\u6839\u8272\u6761\u4E00\u8DEF\u8D2F\u7A7F\u5230\u5361\u7247\u5E95\u90E8",
-                (0, import_react101.createElement)("br"),
+                (0, import_react100.createElement)("br"),
                 "\u5C55\u5F00\u533A\uFF1A\u8FD9\u91CC\u59CB\u7EC8\u4E0D\u53C2\u4E0E hover \u53D8\u8272"
               )
             },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u9ED8\u8BA4\uFF1A\u53EA\u6709\u5934\u90E8\u53D8\u8272"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "hoverScope: 'head' \xB7 \u4E0A\u4E0B\u7559\u767D\u5BF9\u79F0")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u9ED8\u8BA4\uFF1A\u53EA\u6709\u5934\u90E8\u53D8\u8272"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "hoverScope: 'head' \xB7 \u4E0A\u4E0B\u7559\u767D\u5BF9\u79F0")
           ),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             StripCard,
             {
               accent: "business",
               hoverable: true,
               hoverScope: "card",
               expanded: true,
-              panel: (0, import_react101.createElement)(
+              panel: (0, import_react100.createElement)(
                 "div",
                 { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
                 "\u5C55\u5F00\u533A\uFF1A\u6574\u5361\u4E00\u8D77\u53D8\u8272\u65F6\uFF0C\u8FD9\u91CC\u4E5F\u8DDF\u7740\u53D8",
-                (0, import_react101.createElement)("br"),
+                (0, import_react100.createElement)("br"),
                 "\u7531\u6D88\u8D39\u7AEF\u663E\u5F0F\u9009\u62E9\uFF0C\u9ED8\u8BA4\u4E0D\u542F\u7528"
               )
             },
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u53EF\u9009\uFF1A\u6574\u5361\u4E00\u8D77\u53D8\u8272"),
-            (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "hoverScope: 'card'")
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-md)" } }, "\u53EF\u9009\uFF1A\u6574\u5361\u4E00\u8D77\u53D8\u8272"),
+            (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", marginTop: "4px" } }, "hoverScope: 'card'")
           )
         ),
         // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "6px", marginTop: "4px" } },
           ["business", "success", "warning", "danger", "neutral", "purple", "pink", "cyan", "teal", "orange", "indigo", "rose", "slate"].map(
-            (a) => (0, import_react101.createElement)(
+            (a) => (0, import_react100.createElement)(
               StripCard,
               { key: a, accent: a, style: { padding: "8px 12px 8px 20px" } },
-              (0, import_react101.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
+              (0, import_react100.createElement)("div", { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-2)" } }, `accent="${a}"`)
             )
           )
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("sectionHeadTitle"), hint: t3("exSectionHeadHint"), code: CODE_SECTION_HEAD },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "8px" } },
         // A：sparkle 图标 + “全部待办”后缀计数 + 右侧过滤组（滑轨 + 搜索框）
-        (0, import_react101.createElement)(SectionHead, {
-          icon: (0, import_react101.createElement)(Icon, { name: "common.base:AIdamoxing" }),
-          title: (0, import_react101.createElement)(
+        (0, import_react100.createElement)(SectionHead, {
+          icon: (0, import_react100.createElement)(Icon, { name: "common.base:AIdamoxing" }),
+          title: (0, import_react100.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5168\u90E8\u5F85\u529E",
-            (0, import_react101.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
+            (0, import_react100.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "22")
           ),
           right: [
-            (0, import_react101.createElement)(Segmented, {
+            (0, import_react100.createElement)(Segmented, {
               items: [
                 { value: "all", label: t3("segAll"), count: 22 },
                 { value: "doing", label: t3("segDoing"), count: 11 },
@@ -72419,40 +72068,40 @@ function CardPage() {
               onChange: setSeg
             }),
             // 搜索框 140px 定宽（兄弟项目 SEARCH_WIDTH 同款），外面套 div 控宽
-            (0, import_react101.createElement)(
+            (0, import_react100.createElement)(
               "div",
               { style: { width: "140px", flex: "none" } },
-              (0, import_react101.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
+              (0, import_react100.createElement)(Input, { value: kw, onChange: setKw, placeholder: "\u641C\u7D22" })
             )
           ]
         }),
         // B：clock 图标 + “我的待办” + 彩色标签 + 右侧单个操作钮
-        (0, import_react101.createElement)(SectionHead, {
-          icon: (0, import_react101.createElement)(Icon, { name: "common.base:shijian1" }),
-          title: (0, import_react101.createElement)(
+        (0, import_react100.createElement)(SectionHead, {
+          icon: (0, import_react100.createElement)(Icon, { name: "common.base:shijian1" }),
+          title: (0, import_react100.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
             "\u6211\u7684\u5F85\u529E",
-            (0, import_react101.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
+            (0, import_react100.createElement)(Chip, { tone: "success", size: "xs" }, "\u6700\u65B0")
           ),
-          right: (0, import_react101.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
+          right: (0, import_react100.createElement)(Button, { size: "sm", variant: "ghost" }, "\u5237\u65B0")
         }),
         // C：refresh 图标 + “已归档” + 小字说明 + 右侧操作组（两个钮）
-        (0, import_react101.createElement)(SectionHead, {
-          icon: (0, import_react101.createElement)(Icon, { name: "common.base:shuaxin" }),
-          title: (0, import_react101.createElement)(
+        (0, import_react100.createElement)(SectionHead, {
+          icon: (0, import_react100.createElement)(Icon, { name: "common.base:shuaxin" }),
+          title: (0, import_react100.createElement)(
             "span",
             { style: { display: "inline-flex", alignItems: "baseline", gap: "6px" } },
             "\u5DF2\u5F52\u6863",
-            (0, import_react101.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
+            (0, import_react100.createElement)("span", { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)", fontWeight: 400 } }, "\u5171 8 \u6761")
           ),
           right: [
-            (0, import_react101.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
-            (0, import_react101.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
+            (0, import_react100.createElement)(Button, { size: "sm", variant: "ghost" }, "\u64CD\u4F5C"),
+            (0, import_react100.createElement)(Button, { size: "sm", variant: "secondary" }, "\u8BBE\u7F6E")
           ]
         }),
         // D：固定标签颜色速览 —— accent 内置色名 / 任意色值 / default / false
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", flexDirection: "column", gap: "4px" } },
           [
@@ -72461,12 +72110,12 @@ function CardPage() {
             ["success", "success"],
             ["#7c3aed", "#7c3aed"],
             [false, "false\uFF08\u4E0D\u753B\uFF09"]
-          ].map(([accent, label]) => (0, import_react101.createElement)(SectionHead, { key: String(accent), accent, title: label, flush: true }))
+          ].map(([accent, label]) => (0, import_react100.createElement)(SectionHead, { key: String(accent), accent, title: label, flush: true }))
         )
       )
     ),
-    (0, import_react101.createElement)(DocCode, { id: "card" }),
-    (0, import_react101.createElement)(DocApi, { id: "card" })
+    (0, import_react100.createElement)(DocCode, { id: "card" }),
+    (0, import_react100.createElement)(DocApi, { id: "card" })
   );
 }
 var CODE_CHIP = `// tone \u4E94\u6863 + size \u4E09\u6863\uFF1B\u5C3A\u5BF8\u884C\u56FA\u5B9A\u7531\u5927\u5230\u5C0F\uFF08md \u2192 sm \u2192 xs\uFF09\uFF0C\u540C\u6863\u6587\u6848\u4E0D\u6DF7\u6392
@@ -72521,121 +72170,121 @@ var FLIP_STEPS = [
   "\u5DF2\u5B8C\u6210"
 ];
 function ChipPage() {
-  return (0, import_react101.createElement)(
+  return (0, import_react100.createElement)(
     "div",
     null,
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: "Chip", hint: t3("chipHint"), code: CODE_CHIP },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
         ...["md", "sm", "xs"].map(
-          (sz) => (0, import_react101.createElement)(
+          (sz) => (0, import_react100.createElement)(
             "div",
             { key: sz, style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-            (0, import_react101.createElement)(Chip, { size: sz, tone: "warning" }, t3("chipOverdue")),
-            (0, import_react101.createElement)(Chip, { size: sz, tone: "danger" }, t3("chipStalled")),
-            (0, import_react101.createElement)(Chip, { size: sz, tone: "success" }, t3("chipDone")),
-            (0, import_react101.createElement)(Chip, { size: sz, tone: "business" }, t3("chipDoing")),
-            (0, import_react101.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
+            (0, import_react100.createElement)(Chip, { size: sz, tone: "warning" }, t3("chipOverdue")),
+            (0, import_react100.createElement)(Chip, { size: sz, tone: "danger" }, t3("chipStalled")),
+            (0, import_react100.createElement)(Chip, { size: sz, tone: "success" }, t3("chipDone")),
+            (0, import_react100.createElement)(Chip, { size: sz, tone: "business" }, t3("chipDoing")),
+            (0, import_react100.createElement)(Chip, { size: sz }, `Tag ${sz.toUpperCase()}`)
           )
         ),
         // 中性 # 标签（语言无关）+ 长文字回归样
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" } },
-          (0, import_react101.createElement)(Chip, null, "#npm"),
-          (0, import_react101.createElement)(Chip, null, "#\u6784\u5EFA"),
-          (0, import_react101.createElement)(Chip, { onClick: () => notify("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
-          (0, import_react101.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
+          (0, import_react100.createElement)(Chip, null, "#npm"),
+          (0, import_react100.createElement)(Chip, null, "#\u6784\u5EFA"),
+          (0, import_react100.createElement)(Chip, { onClick: () => notify("\u70B9\u4E86 chip") }, "#\u53EF\u70B9"),
+          (0, import_react100.createElement)(Chip, null, "\u4E00\u6574\u6BB5\u6BD4\u8F83\u957F\u7684\u6807\u7B7E\u6587\u5B57\uFF0C\u5BBD\u5EA6\u5E94\u8BE5\u8DDF\u7740\u6587\u5B57\u8D70")
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("chipWidthTitle"), hint: t3("chipWidthHint"), code: CODE_CHIP_WIDTH },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "width\uFF08\u56FA\u5B9A\u5BBD\uFF09" },
-          (0, import_react101.createElement)(Chip, { width: 90 }, "90px \u56FA\u5B9A\u5BBD")
+          (0, import_react100.createElement)(Chip, { width: 90 }, "90px \u56FA\u5B9A\u5BBD")
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "minWidth\uFF08\u6700\u5C0F\u5BBD\uFF1A\u77ED / \u957F\u540C\u5BBD\uFF09" },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", gap: "8px" } },
-            (0, import_react101.createElement)(Chip, { minWidth: 90 }, "\u77ED"),
-            (0, import_react101.createElement)(Chip, { minWidth: 90 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
+            (0, import_react100.createElement)(Chip, { minWidth: 90 }, "\u77ED"),
+            (0, import_react100.createElement)(Chip, { minWidth: 90 }, "\u5F88\u957F\u5F88\u957F\u5F88\u957F")
           )
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "maxWidth\uFF08\u6700\u5927\u5BBD\uFF1A\u7701\u7565\u53F7 + hover \u8DD1\u9A6C\u706F\uFF09" },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { width: "260px" } },
-            (0, import_react101.createElement)(Chip, { maxWidth: 120 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6807\u7B7E\u6587\u5B57")
+            (0, import_react100.createElement)(Chip, { maxWidth: 120 }, "\u8FD9\u662F\u4E00\u6BB5\u4F1A\u88AB\u6298\u53E0\u6210\u7701\u7565\u53F7\u7684\u8D85\u957F\u6807\u7B7E\u6587\u5B57")
           )
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "\u4E09\u8005\u540C\u8BBE \u21D2 width \u4F18\u5148" },
-          (0, import_react101.createElement)(Chip, { width: 90, minWidth: 160, maxWidth: 120 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
+          (0, import_react100.createElement)(Chip, { width: 90, minWidth: 160, maxWidth: 120 }, "\u56FA\u5B9A\u5BBD\u4F18\u5148")
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("marqueeTitle"), hint: t3("exMarqueeHint"), code: CODE_MARQUEE },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-start" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { maxWidth: "148px" } },
-          (0, import_react101.createElement)(MarqueeText, { text: "\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF1A\u5B9A\u5BBD\u663E\u793A\u4E0D\u4E0B\uFF0Chover \u5F00\u59CB\u8DD1\u9A6C\u706F" })
+          (0, import_react100.createElement)(MarqueeText, { text: "\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF1A\u5B9A\u5BBD\u663E\u793A\u4E0D\u4E0B\uFF0Chover \u5F00\u59CB\u8DD1\u9A6C\u706F" })
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Chip,
           { tone: "business", size: "md", maxWidth: 148 },
           "\u6807\u7B7E\u91CC\u6EDA\u52A8\uFF1A\u4E00\u6761\u5F88\u957F\u7684\u4EFB\u52A1\u6807\u9898\uFF0Chover \u8DD1\u9A6C\u706F"
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("liveTitle"), hint: t3("exLiveHint"), code: CODE_LIVE },
-      (0, import_react101.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
+      (0, import_react100.createElement)(LiveText, { render: (nowMs) => new Date(nowMs).toLocaleTimeString() })
     ),
-    (0, import_react101.createElement)(DocCode, { id: "chip" }),
-    (0, import_react101.createElement)(DocApi, { id: "chip" })
+    (0, import_react100.createElement)(DocCode, { id: "chip" }),
+    (0, import_react100.createElement)(DocApi, { id: "chip" })
   );
 }
 function FlipTextPage() {
-  const [flipStep, setFlipStep] = (0, import_react101.useState)(0);
-  const [shown, setShown] = (0, import_react101.useState)(true);
-  return (0, import_react101.createElement)(
+  const [flipStep, setFlipStep] = (0, import_react100.useState)(0);
+  const [shown, setShown] = (0, import_react100.useState)(true);
+  return (0, import_react100.createElement)(
     "div",
     null,
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("flipTitle"), hint: t3("exFlipHint"), code: CODE_FLIP },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "\u6362\u5B57\u5373\u7FFB\u724C\uFF08\u65E7\u7684\u4E0A\u79FB\u51FA\u3001\u65B0\u7684\u4ECE\u4E0B\u8FDB\uFF09" },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", gap: "8px", alignItems: "center", minHeight: "28px" } },
-            (0, import_react101.createElement)(FlipText, { text: shown ? FLIP_STEPS[flipStep] : "", maxWidth: 300 }),
-            (0, import_react101.createElement)(Button, {
+            (0, import_react100.createElement)(FlipText, { text: shown ? FLIP_STEPS[flipStep] : "", maxWidth: 300 }),
+            (0, import_react100.createElement)(Button, {
               size: "sm",
               variant: "outline",
               onClick: () => {
@@ -72643,30 +72292,30 @@ function FlipTextPage() {
                 setFlipStep((i2) => (i2 + 1) % FLIP_STEPS.length);
               }
             }, "\u4E0B\u4E00\u6B65"),
-            (0, import_react101.createElement)(Button, { size: "sm", variant: "ghost", onClick: () => setShown(false) }, "\u6E05\u7A7A\uFF08\u4F20\u7A7A\u4E32\uFF09")
+            (0, import_react100.createElement)(Button, { size: "sm", variant: "ghost", onClick: () => setShown(false) }, "\u6E05\u7A7A\uFF08\u4F20\u7A7A\u4E32\uFF09")
           )
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "maxWidth\uFF08\u8D85\u957F\u4E09\u70B9\u7701\u7565 + hover \u8DD1\u9A6C\u706F\uFF09" },
-          (0, import_react101.createElement)(FlipText, {
+          (0, import_react100.createElement)(FlipText, {
             text: "\u4E00\u6761\u5F88\u957F\u7684\u8FC7\u7A0B\u63D0\u793A\uFF1A\u8FD9\u4E00\u6B65\u6B63\u5728\u628A\u5DE5\u4F5C\u533A\u91CC\u7684\u6240\u6709\u4EFB\u52A1\u9010\u4E2A\u6BD4\u5BF9\u540E\u5199\u5165\u53F0\u8D26\uFF0C\u8BF7\u7A0D\u5019",
             maxWidth: 220
           })
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "width\uFF08\u56FA\u5B9A\u5BBD\uFF09" },
-          (0, import_react101.createElement)(FlipText, { text: "\u56FA\u5B9A 200px", width: 200 })
+          (0, import_react100.createElement)(FlipText, { text: "\u56FA\u5B9A 200px", width: 200 })
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Labeled,
           { label: "sweep\uFF08\u5E38\u9A7B\u626B\u5149\uFF1A\u6587\u5B57\u4E0D\u52A8\u4E5F\u5728\u52A8\uFF09" },
-          (0, import_react101.createElement)(FlipText, { text: "\u6B63\u5728\u5199\u5165\u53F0\u8D26\u2026", sweep: true, maxWidth: 300 })
+          (0, import_react100.createElement)(FlipText, { text: "\u6B63\u5728\u5199\u5165\u53F0\u8D26\u2026", sweep: true, maxWidth: 300 })
         )
       )
     ),
-    (0, import_react101.createElement)(DocApi, { id: "flip-text" })
+    (0, import_react100.createElement)(DocApi, { id: "flip-text" })
   );
 }
 var CODE_HOST_MODAL = `// \u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF1A\u7EC4\u4EF6\u76F4\u63A5\u7528\u5B98\u65B9 Modal\uFF08\u906E\u7F69/\u5934\u90E8/\u5173\u95ED\u53C9\u5168\u5F52\u5BBF\u4E3B\u7BA1\uFF09
@@ -72844,21 +72493,21 @@ blocked.close()
 <LoadingToast text="\u6B63\u5728\u52A0\u8F7D" />
 <LoadingBlock text="\u5904\u7406\u4E2D" />`;
 function FeedbackPage() {
-  const [open, setOpen] = (0, import_react101.useState)(false);
-  const [openNative, setOpenNative] = (0, import_react101.useState)(false);
-  const [alertState, setAlertState] = (0, import_react101.useState)(null);
-  const [confirmCfg, setConfirmCfg] = (0, import_react101.useState)(null);
-  const [confirmResult, setConfirmResult] = (0, import_react101.useState)("");
-  const [largeOpen, setLargeOpen] = (0, import_react101.useState)(false);
-  const [largeOpenB, setLargeOpenB] = (0, import_react101.useState)(false);
-  const [asyncOpen, setAsyncOpen] = (0, import_react101.useState)(false);
-  const [saving, setSaving] = (0, import_react101.useState)(false);
-  const [noticeOpen, setNoticeOpen] = (0, import_react101.useState)(false);
-  const [noticeText, setNoticeText] = (0, import_react101.useState)("");
-  const [sheetCfg, setSheetCfg] = (0, import_react101.useState)({ side: "left", footer: false });
-  const [sheetOpen, setSheetOpen] = (0, import_react101.useState)(false);
-  const [sheetSaving, setSheetSaving] = (0, import_react101.useState)(false);
-  const [nativeText, setNativeText] = (0, import_react101.useState)("");
+  const [open, setOpen] = (0, import_react100.useState)(false);
+  const [openNative, setOpenNative] = (0, import_react100.useState)(false);
+  const [alertState, setAlertState] = (0, import_react100.useState)(null);
+  const [confirmCfg, setConfirmCfg] = (0, import_react100.useState)(null);
+  const [confirmResult, setConfirmResult] = (0, import_react100.useState)("");
+  const [largeOpen, setLargeOpen] = (0, import_react100.useState)(false);
+  const [largeOpenB, setLargeOpenB] = (0, import_react100.useState)(false);
+  const [asyncOpen, setAsyncOpen] = (0, import_react100.useState)(false);
+  const [saving, setSaving] = (0, import_react100.useState)(false);
+  const [noticeOpen, setNoticeOpen] = (0, import_react100.useState)(false);
+  const [noticeText, setNoticeText] = (0, import_react100.useState)("");
+  const [sheetCfg, setSheetCfg] = (0, import_react100.useState)({ side: "left", footer: false });
+  const [sheetOpen, setSheetOpen] = (0, import_react100.useState)(false);
+  const [sheetSaving, setSheetSaving] = (0, import_react100.useState)(false);
+  const [nativeText, setNativeText] = (0, import_react100.useState)("");
   const flash = (opts) => {
     const handle = showLoading(opts);
     window.setTimeout(() => handle.close(), 1200);
@@ -72867,58 +72516,58 @@ function FeedbackPage() {
     setNoticeText("");
     setNoticeOpen(true);
   };
-  return (0, import_react101.createElement)(
+  return (0, import_react100.createElement)(
     "div",
     null,
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("exSmallModalTitle"), hint: t3("exSmallModalHint"), code: CODE_SMALL_MODAL },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           null,
-          (0, import_react101.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "AlertModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react101.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
-            (0, import_react101.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
-            (0, import_react101.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
-            (0, import_react101.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
-            (0, import_react101.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
+            (0, import_react100.createElement)(Button, { onClick: () => setAlertState({ sev: "info", titled: true }) }, "info"),
+            (0, import_react100.createElement)(Button, { onClick: () => setAlertState({ sev: "success", titled: true }) }, "success"),
+            (0, import_react100.createElement)(Button, { onClick: () => setAlertState({ sev: "warning", titled: true }) }, "warning"),
+            (0, import_react100.createElement)(Button, { onClick: () => setAlertState({ sev: "error", titled: true }) }, "error"),
+            (0, import_react100.createElement)(Button, { variant: "outline", onClick: () => setAlertState({ sev: "warning", titled: false }) }, "\u65E0\u6807\u9898")
           ),
-          alertState !== null ? (0, import_react101.createElement)(AlertModal, {
+          alertState !== null ? (0, import_react100.createElement)(AlertModal, {
             severity: alertState.sev,
             title: alertState.titled ? "\u64CD\u4F5C\u7ED3\u679C" : void 0,
             message: "\u8FD9\u662F\u4E00\u6761\u8BF4\u660E\u6587\u5B57\uFF1AAlertModal \u7528\u4E8E\u53EA\u9700\u4E00\u4E2A\u786E\u8BA4\u52A8\u4F5C\u7684\u63D0\u793A\u573A\u666F\u3002",
             onConfirm: () => setAlertState(null)
           }) : null
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           null,
-          (0, import_react101.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "ConfirmModal\uFF08\u7EC4\u4EF6\uFF09"),
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" } },
-            (0, import_react101.createElement)(Button, { onClick: () => {
+            (0, import_react100.createElement)(Button, { onClick: () => {
               setConfirmCfg({ tone: "primary", confirmText: "\u786E\u5B9A", cancelText: "\u53D6\u6D88" });
               setConfirmResult("");
             } }, "\u9ED8\u8BA4\uFF08primary\uFF09"),
-            (0, import_react101.createElement)(Button, { variant: "outline", onClick: () => {
+            (0, import_react100.createElement)(Button, { variant: "outline", onClick: () => {
               setConfirmCfg({ tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3" });
               setConfirmResult("");
             } }, "danger \u53D8\u4F53"),
-            (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => {
+            (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => {
               setConfirmCfg({ tone: "warning", confirmText: "\u6211\u5DF2\u77E5\u6653", cancelText: "\u8FD4\u56DE" });
               setConfirmResult("");
             } }, "\u6539\u6587\u6848"),
-            (0, import_react101.createElement)(Button, { variant: "outline", onClick: startNoticeDemo }, "footer \u5E26\u8FC7\u7A0B\u63D0\u793A"),
-            confirmResult ? (0, import_react101.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
+            (0, import_react100.createElement)(Button, { variant: "outline", onClick: startNoticeDemo }, "footer \u5E26\u8FC7\u7A0B\u63D0\u793A"),
+            confirmResult ? (0, import_react100.createElement)("span", { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } }, confirmResult) : null
           ),
-          confirmCfg !== null ? (0, import_react101.createElement)(ConfirmModal, {
+          confirmCfg !== null ? (0, import_react100.createElement)(ConfirmModal, {
             title: "\u5220\u9664\u4EFB\u52A1",
             message: "\u5220\u9664\u540E\u4E0D\u53EF\u6062\u590D\uFF0C\u786E\u5B9A\u8981\u5220\u9664\u5417\uFF1F",
             tone: confirmCfg.tone,
@@ -72934,7 +72583,7 @@ function FeedbackPage() {
             }
           }) : null,
           // 底栏左侧过程提示：点开始后逐句换文案，loading 期间整框关不掉
-          noticeOpen ? (0, import_react101.createElement)(ConfirmModal, {
+          noticeOpen ? (0, import_react100.createElement)(ConfirmModal, {
             title: "\u8FC1\u79FB\u53F0\u8D26",
             message: "\u8FDB\u53BB\u65F6\u5E95\u680F\u5DE6\u4FA7\u662F**\u7A7A\u7684** \u2014\u2014 \u70B9\u300C\u5F00\u59CB\u300D\u624D\u5F00\u59CB\u51FA\u6B65\u9AA4\uFF0C\u6362\u4E00\u53E5\u7FFB\u4E00\u6B21\u724C\uFF0C\u6700\u540E\u4E00\u53E5\u663E\u793A\u5B8C\u81EA\u5DF1\u5173\u3002\u4E2D\u95F4\u90A3\u53E5\u6545\u610F\u5F88\u957F\uFF1A\u653E\u4E0D\u4E0B\u5C31\u4E09\u70B9\u7701\u7565\uFF0C\u9F20\u6807\u79FB\u4E0A\u53BB\u8DD1\u9A6C\u706F\u3002",
             notice: noticeText,
@@ -72955,26 +72604,26 @@ function FeedbackPage() {
             onCancel: () => setNoticeOpen(false)
           }) : null
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           null,
-          (0, import_react101.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u547D\u4EE4\u5F0F\uFF08Promise\uFF09"),
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-            (0, import_react101.createElement)(Button, { variant: "outline", onClick: () => {
+            (0, import_react100.createElement)(Button, { variant: "outline", onClick: () => {
               alertModal({ title: "\u63D0\u793A", message: "\u8FD9\u662F\u547D\u4EE4\u5F0F alert\uFF0C\u5173\u95ED\u5373\u786E\u8BA4" }).then(() => notify("alert \u5DF2\u5173\u95ED"));
             } }, "alertModal()"),
-            (0, import_react101.createElement)(Button, { onClick: async () => {
+            (0, import_react100.createElement)(Button, { onClick: async () => {
               const ok = await confirmModal({ title: "\u786E\u8BA4\u63D0\u4EA4", message: "\u63D0\u4EA4\u540E\u4E0D\u53EF\u64A4\u9500", tone: "danger", confirmText: "\u63D0\u4EA4", cancelText: "\u53D6\u6D88" });
               notify(ok ? "\u4F60\u70B9\u4E86\uFF1A\u63D0\u4EA4" : "\u4F60\u70B9\u4E86\uFF1A\u53D6\u6D88");
             } }, "confirmModal()")
           ),
           // 异步回调 ⇒ 对应按钮自动转圈、整框锁死，settle 后才关（1.4 秒演示）
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "8px", alignItems: "center" } },
-            (0, import_react101.createElement)(Button, {
+            (0, import_react100.createElement)(Button, {
               variant: "outline",
               onClick: () => {
                 void alertModal({
@@ -72987,7 +72636,7 @@ function FeedbackPage() {
                 }).then(() => notify("\u4FDD\u5B58\u5B8C\u6210\uFF0Calert \u5DF2\u5173\u95ED"));
               }
             }, "alertModal() \xB7 \u5F02\u6B65\u786E\u8BA4"),
-            (0, import_react101.createElement)(Button, {
+            (0, import_react100.createElement)(Button, {
               onClick: async () => {
                 const ok = await confirmModal({
                   title: "\u5220\u9664\u4EFB\u52A1",
@@ -73002,7 +72651,7 @@ function FeedbackPage() {
                 notify(ok ? "\u5220\u9664\u5B8C\u6210\uFF08\u786E\u8BA4\u4E3A true\uFF09" : "\u5DF2\u53D6\u6D88\uFF08false\uFF09");
               }
             }, "confirmModal() \xB7 \u5F02\u6B65\u786E\u8BA4"),
-            (0, import_react101.createElement)(Button, {
+            (0, import_react100.createElement)(Button, {
               variant: "outline",
               onClick: async () => {
                 const ok = await confirmModal({
@@ -73017,7 +72666,7 @@ function FeedbackPage() {
                 notify(ok ? "\u4F60\u70B9\u4E86\uFF1A\u7559\u5728\u9875\u9762" : "\u68C0\u67E5\u5B8C\u6210\uFF0C\u5DF2\u79BB\u5F00\uFF08false\uFF09");
               }
             }, "confirmModal() \xB7 \u5F02\u6B65\u53D6\u6D88"),
-            (0, import_react101.createElement)(Button, {
+            (0, import_react100.createElement)(Button, {
               variant: "ghost",
               onClick: async () => {
                 const ok = await confirmModal({
@@ -73034,7 +72683,7 @@ function FeedbackPage() {
               }
             }, "confirmModal() \xB7 \u5F02\u6B65\u5931\u8D25"),
             // 转圈会撑宽按钮 ⇒ 两颗钮定宽，点「认领」时宽度与位置都不动
-            (0, import_react101.createElement)(Button, {
+            (0, import_react100.createElement)(Button, {
               variant: "outline",
               onClick: async () => {
                 const ok = await confirmModal({
@@ -73052,7 +72701,7 @@ function FeedbackPage() {
               }
             }, "confirmModal() \xB7 \u5B9A\u5BBD"),
             // loading 时只剩一圈：宽度锁在「有文案」时的大小，settle 后文案回来
-            (0, import_react101.createElement)(Button, {
+            (0, import_react100.createElement)(Button, {
               variant: "outline",
               onClick: async () => {
                 const ok = await confirmModal({
@@ -73069,7 +72718,7 @@ function FeedbackPage() {
               }
             }, "confirmModal() \xB7 loading \u53EA\u7559\u5708"),
             // 锁定与 loading 解耦：不是按钮转圈，是整框谁都别动，跑完自己解开
-            (0, import_react101.createElement)(Button, {
+            (0, import_react100.createElement)(Button, {
               variant: "outline",
               onClick: async () => {
                 const ok = await confirmModal({
@@ -73093,99 +72742,99 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("exLargeModalTitle"), hint: t3("exLargeModalHint"), code: CODE_LARGE_MODAL },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           null,
-          (0, import_react101.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
-          (0, import_react101.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
-          open ? (0, import_react101.createElement)(Modal, {
+          (0, import_react100.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u9ED8\u8BA4\uFF08md\uFF09"),
+          (0, import_react100.createElement)(Button, { onClick: () => setOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08md \u9ED8\u8BA4\uFF09"),
+          open ? (0, import_react100.createElement)(Modal, {
             title: "\u4EFB\u52A1\u8BE6\u60C5",
             onClose: () => setOpen(false),
-            footer: (0, import_react101.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
-          }, (0, import_react101.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
+            footer: (0, import_react100.createElement)(Button, { variant: "primary", onClick: () => setOpen(false) }, "\u77E5\u9053\u4E86")
+          }, (0, import_react100.createElement)("div", null, "\u5F39\u7A97\u4E3B\u4F53\u5185\u5BB9\u2014\u2014\u4F1A\u8BDD\u9884\u89C8\u8FD9\u7C7B\u529F\u80FD\u5C31\u7528\u5B83\u6765\u627F\u8F7D\u3002")) : null
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           null,
-          (0, import_react101.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
-          (0, import_react101.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
-          largeOpen ? (0, import_react101.createElement)(
+          (0, import_react100.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u5E26 footer\uFF08lg\uFF09"),
+          (0, import_react100.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5E26 footer\uFF09"),
+          largeOpen ? (0, import_react100.createElement)(
             Modal,
             {
               size: "lg",
               title: "\u4F1A\u8BDD\u8BB0\u5F55",
-              headerActions: (0, import_react101.createElement)(
+              headerActions: (0, import_react100.createElement)(
                 Button,
                 { variant: "outline", size: "sm", icon: iconOf("chevron") },
                 "\u66F4\u591A"
               ),
               onClose: () => setLargeOpen(false),
-              footer: (0, import_react101.createElement)(
+              footer: (0, import_react100.createElement)(
                 "div",
                 { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-                (0, import_react101.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
-                (0, import_react101.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
+                (0, import_react100.createElement)(Button, { variant: "outline", onClick: () => setLargeOpen(false) }, "\u5173\u95ED"),
+                (0, import_react100.createElement)(Button, { variant: "primary", onClick: () => setLargeOpen(false) }, "\u5B8C\u6210")
               )
             },
-            (0, import_react101.createElement)(
+            (0, import_react100.createElement)(
               "div",
               null,
               Array.from(
                 { length: 40 },
-                (_, i2) => (0, import_react101.createElement)("div", { key: i2, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i2 + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
+                (_, i2) => (0, import_react100.createElement)("div", { key: i2, style: { padding: "10px 0", borderBottom: "1px solid var(--dshpc-border-faint)", fontSize: "13px" } }, `\u5217\u8868\u9879 ${i2 + 1}\uFF1A\u8FD9\u662F\u4E00\u6BB5\u53EF\u6EDA\u52A8\u7684\u5185\u5BB9\u793A\u4F8B`)
               ),
-              (0, import_react101.createElement)("div", { className: "dshpc-overlay-head__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
+              (0, import_react100.createElement)("div", { className: "dshpc-overlay-head__sid" }, "\u5171 128 \u6761 \xB7 \u6700\u8FD1\u66F4\u65B0 2 \u5206\u949F\u524D")
             )
           ) : null
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           null,
-          (0, import_react101.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
-          (0, import_react101.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
-          largeOpenB ? (0, import_react101.createElement)(
+          (0, import_react100.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "\u65E0 footer\uFF08\u5185\u5BB9\u81EA\u5B9A\u4E49\uFF09"),
+          (0, import_react100.createElement)(Button, { variant: "outline", onClick: () => setLargeOpenB(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u65E0 footer\uFF09"),
+          largeOpenB ? (0, import_react100.createElement)(
             Modal,
             {
               size: "lg",
-              title: (0, import_react101.createElement)(
+              title: (0, import_react100.createElement)(
                 "div",
                 null,
-                (0, import_react101.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
-                (0, import_react101.createElement)("div", { className: "dshpc-overlay-head__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
+                (0, import_react100.createElement)("div", { style: { fontWeight: 600 } }, "\u4EFB\u52A1\u8BE6\u60C5"),
+                (0, import_react100.createElement)("div", { className: "dshpc-overlay-head__sid" }, "sid-2026-1020-7f3a \xB7 5 \u4E2A\u6B65\u9AA4")
               ),
               onClose: () => setLargeOpenB(false)
             },
-            (0, import_react101.createElement)(
+            (0, import_react100.createElement)(
               "div",
               null,
-              (0, import_react101.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
-              (0, import_react101.createElement)(Surface, { border: "faint", padding: "md", style: { marginTop: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
+              (0, import_react100.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u8FD9\u91CC\u6574\u4E2A\u5F39\u7A97\u90FD\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\u4E49\uFF1A\u6CA1\u6709 footer\uFF0C\u5934\u90E8\u4E5F\u6362\u4E86\u4E00\u79CD\u6392\u6CD5\uFF08\u591A\u6392\u6807\u9898 + \u526F\u6807\u9898\u884C\uFF09\u3002\u5185\u5BB9\u533A\u53EF\u653E\u4EFB\u610F\u4E1A\u52A1\u7EC4\u4EF6\u3002"),
+              (0, import_react100.createElement)(Surface, { border: "faint", padding: "md", style: { marginTop: "12px", fontSize: "13px" } }, "\u4EFB\u610F\u5185\u5BB9\uFF0C\u4F8B\u5982\u4E00\u6BB5\u8BF4\u660E\u6216\u4E00\u4E2A\u4E1A\u52A1\u5361\u7247\u3002")
             )
           ) : null
         ),
         // 异步按钮 + busy：按钮自己转圈，把「在跑」报给 Modal，三条关闭路径一起封死
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           null,
-          (0, import_react101.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "footer \u5F02\u6B65\uFF08\u4FDD\u5B58\u65F6\u6574\u6846\u9501\u6B7B\uFF09"),
-          (0, import_react101.createElement)(Button, { variant: "outline", onClick: () => setAsyncOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5F02\u6B65\u4FDD\u5B58\uFF09"),
-          asyncOpen ? (0, import_react101.createElement)(
+          (0, import_react100.createElement)("div", { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", marginBottom: "6px" } }, "footer \u5F02\u6B65\uFF08\u4FDD\u5B58\u65F6\u6574\u6846\u9501\u6B7B\uFF09"),
+          (0, import_react100.createElement)(Button, { variant: "outline", onClick: () => setAsyncOpen(true) }, "\u6253\u5F00\u5927\u5F39\u7A97\uFF08\u5F02\u6B65\u4FDD\u5B58\uFF09"),
+          asyncOpen ? (0, import_react100.createElement)(
             Modal,
             {
               title: "\u7F16\u8F91\u4EFB\u52A1",
               busy: saving,
               onClose: () => setAsyncOpen(false),
-              footer: (0, import_react101.createElement)(
+              footer: (0, import_react100.createElement)(
                 "div",
                 { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-                (0, import_react101.createElement)(Button, { variant: "outline", disabled: saving, onClick: () => setAsyncOpen(false) }, "\u53D6\u6D88"),
-                (0, import_react101.createElement)(Button, {
+                (0, import_react100.createElement)(Button, { variant: "outline", disabled: saving, onClick: () => setAsyncOpen(false) }, "\u53D6\u6D88"),
+                (0, import_react100.createElement)(Button, {
                   variant: "primary",
                   onBusyChange: setSaving,
                   onClick: async () => {
@@ -73195,70 +72844,70 @@ function FeedbackPage() {
                 }, "\u4FDD\u5B58")
               )
             },
-            (0, import_react101.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u70B9\u300C\u4FDD\u5B58\u300D\uFF1A\u6309\u94AE\u81EA\u5DF1\u8F6C\u5708\uFF0C\u540C\u65F6\u628A busy \u62A5\u7ED9\u5F39\u7A97 \u2014\u2014 \u906E\u7F69 / Esc / \u2715 \u5168\u90E8\u5931\u6548\uFF0C1.4 \u79D2\u540E\u5173\u95ED\u3002footer \u90A3\u6761\u5206\u9694\u7EBF\u7167\u65E7\uFF0C\u4E0D\u56E0\u5F02\u6B65\u6539\u53D8\u3002")
+            (0, import_react100.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.7" } }, "\u70B9\u300C\u4FDD\u5B58\u300D\uFF1A\u6309\u94AE\u81EA\u5DF1\u8F6C\u5708\uFF0C\u540C\u65F6\u628A busy \u62A5\u7ED9\u5F39\u7A97 \u2014\u2014 \u906E\u7F69 / Esc / \u2715 \u5168\u90E8\u5931\u6548\uFF0C1.4 \u79D2\u540E\u5173\u95ED\u3002footer \u90A3\u6761\u5206\u9694\u7EBF\u7167\u65E7\uFF0C\u4E0D\u56E0\u5F02\u6B65\u6539\u53D8\u3002")
           ) : null
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("exSideSheetTitle"), hint: t3("exSideSheetHint"), code: CODE_SIDE_SHEET },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react101.createElement)(Button, { onClick: () => {
+        (0, import_react100.createElement)(Button, { onClick: () => {
           setSheetCfg({ side: "left", footer: false });
           setSheetOpen(true);
         } }, "\u4ECE\u5DE6\u4FA7\u6ED1\u51FA"),
-        (0, import_react101.createElement)(Button, { variant: "outline", onClick: () => {
+        (0, import_react100.createElement)(Button, { variant: "outline", onClick: () => {
           setSheetCfg({ side: "right", footer: false });
           setSheetOpen(true);
         } }, "\u4ECE\u53F3\u4FA7\u6ED1\u51FA"),
-        (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => {
+        (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => {
           setSheetCfg({ side: "left", footer: true });
           setSheetOpen(true);
         } }, "\u5E26\u5E95\u680F"),
         // 常驻渲染 + open 布尔：关闭时才有收回去的动效（条件渲染会一卸载就没影）。
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           SideSheet,
           {
             open: sheetOpen,
             side: sheetCfg.side,
             title: "\u6587\u4EF6\u8BE6\u60C5",
-            extra: (0, import_react101.createElement)(Chip, null, "\u53EA\u8BFB"),
+            extra: (0, import_react100.createElement)(Chip, null, "\u53EA\u8BFB"),
             onClose: () => setSheetOpen(false),
             // 底栏按钮异步：转圈期间抽屉也锁死（busy 由按钮报上来）
             busy: sheetSaving,
-            footer: sheetCfg.footer ? (0, import_react101.createElement)(Button, { variant: "primary", onBusyChange: setSheetSaving, onClick: async () => {
+            footer: sheetCfg.footer ? (0, import_react100.createElement)(Button, { variant: "primary", onBusyChange: setSheetSaving, onClick: async () => {
               await demoWait(1e3);
               setSheetOpen(false);
             } }, "\u4FDD\u5B58\u5E76\u5173\u95ED") : void 0
           },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "10px", fontSize: "13px", lineHeight: "1.7" } },
-            (0, import_react101.createElement)("div", null, "\u76AE\u80A4\u548C PanelDock \u5206\u680F\u4E00\u6A21\u4E00\u6837\uFF08\u5934\u90E8 / \u8FB9\u6846 / \u62D6\u62FD\u6761 / \u9634\u5F71\uFF09\uFF0C\u5BBD\u5EA6\u9ED8\u8BA4\u5C31\u80FD\u62D6 \u2014\u2014 \u4F46\u5B83\u76D6\u5728\u9875\u9762\u4E0A\uFF0C\u4E3B\u533A\u5BBD\u5EA6\u4E0D\u53D8\u3002"),
-            (0, import_react101.createElement)("div", null, "\u6CA1\u6709\u6536\u8D77\uFF1A\u5173\u5C31\u662F\u5173\uFF08\u5206\u680F\u624D\u6709\u6536\u8D77\u94AE\u548C\u8D34\u8FB9\u7684\u8033\u6735\uFF09\u3002"),
-            (0, import_react101.createElement)(Surface, { border: "faint", padding: "md", style: { fontSize: "13px" } }, "\u5185\u5BB9\u968F\u4FBF\u653E\uFF1A\u6587\u4EF6\u6811\u3001\u8BE6\u60C5\u3001\u7B5B\u9009\u8868\u5355\u90FD\u884C\u3002")
+            (0, import_react100.createElement)("div", null, "\u76AE\u80A4\u548C PanelDock \u5206\u680F\u4E00\u6A21\u4E00\u6837\uFF08\u5934\u90E8 / \u8FB9\u6846 / \u62D6\u62FD\u6761 / \u9634\u5F71\uFF09\uFF0C\u5BBD\u5EA6\u9ED8\u8BA4\u5C31\u80FD\u62D6 \u2014\u2014 \u4F46\u5B83\u76D6\u5728\u9875\u9762\u4E0A\uFF0C\u4E3B\u533A\u5BBD\u5EA6\u4E0D\u53D8\u3002"),
+            (0, import_react100.createElement)("div", null, "\u6CA1\u6709\u6536\u8D77\uFF1A\u5173\u5C31\u662F\u5173\uFF08\u5206\u680F\u624D\u6709\u6536\u8D77\u94AE\u548C\u8D34\u8FB9\u7684\u8033\u6735\uFF09\u3002"),
+            (0, import_react100.createElement)(Surface, { border: "faint", padding: "md", style: { fontSize: "13px" } }, "\u5185\u5BB9\u968F\u4FBF\u653E\uFF1A\u6587\u4EF6\u6811\u3001\u8BE6\u60C5\u3001\u7B5B\u9009\u8868\u5355\u90FD\u884C\u3002")
           )
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("exHostModalTitle"), hint: t3("exHostModalHint"), code: CODE_HOST_MODAL },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: "8px" } },
-        (0, import_react101.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
-        (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => {
+        (0, import_react100.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(true) }, "\u6253\u5F00\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\uFF08\u7EC4\u4EF6\uFF09"),
+        (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => {
           void alertModal({ title: "\u5BBF\u4E3B\u63D0\u793A", message: '\u8FD9\u662F\u5BBF\u4E3B\u6837\u5F0F\u7684\u547D\u4EE4\u5F0F alert\uFF08skin:"host"\uFF09\uFF0C\u5173\u95ED\u5373\u786E\u8BA4' });
         } }, 'alertModal({skin:"host"})'),
-        (0, import_react101.createElement)(Button, { variant: "ghost", onClick: async () => {
+        (0, import_react100.createElement)(Button, { variant: "ghost", onClick: async () => {
           const ok = await confirmModal({ title: "\u5BBF\u4E3B\u786E\u8BA4\u6846", message: "\u5B98\u65B9 Modal \u5F39\u51FA\u7684\u786E\u8BA4\uFF08danger\uFF09", tone: "danger", confirmText: "\u5220\u9664", cancelText: "\u518D\u60F3\u60F3", skin: "host" });
           notify(ok ? "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u5220\u9664" : "\u5BBF\u4E3B confirm\uFF1A\u4F60\u70B9\u4E86\u53D6\u6D88");
         } }, 'confirmModal({skin:"host"})'),
-        openNative ? (0, import_react101.createElement)(
+        openNative ? (0, import_react100.createElement)(
           Official2.Modal,
           {
             open: openNative,
@@ -73267,22 +72916,22 @@ function FeedbackPage() {
             closeLabel: "\u5173\u95ED",
             description: "\u8FD9\u662F\u5BBF\u4E3B\u5185\u6838\u63D0\u4F9B\u7684 Modal\uFF0C\u4E0B\u9762\u4E00\u6BB5\u662F\u8C03\u7528\u65B9\u585E\u8FDB\u6765\u7684\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u8F93\u5165\u6846 + \u52FE\u9009\uFF09\u3002",
             contentClassName: "dshpc-native-demo-content",
-            footer: (0, import_react101.createElement)(
+            footer: (0, import_react100.createElement)(
               "div",
               { style: { display: "flex", justifyContent: "flex-end", gap: "8px" } },
-              (0, import_react101.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
-              (0, import_react101.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
-              (0, import_react101.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
+              (0, import_react100.createElement)(Button, { variant: "outline", onClick: () => setOpenNative(false) }, "\u53D6\u6D88"),
+              (0, import_react100.createElement)(Button, { variant: "danger", onClick: () => setOpenNative(false) }, "\u5220\u9664"),
+              (0, import_react100.createElement)(Button, { variant: "primary", onClick: () => setOpenNative(false) }, "\u786E\u8BA4")
             )
           },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "12px" } },
-            (0, import_react101.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
-            (0, import_react101.createElement)(
+            (0, import_react100.createElement)(Input, { value: nativeText, onChange: setNativeText, placeholder: "\u81EA\u5B9A\u4E49\u8F93\u5165\u6846\uFF08\u6765\u81EA core \u63A7\u4EF6\uFF09" }),
+            (0, import_react100.createElement)(
               "label",
               { style: { display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" } },
-              (0, import_react101.createElement)(Checkbox, { checked: false, onChange: () => {
+              (0, import_react100.createElement)(Checkbox, { checked: false, onChange: () => {
               } }),
               "\u81EA\u5B9A\u4E49\u52FE\u9009\u9879"
             )
@@ -73290,17 +72939,17 @@ function FeedbackPage() {
         ) : null
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("exToastNotifyTitle"), hint: t3("exToastNotifyHint"), code: CODE_TOAST_NOTIFY },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-        (0, import_react101.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
-        (0, import_react101.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
-        (0, import_react101.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
-        (0, import_react101.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(Button, { onClick: () => notify("\u5DF2\u4FDD\u5B58\u8349\u7A3F") }, "\u666E\u901A(info)"),
+        (0, import_react100.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u6210\u529F", { variant: "success" }) }, "\u6210\u529F"),
+        (0, import_react100.createElement)(Button, { onClick: () => notify("\u4FDD\u5B58\u5931\u8D25", { variant: "error" }) }, "\u5931\u8D25"),
+        (0, import_react100.createElement)(Button, { onClick: () => notify("\u78C1\u76D8\u7A7A\u95F4\u4E0D\u8DB3", { variant: "warning" }) }, "\u8B66\u544A"),
+        (0, import_react100.createElement)(
           Button,
           {
             onClick: () => notify("\u5DF2\u5220\u9664\u8BE5\u6587\u4EF6", {
@@ -73311,7 +72960,7 @@ function FeedbackPage() {
           },
           "\u5355\u6309\u94AE+\u63CF\u8FF0"
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Button,
           {
             onClick: () => notify("\u786E\u8BA4\u63D0\u4EA4\u5417\uFF1F", {
@@ -73325,7 +72974,7 @@ function FeedbackPage() {
           "\u53CC\u6309\u94AE"
         ),
         // 广播：交给通知中心，同源每个页面各弹一条（本页也靠接收端弹，不会重复）
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           Button,
           {
             variant: "outline",
@@ -73339,29 +72988,29 @@ function FeedbackPage() {
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("exLoaderTitle"), hint: t3("exLoaderHint"), code: CODE_LOADER },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
         ...LOADER_VARIANTS.map(
-          (variant) => (0, import_react101.createElement)(
+          (variant) => (0, import_react100.createElement)(
             "div",
             { key: variant, style: { display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" } },
-            (0, import_react101.createElement)(
+            (0, import_react100.createElement)(
               "span",
               { style: { width: "56px", color: "var(--dshpc-fg-3)", fontSize: "var(--dshpc-font-xs)" } },
               variant
             ),
-            ...LOADER_SIZES.map((size4) => (0, import_react101.createElement)(Loader, { key: size4, variant, size: size4 }))
+            ...LOADER_SIZES.map((size4) => (0, import_react100.createElement)(Loader, { key: size4, variant, size: size4 }))
           )
         ),
         // 背景 / 定位 / 颜色都由调用方配：组件本身只是裸图标
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" } },
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             "span",
             {
               style: {
@@ -73371,9 +73020,9 @@ function FeedbackPage() {
                 background: "var(--dshpc-surface-sunken)"
               }
             },
-            (0, import_react101.createElement)(Loader, { size: "sm" })
+            (0, import_react100.createElement)(Loader, { size: "sm" })
           ),
-          (0, import_react101.createElement)(
+          (0, import_react100.createElement)(
             Surface,
             {
               padding: null,
@@ -73386,56 +73035,56 @@ function FeedbackPage() {
                 fontSize: "var(--dshpc-font-xs)"
               }
             },
-            (0, import_react101.createElement)(Loader, { variant: "blocks", size: "sm" }),
+            (0, import_react100.createElement)(Loader, { variant: "blocks", size: "sm" }),
             "\u6B63\u5728\u540C\u6B65"
           ),
-          (0, import_react101.createElement)("span", { style: { color: "var(--dshpc-business)" } }, (0, import_react101.createElement)(Loader, { size: "lg" }))
+          (0, import_react100.createElement)("span", { style: { color: "var(--dshpc-business)" } }, (0, import_react100.createElement)(Loader, { size: "lg" }))
         ),
         // 同族的胶囊不定进度：三档尺寸
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" } },
-          (0, import_react101.createElement)(LoaderBar, { size: "sm" }),
-          (0, import_react101.createElement)(LoaderBar, { size: "md" }),
-          (0, import_react101.createElement)(LoaderBar, { size: "lg" })
+          (0, import_react100.createElement)(LoaderBar, { size: "sm" }),
+          (0, import_react100.createElement)(LoaderBar, { size: "md" }),
+          (0, import_react100.createElement)(LoaderBar, { size: "lg" })
         )
       )
     ),
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: t3("exLoadingTitle"), hint: t3("exLoadingHint"), code: CODE_LOADING },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "16px" } },
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" } },
-          (0, import_react101.createElement)(LoadingToast, null),
-          (0, import_react101.createElement)(LoadingBlock, { text: "\u5904\u7406\u4E2D" })
+          (0, import_react100.createElement)(LoadingToast, null),
+          (0, import_react100.createElement)(LoadingBlock, { text: "\u5904\u7406\u4E2D" })
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-          (0, import_react101.createElement)(Button, { onClick: () => flash() }, "\u5168\u5C40 toast\uFF081.2s\uFF09"),
-          (0, import_react101.createElement)(Button, { variant: "outline", onClick: () => flash({ variant: "block", text: "\u5904\u7406\u4E2D\u2026" }) }, "\u5168\u5C40 block\uFF081.2s\uFF09"),
-          (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u906E\u7F69 0.3", mask: true, maskOpacity: 0.3 }) }, "\u906E\u7F69 0.3"),
-          (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u900F\u660E\u906E\u7F69", mask: true }) }, "\u906E\u7F69\u900F\u660E\uFF08\u4ECD\u6321\u4F4F\u70B9\u51FB\uFF09")
+          (0, import_react100.createElement)(Button, { onClick: () => flash() }, "\u5168\u5C40 toast\uFF081.2s\uFF09"),
+          (0, import_react100.createElement)(Button, { variant: "outline", onClick: () => flash({ variant: "block", text: "\u5904\u7406\u4E2D\u2026" }) }, "\u5168\u5C40 block\uFF081.2s\uFF09"),
+          (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u906E\u7F69 0.3", mask: true, maskOpacity: 0.3 }) }, "\u906E\u7F69 0.3"),
+          (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => flash({ text: "\u900F\u660E\u906E\u7F69", mask: true }) }, "\u906E\u7F69\u900F\u660E\uFF08\u4ECD\u6321\u4F4F\u70B9\u51FB\uFF09")
         ),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(
           "div",
           { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
-          (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-left", text: "top-left" }) }, "top-left"),
-          (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-center", text: "top-center" }) }, "top-center"),
-          (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-right", text: "top-right" }) }, "top-right"),
-          (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "center", text: "center" }) }, "center"),
-          (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-left", text: "bottom-left" }) }, "bottom-left"),
-          (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-center", text: "bottom-center\uFF08\u9ED8\u8BA4\uFF09" }) }, "bottom-center"),
-          (0, import_react101.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-right", text: "bottom-right" }) }, "bottom-right")
+          (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-left", text: "top-left" }) }, "top-left"),
+          (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-center", text: "top-center" }) }, "top-center"),
+          (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "top-right", text: "top-right" }) }, "top-right"),
+          (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "center", text: "center" }) }, "center"),
+          (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-left", text: "bottom-left" }) }, "bottom-left"),
+          (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-center", text: "bottom-center\uFF08\u9ED8\u8BA4\uFF09" }) }, "bottom-center"),
+          (0, import_react100.createElement)(Button, { variant: "ghost", onClick: () => flash({ position: "bottom-right", text: "bottom-right" }) }, "bottom-right")
         )
       )
     ),
-    (0, import_react101.createElement)(DocCode, { id: "feedback" }),
-    (0, import_react101.createElement)(DocApi, { id: "feedback" })
+    (0, import_react100.createElement)(DocCode, { id: "feedback" }),
+    (0, import_react100.createElement)(DocApi, { id: "feedback" })
   );
 }
 var CODE_DOCK = `// 1) \u5EFA\u4E00\u4E2A dock \u63A7\u5236\u5668\uFF08\u5E94\u7528\u7EA7\u5355\u4F8B\uFF1BmaxPanels \u9ED8\u8BA4 3\uFF09
@@ -73467,8 +73116,8 @@ dock.isCollapsed('files')
 // 4) \u8BA2\u9605\u72B6\u6001\u9A71\u52A8 UI\uFF08React\uFF09
 const state = useSyncExternalStore(dock.subscribe, dock.getSnapshot, dock.getSnapshot)`;
 function LayoutPage() {
-  const state = (0, import_react101.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
-  const [notice, setNotice] = (0, import_react101.useState)(null);
+  const state = (0, import_react100.useSyncExternalStore)(demoDock.subscribe, demoDock.getSnapshot, demoDock.getSnapshot);
+  const [notice, setNotice] = (0, import_react100.useState)(null);
   const open = (id3) => {
     const result = demoDock.open(id3);
     setNotice(result.ok ? null : t3("dockLimitWarn"));
@@ -73483,23 +73132,23 @@ function LayoutPage() {
   };
   const opened = state.ids;
   const collapsedIds = state.collapsed;
-  return (0, import_react101.createElement)(
+  return (0, import_react100.createElement)(
     "div",
     null,
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: "PanelDock", hint: t3("dockHint"), code: CODE_DOCK },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" } },
-        (0, import_react101.createElement)(Button, { size: "sm", onClick: () => open("A") }, t3("dockBtnOpenA")),
-        (0, import_react101.createElement)(Button, { size: "sm", onClick: () => open("B") }, t3("dockBtnOpenB")),
-        (0, import_react101.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t3("dockBtnOpenA2")),
-        (0, import_react101.createElement)(Button, { size: "sm", onClick: () => close("A") }, t3("dockBtnCloseA")),
-        (0, import_react101.createElement)(Button, { size: "sm", onClick: () => collapse("A") }, t3("dockBtnCollapseA")),
-        (0, import_react101.createElement)(Button, { size: "sm", onClick: () => open("default") }, t3("dockBtnDefault")),
-        (0, import_react101.createElement)(Button, { size: "sm", onClick: () => open("C") }, t3("dockBtnOpenC")),
-        (0, import_react101.createElement)(
+        (0, import_react100.createElement)(Button, { size: "sm", onClick: () => open("A") }, t3("dockBtnOpenA")),
+        (0, import_react100.createElement)(Button, { size: "sm", onClick: () => open("B") }, t3("dockBtnOpenB")),
+        (0, import_react100.createElement)(Button, { size: "sm", variant: "primary", onClick: () => open("A") }, t3("dockBtnOpenA2")),
+        (0, import_react100.createElement)(Button, { size: "sm", onClick: () => close("A") }, t3("dockBtnCloseA")),
+        (0, import_react100.createElement)(Button, { size: "sm", onClick: () => collapse("A") }, t3("dockBtnCollapseA")),
+        (0, import_react100.createElement)(Button, { size: "sm", onClick: () => open("default") }, t3("dockBtnDefault")),
+        (0, import_react100.createElement)(Button, { size: "sm", onClick: () => open("C") }, t3("dockBtnOpenC")),
+        (0, import_react100.createElement)(
           Button,
           {
             size: "sm",
@@ -73512,21 +73161,21 @@ function LayoutPage() {
           t3("dockBtnReset")
         )
       ),
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { fontSize: "12px", color: "var(--dshpc-fg-3)" } },
         `${t3("dockOpened")}${opened.length === 0 ? "\u2014" : opened.join(", ")}`,
         collapsedIds.length === 0 ? "" : `\u3000${t3("dockCollapsed")}${collapsedIds.join(", ")}`,
         notice === null ? "" : `\u3000${notice}`
       ),
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { marginTop: "10px", fontSize: "12px", color: "var(--dshpc-fg-3)", lineHeight: "1.9" } },
         t3("dockMainText")
       )
     ),
-    (0, import_react101.createElement)(DocCode, { id: "layout" }),
-    (0, import_react101.createElement)(DocApi, { id: "layout" })
+    (0, import_react100.createElement)(DocCode, { id: "layout" }),
+    (0, import_react100.createElement)(DocApi, { id: "layout" })
   );
 }
 var RANGE_PRESETS = [
@@ -73561,44 +73210,44 @@ h(DateTimePicker, {
   width: 320,
 })`;
 function DateTimePage() {
-  const [singleDay, setSingleDay] = (0, import_react101.useState)(null);
-  const [singleMinute, setSingleMinute] = (0, import_react101.useState)(null);
-  const [rangeDay, setRangeDay] = (0, import_react101.useState)(null);
-  const [rangeSecond, setRangeSecond] = (0, import_react101.useState)(null);
-  const [rangePreset, setRangePreset] = (0, import_react101.useState)(null);
-  return (0, import_react101.createElement)(
+  const [singleDay, setSingleDay] = (0, import_react100.useState)(null);
+  const [singleMinute, setSingleMinute] = (0, import_react100.useState)(null);
+  const [rangeDay, setRangeDay] = (0, import_react100.useState)(null);
+  const [rangeSecond, setRangeSecond] = (0, import_react100.useState)(null);
+  const [rangePreset, setRangePreset] = (0, import_react100.useState)(null);
+  return (0, import_react100.createElement)(
     "div",
     null,
-    (0, import_react101.createElement)(
+    (0, import_react100.createElement)(
       Example,
       { title: "DateTimePicker", hint: t3("dateTimePickerHint"), code: CODE_DATETIME },
-      (0, import_react101.createElement)(
+      (0, import_react100.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "flex-start" } },
-        (0, import_react101.createElement)(DateTimePicker, {
+        (0, import_react100.createElement)(DateTimePicker, {
           precision: "day",
           value: singleDay,
           onChange: (v) => setSingleDay(v)
         }),
-        (0, import_react101.createElement)(DateTimePicker, {
+        (0, import_react100.createElement)(DateTimePicker, {
           precision: "minute",
           value: singleMinute,
           onChange: (v) => setSingleMinute(v)
         }),
-        (0, import_react101.createElement)(DateTimePicker, {
+        (0, import_react100.createElement)(DateTimePicker, {
           mode: "range",
           precision: "day",
           value: rangeDay,
           onChange: (v) => setRangeDay(v)
         }),
-        (0, import_react101.createElement)(DateTimePicker, {
+        (0, import_react100.createElement)(DateTimePicker, {
           mode: "range",
           precision: "second",
           value: rangeSecond,
           onChange: (v) => setRangeSecond(v),
           presets: RANGE_PRESETS
         }),
-        (0, import_react101.createElement)(DateTimePicker, {
+        (0, import_react100.createElement)(DateTimePicker, {
           mode: "range",
           precision: "day",
           value: rangePreset,
@@ -73606,7 +73255,7 @@ function DateTimePage() {
           width: 320,
           presets: RANGE_PRESETS
         }),
-        (0, import_react101.createElement)(DateTimePicker, {
+        (0, import_react100.createElement)(DateTimePicker, {
           precision: "minute",
           value: singleMinute,
           onChange: (v) => setSingleMinute(v),
@@ -73614,13 +73263,13 @@ function DateTimePage() {
         })
       )
     ),
-    (0, import_react101.createElement)(DocCode, { id: "datetime-picker" }),
-    (0, import_react101.createElement)(DocApi, { id: "datetime-picker" })
+    (0, import_react100.createElement)(DocCode, { id: "datetime-picker" }),
+    (0, import_react100.createElement)(DocApi, { id: "datetime-picker" })
   );
 }
 
 // packages/demo/src/sections/blocks.tsx
-var import_react102 = require("react");
+var import_react101 = require("react");
 var CODE_OPEN = `// \u53F3\u4FA7\u5206\u680F\u9884\u89C8\uFF08\u5360\u5BBD\u5EA6\u3001\u6324\u7A84\u4E3B\u533A\uFF1B\u4E0D\u662F\u6D6E\u5C42\uFF09
 import {
   openFilePreview,
@@ -73687,13 +73336,13 @@ import {
   SessionViewModal,
 } from 'dsh-plugin-core/adv/session'`;
 function useExplorerHost() {
-  const { workspaceFiles: workspaceFiles2, officeToPdf } = (0, import_react102.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
-  const wsItems = (0, import_react102.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const { workspaceFiles: workspaceFiles2, officeToPdf } = (0, import_react101.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react101.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
   return { workspaceFiles: workspaceFiles2, officeToPdf, anchor, workspaceNames: wsItems.map((w) => w.title) };
 }
 function NotReady(props) {
-  return (0, import_react102.createElement)(
+  return (0, import_react101.createElement)(
     "div",
     { style: { fontSize: "13px", color: "var(--dshpc-fg-3)" } },
     t3(props.which === "files" ? "explorerFilesNone" : "explorerAnchorNone")
@@ -73701,9 +73350,9 @@ function NotReady(props) {
 }
 function OpenPreviewDemo() {
   const { workspaceFiles: workspaceFiles2, anchor, workspaceNames } = useExplorerHost();
-  const [last2, setLast] = (0, import_react102.useState)(null);
-  if (workspaceFiles2 === null) return (0, import_react102.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react102.createElement)(NotReady, { which: "anchor" });
+  const [last2, setLast] = (0, import_react101.useState)(null);
+  if (workspaceFiles2 === null) return (0, import_react101.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react101.createElement)(NotReady, { which: "anchor" });
   const open = (path, rootName, workspaces) => {
     const mount = pageRow.element;
     if (mount === null) {
@@ -73713,12 +73362,12 @@ function OpenPreviewDemo() {
     openFilePreview({ mount, sessionId: anchor.sessionId, path, rootName, workspaces });
     setLast(path === "" ? `${rootName}\uFF08\u6839\uFF09` : path);
   };
-  return (0, import_react102.createElement)(
+  return (0, import_react101.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react102.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t3("openRootPreview")),
-    last2 === null ? null : (0, import_react102.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
-    (0, import_react102.createElement)(
+    (0, import_react101.createElement)(Button, { variant: "primary", onClick: () => open("", anchor.title, workspaceNames) }, t3("openRootPreview")),
+    last2 === null ? null : (0, import_react101.createElement)("code", { style: { fontSize: "12px" } }, `\u5DF2\u6253\u5F00\uFF1A${last2}`),
+    (0, import_react101.createElement)(
       "div",
       { style: { fontSize: "12px", color: "var(--dshpc-fg-3)", width: "100%" } },
       `${t3("explorerAnchorLabel")}${anchor.title} \xB7 ${t3("explorerSessionLabel")}${anchor.sessionId} \xB7 ${t3("explorerWorkspaces")}${String(workspaceNames.length)}`
@@ -73727,9 +73376,9 @@ function OpenPreviewDemo() {
 }
 function PickFileDemo() {
   const { workspaceFiles: workspaceFiles2, anchor } = useExplorerHost();
-  const [picked, setPicked] = (0, import_react102.useState)(null);
-  if (workspaceFiles2 === null) return (0, import_react102.createElement)(NotReady, { which: "files" });
-  if (anchor === null) return (0, import_react102.createElement)(NotReady, { which: "anchor" });
+  const [picked, setPicked] = (0, import_react101.useState)(null);
+  if (workspaceFiles2 === null) return (0, import_react101.createElement)(NotReady, { which: "files" });
+  if (anchor === null) return (0, import_react101.createElement)(NotReady, { which: "anchor" });
   const pick2 = (anchorBtn, filter2) => {
     void pickWorkspaceFile({
       anchor: anchorBtn,
@@ -73738,10 +73387,10 @@ function PickFileDemo() {
       // 目录补尾斜杠只补一次：根 `/`、盘符 `C:/` 自己就带着，再补就成了 `//` / `C://`。
     }).then((r2) => setPicked(r2 === null ? null : r2.path + (r2.isDir && !r2.path.endsWith("/") ? "/" : "")));
   };
-  return (0, import_react102.createElement)(
+  return (0, import_react101.createElement)(
     "div",
     { style: { display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" } },
-    (0, import_react102.createElement)(
+    (0, import_react101.createElement)(
       Button,
       {
         variant: "primary",
@@ -73749,7 +73398,7 @@ function PickFileDemo() {
       },
       t3("pickAny")
     ),
-    (0, import_react102.createElement)(
+    (0, import_react101.createElement)(
       Button,
       {
         variant: "secondary",
@@ -73758,7 +73407,7 @@ function PickFileDemo() {
       t3("pickJsMd")
     ),
     // 需求一（2026-11-03）：只选文件夹 —— 文件不渲染，目录行尾「选择」+ 面包屑行「选择此文件夹」。
-    (0, import_react102.createElement)(
+    (0, import_react101.createElement)(
       Button,
       {
         variant: "outline",
@@ -73766,18 +73415,18 @@ function PickFileDemo() {
       },
       t3("pickDir")
     ),
-    (0, import_react102.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t3("pickNone") : `${t3("pickResult")}${picked}`)
+    (0, import_react101.createElement)("code", { style: { fontSize: "12px" } }, picked === null ? t3("pickNone") : `${t3("pickResult")}${picked}`)
   );
 }
 function RealSessionListDemo() {
-  const state = (0, import_react102.useSyncExternalStore)(realSessions.subscribe, realSessions.getSnapshot);
-  const files = (0, import_react102.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
-  const wsItems = (0, import_react102.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
-  const archivedIds = (0, import_react102.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getArchiveSnapshot);
+  const state = (0, import_react101.useSyncExternalStore)(realSessions.subscribe, realSessions.getSnapshot);
+  const files = (0, import_react101.useSyncExternalStore)(fileServices.subscribe, fileServices.getSnapshot);
+  const wsItems = (0, import_react101.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot);
+  const archivedIds = (0, import_react101.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getArchiveSnapshot);
   const anchor = pickWorkspaceAnchor(wsItems);
-  const [openId, setOpenId] = (0, import_react102.useState)(null);
-  const [activeId, setActiveId] = (0, import_react102.useState)(null);
-  const view = (0, import_react102.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
+  const [openId, setOpenId] = (0, import_react101.useState)(null);
+  const [activeId, setActiveId] = (0, import_react101.useState)(null);
+  const view = (0, import_react101.useMemo)(() => openId === null ? null : openRealSessionView(openId), [openId]);
   const workspaceFiles2 = files.workspaceFiles;
   const canOpenFile = workspaceFiles2 !== null && anchor !== null;
   const displayTitle = openId === null ? void 0 : state.rows.find((row2) => row2.sessionId === openId)?.displayTitle;
@@ -73804,16 +73453,16 @@ function RealSessionListDemo() {
     openSessionReview({ mount, locator: loc });
   };
   if (state.status !== "ready") {
-    return (0, import_react102.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListUnavailable"));
+    return (0, import_react101.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListUnavailable"));
   }
   if (state.rows.length === 0) {
-    return (0, import_react102.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListEmpty"));
+    return (0, import_react101.createElement)("p", { style: { fontSize: "13px", opacity: 0.8 } }, t3("sessionListEmpty"));
   }
-  return (0, import_react102.createElement)(
+  return (0, import_react101.createElement)(
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "6px", maxWidth: "720px" } },
     ...state.rows.map(
-      (row2) => (0, import_react102.createElement)(
+      (row2) => (0, import_react101.createElement)(
         ListRow,
         {
           key: row2.sessionId,
@@ -73823,48 +73472,48 @@ function RealSessionListDemo() {
             setActiveId(row2.sessionId);
             setOpenId(row2.sessionId);
           },
-          actions: (0, import_react102.createElement)(
+          actions: (0, import_react101.createElement)(
             "span",
             { style: { fontSize: "var(--dshpc-font-sm)", color: "var(--dshpc-fg-3)" } },
             formatDateTime(new Date(row2.updatedAt).toISOString())
           )
         },
-        (0, import_react102.createElement)(
+        (0, import_react101.createElement)(
           "div",
           { style: { display: "flex", alignItems: "center", gap: "8px", minWidth: 0 } },
-          (0, import_react102.createElement)("span", { style: { flex: "1 1 auto", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, row2.displayTitle),
-          row2.running ? (0, import_react102.createElement)(Chip, { size: "xs", tone: "warning" }, t3("sessionListRunning")) : null,
-          archivedIds.includes(row2.sessionId) ? (0, import_react102.createElement)(
+          (0, import_react101.createElement)("span", { style: { flex: "1 1 auto", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, row2.displayTitle),
+          row2.running ? (0, import_react101.createElement)(Chip, { size: "xs", tone: "warning" }, t3("sessionListRunning")) : null,
+          archivedIds.includes(row2.sessionId) ? (0, import_react101.createElement)(
             Chip,
             { size: "xs" },
-            (0, import_react102.createElement)(
+            (0, import_react101.createElement)(
               "span",
               { style: { display: "inline-flex", alignItems: "center", gap: "4px" } },
-              (0, import_react102.createElement)(Icon, { name: "common.base:shoucang", size: 12 }),
+              (0, import_react101.createElement)(Icon, { name: "common.base:shoucang", size: 12 }),
               t3("sessionListArchived")
             )
           ) : null
         )
       )
     ),
-    openId !== null && view !== null ? (0, import_react102.createElement)(SessionViewModal, {
+    openId !== null && view !== null ? (0, import_react101.createElement)(SessionViewModal, {
       sessionId: openId,
       view,
       // 插槽示例只挂在列表**第一个**会话上；其它会话不传 = 与旧版默认形态一致，对比着看更直观。
       // 标题行自定义（一级）：会话自己的标题 + 一枚标签；副标题 sessionId 仍由核心画。
       // 混排文字与徽标要用 inline-flex + align-items:center，否则徽标会贴基线（看着往下沉）。
-      title: withSlots ? (0, import_react102.createElement)(
+      title: withSlots ? (0, import_react101.createElement)(
         "span",
         { style: { display: "inline-flex", alignItems: "center", gap: "6px" } },
         displayTitle ?? "",
-        (0, import_react102.createElement)(Chip, { size: "xs", tone: "success" }, t3("sessionSlotTitle"))
+        (0, import_react101.createElement)(Chip, { size: "xs", tone: "success" }, t3("sessionSlotTitle"))
       ) : void 0,
       heading: withSlots ? void 0 : displayTitle,
       // 头部右侧追加动作：排在核心「继续对话」左边（继续对话与 ✕ 恒居右）。
-      headerActions: withSlots ? (0, import_react102.createElement)(Button, { variant: "outline", size: "sm" }, t3("sessionSlotAction")) : void 0,
+      headerActions: withSlots ? (0, import_react101.createElement)(Button, { variant: "outline", size: "sm" }, t3("sessionSlotAction")) : void 0,
       // 正文顶端 / 底端插槽：都在会话滚动容器内，随会话一起滚。
-      bodyHeader: withSlots ? (0, import_react102.createElement)(Chip, { size: "sm", tone: "warning" }, t3("sessionSlotHeader")) : void 0,
-      bodyFooter: withSlots ? (0, import_react102.createElement)(Chip, { size: "sm", tone: "success" }, t3("sessionSlotFooter")) : void 0,
+      bodyHeader: withSlots ? (0, import_react101.createElement)(Chip, { size: "sm", tone: "warning" }, t3("sessionSlotHeader")) : void 0,
+      bodyFooter: withSlots ? (0, import_react101.createElement)(Chip, { size: "sm", tone: "success" }, t3("sessionSlotFooter")) : void 0,
       onClose: () => {
         view.dispose();
         setOpenId(null);
@@ -73885,38 +73534,38 @@ function RealSessionListDemo() {
   );
 }
 function ExplorerPage() {
-  return (0, import_react102.createElement)(
+  return (0, import_react101.createElement)(
     "div",
     null,
-    (0, import_react102.createElement)(
+    (0, import_react101.createElement)(
       Example,
       { title: t3("methodATitle"), hint: t3("methodAHint"), code: CODE_OPEN },
-      (0, import_react102.createElement)(OpenPreviewDemo, null)
+      (0, import_react101.createElement)(OpenPreviewDemo, null)
     ),
-    (0, import_react102.createElement)(
+    (0, import_react101.createElement)(
       Example,
       { title: t3("methodBTitle"), hint: t3("methodBHint"), code: CODE_PICK },
-      (0, import_react102.createElement)(PickFileDemo, null)
+      (0, import_react101.createElement)(PickFileDemo, null)
     ),
-    (0, import_react102.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
-    (0, import_react102.createElement)(DocApi, { id: "explorer" })
+    (0, import_react101.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_BLOCKS_USAGE }),
+    (0, import_react101.createElement)(DocApi, { id: "explorer" })
   );
 }
 function SessionPage() {
-  return (0, import_react102.createElement)(
+  return (0, import_react101.createElement)(
     "div",
     null,
-    (0, import_react102.createElement)(
+    (0, import_react101.createElement)(
       Example,
       { title: t3("sessionRealTitle"), hint: t3("sessionRealHint"), code: CODE_SESSION_REAL },
-      (0, import_react102.createElement)(RealSessionListDemo, null)
+      (0, import_react101.createElement)(RealSessionListDemo, null)
     ),
-    (0, import_react102.createElement)(DocApi, { id: "session" })
+    (0, import_react101.createElement)(DocApi, { id: "session" })
   );
 }
 
 // packages/demo/src/sections/tables.tsx
-var import_react103 = require("react");
+var import_react102 = require("react");
 var H_SCROLL = {
   className: "dshpc-scroll-thin dshpc-scroll-thin--x",
   style: { overflowX: "auto" }
@@ -73963,10 +73612,10 @@ var PEOPLE = [
   { id: "S-2429", name: "Deng, Qian", mrn: "MRN-61248", age: "33 / F", date: "2026-10-19", modality: "US", flags: [], tone: "success", state: "Reviewed" }
 ];
 function personCell(person) {
-  return (0, import_react103.createElement)(
+  return (0, import_react102.createElement)(
     "div",
     { style: { display: "flex", alignItems: "center", gap: "8px", minWidth: 0 } },
-    (0, import_react103.createElement)(
+    (0, import_react102.createElement)(
       "div",
       {
         style: {
@@ -73985,11 +73634,11 @@ function personCell(person) {
       },
       person.name.slice(0, 1)
     ),
-    (0, import_react103.createElement)(
+    (0, import_react102.createElement)(
       "div",
       { style: { display: "flex", flexDirection: "column", minWidth: 0 } },
-      (0, import_react103.createElement)("span", null, person.name),
-      (0, import_react103.createElement)(
+      (0, import_react102.createElement)("span", null, person.name),
+      (0, import_react102.createElement)(
         "span",
         { style: { fontSize: "var(--dshpc-font-xs)", color: "var(--dshpc-fg-3)" } },
         person.mrn
@@ -73998,8 +73647,8 @@ function personCell(person) {
   );
 }
 function rowsOf() {
-  const actions2 = (0, import_react103.createElement)(IconButton, {
-    icon: (0, import_react103.createElement)(Icon, { name: "common.base:move-down" }),
+  const actions2 = (0, import_react102.createElement)(IconButton, {
+    icon: (0, import_react102.createElement)(Icon, { name: "common.base:move-down" }),
     label: "Open study"
   });
   return PEOPLE.map((person) => ({
@@ -74009,13 +73658,13 @@ function rowsOf() {
       name: personCell(person),
       age: person.age,
       date: person.date,
-      modality: (0, import_react103.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality),
+      modality: (0, import_react102.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality),
       // 多标签：标签之间的间距由调用方布局控制（这里 4px），列内距走列级 padding:8
-      flags: person.flags.length === 0 ? null : (0, import_react103.createElement)(
+      flags: person.flags.length === 0 ? null : (0, import_react102.createElement)(
         "div",
         { style: { display: "flex", gap: "4px", flexWrap: "wrap" } },
         ...person.flags.map(
-          (flag) => (0, import_react103.createElement)(
+          (flag) => (0, import_react102.createElement)(
             Chip,
             {
               key: flag,
@@ -74026,7 +73675,7 @@ function rowsOf() {
           )
         )
       ),
-      status: (0, import_react103.createElement)(Chip, { tone: person.tone, size: "xs" }, person.state),
+      status: (0, import_react102.createElement)(Chip, { tone: person.tone, size: "xs" }, person.state),
       actions: actions2
     }
   }));
@@ -74091,21 +73740,21 @@ var GROUPS = WORKSPACES.map((workspace) => ({
     cells: {
       task: task.title,
       owner: task.owner,
-      state: (0, import_react103.createElement)(Chip, { tone: task.tone, size: "xs" }, task.state),
+      state: (0, import_react102.createElement)(Chip, { tone: task.tone, size: "xs" }, task.state),
       updated: task.updated
     }
   }))
 }));
 function TablePage() {
-  const [selected, setSelected] = (0, import_react103.useState)("S-2418");
-  const [spanSelected, setSpanSelected] = (0, import_react103.useState)("c");
-  const [groupSelected, setGroupSelected] = (0, import_react103.useState)("a2");
-  const [groupAccentOn, setGroupAccentOn] = (0, import_react103.useState)(true);
-  const [groupAccent, setGroupAccent] = (0, import_react103.useState)("default");
-  const [pagerPage, setPagerPage] = (0, import_react103.useState)(1);
-  const [pagerSize, setPagerSize] = (0, import_react103.useState)(10);
-  const [demoShowTotal] = (0, import_react103.useState)(true);
-  const [loadState, setLoadState] = (0, import_react103.useState)("idle");
+  const [selected, setSelected] = (0, import_react102.useState)("S-2418");
+  const [spanSelected, setSpanSelected] = (0, import_react102.useState)("c");
+  const [groupSelected, setGroupSelected] = (0, import_react102.useState)("a2");
+  const [groupAccentOn, setGroupAccentOn] = (0, import_react102.useState)(true);
+  const [groupAccent, setGroupAccent] = (0, import_react102.useState)("default");
+  const [pagerPage, setPagerPage] = (0, import_react102.useState)(1);
+  const [pagerSize, setPagerSize] = (0, import_react102.useState)(10);
+  const [demoShowTotal] = (0, import_react102.useState)(true);
+  const [loadState, setLoadState] = (0, import_react102.useState)("idle");
   const loadColumns = [
     { key: "name", title: "Patient", width: 240 },
     { key: "date", title: "Date", width: 120 },
@@ -74116,14 +73765,14 @@ function TablePage() {
     cells: {
       name: personCell(person),
       date: person.date,
-      modality: (0, import_react103.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality)
+      modality: (0, import_react102.createElement)(Chip, { tone: MODALITY_TONE[person.modality], size: "xs" }, person.modality)
     }
   }));
   const pagerOnChange = (page, size4) => {
     setPagerPage(page);
     setPagerSize(size4);
   };
-  const renderLoadTable = (borders) => (0, import_react103.createElement)(Table, {
+  const renderLoadTable = (borders) => (0, import_react102.createElement)(Table, {
     columns: loadColumns,
     rows: loadState === "loading" ? [] : loadRows,
     borders,
@@ -74137,18 +73786,18 @@ function TablePage() {
     ariaLabel: "Patients loaded incrementally",
     style: { maxWidth: "640px" }
   });
-  return (0, import_react103.createElement)(
+  return (0, import_react102.createElement)(
     "div",
     null,
     // 表格较宽：示例区占满整栏（代码放页面底部），并在窄屏时横向滚动。
     // 空态不放成第二个示例 —— 直接接在主表下方，同一区块里展示「有数据 / 没数据」。
-    (0, import_react103.createElement)(
+    (0, import_react102.createElement)(
       Example,
       { title: "Table", hint: t3("tableHint") },
-      (0, import_react103.createElement)(
+      (0, import_react102.createElement)(
         "div",
         { ...H_SCROLL },
-        (0, import_react103.createElement)(Table, {
+        (0, import_react102.createElement)(Table, {
           columns: COLUMNS,
           rows: rowsOf(),
           striped: true,
@@ -74160,10 +73809,10 @@ function TablePage() {
           style: { minWidth: 960 }
         })
       ),
-      (0, import_react103.createElement)(
+      (0, import_react102.createElement)(
         "div",
         { ...H_SCROLL, style: { ...H_SCROLL.style, marginTop: "16px" } },
-        (0, import_react103.createElement)(Table, {
+        (0, import_react102.createElement)(Table, {
           columns: COLUMNS,
           rows: [],
           borders: "all",
@@ -74172,13 +73821,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react103.createElement)(
+    (0, import_react102.createElement)(
       Example,
       { title: "Density \xB7 borders \xB7 spans", hint: t3("tableSpanHint") },
-      (0, import_react103.createElement)(
+      (0, import_react102.createElement)(
         "div",
         { ...H_SCROLL },
-        (0, import_react103.createElement)(Table, {
+        (0, import_react102.createElement)(Table, {
           columns: SPAN_COLUMNS,
           rows: SPAN_ROWS,
           density: "compact",
@@ -74190,13 +73839,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react103.createElement)(
+    (0, import_react102.createElement)(
       Example,
       { title: "Groups \xB7 \u901A\u680F", hint: t3("tableGroupHint") },
-      (0, import_react103.createElement)(
+      (0, import_react102.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
-        (0, import_react103.createElement)(Segmented, {
+        (0, import_react102.createElement)(Segmented, {
           size: "sm",
           items: [
             { value: "default", label: "\u9ED8\u8BA4" },
@@ -74207,12 +73856,12 @@ function TablePage() {
           value: groupAccent,
           onChange: setGroupAccent
         }),
-        (0, import_react103.createElement)(Checkbox, { checked: groupAccentOn, onChange: setGroupAccentOn, label: "groupAccent" })
+        (0, import_react102.createElement)(Checkbox, { checked: groupAccentOn, onChange: setGroupAccentOn, label: "groupAccent" })
       ),
-      (0, import_react103.createElement)(
+      (0, import_react102.createElement)(
         "div",
         { ...H_SCROLL, style: { ...H_SCROLL.style, marginTop: "12px" } },
-        (0, import_react103.createElement)(Table, {
+        (0, import_react102.createElement)(Table, {
           columns: GROUP_COLUMNS,
           groups: GROUPS,
           groupAccent: groupAccentOn ? groupAccent : false,
@@ -74223,13 +73872,13 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react103.createElement)(
+    (0, import_react102.createElement)(
       Example,
       { title: "Table \xB7 \u5206\u9875", hint: t3("tablePagerHint") },
-      (0, import_react103.createElement)(
+      (0, import_react102.createElement)(
         "div",
         { ...H_SCROLL },
-        (0, import_react103.createElement)(Table, {
+        (0, import_react102.createElement)(Table, {
           columns: COLUMNS,
           // 不传 pagination.total ⇒ 本地分页：这里是全量 12 行，Table 自己按当前页切片
           rows: rowsOf(),
@@ -74246,10 +73895,10 @@ function TablePage() {
         })
       )
     ),
-    (0, import_react103.createElement)(
+    (0, import_react102.createElement)(
       Example,
       { title: "Loading \xB7 \u52A0\u8F7D\u66F4\u591A", hint: t3("tableLoadingHint") },
-      (0, import_react103.createElement)(Segmented, {
+      (0, import_react102.createElement)(Segmented, {
         size: "sm",
         items: [
           { value: "idle", label: "\u6B63\u5E38" },
@@ -74260,7 +73909,7 @@ function TablePage() {
         value: loadState,
         onChange: setLoadState
       }),
-      (0, import_react103.createElement)(
+      (0, import_react102.createElement)(
         "div",
         {
           ...H_SCROLL,
@@ -74276,13 +73925,13 @@ function TablePage() {
         renderLoadTable("y")
       )
     ),
-    (0, import_react103.createElement)(DocApi, { id: "table" }),
-    (0, import_react103.createElement)(DocCode, { id: "table" })
+    (0, import_react102.createElement)(DocApi, { id: "table" }),
+    (0, import_react102.createElement)(DocCode, { id: "table" })
   );
 }
 
 // packages/demo/src/sections/toolbar.tsx
-var import_react104 = require("react");
+var import_react103 = require("react");
 var ANCHOR_ID = "dshpc-demo-quick-toolbar-anchor";
 var CODE_TOOLBAR = `import {
   QuickToolbar,
@@ -74298,22 +73947,22 @@ h(QuickToolbar, {
   backToTop: { threshold: 320 },   // \u9ED8\u8BA4\u5373\u662F 320\uFF1Bfalse \u53EF\u5173\u6389
 })`;
 function ToolbarPage() {
-  const [mode, setMode] = (0, import_react104.useState)("box");
-  const [last2, setLast] = (0, import_react104.useState)("\u2014");
-  return (0, import_react104.createElement)(
+  const [mode, setMode] = (0, import_react103.useState)("box");
+  const [last2, setLast] = (0, import_react103.useState)("\u2014");
+  return (0, import_react103.createElement)(
     "div",
     null,
-    (0, import_react104.createElement)(
+    (0, import_react103.createElement)(
       Example,
       {
         title: "QuickToolbar\uFF08\u53F3\u4FA7\u6D6E\u52A8\uFF09",
         hint: "\u7EB5\u5411\u6052\u8D34\u5C4F\u5E55\u5E95\u8FB9\uFF1B\u5207\u6362\u951A\u70B9\u53EF\u770B\u6A2A\u5411\u4F4D\u7F6E\u53D8\u5316\u3002\u5411\u4E0B\u6EDA\u52A8\uFF0C\u56DE\u9876\u90E8\u6309\u94AE\u4F1A\u51FA\u73B0\u3002",
         code: CODE_TOOLBAR
       },
-      (0, import_react104.createElement)(
+      (0, import_react103.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "14px" } },
-        (0, import_react104.createElement)(Segmented, {
+        (0, import_react103.createElement)(Segmented, {
           items: [
             { value: "box", label: "\u8DDF\u968F\u63A7\u4EF6" },
             { value: "window", label: "\u8DDF\u968F\u7A97\u53E3" }
@@ -74322,10 +73971,10 @@ function ToolbarPage() {
           onChange: setMode,
           label: "\u6A2A\u5411\u951A\u70B9"
         }),
-        (0, import_react104.createElement)(
+        (0, import_react103.createElement)(
           "div",
           { id: ANCHOR_ID },
-          (0, import_react104.createElement)(
+          (0, import_react103.createElement)(
             Surface,
             {
               tone: "sunken",
@@ -74333,15 +73982,15 @@ function ToolbarPage() {
               padding: "lg",
               style: { width: "min(560px, 100%)" }
             },
-            (0, import_react104.createElement)("div", { style: { fontWeight: 600, fontSize: "13px" } }, "\u951A\u5B9A\u63A7\u4EF6"),
-            (0, import_react104.createElement)(
+            (0, import_react103.createElement)("div", { style: { fontWeight: 600, fontSize: "13px" } }, "\u951A\u5B9A\u63A7\u4EF6"),
+            (0, import_react103.createElement)(
               "div",
               { style: { marginTop: "6px", color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "1.8" } },
               "\u5DE5\u5177\u680F\u4F1A\u8D34\u5728\u8FD9\u4E2A\u6846\u7684\u53F3\u7F18\u5916\u4FA7\uFF1B\u7A97\u53E3\u7A84\u5230\u653E\u4E0D\u4E0B\u65F6\u81EA\u52A8\u9000\u56DE\u5C4F\u5E55\u53F3\u7F18\u3002"
             )
           )
         ),
-        (0, import_react104.createElement)(
+        (0, import_react103.createElement)(
           Surface,
           {
             border: "dashed",
@@ -74357,19 +74006,19 @@ function ToolbarPage() {
           },
           "\u5411\u4E0B\u6EDA\u52A8\uFF0C\u56DE\u9876\u90E8\u6309\u94AE\u4F1A\u51FA\u73B0"
         ),
-        (0, import_react104.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, `\u6700\u8FD1\u4E00\u6B21\u70B9\u51FB\uFF1A${last2}`)
+        (0, import_react103.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } }, `\u6700\u8FD1\u4E00\u6B21\u70B9\u51FB\uFF1A${last2}`)
       )
     ),
-    (0, import_react104.createElement)(DocApi, { id: "quick-toolbar" }),
-    (0, import_react104.createElement)(QuickToolbar, {
+    (0, import_react103.createElement)(DocApi, { id: "quick-toolbar" }),
+    (0, import_react103.createElement)(QuickToolbar, {
       anchorId: mode === "box" ? ANCHOR_ID : void 0,
       onAction: (id3) => setLast(id3),
       items: [
-        { id: "search", icon: (0, import_react104.createElement)(Icon, { name: "common.base:chazhao" }), label: "\u641C\u7D22" },
-        { id: "copy", icon: (0, import_react104.createElement)(Icon, { name: "common.base:fuzhi" }), label: "\u590D\u5236" },
+        { id: "search", icon: (0, import_react103.createElement)(Icon, { name: "common.base:chazhao" }), label: "\u641C\u7D22" },
+        { id: "copy", icon: (0, import_react103.createElement)(Icon, { name: "common.base:fuzhi" }), label: "\u590D\u5236" },
         {
           id: "sparkle",
-          icon: (0, import_react104.createElement)(Icon, { name: "common.base:AIdamoxing" }),
+          icon: (0, import_react103.createElement)(Icon, { name: "common.base:AIdamoxing" }),
           label: "AI \u52A9\u624B",
           color: "var(--dshpc-business)",
           fgColor: "#fff"
@@ -74380,26 +74029,26 @@ function ToolbarPage() {
 }
 
 // packages/demo/src/sections/navigation.tsx
-var import_react105 = require("react");
+var import_react104 = require("react");
 function PaginationPage() {
-  const [page, setPage] = (0, import_react105.useState)(2);
-  const [size4, setSize] = (0, import_react105.useState)(10);
-  const [align, setAlign] = (0, import_react105.useState)("right");
-  const [showTotal, setShowTotal] = (0, import_react105.useState)(true);
+  const [page, setPage] = (0, import_react104.useState)(2);
+  const [size4, setSize] = (0, import_react104.useState)(10);
+  const [align, setAlign] = (0, import_react104.useState)("right");
+  const [showTotal, setShowTotal] = (0, import_react104.useState)(true);
   const onChange = (nextPage, nextSize) => {
     setPage(nextPage);
     setSize(nextSize);
   };
-  return (0, import_react105.createElement)(
+  return (0, import_react104.createElement)(
     "div",
     null,
-    (0, import_react105.createElement)(
+    (0, import_react104.createElement)(
       Example,
       { title: "Pagination", hint: t3("paginationHint") },
-      (0, import_react105.createElement)(
+      (0, import_react104.createElement)(
         "div",
         { style: { display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" } },
-        (0, import_react105.createElement)(Segmented, {
+        (0, import_react104.createElement)(Segmented, {
           size: "sm",
           items: [
             { value: "left", label: "\u5DE6" },
@@ -74409,12 +74058,12 @@ function PaginationPage() {
           value: align,
           onChange: setAlign
         }),
-        (0, import_react105.createElement)(Checkbox, { checked: showTotal, onChange: setShowTotal, label: "showTotal" })
+        (0, import_react104.createElement)(Checkbox, { checked: showTotal, onChange: setShowTotal, label: "showTotal" })
       ),
-      (0, import_react105.createElement)(
+      (0, import_react104.createElement)(
         "div",
         { style: { marginTop: "12px" } },
-        (0, import_react105.createElement)(Pagination, {
+        (0, import_react104.createElement)(Pagination, {
           page,
           pageSize: size4,
           total: 86,
@@ -74426,10 +74075,10 @@ function PaginationPage() {
           ariaLabel: "Demo pagination"
         })
       ),
-      (0, import_react105.createElement)(
+      (0, import_react104.createElement)(
         "div",
         { style: { marginTop: "12px" } },
-        (0, import_react105.createElement)(Pagination, {
+        (0, import_react104.createElement)(Pagination, {
           page,
           pageSize: size4,
           total: 86,
@@ -74444,7 +74093,7 @@ function PaginationPage() {
 }
 
 // packages/demo/src/sections/task-notifications.tsx
-var import_react106 = require("react");
+var import_react105 = require("react");
 var DEMO_PROJECT = "dsh-plugin-core-demo";
 var SUB_REMINDER = "reminder";
 var SUB_LEDGER = "ledger";
@@ -74478,16 +74127,16 @@ var row = { display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" 
 var panel = { display: "flex", flexDirection: "column", gap: "8px", fontSize: "12px" };
 var main = { display: "flex", flexDirection: "column", gap: "2px", minWidth: 0, wordBreak: "break-all" };
 function TaskNotificationsPage() {
-  const snapshot = (0, import_react106.useSyncExternalStore)(
+  const snapshot = (0, import_react105.useSyncExternalStore)(
     taskNotifications.subscribe,
     taskNotifications.getSnapshot,
     taskNotifications.getServerSnapshot
   );
-  const [events, setEvents] = (0, import_react106.useState)([]);
-  const [filter2, setFilter] = (0, import_react106.useState)("all");
-  const handles = (0, import_react106.useRef)(/* @__PURE__ */ new Map());
-  const serial = (0, import_react106.useRef)(0);
-  (0, import_react106.useEffect)(() => {
+  const [events, setEvents] = (0, import_react105.useState)([]);
+  const [filter2, setFilter] = (0, import_react105.useState)("all");
+  const handles = (0, import_react105.useRef)(/* @__PURE__ */ new Map());
+  const serial = (0, import_react105.useRef)(0);
+  (0, import_react105.useEffect)(() => {
     taskNotifications.connect();
     return subscribeTaskNotificationEvents((event) => {
       setEvents((prev) => [event, ...prev].slice(0, 8));
@@ -74517,121 +74166,121 @@ function TaskNotificationsPage() {
     const local = taskNotifications.canRestore(task);
     const handle = handles.current.get(task.id);
     const owned = handle !== void 0 && !handle.isSettled;
-    return (0, import_react106.createElement)(
+    return (0, import_react105.createElement)(
       ListRow,
       {
         key: task.id,
-        actions: owned ? (0, import_react106.createElement)(
+        actions: owned ? (0, import_react105.createElement)(
           "div",
           { style: { ...row, justifyContent: "flex-end" } },
-          (0, import_react106.createElement)(Button, { size: "sm", onClick: () => withHandle(task, (x) => x.update({ detail: `updated ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}` })) }, t3("tnUpdate")),
-          (0, import_react106.createElement)(Button, { size: "sm", onClick: () => withHandle(task, (x) => x.background()) }, t3("tnBackground")),
-          (0, import_react106.createElement)(Button, { size: "sm", variant: "primary", onClick: () => withHandle(task, (x) => x.done()) }, t3("tnDone")),
-          (0, import_react106.createElement)(Button, { size: "sm", variant: "danger", onClick: () => withHandle(task, (x) => x.fail("cancelled in demo")) }, t3("tnFail")),
-          (0, import_react106.createElement)(Button, { size: "sm", onClick: () => taskNotifications.requestRestore(task.id) }, t3("tnRestore"))
+          (0, import_react105.createElement)(Button, { size: "sm", onClick: () => withHandle(task, (x) => x.update({ detail: `updated ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}` })) }, t3("tnUpdate")),
+          (0, import_react105.createElement)(Button, { size: "sm", onClick: () => withHandle(task, (x) => x.background()) }, t3("tnBackground")),
+          (0, import_react105.createElement)(Button, { size: "sm", variant: "primary", onClick: () => withHandle(task, (x) => x.done()) }, t3("tnDone")),
+          (0, import_react105.createElement)(Button, { size: "sm", variant: "danger", onClick: () => withHandle(task, (x) => x.fail("cancelled in demo")) }, t3("tnFail")),
+          (0, import_react105.createElement)(Button, { size: "sm", onClick: () => taskNotifications.requestRestore(task.id) }, t3("tnRestore"))
         ) : void 0
       },
-      (0, import_react106.createElement)(
+      (0, import_react105.createElement)(
         "div",
         { style: main },
-        (0, import_react106.createElement)(
+        (0, import_react105.createElement)(
           "div",
           { style: { fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" } },
-          task.icon === void 0 ? null : (0, import_react106.createElement)(Icon, { name: task.icon }),
-          (0, import_react106.createElement)("span", null, task.title)
+          task.icon === void 0 ? null : (0, import_react105.createElement)(Icon, { name: task.icon }),
+          (0, import_react105.createElement)("span", null, task.title)
         ),
-        (0, import_react106.createElement)(
+        (0, import_react105.createElement)(
           "div",
           { style: { ...mono, color: "var(--dshpc-fg-3)" } },
           `project=${task.project} \xB7 group=${task.group} \xB7 status=${task.status} \xB7 backgrounded=${task.backgrounded} \xB7 origin=${task.origin}`
         ),
-        (0, import_react106.createElement)(
+        (0, import_react105.createElement)(
           "div",
           { style: { ...mono, color: local ? "var(--dshpc-fg-2)" : "var(--dshpc-fg-4)" } },
           local ? t3("tnBadgeLocal") : t3("tnBadgeRemote")
         ),
-        task.detail === void 0 ? null : (0, import_react106.createElement)("div", { style: mono }, detailText(task.detail))
+        task.detail === void 0 ? null : (0, import_react105.createElement)("div", { style: mono }, detailText(task.detail))
       )
     );
   }
   function renderEvent(event, index3) {
     const label = "message" in event ? `${event.message.level}: ${event.message.title}` : "task" in event ? event.task.title : "taskId" in event ? event.taskId : event.origin;
-    return (0, import_react106.createElement)(
+    return (0, import_react105.createElement)(
       ListRow,
       { key: `${index3}-${event.type}-${label}` },
-      (0, import_react106.createElement)(
+      (0, import_react105.createElement)(
         "div",
         { style: row },
-        (0, import_react106.createElement)("span", { style: { ...mono, color: "var(--dshpc-business)" } }, event.type),
-        (0, import_react106.createElement)("span", { style: { ...mono, color: "var(--dshpc-fg-3)" } }, ` \xB7 remote=${event.remote} \xB7 ${label}`)
+        (0, import_react105.createElement)("span", { style: { ...mono, color: "var(--dshpc-business)" } }, event.type),
+        (0, import_react105.createElement)("span", { style: { ...mono, color: "var(--dshpc-fg-3)" } }, ` \xB7 remote=${event.remote} \xB7 ${label}`)
       )
     );
   }
-  return (0, import_react106.createElement)(
+  return (0, import_react105.createElement)(
     "div",
     null,
-    (0, import_react106.createElement)(Note, { text: t3("tnNote") }),
-    (0, import_react106.createElement)("div", { style: { ...mono, margin: "10px 0 16px", color: "var(--dshpc-fg-3)" } }, t3("tnCrossPage")),
-    (0, import_react106.createElement)(
+    (0, import_react105.createElement)(Note, { text: t3("tnNote") }),
+    (0, import_react105.createElement)("div", { style: { ...mono, margin: "10px 0 16px", color: "var(--dshpc-fg-3)" } }, t3("tnCrossPage")),
+    (0, import_react105.createElement)(
       Example,
       { title: t3("tnOpsTitle"), hint: t3("tnOpsHint"), code: CODE_SUBSCRIBE },
-      (0, import_react106.createElement)(
+      (0, import_react105.createElement)(
         "div",
         { style: panel },
-        (0, import_react106.createElement)(
+        (0, import_react105.createElement)(
           "div",
           { style: row },
-          (0, import_react106.createElement)(Button, { size: "sm", variant: "primary", onClick: () => register(SUB_REMINDER, "workspace-scan") }, t3("tnRegisterReminder")),
-          (0, import_react106.createElement)(Button, { size: "sm", onClick: () => register(SUB_LEDGER, "session-index") }, t3("tnRegisterLedger")),
-          (0, import_react106.createElement)(Button, { size: "sm", variant: "outline", onClick: broadcast }, t3("tnBroadcast"))
+          (0, import_react105.createElement)(Button, { size: "sm", variant: "primary", onClick: () => register(SUB_REMINDER, "workspace-scan") }, t3("tnRegisterReminder")),
+          (0, import_react105.createElement)(Button, { size: "sm", onClick: () => register(SUB_LEDGER, "session-index") }, t3("tnRegisterLedger")),
+          (0, import_react105.createElement)(Button, { size: "sm", variant: "outline", onClick: broadcast }, t3("tnBroadcast"))
         ),
-        (0, import_react106.createElement)(
+        (0, import_react105.createElement)(
           "div",
           { style: row },
-          (0, import_react106.createElement)(Button, { size: "sm", variant: filter2 === "all" ? "primary" : "outline", onClick: () => setFilter("all") }, t3("tnFilterAll")),
-          (0, import_react106.createElement)(Button, { size: "sm", variant: filter2 === "one" ? "primary" : "outline", onClick: () => setFilter("one") }, t3("tnFilterOne")),
-          (0, import_react106.createElement)(Button, { size: "sm", variant: filter2 === "two" ? "primary" : "outline", onClick: () => setFilter("two") }, t3("tnFilterTwo")),
-          (0, import_react106.createElement)(Button, { size: "sm", variant: filter2 === "allProjects" ? "primary" : "outline", onClick: () => setFilter("allProjects") }, t3("tnFilterAllProjects"))
+          (0, import_react105.createElement)(Button, { size: "sm", variant: filter2 === "all" ? "primary" : "outline", onClick: () => setFilter("all") }, t3("tnFilterAll")),
+          (0, import_react105.createElement)(Button, { size: "sm", variant: filter2 === "one" ? "primary" : "outline", onClick: () => setFilter("one") }, t3("tnFilterOne")),
+          (0, import_react105.createElement)(Button, { size: "sm", variant: filter2 === "two" ? "primary" : "outline", onClick: () => setFilter("two") }, t3("tnFilterTwo")),
+          (0, import_react105.createElement)(Button, { size: "sm", variant: filter2 === "allProjects" ? "primary" : "outline", onClick: () => setFilter("allProjects") }, t3("tnFilterAllProjects"))
         ),
-        (0, import_react106.createElement)(
+        (0, import_react105.createElement)(
           "div",
           { style: row },
-          (0, import_react106.createElement)(Button, { size: "sm", onClick: () => taskNotifications.refresh() }, t3("tnRefresh")),
-          (0, import_react106.createElement)(Button, { size: "sm", variant: "danger", disabled: localPending === 0, onClick: finishAll }, t3("tnFinishAll")),
-          (0, import_react106.createElement)("span", { style: { ...mono, color: "var(--dshpc-fg-4)" } }, t3("tnRefreshHint"))
+          (0, import_react105.createElement)(Button, { size: "sm", onClick: () => taskNotifications.refresh() }, t3("tnRefresh")),
+          (0, import_react105.createElement)(Button, { size: "sm", variant: "danger", disabled: localPending === 0, onClick: finishAll }, t3("tnFinishAll")),
+          (0, import_react105.createElement)("span", { style: { ...mono, color: "var(--dshpc-fg-4)" } }, t3("tnRefreshHint"))
         ),
-        (0, import_react106.createElement)(
+        (0, import_react105.createElement)(
           "div",
           { style: { ...mono, color: "var(--dshpc-fg-4)" } },
           `${t3("tnOpsNote")} \xB7 localPending=${localPending}`
         )
       )
     ),
-    (0, import_react106.createElement)(
+    (0, import_react105.createElement)(
       Example,
       { title: t3("tnSnapshotTitle"), hint: t3("tnSnapshotHint") },
-      (0, import_react106.createElement)(
+      (0, import_react105.createElement)(
         "div",
         { style: panel },
-        (0, import_react106.createElement)("div", { style: mono }, `${t3("tnCountLabel")}: ${visible.length} / ${snapshot.tasks.length} \xB7 revision=${snapshot.revision}`),
-        visible.length === 0 ? (0, import_react106.createElement)(Note, { text: t3("tnEmptyTasks") }) : visible.map(renderTask)
+        (0, import_react105.createElement)("div", { style: mono }, `${t3("tnCountLabel")}: ${visible.length} / ${snapshot.tasks.length} \xB7 revision=${snapshot.revision}`),
+        visible.length === 0 ? (0, import_react105.createElement)(Note, { text: t3("tnEmptyTasks") }) : visible.map(renderTask)
       )
     ),
-    (0, import_react106.createElement)(
+    (0, import_react105.createElement)(
       Example,
       { title: t3("tnEventsTitle"), hint: t3("tnEventsHint") },
-      (0, import_react106.createElement)(
+      (0, import_react105.createElement)(
         "div",
         { style: panel },
-        events.length === 0 ? (0, import_react106.createElement)(Note, { text: t3("tnEmptyEvents") }) : events.map(renderEvent)
+        events.length === 0 ? (0, import_react105.createElement)(Note, { text: t3("tnEmptyEvents") }) : events.map(renderEvent)
       )
     ),
-    (0, import_react106.createElement)(DocContent, { id: "task-notifications" })
+    (0, import_react105.createElement)(DocContent, { id: "task-notifications" })
   );
 }
 
 // packages/demo/src/sections/utils.tsx
-var import_react107 = require("react");
+var import_react106 = require("react");
 var CODE_DATE = `// \u65E5\u671F\u65F6\u95F4\u683C\u5F0F\u5316\uFF08\u5168\u90E8\u8D70\u5F53\u524D locale\uFF09
 formatDateTime('2026-10-18T09:30:05.000Z', { seconds: true })  // 2026-10-18 09:30:05
 formatYmd('2026-10-18T09:30:05.000Z')                          // 2026-10-18
@@ -74666,28 +74315,28 @@ var NUMBER_ROWS = [
   ["formatBytes", formatBytes(125829)]
 ];
 function FnTable(props) {
-  return (0, import_react107.createElement)(
+  return (0, import_react106.createElement)(
     "table",
     { style: { borderCollapse: "collapse", fontSize: "13px" } },
-    (0, import_react107.createElement)(
+    (0, import_react106.createElement)(
       "thead",
       null,
-      (0, import_react107.createElement)(
+      (0, import_react106.createElement)(
         "tr",
         null,
-        (0, import_react107.createElement)("th", { style: th }, "\u51FD\u6570"),
-        (0, import_react107.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
+        (0, import_react106.createElement)("th", { style: th }, "\u51FD\u6570"),
+        (0, import_react106.createElement)("th", { style: th }, "\u8FD4\u56DE\u503C")
       )
     ),
-    (0, import_react107.createElement)(
+    (0, import_react106.createElement)(
       "tbody",
       null,
       props.rows.map(
-        ([fn, out]) => (0, import_react107.createElement)(
+        ([fn, out]) => (0, import_react106.createElement)(
           "tr",
           { key: fn },
-          (0, import_react107.createElement)("td", { style: td }, fn),
-          (0, import_react107.createElement)("td", { style: td }, out)
+          (0, import_react106.createElement)("td", { style: td }, fn),
+          (0, import_react106.createElement)("td", { style: td }, out)
         )
       )
     )
@@ -74696,41 +74345,41 @@ function FnTable(props) {
 var th = { textAlign: "left", padding: "6px 14px 6px 0", color: "var(--dshpc-fg-3)" };
 var td = { padding: "5px 14px 5px 0", borderTop: "1px solid var(--dshpc-border-faint)" };
 function DatePage() {
-  return (0, import_react107.createElement)(
+  return (0, import_react106.createElement)(
     "div",
     null,
-    (0, import_react107.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react107.createElement)(FnTable, { rows: DATE_ROWS })),
-    (0, import_react107.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react107.createElement)(DocApi, { id: "date" })
+    (0, import_react106.createElement)(Example, { title: "date / time", code: CODE_DATE }, (0, import_react106.createElement)(FnTable, { rows: DATE_ROWS })),
+    (0, import_react106.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react106.createElement)(DocApi, { id: "date" })
   );
 }
 function NumberPage() {
-  return (0, import_react107.createElement)(
+  return (0, import_react106.createElement)(
     "div",
     null,
-    (0, import_react107.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react107.createElement)(FnTable, { rows: NUMBER_ROWS })),
-    (0, import_react107.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react107.createElement)(DocApi, { id: "number" })
+    (0, import_react106.createElement)(Example, { title: "number / bytes", code: CODE_NUMBER }, (0, import_react106.createElement)(FnTable, { rows: NUMBER_ROWS })),
+    (0, import_react106.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react106.createElement)(DocApi, { id: "number" })
   );
 }
 function TextPage() {
-  return (0, import_react107.createElement)(DocContent, { id: "text" });
+  return (0, import_react106.createElement)(DocContent, { id: "text" });
 }
 function HttpPage() {
-  return (0, import_react107.createElement)(DocContent, { id: "http" });
+  return (0, import_react106.createElement)(DocContent, { id: "http" });
 }
 function I18nPage() {
-  return (0, import_react107.createElement)(
+  return (0, import_react106.createElement)(
     "div",
     null,
-    (0, import_react107.createElement)(
+    (0, import_react106.createElement)(
       Example,
       { title: "getLocale / setLocale", code: CODE_I18N },
-      (0, import_react107.createElement)(
+      (0, import_react106.createElement)(
         "div",
         { style: { display: "flex", alignItems: "center", gap: "10px" } },
-        (0, import_react107.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
-        (0, import_react107.createElement)("code", {
+        (0, import_react106.createElement)("span", { style: { fontFamily: "var(--dshpc-font-mono)", fontSize: "12px", color: "var(--dshpc-fg-3)" } }, t3("i18nNow")),
+        (0, import_react106.createElement)("code", {
           style: {
             fontFamily: "var(--dshpc-font-mono)",
             fontSize: "13px",
@@ -74742,60 +74391,60 @@ function I18nPage() {
         }, getLocale())
       )
     ),
-    (0, import_react107.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
-    (0, import_react107.createElement)(DocApi, { id: "i18n" })
+    (0, import_react106.createElement)(CodeOnly, { labelKey: "docUsage", code: CODE_UTILS_USAGE }),
+    (0, import_react106.createElement)(DocApi, { id: "i18n" })
   );
 }
 
 // packages/demo/src/sections/reference.tsx
-var import_react108 = require("react");
+var import_react107 = require("react");
 var OUT_OF_SCOPE = ["roadmapOut", "roadmapMirror", "roadmapPreview", "roadmapSkeleton"];
 function ReferencePage() {
-  return (0, import_react108.createElement)(
+  return (0, import_react107.createElement)(
     "div",
     null,
-    (0, import_react108.createElement)(Note, { text: t3("referenceNote") }),
-    (0, import_react108.createElement)(Example, { title: t3("secA11y") }, (0, import_react108.createElement)(Placeholder2, { descKey: "a11yDesc" })),
-    (0, import_react108.createElement)(
+    (0, import_react107.createElement)(Note, { text: t3("referenceNote") }),
+    (0, import_react107.createElement)(Example, { title: t3("secA11y") }, (0, import_react107.createElement)(Placeholder2, { descKey: "a11yDesc" })),
+    (0, import_react107.createElement)(
       Example,
       { title: t3("secRoadmap"), hint: t3("roadmapHint") },
-      (0, import_react108.createElement)(
+      (0, import_react107.createElement)(
         "div",
         { style: { display: "flex", flexDirection: "column", gap: "10px" } },
         OUT_OF_SCOPE.map(
-          (key) => (0, import_react108.createElement)(
+          (key) => (0, import_react107.createElement)(
             "div",
             { key, style: { display: "flex", gap: "8px", alignItems: "flex-start", fontSize: "13px" } },
-            (0, import_react108.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
-            (0, import_react108.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
+            (0, import_react107.createElement)("span", { style: { color: "var(--dshpc-fg-4)", flex: "none", lineHeight: "1.7" } }, "\xB7"),
+            (0, import_react107.createElement)("span", { style: { color: "var(--dshpc-fg-2)", lineHeight: "1.7" } }, t3(key))
           )
         ),
-        (0, import_react108.createElement)(
+        (0, import_react107.createElement)(
           "div",
           { style: { marginTop: "2px", fontSize: "12px", color: "var(--dshpc-fg-3)" } },
           t3("roadmapLayout")
         )
       )
     ),
-    (0, import_react108.createElement)(
+    (0, import_react107.createElement)(
       Example,
       { title: t3("secBuild"), hint: t3("buildDesc") },
-      (0, import_react108.createElement)(
+      (0, import_react107.createElement)(
         "table",
         { style: { borderCollapse: "collapse", fontSize: "13px" } },
-        (0, import_react108.createElement)(
+        (0, import_react107.createElement)(
           "tbody",
           null,
           [
             [t3("buildCore"), `v${"0.35.26"}`],
             [t3("buildDemo"), `v${"0.35.26"}`],
-            [t3("buildStamp"), "261114-125657-851"]
+            [t3("buildStamp"), "261114-193819-009"]
           ].map(
-            ([label, value]) => (0, import_react108.createElement)(
+            ([label, value]) => (0, import_react107.createElement)(
               "tr",
               { key: label },
-              (0, import_react108.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
-              (0, import_react108.createElement)("td", {
+              (0, import_react107.createElement)("td", { style: { padding: "5px 18px 5px 0", color: "var(--dshpc-fg-3)", whiteSpace: "nowrap" } }, label),
+              (0, import_react107.createElement)("td", {
                 style: {
                   padding: "5px 14px 5px 0",
                   fontFamily: "var(--dshpc-font-mono)",
@@ -74819,19 +74468,18 @@ var SECTION_GROUPS = [
   { id: "blocks", titleKey: "grpBlocks" },
   { id: "utils", titleKey: "grpUtils" }
 ];
-var stack = (...pages) => () => (0, import_react109.createElement)("div", null, ...pages.map((Page) => (0, import_react109.createElement)(Page, { key: Page.name })));
+var stack = (...pages) => () => (0, import_react108.createElement)("div", null, ...pages.map((Page) => (0, import_react108.createElement)(Page, { key: Page.name })));
 var ALL_SECTIONS = [
   // ① 入门：帮助索引 → 快速开始 → 参考
-  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react109.createElement)(HelpIndexPage, null) },
-  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react109.createElement)(QuickstartPage, null) },
-  { id: "reference", group: "start", titleKey: "secReference", render: () => (0, import_react109.createElement)(ReferencePage, null) },
+  { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react108.createElement)(HelpIndexPage, null) },
+  { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react108.createElement)(QuickstartPage, null) },
+  { id: "reference", group: "start", titleKey: "secReference", render: () => (0, import_react108.createElement)(ReferencePage, null) },
   // ② 基础设施
-  { id: "foundation", group: "infra", titleKey: "secFoundation", render: () => (0, import_react109.createElement)(FoundationPage, null) },
-  { id: "icons", group: "infra", titleKey: "secIcons", render: () => (0, import_react109.createElement)(IconsPage, null) },
-  { id: "icon-replace", group: "infra", titleKey: "secIconReplace", render: () => (0, import_react109.createElement)(IconReplacePage, null) },
-  { id: "task-notifications", group: "infra", titleKey: "secTaskNotifications", render: () => (0, import_react109.createElement)(TaskNotificationsPage, null) },
+  { id: "foundation", group: "infra", titleKey: "secFoundation", render: () => (0, import_react108.createElement)(FoundationPage, null) },
+  { id: "icons", group: "infra", titleKey: "secIcons", render: () => (0, import_react108.createElement)(IconsPage, null) },
+  { id: "task-notifications", group: "infra", titleKey: "secTaskNotifications", render: () => (0, import_react108.createElement)(TaskNotificationsPage, null) },
   // ③ 控件：一页一类，页内按控件族顺序排列
-  { id: "actions", group: "components", titleKey: "secActions", render: () => (0, import_react109.createElement)(ButtonPage, null) },
+  { id: "actions", group: "components", titleKey: "secActions", render: () => (0, import_react108.createElement)(ButtonPage, null) },
   { id: "inputs", group: "components", titleKey: "secInputs", render: stack(InputPage, PickerPage, DateTimePage) },
   {
     id: "display",
@@ -74839,21 +74487,21 @@ var ALL_SECTIONS = [
     titleKey: "secDisplay",
     render: stack(CardPage, ChipPage, FlipTextPage, TooltipPage, TablePage)
   },
-  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react109.createElement)(FeedbackPage, null) },
+  { id: "feedback", group: "components", titleKey: "secFeedback", render: () => (0, import_react108.createElement)(FeedbackPage, null) },
   { id: "layout", group: "components", titleKey: "secLayout", render: stack(LayoutPage, ToolbarPage) },
-  { id: "navigation", group: "components", titleKey: "secNavigation", render: () => (0, import_react109.createElement)(PaginationPage, null) },
+  { id: "navigation", group: "components", titleKey: "secNavigation", render: () => (0, import_react108.createElement)(PaginationPage, null) },
   // ④ 应用模块
-  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react109.createElement)(ExplorerPage, null) },
-  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react109.createElement)(SessionPage, null) },
+  { id: "explorer", group: "blocks", titleKey: "secExplorer", render: () => (0, import_react108.createElement)(ExplorerPage, null) },
+  { id: "session", group: "blocks", titleKey: "secSession", render: () => (0, import_react108.createElement)(SessionPage, null) },
   // ⑤ 工具方法
-  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react109.createElement)(DatePage, null) },
-  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react109.createElement)(TextPage, null) },
-  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react109.createElement)(NumberPage, null) },
-  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react109.createElement)(HttpPage, null) },
-  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react109.createElement)(I18nPage, null) }
+  { id: "date", group: "utils", titleKey: "secDate", render: () => (0, import_react108.createElement)(DatePage, null) },
+  { id: "text", group: "utils", titleKey: "secText", render: () => (0, import_react108.createElement)(TextPage, null) },
+  { id: "number", group: "utils", titleKey: "secNumber", render: () => (0, import_react108.createElement)(NumberPage, null) },
+  { id: "http", group: "utils", titleKey: "secHttp", render: () => (0, import_react108.createElement)(HttpPage, null) },
+  { id: "i18n", group: "utils", titleKey: "secI18n", render: () => (0, import_react108.createElement)(I18nPage, null) }
 ];
 function Placeholder2(props) {
-  return (0, import_react109.createElement)(
+  return (0, import_react108.createElement)(
     Surface,
     {
       tone: "sunken",
@@ -74861,7 +74509,7 @@ function Placeholder2(props) {
       padding: "lg",
       style: { marginTop: "4px", marginBottom: "16px", color: "var(--dshpc-fg-3)" }
     },
-    (0, import_react109.createElement)("div", {
+    (0, import_react108.createElement)("div", {
       style: {
         fontSize: "11px",
         fontWeight: 600,
@@ -74871,23 +74519,23 @@ function Placeholder2(props) {
         marginBottom: "10px"
       }
     }, t3("phTodo")),
-    (0, import_react109.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
+    (0, import_react108.createElement)("div", { style: { fontSize: "13px", lineHeight: "1.9", whiteSpace: "pre-line" } }, t3(props.descKey))
   );
 }
 function SectionHead2(props) {
-  return (0, import_react109.createElement)(
+  return (0, import_react108.createElement)(
     "div",
     { id: `sec-${props.id}`, style: { margin: "28px 0 14px" } },
-    (0, import_react109.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
-    (0, import_react109.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "var(--dshpc-radius-xs)", marginTop: "6px" } })
+    (0, import_react108.createElement)("h2", { style: { margin: 0, fontSize: "20px" } }, props.title),
+    (0, import_react108.createElement)("div", { style: { height: "3px", width: "36px", background: "var(--dshpc-business)", borderRadius: "var(--dshpc-radius-xs)", marginTop: "6px" } })
   );
 }
 function Sections(props) {
   const current3 = ALL_SECTIONS.find((s) => s.id === props.active) ?? ALL_SECTIONS[0];
-  return (0, import_react109.createElement)(
+  return (0, import_react108.createElement)(
     "div",
     null,
-    (0, import_react109.createElement)(SectionHead2, { id: current3.id, title: t3(current3.titleKey) }),
+    (0, import_react108.createElement)(SectionHead2, { id: current3.id, title: t3(current3.titleKey) }),
     current3.render()
   );
 }
@@ -74947,10 +74595,10 @@ function applySidebarEntry() {
   }
 }
 function MoreMenuRow(props) {
-  return (0, import_react110.createElement)(
+  return (0, import_react109.createElement)(
     import_dsh_client_ui_primitives2.MenuItemButton,
     {
-      icon: (0, import_react110.createElement)(PanelIcon, null),
+      icon: (0, import_react109.createElement)(PanelIcon, null),
       onSelect: () => {
         props.onDismiss();
         jump(PANEL_ID);
@@ -74961,8 +74609,8 @@ function MoreMenuRow(props) {
 }
 function useHostDark2() {
   const read = () => document.body.hasAttribute("data-ds-dark-theme");
-  const [dark, setDark] = (0, import_react110.useState)(read);
-  (0, import_react110.useEffect)(() => {
+  const [dark, setDark] = (0, import_react109.useState)(read);
+  (0, import_react109.useEffect)(() => {
     const obs = new MutationObserver(() => {
       setDark(read());
     });
@@ -74979,28 +74627,14 @@ function useHostDark2() {
     }
   };
 }
-function sectionFromHash() {
-  const raw = (typeof location === "undefined" ? "" : location.hash).replace(/^#\/?/, "");
-  return ALL_SECTIONS.find((section) => section.id === raw)?.id ?? null;
-}
 function DemoPage() {
   useLocale();
   const { dark, toggle } = useHostDark2();
-  const [active, setActive2] = (0, import_react110.useState)(() => sectionFromHash() ?? ALL_SECTIONS[0].id);
-  (0, import_react110.useEffect)(() => {
-    const onHash = () => {
-      const id3 = sectionFromHash();
-      if (id3 !== null) setActive2(id3);
-    };
-    window.addEventListener("hashchange", onHash);
-    return () => {
-      window.removeEventListener("hashchange", onHash);
-    };
-  }, []);
+  const [active, setActive2] = (0, import_react109.useState)(ALL_SECTIONS[0].id);
   const nav2 = [];
   SECTION_GROUPS.forEach((group, gi) => {
     nav2.push(
-      (0, import_react110.createElement)(
+      (0, import_react109.createElement)(
         "div",
         {
           key: `group-${group.id}`,
@@ -75018,7 +74652,7 @@ function DemoPage() {
     );
     for (const section of ALL_SECTIONS.filter((s) => s.group === group.id)) {
       nav2.push(
-        (0, import_react110.createElement)(
+        (0, import_react109.createElement)(
           "button",
           {
             key: section.id,
@@ -75028,7 +74662,6 @@ function DemoPage() {
             className: `dshpc-demo-nav${active === section.id ? " dshpc-demo-nav--active" : ""}`,
             onClick: () => {
               setActive2(section.id);
-              location.hash = section.id;
             },
             style: {
               display: "block",
@@ -75047,7 +74680,7 @@ function DemoPage() {
       );
     }
   });
-  return (0, import_react110.createElement)(
+  return (0, import_react109.createElement)(
     "div",
     {
       // 分栏挂载点：explorer 的 openFilePreview 要把 dock 塞进这一行，主区才被挤窄。
@@ -75064,7 +74697,7 @@ function DemoPage() {
         ["--dshpc-dock-h"]: "100%"
       }
     },
-    (0, import_react110.createElement)(
+    (0, import_react109.createElement)(
       "aside",
       {
         style: {
@@ -75080,9 +74713,9 @@ function DemoPage() {
       },
       // 导航区：唯一滚动容器；底部操作/版本区固定不动
       // 细滚动条 + 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/development/style.md §滚动条让位）
-      (0, import_react110.createElement)("div", { className: "dshpc-scroll-thin", style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px" } }, nav2),
+      (0, import_react109.createElement)("div", { className: "dshpc-scroll-thin", style: { flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 10px" } }, nav2),
       // 固定底栏：明暗切换 + 版本号 + 编译码（时间戳，一眼看出编译时刻）
-      (0, import_react110.createElement)(
+      (0, import_react109.createElement)(
         "div",
         {
           style: {
@@ -75095,7 +74728,7 @@ function DemoPage() {
           }
         },
         // 明暗切换：核心 Segmented 滑动分段（左亮右暗，图标进 label），不手写按钮
-        (0, import_react110.createElement)(Segmented, {
+        (0, import_react109.createElement)(Segmented, {
           items: [
             { value: "light", label: `\u2600 ${t3("themeLight")}` },
             { value: "dark", label: `\u263E ${t3("themeDark")}` }
@@ -75109,7 +74742,7 @@ function DemoPage() {
           label: t3("themeToggle")
         }),
         // 版本号 + 编译码：180px 侧栏放不下一行 ⇒ core / demo 各一行；编译码小一号、与上面隔开
-        (0, import_react110.createElement)(
+        (0, import_react109.createElement)(
           "div",
           {
             style: {
@@ -75123,46 +74756,46 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react110.createElement)("span", null, `core v${"0.35.26"}`),
-          (0, import_react110.createElement)("span", null, `demo v${"0.35.26"}`),
-          (0, import_react110.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261114-125657-851")
+          (0, import_react109.createElement)("span", null, `core v${"0.35.26"}`),
+          (0, import_react109.createElement)("span", null, `demo v${"0.35.26"}`),
+          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261114-193819-009")
         )
       )
     ),
-    (0, import_react110.createElement)(
+    (0, import_react109.createElement)(
       "main",
       // 细滚动条与 1px 让位由 .dshpc-scroll-thin 统一给（口径见 docs/development/style.md §滚动条让位）：
       // dock 不再让 margin，靠这里让，滚动条与分栏分隔线之间才是 1px。
       { className: "dshpc-scroll-thin", style: { flex: 1, minWidth: 0, minHeight: 0, height: "100%", boxSizing: "border-box", overflowY: "auto", padding: "12px 22px 60px" } },
-      (0, import_react110.createElement)(Sections, { active })
+      (0, import_react109.createElement)(Sections, { active })
     ),
     // 分栏挂在**整页**右侧（真实用法），不是塞进某一节里：任何一页点开都挤窄 main。
     // 内容与头部在 demoPanels() 里声明（DockPanel），这里只管显隐。
-    (0, import_react110.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
+    (0, import_react109.createElement)(PanelDock, { dock: demoDock }, ...demoPanels())
   );
 }
 function ConfigPanel(props) {
   const form = props.form;
-  const [, rerender] = (0, import_react110.useState)(0);
-  (0, import_react110.useEffect)(() => form.subscribe(() => {
+  const [, rerender] = (0, import_react109.useState)(0);
+  (0, import_react109.useEffect)(() => form.subscribe(() => {
     rerender((n) => n + 1);
   }), [form]);
-  if (props.view !== "page") return (0, import_react110.createElement)("div", { style: { display: "none" } });
+  if (props.view !== "page") return (0, import_react109.createElement)("div", { style: { display: "none" } });
   const snap = form.getSnapshot();
   const storedMode = snap.value?.entryMode;
   const mode = storedMode === "off" || storedMode === "first" || storedMode === "more" ? storedMode : "more";
   const ready = snap.status === "ready";
-  return (0, import_react110.createElement)(
+  return (0, import_react109.createElement)(
     "div",
     { style: { display: "flex", flexDirection: "column", gap: "14px" } },
     // 一句话说明「这个插件是干嘛的」——标题由详情页自己画，这里只补定位
-    (0, import_react110.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
+    (0, import_react109.createElement)("div", { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", lineHeight: "18px" } }, t3("settingsIntro")),
     // 设置行：滑动栏在右、说明在左；左缘圆角短条有入口=绿 / 关闭=灰（核心 Card 框式）
-    ready ? (0, import_react110.createElement)(
+    ready ? (0, import_react109.createElement)(
       Card,
       {
         accent: mode === "off" ? "neutral" : "success",
-        action: (0, import_react110.createElement)(Segmented, {
+        action: (0, import_react109.createElement)(Segmented, {
           size: "sm",
           value: mode,
           disabled: !snap.writable,
@@ -75179,35 +74812,35 @@ function ConfigPanel(props) {
           ]
         })
       },
-      (0, import_react110.createElement)(
+      (0, import_react109.createElement)(
         "div",
         null,
-        (0, import_react110.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
-        (0, import_react110.createElement)(
+        (0, import_react109.createElement)("div", { style: { fontSize: "13px", fontWeight: 500 } }, t3("settingsEntryTitle")),
+        (0, import_react109.createElement)(
           "div",
           { style: { color: "var(--dshpc-fg-3)", fontSize: "12px", marginTop: "2px" } },
           t3("settingsEntryHint")
         )
       )
-    ) : (0, import_react110.createElement)(
+    ) : (0, import_react109.createElement)(
       "div",
       { style: { color: "var(--dshpc-fg-3)", fontSize: "12px" } },
       t3(snap.status === "loading" ? "settingsLoading" : "settingsUnavailable")
     ),
-    (0, import_react110.createElement)(
+    (0, import_react109.createElement)(
       "div",
       { style: { display: "flex", gap: "8px" } },
-      (0, import_react110.createElement)(
+      (0, import_react109.createElement)(
         Button,
-        { size: "md", variant: "primary", icon: (0, import_react110.createElement)(Icon, { name: "common.base:move-right" }), onClick: props.openDemo },
+        { size: "md", variant: "primary", icon: (0, import_react109.createElement)(Icon, { name: "common.base:move-right" }), onClick: props.openDemo },
         t3("settingsOpenDemo")
       ),
-      (0, import_react110.createElement)(
+      (0, import_react109.createElement)(
         Button,
         {
           size: "md",
           variant: "outline",
-          icon: (0, import_react110.createElement)(import_dsh_client_ui_primitives2.IconLinkOutlineRegular, null),
+          icon: (0, import_react109.createElement)(import_dsh_client_ui_primitives2.IconLinkOutlineRegular, null),
           onClick: () => {
             window.open("https://github.com/cq-guojia/dsh-plugin-core", "_blank", "noopener");
           }
@@ -75219,14 +74852,14 @@ function ConfigPanel(props) {
 }
 function PanelIcon(props) {
   const size4 = props.size ?? 18;
-  return (0, import_react110.createElement)(
+  return (0, import_react109.createElement)(
     "svg",
     { width: size4, height: size4, viewBox: "0 0 1024 1024", "aria-hidden": true },
-    (0, import_react110.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
-    (0, import_react110.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react110.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
-    (0, import_react110.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
-    (0, import_react110.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
+    (0, import_react109.createElement)("path", { d: "M960 896H64c-38.4 0-64-25.6-64-64V192c0-38.4 25.6-64 64-64h896c38.4 0 64 25.6 64 64v640c0 38.4-25.6 64-64 64zM96 800h832v-576h-832v576z", fill: "currentColor" }),
+    (0, import_react109.createElement)("path", { d: "M64 64h256c38.4 0 64 25.6 64 64v768c0 38.4-25.6 64-64 64H64c-38.4 0-64-25.6-64-64V128c0-38.4 25.6-64 64-64z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react109.createElement)("path", { d: "M640 268.8h192v96h-192z", fill: "currentColor" }),
+    (0, import_react109.createElement)("path", { d: "M832 563.2h-192V460.8h192v102.4z", fill: "currentColor", opacity: 0.38 }),
+    (0, import_react109.createElement)("path", { d: "M640 652.8h192v96h-192zM512 883.2c-25.6 0-51.2-19.2-51.2-51.2V192c0-25.6 19.2-51.2 51.2-51.2s51.2 25.6 51.2 51.2v640c0 25.6-25.6 51.2-51.2 51.2zM128 268.8h128v96H128zM128 460.8h128v96H128zM128 652.8h128v96H128z", fill: "currentColor" })
   );
 }
 function apply(ctx) {
@@ -75235,7 +74868,7 @@ function apply(ctx) {
   ensureControls(kit);
   kit.registerStyle("demo", DEMO_CSS);
   kit.ensureStyles();
-  setTooltipRenderer((props) => (0, import_react110.createElement)(import_dsh_client_ui_primitives2.Tooltip, props));
+  setTooltipRenderer((props) => (0, import_react109.createElement)(import_dsh_client_ui_primitives2.Tooltip, props));
   connectToasts();
   mountToasts();
   ctx.inject(["layout"], (sub) => {

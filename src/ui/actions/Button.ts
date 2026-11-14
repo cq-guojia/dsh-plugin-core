@@ -291,7 +291,7 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
     className: buttonClass(variant, size, block, icon !== undefined && icon !== null && !loading, dense, className),
     style: { ...colorVars(variant, color), ...widthStyle, ...style },
   }
-  return h('button', attrs as never,
+  const kids = [
     loading
       // 转圈统一走 Loader：包在图标容器里 ⇒ 尺寸/对齐与常规前置图标完全一致，
       // 「有 icon 的按钮」切 loading 时宽度一点不动（容器内 svg 被 1em 规则接管）。
@@ -307,7 +307,13 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
     // 转圈期间所有图标位都让位：前置位被 Loader 顶替，后置位（展开 / 外链）留在禁用态里只会挤版面
     iconRight !== undefined && iconRight !== null && !loading
       ? h('span', { className: 'dshpc-btn__icon-end' }, iconRight)
-      : null)
+      : null,
+  ]
+  // link 档整块包进一层内容盒：下划线由 button.css 的 ::after 铺满这层的宽度，
+  // 才能横跨图标、间距与文字；非 link 档不需要这层（见 button.css）。
+  return variant === 'link'
+    ? h('button', attrs as never, h('span', { className: 'dshpc-btn__content' }, ...kids))
+    : h('button', attrs as never, ...kids)
 }
 
 /**

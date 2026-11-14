@@ -4,7 +4,7 @@ import { getLocale } from '../../../dist/utils/index.js'
 
 export type Locale = 'zh' | 'en'
 
-/** demo 界面文案的 key（含六个分组名、25 个页面标题、各 Demo 块 hint、空页待补说明；演示数据/按钮文案不在内）。 */
+/** demo 界面文案的 key（含五个分组名、各页标题、各 Demo 块 hint、空页待补说明；演示数据/按钮文案不在内）。 */
 export type DemoMessageKey =
   | 'grpStart'
   | 'grpInfra'
@@ -16,18 +16,6 @@ export type DemoMessageKey =
   | 'secFoundation'
   | 'secTaskNotifications'
   | 'secIcons'
-  | 'secIconReplace'
-  | 'irNote'
-  | 'irSummary'
-  | 'irCurrent'
-  | 'irSource'
-  | 'irReplace'
-  | 'irWhere'
-  | 'irSrcOfficial'
-  | 'irSrcDrawn'
-  | 'irSrcChar'
-  | 'irMissing'
-  | 'irLoading'
   | 'icNote'
   | 'icSearch'
   | 'icOfficial'
@@ -298,18 +286,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secFoundation: '设计基础',
     secTaskNotifications: '通知任务中心',
     secIcons: '图标',
-    secIconReplace: '图标替换',
-    irNote: '本仓还在用「官方 primitives 组件 / 自绘 SVG / 字符」当图标的地方，一行一颗。第三列是对应的候选字形，在不在库里按在线 CSS 实时判定 —— 显示「缺」就是平台还没有这颗字形，需要补。最后一列是**点得进去的演示页链接**，点开就是那颗图标在真实控件里的样子。会话镜像（src/adv/session）与 Loader 动画不换，文件类型图标（FileTypeIcon）统一用官方，都不进表。',
-    irSummary: '{total} 项里 {ok} 项已有对应字形，其余要补。',
-    irCurrent: '现在的图标',
-    irSource: '来源',
-    irReplace: '替换后',
-    irWhere: '演示页',
-    irSrcOfficial: '官方',
-    irSrcDrawn: '自绘',
-    irSrcChar: '字符',
-    irMissing: '缺',
-    irLoading: '读取中…',
     icNote: '官方 primitives 与各套字体图标同页。两边都不写死清单：官方从宿主命名空间实时枚举，字体从在线 CSS 实时解析，宿主升级或平台加图标后刷新即见。点任意格子只复制它的名字，完整写法在页面最后。',
     icSearch: '按名字过滤…',
     icOfficial: 'DSH 官方 primitives',
@@ -605,18 +581,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secFoundation: 'Foundations',
     secTaskNotifications: 'Task Notification Hub',
     secIcons: 'Icons',
-    secIconReplace: 'Icon migration',
-    irNote: 'Every place in this package still drawing an icon from an official primitives component, a hand-drawn SVG or a character — one row per icon. The third column is the candidate glyph, decided by the online CSS at runtime: “missing” means the platform does not have that glyph yet. The last column links straight into the demo pages, where you see the icon inside the real control. The session mirror (src/adv/session), the Loader animations and file-type icons (FileTypeIcon, which stay official) are out of the table.',
-    irSummary: '{ok} of {total} icons already have a matching glyph; the rest still need one.',
-    irCurrent: 'Current',
-    irSource: 'Source',
-    irReplace: 'Replacement',
-    irWhere: 'Demo',
-    irSrcOfficial: 'Official',
-    irSrcDrawn: 'Drawn',
-    irSrcChar: 'Character',
-    irMissing: 'missing',
-    irLoading: 'Loading…',
     icNote: 'Official primitives and every font icon set on one page. Neither list is hard-coded: official icons are enumerated from the host namespace at runtime, font icons are parsed from the online CSS at runtime, so a host upgrade or a new upload in the icon platform shows up on refresh. Clicking a cell copies just its name; the full usage sits at the bottom of the page.',
     icSearch: 'Filter by name…',
     icOfficial: 'DSH official primitives',

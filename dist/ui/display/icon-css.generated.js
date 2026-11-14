@@ -1,0 +1,4 @@
+// ⚠️ 生成物，勿手改。真源 = src/ui/display/icon.css
+// 由 scripts/gen-css.mjs 生成（`pnpm run gen:css`）：改样式请改那个 .css 文件后重新生成。
+export const ICON_CSS = "/* 字体图标的自有基础类：尺寸契约归我们，字形归平台。\n *\n * 背景：iconfont 平台生成的在线 CSS 里，基础类（各库的 baseClass）会写死 font-size:16px，\n * 直接命中 <i>。继承值在层叠里优先级最低，控件字号再怎么设也盖不住它，于是图标恒 16px。\n * 成熟图标库的基础类不带这个声明：Font Awesome 的 .fa 与 Bootstrap Icons 的 .bi 都只给\n * font-family / font-style / line-height，尺寸默认继承父级文字（Font Awesome Sizing Icons 文档\n * 原文「By default, icons inherit the font-size of their parent container」）。\n *\n * 平台那张 CSS 我们是远程 <link> 加载的，改不了；这里用一条自有规则把 16px 中和掉，\n * 恢复「图标跟同一行文字等大」的语义。选择器特异性 (0,1,1) 高于平台基础类 (0,1,0)，\n * 因此不依赖 <link> 与本 <style> 的挂载先后。\n *\n * 只接管 font-size / line-height：font-family、字形、颜色、深色 -dark 字形仍归平台基础类。\n * 显式传 size 的图标带内联 font-size，优先级最高，不受本规则影响。\n * 放大档（按钮 dense）由 button.css 的 .dshpc-iconbtn--dense 规则给出 em 系数。\n */\ni.dshpc-icon{font-size:inherit;line-height:1;}\n";
+//# sourceMappingURL=icon-css.generated.js.map

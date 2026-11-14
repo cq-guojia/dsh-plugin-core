@@ -89,11 +89,21 @@
    ⚠️ 旧修饰类 danger-ink 保留为别名（消费方可能还在挂），两者同一套皮肤。 */
 .dshpc-btn--danger-outline,.dshpc-btn--danger-ink{--btn-border:var(--dshpc-danger);--btn-fg:var(--dshpc-danger);
   --btn-fg-hover:var(--dshpc-danger);--btn-bg-hover:var(--dshpc-danger-soft);--btn-bg-active:var(--dshpc-danger-soft);}
-/* link：行内文字链接型（会话 / 产出文件名），无底无边、品牌蓝、hover 下划线 */
+/* link：行内文字链接型（会话 / 产出文件名），无底无边、品牌蓝、hover 下划线。
+   2026-11-14 二次修：外层 button 挂 text-decoration 这条路走不通 —— W3C css-text-decor-3 §2
+   明确「装饰线不传播到 atomic inline-level 后代的内容」，内容层只要是 inline-flex 就是
+   atomic inline，线进不去；内层靠 inherit 自己画的那条又断在 flex gap 上（真机实测仍断）。
+   成熟解法是避开装饰线、改画盒级线：内容层相对定位，hover 用 ::after 铺满 100% 宽，
+   线必然横跨图标、间距与文字。GitHub Primer 的 Link 靠 text-decoration 是因为外层是 a，
+   我们这里是 button，不能照抄那一条。垂直居中与图标 1:1 尺寸口径不变。 */
 .dshpc-btn--link{--btn-fg:var(--dshpc-link);--btn-fg-hover:var(--dshpc-link);
   --btn-bg-hover:transparent;--btn-bg-active:transparent;
-  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}
-.dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}
+  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;text-decoration:none;}
+/* block 档仍要撑满父宽，不能被 link 的 inline-block 吃掉。 */
+.dshpc-btn--link:not(.dshpc-btn--block){display:inline-block;}
+.dshpc-btn--link > .dshpc-btn__content{position:relative;display:inline-flex;align-items:center;gap:6px;}
+.dshpc-btn--link:hover:not(:disabled) > .dshpc-btn__content::after{
+  content:'';position:absolute;left:0;right:0;bottom:1px;height:1px;background:currentColor;}
 
 /* 图标钮：纯图标，方形；尺寸档的宽高与同档文字按钮等高、圆角统一吃 md（与 .dshpc-btn 同款，2026-10-28 拍板）
    底色 / 图标色全走局部变量：默认**无底色**，消费方可传 color（图标色）/ background（底色）覆盖（用户 2026-11-02）。 */
@@ -115,7 +125,7 @@
    1.25em 相对按钮字号 12/13 ⇒ 15/16.25px，与 .dshpc-btn--dense 一致。
    字体图标是 <i> 直接子元素，得单独给它同一系数（svg 那条选择器管不到）。 */
 .dshpc-iconbtn.dshpc-iconbtn--dense svg{width:1.25em;height:1.25em;}
-.dshpc-iconbtn.dshpc-iconbtn--dense > i{font-size:1.25em;}
+.dshpc-iconbtn.dshpc-iconbtn--dense > .dshpc-icon{font-size:1.25em;}
 .dshpc-iconbtn--outline{--icb-bg:var(--dshpc-surface-1);--icb-border:var(--dshpc-border);}
 .dshpc-iconbtn--danger{--icb-fg:var(--dshpc-danger);--icb-bg-hover:var(--dshpc-danger-soft);--icb-fg-hover:var(--dshpc-danger);}
 .dshpc-iconbtn:hover:not(:disabled){background:var(--icb-bg-hover);color:var(--icb-fg-hover);}

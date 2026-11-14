@@ -4,7 +4,7 @@ import { register } from 'node:module'
 
 // Icon 会从 official.js 取官方图标 ⇒ 宿主平台包要用本地替身，否则 node 里链接不上。
 register(new URL('./primitives-hooks.mjs', import.meta.url))
-const { ICON_FONTS, ICON_SIZES, Icon, parseFontCss } = await import('../dist/ui/display/Icon.js')
+const { ICON_BASE_CLASS, ICON_FONTS, ICON_SIZES, Icon, parseFontCss } = await import('../dist/ui/display/Icon.js')
 const { darkGlyphName } = await import('../dist/ui/display/icon-runtime.js')
 
 // iconfont 在线 CSS 的最小对照样本（结构与平台产物一致）。
@@ -56,14 +56,24 @@ test('注册表每套库的字段齐全、地址是绝对 https', () => {
   }
 })
 
-test('字体图标：组名不可省，拼「基础类 + 前缀 + 名字」', () => {
+test('字体图标：组名不可省，拼「自有基础类 + 平台基础类 + 前缀 + 名字」', () => {
   const el = Icon({ name: 'common.base:gou' })
-  assert.equal(el.props.className, 'koc-i-common-base koc-i-common-base-gou')
+  assert.equal(el.props.className, `${ICON_BASE_CLASS} koc-i-common-base koc-i-common-base-gou`)
 })
 
-test('不传 size 就不写 fontSize：图标继承所在文字字号（1:1）', () => {
+test('每套单色库都带自有基础类（尺寸契约不依赖平台类名）', () => {
+  for (const [id, face] of Object.entries(ICON_FONTS)) {
+    if (face.color === true) continue
+    const el = Icon({ name: `${id}:gou` })
+    assert.ok(el !== null, `${id} 应能渲染`)
+    assert.ok(el.props.className.startsWith(`${ICON_BASE_CLASS} `), `${id} 缺自有基础类`)
+    assert.ok(el.props.className.includes(face.baseClass), `${id} 丢了平台基础类`)
+  }
+})
+
+test('不传 size 就不写 fontSize：尺寸交给 icon.css 的 CSS 契约', () => {
   const el = Icon({ name: 'common.base:gou' })
-  assert.ok(!('fontSize' in el.props.style), '字体图标不许写死 16px，得跟文字走')
+  assert.ok(!('fontSize' in el.props.style), '字体图标不许写死 16px，尺寸交给 icon.css')
   assert.equal(el.props.style.lineHeight, 1)
 })
 

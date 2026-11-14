@@ -183,6 +183,17 @@ test('dense：两个按钮都只加修饰类，尺寸档与高度不变', () => 
   assert.ok(!/dshpc-iconbtn--dense > svg/.test(BUTTON_CSS), '不能用直接子选择器：官方图标外层可能有 wrapper，dense 会漏掉')
 })
 
+test('link 档内容层包住图标与文字，其余档 DOM 不变', () => {
+  const icon = createElement('i', null, 'I')
+  const link = renderToStaticMarkup(createElement(Button, { variant: 'link', icon }, 'link'))
+  assert.ok(
+    link.includes('<span class="dshpc-btn__content"><span class="dshpc-btn__icon"><i>I</i></span>link</span>'),
+    '下划线要横跨图标与文字，两者必须同在内容层里',
+  )
+  const plain = renderToStaticMarkup(createElement(Button, { icon }, '文本'))
+  assert.ok(!plain.includes('dshpc-btn__content'), '非 link 档不该多一层 DOM')
+})
+
 test('IconButton 图标不被 flex 压扁：padding:0 + svg flex:none', () => {
   // 宿主实测：svg 是按钮的直接 flex item，flex-shrink:1 时被默认内距挤成 10px 宽，
   // height 却照样随 dense 变 15px ⇒ 加号被压成窄条。那是布局收缩，不是层叠优先级，

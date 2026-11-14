@@ -11,8 +11,13 @@
  * 尺寸口径（2026-11-14）：**不传 `size` 就继承所在文字的 `font-size`（1:1）**——字体图标本来
  * 就是一个字形，跟同一行文字用同一个字号；显式传预设名 / px 数字才是「独立摆放」或
  * 「装饰性小箭头」的绝对尺寸。按钮 / 输入框的 `sm|md|lg` 只决定文字字号，不另给图标定值。
+ *
+ * 平台基础类自带 `font-size:16px`，光靠继承盖不住 —— 所有 `<i>` 一律带自有基础类
+ * `dshpc-icon`，由 `icon.css` 的尺寸契约接管（见该文件头注）。
  */
 import { createElement as h, type CSSProperties } from 'react'
+import { ensureComponentStyles } from '../infra/css.js'
+import { ICON_CSS } from './icon-css.js'
 import type { ParsedIconFont } from './icon-parse.js'
 import { darkGlyphName, fetchIconFont, primeIconFont, useHostDark, useIconNames } from './icon-runtime.js'
 
@@ -48,7 +53,7 @@ export interface IconFontFace {
  */
 export const ICON_FONTS = {
   'common.base': {
-    url: 'https://at.alicdn.com/t/c/font_5252971_ep4b9h86kka.css',
+    url: 'https://at.alicdn.com/t/c/font_5252971_1lzmstl432b.css',
     family: 'koc-i-common-base',
     baseClass: 'koc-i-common-base',
     prefix: 'koc-i-common-base-',
@@ -149,10 +154,13 @@ export function resolveIconName(
   return font === undefined ? undefined : { id: name.slice(0, cut) as IconFontId, font, glyph: name.slice(cut + 1) }
 }
 
-/** `基础类 前缀+字形名 [调用方补的类]`。 */
+/** 自有基础类：平台类名由在线 CSS 动态解析、各库前缀还不一致，尺寸契约只能挂自己的类上。 */
+export const ICON_BASE_CLASS = 'dshpc-icon'
+
+/** `自有基础类 平台基础类 前缀+字形名 [调用方补的类]`。 */
 function glyphClass(font: IconFontFace, glyph: string, className: string | undefined): string {
   const extra = className === undefined || className === '' ? '' : ` ${className}`
-  return `${font.baseClass} ${font.prefix}${glyph}${extra}`
+  return `${ICON_BASE_CLASS} ${font.baseClass} ${font.prefix}${glyph}${extra}`
 }
 
 /** 尺寸：不传 → `undefined`（继承父级文字字号）；预设名或 px 数字 → 绝对尺寸。 */
@@ -224,6 +232,7 @@ export function FontIcon(props: FontIconProps): ReturnType<typeof h> | null {
   }
   const { id, font, glyph } = hit
   ensureIconFont(id)
+  ensureComponentStyles('icon', ICON_CSS)
   // 多色库要走明暗换字形那条路；单色库的颜色跟着文字走，直接画。
   if (font.color === true) {
     return h(ColorGlyph, { id, font, glyph, size, title, className, style })

@@ -44,6 +44,7 @@ import { FLIP_CSS } from '../dist/ui/display/flip-css.js'
 import { CODE_VIEWER_CSS } from '../dist/ui/display/code-viewer-css.js'
 import { EXPLORER_CSS } from '../dist/adv/explorer/explorer-css.js'
 import { SESSION_CSS } from '../dist/adv/session/session-css.js'
+import { ICON_CSS } from '../dist/ui/display/icon-css.js'
 import { transform } from 'lightningcss'
 import { TOKENS_CSS_TEMPLATE } from '../dist/design/tokens-css.js'
 
@@ -73,6 +74,7 @@ const CONSTANTS = {
   CODE_VIEWER_CSS,
   EXPLORER_CSS,
   SESSION_CSS,
+  ICON_CSS,
 }
 
 /**
@@ -557,7 +559,57 @@ test('按钮图标基线是 1em（与文字等大），dense 对字体图标同�
   )
   assert.match(
     BUTTON_CSS,
-    /\.dshpc-iconbtn\.dshpc-iconbtn--dense > i\{font-size:1\.25em/,
-    'dense 放大档必须同时覆盖字体图标 <i>，不能只管 svg',
+    /\.dshpc-iconbtn\.dshpc-iconbtn--dense > \.dshpc-icon\{font-size:1\.25em/,
+    'dense 放大档必须同时覆盖字体图标，不能只管 svg',
+  )
+})
+
+// 2026-11-14：iconfont 平台基础类自带 font-size:16px，直接命中 <i>，继承值盖不住。
+// 这一条才是「图标跟文字等大」真正生效的地方，删了就退回恒 16px（见 docs/api/icons.doc.ts）。
+test('图标自有基础类的尺寸契约：继承父级字号，且不写死 px', () => {
+  assert.match(
+    ICON_CSS,
+    /i\.dshpc-icon\{[^}]*font-size:inherit;[^}]*line-height:1/,
+    'i.dshpc-icon 必须声明 font-size:inherit，用来中和平台基础类的 16px',
+  )
+  assert.ok(
+    !/i\.dshpc-icon\{[^}]*font-size:\s*\d+(\.\d+)?px/.test(ICON_CSS),
+    '不许在自有基础类上写死 px',
+  )
+})
+
+// 2026-11-14：link 档的下划线必须横跨图标、间距与文字，不能在 flex gap 处断成两截。
+// 第一版照抄 Primer Link 的 text-decoration + inherit 在真机上仍断：W3C css-text-decor-3 §2
+// 规定装饰线不传播到 atomic inline-level 后代的内容，而内容层是 inline-flex（atomic inline）。
+// 正解是盒级线：内容层相对定位，hover 用 ::after 铺满 100% 宽，几何上必然连续。
+test('link 档下划线连续：盒级线铺满内容层，不靠 text-decoration', () => {
+  assert.match(
+    BUTTON_CSS,
+    /\.dshpc-btn--link:not\(\.dshpc-btn--block\)\{display:inline-block/,
+    '外层仍是 inline-block，宽度贴合内容',
+  )
+  assert.match(
+    BUTTON_CSS,
+    /\.dshpc-btn--link > \.dshpc-btn__content\{[^}]*position:relative;[^}]*display:inline-flex;[^}]*align-items:center;[^}]*gap:6px/,
+    '内容层要相对定位并保住垂直居中，盒级线才有铺满的参照',
+  )
+  assert.match(
+    BUTTON_CSS,
+    /\.dshpc-btn--link:hover:not\(:disabled\) > \.dshpc-btn__content::after\{[^}]*left:0;[^}]*right:0;[^}]*background:currentColor/,
+    'hover 线必须是铺满内容层 100% 宽的盒级线',
+  )
+  assert.ok(
+    !/\.dshpc-btn--link:hover:not\(:disabled\)\{text-decoration:underline/.test(BUTTON_CSS),
+    '不许退回 text-decoration：atomic inline 会挡住传播，线必然断在 gap',
+  )
+})
+
+test('自有基础类名在 CSS 与 TS 两侧一致（防漂移）', async () => {
+  const src = await readFile(new URL('../src/ui/display/font-icon.ts', import.meta.url), 'utf8')
+  const m = src.match(/ICON_BASE_CLASS\s*=\s*'([^']+)'/)
+  assert.ok(m, 'font-icon.ts 应导出 ICON_BASE_CLASS')
+  assert.ok(
+    ICON_CSS.includes(`i.${m[1]}{`),
+    `icon.css 的选择器与 ICON_BASE_CLASS（${m[1]}）不一致`,
   )
 })

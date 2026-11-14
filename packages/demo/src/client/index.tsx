@@ -215,28 +215,11 @@ function useHostDark(): { dark: boolean; toggle: () => void } {
   }
 }
 
-/** URL 里的 `#<sectionId>`：认不出来就当没写（深链容错），也让刷新回到同一页。 */
-function sectionFromHash(): SectionId | null {
-  const raw = (typeof location === 'undefined' ? '' : location.hash).replace(/^#\/?/, '')
-  return ALL_SECTIONS.find((section) => section.id === raw)?.id ?? null
-}
-
 /** 整页：左侧两级目录 + 右侧当前页（套用 demo 的展示内容）。 */
 function DemoPage(): ReturnType<typeof h> {
   useLocale()
   const { dark, toggle } = useHostDark()
-  const [active, setActive] = useState<SectionId>(() => sectionFromHash() ?? ALL_SECTIONS[0].id)
-
-  // 页内链接（如「图标替换」表里的演示页链接）靠改 hash 切页；侧栏点击也回写 hash，
-  // 否则点过侧栏后 hash 还停在旧页，再点同一个链接就不会触发 hashchange。
-  useEffect(() => {
-    const onHash = (): void => {
-      const id = sectionFromHash()
-      if (id !== null) setActive(id)
-    }
-    window.addEventListener('hashchange', onHash)
-    return () => { window.removeEventListener('hashchange', onHash) }
-  }, [])
+  const [active, setActive] = useState<SectionId>(ALL_SECTIONS[0].id)
 
   // 侧栏：第一层是能力域的纯标题（不可点），第二层是可点的页。
   // 底部固定栏（不随导航滚动）：明暗切换 + 版本号 + 编译码时间戳——2026-10-24 用户：
@@ -267,7 +250,7 @@ function DemoPage(): ReturnType<typeof h> {
             // 底色 / 前景色必须在 CSS 里：内联 style 优先级高过 .dshpc-demo-nav:hover，
             // 写在这里 hover 永远不生效（用户 2026-11-06 反馈「移上去完全没效果」）。
             className: `dshpc-demo-nav${active === section.id ? ' dshpc-demo-nav--active' : ''}`,
-            onClick: () => { setActive(section.id); location.hash = section.id },
+            onClick: () => { setActive(section.id) },
             style: {
               display: 'block', width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer',
               padding: '7px 10px', borderRadius: 'var(--dshpc-radius-sm)', fontSize: '13px', marginBottom: '2px',

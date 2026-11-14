@@ -11,6 +11,9 @@
  * 尺寸口径（2026-11-14）：**不传 `size` 就继承所在文字的 `font-size`（1:1）**——字体图标本来
  * 就是一个字形，跟同一行文字用同一个字号；显式传预设名 / px 数字才是「独立摆放」或
  * 「装饰性小箭头」的绝对尺寸。按钮 / 输入框的 `sm|md|lg` 只决定文字字号，不另给图标定值。
+ *
+ * 平台基础类自带 `font-size:16px`，光靠继承盖不住 —— 所有 `<i>` 一律带自有基础类
+ * `dshpc-icon`，由 `icon.css` 的尺寸契约接管（见该文件头注）。
  */
 import { createElement as h, type CSSProperties } from 'react';
 import type { ParsedIconFont } from './icon-parse.js';
@@ -113,6 +116,8 @@ export declare function resolveIconName(name: string): {
     font: IconFontFace;
     glyph: string;
 } | undefined;
+/** 自有基础类：平台类名由在线 CSS 动态解析、各库前缀还不一致，尺寸契约只能挂自己的类上。 */
+export declare const ICON_BASE_CLASS = "dshpc-icon";
 /** {@link FontIcon} 的 props。 */
 export interface FontIconProps {
     /** 图标标识：`库名:图标名`（库名 = `ICON_FONTS` 的 key，不可省）。 */
