@@ -147,7 +147,7 @@ export function SideSheet(props: SideSheetProps): ReactNode {
             'aria-label': tt('dockClose'),
             onClick: () => props.onClose?.(),
           },
-          props.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }),
+          props.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi' }),
         )
 
   const renderHeader = (): ReactNode => {

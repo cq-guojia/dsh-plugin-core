@@ -84,7 +84,7 @@ export function SideSheet(props) {
             className: `dshpc-dock__close ${floating ? 'dshpc-dock__close--floating' : 'dshpc-dock__close--abs'}`,
             'aria-label': tt('dockClose'),
             onClick: () => props.onClose?.(),
-        }, props.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }));
+        }, props.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi' }));
     const renderHeader = () => {
         if (props.header === null)
             return null;

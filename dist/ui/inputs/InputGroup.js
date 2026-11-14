@@ -80,7 +80,7 @@ export function InputGroup(props) {
             key: 'undo',
             variant: 'plain',
             size,
-            icon: h(FontIcon, { name: 'common.base:chexiao', size: 14 }),
+            icon: h(FontIcon, { name: 'common.base:chexiao' }),
             label: undoLabel,
             disabled: disabled === true || undoStack.length === 0,
             onClick: undo,

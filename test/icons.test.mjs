@@ -59,7 +59,12 @@ test('注册表每套库的字段齐全、地址是绝对 https', () => {
 test('字体图标：组名不可省，拼「基础类 + 前缀 + 名字」', () => {
   const el = Icon({ name: 'common.base:gou' })
   assert.equal(el.props.className, 'koc-i-common-base koc-i-common-base-gou')
-  assert.equal(el.props.style.fontSize, ICON_SIZES.md)
+})
+
+test('不传 size 就不写 fontSize：图标继承所在文字字号（1:1）', () => {
+  const el = Icon({ name: 'common.base:gou' })
+  assert.ok(!('fontSize' in el.props.style), '字体图标不许写死 16px，得跟文字走')
+  assert.equal(el.props.style.lineHeight, 1)
 })
 
 test('尺寸：预设名与自定义 px 都认', () => {
@@ -80,6 +85,7 @@ test('多色库：深色下拿不到名字清单时仍用原字形', () => {
   assert.equal(typeof el.type, 'function', '多色库走 ColorGlyph 组件')
   assert.equal(el.props.glyph, 'jia')
   assert.equal(el.props.font.color, true)
+  assert.equal(el.props.size, undefined, '多色库不传 size 时同样继承文字字号')
 })
 
 test('深色换字形：有 -dark 就用它，没有就原名字', () => {
@@ -98,10 +104,14 @@ test('未知库不渲染（不回落 common.base）', () => {
   assert.equal(quiet(() => Icon({ name: 'social:gou' })), null)
 })
 
-test('官方图标：无冒号按名取组件，尺寸走 size', () => {
+test('官方图标：无冒号按名取组件，不传 size 就不给官方组件传尺寸', () => {
   const el = Icon({ name: 'IconCheckOutlineRegular' })
   assert.equal(typeof el.type, 'function')
-  assert.equal(el.props.size, ICON_SIZES.md)
+  assert.equal(el.props.size, undefined, '让控件的 svg{width:1em} 接管')
+})
+
+test('官方图标显式传 size 才给绝对 px', () => {
+  assert.equal(Icon({ name: 'IconCheckOutlineRegular', size: 'lg' }).props.size, ICON_SIZES.lg)
 })
 
 test('官方命名空间里非图标的东西不许从字符串拉进来', () => {

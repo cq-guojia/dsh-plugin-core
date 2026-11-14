@@ -328,7 +328,7 @@ export function PanelDock(props) {
             className: 'dshpc-dock__close dshpc-dock__close--abs',
             'aria-label': tt('dockClose'),
             onClick: () => props.dock.close(pane.id, 'button'),
-        }, pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }));
+        }, pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi' }));
     };
     const renderHeader = (pane) => {
         if (pane.header === null)
@@ -351,7 +351,7 @@ export function PanelDock(props) {
             className: 'dshpc-dock__close dshpc-dock__close--floating',
             'aria-label': tt('dockClose'),
             onClick: () => props.dock.close(pane.id, 'button'),
-        }, pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }));
+        }, pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi' }));
     };
     // 开着时根元素带 --open：CSS 据此给主区滚动条让出一条缝（全关即无缝，不留白边）。
     const rootClass = `dshpc-dock${state.ids.length > 0 ? ' dshpc-dock--open' : ''}${props.className === undefined ? '' : ` ${props.className}`}`;

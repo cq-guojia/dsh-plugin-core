@@ -153,7 +153,7 @@ function createToasterHost(): ToastHost {
                 fontWeight: 700,
               },
             },
-            h(FontIcon, { name: palette.glyph, size: 13 }),
+            h(FontIcon, { name: palette.glyph }),
           ),
           h(
             'div',

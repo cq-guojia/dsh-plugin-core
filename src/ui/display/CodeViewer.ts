@@ -70,7 +70,7 @@ export function CodeViewer(props: CodeViewerProps): ReactElement {
     overlay: h(IconButton, {
       variant: 'outline',
       size: 'md',
-      icon: h(FontIcon, { name: copied ? 'common.base:gou' : 'common.base:fuzhi', size: 14 }),
+      icon: h(FontIcon, { name: copied ? 'common.base:gou' : 'common.base:fuzhi' }),
       label: copied ? t('codeCopied') : t('codeCopy'),
       className: 'dshpc-cv__copy',
       onClick: copy,

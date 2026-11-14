@@ -132,7 +132,7 @@ function createToasterHost() {
                 fontSize: '13px',
                 fontWeight: 700,
             },
-        }, h(FontIcon, { name: palette.glyph, size: 13 })), h('div', { style: { flex: 1, minWidth: 0 } }, h('div', { style: { fontWeight: 600 } }, payload.message), payload.description !== undefined
+        }, h(FontIcon, { name: palette.glyph })), h('div', { style: { flex: 1, minWidth: 0 } }, h('div', { style: { fontWeight: 600 } }, payload.message), payload.description !== undefined
             ? h('div', { style: { opacity: 0.9, fontSize: '13px', marginTop: '2px', whiteSpace: 'pre-line' } }, payload.description)
             : null), actions !== undefined && actions.length > 0
             ? h('div', { style: { display: 'flex', gap: '8px', flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => {

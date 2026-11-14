@@ -364,7 +364,7 @@ export function Picker(props: PickerProps): ReturnType<typeof h> {
                             ? h(
                                 'span',
                                 { className: 'dshpc-picker__tick' },
-                                selected.includes(o.value) ? h(FontIcon, { name: 'common.base:gou', size: 12 }) : null,
+                                selected.includes(o.value) ? h(FontIcon, { name: 'common.base:gou' }) : null,
                               )
                             : null,
                           o.icon !== undefined && o.icon !== null

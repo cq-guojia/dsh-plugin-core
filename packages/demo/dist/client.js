@@ -157,7 +157,7 @@ function darkGlyphName(glyph, names) {
 // dist/ui/display/font-icon.js
 var ICON_FONTS = {
   "common.base": {
-    url: "https://at.alicdn.com/t/c/font_5252971_dn4wfq92dar.css",
+    url: "https://at.alicdn.com/t/c/font_5252971_ep4b9h86kka.css",
     family: "koc-i-common-base",
     baseClass: "koc-i-common-base",
     prefix: "koc-i-common-base-"
@@ -230,8 +230,11 @@ function glyphClass(font, glyph, className2) {
 }
 function pxOf(size4) {
   if (size4 === void 0)
-    return ICON_SIZES.md;
+    return void 0;
   return typeof size4 === "number" ? size4 : ICON_SIZES[size4];
+}
+function sizeStyle(size4, style2) {
+  return { ...size4 === void 0 ? {} : { fontSize: size4 }, lineHeight: 1, ...style2 };
 }
 function ColorGlyph(props) {
   const dark = useHostDark();
@@ -242,7 +245,7 @@ function ColorGlyph(props) {
     role: props.title === void 0 ? void 0 : "img",
     "aria-label": props.title,
     title: props.title,
-    style: { fontSize: props.size, lineHeight: 1, ...props.style }
+    style: sizeStyle(props.size, props.style)
   });
 }
 function FontIcon(props) {
@@ -263,7 +266,7 @@ function FontIcon(props) {
     role: title === void 0 ? void 0 : "img",
     "aria-label": title,
     title,
-    style: { fontSize: size4, lineHeight: 1, ...style2 }
+    style: sizeStyle(size4, style2)
   });
 }
 
@@ -277,13 +280,13 @@ function Icon(props) {
     }
     return FontIcon(props);
   }
-  const size4 = props.size === void 0 ? ICON_SIZES.md : typeof props.size === "number" ? props.size : ICON_SIZES[props.size];
+  const size4 = props.size === void 0 ? void 0 : typeof props.size === "number" ? props.size : ICON_SIZES[props.size];
   const glyph = Official[name2];
   if (typeof glyph !== "function" || !/^Icon[A-Z]/.test(name2)) {
     warnMissingIcon(name2);
     return null;
   }
-  const rendered = (0, import_react3.createElement)(glyph, { size: size4 });
+  const rendered = (0, import_react3.createElement)(glyph, size4 === void 0 ? {} : { size: size4 });
   if (title === void 0)
     return rendered;
   return (0, import_react3.createElement)("span", { role: "img", "aria-label": title, title, style: { display: "inline-flex", ...style2 } }, rendered);
@@ -5037,7 +5040,7 @@ function PanelClose(props) {
     className: `dshpc-panel__close${props.className === void 0 ? "" : ` ${props.className}`}`,
     "aria-label": props.label,
     onClick: () => props.onClick()
-  }, props.icon ?? (0, import_react10.createElement)(FontIcon, { name: "common.base:guanbi", size: 14 }));
+  }, props.icon ?? (0, import_react10.createElement)(FontIcon, { name: "common.base:guanbi" }));
 }
 
 // dist/ui/infra/overlay.js
@@ -5529,7 +5532,7 @@ function Picker(props) {
                 pick2(o.value);
             }
           },
-          mode === "multiple" ? (0, import_react12.createElement)("span", { className: "dshpc-picker__tick" }, selected.includes(o.value) ? (0, import_react12.createElement)(FontIcon, { name: "common.base:gou", size: 12 }) : null) : null,
+          mode === "multiple" ? (0, import_react12.createElement)("span", { className: "dshpc-picker__tick" }, selected.includes(o.value) ? (0, import_react12.createElement)(FontIcon, { name: "common.base:gou" }) : null) : null,
           o.icon !== void 0 && o.icon !== null ? (0, import_react12.createElement)("span", { className: "dshpc-picker__option-icon" }, o.icon) : null,
           // 选项文字超长时省略号 + hover 跑马灯（与触发器同一套逻辑），不把菜单撑出横向滚动条。
           (0, import_react12.createElement)(MarqueeText, { text: o.label, className: "dshpc-picker__option-label" })
@@ -5604,7 +5607,7 @@ function Loader(props) {
 var import_react15 = require("react");
 
 // dist/ui/actions/button-css.generated.js
-var BUTTON_CSS = "\n/* \u2500\u2500 \u6309\u94AE / \u56FE\u6807\u94AE P2 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E0E Segmented \u540C\u4E00\u6761\u9AD8\u5EA6\u7EAA\u5F8B\uFF1A--dshpc-control-h-sm(24) / -md(28) / -lg(32)\uFF0C\n   \u6709\u8FB9\u6846\u7684 variant \u7528 1px \u771F\u8FB9\u6846 + \u5185\u90E8 padding \u8865\u56DE\uFF0C**\u6709\u8FB9 / \u65E0\u8FB9\u540C\u9AD8**\u3002\n\n   \u4E09\u6761\u53D7\u63A7\u8F74\uFF082026-10-19 \u91CD\u5199\uFF0C\u5BF9\u9F50\u4E3B\u6D41 UI \u6846\u67B6\u7684\u5206\u7C7B\u53E3\u5F84\uFF09\uFF1A\n     \xB7 variant \u2014\u2014 \u5916\u89C2\u6863 = \u5F62\u6001 + \u8BED\u4E49\u8272\uFF0C\u5171 10 \u6863\uFF1A\n         primary / secondary / outline / ghost / danger / success / warning / info /\n         danger-outline\uFF08\u7EA2\u5B57\u63CF\u8FB9\uFF09/ link\uFF08\u884C\u5185\u94FE\u63A5\uFF09\n     \xB7 size \u2014\u2014 sm / md / lg\n     \xB7 block \u2014\u2014 \u6491\u6EE1\u7236\u5BBD\n   \u6BCF\u4E00\u6863**\u53EA\u586B 5 \u4E2A\u5C40\u90E8\u53D8\u91CF**\uFF08--btn-bg / -fg / -border / -bg-hover / -bg-active\uFF09\uFF0C\n   \u7ED3\u6784\u4E0E\u4EA4\u4E92\u53EA\u6709\u4E0A\u9762\u8FD9\u4E00\u4EFD\uFF1B\u4EFB\u4F55\u6863\u4F4D\u90FD\u4E0D\u8BB8\u518D\u5199\u4E00\u904D display/height/padding\u3002\n   \u81EA\u5B9A\u4E49\u989C\u8272\uFF08Button \u7684 color \u53C2\u6570\uFF09\u540C\u6837\u53EA\u8986\u76D6\u8FD9 5 \u4E2A\u53D8\u91CF\uFF08token \u8986\u76D6\uFF0C\u4E0D\u662F\u65B0\u76AE\u80A4\uFF09\u3002\n\n   \u26A0\uFE0F hover \u4E0D\u518D\u7528 opacity \u538B\u4E00\u5C42\uFF08\u7528\u6237 2026-10-19\uFF1A\u300C\u9ED1\u8272\u548C\u7EA2\u8272\u7684\u6309\u94AE\u79FB\u4E0A\u53BB\u53D8\u5316\u592A\u5C0F\uFF0C\n   \u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\uFF09\u21D2 \u8D70 --dshpc-*-hover / -active \u7684\u660E\u786E\u6DF7\u8272\uFF0C\u89C1 tokens-css.ts\u3002 */\n.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;--btn-pad:12px;\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);--btn-fg-hover:var(--btn-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;\n  box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);\n  background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}\n.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n/* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u5E95\u680F / \u62BD\u5C49\u5E95\u90E8\u7684\u4E3B\u64CD\u4F5C\uFF09 */\n.dshpc-btn--block{display:flex;width:100%;}\n/* block + \u524D\u7F6E\u56FE\u6807 \u21D2 \u6587\u5B57\u89C6\u89C9\u5C45\u4E2D\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\uFF1A\n   \u5185\u5BB9\u7EC4 [\u56FE\u6807 + \u95F4\u8DDD + \u6587\u5B57] \u6574\u4F53\u5728\u76D2\u5185\u5C45\u4E2D\u65F6\uFF0C**\u6587\u5B57**\u7684\u4E2D\u5FC3\u4F1A\u88AB\u56FE\u6807\u63A8\u53F3\u534A\u683C\u3002\n   \u628A\u53F3\u5185\u8FB9\u8DDD\u8865\u4E0A\u300C\u56FE\u6807\u5BBD + \u95F4\u8DDD\u300D\uFF0C\u53EF\u7528\u76D2\u968F\u4E4B\u5DE6\u79FB\u540C\u91CF \u21D2 \u6587\u5B57\u843D\u56DE\u89C6\u89C9\u4E2D\u5FC3\uFF0C\u56FE\u6807\u8D34\u5DE6\u4FA7\u3002\n   \u56FE\u6807\u5BBD\u6309 1.2em \u4F30\uFF08\u5B98\u65B9\u56FE\u6807 14/16px vs \u5B57\u53F7 12/13px\uFF09\uFF0Cem \u968F\u5B57\u53F7\u6863\u81EA\u52A8\u7F29\u653E\u3002 */\n.dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1.2em + 6px);}\n/* \u56FE\u6807\u6BD4\u540C\u6863\u6587\u5B57\u5C0F\u4E00\u53F7\uFF08\u7528\u6237 2026-11-02\uFF09\uFF1A\u5BB9\u5668\u5403\u6389 0.875em\uFF0C\u5185\u8054 SVG \u4E00\u5F8B\u8DDF\u968F 1em\uFF0C\n   \u4E0D\u518D\u7531\u8C03\u7528\u65B9\u7684 size={16} \u8BF4\u4E86\u7B97 \u2014\u2014 \u5168\u7AD9\u6309\u94AE\u56FE\u6807\u5C3A\u5BF8\u53EA\u7531\u8FD9\u4E00\u5904\u51B3\u5B9A\u3002 */\n.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;font-size:.875em;}\n.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;width:1em;height:1em;}\n/* maxWidth \u5305 MarqueeText \u65F6\uFF1A\u6807\u7B7E\u4F5C\u4E3A flex \u5B50\u9879\u5FC5\u987B\u80FD\u6536\u7F29\u5230\u5185\u5BB9\u4EE5\u4E0B\uFF0C\u5426\u5219\u7701\u7565\u53F7 / \u8DD1\u9A6C\u706F\u6D4B\u4E0D\u51C6 */\n.dshpc-btn .dshpc-btn__label{min-width:0;}\n/* loading\uFF1A\u4E0D\u6362 DOM \u7ED3\u6784\uFF0C\u53EA\u5728\u6587\u6848\u524D\u63D2\u4E00\u679A Loader\uFF08size=xs\uFF0C12px\uFF09\u3002\n   \u73AF\u7684\u753B\u6CD5\u4E0E\u52A8\u753B\u7EDF\u4E00\u5728 controls/loader.css\uFF08\u672C\u6587\u4EF6\u4E0D\u518D\u7EF4\u62A4\u7B2C\u4E8C\u4EFD SVG \u5F27 / keyframes\uFF09\u3002 */\n\n/* \u4EA4\u4E92\u6001\uFF1A\u989C\u8272\u53D8\u5316\u5199\u5728\u53D8\u91CF\u4E0A \u21D2 \u6240\u6709\u6863\u4F4D\u4E00\u6B21\u751F\u6548\uFF0C\u4E14\u53D8\u5316\u5E45\u5EA6\u7531 token \u51B3\u5B9A\uFF08\u591F\u660E\u663E\uFF09 */\n.dshpc-btn:hover:not(:disabled){background-color:var(--btn-bg-hover);color:var(--btn-fg-hover);}\n.dshpc-btn:active:not(:disabled){background-color:var(--btn-bg-active);transform:translateY(1px);}\n.dshpc-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-btn:disabled{cursor:default;opacity:.5;}\n/* dense\uFF1A\u5C3A\u5BF8\u6863 / \u9AD8\u5EA6\u4E00\u5F8B\u4E0D\u53D8\uFF0C\u53EA\u628A\u56FE\u6807\u653E\u5927\u4E00\u6863\u3001\u5185\u8DDD\u6536\u7D27\uFF08\u63CF\u8FB9\u7EC6\u7684\u6587\u4EF6\u7C7B\u578B\u56FE\u6807\u7528\uFF09\u3002\n   \u53EA\u8986\u76D6\u5C40\u90E8\u53D8\u91CF\u4E0E\u56FE\u6807\u5B57\u53F7\uFF0C\u4E0D\u53E6\u5199\u4E00\u5957\u76AE\u80A4\uFF1B\u5FC5\u987B\u5199\u5728\u5C3A\u5BF8\u6863\u4E0E\u56FE\u6807\u89C4\u5219\u4E4B\u540E\u624D\u538B\u5F97\u8FC7\u9ED8\u8BA4\u503C\u3002 */\n.dshpc-btn--dense{--btn-pad:6px;}\n.dshpc-btn--dense .dshpc-btn__icon,.dshpc-btn--dense .dshpc-btn__icon-end{font-size:1.25em;}\n\n.dshpc-btn--primary{--btn-bg:var(--dshpc-accent);--btn-fg:var(--dshpc-fg-inverse);\n  --btn-bg-hover:var(--dshpc-accent-hover);--btn-bg-active:var(--dshpc-accent-active);}\n/* secondary\uFF1A\u4E2D\u6027\u5B9E\u5FC3\uFF08\u7070\u9762\uFF09\uFF0C\u7528\u4E8E\u300C\u53D6\u6D88 / \u6B21\u8981\u300D\u8FD9\u7C7B\u4E0E\u4E3B\u64CD\u4F5C\u5E76\u6392\u7684\u6309\u94AE */\n.dshpc-btn--secondary{--btn-bg:var(--dshpc-hover);--btn-fg:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-active);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--outline{--btn-bg:var(--dshpc-surface-1);--btn-border:var(--dshpc-border-strong);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--ghost{--btn-fg:var(--dshpc-fg-2);--btn-fg-hover:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--danger{--btn-bg:var(--dshpc-danger);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-danger-hover);--btn-bg-active:var(--dshpc-danger-active);}\n.dshpc-btn--success{--btn-bg:var(--dshpc-success);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-success-hover);--btn-bg-active:var(--dshpc-success-active);}\n.dshpc-btn--warning{--btn-bg:var(--dshpc-warning);--btn-fg:var(--dshpc-on-warning);\n  --btn-bg-hover:var(--dshpc-warning-hover);--btn-bg-active:var(--dshpc-warning-active);}\n.dshpc-btn--info{--btn-bg:var(--dshpc-business);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-business-hover);--btn-bg-active:var(--dshpc-business-active);}\n/* \u6269\u5C55\u516B\u8272\u5B9E\u5FC3\uFF082026-10-29\uFF09\uFF1A\u767D\u5B57\u4E24\u4E3B\u9898\u5747 \u22654.5:1\uFF1Bhover/active \u8D70\u5404\u81EA token \u6D3E\u751F\u3002 */\n.dshpc-btn--purple{--btn-bg:var(--dshpc-purple);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-purple-hover);--btn-bg-active:var(--dshpc-purple-active);}\n.dshpc-btn--pink{--btn-bg:var(--dshpc-pink);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-pink-hover);--btn-bg-active:var(--dshpc-pink-active);}\n.dshpc-btn--cyan{--btn-bg:var(--dshpc-cyan);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-cyan-hover);--btn-bg-active:var(--dshpc-cyan-active);}\n.dshpc-btn--teal{--btn-bg:var(--dshpc-teal);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-teal-hover);--btn-bg-active:var(--dshpc-teal-active);}\n.dshpc-btn--orange{--btn-bg:var(--dshpc-orange);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-orange-hover);--btn-bg-active:var(--dshpc-orange-active);}\n.dshpc-btn--indigo{--btn-bg:var(--dshpc-indigo);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-indigo-hover);--btn-bg-active:var(--dshpc-indigo-active);}\n.dshpc-btn--rose{--btn-bg:var(--dshpc-rose);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-rose-hover);--btn-bg-active:var(--dshpc-rose-active);}\n.dshpc-btn--slate{--btn-bg:var(--dshpc-slate);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-slate-hover);--btn-bg-active:var(--dshpc-slate-active);}\n/* danger-outline\uFF1A\u7EA2\u5B57\u63CF\u8FB9\uFF08\u7834\u574F\u6027\u6B21\u8981\u64CD\u4F5C\uFF0C\u5982\u5361\u7247\u4E0A\u7684\u300C\u5220\u9664\u300D\uFF09\u3002\n   \u26A0\uFE0F \u65E7\u4FEE\u9970\u7C7B danger-ink \u4FDD\u7559\u4E3A\u522B\u540D\uFF08\u6D88\u8D39\u65B9\u53EF\u80FD\u8FD8\u5728\u6302\uFF09\uFF0C\u4E24\u8005\u540C\u4E00\u5957\u76AE\u80A4\u3002 */\n.dshpc-btn--danger-outline,.dshpc-btn--danger-ink{--btn-border:var(--dshpc-danger);--btn-fg:var(--dshpc-danger);\n  --btn-fg-hover:var(--dshpc-danger);--btn-bg-hover:var(--dshpc-danger-soft);--btn-bg-active:var(--dshpc-danger-soft);}\n/* link\uFF1A\u884C\u5185\u6587\u5B57\u94FE\u63A5\u578B\uFF08\u4F1A\u8BDD / \u4EA7\u51FA\u6587\u4EF6\u540D\uFF09\uFF0C\u65E0\u5E95\u65E0\u8FB9\u3001\u54C1\u724C\u84DD\u3001hover \u4E0B\u5212\u7EBF */\n.dshpc-btn--link{--btn-fg:var(--dshpc-link);--btn-fg-hover:var(--dshpc-link);\n  --btn-bg-hover:transparent;--btn-bg-active:transparent;\n  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}\n.dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}\n\n/* \u56FE\u6807\u94AE\uFF1A\u7EAF\u56FE\u6807\uFF0C\u65B9\u5F62\uFF1B\u5C3A\u5BF8\u6863\u7684\u5BBD\u9AD8\u4E0E\u540C\u6863\u6587\u5B57\u6309\u94AE\u7B49\u9AD8\u3001\u5706\u89D2\u7EDF\u4E00\u5403 md\uFF08\u4E0E .dshpc-btn \u540C\u6B3E\uFF0C2026-10-28 \u62CD\u677F\uFF09\n   \u5E95\u8272 / \u56FE\u6807\u8272\u5168\u8D70\u5C40\u90E8\u53D8\u91CF\uFF1A\u9ED8\u8BA4**\u65E0\u5E95\u8272**\uFF0C\u6D88\u8D39\u65B9\u53EF\u4F20 color\uFF08\u56FE\u6807\u8272\uFF09/ background\uFF08\u5E95\u8272\uFF09\u8986\u76D6\uFF08\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-iconbtn{--icb-bg:transparent;--icb-bg-hover:var(--dshpc-hover);--icb-fg:var(--dshpc-fg-2);--icb-fg-hover:var(--dshpc-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0;\n  border:1px solid var(--icb-border,transparent);border-radius:var(--dshpc-radius-md);\n  background:var(--icb-bg);color:var(--icb-fg);\n  font-family:inherit;cursor:pointer;flex:none;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}\n.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}\n.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}\n/* \u56FE\u6807\u4E0E\u6587\u5B57\u6309\u94AE\u540C\u53E3\u5F84\uFF1ASVG \u4E00\u5F8B\u8DDF\u968F 1em\uFF08\u6BD4 16px \u6863\u5C0F\u4E00\u53F7\uFF09\u3002\n   \u26A0\uFE0F flex:none \u662F\u786C\u7EA6\u675F\uFF1Asvg \u662F\u6309\u94AE\u7684\u76F4\u63A5 flex item\uFF0C\u9ED8\u8BA4 flex-shrink:1 \u4F1A\u88AB\u6309\u94AE\u5185\u8DDD\n   \u6324\u6210 10px \u7A84\u6761\uFF1B\u90A3\u662F\u5E03\u5C40\u6536\u7F29\uFF0C\u4E0D\u662F\u5C42\u53E0\u4F18\u5148\u7EA7 \u2014\u2014 \u6539 width\u3001\u52A0 !important \u90FD\u6551\u4E0D\u56DE\u6765\uFF0C\n   \u800C height \u5728\u4EA4\u53C9\u8F74\u4E0D\u53D7\u5F71\u54CD\uFF0C\u4E8E\u662F\u56FE\u6807\u88AB\u538B\u6241\u53D8\u5F62\u3002\u540E\u4EE3\u9009\u62E9\u5668\u517C\u5BB9\u5B98\u65B9\u56FE\u6807\u5916\u7684 wrapper\u3002 */\n.dshpc-iconbtn svg{display:block;width:1em;height:1em;flex:none;}\n/* dense\uFF1A\u53EA\u653E\u5927\u56FE\u6807\u7684 em \u503C\uFF0C\u6B63\u65B9\u5F62\u5BBD\u9AD8\u4E0E\u9AD8\u5EA6\u6863\u90FD\u4E0D\u52A8\uFF1B\n   1.25em \u76F8\u5BF9\u6309\u94AE\u5B57\u53F7 12/13 \u21D2 15/16.25px\uFF0C\u4E0E .dshpc-btn--dense \u4E00\u81F4\u3002 */\n.dshpc-iconbtn.dshpc-iconbtn--dense svg{width:1.25em;height:1.25em;}\n.dshpc-iconbtn--outline{--icb-bg:var(--dshpc-surface-1);--icb-border:var(--dshpc-border);}\n.dshpc-iconbtn--danger{--icb-fg:var(--dshpc-danger);--icb-bg-hover:var(--dshpc-danger-soft);--icb-fg-hover:var(--dshpc-danger);}\n.dshpc-iconbtn:hover:not(:disabled){background:var(--icb-bg-hover);color:var(--icb-fg-hover);}\n.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}\n\n/* \u2500\u2500 \u884C\u5F0F\u6587\u4EF6\u6309\u94AE\uFF08\u56FE\u6807 + \u6587\u4EF6\u540D\uFF09P2\uFF1A**\u5168\u7AD9\u552F\u4E00\u5B9E\u73B0**\uFF082026-10-04 \u6536\u7F16\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7528\u9014\uFF1A\u300C\u4EA7\u51FA\u7269 / \u9644\u4EF6\u300D\u90A3\u79CD**\u4E00\u884C\u4E00\u4E2A\u6587\u4EF6**\u7684\u6E05\u5355\u9879\uFF08\u57FA\u7840\u4FE1\u606F\u53F3\u680F\u4EA7\u51FA\u7269\u6E05\u5355\u3001\u9644\u4EF6\u533A\u3001\n   \u6267\u884C\u8BB0\u5F55\u9875\u7684\u5C55\u5F00\u533A\uFF09\u3002\u5E73\u65F6\u900F\u660E\u3001**\u9F20\u6807\u79FB\u4E0A\u53BB\u624D\u51FA\u6D45\u5E95**\uFF08\u6CBF\u7528\u7528\u6237 2026-10-03 \u5B9A\u7684\u89C2\u611F\uFF09\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4FEE\u9970\u7C7B\uFF1A\n     --block   \u6491\u6EE1\u7236\u5BBD\uFF08\u6E05\u5355\u91CC\u4E00\u9879\u4E00\u884C\uFF09\n     --inline  \u5185\u5BB9\u5BBD\uFF08\u8DDF\u5728\u6587\u5B57\u540E\u5934\uFF0C\u5982\u9644\u4EF6\u884C\uFF09\n   \u6536\u7F16\u539F\u56E0\uFF1A\u8FD9\u4EFD\u76AE\u80A4\u6B64\u524D\u53EA\u5199\u5728 task-list.tsx \u7684 TASK_LIST_CSS \u91CC\uFF08\u65E7\u540D .dshpc-info-out\uFF09\uFF0C\n   \u6267\u884C\u8BB0\u5F55\u9875\u5C55\u5F00\u533A\u8981\u7528\u540C\u4E00\u79CD\u89C2\u611F \u21D2 \u4E0A\u63D0\u57FA\u7840\u5C42\uFF0C\u907F\u514D\u518D\u51FA\u73B0\u300C\u5404\u5199\u4E00\u4EFD\u5916\u89C2\u300D\uFF08\u540C\u540D\u4E0D\u540C\u76AE\u7684\u5751\u521A\u8E29\u8FC7\uFF09\u3002 */\n.dshpc-filechip{appearance:none;-webkit-appearance:none;border:0;border-radius:var(--dshpc-radius-xs);\n  background:transparent;color:var(--dshpc-fg);font:inherit;text-align:left;cursor:pointer;min-width:0;\n  transition:background-color var(--dshpc-dur) var(--dshpc-ease);}\n.dshpc-filechip:hover:not(:disabled){background:var(--dshpc-chip-bg);}\n.dshpc-filechip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-filechip:disabled{cursor:default;background:transparent;color:var(--dshpc-fg-3);}\n.dshpc-filechip--block{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;\n  padding:4px 6px;font-size:var(--dshpc-font-xs);}\n.dshpc-filechip--inline{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;font-size:var(--dshpc-font-sm);}\n\n@media (prefers-reduced-motion: reduce){.dshpc-btn,.dshpc-iconbtn,.dshpc-filechip{transition:none;}}\n";
+var BUTTON_CSS = "\n/* \u2500\u2500 \u6309\u94AE / \u56FE\u6807\u94AE P2 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u4E0E Segmented \u540C\u4E00\u6761\u9AD8\u5EA6\u7EAA\u5F8B\uFF1A--dshpc-control-h-sm(24) / -md(28) / -lg(32)\uFF0C\n   \u6709\u8FB9\u6846\u7684 variant \u7528 1px \u771F\u8FB9\u6846 + \u5185\u90E8 padding \u8865\u56DE\uFF0C**\u6709\u8FB9 / \u65E0\u8FB9\u540C\u9AD8**\u3002\n\n   \u4E09\u6761\u53D7\u63A7\u8F74\uFF082026-10-19 \u91CD\u5199\uFF0C\u5BF9\u9F50\u4E3B\u6D41 UI \u6846\u67B6\u7684\u5206\u7C7B\u53E3\u5F84\uFF09\uFF1A\n     \xB7 variant \u2014\u2014 \u5916\u89C2\u6863 = \u5F62\u6001 + \u8BED\u4E49\u8272\uFF0C\u5171 10 \u6863\uFF1A\n         primary / secondary / outline / ghost / danger / success / warning / info /\n         danger-outline\uFF08\u7EA2\u5B57\u63CF\u8FB9\uFF09/ link\uFF08\u884C\u5185\u94FE\u63A5\uFF09\n     \xB7 size \u2014\u2014 sm / md / lg\n     \xB7 block \u2014\u2014 \u6491\u6EE1\u7236\u5BBD\n   \u6BCF\u4E00\u6863**\u53EA\u586B 5 \u4E2A\u5C40\u90E8\u53D8\u91CF**\uFF08--btn-bg / -fg / -border / -bg-hover / -bg-active\uFF09\uFF0C\n   \u7ED3\u6784\u4E0E\u4EA4\u4E92\u53EA\u6709\u4E0A\u9762\u8FD9\u4E00\u4EFD\uFF1B\u4EFB\u4F55\u6863\u4F4D\u90FD\u4E0D\u8BB8\u518D\u5199\u4E00\u904D display/height/padding\u3002\n   \u81EA\u5B9A\u4E49\u989C\u8272\uFF08Button \u7684 color \u53C2\u6570\uFF09\u540C\u6837\u53EA\u8986\u76D6\u8FD9 5 \u4E2A\u53D8\u91CF\uFF08token \u8986\u76D6\uFF0C\u4E0D\u662F\u65B0\u76AE\u80A4\uFF09\u3002\n\n   \u26A0\uFE0F hover \u4E0D\u518D\u7528 opacity \u538B\u4E00\u5C42\uFF08\u7528\u6237 2026-10-19\uFF1A\u300C\u9ED1\u8272\u548C\u7EA2\u8272\u7684\u6309\u94AE\u79FB\u4E0A\u53BB\u53D8\u5316\u592A\u5C0F\uFF0C\n   \u5B8C\u5168\u611F\u89C9\u4E0D\u5230\u989C\u8272\u53D8\u4E86\u300D\uFF09\u21D2 \u8D70 --dshpc-*-hover / -active \u7684\u660E\u786E\u6DF7\u8272\uFF0C\u89C1 tokens-css.ts\u3002 */\n.dshpc-btn{--btn-bg:transparent;--btn-fg:var(--dshpc-fg);--btn-border:transparent;--btn-pad:12px;\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);--btn-fg-hover:var(--btn-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;\n  box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);\n  background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}\n.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}\n/* block\uFF1A\u6491\u6EE1\u7236\u5BBD\uFF08\u8868\u5355\u5E95\u680F / \u62BD\u5C49\u5E95\u90E8\u7684\u4E3B\u64CD\u4F5C\uFF09 */\n.dshpc-btn--block{display:flex;width:100%;}\n/* block + \u524D\u7F6E\u56FE\u6807 \u21D2 \u6587\u5B57\u89C6\u89C9\u5C45\u4E2D\uFF082026-10-19 \u7528\u6237\u70B9\u540D\uFF09\uFF1A\n   \u5185\u5BB9\u7EC4 [\u56FE\u6807 + \u95F4\u8DDD + \u6587\u5B57] \u6574\u4F53\u5728\u76D2\u5185\u5C45\u4E2D\u65F6\uFF0C**\u6587\u5B57**\u7684\u4E2D\u5FC3\u4F1A\u88AB\u56FE\u6807\u63A8\u53F3\u534A\u683C\u3002\n   \u628A\u53F3\u5185\u8FB9\u8DDD\u8865\u4E0A\u300C\u56FE\u6807\u5BBD + \u95F4\u8DDD\u300D\uFF0C\u53EF\u7528\u76D2\u968F\u4E4B\u5DE6\u79FB\u540C\u91CF \u21D2 \u6587\u5B57\u843D\u56DE\u89C6\u89C9\u4E2D\u5FC3\uFF0C\u56FE\u6807\u8D34\u5DE6\u4FA7\u3002\n   \u56FE\u6807\u5BBD = 1em\uFF08\u4E0E\u6587\u5B57\u7B49\u5927\uFF09\uFF0Cem \u968F\u5B57\u53F7\u6863\u81EA\u52A8\u7F29\u653E\u3002 */\n.dshpc-btn--block.dshpc-btn--icon-start{padding-right:calc(var(--btn-pad) + 1em + 6px);}\n/* \u56FE\u6807\u4E0E\u540C\u4E00\u884C\u6587\u5B57\u7B49\u5927\uFF082026-11-14\uFF09\uFF1A\u5B57\u4F53 <i> \u4E0D\u5199\u5185\u8054 fontSize \u5C31\u7EE7\u627F\u8FD9\u91CC\uFF0C\n   \u5B98\u65B9 SVG \u7531\u4E0B\u9762\u7684 1em \u63A5\u7BA1 \u2014\u2014 \u4E24\u7C7B\u90FD\u8DDF\u6587\u5B57 font-size 1:1\uFF0C\u4E0D\u7531\u63A7\u4EF6\u9AD8\u5EA6\u6863\u51B3\u5B9A\u3002\n   \u7EDD\u5BF9 px\uFF08size={16} \u4E4B\u7C7B\uFF09\u53EA\u7559\u7ED9\u72EC\u7ACB\u6446\u653E\u4E0E\u88C5\u9970\u6027\u5C0F\u7BAD\u5934\u3002 */\n.dshpc-btn__icon,.dshpc-btn__icon-end{display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:0;font-size:1em;}\n.dshpc-btn__icon svg,.dshpc-btn__icon-end svg{display:block;margin:0;width:1em;height:1em;}\n/* maxWidth \u5305 MarqueeText \u65F6\uFF1A\u6807\u7B7E\u4F5C\u4E3A flex \u5B50\u9879\u5FC5\u987B\u80FD\u6536\u7F29\u5230\u5185\u5BB9\u4EE5\u4E0B\uFF0C\u5426\u5219\u7701\u7565\u53F7 / \u8DD1\u9A6C\u706F\u6D4B\u4E0D\u51C6 */\n.dshpc-btn .dshpc-btn__label{min-width:0;}\n/* loading\uFF1A\u4E0D\u6362 DOM \u7ED3\u6784\uFF0C\u53EA\u5728\u6587\u6848\u524D\u63D2\u4E00\u679A Loader\uFF08size=xs\uFF0C12px\uFF09\u3002\n   \u73AF\u7684\u753B\u6CD5\u4E0E\u52A8\u753B\u7EDF\u4E00\u5728 controls/loader.css\uFF08\u672C\u6587\u4EF6\u4E0D\u518D\u7EF4\u62A4\u7B2C\u4E8C\u4EFD SVG \u5F27 / keyframes\uFF09\u3002 */\n\n/* \u4EA4\u4E92\u6001\uFF1A\u989C\u8272\u53D8\u5316\u5199\u5728\u53D8\u91CF\u4E0A \u21D2 \u6240\u6709\u6863\u4F4D\u4E00\u6B21\u751F\u6548\uFF0C\u4E14\u53D8\u5316\u5E45\u5EA6\u7531 token \u51B3\u5B9A\uFF08\u591F\u660E\u663E\uFF09 */\n.dshpc-btn:hover:not(:disabled){background-color:var(--btn-bg-hover);color:var(--btn-fg-hover);}\n.dshpc-btn:active:not(:disabled){background-color:var(--btn-bg-active);transform:translateY(1px);}\n.dshpc-btn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-btn:disabled{cursor:default;opacity:.5;}\n/* dense\uFF1A\u5C3A\u5BF8\u6863 / \u9AD8\u5EA6\u4E00\u5F8B\u4E0D\u53D8\uFF0C\u53EA\u628A\u56FE\u6807\u653E\u5927\u4E00\u6863\u3001\u5185\u8DDD\u6536\u7D27\uFF08\u63CF\u8FB9\u7EC6\u7684\u6587\u4EF6\u7C7B\u578B\u56FE\u6807\u7528\uFF09\u3002\n   \u53EA\u8986\u76D6\u5C40\u90E8\u53D8\u91CF\u4E0E\u56FE\u6807\u5B57\u53F7\uFF0C\u4E0D\u53E6\u5199\u4E00\u5957\u76AE\u80A4\uFF1B\u5FC5\u987B\u5199\u5728\u5C3A\u5BF8\u6863\u4E0E\u56FE\u6807\u89C4\u5219\u4E4B\u540E\u624D\u538B\u5F97\u8FC7\u9ED8\u8BA4\u503C\u3002 */\n.dshpc-btn--dense{--btn-pad:6px;}\n.dshpc-btn--dense .dshpc-btn__icon,.dshpc-btn--dense .dshpc-btn__icon-end{font-size:1.25em;}\n\n.dshpc-btn--primary{--btn-bg:var(--dshpc-accent);--btn-fg:var(--dshpc-fg-inverse);\n  --btn-bg-hover:var(--dshpc-accent-hover);--btn-bg-active:var(--dshpc-accent-active);}\n/* secondary\uFF1A\u4E2D\u6027\u5B9E\u5FC3\uFF08\u7070\u9762\uFF09\uFF0C\u7528\u4E8E\u300C\u53D6\u6D88 / \u6B21\u8981\u300D\u8FD9\u7C7B\u4E0E\u4E3B\u64CD\u4F5C\u5E76\u6392\u7684\u6309\u94AE */\n.dshpc-btn--secondary{--btn-bg:var(--dshpc-hover);--btn-fg:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-active);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--outline{--btn-bg:var(--dshpc-surface-1);--btn-border:var(--dshpc-border-strong);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--ghost{--btn-fg:var(--dshpc-fg-2);--btn-fg-hover:var(--dshpc-fg);\n  --btn-bg-hover:var(--dshpc-hover);--btn-bg-active:var(--dshpc-active);}\n.dshpc-btn--danger{--btn-bg:var(--dshpc-danger);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-danger-hover);--btn-bg-active:var(--dshpc-danger-active);}\n.dshpc-btn--success{--btn-bg:var(--dshpc-success);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-success-hover);--btn-bg-active:var(--dshpc-success-active);}\n.dshpc-btn--warning{--btn-bg:var(--dshpc-warning);--btn-fg:var(--dshpc-on-warning);\n  --btn-bg-hover:var(--dshpc-warning-hover);--btn-bg-active:var(--dshpc-warning-active);}\n.dshpc-btn--info{--btn-bg:var(--dshpc-business);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-business-hover);--btn-bg-active:var(--dshpc-business-active);}\n/* \u6269\u5C55\u516B\u8272\u5B9E\u5FC3\uFF082026-10-29\uFF09\uFF1A\u767D\u5B57\u4E24\u4E3B\u9898\u5747 \u22654.5:1\uFF1Bhover/active \u8D70\u5404\u81EA token \u6D3E\u751F\u3002 */\n.dshpc-btn--purple{--btn-bg:var(--dshpc-purple);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-purple-hover);--btn-bg-active:var(--dshpc-purple-active);}\n.dshpc-btn--pink{--btn-bg:var(--dshpc-pink);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-pink-hover);--btn-bg-active:var(--dshpc-pink-active);}\n.dshpc-btn--cyan{--btn-bg:var(--dshpc-cyan);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-cyan-hover);--btn-bg-active:var(--dshpc-cyan-active);}\n.dshpc-btn--teal{--btn-bg:var(--dshpc-teal);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-teal-hover);--btn-bg-active:var(--dshpc-teal-active);}\n.dshpc-btn--orange{--btn-bg:var(--dshpc-orange);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-orange-hover);--btn-bg-active:var(--dshpc-orange-active);}\n.dshpc-btn--indigo{--btn-bg:var(--dshpc-indigo);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-indigo-hover);--btn-bg-active:var(--dshpc-indigo-active);}\n.dshpc-btn--rose{--btn-bg:var(--dshpc-rose);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-rose-hover);--btn-bg-active:var(--dshpc-rose-active);}\n.dshpc-btn--slate{--btn-bg:var(--dshpc-slate);--btn-fg:var(--dshpc-on-signal);\n  --btn-bg-hover:var(--dshpc-slate-hover);--btn-bg-active:var(--dshpc-slate-active);}\n/* danger-outline\uFF1A\u7EA2\u5B57\u63CF\u8FB9\uFF08\u7834\u574F\u6027\u6B21\u8981\u64CD\u4F5C\uFF0C\u5982\u5361\u7247\u4E0A\u7684\u300C\u5220\u9664\u300D\uFF09\u3002\n   \u26A0\uFE0F \u65E7\u4FEE\u9970\u7C7B danger-ink \u4FDD\u7559\u4E3A\u522B\u540D\uFF08\u6D88\u8D39\u65B9\u53EF\u80FD\u8FD8\u5728\u6302\uFF09\uFF0C\u4E24\u8005\u540C\u4E00\u5957\u76AE\u80A4\u3002 */\n.dshpc-btn--danger-outline,.dshpc-btn--danger-ink{--btn-border:var(--dshpc-danger);--btn-fg:var(--dshpc-danger);\n  --btn-fg-hover:var(--dshpc-danger);--btn-bg-hover:var(--dshpc-danger-soft);--btn-bg-active:var(--dshpc-danger-soft);}\n/* link\uFF1A\u884C\u5185\u6587\u5B57\u94FE\u63A5\u578B\uFF08\u4F1A\u8BDD / \u4EA7\u51FA\u6587\u4EF6\u540D\uFF09\uFF0C\u65E0\u5E95\u65E0\u8FB9\u3001\u54C1\u724C\u84DD\u3001hover \u4E0B\u5212\u7EBF */\n.dshpc-btn--link{--btn-fg:var(--dshpc-link);--btn-fg-hover:var(--dshpc-link);\n  --btn-bg-hover:transparent;--btn-bg-active:transparent;\n  height:auto;padding:0;border:0;background:none;font-weight:400;text-align:left;}\n.dshpc-btn--link:hover:not(:disabled){text-decoration:underline;}\n\n/* \u56FE\u6807\u94AE\uFF1A\u7EAF\u56FE\u6807\uFF0C\u65B9\u5F62\uFF1B\u5C3A\u5BF8\u6863\u7684\u5BBD\u9AD8\u4E0E\u540C\u6863\u6587\u5B57\u6309\u94AE\u7B49\u9AD8\u3001\u5706\u89D2\u7EDF\u4E00\u5403 md\uFF08\u4E0E .dshpc-btn \u540C\u6B3E\uFF0C2026-10-28 \u62CD\u677F\uFF09\n   \u5E95\u8272 / \u56FE\u6807\u8272\u5168\u8D70\u5C40\u90E8\u53D8\u91CF\uFF1A\u9ED8\u8BA4**\u65E0\u5E95\u8272**\uFF0C\u6D88\u8D39\u65B9\u53EF\u4F20 color\uFF08\u56FE\u6807\u8272\uFF09/ background\uFF08\u5E95\u8272\uFF09\u8986\u76D6\uFF08\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-iconbtn{--icb-bg:transparent;--icb-bg-hover:var(--dshpc-hover);--icb-fg:var(--dshpc-fg-2);--icb-fg-hover:var(--dshpc-fg);\n  appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0;\n  border:1px solid var(--icb-border,transparent);border-radius:var(--dshpc-radius-md);\n  background:var(--icb-bg);color:var(--icb-fg);\n  font-family:inherit;cursor:pointer;flex:none;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}\n.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}\n.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}\n.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}\n/* \u56FE\u6807\u4E0E\u6587\u5B57\u6309\u94AE\u540C\u53E3\u5F84\uFF1A\u5B98\u65B9 SVG \u7531 1em \u63A5\u7BA1\uFF0C\u5B57\u4F53 <i> \u76F4\u63A5\u7EE7\u627F\u6309\u94AE\u5B57\u53F7\uFF0C\u4E24\u8005 1:1\u3002\n   \u26A0\uFE0F flex:none \u662F\u786C\u7EA6\u675F\uFF1Asvg \u662F\u6309\u94AE\u7684\u76F4\u63A5 flex item\uFF0C\u9ED8\u8BA4 flex-shrink:1 \u4F1A\u88AB\u6309\u94AE\u5185\u8DDD\n   \u6324\u6210 10px \u7A84\u6761\uFF1B\u90A3\u662F\u5E03\u5C40\u6536\u7F29\uFF0C\u4E0D\u662F\u5C42\u53E0\u4F18\u5148\u7EA7 \u2014\u2014 \u6539 width\u3001\u52A0 !important \u90FD\u6551\u4E0D\u56DE\u6765\uFF0C\n   \u800C height \u5728\u4EA4\u53C9\u8F74\u4E0D\u53D7\u5F71\u54CD\uFF0C\u4E8E\u662F\u56FE\u6807\u88AB\u538B\u6241\u53D8\u5F62\u3002\u540E\u4EE3\u9009\u62E9\u5668\u517C\u5BB9\u5B98\u65B9\u56FE\u6807\u5916\u7684 wrapper\u3002 */\n.dshpc-iconbtn svg{display:block;width:1em;height:1em;flex:none;}\n/* dense\uFF1A\u53EA\u653E\u5927\u56FE\u6807\u7684 em \u503C\uFF0C\u6B63\u65B9\u5F62\u5BBD\u9AD8\u4E0E\u9AD8\u5EA6\u6863\u90FD\u4E0D\u52A8\uFF1B\n   1.25em \u76F8\u5BF9\u6309\u94AE\u5B57\u53F7 12/13 \u21D2 15/16.25px\uFF0C\u4E0E .dshpc-btn--dense \u4E00\u81F4\u3002\n   \u5B57\u4F53\u56FE\u6807\u662F <i> \u76F4\u63A5\u5B50\u5143\u7D20\uFF0C\u5F97\u5355\u72EC\u7ED9\u5B83\u540C\u4E00\u7CFB\u6570\uFF08svg \u90A3\u6761\u9009\u62E9\u5668\u7BA1\u4E0D\u5230\uFF09\u3002 */\n.dshpc-iconbtn.dshpc-iconbtn--dense svg{width:1.25em;height:1.25em;}\n.dshpc-iconbtn.dshpc-iconbtn--dense > i{font-size:1.25em;}\n.dshpc-iconbtn--outline{--icb-bg:var(--dshpc-surface-1);--icb-border:var(--dshpc-border);}\n.dshpc-iconbtn--danger{--icb-fg:var(--dshpc-danger);--icb-bg-hover:var(--dshpc-danger-soft);--icb-fg-hover:var(--dshpc-danger);}\n.dshpc-iconbtn:hover:not(:disabled){background:var(--icb-bg-hover);color:var(--icb-fg-hover);}\n.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}\n.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}\n\n/* \u2500\u2500 \u884C\u5F0F\u6587\u4EF6\u6309\u94AE\uFF08\u56FE\u6807 + \u6587\u4EF6\u540D\uFF09P2\uFF1A**\u5168\u7AD9\u552F\u4E00\u5B9E\u73B0**\uFF082026-10-04 \u6536\u7F16\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7528\u9014\uFF1A\u300C\u4EA7\u51FA\u7269 / \u9644\u4EF6\u300D\u90A3\u79CD**\u4E00\u884C\u4E00\u4E2A\u6587\u4EF6**\u7684\u6E05\u5355\u9879\uFF08\u57FA\u7840\u4FE1\u606F\u53F3\u680F\u4EA7\u51FA\u7269\u6E05\u5355\u3001\u9644\u4EF6\u533A\u3001\n   \u6267\u884C\u8BB0\u5F55\u9875\u7684\u5C55\u5F00\u533A\uFF09\u3002\u5E73\u65F6\u900F\u660E\u3001**\u9F20\u6807\u79FB\u4E0A\u53BB\u624D\u51FA\u6D45\u5E95**\uFF08\u6CBF\u7528\u7528\u6237 2026-10-03 \u5B9A\u7684\u89C2\u611F\uFF09\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4FEE\u9970\u7C7B\uFF1A\n     --block   \u6491\u6EE1\u7236\u5BBD\uFF08\u6E05\u5355\u91CC\u4E00\u9879\u4E00\u884C\uFF09\n     --inline  \u5185\u5BB9\u5BBD\uFF08\u8DDF\u5728\u6587\u5B57\u540E\u5934\uFF0C\u5982\u9644\u4EF6\u884C\uFF09\n   \u6536\u7F16\u539F\u56E0\uFF1A\u8FD9\u4EFD\u76AE\u80A4\u6B64\u524D\u53EA\u5199\u5728 task-list.tsx \u7684 TASK_LIST_CSS \u91CC\uFF08\u65E7\u540D .dshpc-info-out\uFF09\uFF0C\n   \u6267\u884C\u8BB0\u5F55\u9875\u5C55\u5F00\u533A\u8981\u7528\u540C\u4E00\u79CD\u89C2\u611F \u21D2 \u4E0A\u63D0\u57FA\u7840\u5C42\uFF0C\u907F\u514D\u518D\u51FA\u73B0\u300C\u5404\u5199\u4E00\u4EFD\u5916\u89C2\u300D\uFF08\u540C\u540D\u4E0D\u540C\u76AE\u7684\u5751\u521A\u8E29\u8FC7\uFF09\u3002 */\n.dshpc-filechip{appearance:none;-webkit-appearance:none;border:0;border-radius:var(--dshpc-radius-xs);\n  background:transparent;color:var(--dshpc-fg);font:inherit;text-align:left;cursor:pointer;min-width:0;\n  transition:background-color var(--dshpc-dur) var(--dshpc-ease);}\n.dshpc-filechip:hover:not(:disabled){background:var(--dshpc-chip-bg);}\n.dshpc-filechip:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-filechip:disabled{cursor:default;background:transparent;color:var(--dshpc-fg-3);}\n.dshpc-filechip--block{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;\n  padding:4px 6px;font-size:var(--dshpc-font-xs);}\n.dshpc-filechip--inline{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;font-size:var(--dshpc-font-sm);}\n\n@media (prefers-reduced-motion: reduce){.dshpc-btn,.dshpc-iconbtn,.dshpc-filechip{transition:none;}}\n";
 
 // dist/ui/infra/thenable.js
 function isThenable(value) {
@@ -6168,7 +6171,7 @@ function dayIso(d2) {
 function fmtParts(p, precision) {
   return formatDateTimePrecision(formatDateTimeIso(p), precision);
 }
-var ICON_CAL = (0, import_react16.createElement)(FontIcon, { name: "common.base:riqi", size: 14 });
+var ICON_CAL = (0, import_react16.createElement)(FontIcon, { name: "common.base:riqi" });
 var ICON_PREV_YEAR = (0, import_react16.createElement)(FontIcon, { name: "common.base:zuoxiangshuangjiantou", size: 8 });
 var ICON_PREV_MONTH = (0, import_react16.createElement)(FontIcon, { name: "common.base:move-left", size: 8 });
 var ICON_NEXT_MONTH = (0, import_react16.createElement)(FontIcon, { name: "common.base:move-right", size: 8 });
@@ -6708,10 +6711,10 @@ function connectHost(ctx, options = {}) {
 // dist/ui/inputs/picker-icons.js
 var import_react18 = require("react");
 function folderIcon() {
-  return (0, import_react18.createElement)(FontIcon, { name: "common.base:gongzuoqu", size: 14 });
+  return (0, import_react18.createElement)(FontIcon, { name: "common.base:gongzuoqu" });
 }
 function sparkleIcon() {
-  return (0, import_react18.createElement)(FontIcon, { name: "common.base:AIdamoxing", size: 14 });
+  return (0, import_react18.createElement)(FontIcon, { name: "common.base:AIdamoxing" });
 }
 
 // dist/ui/inputs/ModelPicker.js
@@ -6940,12 +6943,12 @@ function Modal(props) {
   useEscapeClose(!denyClose && props.escClose !== false, denyClose ? void 0 : props.onClose);
   useLockGuards(locked);
   const notice = props.notice === "" ? void 0 : props.notice;
-  const sizeStyle = {
+  const sizeStyle2 = {
     sm: { width: "360px", maxWidth: "calc(100% - 48px)" },
     md: { width: "min(720px, calc(100% - 32px))", maxHeight: "86vh" },
     lg: { width: "min(1120px, calc(100% - 32px))", height: "calc(100% - 80px)" }
   };
-  const s = sizeStyle[props.size ?? "md"];
+  const s = sizeStyle2[props.size ?? "md"];
   const showClose = props.closable !== false && props.onClose !== void 0 && !denyClose;
   const showHeader = props.hideHeader !== true && (props.icon !== void 0 || props.title !== void 0 || props.subtitle !== void 0 || props.headerExtra !== void 0 || props.header !== void 0 || props.headerActions !== void 0 || showClose);
   return (0, import_react22.createElement)(OverlayMask, {
@@ -7103,7 +7106,7 @@ function SideSheet(props) {
     className: `dshpc-dock__close ${floating ? "dshpc-dock__close--floating" : "dshpc-dock__close--abs"}`,
     "aria-label": tt("dockClose"),
     onClick: () => props.onClose?.()
-  }, props.closeIcon ?? (0, import_react23.createElement)(FontIcon, { name: "common.base:guanbi", size: 14 }));
+  }, props.closeIcon ?? (0, import_react23.createElement)(FontIcon, { name: "common.base:guanbi" }));
   const renderHeader = () => {
     if (props.header === null)
       return null;
@@ -7167,7 +7170,7 @@ function AlertModal(props) {
   const [running, setRunning] = (0, import_react24.useState)(false);
   const busy = running || props.confirmLoading === true;
   return (0, import_react24.createElement)(Modal, {
-    icon: (0, import_react24.createElement)("span", { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, (0, import_react24.createElement)(FontIcon, { name: SEVERITY_GLYPH[severity], size: 12 })),
+    icon: (0, import_react24.createElement)("span", { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, (0, import_react24.createElement)(FontIcon, { name: SEVERITY_GLYPH[severity] })),
     title: props.title,
     size: props.size ?? "sm",
     hideHeader: props.title === void 0,
@@ -9504,7 +9507,7 @@ function createToasterHost() {
         fontSize: "13px",
         fontWeight: 700
       }
-    }, (0, import_react36.createElement)(FontIcon, { name: palette.glyph, size: 13 })), (0, import_react36.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react36.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react36.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px", whiteSpace: "pre-line" } }, payload.description) : null), actions2 !== void 0 && actions2.length > 0 ? (0, import_react36.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions2.slice(0, 2).map((a) => {
+    }, (0, import_react36.createElement)(FontIcon, { name: palette.glyph })), (0, import_react36.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react36.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react36.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px", whiteSpace: "pre-line" } }, payload.description) : null), actions2 !== void 0 && actions2.length > 0 ? (0, import_react36.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions2.slice(0, 2).map((a) => {
       const successSurface = payload.variant === "success";
       return (0, import_react36.createElement)(Button, {
         variant: successSurface ? "secondary" : a.variant ?? "info",
@@ -9781,9 +9784,6 @@ function withHint(control, hint) {
 function sizeClass(size4) {
   return size4 === "lg" ? "--lg" : size4 === "md" ? "--md" : "--sm";
 }
-function glyphPx(size4) {
-  return size4 === "sm" ? 11 : 12;
-}
 function Input(props) {
   ensureComponentStyles("field", FIELD_CSS);
   const { value, onChange, placeholder: placeholder2, size: size4 = "lg", error, disabled, type: type3, icon, className: className2, style: style2 } = props;
@@ -9836,7 +9836,7 @@ function Input(props) {
       className: "dshpc-iwrap__clear",
       variant: "plain",
       size: size4,
-      icon: (0, import_react39.createElement)(FontIcon, { name: "common.base:guanbi", size: glyphPx(size4) }),
+      icon: (0, import_react39.createElement)(FontIcon, { name: "common.base:guanbi" }),
       label: t("fieldClear"),
       onMouseDown: (event) => {
         event.preventDefault();
@@ -9885,7 +9885,7 @@ function NumberInput(props) {
       className: `dshpc-num dshpc-num${sizeClass(size4)}${off ? " dshpc-num--disabled" : ""}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
       style: style2
     },
-    (0, import_react39.createElement)(IconButton, { variant: "plain", size: size4, icon: (0, import_react39.createElement)(FontIcon, { name: "common.base:jian", size: glyphPx(size4) }), label: decreaseLabel, disabled: off, onClick: () => {
+    (0, import_react39.createElement)(IconButton, { variant: "plain", size: size4, icon: (0, import_react39.createElement)(FontIcon, { name: "common.base:jian" }), label: decreaseLabel, disabled: off, onClick: () => {
       bump(-1);
     } }),
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
@@ -9908,7 +9908,7 @@ function NumberInput(props) {
           commit(text2);
       }
     }), suffix2 !== void 0 ? (0, import_react39.createElement)("span", { className: "dshpc-num__suffix" }, suffix2) : null),
-    (0, import_react39.createElement)(IconButton, { variant: "plain", size: size4, icon: (0, import_react39.createElement)(FontIcon, { name: "common.base:jia", size: glyphPx(size4) }), label: increaseLabel, disabled: off, onClick: () => {
+    (0, import_react39.createElement)(IconButton, { variant: "plain", size: size4, icon: (0, import_react39.createElement)(FontIcon, { name: "common.base:jia" }), label: increaseLabel, disabled: off, onClick: () => {
       bump(1);
     } })
   ), props.hint);
@@ -9966,7 +9966,7 @@ function InputGroup(props) {
       key: "undo",
       variant: "plain",
       size: size4,
-      icon: (0, import_react40.createElement)(FontIcon, { name: "common.base:chexiao", size: 14 }),
+      icon: (0, import_react40.createElement)(FontIcon, { name: "common.base:chexiao" }),
       label: undoLabel,
       disabled: disabled === true || undoStack.length === 0,
       onClick: undo2
@@ -10858,7 +10858,7 @@ function PanelDock(props) {
       className: "dshpc-dock__close dshpc-dock__close--abs",
       "aria-label": tt("dockClose"),
       onClick: () => props.dock.close(pane.id, "button")
-    }, pane.closeIcon ?? (0, import_react48.createElement)(FontIcon, { name: "common.base:guanbi", size: 14 }));
+    }, pane.closeIcon ?? (0, import_react48.createElement)(FontIcon, { name: "common.base:guanbi" }));
   };
   const renderHeader = (pane) => {
     if (pane.header === null)
@@ -10880,7 +10880,7 @@ function PanelDock(props) {
       className: "dshpc-dock__close dshpc-dock__close--floating",
       "aria-label": tt("dockClose"),
       onClick: () => props.dock.close(pane.id, "button")
-    }, pane.closeIcon ?? (0, import_react48.createElement)(FontIcon, { name: "common.base:guanbi", size: 14 }));
+    }, pane.closeIcon ?? (0, import_react48.createElement)(FontIcon, { name: "common.base:guanbi" }));
   };
   const rootClass = `dshpc-dock${state.ids.length > 0 ? " dshpc-dock--open" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`;
   const ears = state.collapsed.map((id3) => {
@@ -56293,7 +56293,7 @@ function CodeViewer(props) {
     overlay: (0, import_react54.createElement)(IconButton, {
       variant: "outline",
       size: "md",
-      icon: (0, import_react54.createElement)(FontIcon, { name: copied ? "common.base:gou" : "common.base:fuzhi", size: 14 }),
+      icon: (0, import_react54.createElement)(FontIcon, { name: copied ? "common.base:gou" : "common.base:fuzhi" }),
       label: copied ? t4("codeCopied") : t4("codeCopy"),
       className: "dshpc-cv__copy",
       onClick: copy
@@ -56781,13 +56781,13 @@ function PreviewTitleBar(props) {
   }) : null, (0, import_react62.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: (0, import_react62.createElement)(FontIcon, { name: copied ? "common.base:gou" : "common.base:fuzhi", size: 14 }),
+    icon: (0, import_react62.createElement)(FontIcon, { name: copied ? "common.base:gou" : "common.base:fuzhi" }),
     label: tt("previewCopyPath"),
     onClick: onCopyPath
   }), (0, import_react62.createElement)(IconButton, {
     variant: "plain",
     size: "md",
-    icon: (0, import_react62.createElement)(FontIcon, { name: "common.base:shuaxin", size: 14 }),
+    icon: (0, import_react62.createElement)(FontIcon, { name: "common.base:shuaxin" }),
     label: tt("previewRefresh"),
     onClick: onReload
   })));
@@ -69738,8 +69738,12 @@ h(SideSheet, {
         "en": "**An unknown name renders nothing** plus a single console warning: a mistyped library, a renamed glyph on the platform, or an official icon removed by a host upgrade all show as empty space rather than as some other icon. There is deliberately no cross-library fallback \u2014 falling back to another library would draw the wrong glyph, which is harder to trace than a gap."
       },
       {
-        "zh": "\u5C3A\u5BF8\u9ED8\u8BA4 16px\uFF08`ICON_SIZES.md`\uFF09\uFF0C\u4E5F\u53EF\u4EE5\u4F20\u9884\u8BBE\u540D\uFF0C\u6216\u76F4\u63A5\u7ED9 px \u6570\u5B57\u3002`size` \u53EA\u6536\u6570\u5B57\u4E0E\u9884\u8BBE\u540D\u3001\u4E0D\u6536 `em` \u4E4B\u7C7B\u5B57\u7B26\u4E32 \u2014\u2014 \u5B98\u65B9\u7EC4\u4EF6\u7684 props \u662F `size?: number`\uFF0C\u6536 em \u4F1A\u8BA9\u4E24\u7C7B\u56FE\u6807\u4E00\u534A\u751F\u6548\u4E00\u534A\u5931\u6548\u3002\u9700\u8981\u8DDF\u6240\u5728\u6587\u5B57\u5B57\u53F7\u8054\u52A8\u65F6\uFF0C\u628A\u6570\u5B57\u6309\u8C03\u7528\u70B9\u7B97\u597D\u518D\u4F20\u3002",
-        "en": "Size defaults to 16px (`ICON_SIZES.md`); pass a preset name or a raw px number. `size` accepts numbers and preset names only, never strings like `em` \u2014 official components take `size?: number`, so honouring em would make one source work and the other silently ignore it. When an icon must follow text size, compute the number at the call site."
+        "zh": "**\u5C3A\u5BF8\u8DDF\u6587\u5B57\uFF0C\u4E0D\u8DDF\u63A7\u4EF6\u6863**\uFF082026-11-14\uFF09\uFF1A\u4E0D\u4F20 `size` \u65F6\uFF0C\u5B57\u4F53\u56FE\u6807\u7684 `<i>` \u7EE7\u627F\u7236\u7EA7 `font-size`\uFF0C\u5B98\u65B9 SVG \u7531\u63A7\u4EF6\u7684 `svg{width:1em;height:1em}` \u63A5\u7BA1 \u2014\u2014 \u4E24\u7C7B\u90FD\u662F 1:1 \u8DDF\u7740\u540C\u4E00\u884C\u6587\u5B57\u3002`size` \u53EA\u6536\u6570\u5B57\u4E0E\u9884\u8BBE\u540D\uFF08\u4E0D\u6536 `em` \u5B57\u7B26\u4E32\uFF0C\u5B98\u65B9\u7EC4\u4EF6\u7684 props \u662F `size?: number`\uFF09\uFF0C\u4F20\u4E86\u5C31\u662F\u7EDD\u5BF9 px\uFF0C\u5C5E\u663E\u5F0F\u8986\u76D6\u3002",
+        "en": "**Size follows text, not the control size tier** (2026-11-14): with no `size`, the font `<i>` inherits its parent `font-size` and official SVGs are taken over by the control's `svg{width:1em;height:1em}` \u2014 both track the adjacent text 1:1. `size` accepts numbers and preset names only (no `em` strings, since official components take `size?: number`); passing one is an explicit absolute-px override."
+      },
+      {
+        "zh": "**\u4E09\u7C7B\u7528\u6CD5**\uFF1A\u2460 \u8DDF\u6587\u5B57\u5E76\u6392\u7684\u8BED\u4E49\u56FE\u6807\uFF08\u6309\u94AE\u91CC\u7684\u52FE\u3001\u8F93\u5165\u6846\u7684\u6E05\u9664\u53C9\uFF09\u4E00\u5F8B\u4E0D\u4F20 `size`\uFF0C\u7531 `sm|md|lg` \u51B3\u5B9A\u7684\u6587\u5B57\u5B57\u53F7\u81EA\u52A8\u5E26\u51FA\u56FE\u6807\u5C3A\u5BF8\uFF08`sm` 12px \u5B57 \u2192 12px \u56FE\u6807\uFF0C`md`/`lg` 13px \u5B57 \u2192 13px \u56FE\u6807\uFF09\uFF1B\u2461 \u88C5\u9970\u6027\u5FAE\u7BAD\u5934\uFF08\u9009\u62E9\u5668 caret\u3001\u6298\u53E0\u3001\u9762\u5305\u5C51\uFF09\u7528\u663E\u5F0F\u5C0F px\uFF0C\u5B83\u4EEC\u4E0D\u4E0E\u6587\u5B57\u7B49\u5927\uFF1B\u2462 \u72EC\u7ACB\u6446\u653E\u6216\u56FE\u6807\u5C55\u793A\u9875\u7528 `ICON_SIZES` \u7684\u663E\u5F0F\u6863\u3002`dense` \u662F\u552F\u4E00\u7684\u653E\u5927\u6863\uFF0C\u8D70 `1.25em` \u7CFB\u6570\u800C\u4E0D\u662F\u65B0\u6863\u4F4D\u3002",
+        "en": "**Three cases**: (1) semantic icons next to text (a check in a button, the clear cross in an input) omit `size` and inherit the text size chosen by `sm|md|lg` (`sm` 12px text \u2192 12px icon, `md`/`lg` 13px text \u2192 13px icon); (2) decorative micro-arrows (picker caret, collapse, breadcrumbs) take an explicit small px value because they are deliberately smaller than text; (3) standalone icons and the showcase page use the explicit `ICON_SIZES` tiers. `dense` is the only magnification step, expressed as a `1.25em` ratio rather than a new tier."
       },
       {
         "zh": "\u4F20\u5B57\u7B26\u4E32\u7684\u573A\u5408\uFF08\u4F8B\u5982 `taskNotifications` \u7684 `icon` \u5B57\u6BB5\uFF0C\u6838\u5FC3\u53EA\u5B58\u4E0D\u89E3\u91CA\uFF09\u76F4\u63A5\u7528\u540C\u4E00\u6761\u534F\u8BAE\uFF1A`'common.base:jian'`\u3001`'common.logo:github'`\u3001`'IconWrapLinesOutlineRegular'`\uFF0C\u6E32\u67D3\u7AEF\u539F\u6837\u5582\u7ED9 `<Icon name={\u2026} />` \u5373\u53EF\uFF0C\u4E0D\u9700\u8981\u81EA\u5DF1\u518D\u62C6\u5192\u53F7\u3002",
@@ -69764,7 +69768,7 @@ h(SideSheet, {
 // \u5B98\u65B9 primitives \u56FE\u6807\uFF1A\u6CA1\u6709\u5192\u53F7\uFF0C\u76F4\u63A5\u5199\u7EC4\u4EF6\u540D
 <Icon name="IconWrapLinesOutlineRegular" />
 
-// \u5C3A\u5BF8\uFF1A\u9884\u8BBE\u540D\u6216 px \u6570\u5B57\uFF0C\u7F3A\u7701 md\uFF0816\uFF09
+// \u5C3A\u5BF8\uFF1A\u4E0D\u4F20 = \u8DDF\u968F\u6240\u5728\u6587\u5B57\u5B57\u53F7\uFF1B\u663E\u5F0F\u7ED9\u9884\u8BBE\u540D / px \u624D\u662F\u7EDD\u5BF9\u5C3A\u5BF8\uFF08\u72EC\u7ACB\u6446\u653E\u3001\u88C5\u9970\u5C0F\u7BAD\u5934\uFF09
 <Icon name="common.base:guanbi" size="lg" />
 <Icon name="common.base:guanbi" size={31} />
 
@@ -69786,8 +69790,8 @@ h(SideSheet, {
             "type": "(props: IconProps) => JSX.Element | null",
             "def": "\u2014",
             "desc": {
-              "zh": "\u56FE\u6807\u5143\u7D20\u3002props\uFF1A`name`\uFF08\u5FC5\u586B\uFF0C`\u5E93\u540D:\u56FE\u6807\u540D` \u6216\u5B98\u65B9\u7EC4\u4EF6\u540D\uFF09\u3001`size`\uFF08\u9884\u8BBE\u540D\u6216 px\uFF0C\u7F3A\u7701 16\uFF09\u3001`title`\uFF08\u65E0\u969C\u788D\u540D + \u539F\u751F tooltip\uFF09\u3001`className`\u3001`style`\u3002\u627E\u4E0D\u5230\u56FE\u6807\u65F6\u8FD4\u56DE `null` \u5E76\u544A\u8B66\u4E00\u6B21\uFF1B\u591A\u8272\u5E93\u5728\u6DF1\u8272\u4E0B\u81EA\u52A8\u6539\u7528 `-dark` \u5B57\u5F62",
-              "en": "The icon element. Props: `name` (required, `library:name` or an official component name), `size` (preset or px, defaults to 16), `title` (accessible name plus native tooltip), `className`, `style`. Returns `null` with a one-off warning when nothing matches; colour libraries switch to the `-dark` glyph in dark mode"
+              "zh": "\u56FE\u6807\u5143\u7D20\u3002props\uFF1A`name`\uFF08\u5FC5\u586B\uFF0C`\u5E93\u540D:\u56FE\u6807\u540D` \u6216\u5B98\u65B9\u7EC4\u4EF6\u540D\uFF09\u3001`size`\uFF08\u4E0D\u4F20 = \u8DDF\u968F\u6240\u5728\u6587\u5B57\u5B57\u53F7\uFF1B\u9884\u8BBE\u540D\u6216 px = \u663E\u5F0F\u7EDD\u5BF9\u5C3A\u5BF8\uFF09\u3001`title`\uFF08\u65E0\u969C\u788D\u540D + \u539F\u751F tooltip\uFF09\u3001`className`\u3001`style`\u3002\u627E\u4E0D\u5230\u56FE\u6807\u65F6\u8FD4\u56DE `null` \u5E76\u544A\u8B66\u4E00\u6B21\uFF1B\u591A\u8272\u5E93\u5728\u6DF1\u8272\u4E0B\u81EA\u52A8\u6539\u7528 `-dark` \u5B57\u5F62",
+              "en": "The icon element. Props: `name` (required, `library:name` or an official component name), `size` (omit = follow the adjacent text size; preset or px = explicit absolute size), `title` (accessible name plus native tooltip), `className`, `style`. Returns `null` with a one-off warning when nothing matches; colour libraries switch to the `-dark` glyph in dark mode"
             }
           },
           {
@@ -74785,7 +74789,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.26"}`],
             [t3("buildDemo"), `v${"0.35.26"}`],
-            [t3("buildStamp"), "261114-114322-584"]
+            [t3("buildStamp"), "261114-125657-851"]
           ].map(
             ([label, value]) => (0, import_react108.createElement)(
               "tr",
@@ -75121,7 +75125,7 @@ function DemoPage() {
           },
           (0, import_react110.createElement)("span", null, `core v${"0.35.26"}`),
           (0, import_react110.createElement)("span", null, `demo v${"0.35.26"}`),
-          (0, import_react110.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261114-114322-584")
+          (0, import_react110.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261114-125657-851")
         )
       )
     ),

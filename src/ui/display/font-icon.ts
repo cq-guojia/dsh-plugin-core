@@ -6,7 +6,11 @@
  * 所以控件层画字体图标一律用它；`Icon` 是「两类来源一个组件」的对外门面，只在需要官方图标时用。
  *
  * 口径与 `Icon` 一致：`库名:图标名`（库名不可省）、找不到就**不渲染**并一次性告警、
- * 尺寸收预设名或 px、多色库在宿主深色下自动换 `<名字>-dark` 字形。
+ * 多色库在宿主深色下自动换 `<名字>-dark` 字形。
+ *
+ * 尺寸口径（2026-11-14）：**不传 `size` 就继承所在文字的 `font-size`（1:1）**——字体图标本来
+ * 就是一个字形，跟同一行文字用同一个字号；显式传预设名 / px 数字才是「独立摆放」或
+ * 「装饰性小箭头」的绝对尺寸。按钮 / 输入框的 `sm|md|lg` 只决定文字字号，不另给图标定值。
  */
 import { createElement as h, type CSSProperties } from 'react'
 import type { ParsedIconFont } from './icon-parse.js'
@@ -44,7 +48,7 @@ export interface IconFontFace {
  */
 export const ICON_FONTS = {
   'common.base': {
-    url: 'https://at.alicdn.com/t/c/font_5252971_dn4wfq92dar.css',
+    url: 'https://at.alicdn.com/t/c/font_5252971_ep4b9h86kka.css',
     family: 'koc-i-common-base',
     baseClass: 'koc-i-common-base',
     prefix: 'koc-i-common-base-',
@@ -151,10 +155,15 @@ function glyphClass(font: IconFontFace, glyph: string, className: string | undef
   return `${font.baseClass} ${font.prefix}${glyph}${extra}`
 }
 
-/** 尺寸：预设名或 px 数字，缺省 `md`。 */
-function pxOf(size: number | IconSize | undefined): number {
-  if (size === undefined) return ICON_SIZES.md
+/** 尺寸：不传 → `undefined`（继承父级文字字号）；预设名或 px 数字 → 绝对尺寸。 */
+function pxOf(size: number | IconSize | undefined): number | undefined {
+  if (size === undefined) return undefined
   return typeof size === 'number' ? size : ICON_SIZES[size]
+}
+
+/** 不传 size 时不写 fontSize，让 `<i>` 继承所在文字的 font-size（1em）。 */
+function sizeStyle(size: number | undefined, style: CSSProperties | undefined): CSSProperties {
+  return { ...(size === undefined ? {} : { fontSize: size }), lineHeight: 1, ...style }
 }
 
 /**
@@ -168,7 +177,7 @@ function ColorGlyph(props: {
   id: string
   font: IconFontFace
   glyph: string
-  size: number
+  size: number | undefined
   title?: string
   className?: string
   style?: CSSProperties
@@ -181,7 +190,7 @@ function ColorGlyph(props: {
     role: props.title === undefined ? undefined : 'img',
     'aria-label': props.title,
     title: props.title,
-    style: { fontSize: props.size, lineHeight: 1, ...props.style },
+    style: sizeStyle(props.size, props.style),
   })
 }
 
@@ -189,7 +198,7 @@ function ColorGlyph(props: {
 export interface FontIconProps {
   /** 图标标识：`库名:图标名`（库名 = `ICON_FONTS` 的 key，不可省）。 */
   name: string
-  /** 尺寸：预设名或 px 数字，缺省 `md`（16）。 */
+  /** 尺寸：不传 = 继承所在文字字号（1:1）；预设名或 px 数字 = 显式绝对尺寸。 */
   size?: number | IconSize
   /** 无障碍名（同时作原生 tooltip）；装饰性图标不传。 */
   title?: string
@@ -224,6 +233,6 @@ export function FontIcon(props: FontIconProps): ReturnType<typeof h> | null {
     role: title === undefined ? undefined : 'img',
     'aria-label': title,
     title,
-    style: { fontSize: size, lineHeight: 1, ...style },
+    style: sizeStyle(size, style),
   })
 }

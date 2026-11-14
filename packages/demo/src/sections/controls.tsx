@@ -100,7 +100,7 @@ const BUTTON_ICONS: readonly { name: string; glyph: string }[] = [
   { name: 'chevron', glyph: 'common.base:move-down' },
 ]
 
-/** 按名字取一颗图标（找不到返回 null，不抛）。尺寸由核心 button.css 的 1em 接管，不传 size。 */
+/** 按名字取一颗图标（找不到返回 null，不抛）。不传 size：图标继承按钮文字字号，1:1。 */
 function iconOf(name: string): ReturnType<typeof h> | null {
   const found = BUTTON_ICONS.find((item) => item.name === name)
   return found === undefined ? null : h(Icon, { name: found.glyph })

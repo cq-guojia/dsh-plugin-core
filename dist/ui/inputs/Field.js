@@ -28,10 +28,6 @@ export function withHint(control, hint) {
 function sizeClass(size) {
     return size === 'lg' ? '--lg' : size === 'md' ? '--md' : '--sm';
 }
-/** 控件内图标字号跟档位走（2026-11-14 用户：清除叉、加减号都比文字大太多）。 */
-function glyphPx(size) {
-    return size === 'sm' ? 11 : 12;
-}
 /** 文本输入。默认铺满容器（width:100%，与 Textarea 同口径）；要定宽由调用方在外面包壳（如 192px 搜索槽）。 */
 export function Input(props) {
     ensureComponentStyles('field', FIELD_CSS);
@@ -73,7 +69,7 @@ export function Input(props) {
     // 只在 mousedown 上拦焦点：不拦的话 input 先 blur ⇒ 按钮被卸掉 ⇒ 随后的 click 落空。
     showClear
         ? h(IconButton, {
-            className: 'dshpc-iwrap__clear', variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:guanbi', size: glyphPx(size) }), label: t('fieldClear'),
+            className: 'dshpc-iwrap__clear', variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:guanbi' }), label: t('fieldClear'),
             onMouseDown: (event) => { event.preventDefault(); },
             onClick: () => { onChange(''); },
         })
@@ -140,7 +136,7 @@ export function NumberInput(props) {
     return withHint(h('div', {
         className: `dshpc-num dshpc-num${sizeClass(size)}${off ? ' dshpc-num--disabled' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
         style,
-    }, h(IconButton, { variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:jian', size: glyphPx(size) }), label: decreaseLabel, disabled: off, onClick: () => { bump(-1); } }), 
+    }, h(IconButton, { variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:jian' }), label: decreaseLabel, disabled: off, onClick: () => { bump(-1); } }), 
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
     // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
     h('span', { className: 'dshpc-num__mid' }, h('input', {
@@ -154,7 +150,7 @@ export function NumberInput(props) {
         onBlur: () => { commit(text); },
         onKeyDown: (event) => { if (event.key === 'Enter')
             commit(text); },
-    }), suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null), h(IconButton, { variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:jia', size: glyphPx(size) }), label: increaseLabel, disabled: off, onClick: () => { bump(1); } })), props.hint);
+    }), suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null), h(IconButton, { variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:jia' }), label: increaseLabel, disabled: off, onClick: () => { bump(1); } })), props.hint);
 }
 /**
  * 下拉锚点的统一样式（**全站唯一一份**）：`SelectField` 与 `TaskPicker` 共用 —— 两者是同一类锚点，

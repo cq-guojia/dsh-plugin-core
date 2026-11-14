@@ -33,13 +33,13 @@ export function PreviewTitleBar(props) {
         : null, h(IconButton, {
         variant: 'plain',
         size: 'md',
-        icon: h(FontIcon, { name: copied ? 'common.base:gou' : 'common.base:fuzhi', size: 14 }),
+        icon: h(FontIcon, { name: copied ? 'common.base:gou' : 'common.base:fuzhi' }),
         label: tt('previewCopyPath'),
         onClick: onCopyPath,
     }), h(IconButton, {
         variant: 'plain',
         size: 'md',
-        icon: h(FontIcon, { name: 'common.base:shuaxin', size: 14 }),
+        icon: h(FontIcon, { name: 'common.base:shuaxin' }),
         label: tt('previewRefresh'),
         onClick: onReload,
     })));

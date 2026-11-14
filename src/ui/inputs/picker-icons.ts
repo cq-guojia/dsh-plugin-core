@@ -12,10 +12,10 @@ import { FontIcon } from '../display/font-icon.js'
 
 /** 工作区：文件夹 */
 export function folderIcon(): ReturnType<typeof h> {
-  return h(FontIcon, { name: 'common.base:gongzuoqu', size: 14 })
+  return h(FontIcon, { name: 'common.base:gongzuoqu' })
 }
 
 /** 模型：四角星 */
 export function sparkleIcon(): ReturnType<typeof h> {
-  return h(FontIcon, { name: 'common.base:AIdamoxing', size: 14 })
+  return h(FontIcon, { name: 'common.base:AIdamoxing' })
 }

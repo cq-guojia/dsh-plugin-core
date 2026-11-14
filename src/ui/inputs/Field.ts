@@ -33,11 +33,6 @@ function sizeClass(size: FieldSize): string {
   return size === 'lg' ? '--lg' : size === 'md' ? '--md' : '--sm'
 }
 
-/** 控件内图标字号跟档位走（2026-11-14 用户：清除叉、加减号都比文字大太多）。 */
-function glyphPx(size: FieldSize): number {
-  return size === 'sm' ? 11 : 12
-}
-
 export interface InputProps {
   /** 当前值。 */
   value: string
@@ -113,7 +108,7 @@ export function Input(props: InputProps): ReturnType<typeof h> {
       // 只在 mousedown 上拦焦点：不拦的话 input 先 blur ⇒ 按钮被卸掉 ⇒ 随后的 click 落空。
       showClear
         ? h(IconButton, {
-            className: 'dshpc-iwrap__clear', variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:guanbi', size: glyphPx(size) }), label: t('fieldClear'),
+            className: 'dshpc-iwrap__clear', variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:guanbi' }), label: t('fieldClear'),
             onMouseDown: (event: { preventDefault(): void }) => { event.preventDefault() },
             onClick: () => { onChange('') },
           })
@@ -222,7 +217,7 @@ export function NumberInput(props: NumberInputProps): ReturnType<typeof h> {
     className: `dshpc-num dshpc-num${sizeClass(size)}${off ? ' dshpc-num--disabled' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
     style,
   },
-    h(IconButton, { variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:jian', size: glyphPx(size) }), label: decreaseLabel, disabled: off, onClick: () => { bump(-1) } }),
+    h(IconButton, { variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:jian' }), label: decreaseLabel, disabled: off, onClick: () => { bump(-1) } }),
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
     // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
     h('span', { className: 'dshpc-num__mid' },
@@ -238,7 +233,7 @@ export function NumberInput(props: NumberInputProps): ReturnType<typeof h> {
         onKeyDown: (event: { key: string }) => { if (event.key === 'Enter') commit(text) },
       } as never),
       suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null),
-    h(IconButton, { variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:jia', size: glyphPx(size) }), label: increaseLabel, disabled: off, onClick: () => { bump(1) } })), props.hint)
+    h(IconButton, { variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:jia' }), label: increaseLabel, disabled: off, onClick: () => { bump(1) } })), props.hint)
 }
 
 // ─────────────────────── 下拉（官方 Menu）P6 ───────────────────────

@@ -63,7 +63,7 @@ export function AlertModal(props: AlertModalProps): ReturnType<typeof h> {
     Modal,
     {
       icon: h('span', { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` },
-        h(FontIcon, { name: SEVERITY_GLYPH[severity], size: 12 })),
+        h(FontIcon, { name: SEVERITY_GLYPH[severity] })),
       title: props.title,
       size: props.size ?? 'sm',
       hideHeader: props.title === undefined,

@@ -12,7 +12,7 @@ const usageExample = `import { Icon } from 'dsh-plugin-core/ui/icons'
 // 官方 primitives 图标：没有冒号，直接写组件名
 <Icon name="IconWrapLinesOutlineRegular" />
 
-// 尺寸：预设名或 px 数字，缺省 md（16）
+// 尺寸：不传 = 跟随所在文字字号；显式给预设名 / px 才是绝对尺寸（独立摆放、装饰小箭头）
 <Icon name="common.base:guanbi" size="lg" />
 <Icon name="common.base:guanbi" size={31} />
 
@@ -59,8 +59,12 @@ const doc: DocTopic = {
           en: '**An unknown name renders nothing** plus a single console warning: a mistyped library, a renamed glyph on the platform, or an official icon removed by a host upgrade all show as empty space rather than as some other icon. There is deliberately no cross-library fallback — falling back to another library would draw the wrong glyph, which is harder to trace than a gap.',
         },
         {
-          zh: '尺寸默认 16px（`ICON_SIZES.md`），也可以传预设名，或直接给 px 数字。`size` 只收数字与预设名、不收 `em` 之类字符串 —— 官方组件的 props 是 `size?: number`，收 em 会让两类图标一半生效一半失效。需要跟所在文字字号联动时，把数字按调用点算好再传。',
-          en: 'Size defaults to 16px (`ICON_SIZES.md`); pass a preset name or a raw px number. `size` accepts numbers and preset names only, never strings like `em` — official components take `size?: number`, so honouring em would make one source work and the other silently ignore it. When an icon must follow text size, compute the number at the call site.',
+          zh: '**尺寸跟文字，不跟控件档**（2026-11-14）：不传 `size` 时，字体图标的 `<i>` 继承父级 `font-size`，官方 SVG 由控件的 `svg{width:1em;height:1em}` 接管 —— 两类都是 1:1 跟着同一行文字。`size` 只收数字与预设名（不收 `em` 字符串，官方组件的 props 是 `size?: number`），传了就是绝对 px，属显式覆盖。',
+          en: '**Size follows text, not the control size tier** (2026-11-14): with no `size`, the font `<i>` inherits its parent `font-size` and official SVGs are taken over by the control\'s `svg{width:1em;height:1em}` — both track the adjacent text 1:1. `size` accepts numbers and preset names only (no `em` strings, since official components take `size?: number`); passing one is an explicit absolute-px override.',
+        },
+        {
+          zh: '**三类用法**：① 跟文字并排的语义图标（按钮里的勾、输入框的清除叉）一律不传 `size`，由 `sm|md|lg` 决定的文字字号自动带出图标尺寸（`sm` 12px 字 → 12px 图标，`md`/`lg` 13px 字 → 13px 图标）；② 装饰性微箭头（选择器 caret、折叠、面包屑）用显式小 px，它们不与文字等大；③ 独立摆放或图标展示页用 `ICON_SIZES` 的显式档。`dense` 是唯一的放大档，走 `1.25em` 系数而不是新档位。',
+          en: '**Three cases**: (1) semantic icons next to text (a check in a button, the clear cross in an input) omit `size` and inherit the text size chosen by `sm|md|lg` (`sm` 12px text → 12px icon, `md`/`lg` 13px text → 13px icon); (2) decorative micro-arrows (picker caret, collapse, breadcrumbs) take an explicit small px value because they are deliberately smaller than text; (3) standalone icons and the showcase page use the explicit `ICON_SIZES` tiers. `dense` is the only magnification step, expressed as a `1.25em` ratio rather than a new tier.',
         },
         {
           zh: '传字符串的场合（例如 `taskNotifications` 的 `icon` 字段，核心只存不解释）直接用同一条协议：`\'common.base:jian\'`、`\'common.logo:github\'`、`\'IconWrapLinesOutlineRegular\'`，渲染端原样喂给 `<Icon name={…} />` 即可，不需要自己再拆冒号。',
@@ -83,7 +87,7 @@ const doc: DocTopic = {
               name: 'Icon',
               type: '(props: IconProps) => JSX.Element | null',
               def: '—',
-              desc: { zh: '图标元素。props：`name`（必填，`库名:图标名` 或官方组件名）、`size`（预设名或 px，缺省 16）、`title`（无障碍名 + 原生 tooltip）、`className`、`style`。找不到图标时返回 `null` 并告警一次；多色库在深色下自动改用 `-dark` 字形', en: 'The icon element. Props: `name` (required, `library:name` or an official component name), `size` (preset or px, defaults to 16), `title` (accessible name plus native tooltip), `className`, `style`. Returns `null` with a one-off warning when nothing matches; colour libraries switch to the `-dark` glyph in dark mode' },
+              desc: { zh: '图标元素。props：`name`（必填，`库名:图标名` 或官方组件名）、`size`（不传 = 跟随所在文字字号；预设名或 px = 显式绝对尺寸）、`title`（无障碍名 + 原生 tooltip）、`className`、`style`。找不到图标时返回 `null` 并告警一次；多色库在深色下自动改用 `-dark` 字形', en: 'The icon element. Props: `name` (required, `library:name` or an official component name), `size` (omit = follow the adjacent text size; preset or px = explicit absolute size), `title` (accessible name plus native tooltip), `className`, `style`. Returns `null` with a one-off warning when nothing matches; colour libraries switch to the `-dark` glyph in dark mode' },
             },
             {
               name: 'FontIcon',

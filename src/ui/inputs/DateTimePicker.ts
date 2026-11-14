@@ -150,7 +150,7 @@ function fmtParts(p: DateTimeParts, precision: DateTimePrecision): string {
 }
 
 /** 触发器上的日历（图标库字形，2026-11-14 换掉自绘路径）。 */
-const ICON_CAL = h(FontIcon, { name: 'common.base:riqi', size: 14 })
+const ICON_CAL = h(FontIcon, { name: 'common.base:riqi' })
 // 年月前后：图标库字形（2026-11-14 换掉自绘路径），双箭头 = 年、单箭头 = 月。
 const ICON_PREV_YEAR = h(FontIcon, { name: 'common.base:zuoxiangshuangjiantou', size: 8 })
 const ICON_PREV_MONTH = h(FontIcon, { name: 'common.base:move-left', size: 8 })

@@ -427,7 +427,7 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
         'aria-label': tt('dockClose'),
         onClick: () => props.dock.close(pane.id, 'button'),
       },
-      pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }),
+      pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi' }),
     )
   }
 
@@ -459,7 +459,7 @@ export function PanelDock(props: PanelDockProps): ReturnType<typeof h> {
         'aria-label': tt('dockClose'),
         onClick: () => props.dock.close(pane.id, 'button'),
       },
-      pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }),
+      pane.closeIcon ?? h(FontIcon, { name: 'common.base:guanbi' }),
     )
   }
 

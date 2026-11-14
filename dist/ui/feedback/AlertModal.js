@@ -24,7 +24,7 @@ export function AlertModal(props) {
     // 在跑（自己点的或外部传的）⇒ 遮罩 / Esc 一律不关。
     const busy = running || props.confirmLoading === true;
     return h(Modal, {
-        icon: h('span', { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, h(FontIcon, { name: SEVERITY_GLYPH[severity], size: 12 })),
+        icon: h('span', { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, h(FontIcon, { name: SEVERITY_GLYPH[severity] })),
         title: props.title,
         size: props.size ?? 'sm',
         hideHeader: props.title === undefined,

@@ -543,3 +543,21 @@ test('图标尺寸只有核心 1em 基线 + dense 放大档，组件 CSS 不许�
   }
   assert.deepEqual(offenders, [], `组件 CSS 不得写死图标尺寸：\n${offenders.join('\n')}`)
 })
+
+// 2026-11-14：图标跟同一行文字的字号（1:1），不跟控件高度档、也不「比文字小一号」。
+test('按钮图标基线是 1em（与文字等大），dense 对字体图标同样放大', () => {
+  assert.match(
+    BUTTON_CSS,
+    /\.dshpc-btn__icon,\.dshpc-btn__icon-end\{[^}]*font-size:1em;/,
+    '图标尺寸必须跟同一行文字的 font-size 1:1',
+  )
+  assert.ok(
+    !/\.dshpc-btn__icon[^{]*\{[^}]*font-size:\.875em/.test(BUTTON_CSS),
+    '不许退回「比文字小一号」：图标跟文字，不跟控件档',
+  )
+  assert.match(
+    BUTTON_CSS,
+    /\.dshpc-iconbtn\.dshpc-iconbtn--dense > i\{font-size:1\.25em/,
+    'dense 放大档必须同时覆盖字体图标 <i>，不能只管 svg',
+  )
+})

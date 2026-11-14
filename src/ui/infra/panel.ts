@@ -69,6 +69,6 @@ export function PanelClose(props: PanelCloseProps): ReactNode {
       'aria-label': props.label,
       onClick: () => props.onClick(),
     },
-    props.icon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }),
+    props.icon ?? h(FontIcon, { name: 'common.base:guanbi' }),
   )
 }

@@ -11,10 +11,10 @@ import { createElement as h } from 'react';
 import { FontIcon } from '../display/font-icon.js';
 /** 工作区：文件夹 */
 export function folderIcon() {
-    return h(FontIcon, { name: 'common.base:gongzuoqu', size: 14 });
+    return h(FontIcon, { name: 'common.base:gongzuoqu' });
 }
 /** 模型：四角星 */
 export function sparkleIcon() {
-    return h(FontIcon, { name: 'common.base:AIdamoxing', size: 14 });
+    return h(FontIcon, { name: 'common.base:AIdamoxing' });
 }
 //# sourceMappingURL=picker-icons.js.map

@@ -33,6 +33,6 @@ export function PanelClose(props) {
         className: `dshpc-panel__close${props.className === undefined ? '' : ` ${props.className}`}`,
         'aria-label': props.label,
         onClick: () => props.onClick(),
-    }, props.icon ?? h(FontIcon, { name: 'common.base:guanbi', size: 14 }));
+    }, props.icon ?? h(FontIcon, { name: 'common.base:guanbi' }));
 }
 //# sourceMappingURL=panel.js.map

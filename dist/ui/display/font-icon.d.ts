@@ -6,7 +6,11 @@
  * 所以控件层画字体图标一律用它；`Icon` 是「两类来源一个组件」的对外门面，只在需要官方图标时用。
  *
  * 口径与 `Icon` 一致：`库名:图标名`（库名不可省）、找不到就**不渲染**并一次性告警、
- * 尺寸收预设名或 px、多色库在宿主深色下自动换 `<名字>-dark` 字形。
+ * 多色库在宿主深色下自动换 `<名字>-dark` 字形。
+ *
+ * 尺寸口径（2026-11-14）：**不传 `size` 就继承所在文字的 `font-size`（1:1）**——字体图标本来
+ * 就是一个字形，跟同一行文字用同一个字号；显式传预设名 / px 数字才是「独立摆放」或
+ * 「装饰性小箭头」的绝对尺寸。按钮 / 输入框的 `sm|md|lg` 只决定文字字号，不另给图标定值。
  */
 import { createElement as h, type CSSProperties } from 'react';
 import type { ParsedIconFont } from './icon-parse.js';
@@ -113,7 +117,7 @@ export declare function resolveIconName(name: string): {
 export interface FontIconProps {
     /** 图标标识：`库名:图标名`（库名 = `ICON_FONTS` 的 key，不可省）。 */
     name: string;
-    /** 尺寸：预设名或 px 数字，缺省 `md`（16）。 */
+    /** 尺寸：不传 = 继承所在文字字号（1:1）；预设名或 px 数字 = 显式绝对尺寸。 */
     size?: number | IconSize;
     /** 无障碍名（同时作原生 tooltip）；装饰性图标不传。 */
     title?: string;

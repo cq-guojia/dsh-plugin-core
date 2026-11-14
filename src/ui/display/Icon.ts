@@ -6,6 +6,10 @@
  *    {@link ICON_FONTS} 的 key（`所属域.库名[.变体]`，库名本身可以带点）；
  *  - `IconWrapLinesOutlineRegular` —— 官方图标：没有冒号，直接写官方组件名。
  *
+ * 尺寸（2026-11-14）：两类图标**不传 `size` 就跟随所在文字的字号** —— 字体 `<i>` 继承
+ * 父级 `font-size`，官方 SVG 由控件的 `svg{width:1em}` 接管；显式传预设名 / px 才是绝对
+ * 尺寸，用于独立摆放与装饰性小箭头。控件的 `sm|md|lg` 只决定文字字号，不另给图标定值。
+ *
  * 找不到就**不渲染**（不回落别的库 —— 显示错图标比空白更难查），并一次性告警。
  * 字体样式仍是运行时 `<link>` 远程加载，字体文件与样式都不入包。
  *
@@ -47,9 +51,9 @@ export function Icon(props: IconProps): ReturnType<typeof h> | null {
     return FontIcon(props)
   }
 
-  const size: number =
+  const size =
     props.size === undefined
-      ? ICON_SIZES.md
+      ? undefined
       : typeof props.size === 'number'
         ? props.size
         : ICON_SIZES[props.size]
@@ -60,7 +64,9 @@ export function Icon(props: IconProps): ReturnType<typeof h> | null {
     warnMissingIcon(name)
     return null
   }
-  const rendered = h(glyph as (p: { size?: number }) => ReturnType<typeof h>, { size })
+  // 不传 size 就一个属性都不给：官方 SVG 交给控件的 `svg{width:1em}` 接管，跟字体图标
+  // 继承父级字号是同一条链。显式传了才给绝对 px（独立摆放 / 装饰档）。
+  const rendered = h(glyph as (p: { size?: number }) => ReturnType<typeof h>, size === undefined ? {} : { size })
   if (title === undefined) return rendered
   return h(
     'span',
