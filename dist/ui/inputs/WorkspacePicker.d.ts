@@ -1,13 +1,28 @@
 import { createElement as h, type ReactNode } from 'react';
 import { type PickerSize } from './Picker.js';
-import { type PickerSizing } from './picker-logic.js';
+import { type PickerOption, type PickerSizing } from './picker-logic.js';
 import { type Translate } from '../../utils/i18n.js';
+import { type HostWorkspaceItem } from '../infra/host-data.js';
+/** 取值口径：`value` / `onChange` 第一参用工作区的哪个字段。 */
+export type WorkspaceKey = 'id' | 'path' | 'title';
+/**
+ * 快照行 → 选项。缺该字段、或与前面撞值的行**置灰保留**：静默丢会让工作区凭空消失，
+ * 回落到别的口径则等于混用两种值（2026-11-15）。
+ */
+export declare function workspaceOptionsOf(items: readonly HostWorkspaceItem[], key: WorkspaceKey): PickerOption[];
 export interface WorkspacePickerProps extends PickerSizing {
+    /** value / onChange 用哪个字段做值：`id` = workspaceId（默认）/ `path` = 宿主 realpath / `title` = 显示名。 */
+    valueKey?: WorkspaceKey;
     value?: string | string[];
     defaultValue?: string | string[];
     mode?: 'single' | 'multiple';
     max?: number;
-    onChange?: (value: string | string[]) => void;
+    /**
+     * 第一参是选中值（口径见 `valueKey`）；第二参是对应的完整工作区对象 ——
+     * 想要 title / sessionIds / updatedAt 直接取，不必自己再去快照里查。
+     * 多选给数组（与第一参同序）；「所有工作区」与清空给 `undefined`。
+     */
+    onChange?: (value: string | string[], item: HostWorkspaceItem | HostWorkspaceItem[] | undefined) => void;
     /**
      * 是否提供「所有工作区」默认项（**默认提供**；只在单选形态下出现）：
      * 选中即发 `''` —— 表示不筛，是否当「全部」由消费方自己处理。

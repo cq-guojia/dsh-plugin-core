@@ -6880,19 +6880,38 @@ function ModelPicker(props) {
 
 // dist/ui/inputs/WorkspacePicker.js
 var import_react20 = require("react");
+function workspaceValueOf(w, key) {
+  return key === "id" ? w.workspaceId : key === "path" ? w.path : w.title;
+}
+function workspaceOptionsOf(items, key) {
+  const used = /* @__PURE__ */ new Set();
+  return items.map((w) => {
+    const value = workspaceValueOf(w, key);
+    const taken = value === void 0 || used.has(value);
+    if (value !== void 0)
+      used.add(value);
+    return { value: value ?? w.workspaceId, label: w.title, disabled: taken };
+  });
+}
 function WorkspacePicker(props) {
   ensureControls();
   const tt = props.translate ?? t;
   const items = (0, import_react20.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot, workspaceList.getSnapshot);
-  const options = items.map((w) => ({ value: w.workspaceId, label: w.title }));
+  const valueKey = props.valueKey ?? "id";
+  const options = workspaceOptionsOf(items, valueKey);
   const allOption = props.allowDefault !== false && props.mode !== "multiple" ? { value: "", label: props.defaultLabel ?? tt("workspaceAll") } : void 0;
+  const { onChange } = props;
+  const emit = onChange === void 0 ? void 0 : (value) => {
+    const hit = (v) => items.find((w) => workspaceValueOf(w, valueKey) === v);
+    onChange(value, Array.isArray(value) ? value.flatMap((v) => hit(v) ?? []) : hit(value));
+  };
   return (0, import_react20.createElement)(Picker, {
     options: allOption === void 0 ? options : [allOption, ...options],
     value: props.value,
     defaultValue: props.defaultValue,
     mode: props.mode,
     max: props.max,
-    onChange: props.onChange,
+    onChange: emit,
     clearable: props.clearable,
     searchable: props.searchable,
     width: props.width,
@@ -66654,8 +66673,8 @@ var docData = {
         "en": 'First-page paging: `limit` slices by **option count** across groups; "Show more" rendered as the last row of the list appends another `limit` each click. Search results use the same paging and reset to the first page on a new query or reopen. No `limit` means render everything. `PickerOption.keywords` is an optional single string (joined by the caller) that participates in case-insensitive substring matching together with `label` but is **never rendered** \u2014 for search terms like a task UUID that users paste but should not see. `sliceGroups` is also exported as pure logic.'
       },
       {
-        "zh": "WorkspacePicker\uFF1A\u6570\u636E\u81EA\u5E26\u7684\u9886\u57DF\u9009\u62E9\u5668\u3002\u5728\u63D2\u4EF6 apply \u91CC\u8C03\u4E00\u6B21 `connectHost(ctx)`\uFF0C\u7EC4\u4EF6\u5373\u8BA2\u9605\u5B98\u65B9 `workspaces` \u5FEB\u7167\u3002\u672A\u63A5\u7EBF = \u7A7A\u6001\uFF0C\u4E0D\u7F16\u9020\u6570\u636E\u3002\u63A7\u4EF6\u4E0E\u641C\u7D22\u6846\u7684\u5BBD\u5EA6\u4E09\u8F74\uFF08`width` / `minWidth` / `maxWidth` / `searchSizing`\uFF09\u4E0E Picker \u540C\u53E3\u5F84\uFF1B`translate` \u8986\u76D6\u7EC4\u4EF6\u4E0E\u4E0B\u62C9\u5185\u7684\u5168\u90E8\u5185\u7F6E\u6587\u6848\u3002",
-        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Control and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown."
+        "zh": "WorkspacePicker\uFF1A\u6570\u636E\u81EA\u5E26\u7684\u9886\u57DF\u9009\u62E9\u5668\u3002\u5728\u63D2\u4EF6 apply \u91CC\u8C03\u4E00\u6B21 `connectHost(ctx)`\uFF0C\u7EC4\u4EF6\u5373\u8BA2\u9605\u5B98\u65B9 `workspaces` \u5FEB\u7167\u3002\u672A\u63A5\u7EBF = \u7A7A\u6001\uFF0C\u4E0D\u7F16\u9020\u6570\u636E\u3002\u63A7\u4EF6\u4E0E\u641C\u7D22\u6846\u7684\u5BBD\u5EA6\u4E09\u8F74\uFF08`width` / `minWidth` / `maxWidth` / `searchSizing`\uFF09\u4E0E Picker \u540C\u53E3\u5F84\uFF1B`translate` \u8986\u76D6\u7EC4\u4EF6\u4E0E\u4E0B\u62C9\u5185\u7684\u5168\u90E8\u5185\u7F6E\u6587\u6848\u3002\u503C\u53E3\u5F84\u7531 `valueKey` \u5B9A\uFF08\u9ED8\u8BA4 `id`\uFF0C\u53EF\u6362 `path` / `title`\uFF0C\u81EA\u6709\u6570\u636E\u6309\u8DEF\u5F84\u5B58\u7684\u4E0D\u5FC5\u8FC1\u6210 UUID\uFF09\uFF1B`onChange` \u7B2C\u4E8C\u53C2\u76F4\u63A5\u7ED9\u5B8C\u6574\u5DE5\u4F5C\u533A\u5BF9\u8C61\uFF0C\u8981\u54EA\u4E2A\u5B57\u6BB5\u81EA\u5DF1\u53D6\u3002",
+        "en": "WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Control and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown. `valueKey` picks what the value speaks (default `id`, or `path` / `title`) so data already stored by path needs no migration to UUIDs; the second argument of `onChange` is the full workspace object \u2014 take whichever field you need."
       },
       {
         "zh": "ModelPicker\uFF1A\u9009\u62E9\u6A21\u578B\u7684\u5B8C\u6574\u5C01\u88C5\uFF0C\u4E09\u79CD\u5F62\u6001\u5171\u7528\u540C\u4E00\u4EFD\u5BBF\u4E3B\u76EE\u5F55\uFF0C`onChange` \u4E00\u5F8B\u53D1 `provider/id`\uFF1A`grouped`\uFF08\u9ED8\u8BA4\uFF09= \u4E00\u4E2A\u4E0B\u62C9\u3001\u4F9B\u5E94\u5546\u505A\u7EC4\u5934\uFF1B`flat` = \u4E00\u4E2A\u4E0B\u62C9\u3001\u5168\u90E8\u6A21\u578B\u5E73\u94FA\u6210\u300C\u5382\u5546-\u6A21\u578B\u300D\u5E76\u5E26\u641C\u7D22\uFF0C\u641C\u5382\u5546\u540D\u5373\u53EF\u7B5B\uFF1B`cascade` = \u4E24\u4E2A\u4E0B\u62C9\u8054\u52A8\uFF0C\u5382\u5546\u6846\u4E0E\u6A21\u578B\u6846\u90FD\u5E26\u641C\u7D22\uFF0C\u6362\u5382\u5546\u6E05\u7A7A\u6A21\u578B\u3002**\u63A5\u7EBF\u662F\u4E24\u6BB5\u5F0F**\uFF1A\u5BBF\u4E3B `serveModelCatalog(ctx, { path })` + client `connectHost(ctx, { modelsPath: path })` \u7528\u540C\u4E00\u4E2A path \u5E38\u91CF\uFF0C\u6F0F\u4E86 `modelsPath` \u76EE\u5F55\u6C38\u8FDC\u505C\u5728 loading\uFF1B\u4F9B\u5E94\u5546 / \u6A21\u578B\u6709\u589E\u51CF\u65F6 `await refreshModelCatalog()` \u91CD\u62C9\u3002`width` / `minWidth` / `maxWidth` \u7BA1\u63A7\u4EF6\u5360\u4F4D\u5BBD\u5EA6\uFF08\u6839\u76D2\uFF1B\u89E6\u53D1\u5668\u94FA\u6EE1\uFF09\uFF0C`searchSizing` \u7BA1\u6240\u6709\u641C\u7D22\u6846\uFF0C`providerSizing` / `modelSizing` \u8BA9\u8054\u52A8\u6001\u4E24\u4E2A\u6846\u5206\u522B\u8BBE\u5BBD\u3002\u65E7\u503C\u5DF2\u4E0D\u5728\u76EE\u5F55\u91CC\u65F6\u6309\u771F\u5B9E\u503C\u4FDD\u7559\u4E00\u9879\u5E76\u5982\u5B9E\u63D0\u793A\u300C\u5019\u9009\u53EF\u80FD\u4E0D\u5B8C\u6574\u300D\uFF0C\u4E0D\u9759\u9ED8\u4E22\u5F03\u3002\u5BBF\u4E3B\u4FA7 `serveModelCatalog` \u7684 `getLlm` \u53EA\u662F\u53EF\u9009\u53D6\u503C\u8986\u76D6\uFF0C\u4E0D\u4F20\u65F6\u6838\u5FC3\u81EA\u884C\u6536\u53E3\uFF08ctx \u5931\u6D3B\u6309\u4E0D\u53EF\u7528\u56DE 503\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u5FC5\u5404\u81EA\u9632\u3002\u9996\u62C9\u5931\u8D25\u6838\u5FC3\u4F1A\u9000\u907F\u91CD\u8BD5 3 \u6B21\uFF085xx / 429 / \u7F51\u7EDC\u9519\u8BEF\uFF1B403\u3001404 \u4E0D\u91CD\u8BD5\uFF09\uFF0C\u4E09\u6B21\u90FD\u5931\u8D25\u5C31\u505C\u5728\u964D\u7EA7\u6001\uFF1B\u6253\u5F00\u9009\u62E9\u5668 / \u5207\u56DE\u9875\u9762\u65F6\u6309 30s \u8282\u6D41\u81EA\u52A8\u8865\u62C9\uFF0C\u4E0D\u9700\u8981\u81EA\u5DF1\u8F6E\u8BE2\u3002",
@@ -66897,12 +66916,21 @@ var docData = {
         "id": "ui-workspace-picker",
         "rows": [
           {
-            "name": "value / defaultValue / onChange",
-            "type": "\u9009\u4E2D\u503C\u4E3A workspaceId\uFF08\u4E0D\u662F title\uFF09\uFF1B'' = \u300C\u6240\u6709\u5DE5\u4F5C\u533A\u300D",
+            "name": "valueKey",
+            "type": "'id' | 'path' | 'title'",
+            "def": "'id'",
+            "desc": {
+              "zh": "value / onChange \u7B2C\u4E00\u53C2\u7528\u5DE5\u4F5C\u533A\u7684\u54EA\u4E2A\u5B57\u6BB5\uFF1Aid = workspaceId\u3001path = \u5BBF\u4E3B realpath\u3001title = \u663E\u793A\u540D\u3002\u5BBF\u4E3B\u6CA1\u7ED9\u8BE5\u5B57\u6BB5\u3001\u6216\u4E24\u4E2A\u5DE5\u4F5C\u533A\u649E\u503C\u7684\u90A3\u4E00\u884C\u7F6E\u7070\u4FDD\u7559\uFF08\u4E0D\u9759\u9ED8\u4E22\uFF0C\u4E5F\u4E0D\u56DE\u843D\u522B\u7684\u53E3\u5F84\uFF09",
+              "en": "Which workspace field the first argument speaks: id = workspaceId, path = host realpath, title = display name. Rows whose field is missing or duplicated stay visible but disabled (never silently dropped, never falling back to another field)"
+            }
+          },
+          {
+            "name": "value / defaultValue / onChange(value, item)",
+            "type": "\u7B2C\u4E00\u53C2\u662F\u8BE5\u53E3\u5F84\u7684\u5B57\u7B26\u4E32\uFF0C'' = \u300C\u6240\u6709\u5DE5\u4F5C\u533A\u300D\uFF1B\u7B2C\u4E8C\u53C2\u662F\u8BE5\u5DE5\u4F5C\u533A\u7684\u5B8C\u6574\u5BF9\u8C61\uFF08title / path / sessionIds / updatedAt \u90FD\u5728\uFF09\uFF0C\u591A\u9009\u7ED9\u6570\u7EC4\u4E14\u4E0E\u7B2C\u4E00\u53C2\u540C\u5E8F\uFF1B\u300C\u6240\u6709\u5DE5\u4F5C\u533A\u300D\u4E0E\u6E05\u7A7A\u7ED9 undefined",
             "def": "\u2014",
             "desc": {
-              "zh": "\u4E0D\u7B5B",
-              "en": "No filter"
+              "zh": "\u60F3\u7528\u54EA\u4E2A\u5B57\u6BB5\u76F4\u63A5\u4ECE\u5BF9\u8C61\u53D6\uFF0C\u4E0D\u5FC5\u81EA\u5DF1\u56DE\u67E5\u5FEB\u7167\uFF1B\u67E5\u4E0D\u5230\u7684\u65E7\u503C\u4E0D\u7F16\u9020\u5BF9\u8C61",
+              "en": "Take whichever field you need straight from the object instead of re-querying the snapshot; a value absent from the snapshot yields no fabricated object"
             }
           },
           {
@@ -67079,7 +67107,7 @@ var docData = {
       {
         "id": "ui-workspacepicker-example",
         "lang": "tsx",
-        "src": "import { WorkspacePicker, connectHost } from 'dsh-plugin-core/ui'\n\n// apply(ctx) \u91CC\uFF1AconnectHost(ctx)\nh(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })"
+        "src": "import { WorkspacePicker, connectHost } from 'dsh-plugin-core/ui'\n\n// apply(ctx) \u91CC\uFF1AconnectHost(ctx)\nh(WorkspacePicker, {\n  valueKey: 'path', // \u503C\u53E3\u5F84 = \u5DE5\u4F5C\u533A\u8DEF\u5F84\uFF08\u9ED8\u8BA4 'id' = workspaceId\uFF09\n  value: curPath,\n  onChange: (path, ws) => {\n    setPath(path)\n    setTitle(ws?.title) // \u7B2C\u4E8C\u53C2\u662F\u5B8C\u6574\u5DE5\u4F5C\u533A\u5BF9\u8C61\uFF1Atitle / path / sessionIds / updatedAt \u968F\u4FBF\u53D6\n  },\n  clearable: true,\n})"
       },
       {
         "id": "ui-modelpicker-example",
@@ -74598,9 +74626,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.29"}`],
-            [t3("buildDemo"), `v${"0.35.29"}`],
-            [t3("buildStamp"), "261115-011313-573"]
+            [t3("buildCore"), `v${"0.35.30"}`],
+            [t3("buildDemo"), `v${"0.35.30"}`],
+            [t3("buildStamp"), "261115-013238-237"]
           ].map(
             ([label, value]) => (0, import_react107.createElement)(
               "tr",
@@ -74918,9 +74946,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react109.createElement)("span", null, `core v${"0.35.29"}`),
-          (0, import_react109.createElement)("span", null, `demo v${"0.35.29"}`),
-          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-011313-573")
+          (0, import_react109.createElement)("span", null, `core v${"0.35.30"}`),
+          (0, import_react109.createElement)("span", null, `demo v${"0.35.30"}`),
+          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-013238-237")
         )
       )
     ),

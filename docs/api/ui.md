@@ -135,9 +135,9 @@ Picker：单 / 多选、上限、搜索、分组、空态，自绘。键盘：Es
 
 > EN: First-page paging: `limit` slices by **option count** across groups; "Show more" rendered as the last row of the list appends another `limit` each click. Search results use the same paging and reset to the first page on a new query or reopen. No `limit` means render everything. `PickerOption.keywords` is an optional single string (joined by the caller) that participates in case-insensitive substring matching together with `label` but is **never rendered** — for search terms like a task UUID that users paste but should not see. `sliceGroups` is also exported as pure logic.
 
-WorkspacePicker：数据自带的领域选择器。在插件 apply 里调一次 `connectHost(ctx)`，组件即订阅官方 `workspaces` 快照。未接线 = 空态，不编造数据。控件与搜索框的宽度三轴（`width` / `minWidth` / `maxWidth` / `searchSizing`）与 Picker 同口径；`translate` 覆盖组件与下拉内的全部内置文案。
+WorkspacePicker：数据自带的领域选择器。在插件 apply 里调一次 `connectHost(ctx)`，组件即订阅官方 `workspaces` 快照。未接线 = 空态，不编造数据。控件与搜索框的宽度三轴（`width` / `minWidth` / `maxWidth` / `searchSizing`）与 Picker 同口径；`translate` 覆盖组件与下拉内的全部内置文案。值口径由 `valueKey` 定（默认 `id`，可换 `path` / `title`，自有数据按路径存的不必迁成 UUID）；`onChange` 第二参直接给完整工作区对象，要哪个字段自己取。
 
-> EN: WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Control and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown.
+> EN: WorkspacePicker: a domain picker that brings its own data. Call `connectHost(ctx)` once in the plugin apply and it subscribes to the official `workspaces` snapshot. Unwired = empty state, never fabricated data. Control and search-box sizing (`width` / `minWidth` / `maxWidth` / `searchSizing`) matches Picker; `translate` overrides all built-in copy in the component and its dropdown. `valueKey` picks what the value speaks (default `id`, or `path` / `title`) so data already stored by path needs no migration to UUIDs; the second argument of `onChange` is the full workspace object — take whichever field you need.
 
 ModelPicker：选择模型的完整封装，三种形态共用同一份宿主目录，`onChange` 一律发 `provider/id`：`grouped`（默认）= 一个下拉、供应商做组头；`flat` = 一个下拉、全部模型平铺成「厂商-模型」并带搜索，搜厂商名即可筛；`cascade` = 两个下拉联动，厂商框与模型框都带搜索，换厂商清空模型。**接线是两段式**：宿主 `serveModelCatalog(ctx, { path })` + client `connectHost(ctx, { modelsPath: path })` 用同一个 path 常量，漏了 `modelsPath` 目录永远停在 loading；供应商 / 模型有增减时 `await refreshModelCatalog()` 重拉。`width` / `minWidth` / `maxWidth` 管控件占位宽度（根盒；触发器铺满），`searchSizing` 管所有搜索框，`providerSizing` / `modelSizing` 让联动态两个框分别设宽。旧值已不在目录里时按真实值保留一项并如实提示「候选可能不完整」，不静默丢弃。宿主侧 `serveModelCatalog` 的 `getLlm` 只是可选取值覆盖，不传时核心自行收口（ctx 失活按不可用回 503），消费方不必各自防。首拉失败核心会退避重试 3 次（5xx / 429 / 网络错误；403、404 不重试），三次都失败就停在降级态；打开选择器 / 切回页面时按 30s 节流自动补拉，不需要自己轮询。
 
@@ -173,7 +173,8 @@ ModelPicker：选择模型的完整封装，三种形态共用同一份宿主目
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
-| `value / defaultValue / onChange` | `选中值为 workspaceId（不是 title）；'' = 「所有工作区」` | — | 不筛 | No filter |
+| `valueKey` | `'id' \| 'path' \| 'title'` | 'id' | value / onChange 第一参用工作区的哪个字段：id = workspaceId、path = 宿主 realpath、title = 显示名。宿主没给该字段、或两个工作区撞值的那一行置灰保留（不静默丢，也不回落别的口径） | Which workspace field the first argument speaks: id = workspaceId, path = host realpath, title = display name. Rows whose field is missing or duplicated stay visible but disabled (never silently dropped, never falling back to another field) |
+| `value / defaultValue / onChange(value, item)` | `第一参是该口径的字符串，'' = 「所有工作区」；第二参是该工作区的完整对象（title / path / sessionIds / updatedAt 都在），多选给数组且与第一参同序；「所有工作区」与清空给 undefined` | — | 想用哪个字段直接从对象取，不必自己回查快照；查不到的旧值不编造对象 | Take whichever field you need straight from the object instead of re-querying the snapshot; a value absent from the snapshot yields no fabricated object |
 | `allowDefault / defaultLabel` | `「所有工作区」默认项：默认提供、置顶、只在单选出现；选中发 ''；false 关掉` | — | 文案可改 | Text is customizable |
 | `mode / max` | `单选 / 多选 / 上限（到上限已选项仍可反选）` | — | — | — |
 | `placeholder` | `string` | 默认「工作区」 | 想叫「选择工作区」就传它 | Pass it if you want "选择工作区" |
@@ -200,7 +201,15 @@ ModelPicker：选择模型的完整封装，三种形态共用同一份宿主目
 import { WorkspacePicker, connectHost } from 'dsh-plugin-core/ui'
 
 // apply(ctx) 里：connectHost(ctx)
-h(WorkspacePicker, { value: cur, onChange: setCur, clearable: true })
+h(WorkspacePicker, {
+  valueKey: 'path', // 值口径 = 工作区路径（默认 'id' = workspaceId）
+  value: curPath,
+  onChange: (path, ws) => {
+    setPath(path)
+    setTitle(ws?.title) // 第二参是完整工作区对象：title / path / sessionIds / updatedAt 随便取
+  },
+  clearable: true,
+})
 ```
 
 ```tsx id="ui-modelpicker-example"

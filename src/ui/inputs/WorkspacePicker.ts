@@ -5,17 +5,46 @@
 import { createElement as h, useSyncExternalStore, type ReactNode } from 'react'
 import { ensureControls } from '../infra/css.js'
 import { Picker, type PickerSize } from './Picker.js'
-import { type PickerSizing } from './picker-logic.js'
+import { type PickerOption, type PickerSizing } from './picker-logic.js'
 import { t, type Translate } from '../../utils/i18n.js'
-import { workspaceList } from '../infra/host-data.js'
+import { workspaceList, type HostWorkspaceItem } from '../infra/host-data.js'
 import { folderIcon } from './picker-icons.js'
 
+/** 取值口径：`value` / `onChange` 第一参用工作区的哪个字段。 */
+export type WorkspaceKey = 'id' | 'path' | 'title'
+
+/** 某个口径下的字符串值；缺字段 = undefined（不回落别的口径）。 */
+function workspaceValueOf(w: HostWorkspaceItem, key: WorkspaceKey): string | undefined {
+  return key === 'id' ? w.workspaceId : key === 'path' ? w.path : w.title
+}
+
+/**
+ * 快照行 → 选项。缺该字段、或与前面撞值的行**置灰保留**：静默丢会让工作区凭空消失，
+ * 回落到别的口径则等于混用两种值（2026-11-15）。
+ */
+export function workspaceOptionsOf(items: readonly HostWorkspaceItem[], key: WorkspaceKey): PickerOption[] {
+  const used = new Set<string>()
+  return items.map((w) => {
+    const value = workspaceValueOf(w, key)
+    const taken = value === undefined || used.has(value)
+    if (value !== undefined) used.add(value)
+    return { value: value ?? w.workspaceId, label: w.title, disabled: taken }
+  })
+}
+
 export interface WorkspacePickerProps extends PickerSizing {
+  /** value / onChange 用哪个字段做值：`id` = workspaceId（默认）/ `path` = 宿主 realpath / `title` = 显示名。 */
+  valueKey?: WorkspaceKey
   value?: string | string[]
   defaultValue?: string | string[]
   mode?: 'single' | 'multiple'
   max?: number
-  onChange?: (value: string | string[]) => void
+  /**
+   * 第一参是选中值（口径见 `valueKey`）；第二参是对应的完整工作区对象 ——
+   * 想要 title / sessionIds / updatedAt 直接取，不必自己再去快照里查。
+   * 多选给数组（与第一参同序）；「所有工作区」与清空给 `undefined`。
+   */
+  onChange?: (value: string | string[], item: HostWorkspaceItem | HostWorkspaceItem[] | undefined) => void
   /**
    * 是否提供「所有工作区」默认项（**默认提供**；只在单选形态下出现）：
    * 选中即发 `''` —— 表示不筛，是否当「全部」由消费方自己处理。
@@ -47,19 +76,30 @@ export function WorkspacePicker(props: WorkspacePickerProps): ReturnType<typeof 
   ensureControls()
   const tt = props.translate ?? t
   const items = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot, workspaceList.getSnapshot)
-  const options = items.map((w) => ({ value: w.workspaceId, label: w.title }))
+  const valueKey = props.valueKey ?? 'id'
+  const options = workspaceOptionsOf(items, valueKey)
   // 「所有工作区」放最上面（单选才有意义）；选中发 '' —— 空串表示不筛
   const allOption =
     props.allowDefault !== false && props.mode !== 'multiple'
       ? { value: '', label: props.defaultLabel ?? tt('workspaceAll') }
       : undefined
+  // 值 → 对象只从当前快照里查；查不到（已删的工作区 / '') 就是 undefined，不编造。
+  const { onChange } = props
+  const emit =
+    onChange === undefined
+      ? undefined
+      : (value: string | string[]): void => {
+          const hit = (v: string): HostWorkspaceItem | undefined =>
+            items.find((w) => workspaceValueOf(w, valueKey) === v)
+          onChange(value, Array.isArray(value) ? value.flatMap((v) => hit(v) ?? []) : hit(value))
+        }
   return h(Picker, {
     options: allOption === undefined ? options : [allOption, ...options],
     value: props.value,
     defaultValue: props.defaultValue,
     mode: props.mode,
     max: props.max,
-    onChange: props.onChange,
+    onChange: emit,
     clearable: props.clearable,
     searchable: props.searchable,
     width: props.width,

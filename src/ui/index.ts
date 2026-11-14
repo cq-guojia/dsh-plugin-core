@@ -103,7 +103,7 @@ export {
   type TimeParts,
 } from './inputs/datetime-logic.js'
 export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './inputs/ModelPicker.js'
-export { WorkspacePicker, type WorkspacePickerProps } from './inputs/WorkspacePicker.js'
+export { WorkspacePicker, type WorkspaceKey, type WorkspacePickerProps } from './inputs/WorkspacePicker.js'
 export {
   connectHost,
   getWorkspaceFiles,
