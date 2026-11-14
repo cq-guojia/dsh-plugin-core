@@ -33,6 +33,7 @@ export function WorkspacePicker(props) {
     const items = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot, workspaceList.getSnapshot);
     const valueKey = props.valueKey ?? 'id';
     const options = workspaceOptionsOf(items, valueKey);
+    const empty = items.length === 0;
     // 「所有工作区」放最上面（单选才有意义）；选中发 '' —— 空串表示不筛
     const allOption = props.allowDefault !== false && props.mode !== 'multiple'
         ? { value: '', label: props.defaultLabel ?? tt('workspaceAll') }
@@ -60,8 +61,10 @@ export function WorkspacePicker(props) {
         searchSizing: props.searchSizing,
         hint: props.hint,
         icon: props.icon === undefined ? folderIcon() : props.icon ?? undefined,
-        placeholder: props.placeholder ?? tt('explorerRoot'),
-        disabled: props.disabled,
+        placeholder: props.placeholder ?? (empty ? (props.emptyLabel ?? tt('pickerEmpty')) : tt('explorerRoot')),
+        disabled: props.disabled === true || empty,
+        ariaLabel: props.ariaLabel,
+        error: props.error,
         size: props.size,
         placement: props.placement,
         className: props.className,

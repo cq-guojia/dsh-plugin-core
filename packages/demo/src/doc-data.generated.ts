@@ -1810,6 +1810,15 @@ export const docData = {
             }
           },
           {
+            "name": "error",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "校验不通过：触发器描红（与 Input / Textarea 同口径，只描边框）",
+              "en": "Validation failed: red trigger border (same treatment as Input / Textarea)"
+            }
+          },
+          {
             "name": "size",
             "type": "'sm' | 'md' | 'lg'",
             "def": "'md'",
@@ -1974,6 +1983,33 @@ export const docData = {
             "desc": {
               "zh": "想叫「选择工作区」就传它",
               "en": "Pass it if you want \"选择工作区\""
+            }
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "无障碍名（下拉自己没有可见标签时传它）",
+              "en": "Accessible name when the dropdown has no visible label"
+            }
+          },
+          {
+            "name": "error",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "校验不通过：描红（与 Picker / Input 同口径）",
+              "en": "Validation failed: red border, same as Picker / Input"
+            }
+          },
+          {
+            "name": "emptyLabel",
+            "type": "string",
+            "def": "内置「暂无可选」",
+            "desc": {
+              "zh": "宿主一个工作区都没有时的触发器文案；此时控件自动禁用（消费方拿不到候选数组，判不了空）",
+              "en": "Trigger text when the host has no workspace; the control is disabled automatically since callers cannot see the candidate array"
             }
           },
           {

@@ -24,6 +24,8 @@ export interface PickerProps extends PickerSizing {
     placeholder?: string;
     /** 候选可能不完整（宿主没接上服务之类）⇒ 如实告诉用户，不编造。 */
     degraded?: boolean;
+    /** 校验不通过：描红（与 Input / Textarea 同口径，只描边框）。 */
+    error?: boolean;
     disabled?: boolean;
     size?: PickerSize;
     /** 菜单首选展开方向：靠近视口底部时传 `up`；实际会按可用空间自动翻转（flip）。 */

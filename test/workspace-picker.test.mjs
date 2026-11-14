@@ -29,3 +29,18 @@ test('WorkspacePicker：valueKey=path 时受控值按路径匹配并显示标题
   const html = renderToStaticMarkup(h(WorkspacePicker, { valueKey: 'path', value: '/mnt/nas' }))
   assert.match(html, /NAS/)
 })
+
+test('WorkspacePicker：ariaLabel / error 透传到下拉', () => {
+  const html = renderToStaticMarkup(h(WorkspacePicker, { ariaLabel: '工作区', error: true }))
+  assert.match(html, /aria-label="工作区"/)
+  assert.match(html, /dshpc-picker--error/)
+})
+
+test('WorkspacePicker：零工作区时自动禁用，文案默认「暂无可选」、可被 emptyLabel 覆盖', () => {
+  workspaceList.setSource({ getSnapshot: () => ({ items: [] }), subscribe: () => () => {} })
+  const html = renderToStaticMarkup(h(WorkspacePicker, {}))
+  assert.match(html, /disabled/)
+  assert.match(html, /暂无可选/)
+  const custom = renderToStaticMarkup(h(WorkspacePicker, { emptyLabel: '没有可用选项' }))
+  assert.match(custom, /没有可用选项/)
+})

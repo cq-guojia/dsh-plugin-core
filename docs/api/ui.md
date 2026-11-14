@@ -157,6 +157,7 @@ ModelPicker：选择模型的完整封装，三种形态共用同一份宿主目
 | `clearable` | `boolean` | 'false' | 单选时列表顶部多一项「不选」 | In single mode, adds a "none" item at the top of the list |
 | `placeholder` | `string` | 内置「请选择」 | — | — |
 | `degraded` | `boolean` | 'false' | 候选可能不完整 ⇒ 顶部如实提示，不编造 | Candidates may be incomplete ⇒ honest top hint, no fabrication |
+| `error` | `boolean` | 'false' | 校验不通过：触发器描红（与 Input / Textarea 同口径，只描边框） | Validation failed: red trigger border (same treatment as Input / Textarea) |
 | `size` | `'sm' \| 'md' \| 'lg'` | 'md' | — | — |
 | `placement` | `'down' \| 'up'` | 'down' | 触发器靠近视口底部时用 up | Use up when the trigger is near the viewport bottom |
 | `closeOnSelect` | `boolean` | 多选 false / 单选恒关 | 选中后是否收起 | Whether to collapse after selection |
@@ -178,6 +179,9 @@ ModelPicker：选择模型的完整封装，三种形态共用同一份宿主目
 | `allowDefault / defaultLabel` | `「所有工作区」默认项：默认提供、置顶、只在单选出现；选中发 ''；false 关掉` | — | 文案可改 | Text is customizable |
 | `mode / max` | `单选 / 多选 / 上限（到上限已选项仍可反选）` | — | — | — |
 | `placeholder` | `string` | 默认「工作区」 | 想叫「选择工作区」就传它 | Pass it if you want "选择工作区" |
+| `ariaLabel` | `string` | — | 无障碍名（下拉自己没有可见标签时传它） | Accessible name when the dropdown has no visible label |
+| `error` | `boolean` | 'false' | 校验不通过：描红（与 Picker / Input 同口径） | Validation failed: red border, same as Picker / Input |
+| `emptyLabel` | `string` | 内置「暂无可选」 | 宿主一个工作区都没有时的触发器文案；此时控件自动禁用（消费方拿不到候选数组，判不了空） | Trigger text when the host has no workspace; the control is disabled automatically since callers cannot see the candidate array |
 | `icon` | `ReactNode` | — | 触发器前置图标：不传 = 默认文件夹；null = 不显示；传元素 = 自定义 | Leading trigger icon: omitted = default folder; null = hidden; element = custom |
 | `width / minWidth / maxWidth` | `number \| string` | — | 控件宽度三轴（与 Picker 同名同义） | Control sizing, same as Picker |
 | `searchSizing` | `PickerSizing` | — | 下拉内搜索框宽度三轴；菜单会跟着自动加宽 | Search-box sizing; the menu widens with it |

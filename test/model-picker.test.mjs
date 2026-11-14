@@ -68,7 +68,8 @@ test('WorkspacePicker 同样透传宽度、搜索框宽度与自定义文案', (
     translate: (key) => `X:${String(key)}`,
   }))
   assert.match(html, /width:200px;min-width:200px;max-width:200px/)
-  assert.match(html, /X:explorerRoot/)
+  // 本文件没有工作区源 ⇒ 零候选，触发器文案走空态（2026-11-15 起）
+  assert.match(html, /X:pickerEmpty/)
 })
 
 test('搜索框宽度：与触发器共用解析函数，且内联样式绑在搜索框上', () => {

@@ -57,6 +57,15 @@ export interface WorkspacePickerProps extends PickerSizing {
   /** 下拉内搜索框（默认关；要就传 true）。 */
   searchable?: boolean
   disabled?: boolean
+  /** 无障碍名（下拉本身没有可见标签时传它）。 */
+  ariaLabel?: string
+  /** 校验不通过：描红（与 Input / Textarea 同口径，只描边框）。 */
+  error?: boolean
+  /**
+   * 宿主一个工作区都没有时的触发器文案（默认「暂无可选」）。
+   * 此时控件自动禁用：消费方拿不到候选数组，判不了空；点开一个空菜单也没意义。
+   */
+  emptyLabel?: string
   size?: PickerSize
   placement?: 'down' | 'up'
   className?: string
@@ -78,6 +87,7 @@ export function WorkspacePicker(props: WorkspacePickerProps): ReturnType<typeof 
   const items = useSyncExternalStore(workspaceList.subscribe, workspaceList.getSnapshot, workspaceList.getSnapshot)
   const valueKey = props.valueKey ?? 'id'
   const options = workspaceOptionsOf(items, valueKey)
+  const empty = items.length === 0
   // 「所有工作区」放最上面（单选才有意义）；选中发 '' —— 空串表示不筛
   const allOption =
     props.allowDefault !== false && props.mode !== 'multiple'
@@ -108,8 +118,10 @@ export function WorkspacePicker(props: WorkspacePickerProps): ReturnType<typeof 
     searchSizing: props.searchSizing,
     hint: props.hint,
     icon: props.icon === undefined ? folderIcon() : props.icon ?? undefined,
-    placeholder: props.placeholder ?? tt('explorerRoot'),
-    disabled: props.disabled,
+    placeholder: props.placeholder ?? (empty ? (props.emptyLabel ?? tt('pickerEmpty')) : tt('explorerRoot')),
+    disabled: props.disabled === true || empty,
+    ariaLabel: props.ariaLabel,
+    error: props.error,
     size: props.size,
     placement: props.placement,
     className: props.className,

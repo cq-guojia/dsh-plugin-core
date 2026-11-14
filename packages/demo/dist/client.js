@@ -5152,6 +5152,8 @@ var PICKER_CSS = `
 .dshpc-picker__trigger:disabled{color:var(--dshpc-fg-dim);cursor:not-allowed;opacity:.7}
 /* \u805A\u7126\uFF08\u952E\u76D8\u6216\u70B9\u51FB\u9009\u4E2D\uFF09\u65F6\u4E0E\u5168\u7AD9\u4E00\u81F4\u7684\u84DD\u8272\u63CF\u8FB9\uFF1B\u83DC\u5355\u6253\u5F00\u540E\u7126\u70B9\u4F1A\u8FDB\u53BB\uFF0C\u89E6\u53D1\u5668\u81EA\u7136\u5931\u53BB\u7126\u70B9\u3002 */
 .dshpc-picker__trigger:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}
+/* \u6821\u9A8C\u4E0D\u901A\u8FC7\uFF1A\u4E0E Input / Textarea \u540C\u53E3\u5F84\uFF0C\u53EA\u63CF\u8FB9\u6846\uFF082026-11-15\uFF09\u3002hint \u6001\u4E0B\u89E6\u53D1\u5668\u5728 fieldwrap \u91CC\uFF0C\u6545\u4E0D\u9650\u5B9A\u76F4\u63A5\u5B50\u7EA7\u3002 */
+.dshpc-picker--error .dshpc-picker__trigger{border-color:var(--dshpc-danger)}
 /* \u6587\u5B57\u9ED8\u8BA4\u9760\u5DE6\uFF08\u5403\u6389\u5269\u4F59\u5BBD\u5EA6\uFF09\uFF0C\u4E0D\u7ED9 space-between \u628A\u77ED\u6587\u6848\u63A8\u5230\u4E2D\u95F4\u7684\u673A\u4F1A\uFF1B
    \u786E\u5B9E\u8981\u5C45\u4E2D\u5C31\u663E\u5F0F\u4F20 align="center"\u3002 */
 .dshpc-picker__label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
@@ -5509,7 +5511,7 @@ function Picker(props) {
   );
   const triggerRow = props.hint === void 0 ? trigger : (0, import_react12.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--inline" }, trigger, (0, import_react12.createElement)(FieldHint, { text: props.hint }));
   return (0, import_react12.createElement)("div", {
-    className: `dshpc-picker${props.className === void 0 ? "" : ` ${props.className}`}`,
+    className: `dshpc-picker${props.error === true ? " dshpc-picker--error" : ""}${props.className === void 0 ? "" : ` ${props.className}`}`,
     style: controlStyle,
     ref: rootRef,
     onKeyDown
@@ -6899,6 +6901,7 @@ function WorkspacePicker(props) {
   const items = (0, import_react20.useSyncExternalStore)(workspaceList.subscribe, workspaceList.getSnapshot, workspaceList.getSnapshot);
   const valueKey = props.valueKey ?? "id";
   const options = workspaceOptionsOf(items, valueKey);
+  const empty2 = items.length === 0;
   const allOption = props.allowDefault !== false && props.mode !== "multiple" ? { value: "", label: props.defaultLabel ?? tt("workspaceAll") } : void 0;
   const { onChange } = props;
   const emit = onChange === void 0 ? void 0 : (value) => {
@@ -6920,8 +6923,10 @@ function WorkspacePicker(props) {
     searchSizing: props.searchSizing,
     hint: props.hint,
     icon: props.icon === void 0 ? folderIcon() : props.icon ?? void 0,
-    placeholder: props.placeholder ?? tt("explorerRoot"),
-    disabled: props.disabled,
+    placeholder: props.placeholder ?? (empty2 ? props.emptyLabel ?? tt("pickerEmpty") : tt("explorerRoot")),
+    disabled: props.disabled === true || empty2,
+    ariaLabel: props.ariaLabel,
+    error: props.error,
     size: props.size,
     placement: props.placement,
     className: props.className,
@@ -66794,6 +66799,15 @@ var docData = {
             }
           },
           {
+            "name": "error",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "\u6821\u9A8C\u4E0D\u901A\u8FC7\uFF1A\u89E6\u53D1\u5668\u63CF\u7EA2\uFF08\u4E0E Input / Textarea \u540C\u53E3\u5F84\uFF0C\u53EA\u63CF\u8FB9\u6846\uFF09",
+              "en": "Validation failed: red trigger border (same treatment as Input / Textarea)"
+            }
+          },
+          {
             "name": "size",
             "type": "'sm' | 'md' | 'lg'",
             "def": "'md'",
@@ -66958,6 +66972,33 @@ var docData = {
             "desc": {
               "zh": "\u60F3\u53EB\u300C\u9009\u62E9\u5DE5\u4F5C\u533A\u300D\u5C31\u4F20\u5B83",
               "en": 'Pass it if you want "\u9009\u62E9\u5DE5\u4F5C\u533A"'
+            }
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u65E0\u969C\u788D\u540D\uFF08\u4E0B\u62C9\u81EA\u5DF1\u6CA1\u6709\u53EF\u89C1\u6807\u7B7E\u65F6\u4F20\u5B83\uFF09",
+              "en": "Accessible name when the dropdown has no visible label"
+            }
+          },
+          {
+            "name": "error",
+            "type": "boolean",
+            "def": "'false'",
+            "desc": {
+              "zh": "\u6821\u9A8C\u4E0D\u901A\u8FC7\uFF1A\u63CF\u7EA2\uFF08\u4E0E Picker / Input \u540C\u53E3\u5F84\uFF09",
+              "en": "Validation failed: red border, same as Picker / Input"
+            }
+          },
+          {
+            "name": "emptyLabel",
+            "type": "string",
+            "def": "\u5185\u7F6E\u300C\u6682\u65E0\u53EF\u9009\u300D",
+            "desc": {
+              "zh": "\u5BBF\u4E3B\u4E00\u4E2A\u5DE5\u4F5C\u533A\u90FD\u6CA1\u6709\u65F6\u7684\u89E6\u53D1\u5668\u6587\u6848\uFF1B\u6B64\u65F6\u63A7\u4EF6\u81EA\u52A8\u7981\u7528\uFF08\u6D88\u8D39\u65B9\u62FF\u4E0D\u5230\u5019\u9009\u6570\u7EC4\uFF0C\u5224\u4E0D\u4E86\u7A7A\uFF09",
+              "en": "Trigger text when the host has no workspace; the control is disabled automatically since callers cannot see the candidate array"
             }
           },
           {
@@ -74626,9 +74667,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.35.30"}`],
-            [t3("buildDemo"), `v${"0.35.30"}`],
-            [t3("buildStamp"), "261115-013238-237"]
+            [t3("buildCore"), `v${"0.35.31"}`],
+            [t3("buildDemo"), `v${"0.35.31"}`],
+            [t3("buildStamp"), "261115-015349-312"]
           ].map(
             ([label, value]) => (0, import_react107.createElement)(
               "tr",
@@ -74946,9 +74987,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react109.createElement)("span", null, `core v${"0.35.30"}`),
-          (0, import_react109.createElement)("span", null, `demo v${"0.35.30"}`),
-          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-013238-237")
+          (0, import_react109.createElement)("span", null, `core v${"0.35.31"}`),
+          (0, import_react109.createElement)("span", null, `demo v${"0.35.31"}`),
+          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-015349-312")
         )
       )
     ),

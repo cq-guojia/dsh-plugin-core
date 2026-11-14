@@ -196,7 +196,7 @@ export function Picker(props) {
         ? trigger
         : h('span', { className: 'dshpc-fieldwrap dshpc-fieldwrap--inline' }, trigger, h(FieldHint, { text: props.hint }));
     return h('div', {
-        className: `dshpc-picker${props.className === undefined ? '' : ` ${props.className}`}`,
+        className: `dshpc-picker${props.error === true ? ' dshpc-picker--error' : ''}${props.className === undefined ? '' : ` ${props.className}`}`,
         style: controlStyle,
         ref: rootRef,
         onKeyDown,
