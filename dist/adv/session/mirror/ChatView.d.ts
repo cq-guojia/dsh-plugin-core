@@ -40,9 +40,15 @@ export declare function ChatOpenError(props: {
 export declare function ChatCallRow(props: {
     children?: ReactNode;
 }): ReturnType<typeof h>;
-/** 「加载更早记录」按钮（官方 older：按钮 4px 12px / 12px 字号 / radius-sm / 底色 interactive-bg-hover-solid）。 */
+/** 官方 ChatView.tsx:253-272：older 按钮内 5 个叠放 span，只有当前态可见，其余挂 historyHidden 避免按钮宽度跳变。 */
+export type ChatHistoryState = 'more' | 'loading' | 'processing' | 'error' | 'start';
 export declare function ChatOlderButton(props: {
-    label: string;
+    labels: Record<ChatHistoryState, string>;
+    hasMore: boolean;
+    loadingOlder?: boolean;
+    historyLoadStatus?: 'idle' | 'loading' | 'error' | 'pendingConsumption';
+    historyInputHeld?: boolean;
+    historyProcessing?: boolean;
     onClick: () => void;
 }): ReturnType<typeof h>;
 /** 「到底部」悬浮钮（官方 toBottom：34×34 圆形悬浮，仅在有更多历史时显示）。 */

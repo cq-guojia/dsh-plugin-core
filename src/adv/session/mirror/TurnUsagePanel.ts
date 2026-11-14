@@ -8,7 +8,7 @@ import { createPortal } from 'react-dom'
 import { IconDatabaseOutlineRegular } from '../../../ui/official.js'
 import { officialClass } from '../official-classes.js'
 import type { Translate } from '../../../utils/i18n.js'
-import { STAT_MEASURE_STYLE, useStatDialog } from './StatDialog.js'
+import { useStatDialog } from './StatDialog.js'
 import { formatCacheHitPercent, formatCompactCount, formatExactCount } from './message-chrome.js'
 
 /** 官方 TurnTokenUsage 的消费面。 */
@@ -28,13 +28,13 @@ export function TurnUsagePanelMirror(props: {
   t: Translate
 }): ReturnType<typeof h> {
   const { usage, t } = props
-  const { open, setOpen, rootRef, panelRef, pos } = useStatDialog()
+  const { open, setOpen, rootRef, panelRef, anchorStyle, panelStyle } = useStatDialog()
   const cacheHit = usage.cacheReadTokens === undefined
     ? null
     : formatCacheHitPercent(usage.cacheReadTokens, usage.totalTokens - usage.outputTokens, 1)
   const total = formatCompactCount(usage.totalTokens, t)
   const routes = usage.routes?.map(route => `${route.provider}/${route.model}`).join(', ') ?? ''
-  return h('span', { ref: rootRef, className: officialClass('TurnUsagePanel', 'root') ?? '' },
+  return h('span', { ref: rootRef, className: officialClass('TurnUsagePanel', 'root') ?? '', style: anchorStyle },
     h('button', {
       type: 'button',
       className: officialClass('TurnUsagePanel', 'trigger') ?? '',
@@ -51,7 +51,7 @@ export function TurnUsagePanelMirror(props: {
           className: officialClass('stat-dialog', 'panel') ?? '',
           role: 'dialog',
           'aria-label': t('turnUsageTitle'),
-          style: pos ?? STAT_MEASURE_STYLE,
+          style: panelStyle,
         },
           h('div', { className: officialClass('stat-dialog', 'title') ?? '' },
             h('span', { className: officialClass('stat-dialog', 'titleLabel') ?? '' },

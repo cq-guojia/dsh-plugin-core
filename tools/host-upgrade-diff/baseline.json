@@ -1,0 +1,2096 @@
+{
+  "version": "0.2.2-rc.3",
+  "source": "官方 npm 包 src/**/*.tsx + *.module.css",
+  "modules": {
+    "accessibility": {
+      "used": [
+        "visuallyHidden"
+      ],
+      "defined": [
+        "visuallyHidden"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/accessibility.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/GenericCommandCard.tsx",
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ReasoningRow.tsx",
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/RunningStatus.tsx",
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnProcessNodeView.tsx"
+      ]
+    },
+    "ApprovalPanel": {
+      "used": [
+        "actionRow",
+        "body",
+        "card",
+        "command",
+        "description",
+        "heading",
+        "headline",
+        "reject",
+        "root",
+        "strip",
+        "subject",
+        "warningPopover",
+        "warningTag",
+        "warningTitle",
+        "warningTrigger",
+        "withSubject"
+      ],
+      "defined": [
+        "actionRow",
+        "body",
+        "card",
+        "command",
+        "description",
+        "heading",
+        "headline",
+        "reject",
+        "root",
+        "strip",
+        "subject",
+        "warningPopover",
+        "warningTag",
+        "warningTitle",
+        "warningTrigger",
+        "withSubject"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-approval-0.2.2-rc.3/package/src/client/ApprovalPanel.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-approval-0.2.2-rc.3/package/src/client/ApprovalCard.tsx",
+        "deepseek-ai-dsh-client-ui-approval-0.2.2-rc.3/package/src/client/ApprovalWarning.tsx"
+      ]
+    },
+    "AskQuestionCard": {
+      "used": [
+        "answer",
+        "answerLine",
+        "card",
+        "item",
+        "question",
+        "questionList",
+        "skipped",
+        "unansweredQuestion",
+        "verdict"
+      ],
+      "defined": [
+        "answer",
+        "answerLine",
+        "card",
+        "item",
+        "question",
+        "questionList",
+        "skipped",
+        "unansweredQuestion",
+        "verdict"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/components/AskQuestionCard.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/components/AskQuestionCard.tsx"
+      ]
+    },
+    "AssistantMarkdown": {
+      "used": [
+        "body",
+        "root",
+        "stopped"
+      ],
+      "defined": [
+        "actions",
+        "body",
+        "md-table-wide",
+        "root",
+        "stopped"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/AssistantMarkdown.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/AssistantMarkdown.tsx"
+      ]
+    },
+    "AttachmentRail": {
+      "used": [
+        "arrow",
+        "arrowLeft",
+        "arrowRight",
+        "item",
+        "rail",
+        "root"
+      ],
+      "defined": [
+        "arrow",
+        "arrowLeft",
+        "arrowRight",
+        "item",
+        "rail",
+        "remove",
+        "root",
+        "thumbnail"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-attachment-0.2.2-rc.3/package/src/AttachmentRail.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-attachment-0.2.2-rc.3/package/src/AttachmentRail.tsx"
+      ]
+    },
+    "bash-sample": {
+      "used": [
+        "bodyWrap",
+        "card",
+        "chevron",
+        "chevronHover",
+        "commandInput",
+        "errorSummary",
+        "iconIdle",
+        "inspectButton",
+        "ioCard",
+        "ioDivider",
+        "ioLabel",
+        "ioSection",
+        "ioText",
+        "leading",
+        "root",
+        "sep",
+        "stoppedSummary",
+        "summary",
+        "terminal",
+        "title",
+        "visuallyHidden"
+      ],
+      "defined": [
+        "bodyWrap",
+        "card",
+        "chevron",
+        "chevronHover",
+        "commandInput",
+        "errorSummary",
+        "iconIdle",
+        "inspectButton",
+        "ioCard",
+        "ioDivider",
+        "ioLabel",
+        "ioSection",
+        "ioText",
+        "leading",
+        "root",
+        "sep",
+        "stoppedSummary",
+        "summary",
+        "terminal",
+        "title",
+        "visuallyHidden"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/toolviews/bash-sample.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/toolviews/bash-sample.tsx"
+      ]
+    },
+    "ChangedFiles": {
+      "used": [
+        "added",
+        "card",
+        "counts",
+        "deleted",
+        "header",
+        "list",
+        "path",
+        "preview",
+        "previewHint",
+        "previewPath",
+        "row",
+        "stat",
+        "statCounts",
+        "tile",
+        "title",
+        "titles",
+        "toggle"
+      ],
+      "defined": [
+        "added",
+        "card",
+        "counts",
+        "deleted",
+        "header",
+        "list",
+        "path",
+        "preview",
+        "previewHint",
+        "previewPath",
+        "row",
+        "stat",
+        "statCounts",
+        "tile",
+        "title",
+        "titles",
+        "toggle"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/ChangedFiles.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/ChangedFiles.tsx"
+      ]
+    },
+    "ChatGroupSeat": {
+      "used": [
+        "activityIcon",
+        "body",
+        "chevron",
+        "content",
+        "expandedBody",
+        "fadeBottom",
+        "fadeTop",
+        "label",
+        "leading",
+        "root",
+        "title"
+      ],
+      "defined": [
+        "activityIcon",
+        "body",
+        "chevron",
+        "content",
+        "expandedBody",
+        "fadeBottom",
+        "fadeTop",
+        "label",
+        "leading",
+        "root",
+        "title"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ChatGroupSeat.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ChatGroupSeat.tsx"
+      ]
+    },
+    "ChatView": {
+      "used": [
+        "callRow",
+        "column",
+        "flowItem",
+        "frame",
+        "hint",
+        "historyHidden",
+        "modalAction",
+        "older",
+        "openError",
+        "root",
+        "running",
+        "runningContent",
+        "runningDivider",
+        "runningIcon",
+        "runningText",
+        "runningWhaleAnimated",
+        "runningWhaleStill",
+        "scroll",
+        "textInteraction",
+        "toBottom",
+        "toBottomSlot",
+        "turnSpacer"
+      ],
+      "defined": [
+        "callRow",
+        "column",
+        "flowItem",
+        "frame",
+        "hint",
+        "historyHidden",
+        "modalAction",
+        "older",
+        "openError",
+        "root",
+        "running",
+        "runningContent",
+        "runningDivider",
+        "runningIcon",
+        "runningText",
+        "runningWhaleAnimated",
+        "runningWhaleStill",
+        "scroll",
+        "textInteraction",
+        "toBottom",
+        "toBottomSlot",
+        "turnSpacer"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ChatView.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ChatNodeSeat.tsx",
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ChatView.tsx",
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/CommandNodeView.tsx",
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/RunningStatus.tsx",
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/RunningWhaleTail.tsx"
+      ]
+    },
+    "CodeBody": {
+      "used": [
+        "code",
+        "renderer"
+      ],
+      "defined": [
+        "code",
+        "renderer"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/code/CodeBody.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/code/CodeBody.tsx"
+      ]
+    },
+    "ComposerAttachments": {
+      "used": [
+        "failureGlyph",
+        "imageItem",
+        "progressBar",
+        "progressTrack",
+        "rail",
+        "remove",
+        "thumbnail",
+        "thumbnailFailed",
+        "thumbnailRefused"
+      ],
+      "defined": [
+        "failureGlyph",
+        "imageItem",
+        "progressBar",
+        "progressTrack",
+        "rail",
+        "remove",
+        "thumbnail",
+        "thumbnailFailed",
+        "thumbnailRefused"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-attachment-0.2.2-rc.3/package/src/client/ComposerAttachments.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-attachment-0.2.2-rc.3/package/src/client/ComposerAttachments.tsx"
+      ]
+    },
+    "ContextBody": {
+      "used": [
+        "catalogNotice",
+        "entries",
+        "entry",
+        "entryDescription",
+        "entryName",
+        "field",
+        "fieldKey",
+        "fieldValue",
+        "fields",
+        "file",
+        "fileAction",
+        "filePath",
+        "files",
+        "recall",
+        "recallCounts",
+        "recallLabel",
+        "recalls",
+        "relaySender",
+        "section",
+        "sectionName",
+        "sectionText",
+        "sections",
+        "text"
+      ],
+      "defined": [
+        "catalogNotice",
+        "entries",
+        "entry",
+        "entryDescription",
+        "entryName",
+        "field",
+        "fieldKey",
+        "fieldValue",
+        "fields",
+        "file",
+        "fileAction",
+        "filePath",
+        "files",
+        "recall",
+        "recallCounts",
+        "recallLabel",
+        "recalls",
+        "relaySender",
+        "section",
+        "sectionName",
+        "sectionText",
+        "sections",
+        "text"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ContextBody.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ContextBody.tsx"
+      ]
+    },
+    "ContextInjectionRow": {
+      "used": [
+        "body",
+        "chevron",
+        "root",
+        "sep",
+        "source",
+        "summary",
+        "toolChanges"
+      ],
+      "defined": [
+        "body",
+        "chevron",
+        "root",
+        "sep",
+        "source",
+        "summary",
+        "toolChanges"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ContextInjectionRow.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ContextInjectionRow.tsx",
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/SystemPromptRow.tsx"
+      ]
+    },
+    "Deliverables": {
+      "used": [
+        "actions",
+        "cardPreview",
+        "description",
+        "details",
+        "file",
+        "fileBody",
+        "fileIcon",
+        "fileName",
+        "hostStatus",
+        "presented",
+        "previewHint",
+        "root",
+        "secondaryText",
+        "toggle"
+      ],
+      "defined": [
+        "actions",
+        "cardPreview",
+        "description",
+        "details",
+        "file",
+        "fileBody",
+        "fileIcon",
+        "fileName",
+        "hostStatus",
+        "presented",
+        "previewHint",
+        "root",
+        "secondaryText",
+        "toggle"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/Deliverables.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/Deliverables.tsx",
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/PresentedFileCard.tsx"
+      ]
+    },
+    "DropOverlay": {
+      "used": [
+        "desc",
+        "illustration",
+        "mask",
+        "title",
+        "wrap"
+      ],
+      "defined": [
+        "desc",
+        "illustration",
+        "mask",
+        "title",
+        "wrap"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-attachment-0.2.2-rc.3/package/src/DropOverlay.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-attachment-0.2.2-rc.3/package/src/DropOverlay.tsx"
+      ]
+    },
+    "ExcelBody": {
+      "used": [
+        "body",
+        "formulaWarning",
+        "notice",
+        "status",
+        "withFormulaWarning",
+        "workbook"
+      ],
+      "defined": [
+        "body",
+        "formulaWarning",
+        "fortune-cols-freeze-handle",
+        "fortune-fx-input",
+        "fortune-fx-input-container",
+        "fortune-rows-freeze-handle",
+        "fortune-sheet-area-right",
+        "fortune-sheettab-container",
+        "fortune-sheettab-container-c",
+        "fortune-sheettab-scroll",
+        "fortune-stat-area",
+        "luckysheet-sheet-area",
+        "luckysheet-sheets-item",
+        "luckysheet-sheets-item-function",
+        "notice",
+        "status",
+        "withFormulaWarning",
+        "workbook"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/excel/ExcelBody.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/excel/excel.tsx"
+      ]
+    },
+    "ExitCodeBadge": {
+      "used": [
+        "badge",
+        "dot"
+      ],
+      "defined": [
+        "badge",
+        "dot"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/components/ExitCodeBadge.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/components/ExitCodeBadge.tsx"
+      ]
+    },
+    "FileCard": {
+      "used": [
+        "body",
+        "card",
+        "failed",
+        "icon",
+        "meta",
+        "metaFailed",
+        "name",
+        "progressBar",
+        "progressTrack",
+        "remove",
+        "removeFailed",
+        "retry",
+        "spinner"
+      ],
+      "defined": [
+        "body",
+        "card",
+        "failed",
+        "icon",
+        "meta",
+        "metaFailed",
+        "name",
+        "progressBar",
+        "progressTrack",
+        "remove",
+        "removeFailed",
+        "retry",
+        "spinner"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-attachment-0.2.2-rc.3/package/src/FileCard.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-attachment-0.2.2-rc.3/package/src/FileCard.tsx"
+      ]
+    },
+    "FileDiff": {
+      "used": [
+        "body",
+        "cell",
+        "column",
+        "columns",
+        "empty",
+        "header",
+        "hunk",
+        "hunkHeader",
+        "line",
+        "note",
+        "number",
+        "root",
+        "sideLine",
+        "sign",
+        "splitLine",
+        "status",
+        "text"
+      ],
+      "defined": [
+        "add",
+        "body",
+        "cell",
+        "column",
+        "columns",
+        "context",
+        "del",
+        "empty",
+        "header",
+        "hunk",
+        "hunkHeader",
+        "line",
+        "note",
+        "number",
+        "root",
+        "sideLine",
+        "sign",
+        "splitLine",
+        "status",
+        "text"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/FileDiff.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/ChangedFiles.tsx",
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/FileDiff.tsx",
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/ReviewTab.tsx"
+      ]
+    },
+    "FontNotice": {
+      "used": [
+        "anchor",
+        "count",
+        "description",
+        "fonts",
+        "panel",
+        "panelHeader",
+        "warning"
+      ],
+      "defined": [
+        "anchor",
+        "count",
+        "description",
+        "fonts",
+        "panel",
+        "panelHeader",
+        "warning"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/office/FontNotice.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/office/FontNotice.tsx"
+      ]
+    },
+    "frontmatter-fields": {
+      "used": [
+        "block",
+        "field",
+        "fields",
+        "key",
+        "value"
+      ],
+      "defined": [
+        "block",
+        "field",
+        "fields",
+        "key",
+        "value"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/markdown/frontmatter-fields.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/markdown/frontmatter-fields.tsx"
+      ]
+    },
+    "GenericCommandCard": {
+      "used": [
+        "body",
+        "leading",
+        "root",
+        "separator",
+        "summary",
+        "title"
+      ],
+      "defined": [
+        "body",
+        "leading",
+        "root",
+        "separator",
+        "summary",
+        "title"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/GenericCommandCard.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/GenericCommandCard.tsx"
+      ]
+    },
+    "HtmlBody": {
+      "used": [
+        "frame",
+        "status"
+      ],
+      "defined": [
+        "frame",
+        "status"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/html/HtmlBody.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/html/HtmlBody.tsx"
+      ]
+    },
+    "ImageBody": {
+      "used": [
+        "frame",
+        "image",
+        "status",
+        "surface"
+      ],
+      "defined": [
+        "frame",
+        "image",
+        "status",
+        "surface"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/image/ImageBody.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/image/ImageBody.tsx"
+      ]
+    },
+    "LoadingIndicator": {
+      "used": [
+        "inline",
+        "loading"
+      ],
+      "defined": [
+        "inline",
+        "loading"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/LoadingIndicator.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/LoadingIndicator.tsx"
+      ]
+    },
+    "MarkdownBody": {
+      "used": [
+        "document",
+        "frontmatter",
+        "frontmatterSource"
+      ],
+      "defined": [
+        "document",
+        "frontmatter",
+        "frontmatterSource"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/markdown/MarkdownBody.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/markdown/MarkdownBody.tsx"
+      ]
+    },
+    "MessageIconActions": {
+      "used": [
+        "action",
+        "actions",
+        "endInfo",
+        "timeEnd",
+        "timeStart",
+        "visuallyHidden"
+      ],
+      "defined": [
+        "action",
+        "actions",
+        "endInfo",
+        "timeEnd",
+        "timeStart",
+        "visuallyHidden"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/MessageIconActions.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/MessageIconActions.tsx"
+      ]
+    },
+    "MessageImage": {
+      "used": [
+        "error",
+        "frame",
+        "gallery",
+        "loading",
+        "spinner"
+      ],
+      "defined": [
+        "error",
+        "frame",
+        "gallery",
+        "loading",
+        "spinner"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-attachment-0.2.2-rc.3/package/src/MessageImage.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-attachment-0.2.2-rc.3/package/src/MessageImage.tsx"
+      ]
+    },
+    "MessageItem": {
+      "used": [
+        "actions",
+        "attachmentRow",
+        "compactionBody",
+        "compactionButton",
+        "compactionContextIcon",
+        "compactionDisclosureIcon",
+        "compactionLeading",
+        "compactionRow",
+        "compactionSep",
+        "compactionSummary",
+        "compactionTitle",
+        "contextRow",
+        "fileCard",
+        "fileContent",
+        "fileIcon",
+        "fileMeta",
+        "fileName",
+        "maxTokensTitle",
+        "referenceSummary",
+        "retryDetailLabel",
+        "retryDetails",
+        "retryRow",
+        "retrySummary",
+        "retryText",
+        "turnErrorCode",
+        "turnErrorCopy",
+        "turnErrorDot",
+        "turnErrorMessage",
+        "turnErrorRow",
+        "turnErrorTitle",
+        "userRow",
+        "userStack"
+      ],
+      "defined": [
+        "attachmentRow",
+        "compactionBody",
+        "compactionButton",
+        "compactionContextIcon",
+        "compactionDisclosureIcon",
+        "compactionLeading",
+        "compactionRow",
+        "compactionSep",
+        "compactionSummary",
+        "compactionTitle",
+        "contextRow",
+        "fileCard",
+        "fileContent",
+        "fileIcon",
+        "fileMeta",
+        "fileName",
+        "maxTokensTitle",
+        "referenceSummary",
+        "retryDetailLabel",
+        "retryDetails",
+        "retryRow",
+        "retrySummary",
+        "retryText",
+        "turnErrorCode",
+        "turnErrorCopy",
+        "turnErrorDot",
+        "turnErrorMessage",
+        "turnErrorRow",
+        "turnErrorTitle",
+        "userRow",
+        "userStack"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/MessageItem.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/CompactionItem.tsx",
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/MessageItem.tsx",
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/UserContent.tsx"
+      ]
+    },
+    "OfficeBody": {
+      "used": [
+        "body"
+      ],
+      "defined": [
+        "body"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/office/OfficeBody.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/office/OfficeBody.tsx"
+      ]
+    },
+    "PdfBody": {
+      "used": [
+        "body",
+        "canvas",
+        "page",
+        "placeholder",
+        "status",
+        "surface",
+        "text"
+      ],
+      "defined": [
+        "body",
+        "canvas",
+        "endOfContent",
+        "markedContent",
+        "page",
+        "placeholder",
+        "selecting",
+        "status",
+        "surface",
+        "text",
+        "textLayer"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/pdf/PdfBody.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/pdf/pdf.tsx"
+      ]
+    },
+    "PlanReviewPanel": {
+      "used": [
+        "actions",
+        "card",
+        "description",
+        "discuss",
+        "feedback",
+        "footer",
+        "frame",
+        "previewActions",
+        "strip",
+        "summary",
+        "title"
+      ],
+      "defined": [
+        "actions",
+        "card",
+        "description",
+        "discuss",
+        "feedback",
+        "footer",
+        "frame",
+        "previewActions",
+        "strip",
+        "summary",
+        "title"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-user-questions-0.2.2-rc.3/package/src/client/PlanReviewPanel.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-user-questions-0.2.2-rc.3/package/src/client/PlanReviewPanel.tsx"
+      ]
+    },
+    "PreferenceRow": {
+      "used": [
+        "chevron",
+        "desc",
+        "row",
+        "rowText",
+        "selector",
+        "title"
+      ],
+      "defined": [
+        "chevron",
+        "desc",
+        "row",
+        "rowText",
+        "selector",
+        "title"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/settings/PreferenceRow.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/settings/PreferenceRow.tsx"
+      ]
+    },
+    "PresentRow": {
+      "used": [
+        "inspect",
+        "output",
+        "paths",
+        "summary"
+      ],
+      "defined": [
+        "inspect",
+        "output",
+        "paths",
+        "summary"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/PresentRow.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/PresentRow.tsx"
+      ]
+    },
+    "QuestionComposer": {
+      "used": [
+        "badge",
+        "body",
+        "card",
+        "cardMinimized",
+        "checkbox",
+        "checkboxChecked",
+        "copyToggle",
+        "customBlock",
+        "customInline",
+        "customRow",
+        "customRowActive",
+        "customRowYielded",
+        "description",
+        "descriptionToggle",
+        "detail",
+        "eyebrow",
+        "feedback",
+        "field",
+        "fieldInput",
+        "fieldMirror",
+        "footer",
+        "footerActions",
+        "frame",
+        "header",
+        "headerActions",
+        "headingBlock",
+        "iconButton",
+        "number",
+        "option",
+        "optionCopy",
+        "optionLabel",
+        "optionLine",
+        "optionRow",
+        "optionRowInteractive",
+        "optionSelected",
+        "options",
+        "pager",
+        "progress",
+        "questionTitle",
+        "questionToggle",
+        "reviewNote",
+        "title",
+        "titlePreview",
+        "waitButton",
+        "waitStatus"
+      ],
+      "defined": [
+        "badge",
+        "body",
+        "card",
+        "cardMinimized",
+        "checkbox",
+        "checkboxChecked",
+        "copyToggle",
+        "customBlock",
+        "customInline",
+        "customRow",
+        "customRowActive",
+        "customRowYielded",
+        "description",
+        "descriptionToggle",
+        "detail",
+        "eyebrow",
+        "feedback",
+        "field",
+        "fieldInput",
+        "fieldMirror",
+        "footer",
+        "footerActions",
+        "frame",
+        "header",
+        "headerActions",
+        "headingBlock",
+        "iconButton",
+        "number",
+        "option",
+        "optionCopy",
+        "optionLabel",
+        "optionLine",
+        "optionRow",
+        "optionRowInteractive",
+        "optionSelected",
+        "options",
+        "pager",
+        "progress",
+        "questionTitle",
+        "questionToggle",
+        "reviewNote",
+        "title",
+        "titlePreview",
+        "waitButton",
+        "waitStatus"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-user-questions-0.2.2-rc.3/package/src/client/QuestionComposer.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-user-questions-0.2.2-rc.3/package/src/client/QuestionComposer.tsx"
+      ]
+    },
+    "QuestionReplyView": {
+      "used": [
+        "action",
+        "actions",
+        "answer",
+        "bubble",
+        "bubbleWidth",
+        "details",
+        "header",
+        "question",
+        "row",
+        "text",
+        "time"
+      ],
+      "defined": [
+        "action",
+        "actions",
+        "answer",
+        "bubble",
+        "bubbleWidth",
+        "details",
+        "header",
+        "question",
+        "row",
+        "text",
+        "time"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-user-questions-0.2.2-rc.3/package/src/client/QuestionReplyView.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-user-questions-0.2.2-rc.3/package/src/client/QuestionReplyView.tsx"
+      ]
+    },
+    "QuestionToolRow": {
+      "used": [
+        "panelButton"
+      ],
+      "defined": [
+        "panelButton"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/components/QuestionToolRow.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/components/QuestionToolRow.tsx"
+      ]
+    },
+    "ReasoningRow": {
+      "used": [
+        "leading",
+        "root",
+        "row",
+        "separator",
+        "summary",
+        "summaryText",
+        "thinkBody",
+        "title"
+      ],
+      "defined": [
+        "leading",
+        "root",
+        "row",
+        "separator",
+        "summary",
+        "summaryText",
+        "thinkBody",
+        "title"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ReasoningRow.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/ReasoningRow.tsx"
+      ]
+    },
+    "ReviewTab": {
+      "used": [
+        "added",
+        "compareIcon",
+        "counts",
+        "deleted",
+        "item",
+        "itemCounts",
+        "itemPath",
+        "label",
+        "root",
+        "selector",
+        "selectorButton",
+        "selectorLabel",
+        "tool",
+        "tools"
+      ],
+      "defined": [
+        "added",
+        "compareIcon",
+        "counts",
+        "deleted",
+        "item",
+        "itemCounts",
+        "itemPath",
+        "label",
+        "root",
+        "selector",
+        "selectorButton",
+        "selectorLabel",
+        "tool",
+        "tools"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/ReviewTab.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-deliverables-0.2.2-rc.3/package/src/client/ReviewTab.tsx"
+      ]
+    },
+    "SkillRow": {
+      "used": [
+        "bodyWrap",
+        "card",
+        "chevron",
+        "chevronHover",
+        "errorSummary",
+        "iconIdle",
+        "inspectButton",
+        "instructions",
+        "instructionsCard",
+        "instructionsHeader",
+        "leading",
+        "row",
+        "separator",
+        "stoppedSummary",
+        "summary",
+        "title",
+        "visuallyHidden"
+      ],
+      "defined": [
+        "bodyWrap",
+        "card",
+        "chevron",
+        "chevronHover",
+        "errorSummary",
+        "iconIdle",
+        "inspectButton",
+        "instructions",
+        "instructionsCard",
+        "instructionsHeader",
+        "leading",
+        "row",
+        "separator",
+        "stoppedSummary",
+        "summary",
+        "title",
+        "visuallyHidden"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-skill-0.2.2-rc.3/package/src/client/SkillRow.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-skill-0.2.2-rc.3/package/src/client/SkillRow.tsx"
+      ]
+    },
+    "stat-dialog": {
+      "used": [
+        "details",
+        "panel",
+        "reasoning",
+        "route",
+        "title",
+        "titleLabel",
+        "titleRule",
+        "titleValue"
+      ],
+      "defined": [
+        "details",
+        "panel",
+        "reasoning",
+        "route",
+        "title",
+        "titleLabel",
+        "titleRule",
+        "titleValue"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/stat-dialog.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/StatsPills.tsx",
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnUsagePanel.tsx"
+      ]
+    },
+    "StatsPills": {
+      "used": [
+        "anchor",
+        "label",
+        "pill",
+        "sep"
+      ],
+      "defined": [
+        "anchor",
+        "label",
+        "pill",
+        "sep"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/StatsPills.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/StatsPills.tsx"
+      ]
+    },
+    "TextPreview": {
+      "used": [
+        "action",
+        "body",
+        "changed",
+        "content",
+        "empty",
+        "emptyIcon",
+        "emptyLine",
+        "header",
+        "line",
+        "more",
+        "page",
+        "path",
+        "preview",
+        "retry",
+        "status",
+        "statusLine",
+        "textDocument",
+        "titleIcon",
+        "tool",
+        "viewerTool",
+        "wrap"
+      ],
+      "defined": [
+        "action",
+        "body",
+        "changed",
+        "content",
+        "empty",
+        "emptyIcon",
+        "emptyLine",
+        "header",
+        "line",
+        "lineMark",
+        "more",
+        "page",
+        "path",
+        "preview",
+        "retry",
+        "status",
+        "statusLine",
+        "textDocument",
+        "titleIcon",
+        "tool",
+        "viewerTool",
+        "wrap"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/TextPreview.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/PreviewFrame.tsx",
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/TextPreview.tsx",
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/TextTitle.tsx",
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/office/FontNotice.tsx",
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/office/OfficeBody.tsx",
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/text/TextBody.tsx"
+      ]
+    },
+    "ToolCallTree": {
+      "used": [
+        "callRow",
+        "subCalls"
+      ],
+      "defined": [
+        "callRow",
+        "subCalls"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/ToolCallTree.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/ToolCallTree.tsx"
+      ]
+    },
+    "ToolDetails": {
+      "used": [
+        "badge",
+        "caption",
+        "code",
+        "description",
+        "empty",
+        "field",
+        "fields",
+        "group",
+        "heading",
+        "item",
+        "lines",
+        "list",
+        "path",
+        "pending",
+        "previous",
+        "prose",
+        "root",
+        "status",
+        "statusText",
+        "subtitle",
+        "text",
+        "unchanged"
+      ],
+      "defined": [
+        "badge",
+        "caption",
+        "code",
+        "description",
+        "empty",
+        "field",
+        "fields",
+        "group",
+        "heading",
+        "item",
+        "lines",
+        "list",
+        "path",
+        "pending",
+        "previous",
+        "prose",
+        "root",
+        "status",
+        "statusText",
+        "subtitle",
+        "text",
+        "unchanged"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/components/ToolDetails.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/components/ToolDetails.tsx"
+      ]
+    },
+    "ToolRow": {
+      "used": [
+        "bodyScroll",
+        "bodyWrap",
+        "chevron",
+        "codeBody",
+        "detailsBodyWrap",
+        "diffAdded",
+        "diffBody",
+        "diffRemoved",
+        "diffStat",
+        "errorSummary",
+        "fileLink",
+        "fileLinks",
+        "fileTargetLink",
+        "imageBody",
+        "imageExtra",
+        "imageMeta",
+        "inspectButton",
+        "ioCard",
+        "ioDivider",
+        "ioLabel",
+        "ioSection",
+        "ioText",
+        "leading",
+        "readBody",
+        "root",
+        "row",
+        "searchBody",
+        "searchRecovery",
+        "sep",
+        "stoppedSummary",
+        "summary",
+        "summarySuffix",
+        "terminalBody",
+        "title",
+        "visuallyHidden",
+        "webBody"
+      ],
+      "defined": [
+        "bodyScroll",
+        "bodyWrap",
+        "codeBody",
+        "detailsBodyWrap",
+        "diffAdded",
+        "diffBody",
+        "diffRemoved",
+        "diffStat",
+        "errorSummary",
+        "fileLink",
+        "fileLinks",
+        "fileTargetLink",
+        "imageBody",
+        "imageExtra",
+        "imageMeta",
+        "inspectButton",
+        "ioCard",
+        "ioDivider",
+        "ioLabel",
+        "ioSection",
+        "ioText",
+        "leading",
+        "readBody",
+        "root",
+        "row",
+        "searchBody",
+        "searchRecovery",
+        "sep",
+        "stoppedSummary",
+        "summary",
+        "summarySuffix",
+        "terminalBody",
+        "title",
+        "visuallyHidden",
+        "webBody"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/components/ToolRow.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/components/QuestionToolRow.tsx",
+        "deepseek-ai-dsh-client-ui-tool-0.2.2-rc.3/package/src/client/tool/components/ToolRow.tsx"
+      ]
+    },
+    "TurnNavigator": {
+      "used": [
+        "fadeBottom",
+        "fadeTop",
+        "frame",
+        "mark",
+        "markActive",
+        "markBusy",
+        "markPreview",
+        "markUnloaded",
+        "marks",
+        "preview",
+        "previewPrompt",
+        "previewResponse",
+        "scroller",
+        "slot"
+      ],
+      "defined": [
+        "fadeBottom",
+        "fadeTop",
+        "frame",
+        "mark",
+        "markActive",
+        "markBusy",
+        "markPreview",
+        "markUnloaded",
+        "marks",
+        "preview",
+        "previewPrompt",
+        "previewResponse",
+        "scroller",
+        "slot"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnNavigator.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnNavigator.tsx"
+      ]
+    },
+    "TurnProcessNodeView": {
+      "used": [
+        "chevron",
+        "durationNumber",
+        "label",
+        "root"
+      ],
+      "defined": [
+        "chevron",
+        "durationNumber",
+        "label",
+        "root"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnProcessNodeView.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnProcessNodeView.tsx"
+      ]
+    },
+    "TurnTailNodeView": {
+      "used": [
+        "actions",
+        "root"
+      ],
+      "defined": [
+        "actions",
+        "root"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnTailNodeView.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnTailNodeView.tsx"
+      ]
+    },
+    "TurnTriggerNodeView": {
+      "used": [
+        "body",
+        "chevron",
+        "content",
+        "continuation",
+        "explanation",
+        "header",
+        "icon",
+        "openChevron",
+        "root",
+        "time",
+        "title"
+      ],
+      "defined": [
+        "body",
+        "chevron",
+        "content",
+        "continuation",
+        "explanation",
+        "header",
+        "icon",
+        "openChevron",
+        "root",
+        "time",
+        "title"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnTriggerNodeView.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnTriggerNodeView.tsx"
+      ]
+    },
+    "TurnUsagePanel": {
+      "used": [
+        "label",
+        "root",
+        "trigger"
+      ],
+      "defined": [
+        "label",
+        "root",
+        "trigger"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnUsagePanel.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-chat-0.2.2-rc.3/package/src/client/chat/TurnUsagePanel.tsx"
+      ]
+    },
+    "ZoomViewport": {
+      "used": [
+        "frame",
+        "revealZone",
+        "scrollport",
+        "surface"
+      ],
+      "defined": [
+        "frame",
+        "revealZone",
+        "scrollport",
+        "surface"
+      ],
+      "css": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/zoom/ZoomViewport.module.css"
+      ],
+      "tsx": [
+        "deepseek-ai-dsh-client-ui-sidebar-documentpreview-0.2.2-rc.3/package/src/client/zoom/ZoomViewport.tsx"
+      ]
+    }
+  },
+  "pending": {
+    "ChatView": [
+      "textInteraction"
+    ],
+    "MessageItem": [
+      "actions"
+    ],
+    "ApprovalPanel": [
+      "warningPopover",
+      "warningTag",
+      "warningTitle",
+      "warningTrigger"
+    ],
+    "bash-sample": [
+      "inspectButton"
+    ],
+    "FileDiff": [
+      "cell",
+      "column",
+      "columns",
+      "empty",
+      "sideLine",
+      "splitLine"
+    ],
+    "ToolRow": [
+      "chevron",
+      "inspectButton"
+    ],
+    "Deliverables": [
+      "hostStatus"
+    ],
+    "PresentRow": [
+      "inspect"
+    ],
+    "MessageImage": [
+      "spinner"
+    ],
+    "QuestionComposer": [
+      "reviewNote",
+      "waitButton"
+    ],
+    "SkillRow": [
+      "inspectButton"
+    ]
+  },
+  "usedModules": [
+    "ApprovalPanel",
+    "AskQuestionCard",
+    "AssistantMarkdown",
+    "ChangedFiles",
+    "ChatGroupSeat",
+    "ChatView",
+    "ContextBody",
+    "ContextInjectionRow",
+    "Deliverables",
+    "ExitCodeBadge",
+    "FileDiff",
+    "GenericCommandCard",
+    "MessageIconActions",
+    "MessageImage",
+    "MessageItem",
+    "PresentRow",
+    "QuestionComposer",
+    "QuestionReplyView",
+    "ReasoningRow",
+    "SkillRow",
+    "ToolDetails",
+    "ToolRow",
+    "TurnProcessNodeView",
+    "TurnTailNodeView",
+    "TurnTriggerNodeView",
+    "TurnUsagePanel",
+    "accessibility",
+    "bash-sample",
+    "stat-dialog"
+  ],
+  "unusedModules": {
+    "AttachmentRail": [
+      "arrow",
+      "arrowLeft",
+      "arrowRight",
+      "item",
+      "rail",
+      "root"
+    ],
+    "CodeBody": [
+      "code",
+      "renderer"
+    ],
+    "ComposerAttachments": [
+      "failureGlyph",
+      "imageItem",
+      "progressBar",
+      "progressTrack",
+      "rail",
+      "remove",
+      "thumbnail",
+      "thumbnailFailed",
+      "thumbnailRefused"
+    ],
+    "DropOverlay": [
+      "desc",
+      "illustration",
+      "mask",
+      "title",
+      "wrap"
+    ],
+    "ExcelBody": [
+      "body",
+      "formulaWarning",
+      "notice",
+      "status",
+      "withFormulaWarning",
+      "workbook"
+    ],
+    "FileCard": [
+      "body",
+      "card",
+      "failed",
+      "icon",
+      "meta",
+      "metaFailed",
+      "name",
+      "progressBar",
+      "progressTrack",
+      "remove",
+      "removeFailed",
+      "retry",
+      "spinner"
+    ],
+    "FontNotice": [
+      "anchor",
+      "count",
+      "description",
+      "fonts",
+      "panel",
+      "panelHeader",
+      "warning"
+    ],
+    "frontmatter-fields": [
+      "block",
+      "field",
+      "fields",
+      "key",
+      "value"
+    ],
+    "HtmlBody": [
+      "frame",
+      "status"
+    ],
+    "ImageBody": [
+      "frame",
+      "image",
+      "status",
+      "surface"
+    ],
+    "LoadingIndicator": [
+      "inline",
+      "loading"
+    ],
+    "MarkdownBody": [
+      "document",
+      "frontmatter",
+      "frontmatterSource"
+    ],
+    "OfficeBody": [
+      "body"
+    ],
+    "PdfBody": [
+      "body",
+      "canvas",
+      "page",
+      "placeholder",
+      "status",
+      "surface",
+      "text"
+    ],
+    "PlanReviewPanel": [
+      "actions",
+      "card",
+      "description",
+      "discuss",
+      "feedback",
+      "footer",
+      "frame",
+      "previewActions",
+      "strip",
+      "summary",
+      "title"
+    ],
+    "PreferenceRow": [
+      "chevron",
+      "desc",
+      "row",
+      "rowText",
+      "selector",
+      "title"
+    ],
+    "QuestionToolRow": [
+      "panelButton"
+    ],
+    "ReviewTab": [
+      "added",
+      "compareIcon",
+      "counts",
+      "deleted",
+      "item",
+      "itemCounts",
+      "itemPath",
+      "label",
+      "root",
+      "selector",
+      "selectorButton",
+      "selectorLabel",
+      "tool",
+      "tools"
+    ],
+    "StatsPills": [
+      "anchor",
+      "label",
+      "pill",
+      "sep"
+    ],
+    "TextPreview": [
+      "action",
+      "body",
+      "changed",
+      "content",
+      "empty",
+      "emptyIcon",
+      "emptyLine",
+      "header",
+      "line",
+      "more",
+      "page",
+      "path",
+      "preview",
+      "retry",
+      "status",
+      "statusLine",
+      "textDocument",
+      "titleIcon",
+      "tool",
+      "viewerTool",
+      "wrap"
+    ],
+    "ToolCallTree": [
+      "callRow",
+      "subCalls"
+    ],
+    "TurnNavigator": [
+      "fadeBottom",
+      "fadeTop",
+      "frame",
+      "mark",
+      "markActive",
+      "markBusy",
+      "markPreview",
+      "markUnloaded",
+      "marks",
+      "preview",
+      "previewPrompt",
+      "previewResponse",
+      "scroller",
+      "slot"
+    ],
+    "ZoomViewport": [
+      "frame",
+      "revealZone",
+      "scrollport",
+      "surface"
+    ]
+  },
+  "packages": [
+    {
+      "name": "@deepseek-ai/dsh-client-ui-approval",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-attachment",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-chat",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-conversation",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-deliverables",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-primitives",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-renderer",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-sidebar-documentpreview",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-skill",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-slots",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-theme",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-tool",
+      "version": "0.2.2-rc.3"
+    },
+    {
+      "name": "@deepseek-ai/dsh-client-ui-user-questions",
+      "version": "0.2.2-rc.3"
+    }
+  ],
+  "decisionKinds": {
+    "ApprovalPanel.description": "aligned",
+    "ApprovalPanel.heading": "aligned",
+    "ApprovalPanel.subject": "aligned",
+    "ApprovalPanel.warningPopover": "notApplicable",
+    "ApprovalPanel.warningTag": "notApplicable",
+    "ApprovalPanel.warningTitle": "notApplicable",
+    "ApprovalPanel.warningTrigger": "notApplicable",
+    "ApprovalPanel.withSubject": "aligned",
+    "bash-sample.inspectButton": "notApplicable",
+    "ChatView.historyHidden": "aligned",
+    "ChatView.textInteraction": "notApplicable",
+    "Deliverables.hostStatus": "notApplicable",
+    "FileDiff.cell": "notApplicable",
+    "FileDiff.column": "notApplicable",
+    "FileDiff.columns": "notApplicable",
+    "FileDiff.empty": "notApplicable",
+    "FileDiff.sideLine": "notApplicable",
+    "FileDiff.splitLine": "notApplicable",
+    "MessageImage.spinner": "notApplicable",
+    "MessageItem.actions": "noop",
+    "PresentRow.inspect": "notApplicable",
+    "QuestionComposer.customRowYielded": "aligned",
+    "QuestionComposer.reviewNote": "notApplicable",
+    "QuestionComposer.waitButton": "notApplicable",
+    "SkillRow.inspectButton": "notApplicable",
+    "ToolRow.chevron": "noop",
+    "ToolRow.fileLinks": "aligned",
+    "ToolRow.fileTargetLink": "aligned",
+    "ToolRow.inspectButton": "notApplicable",
+    "TurnTriggerNodeView.continuation": "aligned"
+  }
+}

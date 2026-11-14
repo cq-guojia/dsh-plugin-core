@@ -15,7 +15,6 @@ export type UtilMessageKey =
   | 'sessionEmpty'
   | 'explorerLoading'
   | 'loadingDefault'
-  | 'explorerFailed'
   | 'explorerRoot'
   | 'explorerTruncated'
   | 'explorerEmptyDir'
@@ -112,12 +111,23 @@ export type UtilMessageKey =
   // ── 会话预览（mirror/ 官方会话 UI；文案逐字对齐官方 ui-chat / ui-tool / ui-deliverables 词典）──
   | 'sessionUnknownKind'
   | 'sessionLoadOlder'
+  | 'chatLoadingOlder'
+  | 'chatProcessingOlder'
+  | 'chatRetryOlder'
+  | 'chatHistoryStart'
   | 'sessionProcess'
   | 'triggerRequest'
+  | 'triggerContinuation'
   | 'triggerGoal'
   | 'triggerAgent'
   | 'triggerTeam'
   | 'triggerSubagent'
+  | 'triggerSubagentCompleted'
+  | 'triggerSubagentAborted'
+  | 'triggerSubagentError'
+  | 'triggerSubagentMaxTokens'
+  | 'triggerSubagentRefusal'
+  | 'triggerSubagentUnknown'
   | 'triggerGithub'
   | 'triggerWebhook'
   | 'triggerSchedule'
@@ -594,7 +604,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     sessionEmpty: '该会话暂无内容',
     explorerLoading: '加载中…',
     loadingDefault: '数据加载中',
-    explorerFailed: '加载失败',
     explorerRoot: '工作区',
     explorerTruncated: '条目过多，已截断',
     explorerEmptyDir: '空目录',
@@ -688,16 +697,27 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     codeCopy: '复制',
     codeCopied: '已复制',
     sessionUnknownKind: '未支持的节点类型：',
-    sessionLoadOlder: '加载更早记录',
+    sessionLoadOlder: '加载更早',
+    chatLoadingOlder: '正在加载',
+    chatProcessingOlder: '正在处理',
+    chatRetryOlder: '重新加载',
+    chatHistoryStart: '已到会话开头',
     sessionProcess: '过程',
     triggerRequest: '收到执行请求',
+    triggerContinuation: '已请求继续生成',
     triggerGoal: '继续执行目标',
     triggerAgent: '收到任务消息',
     triggerTeam: '收到团队消息',
     triggerSubagent: '子任务状态更新',
+    triggerSubagentCompleted: '子智能体已完成任务',
+    triggerSubagentAborted: '子智能体任务已停止',
+    triggerSubagentError: '子智能体执行失败',
+    triggerSubagentMaxTokens: '子智能体已达 token 上限',
+    triggerSubagentRefusal: '子智能体拒绝执行',
+    triggerSubagentUnknown: '子智能体异常结束',
     triggerGithub: '收到 GitHub 事件',
     triggerWebhook: '收到外部事件',
-    triggerSchedule: '定时任务',
+    triggerSchedule: '自动化任务',
     triggerJob: '后台任务状态更新',
     triggerPlugin: '插件状态更新',
     triggerExplanation: '这条通知触发了本轮回复。',
@@ -1165,7 +1185,6 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     sessionEmpty: 'No content in this session',
     explorerLoading: 'Loading…',
     loadingDefault: 'Loading',
-    explorerFailed: 'Failed to load',
     explorerRoot: 'Workspace',
     explorerTruncated: 'Too many entries, truncated',
     explorerEmptyDir: 'Empty folder',
@@ -1259,19 +1278,30 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     codeCopy: 'Copy',
     codeCopied: 'Copied',
     sessionUnknownKind: 'Unsupported node kind: ',
-    sessionLoadOlder: 'Load earlier messages',
+    sessionLoadOlder: 'Load earlier',
+    chatLoadingOlder: 'Loading earlier',
+    chatProcessingOlder: 'Processing',
+    chatRetryOlder: 'Retry loading',
+    chatHistoryStart: 'Start of conversation',
     sessionProcess: 'Process',
-    triggerRequest: 'Execution request received',
-    triggerGoal: 'Continuing the goal',
+    triggerRequest: 'Execution requested',
+    triggerContinuation: 'Requested to continue generation',
+    triggerGoal: 'Continuing goal',
     triggerAgent: 'Task message received',
     triggerTeam: 'Team message received',
-    triggerSubagent: 'Subagent status update',
+    triggerSubagent: 'Subtask status updated',
+    triggerSubagentCompleted: 'Subagent run completed',
+    triggerSubagentAborted: 'Subagent run stopped',
+    triggerSubagentError: 'Subagent run failed',
+    triggerSubagentMaxTokens: 'Subagent reached the token limit',
+    triggerSubagentRefusal: 'Subagent declined the task',
+    triggerSubagentUnknown: 'Subagent run ended unexpectedly',
     triggerGithub: 'GitHub event received',
     triggerWebhook: 'External event received',
-    triggerSchedule: 'Scheduled task',
-    triggerJob: 'Background task status update',
-    triggerPlugin: 'Plugin status update',
-    triggerExplanation: 'This notification triggered the reply below.',
+    triggerSchedule: 'Automation task',
+    triggerJob: 'Background task updated',
+    triggerPlugin: 'Plugin status updated',
+    triggerExplanation: 'This notification triggered this response.',
     turnProcessTook: 'Completed in ',
     turnProcessWorked: 'Completed',
     turnProcessFailed: 'Failed',

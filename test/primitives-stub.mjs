@@ -23,10 +23,10 @@ const NAMES = [
   'IconPaperPlaneOutlineRegular',
   'IconPlanOutlineRegular', 'IconPlayOutlineRegular', 'IconQuestionOutlineRegular', 'IconQueueOutlineRegular',
   'IconRefreshOutlineRegular', 'IconSearchOutlineRegular', 'IconSkillOutlineRegular', 'IconSparkleRegular',
-  'IconThinkOutlineRegular', 'IconWrapFillRegular', 'MarkdownDelegateProvider', 'MarkdownText', 'ReadBlock',
+  'IconThinkOutlineRegular', 'IconUsersOutlineRegular', 'IconWrapFillRegular', 'MarkdownDelegateProvider', 'MarkdownText', 'ReadBlock',
   'SearchBlock', 'StateDot', 'Tag', 'TerminalBlock', 'TextShimmer', 'Tooltip', 'UserMessageBubble', 'UserTextRun', 'WebBlock',
   'diffTotals', 'fileExtension', 'fileSizeText', 'languageForPath',
-  'useAnchoredPosition', 'useCodeHighlighter', 'useDismissOnOutsidePointer', 'writeClipboard',
+  'useCodeHighlighter', 'useDismissOnOutsidePointer', 'writeClipboard',
 ]
 
 const stub = (name) => {
@@ -53,6 +53,16 @@ exported.CommandText = ({ text, className }) => createElement('span', { classNam
 exported.ImageLightbox = ({ src, alt }) => createElement('div', { 'data-image-lightbox': src, 'aria-label': alt })
 // TextShimmer 只加高光、不吞 children：自检要看到它包住的 skill 标题与摘要。
 exported.TextShimmer = ({ children }) => createElement(Fragment, null, children)
+// DisclosureRow 把摘要放在 collapsedContent（不是 children），且 keepContentWhenOpen 时两槽都在：
+// 替身分槽标记，断言才能证明 fileLinks / sep 真的落在 collapsedContent 而不是展开体里。
+exported.DisclosureRow = ({ collapsedContent, children, open, rowClassName }) =>
+  createElement('div', {
+    'data-disclosure-row': '',
+    'data-open': open === true ? 'true' : 'false',
+    className: rowClassName,
+  },
+    createElement('span', { 'data-slot': 'collapsed' }, collapsedContent),
+    createElement('span', { 'data-slot': 'expanded' }, children))
 // `official.ts` 还 `export { Official }`，消费方可能从 official.js 拿命名空间对象。
 exported.Official = Object.fromEntries(NAMES.map((name) => [name, stub(name)]))
 
@@ -70,8 +80,8 @@ export const {
   IconPlanOutlineRegular, IconPlayOutlineRegular, IconQuestionOutlineRegular, IconQueueOutlineRegular,
   IconRefreshOutlineRegular, IconSearchOutlineRegular, IconSkillOutlineRegular, IconSparkleRegular,
   IconWrapFillRegular,
-  CodeBlock, IconThinkOutlineRegular, MarkdownDelegateProvider, MarkdownText, ReadBlock,
+  CodeBlock, IconThinkOutlineRegular, IconUsersOutlineRegular, MarkdownDelegateProvider, MarkdownText, ReadBlock,
   SearchBlock, StateDot, Tag, TerminalBlock, TextShimmer, Tooltip, UserMessageBubble, UserTextRun, WebBlock,
   diffTotals, fileExtension, fileSizeText, languageForPath,
-  useAnchoredPosition, useCodeHighlighter, useDismissOnOutsidePointer, writeClipboard, Official,
+  useCodeHighlighter, useDismissOnOutsidePointer, writeClipboard, Official,
 } = exported

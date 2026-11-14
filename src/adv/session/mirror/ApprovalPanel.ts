@@ -16,14 +16,29 @@ import type { ApprovalDecision, PendingApprovalFace } from '../pending-approval.
 
 const cls = (semantic: string): string => officialClass('ApprovalPanel', semantic) ?? ''
 
-/** 官方 headline：请求方本地化文案优先，否则退「工具 X 请求越权执行」，再否则用审计 reason。 */
-function headline(approval: PendingApprovalFace, t: Translate): string {
-  const shown = approval.displayReason
-  if (shown !== undefined) {
-    const text = shown[getLocale()] ?? shown.en
-    if (typeof text === 'string' && text !== '') return text
-  }
-  return approval.reason ?? t('approvalEscalation', { toolName: approval.toolName })
+/**
+ * 官方 ApprovalPanel.tsx:11 `reason = displayReason === undefined ? approval.reason : resolveReason(displayReason)`，
+ * :14 `title: reason ?? t('escalation', {toolName})`。两处都是 `??`：空串是合法标题，不回落。
+ * `resolveReason` 由注入方给的是 `ctx.locale.resolveText`（index.ts:104 的语言回退链）；
+ * 本仓缺省用自有 getLocale() → en 回退链，同样不排除空串、不伪造语言。
+ * 返回 `string | undefined` 只表达「语言表里中英都没有」这一种缺数据情形：
+ * 该情形走官方 :14 的 `?? t('escalation')` 回落路径，与官方 `reason === undefined` 同义。
+ */
+export type ApprovalReasonResolver = (shown: Readonly<Record<string, string>>) => string | undefined
+
+function defaultResolveReason(shown: Readonly<Record<string, string>>): string | undefined {
+  return shown[getLocale()] ?? shown.en
+}
+
+function headline(
+  approval: PendingApprovalFace,
+  t: Translate,
+  resolveReason: ApprovalReasonResolver,
+): string {
+  const reason = approval.displayReason === undefined
+    ? approval.reason
+    : resolveReason(approval.displayReason)
+  return reason ?? t('approvalEscalation', { toolName: approval.toolName })
 }
 
 /** 官方 ApprovalCommand（ui-chat lib/client.js:151-172）：callId → tool-call 起始节点的 args.command。 */
@@ -60,9 +75,16 @@ export function ApprovalPanelMirror(props: {
   approval: PendingApprovalFace
   /** 关联工具调用的命令行（官方 approval.detail 槽的等价物；取不到 = 不画那行）。 */
   command?: string
+  /** 官方 ApprovalCard.tsx:68-71 的可选 subject（应用授权卡复用路径）；工具审批不传。 */
+  subject?: { name: string; icon?: string }
+  /** 官方 ApprovalCard.tsx:76 的可选 description；工具审批不传。 */
+  description?: string
+  /** 宿主 `ctx.locale.resolveText`（index.ts:104）注入口；缺省用自有 getLocale() → en 回退链。 */
+  resolveReason?: ApprovalReasonResolver
   t: Translate
 }): ReactElement {
-  const { approval, command, t } = props
+  const { approval, command, subject, description, t } = props
+  const resolveReason = props.resolveReason ?? defaultResolveReason
   const [answered, setAnswered] = useState(false)
   const waiting = useRef(false)
   const answer = (outcome: ApprovalDecision): void => {
@@ -76,7 +98,7 @@ export function ApprovalPanelMirror(props: {
     })
   }
   return h('div', { className: cls('root'), 'data-approval-key': approval.key, 'aria-busy': answered },
-    h('div', { className: cls('card') },
+    h('div', { className: subject === undefined ? cls('card') : `${cls('card')} ${cls('withSubject')}` },
       h('div', { className: cls('strip') },
         h(StateDot, { state: answered ? 'ongoing' : 'warning' }),
         t('approvalWaiting'),
@@ -88,7 +110,16 @@ export function ApprovalPanelMirror(props: {
         role: 'group',
         'aria-label': t('approvalDetailAria'),
       },
-        h('div', { className: cls('headline') }, headline(approval, t)),
+        subject === undefined
+          ? null
+          : h('div', { className: cls('subject') },
+              subject.icon === undefined
+                ? null
+                : h('img', { src: subject.icon, alt: '', width: 40, height: 40, draggable: false }),
+              h('strong', null, subject.name)),
+        h('div', { className: cls('heading') },
+          h('div', { className: cls('headline') }, headline(approval, t, resolveReason))),
+        description === undefined ? null : h('p', { className: cls('description') }, description),
         command === undefined ? null : h('div', { className: cls('command') }, command),
       ),
       h('div', { className: cls('actionRow') },

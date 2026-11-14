@@ -403,7 +403,6 @@ var DICT = {
     sessionEmpty: "\u8BE5\u4F1A\u8BDD\u6682\u65E0\u5185\u5BB9",
     explorerLoading: "\u52A0\u8F7D\u4E2D\u2026",
     loadingDefault: "\u6570\u636E\u52A0\u8F7D\u4E2D",
-    explorerFailed: "\u52A0\u8F7D\u5931\u8D25",
     explorerRoot: "\u5DE5\u4F5C\u533A",
     explorerTruncated: "\u6761\u76EE\u8FC7\u591A\uFF0C\u5DF2\u622A\u65AD",
     explorerEmptyDir: "\u7A7A\u76EE\u5F55",
@@ -497,16 +496,27 @@ var DICT = {
     codeCopy: "\u590D\u5236",
     codeCopied: "\u5DF2\u590D\u5236",
     sessionUnknownKind: "\u672A\u652F\u6301\u7684\u8282\u70B9\u7C7B\u578B\uFF1A",
-    sessionLoadOlder: "\u52A0\u8F7D\u66F4\u65E9\u8BB0\u5F55",
+    sessionLoadOlder: "\u52A0\u8F7D\u66F4\u65E9",
+    chatLoadingOlder: "\u6B63\u5728\u52A0\u8F7D",
+    chatProcessingOlder: "\u6B63\u5728\u5904\u7406",
+    chatRetryOlder: "\u91CD\u65B0\u52A0\u8F7D",
+    chatHistoryStart: "\u5DF2\u5230\u4F1A\u8BDD\u5F00\u5934",
     sessionProcess: "\u8FC7\u7A0B",
     triggerRequest: "\u6536\u5230\u6267\u884C\u8BF7\u6C42",
+    triggerContinuation: "\u5DF2\u8BF7\u6C42\u7EE7\u7EED\u751F\u6210",
     triggerGoal: "\u7EE7\u7EED\u6267\u884C\u76EE\u6807",
     triggerAgent: "\u6536\u5230\u4EFB\u52A1\u6D88\u606F",
     triggerTeam: "\u6536\u5230\u56E2\u961F\u6D88\u606F",
     triggerSubagent: "\u5B50\u4EFB\u52A1\u72B6\u6001\u66F4\u65B0",
+    triggerSubagentCompleted: "\u5B50\u667A\u80FD\u4F53\u5DF2\u5B8C\u6210\u4EFB\u52A1",
+    triggerSubagentAborted: "\u5B50\u667A\u80FD\u4F53\u4EFB\u52A1\u5DF2\u505C\u6B62",
+    triggerSubagentError: "\u5B50\u667A\u80FD\u4F53\u6267\u884C\u5931\u8D25",
+    triggerSubagentMaxTokens: "\u5B50\u667A\u80FD\u4F53\u5DF2\u8FBE token \u4E0A\u9650",
+    triggerSubagentRefusal: "\u5B50\u667A\u80FD\u4F53\u62D2\u7EDD\u6267\u884C",
+    triggerSubagentUnknown: "\u5B50\u667A\u80FD\u4F53\u5F02\u5E38\u7ED3\u675F",
     triggerGithub: "\u6536\u5230 GitHub \u4E8B\u4EF6",
     triggerWebhook: "\u6536\u5230\u5916\u90E8\u4E8B\u4EF6",
-    triggerSchedule: "\u5B9A\u65F6\u4EFB\u52A1",
+    triggerSchedule: "\u81EA\u52A8\u5316\u4EFB\u52A1",
     triggerJob: "\u540E\u53F0\u4EFB\u52A1\u72B6\u6001\u66F4\u65B0",
     triggerPlugin: "\u63D2\u4EF6\u72B6\u6001\u66F4\u65B0",
     triggerExplanation: "\u8FD9\u6761\u901A\u77E5\u89E6\u53D1\u4E86\u672C\u8F6E\u56DE\u590D\u3002",
@@ -974,7 +984,6 @@ var DICT = {
     sessionEmpty: "No content in this session",
     explorerLoading: "Loading\u2026",
     loadingDefault: "Loading",
-    explorerFailed: "Failed to load",
     explorerRoot: "Workspace",
     explorerTruncated: "Too many entries, truncated",
     explorerEmptyDir: "Empty folder",
@@ -1068,19 +1077,30 @@ var DICT = {
     codeCopy: "Copy",
     codeCopied: "Copied",
     sessionUnknownKind: "Unsupported node kind: ",
-    sessionLoadOlder: "Load earlier messages",
+    sessionLoadOlder: "Load earlier",
+    chatLoadingOlder: "Loading earlier",
+    chatProcessingOlder: "Processing",
+    chatRetryOlder: "Retry loading",
+    chatHistoryStart: "Start of conversation",
     sessionProcess: "Process",
-    triggerRequest: "Execution request received",
-    triggerGoal: "Continuing the goal",
+    triggerRequest: "Execution requested",
+    triggerContinuation: "Requested to continue generation",
+    triggerGoal: "Continuing goal",
     triggerAgent: "Task message received",
     triggerTeam: "Team message received",
-    triggerSubagent: "Subagent status update",
+    triggerSubagent: "Subtask status updated",
+    triggerSubagentCompleted: "Subagent run completed",
+    triggerSubagentAborted: "Subagent run stopped",
+    triggerSubagentError: "Subagent run failed",
+    triggerSubagentMaxTokens: "Subagent reached the token limit",
+    triggerSubagentRefusal: "Subagent declined the task",
+    triggerSubagentUnknown: "Subagent run ended unexpectedly",
     triggerGithub: "GitHub event received",
     triggerWebhook: "External event received",
-    triggerSchedule: "Scheduled task",
-    triggerJob: "Background task status update",
-    triggerPlugin: "Plugin status update",
-    triggerExplanation: "This notification triggered the reply below.",
+    triggerSchedule: "Automation task",
+    triggerJob: "Background task updated",
+    triggerPlugin: "Plugin status updated",
+    triggerExplanation: "This notification triggered this response.",
     turnProcessTook: "Completed in ",
     turnProcessWorked: "Completed",
     turnProcessFailed: "Failed",
@@ -57722,8 +57742,8 @@ var CSS_PKG_PREFIXES = [
   "@deepseek-ai/dsh-client-ui-approval/",
   // 待答题目面板（mirror/QuestionPanel.ts）；tagId =
   // `@deepseek-ai/dsh-client-ui-user-questions/QuestionComposer.module.css`。
-  // 该包是**宿主外壳包、未发 npm**（源码在公开仓库 packages/client/ui-user-questions/），
-  // 但样式同样是 data-plugin-css 注入 ⇒ 类名照旧运行时发现，不写死哈希。
+  // 0.2.2-rc.3 起发布了同号 npm 包（rc.1 时还是未发布的外壳包，源码在公开仓库
+  // packages/client/ui-user-questions/）；样式同样是 data-plugin-css 注入 ⇒ 类名照旧运行时发现。
   "@deepseek-ai/dsh-client-ui-user-questions/"
 ];
 function parseOfficialCss(css3) {
@@ -58301,8 +58321,18 @@ function ChatOpenError(props) {
 function ChatCallRow(props) {
   return (0, import_react67.createElement)("div", { className: officialClass("ChatView", "callRow") ?? "" }, props.children);
 }
+var CHAT_HISTORY_STATES = ["more", "loading", "processing", "error", "start"];
 function ChatOlderButton(props) {
-  return (0, import_react67.createElement)("div", { className: officialClass("ChatView", "older") ?? "" }, (0, import_react67.createElement)("button", { type: "button", onClick: props.onClick }, props.label));
+  const current3 = !props.hasMore ? "start" : props.loadingOlder === true ? "loading" : props.historyLoadStatus === "error" ? "error" : props.historyInputHeld === true ? "more" : props.historyProcessing === true ? "processing" : "more";
+  return (0, import_react67.createElement)("div", {
+    className: officialClass("ChatView", "older") ?? "",
+    "data-chat-history": props.historyLoadStatus
+    // shortcut: 官方 :254 另有 ref={scroll.historyEdgeRef} 滚动锚点，只读预览无 scroll controller。
+  }, (0, import_react67.createElement)("button", { type: "button", disabled: !props.hasMore, onClick: props.onClick }, CHAT_HISTORY_STATES.map((state) => (0, import_react67.createElement)("span", {
+    key: state,
+    "aria-hidden": state !== current3,
+    className: state === current3 ? void 0 : officialClass("ChatView", "historyHidden") ?? void 0
+  }, props.labels[state]))));
 }
 
 // dist/adv/session/mirror/GenericCommandCard.js
@@ -60156,8 +60186,56 @@ var summaryLinkKeyDown = (event) => {
 function ExitCodeBadge({ label }) {
   return (0, import_react71.createElement)(official_exports.Tag, { tone: "neutral", className: officialClass("ExitCodeBadge", "badge") ?? "" }, (0, import_react71.createElement)("span", { className: officialClass("ExitCodeBadge", "dot") ?? "", "aria-hidden": true }), label);
 }
+var FILE_TARGET_SEPARATOR = ", ";
+var FILE_TARGET_MOVE = " \u2192 ";
+var PATCH_BEGIN = "*** Begin Patch";
+var PATCH_END = "*** End Patch";
+var PATCH_ADD = "*** Add File: ";
+var PATCH_DELETE = "*** Delete File: ";
+var PATCH_UPDATE = "*** Update File: ";
+var PATCH_MOVE = "*** Move to: ";
+function patchInputOf(name2, argsRaw) {
+  if (name2 !== "apply_patch")
+    return void 0;
+  const parsed = parseArgs(argsRaw);
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
+    return void 0;
+  const input = parsed.input;
+  return typeof input === "string" && input !== "" ? input : void 0;
+}
+function isAbsoluteWorkspacePath(path) {
+  return path.startsWith("/") || /^[A-Za-z]:[/\\]/.test(path) || path.startsWith("\\\\");
+}
+function patchFileTargets(patch) {
+  if (patch === void 0)
+    return [];
+  const lines = patch.trim().split(/\r?\n/);
+  if (lines[0]?.trim() !== PATCH_BEGIN || lines[lines.length - 1]?.trim() !== PATCH_END)
+    return [];
+  const operations = [];
+  for (let index3 = 1; index3 < lines.length - 1; index3 += 1) {
+    const header = (lines[index3] ?? "").trim();
+    const lineNumber = index3 + 1;
+    if (header.startsWith(PATCH_ADD))
+      operations.push({ lineNumber, kind: "add", path: header.slice(PATCH_ADD.length) });
+    else if (header.startsWith(PATCH_DELETE))
+      operations.push({ lineNumber, kind: "delete", path: header.slice(PATCH_DELETE.length) });
+    else if (header.startsWith(PATCH_UPDATE))
+      operations.push({ lineNumber, kind: "update", path: header.slice(PATCH_UPDATE.length) });
+    else if (header.startsWith(PATCH_MOVE)) {
+      const last2 = operations[operations.length - 1];
+      if (last2?.kind === "update" && last2.moveTo === void 0)
+        last2.moveTo = header.slice(PATCH_MOVE.length);
+    }
+  }
+  return operations.map((op) => {
+    const moveTo = op.kind === "update" ? op.moveTo : void 0;
+    return moveTo === void 0 ? { id: op.lineNumber, label: op.path, filePath: op.kind === "delete" ? void 0 : op.path } : { id: op.lineNumber, from: op.path, label: moveTo, filePath: moveTo };
+  });
+}
 function GenericCommandCard(props) {
-  const { name: name2, argsRaw, output, isError, meta: meta2, settled = true, phase, interrupted, errorCode, onOpenFile, image, loadImage, t: t4 } = props;
+  const { name: name2, argsRaw, output, isError, meta: meta2, settled = true, phase, interrupted, errorCode, fileTargetContextMenuProps, onOpenFile, image, loadImage, t: t4 } = props;
+  const patchInput = patchInputOf(name2, argsRaw);
   const [expanded, setExpanded] = (0, import_react71.useState)(false);
   const variant = classifyTool(name2);
   const titleKey = toolTitleKey(name2);
@@ -60215,6 +60293,10 @@ function GenericCommandCard(props) {
       return void 0;
     }
   })();
+  const patchTargets = patchInput === void 0 ? [] : patchFileTargets(patchInput);
+  const usableArgumentPath = (path) => isAbsoluteWorkspacePath(path) || settled && !isError;
+  const fileTargets = patchInput !== void 0 && (patchTargets.length > 1 || patchTargets.some((target) => target.from !== void 0)) ? patchTargets.map((target) => target.filePath === void 0 || usableArgumentPath(target.filePath) ? target : { ...target, filePath: void 0 }) : void 0;
+  const openTarget = rowState === "ok" && fileTargets?.some((target) => target.filePath !== void 0) === true ? onOpenFile : void 0;
   const inputRaw = argsRaw === "" || filePath !== void 0 ? null : argsRaw;
   const outputText = output === "" ? null : output;
   const card = terminal !== null ? "terminal" : diffs !== null ? "diff" : read !== null ? "read" : image !== void 0 ? "image" : search !== null ? "search" : web !== null ? "web" : details !== null ? "details" : null;
@@ -60230,15 +60312,38 @@ function GenericCommandCard(props) {
     terminal: terminalLabels(t4)
   }), [t4]);
   const statusText = rowState === "preparing" ? t4("rowPreparing") : rowState === "running" ? t4("rowRunning") : rowState === "error" ? t4("rowFailed") : rowState === "stopped" ? t4("rowStopped") : null;
-  const summaryClassName = `${officialClass("ToolRow", "summary") ?? ""}${rowState === "error" ? ` ${officialClass("ToolRow", "errorSummary") ?? ""}` : ""}${rowState === "stopped" ? ` ${officialClass("ToolRow", "stoppedSummary") ?? ""}` : ""}`;
-  const collapsedContent = summaryText === "" ? void 0 : (0, import_react71.createElement)(import_react71.Fragment, null, (0, import_react71.createElement)("span", { className: officialClass("ToolRow", "sep") ?? "", "aria-hidden": true }), openFile !== void 0 ? (0, import_react71.createElement)("button", {
+  const summaryClassName = `${officialClass("ToolRow", "summary") ?? ""}${exitLabel === null && rowState === "error" ? ` ${officialClass("ToolRow", "errorSummary") ?? ""}` : ""}${exitLabel === null && rowState === "stopped" ? ` ${officialClass("ToolRow", "stoppedSummary") ?? ""}` : ""}`;
+  const collapsedContent = summaryText === "" ? void 0 : (0, import_react71.createElement)(import_react71.Fragment, null, (0, import_react71.createElement)("span", {
+    className: officialClass("ToolRow", "sep") ?? "",
+    "data-shimmer-decoration": true,
+    "aria-hidden": true
+  }), exitLabel === null && fileTargets !== void 0 && openTarget !== void 0 ? (0, import_react71.createElement)("span", { className: officialClass("ToolRow", "fileLinks") ?? "" }, fileTargets.map((target, index3) => {
+    const path = target.filePath;
+    const menu = path === void 0 ? void 0 : fileTargetContextMenuProps?.(path);
+    return (0, import_react71.createElement)(import_react71.Fragment, { key: target.id }, index3 > 0 ? FILE_TARGET_SEPARATOR : null, target.from === void 0 ? null : `${target.from}${FILE_TARGET_MOVE}`, path === void 0 ? target.label : (0, import_react71.createElement)("button", {
+      type: "button",
+      className: officialClass("ToolRow", "fileTargetLink") ?? "",
+      ...menu,
+      onClick: (event) => {
+        stopLinkClick(event);
+        openTarget(path);
+      },
+      onKeyDown: (event) => {
+        summaryLinkKeyDown(event);
+        const forwarded = menu?.onKeyDown;
+        if (typeof forwarded === "function") {
+          forwarded(event);
+        }
+      }
+    }, target.label));
+  })) : exitLabel === null && openFile !== void 0 ? (0, import_react71.createElement)("button", {
     type: "button",
     className: officialClass("ToolRow", "fileLink") ?? "",
     onClick: (event) => {
       stopLinkClick(event);
       openFile();
     }
-  }, (0, import_react71.createElement)(official_exports.TextShimmer, { active: running }, summaryText)) : linkHref !== void 0 ? (0, import_react71.createElement)("a", {
+  }, (0, import_react71.createElement)(official_exports.TextShimmer, { active: running }, summaryText)) : exitLabel === null && linkHref !== void 0 ? (0, import_react71.createElement)("a", {
     className: officialClass("ToolRow", "fileLink") ?? "",
     href: linkHref,
     target: "_blank",
@@ -60783,14 +60888,12 @@ function BashRowMirror(props) {
 // dist/adv/session/mirror/ApprovalPanel.js
 var import_react77 = require("react");
 var cls = (semantic) => officialClass("ApprovalPanel", semantic) ?? "";
-function headline(approval, t4) {
-  const shown = approval.displayReason;
-  if (shown !== void 0) {
-    const text2 = shown[getLocale()] ?? shown.en;
-    if (typeof text2 === "string" && text2 !== "")
-      return text2;
-  }
-  return approval.reason ?? t4("approvalEscalation", { toolName: approval.toolName });
+function defaultResolveReason(shown) {
+  return shown[getLocale()] ?? shown.en;
+}
+function headline(approval, t4, resolveReason) {
+  const reason = approval.displayReason === void 0 ? approval.reason : resolveReason(approval.displayReason);
+  return reason ?? t4("approvalEscalation", { toolName: approval.toolName });
 }
 function approvalCommand(order, read, callId) {
   if (callId === void 0)
@@ -60816,7 +60919,8 @@ function approvalCommand(order, read, callId) {
   return void 0;
 }
 function ApprovalPanelMirror(props) {
-  const { approval, command: command2, t: t4 } = props;
+  const { approval, command: command2, subject, description, t: t4 } = props;
+  const resolveReason = props.resolveReason ?? defaultResolveReason;
   const [answered, setAnswered] = (0, import_react77.useState)(false);
   const waiting = (0, import_react77.useRef)(false);
   const answer = (outcome) => {
@@ -60829,13 +60933,13 @@ function ApprovalPanelMirror(props) {
       setAnswered(false);
     });
   };
-  return (0, import_react77.createElement)("div", { className: cls("root"), "data-approval-key": approval.key, "aria-busy": answered }, (0, import_react77.createElement)("div", { className: cls("card") }, (0, import_react77.createElement)("div", { className: cls("strip") }, (0, import_react77.createElement)(official_exports.StateDot, { state: answered ? "ongoing" : "warning" }), t4("approvalWaiting")), (0, import_react77.createElement)("div", {
+  return (0, import_react77.createElement)("div", { className: cls("root"), "data-approval-key": approval.key, "aria-busy": answered }, (0, import_react77.createElement)("div", { className: subject === void 0 ? cls("card") : `${cls("card")} ${cls("withSubject")}` }, (0, import_react77.createElement)("div", { className: cls("strip") }, (0, import_react77.createElement)(official_exports.StateDot, { state: answered ? "ongoing" : "warning" }), t4("approvalWaiting")), (0, import_react77.createElement)("div", {
     className: cls("body"),
     "data-approval-scroll": "",
     tabIndex: 0,
     role: "group",
     "aria-label": t4("approvalDetailAria")
-  }, (0, import_react77.createElement)("div", { className: cls("headline") }, headline(approval, t4)), command2 === void 0 ? null : (0, import_react77.createElement)("div", { className: cls("command") }, command2)), (0, import_react77.createElement)("div", { className: cls("actionRow") }, (0, import_react77.createElement)(official_exports.Button, {
+  }, subject === void 0 ? null : (0, import_react77.createElement)("div", { className: cls("subject") }, subject.icon === void 0 ? null : (0, import_react77.createElement)("img", { src: subject.icon, alt: "", width: 40, height: 40, draggable: false }), (0, import_react77.createElement)("strong", null, subject.name)), (0, import_react77.createElement)("div", { className: cls("heading") }, (0, import_react77.createElement)("div", { className: cls("headline") }, headline(approval, t4, resolveReason))), description === void 0 ? null : (0, import_react77.createElement)("p", { className: cls("description") }, description), command2 === void 0 ? null : (0, import_react77.createElement)("div", { className: cls("command") }, command2)), (0, import_react77.createElement)("div", { className: cls("actionRow") }, (0, import_react77.createElement)(official_exports.Button, {
     variant: "outline",
     className: cls("reject"),
     disabled: answered,
@@ -61049,6 +61153,9 @@ function questionSet(row2) {
 var import_react78 = require("react");
 var cls2 = (...names) => names.filter((name2) => typeof name2 === "string" && name2 !== "").join(" ");
 var c2 = (semantic) => officialClass("QuestionComposer", semantic) ?? "";
+function customRowYielded(multiSelect, selectedCount) {
+  return multiSelect !== true && selectedCount > 0;
+}
 var EMPTY_COPIES = /* @__PURE__ */ new Set();
 function QuestionPanel(props) {
   const { panelKey, questions, answer, dismiss: dismiss2, dismissal = "hide", subscribeCard, t: t4 } = props;
@@ -61271,7 +61378,12 @@ function QuestionPanel(props) {
       }
     }, isExpanded ? (0, import_react78.createElement)(official_exports.IconChevronUpOutlineRegular) : (0, import_react78.createElement)(official_exports.IconChevronDownOutlineRegular)));
   }), hasOptions ? (0, import_react78.createElement)("div", {
-    className: cls2(c2("customRow"), draft.custom !== "" && c2("customRowActive"))
+    className: cls2(
+      c2("customRow"),
+      draft.custom !== "" && c2("customRowActive"),
+      // 官方 QuestionComposer.tsx:637-642：单选已选中某项时抑制自定义输入行抢焦点高亮。
+      customRowYielded(current3.multiSelect === true, draft.selected.length) && c2("customRowYielded")
+    )
   }, current3.multiSelect === true ? (0, import_react78.createElement)("span", {
     className: cls2(c2("checkbox"), draft.custom !== "" && c2("checkboxChecked")),
     "aria-hidden": true
@@ -61888,16 +62000,17 @@ var import_react_dom5 = require("react-dom");
 
 // dist/adv/session/mirror/StatDialog.js
 var import_react86 = require("react");
-var PANEL_MARGIN = 12;
-var PANEL_GAP = 8;
-var STAT_MEASURE_STYLE = { visibility: "hidden", left: 0, top: 0 };
+function statDialogStyles(anchorName) {
+  return { anchorStyle: { anchorName }, panelStyle: { positionAnchor: anchorName } };
+}
 function useStatDialog(controlled) {
   const [ownOpen, setOwnOpen] = (0, import_react86.useState)(false);
   const open = controlled?.open ?? ownOpen;
   const setOpen = controlled?.setOpen ?? setOwnOpen;
   const rootRef = (0, import_react86.useRef)(null);
   const panelRef = (0, import_react86.useRef)(null);
-  const pos = (0, official_exports.useAnchoredPosition)({ open, anchorRef: rootRef, panelRef, side: "top", gap: PANEL_GAP, margin: PANEL_MARGIN });
+  const anchorName = `--dsh-stat-${(0, import_react86.useId)().replace(/:/g, "")}`;
+  const { anchorStyle, panelStyle } = statDialogStyles(anchorName);
   (0, official_exports.useDismissOnOutsidePointer)(rootRef, open, setOpen, panelRef);
   (0, import_react86.useEffect)(() => {
     if (!open)
@@ -61921,17 +62034,17 @@ function useStatDialog(controlled) {
       document.removeEventListener("click", onClick, true);
     };
   }, [open, setOpen]);
-  return { open, setOpen, rootRef, panelRef, pos };
+  return { open, setOpen, rootRef, panelRef, anchorName, anchorStyle, panelStyle };
 }
 
 // dist/adv/session/mirror/TurnUsagePanel.js
 function TurnUsagePanelMirror(props) {
   const { usage, t: t4 } = props;
-  const { open, setOpen, rootRef, panelRef, pos } = useStatDialog();
+  const { open, setOpen, rootRef, panelRef, anchorStyle, panelStyle } = useStatDialog();
   const cacheHit = usage.cacheReadTokens === void 0 ? null : formatCacheHitPercent(usage.cacheReadTokens, usage.totalTokens - usage.outputTokens, 1);
   const total = formatCompactCount(usage.totalTokens, t4);
   const routes = usage.routes?.map((route) => `${route.provider}/${route.model}`).join(", ") ?? "";
-  return (0, import_react87.createElement)("span", { ref: rootRef, className: officialClass("TurnUsagePanel", "root") ?? "" }, (0, import_react87.createElement)("button", {
+  return (0, import_react87.createElement)("span", { ref: rootRef, className: officialClass("TurnUsagePanel", "root") ?? "", style: anchorStyle }, (0, import_react87.createElement)("button", {
     type: "button",
     className: officialClass("TurnUsagePanel", "trigger") ?? "",
     "aria-haspopup": "dialog",
@@ -61944,7 +62057,7 @@ function TurnUsagePanelMirror(props) {
     className: officialClass("stat-dialog", "panel") ?? "",
     role: "dialog",
     "aria-label": t4("turnUsageTitle"),
-    style: pos ?? STAT_MEASURE_STYLE
+    style: panelStyle
   }, (0, import_react87.createElement)("div", { className: officialClass("stat-dialog", "title") ?? "" }, (0, import_react87.createElement)("span", { className: officialClass("stat-dialog", "titleLabel") ?? "" }, (0, import_react87.createElement)(official_exports.IconDatabaseOutlineRegular, null), t4("turnUsageTitle")), (0, import_react87.createElement)("span", { className: officialClass("stat-dialog", "titleValue") ?? "" }, formatExactCount(usage.totalTokens, t4))), (0, import_react87.createElement)("div", { className: officialClass("stat-dialog", "titleRule") ?? "", "aria-hidden": true }), (0, import_react87.createElement)("dl", { className: officialClass("stat-dialog", "details") ?? "", "data-turn-usage-details": true }, routes === "" ? null : (0, import_react87.createElement)(import_react87.Fragment, null, (0, import_react87.createElement)("dt", null, t4("turnUsageModel")), (0, import_react87.createElement)("dd", { className: officialClass("stat-dialog", "route") ?? "" }, routes)), cacheHit === null ? null : (0, import_react87.createElement)(import_react87.Fragment, null, (0, import_react87.createElement)("dt", null, t4("turnUsageCacheHit")), (0, import_react87.createElement)("dd", null, `${cacheHit}%`)), (0, import_react87.createElement)("dt", null, t4("turnUsageInput")), (0, import_react87.createElement)("dd", null, formatExactCount(usage.uncachedInputTokens, t4)), usage.cacheReadTokens === void 0 ? null : (0, import_react87.createElement)(import_react87.Fragment, null, (0, import_react87.createElement)("dt", null, t4("turnUsageCacheRead")), (0, import_react87.createElement)("dd", null, formatExactCount(usage.cacheReadTokens, t4))), usage.cacheWriteTokens === void 0 ? null : (0, import_react87.createElement)(import_react87.Fragment, null, (0, import_react87.createElement)("dt", null, t4("turnUsageCacheWrite")), (0, import_react87.createElement)("dd", null, formatExactCount(usage.cacheWriteTokens, t4))), (0, import_react87.createElement)("dt", null, t4("turnUsageOutput")), (0, import_react87.createElement)("dd", null, formatExactCount(usage.outputTokens, t4), usage.reasoningTokens === void 0 ? null : (0, import_react87.createElement)("span", {
     className: officialClass("stat-dialog", "reasoning") ?? ""
   }, t4("turnUsageReasoning", { tokens: formatExactCount(usage.reasoningTokens, t4) }))))), document.body) : null);
@@ -62042,19 +62155,40 @@ var TRIGGER_ICONS = {
   goal: official_exports.IconGoalOutlineRegular,
   agent: official_exports.IconPaperPlaneOutlineRegular,
   team: official_exports.IconAgentPresetOutlineRegular,
-  subagent: official_exports.IconAgentPresetOutlineRegular,
+  subagent: official_exports.IconUsersOutlineRegular,
   github: official_exports.IconBranchOutlineRegular,
   webhook: official_exports.IconGlobeOutlineRegular,
   schedule: official_exports.IconClockOutlineRegular,
   job: official_exports.IconQueueOutlineRegular,
-  plugin: official_exports.IconCordisPluginOutlineRegular
+  plugin: official_exports.IconCordisPluginOutlineRegular,
+  continue: official_exports.IconPlayOutlineRegular
 };
 var MAX_CHARS2 = 2e4;
-function turnTriggerDetails(source) {
+function subagentTitle(reason) {
+  if (typeof reason !== "string" || reason === "")
+    return "triggerSubagent";
+  switch (reason) {
+    case "completed":
+      return "triggerSubagentCompleted";
+    case "aborted":
+      return "triggerSubagentAborted";
+    case "error":
+      return "triggerSubagentError";
+    case "max-tokens":
+      return "triggerSubagentMaxTokens";
+    case "refusal":
+      return "triggerSubagentRefusal";
+    default:
+      return "triggerSubagentUnknown";
+  }
+}
+function turnTriggerDetails(data2) {
   const record = (value) => typeof value === "object" && value !== null && !Array.isArray(value) ? value : {};
-  const src = record(source);
+  const src = record(data2?.source);
   const kind = typeof src.kind === "string" ? src.kind : "";
   switch (kind) {
+    case "retry":
+      return Array.isArray(data2?.content) && data2.content.length === 0 ? { title: "triggerContinuation", icon: "continue", compact: true } : { title: "triggerRequest", icon: "request" };
     case "goal":
       return { title: "triggerGoal", icon: "goal" };
     case "agent-message":
@@ -62062,7 +62196,7 @@ function turnTriggerDetails(source) {
     case "team-message":
       return { title: "triggerTeam", icon: "team" };
     case "subagent-settled":
-      return { title: "triggerSubagent", icon: "subagent" };
+      return { title: subagentTitle(src.stopReason), icon: "subagent" };
     case "webhook": {
       const github = src.provider === "github";
       return github ? { title: "triggerGithub", icon: "github" } : { title: "triggerWebhook", icon: "webhook" };
@@ -62081,8 +62215,14 @@ function TurnTriggerNodeViewMirror(props) {
   const { data: data2, t: t4 } = props;
   const [open, setOpen] = (0, import_react89.useState)(false);
   const bodyId = (0, import_react89.useId)();
-  const details = turnTriggerDetails(data2?.source);
+  const details = turnTriggerDetails(data2);
   const TriggerIcon = TRIGGER_ICONS[details.icon] ?? official_exports.IconContextInjectionOutlineRegular;
+  if (details.compact === true) {
+    return (0, import_react89.createElement)("div", {
+      className: officialClass("TurnTriggerNodeView", "continuation") ?? "",
+      "data-generation-continuation": true
+    }, (0, import_react89.createElement)("span", { className: officialClass("TurnTriggerNodeView", "icon") ?? "", "aria-hidden": true }, (0, import_react89.createElement)(TriggerIcon, { size: 14 })), (0, import_react89.createElement)("span", null, t4(details.title)));
+  }
   const time = typeof data2?.time === "number" ? data2.time : void 0;
   return (0, import_react89.createElement)("section", {
     className: officialClass("TurnTriggerNodeView", "root") ?? "",
@@ -62928,7 +63068,7 @@ function turnLocationOf(node) {
 function blocksOf(value) {
   return Array.isArray(value) ? value : void 0;
 }
-function toolCallCard(node, t4, onOpenFile, loadImage) {
+function toolCallCard(node, t4, onOpenFile, loadImage, fileTargetContextMenuProps) {
   const root = dataOf(node).root;
   if (root === void 0 || root === null)
     return null;
@@ -62954,6 +63094,7 @@ function toolCallCard(node, t4, onOpenFile, loadImage) {
     image: imageCardFace(name2, argsRaw, content2, root.meta, isError, settled) ?? void 0,
     loadImage,
     onOpenFile,
+    fileTargetContextMenuProps,
     t: t4
   };
 }
@@ -63034,7 +63175,7 @@ function renderKeyedNode(node, turnProcess, t4, onBranchAt, fileOpen, groupPart,
       const root = dataOf(node).root;
       if (isPresentRoot(root))
         return (0, import_react93.createElement)(PresentRowMirror, { block: root, t: t4 });
-      const card = toolCallCard(node, t4, fileOpen?.open, loadImage);
+      const card = toolCallCard(node, t4, fileOpen?.open, loadImage, fileOpen?.fileTargetContextMenuProps);
       if (card === null)
         return null;
       return card.name === "bash" || card.name === "pwsh" ? (0, import_react93.createElement)(BashRowMirror, card) : card.name === "skill" ? (0, import_react93.createElement)(SkillRowMirror, card) : (0, import_react93.createElement)(GenericCommandCard, card);
@@ -63166,6 +63307,7 @@ function renderLegacyNode(node, t4, fileOpen) {
         settled: true,
         interrupted: node.error?.code === "interrupted",
         onOpenFile: fileOpen?.open,
+        fileTargetContextMenuProps: fileOpen?.fileTargetContextMenuProps,
         t: t4
       });
     }
@@ -63567,9 +63709,10 @@ function SessionViewModal(props) {
       return void 0;
     return {
       open: openFile,
-      mentions: makeFileMentions(collectFilePaths(order, store, turns), openFile)
+      mentions: makeFileMentions(collectFilePaths(order, store, turns), openFile),
+      fileTargetContextMenuProps: props.fileTargetContextMenuProps
     };
-  }, [onOpenFile, openFile, order, store, turns]);
+  }, [onOpenFile, openFile, order, store, turns, props.fileTargetContextMenuProps]);
   const openDelegatedFile = (0, import_react93.useMemo)(() => {
     if (fileOpen === void 0)
       return () => {
@@ -63742,8 +63885,27 @@ function SessionViewModal(props) {
     console.info(`[dsh-plugin-core:session] \u4F1A\u8BDD running=${sessionSnap?.running === true}\uFF1B\u672B 4 \u4E2A=${tail.join(" | ")}\uFF1B\u5168\u6D41=${[...counts].map(([kind, count4]) => `${kind}\xD7${count4}`).join(" ")}`);
   }
   const openState = sessionSnap?.openState;
-  const showLoadOlder = sessionSnap?.hasMore !== false;
+  const hasMore = sessionSnap?.hasMore === true;
+  const showLoadOlder = hasMore || sessionSnap?.historyWasPartial === true;
   const runningRow = sessionSnap?.running !== true ? null : (0, import_react93.createElement)(RunningStatusMirror, { key: "running", startTime: runningStartTime, t: tt });
+  const olderRow = showLoadOlder ? (0, import_react93.createElement)(ChatOlderButton, {
+    key: "older",
+    labels: {
+      more: tt("sessionLoadOlder"),
+      loading: tt("chatLoadingOlder"),
+      processing: tt("chatProcessingOlder"),
+      error: tt("chatRetryOlder"),
+      start: tt("chatHistoryStart")
+    },
+    hasMore,
+    loadingOlder: sessionSnap?.loadingOlder,
+    historyLoadStatus: sessionSnap?.historyLoadStatus,
+    historyInputHeld: props.historyScroll?.inputHeld,
+    historyProcessing: props.historyScroll?.processing,
+    onClick: () => {
+      view.loadOlder();
+    }
+  }) : null;
   const body = rendered.length === 0 && pendingRows.length === 0 ? [
     bodyHeaderRow,
     // 官方三态各走各的类：error = openError（错误色），loading / 空 = hint。
@@ -63751,14 +63913,13 @@ function SessionViewModal(props) {
       key: "hint",
       text: openState === "loading" || openState === "cold" ? tt("sessionLoading") : tt("sessionEmpty")
     }),
+    olderRow,
     runningRow,
     // 已挂在最后一条 tail 上的话这里不再画（否则同一个槽出现两次）。
     footerAnchorKey === void 0 ? bodyFooterRow : null
   ] : [
     bodyHeaderRow,
-    showLoadOlder ? (0, import_react93.createElement)(ChatOlderButton, { key: "older", label: tt("sessionLoadOlder"), onClick: () => {
-      view.loadOlder();
-    } }) : null,
+    olderRow,
     ...rendered,
     ...pendingRows,
     runningRow,
@@ -63820,6 +63981,7 @@ function SessionViewModal(props) {
   const approvalRow = pendingApproval === void 0 ? null : (0, import_react93.createElement)("div", { className: "dshpc-sv-approval" }, (0, import_react93.createElement)(ApprovalPanelMirror, {
     approval: pendingApproval,
     command: approvalCommand(order, (key) => store?.get(key), pendingApproval.callId),
+    resolveReason: props.resolveApprovalReason,
     t: tt
   }));
   const hasCard = questionRow !== null || approvalRow !== null;
@@ -74438,7 +74600,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.26"}`],
             [t3("buildDemo"), `v${"0.35.26"}`],
-            [t3("buildStamp"), "261114-193819-009"]
+            [t3("buildStamp"), "261115-000359-592"]
           ].map(
             ([label, value]) => (0, import_react107.createElement)(
               "tr",
@@ -74758,7 +74920,7 @@ function DemoPage() {
           },
           (0, import_react109.createElement)("span", null, `core v${"0.35.26"}`),
           (0, import_react109.createElement)("span", null, `demo v${"0.35.26"}`),
-          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261114-193819-009")
+          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-000359-592")
         )
       )
     ),

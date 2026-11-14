@@ -11,15 +11,14 @@ import { Button, StateDot } from '../../../ui/official.js';
 import { officialClass } from '../official-classes.js';
 import { getLocale } from '../../../utils/i18n.js';
 const cls = (semantic) => officialClass('ApprovalPanel', semantic) ?? '';
-/** 官方 headline：请求方本地化文案优先，否则退「工具 X 请求越权执行」，再否则用审计 reason。 */
-function headline(approval, t) {
-    const shown = approval.displayReason;
-    if (shown !== undefined) {
-        const text = shown[getLocale()] ?? shown.en;
-        if (typeof text === 'string' && text !== '')
-            return text;
-    }
-    return approval.reason ?? t('approvalEscalation', { toolName: approval.toolName });
+function defaultResolveReason(shown) {
+    return shown[getLocale()] ?? shown.en;
+}
+function headline(approval, t, resolveReason) {
+    const reason = approval.displayReason === undefined
+        ? approval.reason
+        : resolveReason(approval.displayReason);
+    return reason ?? t('approvalEscalation', { toolName: approval.toolName });
 }
 /** 官方 ApprovalCommand（ui-chat lib/client.js:151-172）：callId → tool-call 起始节点的 args.command。 */
 export function approvalCommand(order, read, callId) {
@@ -52,7 +51,8 @@ export function approvalCommand(order, read, callId) {
  * shortcut: 未移植官方 root 上的 Enter/Esc 快捷键（要求焦点在卡内），需要键盘作答时补。
  */
 export function ApprovalPanelMirror(props) {
-    const { approval, command, t } = props;
+    const { approval, command, subject, description, t } = props;
+    const resolveReason = props.resolveReason ?? defaultResolveReason;
     const [answered, setAnswered] = useState(false);
     const waiting = useRef(false);
     const answer = (outcome) => {
@@ -66,13 +66,17 @@ export function ApprovalPanelMirror(props) {
             setAnswered(false);
         });
     };
-    return h('div', { className: cls('root'), 'data-approval-key': approval.key, 'aria-busy': answered }, h('div', { className: cls('card') }, h('div', { className: cls('strip') }, h(StateDot, { state: answered ? 'ongoing' : 'warning' }), t('approvalWaiting')), h('div', {
+    return h('div', { className: cls('root'), 'data-approval-key': approval.key, 'aria-busy': answered }, h('div', { className: subject === undefined ? cls('card') : `${cls('card')} ${cls('withSubject')}` }, h('div', { className: cls('strip') }, h(StateDot, { state: answered ? 'ongoing' : 'warning' }), t('approvalWaiting')), h('div', {
         className: cls('body'),
         'data-approval-scroll': '',
         tabIndex: 0,
         role: 'group',
         'aria-label': t('approvalDetailAria'),
-    }, h('div', { className: cls('headline') }, headline(approval, t)), command === undefined ? null : h('div', { className: cls('command') }, command)), h('div', { className: cls('actionRow') }, h(Button, {
+    }, subject === undefined
+        ? null
+        : h('div', { className: cls('subject') }, subject.icon === undefined
+            ? null
+            : h('img', { src: subject.icon, alt: '', width: 40, height: 40, draggable: false }), h('strong', null, subject.name)), h('div', { className: cls('heading') }, h('div', { className: cls('headline') }, headline(approval, t, resolveReason))), description === undefined ? null : h('p', { className: cls('description') }, description), command === undefined ? null : h('div', { className: cls('command') }, command)), h('div', { className: cls('actionRow') }, h(Button, {
         variant: 'outline',
         className: cls('reject'),
         disabled: answered,

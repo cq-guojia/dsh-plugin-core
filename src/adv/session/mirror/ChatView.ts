@@ -131,10 +131,36 @@ export function ChatCallRow(props: { children?: ReactNode }): ReturnType<typeof 
   return h('div', { className: officialClass('ChatView', 'callRow') ?? '' }, props.children)
 }
 
-/** 「加载更早记录」按钮（官方 older：按钮 4px 12px / 12px 字号 / radius-sm / 底色 interactive-bg-hover-solid）。 */
-export function ChatOlderButton(props: { label: string; onClick: () => void }): ReturnType<typeof h> {
-  return h('div', { className: officialClass('ChatView', 'older') ?? '' },
-    h('button', { type: 'button', onClick: props.onClick }, props.label),
+/** 官方 ChatView.tsx:253-272：older 按钮内 5 个叠放 span，只有当前态可见，其余挂 historyHidden 避免按钮宽度跳变。 */
+export type ChatHistoryState = 'more' | 'loading' | 'processing' | 'error' | 'start'
+const CHAT_HISTORY_STATES: readonly ChatHistoryState[] = ['more', 'loading', 'processing', 'error', 'start']
+
+export function ChatOlderButton(props: {
+  labels: Record<ChatHistoryState, string>
+  hasMore: boolean
+  loadingOlder?: boolean
+  historyLoadStatus?: 'idle' | 'loading' | 'error' | 'pendingConsumption'
+  historyInputHeld?: boolean
+  historyProcessing?: boolean
+  onClick: () => void
+}): ReturnType<typeof h> {
+  // 官方 ChatView.tsx:263-267：current 五态的判定顺序逐字照搬。
+  const current: ChatHistoryState = !props.hasMore ? 'start'
+    : props.loadingOlder === true ? 'loading'
+      : props.historyLoadStatus === 'error' ? 'error'
+        : props.historyInputHeld === true ? 'more'
+          : props.historyProcessing === true ? 'processing' : 'more'
+  return h('div', {
+    className: officialClass('ChatView', 'older') ?? '',
+    'data-chat-history': props.historyLoadStatus,
+    // shortcut: 官方 :254 另有 ref={scroll.historyEdgeRef} 滚动锚点，只读预览无 scroll controller。
+  },
+    h('button', { type: 'button', disabled: !props.hasMore, onClick: props.onClick },
+      CHAT_HISTORY_STATES.map(state => h('span', {
+        key: state,
+        'aria-hidden': state !== current,
+        className: state === current ? undefined : officialClass('ChatView', 'historyHidden') ?? undefined,
+      }, props.labels[state]))),
   )
 }
 

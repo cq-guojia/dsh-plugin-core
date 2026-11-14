@@ -7,18 +7,18 @@ import { Fragment, createElement as h } from 'react';
 import { createPortal } from 'react-dom';
 import { IconDatabaseOutlineRegular } from '../../../ui/official.js';
 import { officialClass } from '../official-classes.js';
-import { STAT_MEASURE_STYLE, useStatDialog } from './StatDialog.js';
+import { useStatDialog } from './StatDialog.js';
 import { formatCacheHitPercent, formatCompactCount, formatExactCount } from './message-chrome.js';
 /** 本轮用量 pill + 明细弹层。 */
 export function TurnUsagePanelMirror(props) {
     const { usage, t } = props;
-    const { open, setOpen, rootRef, panelRef, pos } = useStatDialog();
+    const { open, setOpen, rootRef, panelRef, anchorStyle, panelStyle } = useStatDialog();
     const cacheHit = usage.cacheReadTokens === undefined
         ? null
         : formatCacheHitPercent(usage.cacheReadTokens, usage.totalTokens - usage.outputTokens, 1);
     const total = formatCompactCount(usage.totalTokens, t);
     const routes = usage.routes?.map(route => `${route.provider}/${route.model}`).join(', ') ?? '';
-    return h('span', { ref: rootRef, className: officialClass('TurnUsagePanel', 'root') ?? '' }, h('button', {
+    return h('span', { ref: rootRef, className: officialClass('TurnUsagePanel', 'root') ?? '', style: anchorStyle }, h('button', {
         type: 'button',
         className: officialClass('TurnUsagePanel', 'trigger') ?? '',
         'aria-haspopup': 'dialog',
@@ -30,7 +30,7 @@ export function TurnUsagePanelMirror(props) {
             className: officialClass('stat-dialog', 'panel') ?? '',
             role: 'dialog',
             'aria-label': t('turnUsageTitle'),
-            style: pos ?? STAT_MEASURE_STYLE,
+            style: panelStyle,
         }, h('div', { className: officialClass('stat-dialog', 'title') ?? '' }, h('span', { className: officialClass('stat-dialog', 'titleLabel') ?? '' }, h(IconDatabaseOutlineRegular, null), t('turnUsageTitle')), h('span', { className: officialClass('stat-dialog', 'titleValue') ?? '' }, formatExactCount(usage.totalTokens, t))), h('div', { className: officialClass('stat-dialog', 'titleRule') ?? '', 'aria-hidden': true }), h('dl', { className: officialClass('stat-dialog', 'details') ?? '', 'data-turn-usage-details': true }, routes === '' ? null : h(Fragment, null, h('dt', null, t('turnUsageModel')), h('dd', { className: officialClass('stat-dialog', 'route') ?? '' }, routes)), cacheHit === null ? null : h(Fragment, null, h('dt', null, t('turnUsageCacheHit')), h('dd', null, `${cacheHit}%`)), h('dt', null, t('turnUsageInput')), h('dd', null, formatExactCount(usage.uncachedInputTokens, t)), usage.cacheReadTokens === undefined ? null : h(Fragment, null, h('dt', null, t('turnUsageCacheRead')), h('dd', null, formatExactCount(usage.cacheReadTokens, t))), usage.cacheWriteTokens === undefined ? null : h(Fragment, null, h('dt', null, t('turnUsageCacheWrite')), h('dd', null, formatExactCount(usage.cacheWriteTokens, t))), h('dt', null, t('turnUsageOutput')), h('dd', null, formatExactCount(usage.outputTokens, t), usage.reasoningTokens === undefined
             ? null
             : h('span', {

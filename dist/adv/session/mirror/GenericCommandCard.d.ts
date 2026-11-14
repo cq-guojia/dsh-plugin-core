@@ -131,6 +131,30 @@ export declare function ExitCodeBadge({ label }: {
  * 工具调用 / 命令卡（官方 GenericToolCard + ToolRow 镜像）。
  * 折叠行 = 图标 + 标题 [+ 分隔点 + 摘要（文件路径链接化）+ 后缀]；展开体按官方分发链。
  */
+/** 官方 tool-call-model.ts:149-165：摘要分隔符 / 移动符 / 逐文件目标结构。 */
+export declare const FILE_TARGET_SEPARATOR = ", ";
+export declare const FILE_TARGET_MOVE = " \u2192 ";
+export interface ToolRowFileTargetFace {
+    readonly id: number;
+    readonly from?: string;
+    readonly label: string;
+    readonly filePath: string | undefined;
+}
+/**
+ * 官方 tool-call-model.ts:380 `patch = toolName === 'apply_patch' ? patchSummary(block.args, …)`：
+ * patch 原文只来自 apply_patch 的 `input` 参数（`block.args.text('input')`），且只在参数完整时成立。
+ * 本仓 argsRaw 是参数 JSON 文本，流式半截 / 非法 JSON 一律按官方 `args.complete('input') === false` 处理。
+ */
+export declare function patchInputOf(name: string, argsRaw: string): string | undefined;
+/** 官方 `@deepseek-ai/dsh-util-workspace-path` src/index.ts:17-19 的等价判定（POSIX / Windows 盘符 / UNC）。 */
+export declare function isAbsoluteWorkspacePath(path: string): boolean;
+/**
+ * 官方 tool-call-model.ts:311-330 `patchSummary` 的等价复刻：parsePatch 的文件头操作 → 摘要目标。
+ * parsePatch 实现体属宿主 `@deepseek-ai/dsh-fs-patch`（lib/client.js 内），本仓只复刻其文件头解析；
+ * malformed patch 与官方一样返回空目标（PatchParseError ⇒ operations=[]）。
+ * shortcut: 官方 display() 按 cwd / home 缩写路径，只读预览无这两个上下文，直接显示原始路径。
+ */
+export declare function patchFileTargets(patch: string | undefined): readonly ToolRowFileTargetFace[];
 export declare function GenericCommandCard(props: {
     name: string;
     argsRaw: string;
@@ -147,6 +171,8 @@ export declare function GenericCommandCard(props: {
     interrupted?: boolean;
     /** root.error.code（ASK_CANCELLED / ASK_ABORTED / …）。 */
     errorCode?: string;
+    /** 官方 ToolRow.tsx:274 的宿主文件右键菜单通道；不传则不展开，不伪造。 */
+    fileTargetContextMenuProps?: (path: string) => Record<string, unknown> | undefined;
     /** 统一 openFile 入口：read/write/edit 摘要路径渲染成官方 fileLink（read 带 offset 落点行）。 */
     onOpenFile?: (path: string, options?: {
         line?: number;

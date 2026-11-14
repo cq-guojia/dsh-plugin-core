@@ -1,5 +1,5 @@
 /** 本仓会话预览当前对齐的宿主版本（单一真源；升级核对工具读这里，散落的版本注释不作真源）。 */
-export declare const ALIGNED_HOST_VERSION = "0.2.2-rc.1";
+export declare const ALIGNED_HOST_VERSION = "0.2.2-rc.3";
 /** 语义名 → 真实（带哈希）类名。 */
 export type OfficialClassMap = Map<string, string>;
 /**

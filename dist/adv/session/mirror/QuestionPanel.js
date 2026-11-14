@@ -33,6 +33,10 @@ import { parseRecommendedLabel, recommendedOptions, } from '../pending-questions
 const cls = (...names) => names.filter((name) => typeof name === 'string' && name !== '').join(' ');
 /** 取一个官方题面板类名；官方样式未注入时留空（不写死哈希，也不自绘顶替）。 */
 const c = (semantic) => officialClass('QuestionComposer', semantic) ?? '';
+/** 官方 QuestionComposer.tsx:637-642：单选已选中某项 ⇒ 抑制自定义输入行的 focus-within 高亮。 */
+export function customRowYielded(multiSelect, selectedCount) {
+    return multiSelect !== true && selectedCount > 0;
+}
 const EMPTY_COPIES = new Set();
 /**
  * 待答题目面板（官方 QuestionComposer 的 1:1 复刻）。
@@ -283,7 +287,9 @@ export function QuestionPanel(props) {
                 }, isExpanded ? h(IconChevronUpOutlineRegular) : h(IconChevronDownOutlineRegular)));
         }), hasOptions
             ? h('div', {
-                className: cls(c('customRow'), draft.custom !== '' && c('customRowActive')),
+                className: cls(c('customRow'), draft.custom !== '' && c('customRowActive'), 
+                // 官方 QuestionComposer.tsx:637-642：单选已选中某项时抑制自定义输入行抢焦点高亮。
+                customRowYielded(current.multiSelect === true, draft.selected.length) && c('customRowYielded')),
             }, current.multiSelect === true
                 ? h('span', {
                     className: cls(c('checkbox'), draft.custom !== '' && c('checkboxChecked')),

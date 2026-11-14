@@ -51,6 +51,28 @@ export interface SessionViewModalProps {
     /** 变更文件点击出口（官方 openReview 等价）：带「改动身份」(sessionId+seq+index)，
      *  消费方据此开审阅（本包走 openFilePreview 的 content 槽）。缺省 = 变更卡整张不可点。 */
     onOpenReview?: (locator: ChangedFileReviewLocator) => void;
+    /**
+     * 官方 `useChatScroll()` 的交互态投影（ChatView.tsx:266-267 的 scroll.historyInputHeld /
+     * historyProcessing）：来自 use-chat-viewport.ts:1013 的触摸/指针按住与
+     * use-chat-navigation.ts:308 的 historyIntent。它们**不在** session 快照里，
+     * 只读预览没有该 controller ⇒ 缺省按官方 useState(false) / 'none' 初值处理，不伪造。
+     * 接了真实滚动控制器的调用方才注入，用于 older 五态的 processing / 回落 more 分支。
+     */
+    historyScroll?: {
+        inputHeld?: boolean;
+        processing?: boolean;
+    };
+    /**
+     * 官方 ToolRow.tsx:274 `fileTargetContextMenuProps` 的宿主右键菜单通道
+     * （file-mutation-row.tsx:62 由 getTriggerProps 注入）。只读预览默认没有该通道；
+     * 调用方接了宿主菜单才传，不传则不展开，不伪造。
+     */
+    fileTargetContextMenuProps?: (path: string) => Record<string, unknown> | undefined;
+    /**
+     * 官方 ui-approval index.ts:104 `resolveReason: ctx.locale.resolveText` 的宿主注入口。
+     * 不传 = 用本仓 getLocale() → en 语言回退链（自有 locale 真源），不伪造。
+     */
+    resolveApprovalReason?: (shown: Readonly<Record<string, string>>) => string | undefined;
 }
 /**
  * 面板内只读会话弹窗：只读、不可在框内续聊（底层 keyed 数组是只读快照，官方无写面）。

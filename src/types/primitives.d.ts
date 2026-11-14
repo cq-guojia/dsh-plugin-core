@@ -175,6 +175,7 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
   export const IconAlarmClockOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconPlayOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconQueueOutlineRegular: ComponentType<{ size?: number; className?: string }>
+  export const IconUsersOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconCordisPluginOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconThinkOutlineRegular: ComponentType<{ size?: number; className?: string }>
   export const IconBrowseOutlineRegular: ComponentType<{ size?: number; className?: string }>
@@ -342,17 +343,6 @@ declare module '@deepseek-ai/dsh-client-ui-primitives' {
     actions?: readonly { label: string; prefix?: string; onClick: () => void }[]
     onDone: () => void
   }>
-
-  /** 官方「固定定位浮层贴住锚点」：滚动 / 尺寸变化时自动重算并夹在视口内。 */
-  export function useAnchoredPosition(options: {
-    open: boolean
-    anchorRef: { current: HTMLElement | null }
-    panelRef: { current: HTMLElement | null }
-    side?: 'top' | 'bottom'
-    align?: 'start' | 'end'
-    gap: number
-    margin: number
-  }): import('react').CSSProperties | undefined
 
   /** 官方「点外关闭」：锚点与面板之外按下指针时关闭。 */
   export function useDismissOnOutsidePointer(

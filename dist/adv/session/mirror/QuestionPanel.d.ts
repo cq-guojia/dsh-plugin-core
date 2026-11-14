@@ -1,6 +1,8 @@
 import type { ReactElement } from 'react';
 import type { Translate } from '../../../utils/i18n.js';
 import { type PendingQuestionAnswerItem, type PendingQuestionCardState, type PendingQuestionItem } from '../pending-questions.js';
+/** 官方 QuestionComposer.tsx:637-642：单选已选中某项 ⇒ 抑制自定义输入行的 focus-within 高亮。 */
+export declare function customRowYielded(multiSelect: boolean, selectedCount: number): boolean;
 export interface QuestionPanelProps {
     /** 卡片身份（官方 `PendingQuestion.key`），落到 `data-question-key`。 */
     panelKey?: string;

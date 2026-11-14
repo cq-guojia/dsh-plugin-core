@@ -751,6 +751,72 @@ export function ExitCodeBadge({ label }: { label: string }): ReturnType<typeof h
  * 工具调用 / 命令卡（官方 GenericToolCard + ToolRow 镜像）。
  * 折叠行 = 图标 + 标题 [+ 分隔点 + 摘要（文件路径链接化）+ 后缀]；展开体按官方分发链。
  */
+/** 官方 tool-call-model.ts:149-165：摘要分隔符 / 移动符 / 逐文件目标结构。 */
+export const FILE_TARGET_SEPARATOR = ', '
+export const FILE_TARGET_MOVE = ' → '
+export interface ToolRowFileTargetFace {
+  readonly id: number
+  readonly from?: string
+  readonly label: string
+  readonly filePath: string | undefined
+}
+
+const PATCH_BEGIN = '*** Begin Patch'
+const PATCH_END = '*** End Patch'
+const PATCH_ADD = '*** Add File: '
+const PATCH_DELETE = '*** Delete File: '
+const PATCH_UPDATE = '*** Update File: '
+const PATCH_MOVE = '*** Move to: '
+
+/**
+ * 官方 tool-call-model.ts:380 `patch = toolName === 'apply_patch' ? patchSummary(block.args, …)`：
+ * patch 原文只来自 apply_patch 的 `input` 参数（`block.args.text('input')`），且只在参数完整时成立。
+ * 本仓 argsRaw 是参数 JSON 文本，流式半截 / 非法 JSON 一律按官方 `args.complete('input') === false` 处理。
+ */
+export function patchInputOf(name: string, argsRaw: string): string | undefined {
+  if (name !== 'apply_patch') return undefined
+  const parsed = parseArgs(argsRaw)
+  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return undefined
+  const input = (parsed as Record<string, unknown>).input
+  return typeof input === 'string' && input !== '' ? input : undefined
+}
+
+/** 官方 `@deepseek-ai/dsh-util-workspace-path` src/index.ts:17-19 的等价判定（POSIX / Windows 盘符 / UNC）。 */
+export function isAbsoluteWorkspacePath(path: string): boolean {
+  return path.startsWith('/') || /^[A-Za-z]:[/\\]/.test(path) || path.startsWith('\\\\')
+}
+
+/**
+ * 官方 tool-call-model.ts:311-330 `patchSummary` 的等价复刻：parsePatch 的文件头操作 → 摘要目标。
+ * parsePatch 实现体属宿主 `@deepseek-ai/dsh-fs-patch`（lib/client.js 内），本仓只复刻其文件头解析；
+ * malformed patch 与官方一样返回空目标（PatchParseError ⇒ operations=[]）。
+ * shortcut: 官方 display() 按 cwd / home 缩写路径，只读预览无这两个上下文，直接显示原始路径。
+ */
+export function patchFileTargets(patch: string | undefined): readonly ToolRowFileTargetFace[] {
+  if (patch === undefined) return []
+  const lines = patch.trim().split(/\r?\n/)
+  if (lines[0]?.trim() !== PATCH_BEGIN || lines[lines.length - 1]?.trim() !== PATCH_END) return []
+  type Operation = { lineNumber: number; kind: 'add' | 'delete' | 'update'; path: string; moveTo?: string }
+  const operations: Operation[] = []
+  for (let index = 1; index < lines.length - 1; index += 1) {
+    const header = (lines[index] ?? '').trim()
+    const lineNumber = index + 1
+    if (header.startsWith(PATCH_ADD)) operations.push({ lineNumber, kind: 'add', path: header.slice(PATCH_ADD.length) })
+    else if (header.startsWith(PATCH_DELETE)) operations.push({ lineNumber, kind: 'delete', path: header.slice(PATCH_DELETE.length) })
+    else if (header.startsWith(PATCH_UPDATE)) operations.push({ lineNumber, kind: 'update', path: header.slice(PATCH_UPDATE.length) })
+    else if (header.startsWith(PATCH_MOVE)) {
+      const last = operations[operations.length - 1]
+      if (last?.kind === 'update' && last.moveTo === undefined) last.moveTo = header.slice(PATCH_MOVE.length)
+    }
+  }
+  return operations.map(op => {
+    const moveTo = op.kind === 'update' ? op.moveTo : undefined
+    return moveTo === undefined
+      ? { id: op.lineNumber, label: op.path, filePath: op.kind === 'delete' ? undefined : op.path }
+      : { id: op.lineNumber, from: op.path, label: moveTo, filePath: moveTo }
+  })
+}
+
 export function GenericCommandCard(props: {
   name: string
   argsRaw: string
@@ -767,6 +833,8 @@ export function GenericCommandCard(props: {
   interrupted?: boolean
   /** root.error.code（ASK_CANCELLED / ASK_ABORTED / …）。 */
   errorCode?: string
+  /** 官方 ToolRow.tsx:274 的宿主文件右键菜单通道；不传则不展开，不伪造。 */
+  fileTargetContextMenuProps?: (path: string) => Record<string, unknown> | undefined
   /** 统一 openFile 入口：read/write/edit 摘要路径渲染成官方 fileLink（read 带 offset 落点行）。 */
   onOpenFile?: (path: string, options?: { line?: number }) => void
   /** `read_image` 的图片卡面（imageCardFace 的结果）；undefined = 走通用卡。 */
@@ -775,7 +843,11 @@ export function GenericCommandCard(props: {
   loadImage?: MessageImageLoader
   t: Translate
 }): ReturnType<typeof h> {
-  const { name, argsRaw, output, isError, meta, settled = true, phase, interrupted, errorCode, onOpenFile, image, loadImage, t } = props
+  const { name, argsRaw, output, isError, meta, settled = true, phase, interrupted, errorCode,
+    fileTargetContextMenuProps, onOpenFile, image, loadImage, t } = props
+  // 官方 tool-call-model.ts:380：patch 只由 apply_patch 的 input 参数派生，不接受外部注入；
+  // 只读预览的 argsRaw 就是 args 文本，三个调用点因此自动共用同一条真实数据链。
+  const patchInput = patchInputOf(name, argsRaw)
   const [expanded, setExpanded] = useState(false)
   const variant = classifyTool(name)
   const titleKey = toolTitleKey(name)
@@ -852,6 +924,23 @@ export function GenericCommandCard(props: {
       return protocol === 'http:' || protocol === 'https:' ? url : undefined
     } catch { return undefined }
   })()
+  // 官方 tool-call-model.ts:380,384-391：patch 只由 apply_patch 的 input 派生，且只有
+  // patch !== undefined 才可能有 fileTargets；结果 diff 卡的多文件不能拿来凑 fileLinks。
+  const patchTargets = patchInput === undefined ? [] : patchFileTargets(patchInput)
+  // 官方 :384-386 usableArgumentPath 逐目标降级：非绝对工作区路径且未成功结算 ⇒ 只出裸 label。
+  // parentCallId 在只读快照里恒缺席，等价官方 `parentCallId === undefined` 分支恒真。
+  const usableArgumentPath = (path: string): boolean =>
+    isAbsoluteWorkspacePath(path) || (settled && !isError)
+  const fileTargets = patchInput !== undefined
+    && (patchTargets.length > 1 || patchTargets.some(target => target.from !== undefined))
+    ? patchTargets.map(target => target.filePath === undefined || usableArgumentPath(target.filePath)
+        ? target
+        : { ...target, filePath: undefined })
+    : undefined
+  // 官方 ToolRow.tsx:245：只有成功结算行、且至少一个目标可打开，才给逐文件链接。
+  const openTarget = rowState === 'ok' && fileTargets?.some(target => target.filePath !== undefined) === true
+    ? onOpenFile
+    : undefined
   // 展开体（官方 1514-1550）：input/output/card 三源；bodyText 仅展开且无专属卡时格式化。
   // 官方 singleFile（1876/1885）：摘要已是文件路径链接的工具（read）不再摊原始输入 JSON。
   const inputRaw = argsRaw === '' || filePath !== undefined ? null : argsRaw
@@ -873,18 +962,48 @@ export function GenericCommandCard(props: {
       : rowState === 'error' ? t('rowFailed')
         : rowState === 'stopped' ? t('rowStopped')
           : null
+  // 官方 ToolRow.tsx:310-315 clsx：两个状态色类都以 exitLabel === null 为前提。
   const summaryClassName = `${officialClass('ToolRow', 'summary') ?? ''}${
-    rowState === 'error' ? ` ${officialClass('ToolRow', 'errorSummary') ?? ''}` : ''
-  }${rowState === 'stopped' ? ` ${officialClass('ToolRow', 'stoppedSummary') ?? ''}` : ''}`
+    exitLabel === null && rowState === 'error' ? ` ${officialClass('ToolRow', 'errorSummary') ?? ''}` : ''
+  }${exitLabel === null && rowState === 'stopped' ? ` ${officialClass('ToolRow', 'stoppedSummary') ?? ''}` : ''}`
   const collapsedContent = summaryText === '' ? undefined : h(Fragment, null,
-    h('span', { className: officialClass('ToolRow', 'sep') ?? '', 'aria-hidden': true }),
-    openFile !== undefined
-      ? h('button', {
+    h('span', {
+      className: officialClass('ToolRow', 'sep') ?? '',
+      'data-shimmer-decoration': true,
+      'aria-hidden': true,
+    }),
+    exitLabel === null && fileTargets !== undefined && openTarget !== undefined
+      ? h('span', { className: officialClass('ToolRow', 'fileLinks') ?? '' },
+          fileTargets.map((target, index) => {
+            const path = target.filePath
+            const menu = path === undefined ? undefined : fileTargetContextMenuProps?.(path)
+            return h(Fragment, { key: target.id },
+              index > 0 ? FILE_TARGET_SEPARATOR : null,
+              target.from === undefined ? null : `${target.from}${FILE_TARGET_MOVE}`,
+              path === undefined
+                ? target.label
+                : h('button', {
+                    type: 'button',
+                    className: officialClass('ToolRow', 'fileTargetLink') ?? '',
+                    ...menu,
+                    onClick: (event: ReactMouseEvent<HTMLButtonElement>) => { stopLinkClick(event); openTarget(path) },
+                    onKeyDown: (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+                      summaryLinkKeyDown(event)
+                      const forwarded = menu?.onKeyDown
+                      if (typeof forwarded === 'function') {
+                        (forwarded as (e: ReactKeyboardEvent<HTMLButtonElement>) => void)(event)
+                      }
+                    },
+                  }, target.label),
+            )
+          }))
+      : exitLabel === null && openFile !== undefined
+        ? h('button', {
           type: 'button',
           className: officialClass('ToolRow', 'fileLink') ?? '',
           onClick: (event: ReactMouseEvent<HTMLButtonElement>) => { stopLinkClick(event); openFile() },
         }, h(TextShimmer, { active: running }, summaryText))
-      : linkHref !== undefined
+      : exitLabel === null && linkHref !== undefined
         ? h('a', {
             className: officialClass('ToolRow', 'fileLink') ?? '',
             href: linkHref,

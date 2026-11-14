@@ -19,12 +19,16 @@ function walk(dir) {
 
 test('内置字典没有死 key', () => {
   const files = walk(SRC)
-  const code = files.map((f) => fs.readFileSync(f, 'utf8')).join('\n')
+  const dictFile = path.join(SRC, 'utils', 'i18n.ts')
+  // 字典本体必须排除：I18nKey 联合类型把每个 key 都写成带引号字面量，
+  // 混进 code 会让「有没有被引用」恒真，旧守卫查不出死 key。
+  const code = files.filter((f) => f !== dictFile).map((f) => fs.readFileSync(f, 'utf8')).join('\n')
+  const dict = fs.readFileSync(dictFile, 'utf8')
   // 只取 zh 字典块（避免误匹配别处 4 空格缩进的 type: '...' 之类）
-  const start = code.indexOf('  zh: {')
-  const end = code.indexOf('  en: {', start)
+  const start = dict.indexOf('  zh: {')
+  const end = dict.indexOf('  en: {', start)
   assert.ok(start >= 0 && end > start, '定位不到 zh 字典块，正则/结构可能变了')
-  const zhBlock = code.slice(start, end)
+  const zhBlock = dict.slice(start, end)
   const keys = [...zhBlock.matchAll(/^\s{4}([a-zA-Z][a-zA-Z0-9]*):\s*'/gm)].map((m) => m[1])
   assert.ok(keys.length > 30, `应抓到 30+ 个 key，实际 ${keys.length}（正则可能失效）`)
   const dead = keys.filter((k) => !code.includes(`'${k}'`))

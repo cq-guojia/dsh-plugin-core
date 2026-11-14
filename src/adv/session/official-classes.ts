@@ -28,7 +28,7 @@
 //   0.2.x 已删 ToolRow.chevron / imageLabel（箭头样式并入 primitives DisclosureRow）。
 
 /** 本仓会话预览当前对齐的宿主版本（单一真源；升级核对工具读这里，散落的版本注释不作真源）。 */
-export const ALIGNED_HOST_VERSION = '0.2.2-rc.1'
+export const ALIGNED_HOST_VERSION = '0.2.2-rc.3'
 
 /** 官方注入 style 标签的 data-plugin-css 包前缀（chat 主视图 + ui-tool / ui-skill 工具卡 + ui-deliverables + ui-approval 审批卡）。 */
 const CSS_PKG_PREFIXES = [
@@ -43,8 +43,8 @@ const CSS_PKG_PREFIXES = [
   '@deepseek-ai/dsh-client-ui-approval/',
   // 待答题目面板（mirror/QuestionPanel.ts）；tagId =
   // `@deepseek-ai/dsh-client-ui-user-questions/QuestionComposer.module.css`。
-  // 该包是**宿主外壳包、未发 npm**（源码在公开仓库 packages/client/ui-user-questions/），
-  // 但样式同样是 data-plugin-css 注入 ⇒ 类名照旧运行时发现，不写死哈希。
+  // 0.2.2-rc.3 起发布了同号 npm 包（rc.1 时还是未发布的外壳包，源码在公开仓库
+  // packages/client/ui-user-questions/）；样式同样是 data-plugin-css 注入 ⇒ 类名照旧运行时发现。
   '@deepseek-ai/dsh-client-ui-user-questions/',
 ]
 

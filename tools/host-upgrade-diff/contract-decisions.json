@@ -1,0 +1,152 @@
+{
+  "ApprovalPanel.description": {
+    "kind": "aligned",
+    "evidence": "dsh-client-ui-approval@0.2.2-rc.3 src/client/ApprovalCard.tsx:76",
+    "reason": "官方 body 内 heading 之后、command 之前的可选 description 入参分支；本仓按原文补 props 与条件渲染，条件不成立时不挂类"
+  },
+  "ApprovalPanel.heading": {
+    "kind": "aligned",
+    "evidence": "dsh-client-ui-approval@0.2.2-rc.3 src/client/ApprovalCard.tsx:72-75",
+    "reason": "官方无条件 heading 行容器包 headline（与 warningTrigger）；本仓原先 headline 直挂 body，缺这一层"
+  },
+  "ApprovalPanel.subject": {
+    "kind": "aligned",
+    "evidence": "dsh-client-ui-approval@0.2.2-rc.3 src/client/ApprovalCard.tsx:68-71",
+    "reason": "官方 body 首子节点的可选 subject（应用授权卡复用路径）；本仓补 props 与条件渲染，工具审批路径恒不画。前提登记：官方 warning* 四条同在 subject 之后，且宿主只在传 warning 时成立（index.ts:104 composer 注入没有 warning 入参）⇒ 本仓按同一前提不实现这四条，判定 notApplicable 的前提是「工具审批路径不传 warning」"
+  },
+  "ApprovalPanel.withSubject": {
+    "kind": "aligned",
+    "evidence": "dsh-client-ui-approval@0.2.2-rc.3 src/client/ApprovalCard.tsx:59",
+    "reason": "官方挂在 card 层、仅 subject !== undefined 时拼上；本仓按同一条件拼类"
+  },
+  "ApprovalPanel.warningPopover": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-approval@0.2.2-rc.3 src/client/ApprovalWarning.tsx:88-95；ApprovalPanel.tsx:12-19",
+    "reason": "hover/focus/touch 打开的 portal 交互态，需宿主 MenuSurface/useDismissOnOutsidePointer/anchor positioning；官方工具审批 composer 从不传 warning，只读预览无此态"
+  },
+  "ApprovalPanel.warningTag": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-approval@0.2.2-rc.3 src/client/ApprovalWarning.tsx:84-86",
+    "reason": "warningTrigger 内部的 Tag 锚点内容，脱离 popover 交互不成立"
+  },
+  "ApprovalPanel.warningTitle": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-approval@0.2.2-rc.3 src/client/ApprovalWarning.tsx:92",
+    "reason": "portal 内 MenuSurface 的标题，只读预览无 portal 态"
+  },
+  "ApprovalPanel.warningTrigger": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-approval@0.2.2-rc.3 src/client/ApprovalWarning.tsx:80-83",
+    "reason": "hover/键盘焦点/触摸激活按钮，官方工具审批路径不传 warning 且本仓无对应原语"
+  },
+  "bash-sample.inspectButton": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-tool@0.2.2-rc.3 src/client/tool/toolviews/bash-sample.tsx:158-163；contract/slots.ts:70-72",
+    "reason": "宿主 ToolCallTree 注入的轨迹视图 inspect 回调；本仓无 inspectCall 数据源，硬画按钮等于自造入口"
+  },
+  "ChatView.historyHidden": {
+    "kind": "aligned",
+    "evidence": "dsh-client-ui-chat@0.2.2-rc.3 src/client/chat/ChatView.tsx:253-272；ChatView.module.css:348-350",
+    "reason": "官方 older 按钮内 5 个叠放 span，仅当前态可见；本仓按 :263-267 复刻 current 五态判定（含 error/processing）、:253 的 (hasMore || historyWasPartial) 外层条件（hint/openError/older/flow 并列兄弟，空正文也挂）与 :254 的 data-chat-history 实值透传（缺值不编造）；:266-267 的 scroll.historyInputHeld / historyProcessing 来自 useChatScroll 交互 controller（use-chat-scroll.ts:57/62、use-chat-navigation.ts:308、use-chat-viewport.ts:1013），不在 session 快照里 ⇒ 本仓改由 props.historyScroll 由调用方注入真实投影，缺省按官方 useState(false) / 'none' 初值处理；shortcut: :254 的 scroll.historyEdgeRef 滚动锚点在只读预览无对应 controller，未伪造"
+  },
+  "ChatView.textInteraction": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-chat@0.2.2-rc.3 src/client/chat/ChatView.tsx:286-292；ChatView.module.css:419-426",
+    "reason": "宿主选中手势 + keyed 插件槽驱动的浮层，容器恒 visibility:hidden 且 active===null 时为空；挂到已有元素会直接隐藏它"
+  },
+  "Deliverables.hostStatus": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-deliverables@0.2.2-rc.3 src/client/Deliverables.tsx:103-107",
+    "reason": "桌面 Host 可用性探测（usePresentedHost）的错误/不可用状态行与重试按钮；本弹窗无原生 Host 服务"
+  },
+  "FileDiff.cell": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-deliverables@0.2.2-rc.3 src/client/FileDiff.tsx:236-241；ChangedFiles.tsx:118-120",
+    "reason": "右侧审阅标签页 split 视图的左右单元格；hover 预览官方自己传 split=false，只读预览无 split 开关"
+  },
+  "FileDiff.column": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-deliverables@0.2.2-rc.3 src/client/FileDiff.tsx:195-197",
+    "reason": "SplitColumns 的左右两列，仅 split && !wrap 时渲染；本仓无 ReviewTab 与 splitRows 数据"
+  },
+  "FileDiff.columns": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-deliverables@0.2.2-rc.3 src/client/FileDiff.tsx:195,231",
+    "reason": "split && !wrap 分支的双列容器；hover 预览恒 unified"
+  },
+  "FileDiff.empty": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-deliverables@0.2.2-rc.3 src/client/FileDiff.tsx:206,237,241",
+    "reason": "split 行里缺 left/right 时的替代类；本仓 ChangedFileDiff 的 'empty' 是 data-diff-note 取值，不是类名"
+  },
+  "FileDiff.sideLine": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-deliverables@0.2.2-rc.3 src/client/FileDiff.tsx:206",
+    "reason": "split && !wrap 分支的单侧行，依赖 splitRows 配对数据"
+  },
+  "FileDiff.splitLine": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-deliverables@0.2.2-rc.3 src/client/FileDiff.tsx:235-236",
+    "reason": "split && wrap 分支的成对行，依赖 ReviewTab 的 split 状态"
+  },
+  "MessageImage.spinner": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-attachment@0.2.2-rc.3 src/MessageImage.tsx:118,146-150",
+    "reason": "仅 variant==='thumbnail' && src===null 的旋转图标分支；本仓 ImageGalleryMirror 无 thumbnail 变体，分支不可达，挂到 span.loading 会让文字无限旋转"
+  },
+  "MessageItem.actions": {
+    "kind": "noop",
+    "evidence": "dsh-client-ui-chat@0.2.2-rc.3 src/client/chat/MessageItem.tsx:257-263；MessageItem.module.css 全文无 .actions；MessageIconActions.module.css:5-10",
+    "reason": "官方传的是父模块布局覆盖类名，本模块 CSS 未定义 ⇒ 运行时 undefined；真身在 MessageIconActions/TurnTailNodeView，本仓两处已挂等价类名"
+  },
+  "PresentRow.inspect": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-deliverables@0.2.2-rc.3 src/client/PresentRow.tsx:56；contract/slots.ts:70-72",
+    "reason": "宿主注入的轨迹视图 inspect 回调按钮；本弹窗无原生层与回调"
+  },
+  "QuestionComposer.customRowYielded": {
+    "kind": "aligned",
+    "evidence": "dsh-client-ui-user-questions@0.2.2-rc.3 src/client/QuestionComposer.tsx:637-642；QuestionComposer.module.css:491,502",
+    "reason": "单选已选中某项时抑制自定义输入行抢焦点高亮的纯抑制类；本仓按官方同一条件挂到 customRow"
+  },
+  "QuestionComposer.reviewNote": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-user-questions@0.2.2-rc.3 src/client/QuestionComposer.tsx:628-630",
+    "reason": "已结算调用的 review 只读回放卡（草稿由 recorded answers 初始化）；本仓 settled 题走 QuestionReplyView 复刻，预览无 review 卡座位"
+  },
+  "QuestionComposer.waitButton": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-user-questions@0.2.2-rc.3 src/client/QuestionComposer.tsx:488-492,284-288",
+    "reason": "调 pending.takeTime() 挂起宿主前台 claim 的『慢慢回答』按钮；只读预览无活体交互可挂起，数据面无 waitState/takeTime"
+  },
+  "SkillRow.inspectButton": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-skill@0.2.2-rc.3 src/client/SkillRow.tsx:163-168；ui-tool contract/slots.ts:70-72",
+    "reason": "同 ToolRow：宿主轨迹视图回调按钮；本仓无 inspect 数据源"
+  },
+  "ToolRow.chevron": {
+    "kind": "noop",
+    "evidence": "dsh-client-ui-tool@0.2.2-rc.3 src/client/tool/components/QuestionToolRow.tsx:31；ToolRow.module.css 全文无 .chevron",
+    "reason": "官方把未定义的 css.chevron 传给 DisclosureRow.chevronClassName，是失效 no-op；本仓直接挂官方 DisclosureRow 原语，箭头样式等价"
+  },
+  "ToolRow.fileLinks": {
+    "kind": "aligned",
+    "evidence": "dsh-client-ui-tool@0.2.2-rc.3 src/client/tool/components/ToolRow.tsx:263-280",
+    "reason": "apply_patch 多文件目标的逗号串联容器；本仓按官方 tool-call-model.ts:311-330 patchSummary 契约复刻 patchInput → ToolRowFileTarget（含 move/delete，patch 只由 apply_patch 的 input 参数派生，不接受外部注入），fileTargets 判据照 :388 的 patch !== undefined 前提与 :384-386 usableArgumentPath 逐目标降级（非绝对工作区路径且未成功结算 ⇒ 只出裸 label），openTarget 判据照 ToolRow.tsx:245（仅 state==='ok' 且有可打开目标），sep 补官方 :262 的 data-shimmer-decoration"
+  },
+  "ToolRow.fileTargetLink": {
+    "kind": "aligned",
+    "evidence": "dsh-client-ui-tool@0.2.2-rc.3 src/client/tool/components/ToolRow.tsx:129-146,269-276",
+    "reason": "fileLinks 内有 filePath 的目标按钮（stopPropagation + onOpenFile）；本仓按官方 DOM 层级补，并接入可选 fileTargetContextMenuProps（官方 :134/:141/:274 的宿主右键菜单通道，不传则不展开）；delete 目标无 filePath ⇒ 裸 label 分支真实可达"
+  },
+  "ToolRow.inspectButton": {
+    "kind": "notApplicable",
+    "evidence": "dsh-client-ui-tool@0.2.2-rc.3 src/client/tool/components/ToolRow.tsx:443-452；ToolCallTree.tsx:39",
+    "reason": "宿主 ToolCallTree 注入 inspectCall 才渲染的轨迹视图按钮；本仓无该回调"
+  },
+  "TurnTriggerNodeView.continuation": {
+    "kind": "aligned",
+    "evidence": "dsh-client-ui-chat@0.2.2-rc.3 src/client/chat/TurnTriggerNodeView.tsx:35-40；turn-trigger.ts:46",
+    "reason": "retry 且 content 为空的『手动继续回执』早返回分支，不渲 section.root；本仓补 compact 判定、continue 图标与 continuation/icon 两层 DOM"
+  }
+}

@@ -62,7 +62,7 @@ const READY_CHAT = {
 function render(props = {}) {
   return renderToStaticMarkup(h(SessionViewModal, {
     sessionId: 'sess-abc-123',
-    view: fakeView(READY_CHAT, { openState: 'open', hasMore: true }),
+    view: fakeView(READY_CHAT, { openState: 'open', hasMore: true, historyLoadStatus: 'idle' }),
     onClose: noop,
     ...props,
   }))
@@ -100,14 +100,72 @@ test('顺序：顶端槽在「加载更早」与全部节点之前，底端槽�
   const html = render({ bodyHeader: '顶端提示', bodyFooter: '底端汇总' })
   const flow = html.indexOf('data-chat-flow')
   const header = html.indexOf('dshpc-sv-body-header')
-  const older = html.indexOf('加载更早记录')
+  const older = html.indexOf('加载更早')
   const first = html.indexOf('会话里的第一句话')
   const footer = html.indexOf('dshpc-sv-body-footer')
   assert.ok(flow > -1 && header > flow, '顶端槽必须在会话流容器内')
   assert.ok(first > -1, `节点未渲染：${html.slice(0, 1600)}`)
   assert.ok(header < older, `顶端槽必须在「加载更早」之前：${html.slice(0, 1600)}`)
+  // 官方 ChatView.tsx:253-272：older 按钮叠放五态，仅当前态可见；文案按官方 locale.ts:94-98。
+  const historyAt = html.indexOf('data-chat-history')
+  const historyEnd = html.indexOf('</button>', historyAt)
+  const olderButton = html.slice(historyAt, historyEnd)
+  assert.match(olderButton, /data-chat-history="idle"/)
+  assert.equal((olderButton.match(/<span /g) ?? []).length, 5, 'older 必须叠放 5 个状态 span')
+  assert.match(olderButton, /aria-hidden="false">加载更早</)
+  assert.equal((olderButton.match(/aria-hidden="true"/g) ?? []).length, 4, '其余四态必须 aria-hidden')
   assert.ok(older < first, '「加载更早」在节点之前')
   assert.ok(first < footer, '底端槽必须在最后一条内容之后')
+})
+
+test('older 五态文案走官方 locale（中英各一套，组件里不写死）', () => {
+  const zh = render()
+  for (const label of ['加载更早', '正在加载', '正在处理', '重新加载', '已到会话开头']) {
+    assert.ok(zh.includes(label), `中文缺 ${label}`)
+  }
+  setLocale('en')
+  const en = render()
+  for (const label of ['Load earlier', 'Loading earlier', 'Processing', 'Retry loading', 'Start of conversation']) {
+    assert.ok(en.includes(label), `英文缺 ${label}`)
+  }
+  setLocale('zh')
+})
+
+test('older 外层条件：空正文 + hasMore=false + historyWasPartial=true 也必须挂', () => {
+  // 官方 ChatView.tsx:247-284：hint / openError / older / flow 是并列兄弟，
+  // older 只看 (hasMore || historyWasPartial)，与正文有没有节点无关。
+  const html = render({
+    view: fakeView(undefined, { openState: 'loading', hasMore: false, historyWasPartial: true }),
+  })
+  // historyLoadStatus 迟到时不编造值 ⇒ data-chat-history 缺席是正确行为；
+  // 这里钉的是「older 按钮本体在空正文分支也挂」，故按按钮与其五态 span 断言。
+  const start = html.indexOf('已到会话开头')
+  assert.ok(start > -1, '空正文时 older 不能消失')
+  assert.ok(html.indexOf('加载会话…') < start, 'older 在 hint 之后（官方 :247→:253 顺序）')
+  assert.ok((html.match(/aria-hidden="true"/g) ?? []).length >= 4, 'older 五态叠放仍在')
+})
+
+test('older 五态数据源：pendingConsumption 的 data 属性与 processing / inputHeld 判定', () => {
+  const pending = render({
+    view: fakeView(READY_CHAT, {
+      openState: 'open', hasMore: true, historyLoadStatus: 'pendingConsumption', historyWasPartial: false,
+    }),
+  })
+  assert.match(pending, /data-chat-history="pendingConsumption"/, 'historyLoadStatus 必须原样透传')
+
+  const processing = render({
+    view: fakeView(READY_CHAT, { openState: 'open', hasMore: true, historyLoadStatus: 'idle' }),
+    historyScroll: { processing: true },
+  })
+  const seg = processing.slice(processing.indexOf('data-chat-history'))
+  assert.match(seg.slice(0, seg.indexOf('</button>')), /aria-hidden="false">正在处理</, 'processing 态可达')
+
+  const held = render({
+    view: fakeView(READY_CHAT, { openState: 'open', hasMore: true, historyLoadStatus: 'idle' }),
+    historyScroll: { inputHeld: true, processing: true },
+  })
+  const heldSeg = held.slice(held.indexOf('data-chat-history'))
+  assert.match(heldSeg.slice(0, heldSeg.indexOf('</button>')), /aria-hidden="false">加载更早</, 'inputHeld 优先回落 more')
 })
 
 test('一级标题：title 节点替换标题行，sessionId 副标题行照旧保留', () => {

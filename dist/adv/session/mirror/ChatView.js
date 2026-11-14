@@ -110,9 +110,23 @@ export function ChatOpenError(props) {
 export function ChatCallRow(props) {
     return h('div', { className: officialClass('ChatView', 'callRow') ?? '' }, props.children);
 }
-/** 「加载更早记录」按钮（官方 older：按钮 4px 12px / 12px 字号 / radius-sm / 底色 interactive-bg-hover-solid）。 */
+const CHAT_HISTORY_STATES = ['more', 'loading', 'processing', 'error', 'start'];
 export function ChatOlderButton(props) {
-    return h('div', { className: officialClass('ChatView', 'older') ?? '' }, h('button', { type: 'button', onClick: props.onClick }, props.label));
+    // 官方 ChatView.tsx:263-267：current 五态的判定顺序逐字照搬。
+    const current = !props.hasMore ? 'start'
+        : props.loadingOlder === true ? 'loading'
+            : props.historyLoadStatus === 'error' ? 'error'
+                : props.historyInputHeld === true ? 'more'
+                    : props.historyProcessing === true ? 'processing' : 'more';
+    return h('div', {
+        className: officialClass('ChatView', 'older') ?? '',
+        'data-chat-history': props.historyLoadStatus,
+        // shortcut: 官方 :254 另有 ref={scroll.historyEdgeRef} 滚动锚点，只读预览无 scroll controller。
+    }, h('button', { type: 'button', disabled: !props.hasMore, onClick: props.onClick }, CHAT_HISTORY_STATES.map(state => h('span', {
+        key: state,
+        'aria-hidden': state !== current,
+        className: state === current ? undefined : officialClass('ChatView', 'historyHidden') ?? undefined,
+    }, props.labels[state]))));
 }
 /** 「到底部」悬浮钮（官方 toBottom：34×34 圆形悬浮，仅在有更多历史时显示）。 */
 export function ChatToBottom(props) {

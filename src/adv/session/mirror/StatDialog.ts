@@ -1,44 +1,47 @@
-// 官方对照：packages/client/ui-chat/src/client/chat/stat-dialog.js（0.1.7-rc.2 lib/client.js:6278-6350）
-//   PANEL_MARGIN = 12 / PANEL_GAP = 8（lib/client.js:6281-6283）
-//   useStatDialog = 受控开关 + useAnchoredPosition(side:'top') + useDismissOnOutsidePointer + Escape 关闭。
-// 官方用的是 primitives 的同名 hook，这里直接复用同一份实现（不是自绘定位）。
-import { useEffect, useRef, useState } from 'react'
+// 官方对照：@deepseek-ai/dsh-client-ui-chat@0.2.2-rc.3 lib/client.js 的 useStatDialog()。
+//   RC.3 删掉了 primitives 的 useAnchoredPosition，定位改走 CSS anchor positioning：
+//   useId 生成 `--dsh-stat-*` 名字 → trigger 的 style.anchorName 声明锚点，
+//   portal 面板的 style.positionAnchor 指向同一名字；几何、贴边与溢出回退全在官方
+//   stat-dialog.module.css 的 anchor() / position-area / @position-try 里，JS 不再测量。
+import { useEffect, useId, useRef, useState } from 'react'
 import type { CSSProperties, RefObject } from 'react'
-import { useAnchoredPosition, useDismissOnOutsidePointer } from '../../../ui/official.js'
+import { useDismissOnOutsidePointer } from '../../../ui/official.js'
 
-const PANEL_MARGIN = 12
-const PANEL_GAP = 8
+/** React 18 的 CSSProperties 尚未收录 CSS anchor 的两个属性，补齐类型。 */
+export type AnchorStyle = CSSProperties & { anchorName: string }
+export type PositionAnchorStyle = CSSProperties & { positionAnchor: string }
 
-/**
- * 官方 stat-dialog.ts 的 MEASURE_STYLE：首趟（pos 未定）时面板「隐藏但仍布局」，
- * 好让 useAnchoredPosition 量到真实尺寸。官方要求面板铺 `pos ?? MEASURE_STYLE`；
- * 漏了它 ⇒ 首趟完全无定位、面板落进文档流撑长页面（真机 2026-10-23：点用量无反应 + 滚动条变长）。
- */
-export const STAT_MEASURE_STYLE: CSSProperties = { visibility: 'hidden', left: 0, top: 0 }
+/** 两个 CSS 属性必须指向同一个 anchor 名；抽成纯函数让渲染级自检能直接断言。 */
+export function statDialogStyles(anchorName: string): { anchorStyle: AnchorStyle; panelStyle: PositionAnchorStyle } {
+  return { anchorStyle: { anchorName }, panelStyle: { positionAnchor: anchorName } }
+}
 
 export interface StatDialogSeat {
   open: boolean
   setOpen(open: boolean): void
   rootRef: RefObject<HTMLSpanElement | null>
   panelRef: RefObject<HTMLDivElement | null>
-  pos: CSSProperties | undefined
+  anchorName: string
+  anchorStyle: AnchorStyle
+  panelStyle: PositionAnchorStyle
 }
 
-/** 官方 useStatDialog：把弹层挂在触发器上方（side: 'top'），点外 / Esc 关闭。 */
+/** 官方 useStatDialog：受控开关 + CSS anchor 定位 + 点外 / Esc 关闭。 */
 export function useStatDialog(controlled?: { open?: boolean; setOpen?(open: boolean): void }): StatDialogSeat {
   const [ownOpen, setOwnOpen] = useState<boolean>(false)
   const open = controlled?.open ?? ownOpen
   const setOpen = controlled?.setOpen ?? setOwnOpen
   const rootRef = useRef<HTMLSpanElement | null>(null)
   const panelRef = useRef<HTMLDivElement | null>(null)
-  const pos = useAnchoredPosition({ open, anchorRef: rootRef, panelRef, side: 'top', gap: PANEL_GAP, margin: PANEL_MARGIN })
+  const anchorName = `--dsh-stat-${useId().replace(/:/g, '')}`
+  const { anchorStyle, panelStyle } = statDialogStyles(anchorName)
   useDismissOnOutsidePointer(rootRef, open, setOpen, panelRef)
   useEffect(() => {
     if (!open) return
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.key === 'Escape') setOpen(false)
     }
-    // 官方 chat:6806-6820：pointerdown 之外还要捕获阶段 click（只发 click 的交互也得关）。
+    // 官方 chat：pointerdown 之外还要捕获阶段 click（只发 click 的交互也得关）。
     const onClick = (event: MouseEvent): void => {
       const target = event.target
       if (!(target instanceof Node)) return
@@ -52,5 +55,5 @@ export function useStatDialog(controlled?: { open?: boolean; setOpen?(open: bool
       document.removeEventListener('click', onClick, true)
     }
   }, [open, setOpen])
-  return { open, setOpen, rootRef, panelRef, pos }
+  return { open, setOpen, rootRef, panelRef, anchorName, anchorStyle, panelStyle }
 }

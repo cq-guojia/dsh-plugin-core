@@ -55,6 +55,11 @@ const cls = (...names: Array<string | null | undefined | false>): string =>
 /** 取一个官方题面板类名；官方样式未注入时留空（不写死哈希，也不自绘顶替）。 */
 const c = (semantic: string): string => officialClass('QuestionComposer', semantic) ?? ''
 
+/** 官方 QuestionComposer.tsx:637-642：单选已选中某项 ⇒ 抑制自定义输入行的 focus-within 高亮。 */
+export function customRowYielded(multiSelect: boolean, selectedCount: number): boolean {
+  return multiSelect !== true && selectedCount > 0
+}
+
 // 官方 `parseRecommendedLabel` / `recommendedOptions` 是纯函数，放在数据面（pending-questions.ts）
 // 以便 Node 自检直接断言（本文件静态引官方 primitives，Node 里 import 不了）。
 
@@ -386,7 +391,12 @@ export function QuestionPanel(props: QuestionPanelProps): ReactElement {
               }),
               hasOptions
                 ? h('div', {
-                    className: cls(c('customRow'), draft.custom !== '' && c('customRowActive')),
+                    className: cls(
+                      c('customRow'),
+                      draft.custom !== '' && c('customRowActive'),
+                      // 官方 QuestionComposer.tsx:637-642：单选已选中某项时抑制自定义输入行抢焦点高亮。
+                      customRowYielded(current.multiSelect === true, draft.selected.length) && c('customRowYielded'),
+                    ),
                   },
                     current.multiSelect === true
                       ? h('span', {

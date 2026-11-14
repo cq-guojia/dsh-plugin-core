@@ -14,14 +14,42 @@ const { ChatNodeListMirror } = await import('../dist/adv/session/mirror/ChatView
 const { contextBodyView } = await import('../dist/adv/session/mirror/ContextBody.js')
 const { contextRowFacts } = await import('../dist/adv/session/mirror/ContextInjectionRow.js')
 const { t, setLocale } = await import('../dist/utils/i18n.js')
+const { statDialogStyles } = await import('../dist/adv/session/mirror/StatDialog.js')
+const { TurnUsagePanelMirror } = await import('../dist/adv/session/mirror/TurnUsagePanel.js')
 
-test('用户气泡用官方 UserMessageBubble，带官方两个 data 标记', () => {
+// Node 里没有宿主 style 注入，officialClass() 恒 null ⇒ 断言不到「类名真挂」。
+// 这里只造一个最小假 document（QuestionComposer 一个模块），让这条链在 SSR 里真实生效；
+// 其余模块仍返回 null，与改动前的行为一致。
+const OFFICIAL_CLS = { customRowYielded: '_qXk2_customRowYielded' }
+globalThis.document = {
+  querySelectorAll: () => [{
+    dataset: { pluginCss: '@deepseek-ai/dsh-client-ui-user-questions/QuestionComposer.module.css' },
+    textContent: `._qXk2_root{color:red}._qXk2_customRow{color:red}.${OFFICIAL_CLS.customRowYielded}{color:red}`,
+  }],
+}
+
+test('统计弹窗走官方 CSS anchor：trigger 声明锚点，panel 指向同一名字', () => {
+  const { anchorStyle, panelStyle } = statDialogStyles('--dsh-stat-r1')
+  assert.equal(anchorStyle.anchorName, '--dsh-stat-r1')
+  assert.equal(panelStyle.positionAnchor, anchorStyle.anchorName)
+  const html = renderToStaticMarkup(h(TurnUsagePanelMirror, {
+    usage: { totalTokens: 100, uncachedInputTokens: 60, outputTokens: 40 },
+    t: (key) => key,
+  }))
+  assert.match(html, /anchor-name:--dsh-stat-/)
+  assert.doesNotMatch(html, /visibility:hidden/)
+})
+
+// 注意：这两条断言的是「本仓按官方契约把哪些 props 交给官方原语」。
+// SSR 替身（primitives-stub.mjs）把收到的 props 回显成属性，所以看到的是入参而非官方渲染结果；
+// 官方原语自身输出什么标记由宿主保证，测试不假装验过它。
+test('用户气泡按官方契约向 UserMessageBubble 传入两个 data 标记', () => {
   const html = renderToStaticMarkup(h(UserMessage, { text: '你好', t: (key) => key }))
   assert.match(html, /data-message-bubble=""/)
   assert.match(html, /data-text-interaction-source=""/)
 })
 
-test('退出码徽章用官方 Tag(neutral) 胶囊 + 失败点，不是裸 span', () => {
+test('退出码徽章按官方契约给 Tag 传 tone="neutral" + 失败点', () => {
   const html = renderToStaticMarkup(h(ExitCodeBadge, { label: '退出码 1' }))
   assert.match(html, /data-tone="neutral"/)
   assert.match(html, /aria-hidden="true"/)
@@ -459,4 +487,139 @@ test('approvalCommand：按 callId 取 tool-call 起始节点的 args.command', 
   assert.equal(approvalCommand(['k1', 'k2', 'k3'], read, 'c1'), 'sh /root/x.sh')
   assert.equal(approvalCommand(['k1', 'k2', 'k3'], read, 'c9'), undefined)
   assert.equal(approvalCommand(['k1', 'k2', 'k3'], read, undefined), undefined)
+})
+
+// ── RC.3 官方 src/ 契约对齐：A 类 9 条的 DOM 层级、条件与数据面 ──
+
+const { ChatOlderButton } = await import('../dist/adv/session/mirror/ChatView.js')
+const { turnTriggerDetails, TurnTriggerNodeViewMirror } = await import('../dist/adv/session/mirror/TurnTriggerNodeView.js')
+const { patchFileTargets, GenericCommandCard } = await import('../dist/adv/session/mirror/GenericCommandCard.js')
+const { customRowYielded } = await import('../dist/adv/session/mirror/QuestionPanel.js')
+
+const HISTORY_LABELS = {
+  more: '加载更早', loading: '正在加载', processing: '正在处理', error: '重新加载', start: '已到会话开头',
+}
+
+test('older 按钮：官方五态叠放，仅当前态可见；五态判定逐条可复现', () => {
+  const cases = [
+    [{ hasMore: true }, '加载更早'],
+    [{ hasMore: true, loadingOlder: true }, '正在加载'],
+    [{ hasMore: true, historyLoadStatus: 'error' }, '重新加载'],
+    [{ hasMore: true, historyProcessing: true }, '正在处理'],
+    [{ hasMore: false }, '已到会话开头'],
+  ]
+  for (const [state, visible] of cases) {
+    const html = renderToStaticMarkup(h(ChatOlderButton, { labels: HISTORY_LABELS, ...state, onClick: () => {} }))
+    assert.equal((html.match(/<span /g) ?? []).length, 5, `必须叠放 5 个状态 span：${visible}`)
+    assert.match(html, new RegExp(`aria-hidden="false">${visible}<`))
+    assert.equal((html.match(/aria-hidden="true"/g) ?? []).length, 4, `其余四态必须隐藏：${visible}`)
+    assert.equal(html.includes('disabled=""'), state.hasMore === false, 'hasMore=false 才 disabled')
+  }
+  const errored = renderToStaticMarkup(h(ChatOlderButton, {
+    labels: HISTORY_LABELS, hasMore: true, historyLoadStatus: 'error', onClick: () => {},
+  }))
+  assert.match(errored, /data-chat-history="error"/)
+})
+
+test('审批卡：官方 heading 层与 subject/description 可选分支按条件渲染', () => {
+  const approval = { kind: 'approval', key: 'approval:9', toolName: 'bash', answerable: false, answer: async () => {} }
+  const base = { approval, command: 'sh x.sh', t: (k) => k }
+  const plain = renderToStaticMarkup(h(ApprovalPanelMirror, base))
+  assert.ok(!plain.includes('<img'), '不传 subject 不得画图标')
+  assert.ok(!plain.includes('<p>'), '不传 description 不得画描述')
+  const full = renderToStaticMarkup(h(ApprovalPanelMirror, {
+    ...base, subject: { name: '插件 X', icon: 'icon.png' }, description: '请求写入工作区',
+  }))
+  assert.match(full, /<img[^>]*width="40"[^>]*height="40"/)
+  assert.match(full, /<strong>插件 X<\/strong>/)
+  assert.ok(full.indexOf('插件 X') < full.indexOf('approvalEscalation'), 'subject 必须是 body 首子')
+  assert.ok(full.indexOf('请求写入工作区') > full.indexOf('approvalEscalation'), 'description 在 heading 之后')
+  assert.ok(full.indexOf('请求写入工作区') < full.indexOf('sh x.sh'), 'description 在 command 之前')
+})
+
+test('触发行：retry 且 content 为空走官方 continuation compact 早返回', () => {
+  assert.deepEqual(turnTriggerDetails({ source: { kind: 'retry' }, content: [] }),
+    { title: 'triggerContinuation', icon: 'continue', compact: true })
+  assert.equal(turnTriggerDetails({ source: { kind: 'retry' }, content: ['x'] }).compact, undefined)
+  const html = renderToStaticMarkup(h(TurnTriggerNodeViewMirror, {
+    data: { source: { kind: 'retry' }, content: [] }, t: (k) => k,
+  }))
+  assert.match(html, /data-generation-continuation="true"/)
+  assert.match(html, /triggerContinuation/)
+  assert.ok(!html.includes('<section'), 'compact 不渲 section.root')
+  assert.ok(!html.includes('aria-expanded'), 'compact 不渲折叠头')
+})
+
+test('apply_patch 多文件目标：按官方 patchSummary 契约解析 add/update/delete/move', () => {
+  const patch = [
+    '*** Begin Patch',
+    '*** Update File: src/a.ts',
+    '*** Move to: src/b.ts',
+    '@@',
+    '-old',
+    '+new',
+    '*** Add File: src/c.ts',
+    '+content',
+    '*** Delete File: src/d.ts',
+    '*** End Patch',
+  ].join('\n')
+  const targets = patchFileTargets(patch)
+  assert.equal(targets.length, 3)
+  assert.deepEqual(targets[0], { id: 2, from: 'src/a.ts', label: 'src/b.ts', filePath: 'src/b.ts' })
+  assert.deepEqual(targets[1], { id: 7, label: 'src/c.ts', filePath: 'src/c.ts' })
+  assert.deepEqual(targets[2], { id: 9, label: 'src/d.ts', filePath: undefined })
+  assert.deepEqual(patchFileTargets('not a patch'), [], 'malformed patch 与官方一样给空目标')
+  assert.deepEqual(patchFileTargets(undefined), [])
+})
+
+test('工具卡：多文件出官方 fileLinks，删除项只出裸 label', () => {
+  const patch = ['*** Begin Patch', '*** Add File: src/a.ts', '+a', '*** Delete File: src/b.ts', '*** End Patch'].join('\n')
+  // patch 只从 apply_patch 的 input 参数派生（官方 tool-call-model.ts:380），这里走真实数据链。
+  const html = renderToStaticMarkup(h(GenericCommandCard, {
+    name: 'apply_patch', argsRaw: JSON.stringify({ input: patch }), output: 'Done', isError: false,
+    onOpenFile: () => {}, t: (k) => k,
+  }))
+  const collapsed = html.slice(html.indexOf('data-slot="collapsed"'), html.indexOf('data-slot="expanded"'))
+  assert.match(collapsed, /data-shimmer-decoration="true"/, '官方 sep 必须落在折叠摘要槽')
+  assert.ok(collapsed.includes('src/a.ts') && collapsed.includes('src/b.ts'))
+  assert.ok(collapsed.includes('>src/a.ts</button>'), '可打开的目标出 fileTargetLink 按钮')
+  assert.ok(!collapsed.includes('>src/b.ts</button>'), '删除项 filePath 为空，只出裸 label')
+})
+
+test('工具卡：非 apply_patch 工具即使参数里有 input 也不出 fileLinks', () => {
+  const patch = ['*** Begin Patch', '*** Add File: src/a.ts', '+a', '*** Add File: src/b.ts', '+b', '*** End Patch'].join('\n')
+  const html = renderToStaticMarkup(h(GenericCommandCard, {
+    name: 'bash', argsRaw: JSON.stringify({ input: patch }), output: 'Done', isError: false,
+    onOpenFile: () => {}, t: (k) => k,
+  }))
+  assert.ok(!html.includes('fileTargetLink'), '官方 patch 只由 apply_patch 派生')
+})
+
+test('自定义输入行：单选已选中时按官方条件真挂 customRowYielded 类名', () => {
+  assert.equal(customRowYielded(false, 0), false)
+  assert.equal(customRowYielded(false, 1), true)
+  assert.equal(customRowYielded(true, 1), false, '多选题不抑制')
+  // QUESTION_PANEL_CASE 的首个选项带「(推荐)」⇒ recommendedOptions 预选非空 ⇒ 条件成立。
+  const html = renderToStaticMarkup(h(QuestionPanel, { ...QUESTION_PANEL_CASE, t: (k) => k }))
+  assert.match(html, /data-question-key="question:s1:c1"/)
+  assert.match(html, new RegExp(OFFICIAL_CLS.customRowYielded), '条件成立时官方类名必须真挂上')
+  const multi = renderToStaticMarkup(h(QuestionPanel, {
+    ...QUESTION_PANEL_CASE,
+    questions: [{ ...QUESTION_PANEL_CASE.questions[0], multiSelect: true }],
+    t: (k) => k,
+  }))
+  assert.ok(!multi.includes(OFFICIAL_CLS.customRowYielded), '多选题条件不成立时不得挂该类')
+})
+
+const { useStatDialog } = await import('../dist/adv/session/mirror/StatDialog.js')
+
+test('useStatDialog：运行时生成的 anchor-name 与 panel position-anchor 同源', () => {
+  const Probe = () => {
+    const { anchorName, panelStyle } = useStatDialog()
+    return h('span', null, `${anchorName}|${panelStyle.positionAnchor}`)
+  }
+  const html = renderToStaticMarkup(h(Probe))
+  const [left, right] = html.replace(/<\/?span>/g, '').split('|')
+  assert.match(left, /^--dsh-stat-/)
+  assert.equal(right, left, 'anchorName 与 positionAnchor 必须运行时相等，而不只是格式对')
 })

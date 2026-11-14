@@ -3,9 +3,9 @@
 真源在**本仓库之外**的已核实行为。带来源与适用版本；宿主升级后要复核这里。
 
 **用途**：记录本仓用到的 DSH 宿主与官方包行为，供改底座时查证，避免运行时试探猜 API。
-**适用版本**：宿主 `0.2.1-rc.5` 与 `0.2.2-rc.1` 两线；各节「版本：」行标注了该结论对应的解包版本。
+**适用版本**：宿主 `0.2.1-rc.5`、`0.2.2-rc.1`、`0.2.2-rc.3` 三线；各节「版本：」行标注了该结论对应的解包版本，§19 为 rc.3。
 **版本真源**：`npm view @deepseek-ai/<包> dist-tags` 取与宿主同号版本，再 `npm pack` 解包读 `lib/*.js`。
-**复核日期**：2026-11-11（§18 最近一次解包核实）；宿主升级后按各节来源重新核对。
+**复核日期**：2026-11-14（§19 最近一次解包核实）；宿主升级后按各节来源重新核对。
 
 ## 1. 客户端产物形态
 
@@ -449,7 +449,7 @@
 |---|---|
 | 宿主注册会话投影 `userQuestions`，视图 `{ active, settled }`；active 行 = `{ callId, questions:[{id,question,detail?,header?,options?:[{label,description?}],multiSelect?}], state:'open'\|'continued' }` | `dsh-user-questions` `lib/index.js:52-74` |
 | 投影是**公开只读面**，客户端入口与本仓已在用的 `inbox` 同一个（`session.projections.faceOf(key)`），**没有作答通道** | 同文件 `:268-295` |
-| 实时阻塞（`state:'open'`）走宿主瀑布 `user-questions/request`；作答者是宿主外壳包 `@deepseek-ai/dsh-client-ui-user-questions` 里的题面板（**未发 npm**） | `dsh-user-questions` `lib/index.js:709`；ui-tool `contract/slots.d.ts:101-124`（`userQuestionPanels` 由外壳提供） |
+| 实时阻塞（`state:'open'`）走宿主瀑布 `user-questions/request`；作答者是宿主外壳包 `@deepseek-ai/dsh-client-ui-user-questions` 里的题面板（rc.1 时未发 npm；rc.3 已发同号包，见 §19） | `dsh-user-questions` `lib/index.js:709`；ui-tool `contract/slots.d.ts:101-124`（`userQuestionPanels` 由外壳提供） |
 | `state:'continued'`（定时 / 超时后）还能通过 remote `userQuestions/answer(agentId, callId, { answers })` 补答，答案以 user 消息 steer 进会话 | `dsh-user-questions` `typert.remote-client.d.ts:16-18`、`lib/index.js:560-600` |
 | 外壳包源码在公开仓库（`deepseek-ai/deepseek-harness` tag `dsh-v0.2.2-rc.1`）：面板 = `packages/client/ui-user-questions/src/client/QuestionComposer.tsx` + 同目录 `QuestionComposer.module.css` | GitHub raw，2026-11-11 拉取核对 |
 | **题卡也是 pending-interaction 域**：外壳 `apply()` 里 `ctx.uiSession.registerPendingInteraction<PendingQuestion>(…)`（计划审阅权重 2、普通题 1）⇒ 活体就在 `uiSession.sessionStatus.pendingInteraction` 上，`kind='question'` | 同包 `src/client/index.ts:371-374` |
@@ -472,7 +472,41 @@
 `SessionViewModal` 在底栏栈里画这两张卡（官方位置 = 输入框接管 / 面板），有卡时关掉底栏分隔线（官方那里没有线）。
 `openSessionView` 第五参给 `uiSession`、第六参给 `userQuestionPanels`，不传 ⇒ 两张卡都没有（预览保持纯只读）。
 
+## 19. 宿主 0.2.2-rc.3：定位 hook 删除与 CSS anchor 替代（2026-11-14 解包核实）
+
+解包版本：12 个 `@deepseek-ai/dsh-client-ui-*` 包全部 `0.2.2-rc.3`（`dist-tags.next` 指向 rc.3，`latest` 仍停在 `0.1.2-alpha.2`）。
+
+| 事实 | 证据 |
+|---|---|
+| `primitives` 删除 `useAnchoredPosition`（JS 测量定位 hook）；导出表只剩 `useAnchoredMaxHeight(ref, cap, signal, margin)`，签名不等价，不是替代品 | `dsh-client-ui-primitives@0.2.2-rc.3` `lib/index.js:12503` 的 `export {…}`；全包无该函数定义 |
+| 官方 `useStatDialog()` 不再返回 `pos`：`useId()` 生成 `--dsh-stat-*` 名字，返回 `anchorName`；trigger `<span style={{anchorName}}>`，portal 面板 `style={{positionAnchor: anchorName}}` | `dsh-client-ui-chat@0.2.2-rc.3` `lib/client.js` 的 `useStatDialog` / `TurnUsagePanel` / `DialogPill` 实现本体 |
+| 定位几何改走 CSS anchor positioning：`stat-dialog.module.css` 的 `.panel` 用 `anchor(top)` / `anchor(left)` / `position-area` / `position-try-fallbacks` 五档 `@position-try` 回退 | 同包 `lib/client.js` 的 `css$4` 与 `tagId$4` |
+| CSS module 注入形态**未变**（`style[data-plugin-css]` + `dataset.pluginCss` + `head.appendChild`，类名 `<hash>_<语义名>`），但产物由多行双引号字符串变成 20 行、反引号模板字符串声明，且一条 CSS 可拆成多段模板串拼接 | 同包 `lib/client.js` 注入段与 `css$16`；`tools/host-upgrade-diff/scripts/diff.mjs` gate ④ 实测 css / tagId 各 63 条、语义名 679 个 |
+| `@deepseek-ai/dsh-client-ui-user-questions` 在 rc.3 发布了同号 npm 包（rc.1 时未发，见 §18），`lib/client.js` 自带 `QuestionComposer.module.css` 等 3 条 tagId | `npm view @deepseek-ai/dsh-client-ui-user-questions@0.2.2-rc.3 version`；该包 `lib/client.js` |
+| 本仓已用类名语义面在 rc.3 **无失效项**；官方有本仓未接 29 条语义名（口径＝`lib/client.js` 注入 CSS 的类面差；§20 的 30 条是官方 `src/` TSX 引用差，两者不是同一测量面，勿混读） | 按 `tools/host-upgrade-diff/scripts/diff.mjs` 对 12 包实跑的清单第 3 / 4 节 |
+
+处置（本仓）：`src/adv/session/mirror/StatDialog.ts` 按官方 `useStatDialog` 重构为 CSS anchor（删 `pos` / `STAT_MEASURE_STYLE`），`TurnUsagePanel.ts` 的 trigger 与 portal 各挂 `anchor-name` / `position-anchor`；`src/types/primitives.d.ts`、`test/primitives-stub.mjs` 删除已消失的 hook；`ALIGNED_HOST_VERSION` 升到 `0.2.2-rc.3`。不写自绘定位兜底（§8 长期口径）。
+工具侧：`tools/host-upgrade-diff/scripts/diff.mjs` 解析器改为整文件扫描 + 双引号 / 反引号两种字面量 + 多段拼接的分号边界；`runbook.md` 的 `PKGS` 补 3 个注入包（9→12）；gate 判据未改。
+
+## 20. 宿主 0.2.2-rc.3：官方包自带 src/ 源码作为 1:1 复刻真源（2026-11-14 解包核实）
+
+解包版本：13 个 `@deepseek-ai/dsh-client-ui-*` 包（含 `slots`）全部 `0.2.2-rc.3`；契约面这轮比 §19 的 diff 面多取了 `slots`，取包清单此后统一为这 13 个。
+
+| 事实 | 证据 |
+|---|---|
+| 8 个注入包的 npm 产物含 `package/src/**/*.tsx` 与未编译的 `*.module.css`（52 个 module），`package.json` 的 `exports` 有公开 `./src/*` 出口 | 各包 `package/src/` 目录与 `package.json` |
+| 宿主运行时只加载 `lib/*.js`；会话相关 33 个官方 TSX 含 38 处 `renderSlot` / 87 处官方 hook，依赖宿主 slot machinery ⇒ 不能构建期把官方 TSX 编译进插件 | `dsh-client-ui-chat@0.2.2-rc.3` `lib/client.js`；`dsh-client-ui-slots` `lib/types/renderer.d.ts` 的 `SlotRegistry.renderSlot` 只允许 `root` |
+| 官方 TSX 的 `css.<语义名>` 引用 + `*.module.css` 选择器构成 1:1 复刻的结构 / 类名契约；类名也写在后代选择器与伪类组合里（如 `stat-dialog.module.css:97` 的 `.details .route`），按行首 `^\.` 抽会漏 | `ChatView.tsx`、`TurnUsagePanel.tsx`、`QuestionComposer.tsx`、`ToolRow.tsx` 与同名 `.module.css` |
+| 按官方源码契约核对：本仓 29 个模块里官方 TSX 引用而未接 30 条语义名；逐条按官方实现本体判定后，9 条 `aligned`（按原文补 DOM / 条件）、19 条 `notApplicable`（官方交互态在只读预览里不成立，硬挂类名即假复刻）、2 条 `noop`（官方自身未定义 / 本仓已用等价原语）；本仓挂了官方源码未定义 0 条 | `tools/host-upgrade-diff/baseline.json`、`contract-decisions.json`；`diff.mjs --contract` 逐模块报告 |
+| 官方 TSX 里大量类名挂在条件分支上（宿主注入回调、hover popover、review tab split、桌面 Host 探测）；`ChatView.textInteraction` 的容器 CSS 恒 `visibility:hidden`，无条件挂类会直接隐藏元素 ⇒「1:1」必须是官方原文的条件与 DOM 层级一致，不是把类名挂满 | `ui-chat` `ChatView.tsx:286-292` 与 `ChatView.module.css:419-426`；`ui-tool` `ToolRow.tsx:245,263-280`；`ui-deliverables` `FileDiff.tsx:195-241`；`ui-user-questions` `QuestionComposer.tsx:488-492,628-630` |
+
+处置（本仓）：`tools/host-upgrade-diff/scripts/diff.mjs` 新增 `--contract`（从官方 `src/` 生成入库基线 `baseline.json`，含 `pending` / `usedModules` / `unusedModules`）、逐条判定真源 `contract-decisions.json`（每条附官方 `文件:行号@版本` 证据）、`--contract-check` 与 `--self-check`（均挂 `package.json` 的 `pretest`：版本漂移 / 基线被清空 / 类面误收 / 注释误判 / 模块漏抽 / `aligned` 未落地 / 不适用却挂类，任一即退出码 1）。A 类 9 条按官方原文落地：`ApprovalPanel` 的 heading 层与 subject / description / withSubject 可选分支、`QuestionComposer.customRowYielded`、`ToolRow` 的 `patchInput` → `patchSummary` 等价复刻与 fileLinks / fileTargetLink（含 move / delete / 成功结算条件 / shimmer 标记）、`ChatView` 的 older 五态叠放与 `historyHidden`、`TurnTriggerNodeView` 的 continuation compact 早返回；官方文案 5 个新增 key 中英逐字对齐 `ui-chat/locale.ts`。运行时仍直接用官方数据服务 / primitives / 宿主注入 CSS，结构层按官方 `src/` 原文 1:1 复刻。宿主右键菜单通道以可选 `fileTargetContextMenuProps` 透传（调用方不传则不展开，不伪造）；仅 `scroll.historyEdgeRef` 滚动锚点因只读预览无对应 controller 按 `shortcut:` 标注未移植。契约闸的包清单锚按名断言：基线 `packages` 必须含 `CSS_PKG_PREFIXES` 的 8 个注入包，不再数总数 —— 旧实现「条数 ≥ 13」在凑够条数但缺注入包时同样放行，runbook 与脚本 12 / 13 两套数字就是这样漂出来的；取包清单（`runbook.md` 的 `PKGS`）固定为本轮这 13 个，数量由步骤 2 按 `PKGS` 词数自动核对，不再两处手写数字。`slots` 不进类面、也不出 CSS / TSX（产物只有 `src/*.ts` 与 `lib/index.js`），漏取契约闸不拦，取它是为 `SlotRegistry.renderSlot` 这条事实留证据，并让基线包清单与取包清单同号。
+
 ## 更新日志
 
 - 2026-11-08 23:34:50：按文档库规范建立版本元数据与统一目录索引
 - 2026-11-13 16:22:32：文档库结构迁移：旧路径改指新槽位
+- 2026-11-14 20:15:38：追加 §19：RC.3 定位 hook 删除、CSS anchor 替代与本仓适配
+- 2026-11-14 21:10:03：追加 §20：官方 src/ 作为 1:1 复刻契约真源与 pretest 闸
+- 2026-11-14 21:49:14：§20 补 30 条官方源码判定结论、1:1 定义与最终实现事实
+- 2026-11-14 23:54:02：取包口径统一为 13 包（补 slots），契约闸包清单锚改为按名断言注入包

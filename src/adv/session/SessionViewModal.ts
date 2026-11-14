@@ -185,7 +185,13 @@ function blocksOf(value: unknown): readonly AssistantBlockLike[] | undefined {
  * 官方 ToolCallBlock（uic contract/records.d.ts:140）→ 工具卡 props。
  * running 半截（phase: preparing/start）只有 name/argsRaw；settled（kind: tool-result）带输出与错误。
  */
-function toolCallCard(node: ChatNodeFace, t: Translate, onOpenFile?: (path: string) => void, loadImage?: MessageImageLoader): Parameters<typeof GenericCommandCard>[0] | null {
+function toolCallCard(
+  node: ChatNodeFace,
+  t: Translate,
+  onOpenFile?: (path: string) => void,
+  loadImage?: MessageImageLoader,
+  fileTargetContextMenuProps?: (path: string) => Record<string, unknown> | undefined,
+): Parameters<typeof GenericCommandCard>[0] | null {
   const root = dataOf(node).root as Record<string, unknown> | undefined
   if (root === undefined || root === null) return null
   const settled = root.kind === 'tool-result'
@@ -210,6 +216,7 @@ function toolCallCard(node: ChatNodeFace, t: Translate, onOpenFile?: (path: stri
     image: imageCardFace(name, argsRaw, content, root.meta, isError, settled) ?? undefined,
     loadImage,
     onOpenFile,
+    fileTargetContextMenuProps,
     t,
   }
 }
@@ -360,7 +367,7 @@ function renderKeyedNode(
       // （标题「交付文件」+ 状态词 + 路径列表；不经通用工具卡）。
       const root = dataOf(node).root
       if (isPresentRoot(root)) return h(PresentRowMirror, { block: root, t })
-      const card = toolCallCard(node, t, fileOpen?.open, loadImage)
+      const card = toolCallCard(node, t, fileOpen?.open, loadImage, fileOpen?.fileTargetContextMenuProps)
       if (card === null) return null
       // 官方 tool.call.toolview 槽位按工具名分派：bash / pwsh 走专属 BashRow（独立卡片，无 DisclosureRow）；
       // skill 走 ui-skill 包注册的专属 SkillRow（标题「加载技能」+ 技能图标 + Instructions 展开卡）。
@@ -541,6 +548,7 @@ function renderLegacyNode(
         settled: true,
         interrupted: (node.error as { code?: string } | undefined)?.code === 'interrupted',
         onOpenFile: fileOpen?.open,
+        fileTargetContextMenuProps: fileOpen?.fileTargetContextMenuProps,
         t,
       })
     }
@@ -643,10 +651,12 @@ interface FileMentionsFace {
   resolve(value: string): { open(): void; label: string; title: string } | undefined
 }
 
-/** 文件打开上下文：openFile 单一入口（工具卡路径 + md 行内引用共用）+ 词表。 */
+/** 文件打开上下文：openFile 单一入口（工具卡路径 + md 行内引用共用）+ 词表 + 宿主右键菜单通道。 */
 interface FileOpenFace {
   open(path: string, options?: { line?: number }): void
   mentions: FileMentionsFace
+  /** 官方 file-mutation-row.tsx:62 的 getTriggerProps；调用方不接宿主菜单时缺省。 */
+  fileTargetContextMenuProps?: (path: string) => Record<string, unknown> | undefined
 }
 
 /** 路径归一：去 './' 前缀（词表键与 resolve 两侧同规则）。 */
@@ -864,6 +874,25 @@ export interface SessionViewModalProps {
   /** 变更文件点击出口（官方 openReview 等价）：带「改动身份」(sessionId+seq+index)，
    *  消费方据此开审阅（本包走 openFilePreview 的 content 槽）。缺省 = 变更卡整张不可点。 */
   onOpenReview?: (locator: ChangedFileReviewLocator) => void
+  /**
+   * 官方 `useChatScroll()` 的交互态投影（ChatView.tsx:266-267 的 scroll.historyInputHeld /
+   * historyProcessing）：来自 use-chat-viewport.ts:1013 的触摸/指针按住与
+   * use-chat-navigation.ts:308 的 historyIntent。它们**不在** session 快照里，
+   * 只读预览没有该 controller ⇒ 缺省按官方 useState(false) / 'none' 初值处理，不伪造。
+   * 接了真实滚动控制器的调用方才注入，用于 older 五态的 processing / 回落 more 分支。
+   */
+  historyScroll?: { inputHeld?: boolean; processing?: boolean }
+  /**
+   * 官方 ToolRow.tsx:274 `fileTargetContextMenuProps` 的宿主右键菜单通道
+   * （file-mutation-row.tsx:62 由 getTriggerProps 注入）。只读预览默认没有该通道；
+   * 调用方接了宿主菜单才传，不传则不展开，不伪造。
+   */
+  fileTargetContextMenuProps?: (path: string) => Record<string, unknown> | undefined
+  /**
+   * 官方 ui-approval index.ts:104 `resolveReason: ctx.locale.resolveText` 的宿主注入口。
+   * 不传 = 用本仓 getLocale() → en 语言回退链（自有 locale 真源），不伪造。
+   */
+  resolveApprovalReason?: (shown: Readonly<Record<string, string>>) => string | undefined
 }
 
 /**
@@ -1086,12 +1115,15 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
   }))
   // markdown 行内文件词表（来自 keyed 工具流；onOpenFile 未就位 = 整个上下文不启用）。
   const fileOpen = useMemo<FileOpenFace | undefined>(() => {
+    // 没 onOpenFile ⇒ 官方把路径退成纯文本，fileTargetLink 分支压根不成立，
+    // 右键菜单通道这时也无对象可挂，一并缺省（不伪造可点目标）。
     if (onOpenFile === undefined) return undefined
     return {
       open: openFile,
       mentions: makeFileMentions(collectFilePaths(order, store, turns), openFile),
+      fileTargetContextMenuProps: props.fileTargetContextMenuProps,
     }
-  }, [onOpenFile, openFile, order, store, turns])
+  }, [onOpenFile, openFile, order, store, turns, props.fileTargetContextMenuProps])
   /**
    * 官方 markdown **链接**的打开出口（`[名](<路径>)` ⇒ 官方 MarkdownFileLink）。
    * 与 `fileMentions`（管行内 code）是两条独立的路：官方只有 `openFile` 就位才把链接渲成
@@ -1295,12 +1327,40 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
       + `末 4 个=${tail.join(' | ')}；全流=${[...counts].map(([kind, count]) => `${kind}×${count}`).join(' ')}`)
   }
   const openState = sessionSnap?.openState
-  const showLoadOlder = sessionSnap?.hasMore !== false
+  // 官方 ChatView.tsx:253：(hasMore || historyWasPartial) 才渲 older；hasMore 是必填 boolean，
+  // 快照缺席按官方 falsy 处理，不能把 undefined 当成「还有更多」。
+  const hasMore = sessionSnap?.hasMore === true
+  const showLoadOlder = hasMore || sessionSnap?.historyWasPartial === true
   // 官方 ChatFlow 的流末尾顺序 = rows → pendingRows → RunningStatus（lib/client.js:5703-5706）；
   // 运行态由 SessionSnapshot.running 决定（:5645/:5704），不是从 order 末尾节点反推。
   const runningRow = sessionSnap?.running !== true
     ? null
     : h(RunningStatusMirror, { key: 'running', startTime: runningStartTime, t: tt })
+  // 官方 ChatView.tsx:247-284：hint / openError / older / flow 是 column 下并列兄弟；
+  // older 的 :253 条件只与 (hasMore || historyWasPartial) 有关，与 flow 有没有节点完全无关。
+  // 因此 olderRow 必须在空正文分支也挂，不能塞进「rendered 非空」那一支。
+  // 官方 :266-267 的 scroll.historyInputHeld / historyProcessing 是 useChatScroll 的交互态
+  // （use-chat-scroll.ts:57/62, use-chat-navigation.ts:308, use-chat-viewport.ts:1013），
+  // 不在 session 快照里；本仓由调用方经 props.historyScroll 注入真实 controller 投影，
+  // 缺省按官方 useState(false) / historyIntent==='none' 的初值处理，不伪造。
+  const olderRow = showLoadOlder
+    ? h(ChatOlderButton, {
+        key: 'older',
+        labels: {
+          more: tt('sessionLoadOlder'),
+          loading: tt('chatLoadingOlder'),
+          processing: tt('chatProcessingOlder'),
+          error: tt('chatRetryOlder'),
+          start: tt('chatHistoryStart'),
+        },
+        hasMore,
+        loadingOlder: sessionSnap?.loadingOlder,
+        historyLoadStatus: sessionSnap?.historyLoadStatus,
+        historyInputHeld: props.historyScroll?.inputHeld,
+        historyProcessing: props.historyScroll?.processing,
+        onClick: () => { view.loadOlder() },
+      })
+    : null
   const body = rendered.length === 0 && pendingRows.length === 0
     ? [
         bodyHeaderRow,
@@ -1311,15 +1371,14 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
               key: 'hint',
               text: openState === 'loading' || openState === 'cold' ? tt('sessionLoading') : tt('sessionEmpty'),
             }),
+        olderRow,
         runningRow,
         // 已挂在最后一条 tail 上的话这里不再画（否则同一个槽出现两次）。
         footerAnchorKey === undefined ? bodyFooterRow : null,
       ]
     : [
         bodyHeaderRow,
-        showLoadOlder
-          ? h(ChatOlderButton, { key: 'older', label: tt('sessionLoadOlder'), onClick: () => { view.loadOlder() } })
-          : null,
+        olderRow,
         ...rendered,
         ...pendingRows,
         runningRow,
@@ -1419,6 +1478,7 @@ export function SessionViewModal(props: SessionViewModalProps): ReturnType<typeo
         h(ApprovalPanelMirror, {
           approval: pendingApproval,
           command: approvalCommand(order, key => store?.get(key), pendingApproval.callId),
+          resolveReason: props.resolveApprovalReason,
           t: tt,
         }),
       )

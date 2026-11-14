@@ -28,6 +28,9 @@ export interface SessionSnapshotFace {
     openState?: 'cold' | 'loading' | 'open' | 'error';
     hasMore?: boolean;
     loadingOlder?: boolean;
+    /** 官方 ChatView.tsx:136-140 的 useSession 历史分页状态。 */
+    readonly historyWasPartial?: boolean;
+    readonly historyLoadStatus?: 'idle' | 'loading' | 'error' | 'pendingConsumption';
     /** 官方 ChatFlow 用它决定 RunningStatus 挂载（ui-chat lib/client.js:5645/5704）。 */
     readonly running?: boolean;
     /** 等待 durable `user/message` 期间的本地提交回显。 */
