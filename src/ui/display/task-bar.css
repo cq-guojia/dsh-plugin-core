@@ -23,7 +23,10 @@
 .dshpc-taskbar__trigger--icon{justify-content:center;padding:0;width:28px;}
 .dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--sm{width:24px;}
 .dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--lg{width:32px;}
-.dshpc-taskbar__label{flex:none;white-space:nowrap;}
+/* 文字吃剩余宽：定宽 / 给了上限时先压它（图标、计数、三角都是 flex:none 不让位）。
+   省略号与 hover 跑马灯由 MarqueeText（.dshpc-mq）自己管，本文件只给可收缩的外壳。 */
+.dshpc-taskbar__label{flex:0 1 auto;min-width:0;white-space:nowrap;}
+.dshpc-taskbar__count{flex:none;}
 .dshpc-taskbar__caret{flex:none;color:var(--dshpc-fg-3);margin-left:2px;}
 
 /* 图标位：绿点钉在右上角，不参与布局。
@@ -50,8 +53,13 @@
 .dshpc-taskbar__item{
   display:flex;align-items:center;gap:var(--dshpc-space-2);
   padding:var(--dshpc-space-2) var(--dshpc-space-3);
+  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);
 }
 .dshpc-taskbar__item + .dshpc-taskbar__item{border-top:1px dashed var(--dshpc-border);}
+/* 行 hover（2026-11-15 用户：跟表格选中那种蓝差不多、或更浅的极淡蓝）。
+   只是「鼠标在这儿」的反馈 —— 行不给 cursor / 焦点环，也没有点击行为；选中态不做。 */
+.dshpc-taskbar__item:hover{background:var(--dshpc-taskbar-row-hover);}
+@media (prefers-reduced-motion:reduce){.dshpc-taskbar__item{transition:none}}
 
 /* 行内：图标 + 两行文字 + 右侧动作。图标不带底板，只留字形。 */
 .dshpc-taskbar__row-icon{flex:none;display:inline-flex;align-items:center;color:var(--dshpc-fg-2);}

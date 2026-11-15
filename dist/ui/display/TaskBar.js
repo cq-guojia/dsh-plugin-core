@@ -2,6 +2,7 @@ import { createElement as h, useEffect, useState, useSyncExternalStore, } from '
 import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react';
 import { Button, IconButton } from '../actions/Button.js';
 import { FontIcon, resolveIconName } from './font-icon.js';
+import { MarqueeText } from './MarqueeText.js';
 import { Chevron } from '../infra/chevron.js';
 import { PanelSurface } from '../infra/panel.js';
 import { ensureComponentStyles } from '../infra/css.js';
@@ -61,9 +62,24 @@ export function TaskBar(props) {
     ensureComponentStyles('task-bar', TASK_BAR_CSS);
     // 切语言要重渲，否则计数与空态文字停在旧语种。
     useLocale();
-    const { form = 'pill', size = 'md', groups, project, includeHidden, placement = 'down', defaultIcon = DEFAULT_ICON, className, style, } = props;
+    const { form = 'pill', size = 'md', groups, project, includeHidden, placement = 'down', defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className, style, } = props;
     // 行内动作按钮一律最小号：面板里的动作是次要操作，不跟着触发器尺寸变（2026-11-15 用户）。
     const actionSize = 'sm';
+    // 宽度三轴与 Button 同口径：固定宽优先，min / max 只在 width 未设时生效。
+    // 只图标形态的宽高由 CSS 定死相等 ⇒ 一律不套，免得画出长方形。
+    const triggerWidth = {};
+    if (form === 'pill') {
+        if (width !== undefined)
+            triggerWidth.width = width;
+        else {
+            if (minWidth !== undefined)
+                triggerWidth.minWidth = minWidth;
+            if (maxWidth !== undefined)
+                triggerWidth.maxWidth = maxWidth;
+        }
+    }
+    // 只有被宽度约束（定宽或给了上限）才需要「省略号 + hover 跑马灯」；否则别多套一层测宽组件。
+    const truncatable = form === 'pill' && (width !== undefined || maxWidth !== undefined);
     const [open, setOpen] = useState(false);
     const snapshot = useSyncExternalStore(taskNotifications.subscribe, taskNotifications.getSnapshot, taskNotifications.getServerSnapshot);
     useEffect(() => { taskNotifications.connect(); }, []);
@@ -119,7 +135,14 @@ export function TaskBar(props) {
         'aria-expanded': open,
         'aria-haspopup': 'menu',
         onClick: toggle,
-    }, icon, form === 'icon' ? null : h('span', { className: 'dshpc-taskbar__label' }, t('taskbarLabel')), form === 'icon' || !busy
+        style: triggerWidth,
+    }, icon, 
+    // 长条的文字吃剩余宽：定宽 / 上限时折叠省略号、hover 跑马灯（全站唯一实现 MarqueeText）。
+    form === 'icon'
+        ? null
+        : truncatable
+            ? h(MarqueeText, { text: t('taskbarLabel'), className: 'dshpc-taskbar__label' })
+            : h('span', { className: 'dshpc-taskbar__label' }, t('taskbarLabel')), form === 'icon' || !busy
         ? null
         : h('span', { className: 'dshpc-taskbar__count' }, t('taskbarCount', { n: running })), form === 'icon' ? null : h(Chevron, { dir: open ? 'up' : 'down', size: 6, className: 'dshpc-taskbar__caret' }));
     function renderRow(task) {

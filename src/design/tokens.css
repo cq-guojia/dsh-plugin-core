@@ -182,6 +182,10 @@ body{
      常态 tone-sunken 是 6% 蓝灰叠白 ≈ #f0f1f3，这里只加深到 9% 中性黑 ≈ #e8e8e8，
      能看出移上去了，又不会把整行内容和文字对比度一起改掉。暗色档见 body[data-ds-dark-theme]。 */
   --dshpc-listrow-hover-bg:rgba(15,15,15,.09);
+  /* TaskBar 行 hover（2026-11-15 用户定）：「很淡很淡的蓝，跟表格选中那种蓝差不多，或者还浅点」。
+     表格选中是 slate 14%（上面那条 listrow-selected-bg），这里取**一半 8%** —— 同色系、更淡，
+     hover 只是「鼠标在这儿」，不能浓到像选中。暗色档见 body[data-ds-dark-theme]（16% / 选中 26%）。 */
+  --dshpc-taskbar-row-hover:color-mix(in srgb,var(--dshpc-slate) 8%,transparent);
   /* 任务日程页本月格默认底（2026-10-06 → 续2）：浅色下给**淡蓝**（business 8% 透白底）——
      参照用户参考稿里未选中日程块 / Tuesday 列的那种蓝、再浅一点点；
      相邻月补位格仍走 --dshpc-surface-2（更灰），不受影响。
@@ -368,6 +372,8 @@ body[data-ds-dark-theme]{
   --dshpc-listrow-selected-bg:color-mix(in srgb,var(--dshpc-slate) 26%,transparent);
   /* 暗色 hover：常态 6% 白 → 10% 白，只提亮一点点（原来是 active 的 24% 白，太跳）。 */
   --dshpc-listrow-hover-bg:rgba(255,255,255,.10);
+  /* TaskBar 行 hover（暗色版）：同样比选中（26%）淡一档，取 16% —— 深底上要够看出泛蓝，又不能像选中。 */
+  --dshpc-taskbar-row-hover:color-mix(in srgb,var(--dshpc-slate) 16%,transparent);
   /* 任务日程页本月格的默认底（深色版，2026-10-06）：深的、带点灰蓝的暗色（用户给的参考图 ≈ #23262e），
      比原来的卡片面更沉、更偏蓝灰；选中格仍走 --dshpc-selected-bg（更暗一档），层级不变。 */
   --dshpc-cal-cell-bg:#23262e;

@@ -21,6 +21,15 @@ export interface TaskBarProps {
     placement?: 'down' | 'up';
     /** 任务没带图标时用的默认图标（`库名:图标名`）。 */
     defaultIcon?: string;
+    /**
+     * 触发器的宽（px 或任意 CSS 宽度值）。三轴与 `Button` 同口径：固定宽优先，
+     * 一旦设定 `minWidth` / `maxWidth` 自动失效。只图标形态宽高恒等（正方形），**忽略这三个参数**。
+     */
+    width?: number | string;
+    /** 最小宽：`width` 未设时生效，内容不足此宽时以它为准。 */
+    minWidth?: number | string;
+    /** 最大宽：`width` 未设时生效；文字放不下折叠成省略号，hover 跑马灯展开（同 `Button`）。 */
+    maxWidth?: number | string;
     /** 追加 class（只补布局）。 */
     className?: string;
     style?: CSSProperties;

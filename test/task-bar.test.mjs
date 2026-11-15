@@ -4,6 +4,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { TaskBar, notifyTask, setDefaultTaskProject, taskNotifications } from '../dist/ui/index.js'
 import { TASK_BAR_CSS } from '../dist/ui/display/task-bar-css.js'
+import { TOKENS_CSS_TEMPLATE } from '../dist/design/tokens-css.js'
 import { formatDurationHms } from '../dist/utils/index.js'
 
 // 展示栏默认按「全局默认项目」取数，跟真实插件一样在入口设一次。
@@ -50,6 +51,48 @@ test('没有任务时不呼吸、不出绿点', () => {
 test('面板只画一层框：行间一条虚线，行本身不再套 ListRow 的底 / 边', () => {
   assert.match(TASK_BAR_CSS, /\.dshpc-taskbar__item \+ \.dshpc-taskbar__item\{border-top:1px dashed/)
   assert.ok(!TASK_BAR_CSS.includes('dshpc-listrow'), '行不再复用 ListRow，CSS 不该引用它的类')
+})
+
+// 2026-11-15 用户：行 hover 给一层极淡的蓝（跟表格选中同色系、更浅就行），行本身仍然不可点。
+test('行 hover 只换极淡蓝底，不给点击语义', () => {
+  const css = TASK_BAR_CSS.replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.match(css, /\.dshpc-taskbar__item:hover\{background:var\(--dshpc-taskbar-row-hover\);\}/)
+  assert.ok(!/\.dshpc-taskbar__item[^{]*\{[^}]*cursor:/.test(css), '行不该给 cursor（不可点）')
+  assert.ok(!/\.dshpc-taskbar__item[^{]*:focus/.test(css), '行不给焦点环（没有键盘交互）')
+  assert.match(css, /prefers-reduced-motion:reduce\)\{\.dshpc-taskbar__item\{transition:none\}\}/)
+})
+
+test('行 hover token：明暗各一档，且都比表格选中（14% / 26%）更淡', () => {
+  const darkAt = TOKENS_CSS_TEMPLATE.indexOf('body[data-ds-dark-theme]{')
+  assert.ok(darkAt > 0, '暗色段必须存在')
+  const light = TOKENS_CSS_TEMPLATE.slice(0, darkAt)
+  const dark = TOKENS_CSS_TEMPLATE.slice(darkAt)
+  assert.match(light, /--dshpc-taskbar-row-hover:color-mix\(in srgb,var\(--dshpc-slate\) 8%,transparent\)/)
+  assert.match(dark, /--dshpc-taskbar-row-hover:color-mix\(in srgb,var\(--dshpc-slate\) 16%,transparent\)/)
+})
+
+// 2026-11-15 用户：宽度要像 Button 那样能定宽 / 最小 / 最大，放不下就三个点 + hover 跑马灯。
+test('宽度三轴与 Button 同口径：定宽优先，min / max 次之', () => {
+  assert.ok(render({ width: 200 }).includes('width:200px'), '定宽该落到触发器')
+  const both = render({ width: 200, minWidth: 120, maxWidth: 300 })
+  assert.ok(both.includes('width:200px'), '定宽在')
+  assert.ok(!both.includes('min-width') && !both.includes('max-width'), '定宽时另两者失效')
+  const limited = render({ minWidth: 160, maxWidth: 240 })
+  assert.ok(limited.includes('min-width:160px') && limited.includes('max-width:240px'), 'min / max 各自生效')
+})
+
+test('定宽或给了上限 ⇒ 文字叠跑马灯；只有下限 / 没约束不叠', () => {
+  assert.ok(render({ maxWidth: 140 }).includes('dshpc-mq'), 'maxWidth 该叠 MarqueeText')
+  assert.ok(render({ width: 140 }).includes('dshpc-mq'), '定宽同样要截断')
+  assert.ok(!render({}).includes('dshpc-mq'), '没有宽度约束不该多套一层')
+  assert.ok(!render({ minWidth: 140 }).includes('dshpc-mq'), '只有下限不会截断，不必测宽')
+  const css = TASK_BAR_CSS.replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.match(css, /\.dshpc-taskbar__label\{flex:0 1 auto;min-width:0;white-space:nowrap;\}/, '文字槽要能收缩')
+})
+
+test('只图标形态恒为正方形：宽度三轴一律忽略', () => {
+  const html = render({ form: 'icon', width: 200, maxWidth: 300 })
+  assert.ok(!html.includes('width:200px') && !html.includes('max-width'), '图标档不能被拉成长方形')
 })
 
 test('呼吸是 CSS 动画，且尊重 reduced-motion', () => {

@@ -298,6 +298,9 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
         h(TaskBar, { size: 'lg', groups }),
         h(TaskBar, { form: 'icon', groups }),
         h(TaskBar, { form: 'icon', size: 'lg', groups }),
+        // 宽度三轴（与 Button 同口径）：定宽按给的来；给了上限放不下就三个点，移上去跑马灯
+        h(TaskBar, { width: 220, groups }),
+        h(TaskBar, { maxWidth: 110, groups }),
       ),
     ),
     h(

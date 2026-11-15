@@ -5,6 +5,7 @@ import {
 import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react'
 import { Button, IconButton, type ButtonSize } from '../actions/Button.js'
 import { FontIcon, resolveIconName } from './font-icon.js'
+import { MarqueeText } from './MarqueeText.js'
 import { Chevron } from '../infra/chevron.js'
 import { PanelSurface } from '../infra/panel.js'
 import { ensureComponentStyles } from '../infra/css.js'
@@ -42,6 +43,15 @@ export interface TaskBarProps {
   placement?: 'down' | 'up'
   /** 任务没带图标时用的默认图标（`库名:图标名`）。 */
   defaultIcon?: string
+  /**
+   * 触发器的宽（px 或任意 CSS 宽度值）。三轴与 `Button` 同口径：固定宽优先，
+   * 一旦设定 `minWidth` / `maxWidth` 自动失效。只图标形态宽高恒等（正方形），**忽略这三个参数**。
+   */
+  width?: number | string
+  /** 最小宽：`width` 未设时生效，内容不足此宽时以它为准。 */
+  minWidth?: number | string
+  /** 最大宽：`width` 未设时生效；文字放不下折叠成省略号，hover 跑马灯展开（同 `Button`）。 */
+  maxWidth?: number | string
   /** 追加 class（只补布局）。 */
   className?: string
   style?: CSSProperties
@@ -107,11 +117,24 @@ export function TaskBar(props: TaskBarProps): ReactNode {
   useLocale()
   const {
     form = 'pill', size = 'md', groups, project, includeHidden, placement = 'down',
-    defaultIcon = DEFAULT_ICON, className, style,
+    defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className, style,
   } = props
 
   // 行内动作按钮一律最小号：面板里的动作是次要操作，不跟着触发器尺寸变（2026-11-15 用户）。
   const actionSize: ButtonSize = 'sm'
+
+  // 宽度三轴与 Button 同口径：固定宽优先，min / max 只在 width 未设时生效。
+  // 只图标形态的宽高由 CSS 定死相等 ⇒ 一律不套，免得画出长方形。
+  const triggerWidth: CSSProperties = {}
+  if (form === 'pill') {
+    if (width !== undefined) triggerWidth.width = width
+    else {
+      if (minWidth !== undefined) triggerWidth.minWidth = minWidth
+      if (maxWidth !== undefined) triggerWidth.maxWidth = maxWidth
+    }
+  }
+  // 只有被宽度约束（定宽或给了上限）才需要「省略号 + hover 跑马灯」；否则别多套一层测宽组件。
+  const truncatable = form === 'pill' && (width !== undefined || maxWidth !== undefined)
 
   const [open, setOpen] = useState(false)
   const snapshot = useSyncExternalStore(
@@ -180,9 +203,15 @@ export function TaskBar(props: TaskBarProps): ReactNode {
       'aria-expanded': open,
       'aria-haspopup': 'menu',
       onClick: toggle,
+      style: triggerWidth,
     },
     icon,
-    form === 'icon' ? null : h('span', { className: 'dshpc-taskbar__label' }, t('taskbarLabel')),
+    // 长条的文字吃剩余宽：定宽 / 上限时折叠省略号、hover 跑马灯（全站唯一实现 MarqueeText）。
+    form === 'icon'
+      ? null
+      : truncatable
+        ? h(MarqueeText, { text: t('taskbarLabel'), className: 'dshpc-taskbar__label' })
+        : h('span', { className: 'dshpc-taskbar__label' }, t('taskbarLabel')),
     form === 'icon' || !busy
       ? null
       : h('span', { className: 'dshpc-taskbar__count' }, t('taskbarCount', { n: running })),
