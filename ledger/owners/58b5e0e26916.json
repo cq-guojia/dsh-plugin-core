@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261115-0854-7d77-通知任务中心通用展示栏": {"category": "界面开发", "created": "2026-11-15 08:54:55", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-15 08:54:55", "status": "doing", "tags": ["通知中心", "展示栏", "下拉面板"], "title": "通知任务中心通用展示栏", "updated": "2026-11-15 10:50:12", "worklog": "worklog/202611/15-0854-7d77-通知任务中心通用展示栏.md"}
+    "20261115-0854-7d77-通知任务中心通用展示栏": {"category": "界面开发", "created": "2026-11-15 08:54:55", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-15 08:54:55", "status": "doing", "tags": ["通知中心", "展示栏", "下拉面板"], "title": "通知任务中心通用展示栏", "updated": "2026-11-15 10:57:40", "worklog": "worklog/202611/15-0854-7d77-通知任务中心通用展示栏.md"}
   },
   "version": "20261022000000"
 }
