@@ -58,6 +58,11 @@ export type DemoMessageKey =
   | 'tnCountLabel'
   | 'tnBadgeLocal'
   | 'tnBadgeRemote'
+  | 'tnActionView'
+  | 'tnActionCancel'
+  | 'tnActionShow'
+  | 'tnActionClick'
+  | 'tnActionRefresh'
   | 'secReference'
   | 'secActions'
   | 'secInputs'
@@ -302,7 +307,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnNote: '本页只演示数据面：状态池、订阅、事件总线、跨页同步与结束句柄。任务、条数、revision、时间与事件全部来自真实 API 调用，没有模拟数据、没有定时器、没有占位行。可收起弹窗与事件查看控件不在这里，由后续任务单独提供。',
     tnCrossPage: '跨页演示：在另一个同源标签页打开本页，两边各自注册或结束任务，列表与事件会即时同步；关掉其中一个标签页可看到 peer-left 事件。跨页条目能看不能点。',
     tnBarTitle: '通用展示栏',
-    tnBarHint: '封装好的形态：长条与只图标；点开是后台正在跑的任务',
+    tnBarHint: '触发器照下拉框的皮；点开每行有动作按钮（固定最小号：不传色灰底、传 color 换底色，只传 icon 是正方形）；每次注册都随机生成 0/1/2 颗',
     tnOpsTitle: '真实操作台',
     tnOpsHint: '每个按钮都调用真实 API；右侧是同一套调用的代码',
     tnRegisterReminder: '注册到 dsh-task-reminder',
@@ -330,6 +335,11 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnCountLabel: '显示 / 全池',
     tnBadgeLocal: '本页创建 · 可还原',
     tnBadgeRemote: '跨页条目 · 能看不能点',
+    tnActionView: '查看',
+    tnActionCancel: '取消',
+    tnActionShow: '显示',
+    tnActionClick: '点击',
+    tnActionRefresh: '刷新',
     secReference: '参考与约定',
     secActions: '动作',
     secInputs: '录入',
@@ -599,7 +609,7 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnNote: 'This page demos the data plane only: pool, subscription, event bus, cross-page sync and settlement handles. Rows, counts, revision, timestamps and events all come from real API calls — no mock data, no timers, no placeholder rows. Collapsible dialogs and the event-viewer control are not here; they arrive in separate tasks.',
     tnCrossPage: 'Cross-page demo: open this page in another same-origin tab. Register or settle a task on either side and both lists and event streams update immediately; close one tab to see a peer-left event. Cross-page rows are view-only.',
     tnBarTitle: 'Ready-made bar',
-    tnBarHint: 'Pill and icon-only forms; click to list the running background tasks',
+    tnBarHint: 'Trigger follows the dropdown skin; row actions are always the smallest size (grey by default, any color via color, icon-only renders as a square); every registration picks 0/1/2 buttons at random',
     tnOpsTitle: 'Live controls',
     tnOpsHint: 'Every button calls a real API; the code on the right is that same call',
     tnRegisterReminder: 'Register to dsh-task-reminder',
@@ -627,6 +637,11 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnCountLabel: 'shown / total',
     tnBadgeLocal: 'Created here · restorable',
     tnBadgeRemote: 'Cross-page row · view only',
+    tnActionView: 'View',
+    tnActionCancel: 'Cancel',
+    tnActionShow: 'Show',
+    tnActionClick: 'Click',
+    tnActionRefresh: 'Refresh',
     secReference: 'Reference',
     secActions: 'Actions',
     secInputs: 'Inputs',

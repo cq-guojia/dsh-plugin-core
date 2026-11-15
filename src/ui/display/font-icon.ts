@@ -53,7 +53,7 @@ export interface IconFontFace {
  */
 export const ICON_FONTS = {
   'common.base': {
-    url: 'https://at.alicdn.com/t/c/font_5252971_jpekkiqjy2.css',
+    url: 'https://at.alicdn.com/t/c/font_5252971_zktziwb6qm.css',
     family: 'koc-i-common-base',
     baseClass: 'koc-i-common-base',
     prefix: 'koc-i-common-base-',
@@ -96,7 +96,7 @@ export const ICON_SIZES = { sm: 14, md: 16, lg: 20, xl: 24 } as const
 export type IconSize = keyof typeof ICON_SIZES
 
 /**
- * 保证该库的样式只挂一条 `<link>`。
+ * 保证该库的样式只挂一条 `<link>`（字体就是那份在线 CSS 里 `@font-face` 引的那个文件）。
  *
  * 地址变了就走改 `href`（iconfont 重发布 / 整库换链接都不会插出第二条），
  * 没有 `document`（node 自检）直接返回。

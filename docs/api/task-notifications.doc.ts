@@ -38,10 +38,13 @@ notifyMessage('已保存', { group: 'notice', icon: 'check', level: 'success' })
 const actionsExample = `import { notifyTask, taskNotifications } from 'dsh-plugin-core/ui'
 
 // ① 弹窗这边：按钮名 + 点它干什么。run 写匿名函数就行，不用起名
+//    color 可选：不传用展示方的默认档（灰底），传了就是该按钮的底色
+//    icon 可选：只给 icon 不给 label，展示方会画成正方形图标钮
 const handle = notifyTask('收到确认', {
   actions: [
     { label: '重新打开', run: () => reopenDialog() },
-    { label: '知道了', run: () => handle.done() },
+    { label: '知道了', color: '#16a34a', icon: 'common.base:gou', run: () => handle.done() },
+    { icon: 'common.base:shuaxin', run: () => reload() },
   ],
 })
 handle.background()
@@ -82,8 +85,8 @@ const doc: DocTopic = {
           en: 'Two channels: the **pool** (`getSnapshot` / `subscribe`, feeds `useSyncExternalStore`) and the **event bus** (`subscribeTaskNotificationEvents`, one-off facts, no history). Use `notifyTask` for rows that appear in the list and can be ended; `notifyMessage` for a one-off announcement that stays out of it.',
         },
         {
-          zh: '按钮：要给后台条目加「拉回来」这类操作，就传 `actions: [{ label, run }]`。方法留在创建页内存里，记录只带文案，所以别的标签页也画得出按钮，点击会发回创建页执行。',
-          en: 'Actions: to give a backgrounded row something to do, pass `actions: [{ label, run }]`. The method stays in the creating page\'s memory and only labels cross pages, so other tabs can render the buttons and a click is executed back on the creating page.',
+          zh: '按钮：要给后台条目加「拉回来」这类操作，就传 `actions: [{ label?, icon?, color?, run }]`（`label` 与 `icon` 至少给一个）。方法留在创建页内存里，记录只带文案 / 图标标识 / 颜色，所以别的标签页也画得出按钮，点击会发回创建页执行。一条记录可带多颗按钮，展示方按顺序全画出来；只给 `icon` 的那颗是正方形图标钮。',
+          en: 'Actions: to give a backgrounded row something to do, pass `actions: [{ label?, icon?, color?, run }]` (at least one of `label` and `icon`). The method stays in the creating page\'s memory and only labels, icon ids and colors cross pages, so other tabs can render the buttons and a click is executed back on the creating page. A record may carry several buttons; the renderer draws them all in order, and an icon-without-label one becomes a square icon button.',
         },
         {
           zh: '其余约定：`detail` 收任意 JSON 值（函数与类实例当场抛错）；`icon` / `iconSvg` 只是字符串，渲染与注入安全由消费端负责；两级分组用 `project`（`setDefaultTaskProject()` 设一次）+ `group`（缺省 `default`）。',
@@ -123,8 +126,8 @@ const doc: DocTopic = {
             { name: 'input.hidden', type: 'boolean', def: 'false', desc: { zh: '不进默认列表；开了之后默认 5 分钟兜底。可在 `update` 里切换（传 false 能取消）', en: 'Kept out of the default list; hidden rows default to a 5-minute TTL. Switchable through `update` (false un-hides)' } },
             { name: 'input.timeoutMs', type: 'number', def: 'hidden ? 5 分钟 : 0', desc: { zh: '回收窗口，从最后一次活动起算；必须是有限数且 ≥ 0，0 表示永不回收', en: 'Reclamation window counted from the last activity; must be finite and ≥ 0, where 0 means never' } },
             { name: 'input.detail', type: 'TaskNotificationDetail', def: '—', desc: { zh: '任意 JSON 值（对象 / 数组 / 数字 / 布尔 / null）；入池前克隆私有副本，函数与类实例当场抛错', en: 'Any JSON value (object / array / number / boolean / null); cloned into a private copy on the way in, while functions and class instances throw immediately' } },
-            { name: 'input.actions', type: 'readonly TaskNotificationAction[]', def: '—', desc: { zh: '按钮：`{ label, run }` 数组，run 是匿名函数、不进池不过线，只在创建页执行；label 为空或 run 不是函数时注册当场抛错', en: 'Actions: an array of `{ label, run }`; run is an anonymous function that never enters the pool or the wire and runs only on the creating page. An empty label or a non-function run throws at registration' } },
-            { name: 'record.actions', type: 'readonly { label: string }[] | undefined', def: 'undefined', desc: { zh: '跨页可见的只有按钮文案，下标即动作 id；没有按钮的记录不带这个字段', en: 'Only labels cross pages, and the index is the action id; rows without actions carry no such field' } },
+            { name: 'input.actions', type: 'readonly TaskNotificationAction[]', def: '—', desc: { zh: '按钮：`{ label?, icon?, color?, run }` 数组，`label` 与 `icon` 至少给一个；run 是匿名函数、不进池不过线，只在创建页执行；`color` 是任意 CSS 色值，不传由展示方用默认档；两者都空、run 不是函数或 color 传了空串时注册当场抛错', en: 'Actions: an array of `{ label?, icon?, color?, run }` with at least one of label and icon; run is an anonymous function that never enters the pool or the wire and runs only on the creating page. `color` is any CSS color, omitted means the renderer default. Both label and icon empty, a non-function run or a blank color throws at registration' } },
+            { name: 'record.actions', type: 'readonly { label?: string; icon?: string; color?: string }[] | undefined', def: 'undefined', desc: { zh: '跨页可见的只有文案 / 图标标识 / 颜色，下标即动作 id；没有按钮的记录不带这个字段', en: 'Only labels, icon ids and colors cross pages, and the index is the action id; rows without actions carry no such field' } },
             { name: 'input.projectLabel / groupLabel', type: 'string', def: '—', desc: { zh: '项目 / 分组的显示名覆盖', en: 'Project / group display-name overrides' } },
             { name: 'handle.update(patch)', type: '(patch: TaskNotificationPatch) => void', def: '—', desc: { zh: '只改纯数据字段，随时可调用；actions 注册时定型，不能改', en: 'Updates plain data fields, callable any time; actions are fixed at registration and cannot change' } },
             { name: 'handle.background()', type: '() => void', def: '—', desc: { zh: '标记收起并发 backgrounded 事件，不结算', en: 'Marks the task backgrounded and emits a backgrounded event without settling' } },

@@ -589,6 +589,7 @@ const DICT = {
         taskbarLabel: '后台任务',
         taskbarCount: '{n} 个运行中',
         taskbarEmpty: '暂无后台任务',
+        taskbarElapsed: '已执行 {time}',
     },
     en: {
         sessionLoading: 'Loading session…',
@@ -1170,6 +1171,7 @@ const DICT = {
         taskbarLabel: 'Background tasks',
         taskbarCount: '{n} running',
         taskbarEmpty: 'No background tasks',
+        taskbarElapsed: 'Running {time}',
     },
 };
 /** 手动覆盖（`setLocale`）；不覆盖就跟随宿主语言。 */

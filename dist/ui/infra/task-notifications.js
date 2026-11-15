@@ -71,18 +71,34 @@ function assertOptionalText(source, keys) {
         }
     }
 }
-/** 校验按钮并只抽出能跨页的部分（文案）；方法本体由调用方保管。 */
+/** 校验按钮并只抽出能跨页的部分（文案 / 图标 / 颜色）；方法本体由调用方保管。 */
 function normalizeActions(actions) {
     if (actions === undefined)
         return [];
     return actions.map((action) => {
-        if (typeof action.label !== 'string' || action.label.trim() === '') {
-            throw new Error('task notification action label must be a non-empty string');
+        if (action.label !== undefined && typeof action.label !== 'string') {
+            throw new Error('task notification action label must be a string');
+        }
+        if (action.icon !== undefined && typeof action.icon !== 'string') {
+            throw new Error('task notification action icon must be a string');
         }
         if (typeof action.run !== 'function') {
             throw new Error('task notification action run must be a function');
         }
-        return { label: action.label };
+        const label = action.label?.trim() ?? '';
+        const icon = action.icon?.trim() ?? '';
+        // 只有图标也算合法（展示方画成正方形图标钮）；两个都空就没法画，直接拒。
+        if (label === '' && icon === '') {
+            throw new Error('task notification action needs a non-empty label or icon');
+        }
+        if (action.color !== undefined && (typeof action.color !== 'string' || action.color.trim() === '')) {
+            throw new Error('task notification action color must be a non-empty string when provided');
+        }
+        return {
+            ...(label === '' ? {} : { label: action.label }),
+            ...(icon === '' ? {} : { icon: action.icon }),
+            ...(action.color === undefined ? {} : { color: action.color }),
+        };
     });
 }
 function normalizeGroup(group) {
@@ -232,10 +248,23 @@ function cloneDetail(value) {
 /** 记录里只允许出现文案；多出任何键（例如误带的 run）都算畸形消息，整条丢掉。 */
 function isActionInfos(value) {
     return (Array.isArray(value) &&
-        value.every((item) => isRecord(item) &&
-            Object.keys(item).length === 1 &&
-            typeof item.label === 'string' &&
-            item.label.trim() !== ''));
+        value.every((item) => {
+            if (!isRecord(item))
+                return false;
+            // 只认 label / icon / color 三个键：别让畸形分片借着体积校验混进池。
+            if (!Object.keys(item).every((key) => key === 'label' || key === 'icon' || key === 'color'))
+                return false;
+            if (!isOptionalString(item.label))
+                return false;
+            if (!isOptionalString(item.icon))
+                return false;
+            if (item.color !== undefined && (typeof item.color !== 'string' || item.color.trim() === ''))
+                return false;
+            // 文案与图标至少得有一个，否则这颗按钮画不出来。
+            const label = typeof item.label === 'string' ? item.label.trim() : '';
+            const icon = typeof item.icon === 'string' ? item.icon.trim() : '';
+            return label !== '' || icon !== '';
+        }));
 }
 function isOptionalString(value) {
     return value === undefined || typeof value === 'string';

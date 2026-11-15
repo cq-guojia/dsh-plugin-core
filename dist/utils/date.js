@@ -53,14 +53,21 @@ export function formatClock(iso, opts) {
     const d = new Date(ms);
     return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
 }
-/** 时长：有小时 ⇒ `H:MM:SS`；不足 1 小时 ⇒ `MM:SS`。负数 / NaN ⇒ `-`。 */
-export function formatDurationHms(ms) {
+/**
+ * 时长：有小时 ⇒ `H:MM:SS`；不足 1 小时 ⇒ `MM:SS`。负数 / NaN ⇒ `-`。
+ *
+ * `padHours` 打开后小时位固定两位（`00:00:01`），给「一直在跳」的计时要宽恒定、
+ * 不因进位左右抖动用（如 TaskBar 的已运行时）。
+ */
+export function formatDurationHms(ms, opts) {
     if (!Number.isFinite(ms) || ms < 0)
         return '-';
     const totalSec = Math.round(ms / 1000);
     const h = Math.floor(totalSec / 3600);
     const m = Math.floor((totalSec % 3600) / 60);
     const s = totalSec % 60;
+    if (opts?.padHours === true)
+        return `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
     return h > 0 ? `${h}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 /** 两个时刻是否同一天（本机时区）。 */

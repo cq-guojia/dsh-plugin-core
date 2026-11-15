@@ -25,13 +25,23 @@ export type TaskNotificationDetail = string | number | boolean | null | readonly
  * —— 与 VS Code 命令表、Chrome 通知按钮同一形态：边界上只走 id 与纯数据。
  */
 export interface TaskNotificationAction {
-    readonly label: string;
+    /** 文案；与 `icon` 至少给一个。只给 `icon` 时展示方画成正方形图标钮。 */
+    readonly label?: string;
+    /** 图标标识（`库名:图标名`）；与 `label` 至少给一个。 */
+    readonly icon?: string;
+    /**
+     * 按钮色（任意 CSS 色值，如 `#dc2626` / `var(--dshpc-business)`）。
+     * 不传 = 用展示方的默认档；传了就是实心底色。跨页只传这个字符串本身。
+     */
+    readonly color?: string;
     /** 点击时执行；匿名函数即可。抛错由池捕获并算作本次调用失败。 */
     readonly run: () => void;
 }
-/** 记录里能跨页的那部分：只有文案。下标即动作 id。 */
+/** 记录里能跨页的那部分：文案 + 图标 + 可选按钮色。下标即动作 id。 */
 export interface TaskNotificationActionInfo {
-    readonly label: string;
+    readonly label?: string;
+    readonly icon?: string;
+    readonly color?: string;
 }
 /** Plain, structured-cloneable data. No functions, no ReactNode, no components. */
 export interface TaskNotificationRecord {

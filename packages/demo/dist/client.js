@@ -251,7 +251,7 @@ function darkGlyphName(glyph, names) {
 // dist/ui/display/font-icon.js
 var ICON_FONTS = {
   "common.base": {
-    url: "https://at.alicdn.com/t/c/font_5252971_jpekkiqjy2.css",
+    url: "https://at.alicdn.com/t/c/font_5252971_zktziwb6qm.css",
     family: "koc-i-common-base",
     baseClass: "koc-i-common-base",
     prefix: "koc-i-common-base-"
@@ -979,7 +979,8 @@ var DICT = {
     sessionProbeStyle: "\u5B98\u65B9\u6837\u5F0F\u672A\u547D\u4E2D\uFF08\u5F53\u524D\u4E3A\u81EA\u7ED8\u56DE\u9000\uFF09",
     taskbarLabel: "\u540E\u53F0\u4EFB\u52A1",
     taskbarCount: "{n} \u4E2A\u8FD0\u884C\u4E2D",
-    taskbarEmpty: "\u6682\u65E0\u540E\u53F0\u4EFB\u52A1"
+    taskbarEmpty: "\u6682\u65E0\u540E\u53F0\u4EFB\u52A1",
+    taskbarElapsed: "\u5DF2\u6267\u884C {time}"
   },
   en: {
     sessionLoading: "Loading session\u2026",
@@ -1560,7 +1561,8 @@ var DICT = {
     sessionProbeStyle: "Official styles not matched (using the self-drawn fallback)",
     taskbarLabel: "Background tasks",
     taskbarCount: "{n} running",
-    taskbarEmpty: "No background tasks"
+    taskbarEmpty: "No background tasks",
+    taskbarElapsed: "Running {time}"
   }
 };
 var override = null;
@@ -1672,13 +1674,28 @@ function normalizeActions(actions2) {
   if (actions2 === void 0)
     return [];
   return actions2.map((action) => {
-    if (typeof action.label !== "string" || action.label.trim() === "") {
-      throw new Error("task notification action label must be a non-empty string");
+    if (action.label !== void 0 && typeof action.label !== "string") {
+      throw new Error("task notification action label must be a string");
+    }
+    if (action.icon !== void 0 && typeof action.icon !== "string") {
+      throw new Error("task notification action icon must be a string");
     }
     if (typeof action.run !== "function") {
       throw new Error("task notification action run must be a function");
     }
-    return { label: action.label };
+    const label = action.label?.trim() ?? "";
+    const icon = action.icon?.trim() ?? "";
+    if (label === "" && icon === "") {
+      throw new Error("task notification action needs a non-empty label or icon");
+    }
+    if (action.color !== void 0 && (typeof action.color !== "string" || action.color.trim() === "")) {
+      throw new Error("task notification action color must be a non-empty string when provided");
+    }
+    return {
+      ...label === "" ? {} : { label: action.label },
+      ...icon === "" ? {} : { icon: action.icon },
+      ...action.color === void 0 ? {} : { color: action.color }
+    };
   });
 }
 function normalizeGroup(group) {
@@ -1799,7 +1816,21 @@ function cloneDetail(value) {
   return typeof structuredClone === "function" ? structuredClone(value) : JSON.parse(JSON.stringify(value));
 }
 function isActionInfos(value) {
-  return Array.isArray(value) && value.every((item) => isRecord(item) && Object.keys(item).length === 1 && typeof item.label === "string" && item.label.trim() !== "");
+  return Array.isArray(value) && value.every((item) => {
+    if (!isRecord(item))
+      return false;
+    if (!Object.keys(item).every((key) => key === "label" || key === "icon" || key === "color"))
+      return false;
+    if (!isOptionalString(item.label))
+      return false;
+    if (!isOptionalString(item.icon))
+      return false;
+    if (item.color !== void 0 && (typeof item.color !== "string" || item.color.trim() === ""))
+      return false;
+    const label = typeof item.label === "string" ? item.label.trim() : "";
+    const icon = typeof item.icon === "string" ? item.icon.trim() : "";
+    return label !== "" || icon !== "";
+  });
 }
 function isOptionalString(value) {
   return value === void 0 || typeof value === "string";
@@ -6056,13 +6087,15 @@ function formatClock(iso, opts) {
   const d2 = new Date(ms);
   return `${pad2(d2.getHours())}:${pad2(d2.getMinutes())}:${pad2(d2.getSeconds())}`;
 }
-function formatDurationHms(ms) {
+function formatDurationHms(ms, opts) {
   if (!Number.isFinite(ms) || ms < 0)
     return "-";
   const totalSec = Math.round(ms / 1e3);
   const h99 = Math.floor(totalSec / 3600);
   const m = Math.floor(totalSec % 3600 / 60);
   const s = totalSec % 60;
+  if (opts?.padHours === true)
+    return `${pad2(h99)}:${pad2(m)}:${pad2(s)}`;
   return h99 > 0 ? `${h99}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
 }
 function sameCalendarDay(a, b) {
@@ -7875,26 +7908,68 @@ function ListRow(props) {
 }
 
 // dist/ui/display/TaskBar.js
+var import_react32 = require("react");
+
+// dist/ui/infra/ticker.js
 var import_react31 = require("react");
+var tickerListeners = /* @__PURE__ */ new Set();
+var tickerTimer = null;
+var onVisibilityChange = () => {
+  for (const l of [...tickerListeners])
+    l();
+};
+var visibilityBound2 = false;
+function subscribeTicker(cb) {
+  tickerListeners.add(cb);
+  if (tickerTimer === null) {
+    tickerTimer = window.setInterval(() => {
+      for (const l of [...tickerListeners])
+        l();
+    }, 1e3);
+    if (!visibilityBound2 && typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", onVisibilityChange);
+      visibilityBound2 = true;
+    }
+  }
+  return () => {
+    tickerListeners.delete(cb);
+    if (tickerListeners.size === 0 && tickerTimer !== null) {
+      window.clearInterval(tickerTimer);
+      tickerTimer = null;
+    }
+  };
+}
+function useNowMs() {
+  const [nowMs, setNowMs] = (0, import_react31.useState)(() => Date.now());
+  (0, import_react31.useEffect)(() => subscribeTicker(() => setNowMs(Date.now())), []);
+  return nowMs;
+}
 
 // dist/ui/display/task-bar-css.generated.js
-var TASK_BAR_CSS = "/* \u2500\u2500 TaskBar \xB7 \u901A\u77E5\u4EFB\u52A1\u4E2D\u5FC3\u7684\u901A\u7528\u5C55\u793A\u680F \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u89E6\u53D1\u5668\u672C\u4F53\u5C31\u662F Button\uFF08\u63CF\u8FB9\u6863\uFF09\uFF1A\u5706\u89D2 / \u8FB9\u6846 / hover / \u7126\u70B9\u73AF\u5168\u5728 button.css\uFF0C\n   \u672C\u6587\u4EF6\u53EA\u8865\u5B83\u6CA1\u6709\u7684\uFF1A\u56FE\u6807\u4F4D\u7684\u5C0F\u7EFF\u70B9\u3001\u8BA1\u6570\u6587\u6848\u3001\u4E0B\u62C9\u91CC\u7684\u884C\u5185\u6392\u7248\u3002\n   \u4E0B\u62C9\u5BB9\u5668\u8D70 PanelSurface(menu)\uFF0C\u8FD9\u91CC\u53EA\u7ED9\u5BBD\u5EA6\u4E0E\u6EDA\u52A8\u533A\uFF0C\u4E0D\u6539\u9762\u677F\u76AE\u80A4\u3002 */\n\n.dshpc-taskbar{display:inline-flex;}\n\n/* \u56FE\u6807\u4F4D\uFF1A\u7EFF\u70B9\u9489\u5728\u53F3\u4E0A\u89D2\uFF0C\u4E0D\u53C2\u4E0E\u5E03\u5C40\u3002 */\n.dshpc-taskbar__iconwrap{position:relative;display:inline-flex;align-items:center;justify-content:center;}\n.dshpc-taskbar__dot{\n  position:absolute;top:-1px;right:-2px;width:6px;height:6px;border-radius:50%;\n  background:var(--dshpc-success);box-shadow:0 0 0 2px var(--dshpc-surface-base);\n}\n.dshpc-taskbar__count{color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;margin-left:2px;}\n\n/* \u9762\u677F\u53EA\u8865\u5E03\u5C40\uFF1A\u5BBD\u5EA6\u8DDF\u7740\u89C6\u53E3\u6536\uFF0C\u5217\u8868\u81EA\u5DF1\u6EDA\u3002 */\n.dshpc-taskbar__panel{width:min(340px,calc(100vw - 24px));padding:var(--dshpc-space-1);}\n.dshpc-taskbar__list{\n  display:flex;flex-direction:column;gap:2px;\n  max-height:320px;overflow:auto;padding:2px;\n}\n.dshpc-taskbar__empty{\n  padding:var(--dshpc-space-4) var(--dshpc-space-3);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n}\n\n/* \u4E00\u884C\uFF1A\u56FE\u6807 + \u4E24\u884C\u6587\u5B57\uFF1B\u53F3\u4FA7\u6309\u94AE\u7531 ListRow \u7684 actions \u69FD\u8D1F\u8D23\u3002 */\n.dshpc-taskbar__row{display:flex;align-items:center;gap:var(--dshpc-space-2);flex:1 1 auto;min-width:0;}\n.dshpc-taskbar__row-icon{\n  flex:none;display:inline-flex;align-items:center;justify-content:center;\n  width:22px;height:22px;border-radius:var(--dshpc-radius-sm);\n  background:var(--dshpc-surface-sunken);color:var(--dshpc-fg-2);\n}\n.dshpc-taskbar__row-main{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1 1 auto;}\n.dshpc-taskbar__row-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}\n.dshpc-taskbar__row-meta{font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);}\n";
+var TASK_BAR_CSS = "/* \u2500\u2500 TaskBar \xB7 \u901A\u77E5\u4EFB\u52A1\u4E2D\u5FC3\u7684\u901A\u7528\u5C55\u793A\u680F \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u89E6\u53D1\u5668\u672C\u4F53\u662F Button\uFF08\u957F\u6761\uFF09/ IconButton\uFF08\u7EAF\u56FE\u6807\uFF0C\u6B63\u65B9\u5F62\uFF09\u7684\u63CF\u8FB9\u6863\uFF1A\n   \u5706\u89D2 / \u8FB9\u6846 / hover / \u7126\u70B9\u73AF\u5168\u5728 button.css\uFF0C\u672C\u6587\u4EF6\u53EA\u8865\u5B83\u6CA1\u6709\u7684\uFF1A\n   \u56FE\u6807\u4F4D\u7684\u5C0F\u7EFF\u70B9\u4E0E\u547C\u5438\u3001\u8BA1\u6570\u6587\u6848\u3001\u4E0B\u62C9\u91CC\u300C\u4E00\u6761\u865A\u7EBF\u4E00\u683C\u300D\u7684\u6392\u7248\u3002\n   \u4E0B\u62C9\u5BB9\u5668\u8D70 PanelSurface(menu)\uFF0C\u8FD9\u91CC\u53EA\u7ED9\u5BBD\u5EA6\u4E0E\u6EDA\u52A8\u533A\uFF0C\u4E0D\u6539\u9762\u677F\u76AE\u80A4\u3002 */\n\n.dshpc-taskbar{display:inline-flex;}\n\n/* \u89E6\u53D1\u5668\uFF1A\u6574\u6BB5\u76AE\u80A4\u7167\u4E0B\u62C9\u6846\uFF08Picker \u7684 trigger\uFF09\u6765 \u2014\u2014 \u540C\u9AD8\u5EA6\u6863\u3001\u540C 1px \u52A0\u91CD\u63CF\u8FB9\u3001\n   \u540C md \u5706\u89D2\u3001\u540C 8px \u5DE6\u53F3\u5185\u8DDD\uFF1B\u53F3\u4FA7\u4E09\u89D2\u4E5F\u5C31 6px\uFF0C\u522B\u518D\u653E\u5927\u4E00\u53F7\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4E00\u5957\u76AE\uFF1A--pill \u662F\u56FE\u6807 + \u6587\u5B57 + \u8BA1\u6570 + \u4E09\u89D2\uFF0C--icon \u53EA\u6709\u56FE\u6807\u4E14\u5BBD\u9AD8\u76F8\u7B49\u3002 */\n.dshpc-taskbar__trigger{\n  display:inline-flex;align-items:center;gap:6px;box-sizing:border-box;\n  height:28px;padding:0 8px;\n  color:var(--dshpc-fg);background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);\n  font-family:inherit;font-size:var(--dshpc-font-md);line-height:1;cursor:pointer;\n}\n.dshpc-taskbar__trigger:hover{background:var(--dshpc-hover);}\n.dshpc-taskbar__trigger:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-taskbar__trigger--sm{height:24px;font-size:var(--dshpc-font-sm);}\n.dshpc-taskbar__trigger--lg{height:32px;}\n.dshpc-taskbar__trigger--icon{justify-content:center;padding:0;width:28px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--sm{width:24px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--lg{width:32px;}\n.dshpc-taskbar__label{flex:none;white-space:nowrap;}\n.dshpc-taskbar__caret{flex:none;color:var(--dshpc-fg-3);margin-left:2px;}\n\n/* \u56FE\u6807\u4F4D\uFF1A\u7EFF\u70B9\u9489\u5728\u53F3\u4E0A\u89D2\uFF0C\u4E0D\u53C2\u4E0E\u5E03\u5C40\u3002\n   \u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u53EA\u6709\u5B57\u5F62\u81EA\u5DF1\u547C\u5438\uFF08\u5927\u5C0F\u5FAA\u73AF\uFF09\u2014\u2014 \u7EFF\u70B9\u8DDF\u7740\u7F29\u653E\u4F1A\u6643\u4F4D\u7F6E\uFF0C\u6240\u4EE5\u52A8\u753B\u6302\u5728 <i> \u4E0A\u3002 */\n.dshpc-taskbar__iconwrap{position:relative;display:inline-flex;align-items:center;justify-content:center;}\n.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:dshpc-taskbar-breathe 1.6s var(--dshpc-ease) infinite;}\n@keyframes dshpc-taskbar-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}\n@media (prefers-reduced-motion:reduce){.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:none}}\n.dshpc-taskbar__dot{\n  position:absolute;top:-2px;right:-3px;width:5px;height:5px;border-radius:50%;\n  background:var(--dshpc-success);box-shadow:0 0 0 2px var(--dshpc-surface-base);\n}\n.dshpc-taskbar__count{color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;margin-left:2px;}\n\n/* \u9762\u677F\u53EA\u8865\u5E03\u5C40\uFF1A\u5BBD\u5EA6\u8DDF\u7740\u89C6\u53E3\u6536\uFF0C\u5185\u8DDD\u5F52\u96F6 \u2014\u2014 \u884C\u81EA\u5DF1\u5E26\u5185\u8DDD\uFF0C\u865A\u7EBF\u624D\u80FD\u4E00\u6761\u901A\u5230\u5E95\u3002 */\n.dshpc-taskbar__panel{width:min(400px,calc(100vw - 24px));padding:0;overflow:hidden;}\n.dshpc-taskbar__list{max-height:320px;overflow:auto;}\n.dshpc-taskbar__empty{\n  padding:var(--dshpc-space-4) var(--dshpc-space-3);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n}\n\n/* \u4E00\u683C\u4E00\u6761\u865A\u7EBF\uFF1A\u884C\u4E0E\u884C\u4E4B\u95F4\u53EA\u753B\u5206\u9694\u7EBF\uFF0C\u884C\u672C\u8EAB\u4E0D\u5957\u5E95 / \u4E0D\u63CF\u8FB9 / \u4E0D\u5706\u89D2 \u2014\u2014 \u9762\u677F\u5DF2\u7ECF\u662F\u4E00\u5C42\u6846\u3002 */\n.dshpc-taskbar__item{\n  display:flex;align-items:center;gap:var(--dshpc-space-2);\n  padding:var(--dshpc-space-2) var(--dshpc-space-3);\n}\n.dshpc-taskbar__item + .dshpc-taskbar__item{border-top:1px dashed var(--dshpc-border);}\n\n/* \u884C\u5185\uFF1A\u56FE\u6807 + \u4E24\u884C\u6587\u5B57 + \u53F3\u4FA7\u52A8\u4F5C\u3002\u56FE\u6807\u4E0D\u5E26\u5E95\u677F\uFF0C\u53EA\u7559\u5B57\u5F62\u3002 */\n.dshpc-taskbar__row-icon{flex:none;display:inline-flex;align-items:center;color:var(--dshpc-fg-2);}\n.dshpc-taskbar__row-main{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1 1 auto;}\n.dshpc-taskbar__row-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}\n.dshpc-taskbar__row-meta{font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);}\n.dshpc-taskbar__row-actions{flex:none;display:inline-flex;align-items:center;gap:var(--dshpc-space-1);}\n";
 
 // dist/ui/display/TaskBar.js
-var DEFAULT_ICON = "common.base:info";
+var DEFAULT_ICON = "common.base:cpu";
 function iconNameOf(task, fallback) {
-  return task.icon?.includes(":") === true ? task.icon : fallback;
+  const name2 = task.icon;
+  return name2 === void 0 || resolveIconName(name2) === void 0 ? fallback : name2;
 }
-function metaOf(task) {
-  return relativePast(new Date(task.startedAt).toISOString(), Date.now());
+function actionIconOf(action, fallback) {
+  const name2 = action.icon;
+  return name2 === void 0 || resolveIconName(name2) === void 0 ? fallback : name2;
+}
+function Elapsed(props) {
+  const nowMs = useNowMs();
+  return (0, import_react32.createElement)("span", { className: "dshpc-taskbar__row-meta" }, t("taskbarElapsed", { time: formatDurationHms(Math.max(0, nowMs - props.since), { padHours: true }) }));
 }
 function TaskBar(props) {
   ensureComponentStyles("task-bar", TASK_BAR_CSS);
   useLocale();
-  const { form = "pill", groups, project, includeHidden, placement = "down", defaultIcon = DEFAULT_ICON, className: className2, style: style2 } = props;
-  const [open, setOpen] = (0, import_react31.useState)(false);
-  const snapshot = (0, import_react31.useSyncExternalStore)(taskNotifications.subscribe, taskNotifications.getSnapshot, taskNotifications.getServerSnapshot);
-  (0, import_react31.useEffect)(() => {
+  const { form = "pill", size: size4 = "md", groups, project, includeHidden, placement = "down", defaultIcon = DEFAULT_ICON, className: className2, style: style2 } = props;
+  const actionSize = "sm";
+  const [open, setOpen] = (0, import_react32.useState)(false);
+  const snapshot = (0, import_react32.useSyncExternalStore)(taskNotifications.subscribe, taskNotifications.getSnapshot, taskNotifications.getServerSnapshot);
+  (0, import_react32.useEffect)(() => {
     taskNotifications.connect();
   }, []);
   const tasks2 = selectTaskNotifications(snapshot, groups, {
@@ -7902,6 +7977,7 @@ function TaskBar(props) {
     ...includeHidden === void 0 ? {} : { includeHidden }
   });
   const running = tasks2.length;
+  const busy = running > 0;
   const { refs, floatingStyles } = useFloating2({
     open,
     onOpenChange: setOpen,
@@ -7909,7 +7985,7 @@ function TaskBar(props) {
     middleware: [offset3(6), flip3({ padding: 8 }), shift3({ padding: 8 })],
     whileElementsMounted: autoUpdate
   });
-  (0, import_react31.useEffect)(() => {
+  (0, import_react32.useEffect)(() => {
     if (!open || typeof document === "undefined")
       return;
     const onPointerDown = (event) => {
@@ -7935,60 +8011,74 @@ function TaskBar(props) {
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open, refs]);
-  const icon = (0, import_react31.createElement)("span", { className: "dshpc-taskbar__iconwrap" }, (0, import_react31.createElement)(FontIcon, { name: defaultIcon }), running > 0 ? (0, import_react31.createElement)("span", { className: "dshpc-taskbar__dot" }) : null);
-  const trigger = form === "icon" ? (0, import_react31.createElement)(Button, {
-    variant: "outline",
-    size: "md",
-    icon,
-    "aria-label": t("taskbarLabel"),
+  const icon = (0, import_react32.createElement)("span", { className: `dshpc-taskbar__iconwrap${busy ? " dshpc-taskbar__iconwrap--busy" : ""}` }, (0, import_react32.createElement)(FontIcon, { name: defaultIcon }), busy ? (0, import_react32.createElement)("span", { className: "dshpc-taskbar__dot" }) : null);
+  const toggle = () => {
+    setOpen(!open);
+  };
+  const trigger = (0, import_react32.createElement)("button", {
+    type: "button",
+    className: `dshpc-taskbar__trigger dshpc-taskbar__trigger--${form} dshpc-taskbar__trigger--${size4}`,
+    ...form === "icon" ? { "aria-label": t("taskbarLabel") } : {},
     "aria-expanded": open,
-    onClick: () => {
-      setOpen(!open);
-    }
-  }) : (0, import_react31.createElement)(Button, {
-    variant: "outline",
-    size: "md",
-    icon,
-    "aria-expanded": open,
-    onClick: () => {
-      setOpen(!open);
-    }
-  }, (0, import_react31.createElement)("span", null, t("taskbarLabel")), running > 0 ? (0, import_react31.createElement)("span", { className: "dshpc-taskbar__count" }, t("taskbarCount", { n: running })) : null);
+    "aria-haspopup": "menu",
+    onClick: toggle
+  }, icon, form === "icon" ? null : (0, import_react32.createElement)("span", { className: "dshpc-taskbar__label" }, t("taskbarLabel")), form === "icon" || !busy ? null : (0, import_react32.createElement)("span", { className: "dshpc-taskbar__count" }, t("taskbarCount", { n: running })), form === "icon" ? null : (0, import_react32.createElement)(Chevron, { dir: open ? "up" : "down", size: 6, className: "dshpc-taskbar__caret" }));
   function renderRow(task) {
-    const action = task.actions?.[0];
-    return (0, import_react31.createElement)(ListRow, {
-      key: task.id,
-      bordered: true,
-      actions: action === void 0 ? void 0 : (0, import_react31.createElement)(Button, {
-        size: "sm",
-        variant: "ghost",
-        onClick: () => {
-          void taskNotifications.runAction(task.id, 0);
-        }
-      }, action.label)
-    }, (0, import_react31.createElement)(
+    const actions2 = task.actions ?? [];
+    return (0, import_react32.createElement)("div", { key: task.id, className: "dshpc-taskbar__item" }, (0, import_react32.createElement)("span", { className: "dshpc-taskbar__row-icon" }, (0, import_react32.createElement)(FontIcon, { name: iconNameOf(task, defaultIcon) })), (0, import_react32.createElement)("div", { className: "dshpc-taskbar__row-main" }, (0, import_react32.createElement)("span", { className: "dshpc-taskbar__row-title", title: task.title }, task.title), (0, import_react32.createElement)(Elapsed, { since: task.startedAt })), actions2.length === 0 ? null : (0, import_react32.createElement)(
       "div",
-      { className: "dshpc-taskbar__row" },
-      // shortcut: iconSvg 暂不渲染（要过清洗才能 injected）；需要时在这里补 sanitize 分支。
-      (0, import_react31.createElement)("span", { className: "dshpc-taskbar__row-icon" }, (0, import_react31.createElement)(FontIcon, { name: iconNameOf(task, defaultIcon) })),
-      (0, import_react31.createElement)("div", { className: "dshpc-taskbar__row-main" }, (0, import_react31.createElement)("span", { className: "dshpc-taskbar__row-title", title: task.title }, task.title), (0, import_react31.createElement)("span", { className: "dshpc-taskbar__row-meta" }, metaOf(task)))
+      {
+        className: "dshpc-taskbar__row-actions",
+        onClick: (event) => {
+          event.stopPropagation();
+        }
+      },
+      // 记录里带几颗就画几颗：不传色 = 中性灰底（secondary）；
+      // 传了色 = 该色实心底（primary 的反色文字，深底浅字，两主题都读得清）。
+      // 只有图标没有文案的那颗画成正方形图标钮（宽高相等），默认同样带灰底。
+      actions2.map((action, index3) => {
+        const label = action.label === void 0 || action.label === "" ? void 0 : action.label;
+        const glyph = actionIconOf(action, defaultIcon);
+        if (label === void 0) {
+          return (0, import_react32.createElement)(IconButton, {
+            key: `${task.id}-${index3}`,
+            size: actionSize,
+            icon: (0, import_react32.createElement)(FontIcon, { name: glyph }),
+            label: glyph,
+            background: action.color ?? "var(--dshpc-hover)",
+            onClick: () => {
+              void taskNotifications.runAction(task.id, index3);
+            }
+          });
+        }
+        return (0, import_react32.createElement)(Button, {
+          key: `${task.id}-${index3}`,
+          size: actionSize,
+          variant: action.color === void 0 ? "secondary" : "primary",
+          ...action.color === void 0 ? {} : { color: action.color },
+          icon: (0, import_react32.createElement)(FontIcon, { name: glyph }),
+          onClick: () => {
+            void taskNotifications.runAction(task.id, index3);
+          }
+        }, label);
+      })
     ));
   }
-  return (0, import_react31.createElement)("span", {
+  return (0, import_react32.createElement)("span", {
     ref: refs.setReference,
     className: className2 === void 0 ? "dshpc-taskbar" : `dshpc-taskbar ${className2}`,
     style: style2
-  }, trigger, open ? (0, import_react31.createElement)(FloatingPortal, null, (0, import_react31.createElement)("div", { ref: refs.setFloating, style: floatingStyles }, (0, import_react31.createElement)(PanelSurface, { tier: "menu", role: "menu", className: "dshpc-taskbar__panel" }, running === 0 ? (0, import_react31.createElement)("div", { className: "dshpc-taskbar__empty" }, t("taskbarEmpty")) : (0, import_react31.createElement)("div", { className: "dshpc-taskbar__list dshpc-scroll-thin" }, tasks2.map(renderRow))))) : null);
+  }, trigger, open ? (0, import_react32.createElement)(FloatingPortal, null, (0, import_react32.createElement)("div", { ref: refs.setFloating, style: floatingStyles }, (0, import_react32.createElement)(PanelSurface, { tier: "menu", role: "menu", className: "dshpc-taskbar__panel" }, busy ? (0, import_react32.createElement)("div", { className: "dshpc-taskbar__list dshpc-scroll-thin" }, tasks2.map(renderRow)) : (0, import_react32.createElement)("div", { className: "dshpc-taskbar__empty" }, t("taskbarEmpty"))))) : null);
 }
 
 // dist/ui/display/Table.js
-var import_react36 = require("react");
+var import_react37 = require("react");
 
 // dist/ui/display/table-plain-css.generated.js
 var TABLE_PLAIN_CSS = "/* \u2500\u2500 \u5916\u89C2\u4E00 \xB7 Plain\uFF08\u7B2C\u4E00\u4E2A\u6837\u5F0F\uFF1A\u767D\u5361\u7247\u4E0A\u7684\u8F7B\u91CF\u8868\u683C\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u7279\u5F81\uFF1A\u5916\u6846 + \u7070\u5E95\u8868\u5934\uFF08\u542B\u4E0B\u8FB9\u7EBF\uFF0C\u53CC\u884C\u5206\u7EC4\u8868\u5934\u4E5F\u6E05\u695A\uFF09\u3001\u7AD6\u5411\u5206\u9694\u7EBF\u3001\n   \u6570\u636E\u884C\u53EA\u4FDD\u7559\u6781\u6DE1\u5E95\u7EBF\uFF08\u4E0D\u753B\u91CD\u6A2A\u7EBF\uFF09\u3001\u884C\u60AC\u6D6E\u6DE1\u84DD\u3001\u9009\u4E2D\u884C\u6DE1\u84DD\u5E95 + \u5DE6\u4FA7 3px \u84DD\u7AD6\u6761\u3002\n   \u9009\u62E9\u5668\u5168\u90E8\u6302\u5728 .dshpc-table--plain \u4E0B\uFF0C\u548C\u57FA\u7840\u5C42\u4E0D\u540C\u540D\uFF08\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\uFF09\u3002\n   \u7AD6\u5206\u9694\u7EBF\u6309\u5217\u58F0\u660E\uFF08\u683C\u5B50\u4E0A\u7684 data-divider\uFF09\uFF0C\u4E0D\u7528\u76F8\u90BB\u5144\u5F1F\u9009\u62E9\u5668 \u2014\u2014 \u540E\u8005\u4F1A\u8BA9\u6BCF\u884C\u9996\u683C\n   \u6C38\u8FDC\u6CA1\u6709\u5DE6\u7EBF\uFF08\u7528\u6237 2026-10-30 \u771F\u673A\u770B\u5230\u7684 Name \u5DE6\u4FA7\u7F3A\u7EBF\uFF09\uFF0C\u4E14\u5355\u5143\u683C\u8DE8\u5217\u540E\u4F1A\u753B\u9519\u4F4D\u7F6E\u3002\n   \u540E\u7EED\u5916\u89C2\u7167\u6B64\u53E6\u5EFA\uFF1Atable-grid.css / table-zebra.css\uFF0C\u5404\u81EA\u4E00\u4E2A\u7EC4\u4EF6\u3001\u5404\u81EA import \u81EA\u5DF1\u90A3\u4EFD\u3002 */\n\n/* \u5916\u6846\u56DB\u6001\uFF1Aall \u56DB\u8FB9 / x \u53EA\u6709\u5DE6\u53F3 / y \u53EA\u6709\u4E0A\u4E0B / none \u5168\u4E0D\u8981\u3002\n   \u7EC4\u4EF6\u603B\u4F1A\u6309 borders \u5C5E\u6027\u548C\u4E0A\u5BF9\u5E94 class\uFF0C\u6545\u8FD9\u91CC\u4E0D\u5B58\u5728\u300C\u65E0 class \u7684\u88F8\u8868\u300D\u3002\n   \u300C\u4E0D\u8981\u5DE6\u53F3\u4E24\u6761\u8FB9\u300D\u5C31\u662F borders='y'\u3002 */\n.dshpc-table--plain.dshpc-table--borders-all{border:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-x{border-left:1px solid var(--dshpc-border);\n  border-right:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-y{border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);}\n.dshpc-table--plain.dshpc-table--borders-none{border:0;}\n\n/* \u8868\u5934\uFF1A\u4E2D\u6027\u7070\u5E95 + \u4E0B\u8FB9\u7EBF\u3002\u5E95\u8272\u8D70 --dshpc-table-head-bg\uFF08= --dshpc-surface-sunken\uFF0C\n   \u4E0E\u901A\u680F\u90A3\u5C42\u7070\u540C\u6E90\uFF1B2026-10-30 \u7528\u6237\u4E8C\u6B21\u5B9A\u6848\uFF1A\u8868\u5934 / \u901A\u680F\u4E92\u6362\u5E95\u8272\uFF09\uFF1B\u4E0B\u8FB9\u7EBF\u515C\u4F4F\u5206\u7EC4\u8868\u5934\u7684\u7B2C\u4E8C\u5C42\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell{\n  background:var(--dshpc-table-head-bg);\n  border-bottom:1px solid var(--dshpc-border);\n}\n.dshpc-table--plain .dshpc-table__head-cell--group{color:var(--dshpc-fg-3);}\n\n/* \u8868\u5934\u591A\u8272\uFF1A\u5217\u7EA7 headerTone \u6253\u5230 data-header-tone\uFF0C\u6D45\u5E95 + \u540C\u8272\u6587\u5B57\u3002\n   \u8272\u503C\u5168\u90E8\u6765\u81EA token\uFF08soft \u5E95 / \u5B9E\u8272\u5B57\uFF09\uFF0C\u6697\u8272\u4E3B\u9898\u81EA\u52A8\u8DDF\u968F\uFF0C\u4E0D\u5199\u6B7B\u4EFB\u4F55 hex\u3002\n   \u8FD9\u7EC4\u89C4\u5219\u6BD4\u4E0A\u65B9\u7070\u5E95\u89C4\u5219\u591A\u4E00\u4E2A\u5C5E\u6027\u9009\u62E9\u5668\uFF0C\u5FC5\u7136\u8986\u76D6\u9ED8\u8BA4\u7070\u5E95\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='business']{background:var(--dshpc-business-soft);color:var(--dshpc-business);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='success']{background:var(--dshpc-success-soft);color:var(--dshpc-success);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='warning']{background:var(--dshpc-warning-soft);color:var(--dshpc-warning);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='danger']{background:var(--dshpc-danger-soft);color:var(--dshpc-danger);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='purple']{background:var(--dshpc-purple-soft);color:var(--dshpc-purple);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='pink']{background:var(--dshpc-pink-soft);color:var(--dshpc-pink);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='cyan']{background:var(--dshpc-cyan-soft);color:var(--dshpc-cyan);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='teal']{background:var(--dshpc-teal-soft);color:var(--dshpc-teal);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='orange']{background:var(--dshpc-orange-soft);color:var(--dshpc-orange);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='indigo']{background:var(--dshpc-indigo-soft);color:var(--dshpc-indigo);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='rose']{background:var(--dshpc-rose-soft);color:var(--dshpc-rose);}\n.dshpc-table--plain .dshpc-table__head-cell[data-header-tone='slate']{background:var(--dshpc-slate-soft);color:var(--dshpc-slate);}\n\n/* \u7AD6\u5206\u9694\u7EBF\uFF1A\u6309\u5217\u58F0\u660E\uFF0C**\u9ED8\u8BA4\u4E0D\u753B**\u3002\u7EC4\u4EF6\u53EA\u7ED9 divider: true \u7684\u5217\u6253 data-divider='left'\uFF0C\n   \u9996\u5217\u6052\u4E0D\u753B\uFF08\u90A3\u662F\u5916\u6846\u7684\u4F4D\u7F6E\uFF09\u3002\u9ED8\u8BA4\u8868\u683C = \u53EA\u6709\u6A2A\u7EBF\u3001\u6CA1\u6709\u4E00\u6761\u7AD6\u7EBF\uFF1B\n   \u8981\u300C\u5217\u95F4\u6709\u7EBF\u300D\u5C31\u7ED9\u5BF9\u5E94\u5217 divider:true\u3002 */\n.dshpc-table--plain .dshpc-table__head-cell[data-divider='left'],\n.dshpc-table--plain .dshpc-table__cell[data-divider='left']{border-left:1px solid var(--dshpc-border);}\n\n/* \u6570\u636E\u884C\u4E4B\u95F4\u7684\u6781\u6DE1\u5E95\u7EBF\uFF1A\u53EA\u5E2E\u773C\u775B\u300C\u5206\u884C\u300D\uFF0C\u4E0D\u56DE\u5230\u7C97\u6A2A\u7EBF\u8868\u683C\u7684\u8001\u6837\u5B50\u3002 */\n.dshpc-table--plain .dshpc-table__row + .dshpc-table__row .dshpc-table__cell{\n  border-top:1px solid var(--dshpc-border-faint);\n}\n\n/* \u5E95\u90E8\u72B6\u6001\u884C\uFF08\u52A0\u8F7D\u66F4\u591A / \u5230\u5E95\uFF09\uFF1A\u6574\u884C\u901A\u680F\uFF0C\u4E0E\u4E0A\u65B9\u6570\u636E\u884C\u4E4B\u95F4\u8865\u4E00\u6761\u5B9E\u7EBF\u3002\n   \u53EA\u8865\u9876\u7EBF\uFF1A\u5DE6\u53F3\u4E24\u6761\u4E0D\u7531\u8FD9\u4E00\u683C\u91CD\u590D\u753B \u2014\u2014 borders=all / x \u65F6\u8868\u7EA7\u5916\u6846\u5DF2\u7ECF\u515C\u4F4F\uFF1B\n   borders=y / none \u672C\u6765\u5C31\u6CA1\u6709\u5DE6\u53F3\u8FB9\u3002\u6574\u8868\u52A0\u8F7D\u5360\u4F4D\u884C\u4E0D\u52A0\uFF08\u8868\u5934\u5DF2\u6709\u4E0B\u8FB9\u7EBF\uFF0C\u518D\u52A0\u5C31\u6210\u53CC\u7EBF\uFF09\u3002 */\n.dshpc-table--plain .dshpc-table__state-row--footer .dshpc-table__state-cell{\n  border-top:1px solid var(--dshpc-border);\n}\n\n/* \u6CA1\u6709\u5DE6\u53F3\u5916\u6846\u65F6\uFF08borders=y\uFF09\u5E95\u90E8\u72B6\u6001\u884C\u4E0B\u9762\u90A3\u6761\u8868\u5E95\u7EBF\u4E5F\u53BB\u6389\uFF1A\n   \u72B6\u6001\u884C\u53EA\u7559\u4E0A\u65B9\u4E00\u6761\u5B9E\u7EBF\uFF0C\u5426\u5219\u56FE\u6807 / \u6587\u6848\u4E0B\u65B9\u8FD8\u591A\u4E00\u6761\u5B64\u7EBF\uFF082026-10-31 \u7528\u6237\u5B9A\uFF09\u3002\n   borders=none \u672C\u6765\u5C31\u6CA1\u6709\u5E95\u8FB9\uFF0C\u65E0\u9700\u5728\u6B64\u91CD\u590D\u3002 */\n.dshpc-table--plain.dshpc-table--borders-y.dshpc-table--foot-no-bottom{border-bottom:0;}\n\n/* \u884C\u60AC\u6D6E\uFF1A\u53EA\u5728\u53EF\u70B9\u884C\u4E0A\u7ED9\u53CD\u9988\uFF0C\u9759\u6001\u8868\u683C\u4E0D\u8BEF\u5BFC\u7528\u6237\u4EE5\u4E3A\u80FD\u70B9\u3002\n   \u5E95\u8272\u662F\u6781\u6DE1\u4E2D\u6027\u7070\uFF08--dshpc-table-row-hover\uFF1A\u4EAE\u8272\u4E00\u5C42\u6DE1\u9ED1 \u22481.5%\uFF0C\u6697\u8272\u4E00\u5C42\u6DE1\u767D \u22483%\uFF09\u2014\u2014\n   2026-10-30 \u7528\u6237\uFF1Ahover \u8981\u7279\u522B\u6DE1\u7684\u7070\u3001\u4E0D\u8981\u6DE1\u84DD\uFF08\u7B2C\u4E8C\u6B21\u53C8\u8981\u6C42\u518D\u6D45\u4E00\u534A\uFF09\u3002\u5E26 __body \u4E0A\u4E0B\u6587\u662F\u4E3A\u4E86\u538B\u8FC7\u57FA\u7840\u5C42\u7684\u6591\u9A6C\u7EB9\uFF08\u89C1 table.css\uFF09\u3002 */\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-interactive='true']:hover{background:var(--dshpc-table-row-hover);}\n\n/* \u9009\u4E2D\u884C\uFF1A\u6DE1\u84DD\u5E95 + \u5DE6\u4FA7\u84DD\u7AD6\u6761\u3002\u7528\u80CC\u666F\u6E10\u53D8\u753B\u6761\uFF0C\u907F\u514D tr \u4E0A\u4F2A\u5143\u7D20 / \u5B9A\u4F4D\u7684\u517C\u5BB9\u95EE\u9898\uFF1B\n   \u4E24\u6761\u9009\u62E9\u5668\u540C\u4E00\u4EFD\u58F0\u660E\uFF1A\u60AC\u6D6E\u6001\uFF08\u591A\u4E00\u4E2A\u5C5E\u6027 + \u4F2A\u7C7B\uFF09\u4E0D\u4F1A\u76D6\u6389\u9009\u4E2D\u6001\u3002\n   \u5E95\u8272\u7528 business-soft\uFF08\u6BD4\u60AC\u6D6E\u518D\u660E\u786E\u4E00\u6863\u4F46\u4ECD\u662F\u6D45\u8272\uFF09\uFF0C\u6761\u672C\u8EAB\u624D\u662F\u300C\u9009\u4E2D\u300D\u7684\u4FE1\u53F7\u3002\n   \u7279\u5F02\u6027 4 \u7EA7\uFF0C\u9AD8\u4E8E\u57FA\u7840\u5C42\u7684\u6591\u9A6C\u7EB9\uFF083 \u7EA7\uFF09\u21D2 \u5076\u6570\u884C\u4E5F\u80FD\u6B63\u5E38\u9009\u4E2D\u3002 */\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'],\n.dshpc-table--plain .dshpc-table__body .dshpc-table__row[data-selected='true'][data-interactive='true']:hover{\n  background:linear-gradient(to right,var(--dshpc-business) 3px,var(--dshpc-business-soft) 3px);\n}\n";
 
 // dist/ui/navigation/Pagination.js
-var import_react33 = require("react");
+var import_react34 = require("react");
 
 // dist/ui/navigation/pagination-css.generated.js
 var PAGINATION_CSS = "/* \u2500\u2500 \u5206\u9875\uFF08\u2039 Previous 1 2 3 \u2026 36 Next \u203A\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5F53\u524D\u9875 = \u84DD\u8272\u5706\u89D2\u65B9\u5757 + \u767D\u5B57\uFF08\u5B9E\u5FC3\u9762\u7684\u5B57\u5FC5\u987B\u8D70 --dshpc-on-signal\uFF0C\u4E0D\u8BB8\u7528\u4E3B\u9898\u53CD\u8272\uFF09\uFF1B\n   \u5176\u4F59\u9875\u7801\u662F\u7EAF\u6587\u5B57\u6309\u94AE\uFF0C\u60AC\u6D6E\u53EA\u7ED9\u6781\u6DE1\u4E2D\u6027\u5E95\u3002\u5BF9\u9F50\u7531 --left / --center / --right \u4E09\u4E2A\u4FEE\u9970\u51B3\u5B9A\uFF0C\n   \u7EC4\u4EF6\u9ED8\u8BA4 right\u3002\u989C\u8272\u5168\u90E8\u8D70 token\uFF0C\u660E\u6697\u81EA\u52A8\u8DDF\u968F\u5BBF\u4E3B\u3002 */\n\n.dshpc-pagination{display:flex;align-items:center;gap:var(--dshpc-space-2);flex-wrap:wrap;\n  font-size:var(--dshpc-font-sm);line-height:1;color:var(--dshpc-fg-2);}\n\n.dshpc-pagination--left{justify-content:flex-start;}\n.dshpc-pagination--center{justify-content:center;}\n.dshpc-pagination--right{justify-content:flex-end;}\n\n.dshpc-pagination__total{color:var(--dshpc-fg-3);margin-inline-end:var(--dshpc-space-1);}\n\n.dshpc-pagination__pages{display:flex;align-items:center;gap:2px;}\n\n/* \u9875\u7801 / \u4E0A\u4E0B\u9875 = \u6838\u5FC3 Button\uFF08\u5F53\u524D\u9875 info \u5B9E\u5FC3\u84DD\u3001\u5176\u4F59 ghost\uFF09\uFF0C\u7BAD\u5934 = \u5168\u7AD9\u552F\u4E00 Chevron\u3002\n   \u8FD9\u91CC\u53EA\u8865\u5C3A\u5BF8\u4E0E\u95F4\u8DDD\uFF0C\u4E0D\u91CD\u753B\u6309\u94AE\u76AE\u80A4\uFF1B\u4E24\u7EA7\u9009\u62E9\u5668\u538B\u8FC7 .dshpc-btn--md \u7684\u5185\u8DDD\u3002 */\n.dshpc-pagination .dshpc-pagination__page{padding:0 6px;min-width:28px;}\n.dshpc-pagination .dshpc-pagination__nav{padding:0 var(--dshpc-space-2);}\n\n.dshpc-pagination__ellipsis{display:inline-flex;align-items:center;justify-content:center;\n  min-width:28px;height:28px;color:var(--dshpc-fg-3);}\n\n.dshpc-pagination__simple{min-width:64px;text-align:center;font-variant-numeric:tabular-nums;\n  color:var(--dshpc-fg);}\n\n/* \u7B80\u6D01\u6A21\u5F0F\u53EA\u7559\u7BAD\u5934\uFF1A\u6587\u5B57\u6807\u7B7E\u9690\u85CF\uFF0C\u7BAD\u5934\u4ECD\u7136\u53EF\u89C1\uFF08\u65E0\u969C\u788D\u540D\u8FD8\u5728 aria-label \u4E0A\uFF09\u3002 */\n.dshpc-pagination--simple .dshpc-pagination__text{display:none;}\n\n/* \u6BCF\u9875\u6761\u6570\u4E0B\u62C9 = \u6838\u5FC3 Picker\uFF08\u7BAD\u5934\u662F\u5168\u7AD9\u552F\u4E00\u7684 Chevron\uFF09\uFF1A\u53EA\u6536\u7A84\u4E0D\u53C2\u4E0E\u4F38\u7F29\u3002 */\n.dshpc-pagination__size{flex:none;}\n";
@@ -8077,7 +8167,7 @@ function Pagination(props) {
       return showTotal(total, from2, to);
     return total === 0 ? tt("paginationTotalZero") : tt("paginationTotal", { from: from2, to, total });
   })();
-  const pageButton = (n) => (0, import_react33.createElement)(Button, {
+  const pageButton = (n) => (0, import_react34.createElement)(Button, {
     key: n,
     variant: n === page ? "info" : "ghost",
     size: "md",
@@ -8090,20 +8180,20 @@ function Pagination(props) {
   const navButton = (direction) => {
     const isPrev = direction === "prev";
     const label = isPrev ? tt("paginationPrev") : tt("paginationNext");
-    return (0, import_react33.createElement)(Button, {
+    return (0, import_react34.createElement)(Button, {
       variant: "ghost",
       size: "md",
       className: "dshpc-pagination__nav",
-      icon: isPrev ? (0, import_react33.createElement)(Chevron, { dir: "left", size: 10 }) : void 0,
-      iconRight: isPrev ? void 0 : (0, import_react33.createElement)(Chevron, { dir: "right", size: 10 }),
+      icon: isPrev ? (0, import_react34.createElement)(Chevron, { dir: "left", size: 10 }) : void 0,
+      iconRight: isPrev ? void 0 : (0, import_react34.createElement)(Chevron, { dir: "right", size: 10 }),
       "aria-label": label,
       disabled: disabled || (isPrev ? page <= 1 : page >= count4),
       onClick: () => go(isPrev ? page - 1 : page + 1)
-    }, (0, import_react33.createElement)("span", { className: "dshpc-pagination__text" }, label));
+    }, (0, import_react34.createElement)("span", { className: "dshpc-pagination__text" }, label));
   };
-  const middle2 = props.simple === true ? [(0, import_react33.createElement)("span", { key: "simple", className: "dshpc-pagination__simple" }, `${String(page)} / ${String(count4)}`)] : pageItems(page, count4, props.siblingCount, props.boundaryCount).map((item, index3) => item === "gap" ? (0, import_react33.createElement)("span", { key: `gap-${String(index3)}`, className: "dshpc-pagination__ellipsis", "aria-hidden": "true" }, "\u2026") : pageButton(item));
+  const middle2 = props.simple === true ? [(0, import_react34.createElement)("span", { key: "simple", className: "dshpc-pagination__simple" }, `${String(page)} / ${String(count4)}`)] : pageItems(page, count4, props.siblingCount, props.boundaryCount).map((item, index3) => item === "gap" ? (0, import_react34.createElement)("span", { key: `gap-${String(index3)}`, className: "dshpc-pagination__ellipsis", "aria-hidden": "true" }, "\u2026") : pageButton(item));
   const options = props.pageSizeOptions ?? [];
-  const sizeNode = options.length === 0 ? null : (0, import_react33.createElement)(Picker, {
+  const sizeNode = options.length === 0 ? null : (0, import_react34.createElement)(Picker, {
     // 沿用根盒默认下限：旧写法 minWidth:'auto' 压不住触发器的 120，迁移后会把控件缩到文字宽。
     className: "dshpc-pagination__size",
     mode: "single",
@@ -8122,21 +8212,21 @@ function Pagination(props) {
       props.onChange(1, next);
     }
   });
-  return (0, import_react33.createElement)("nav", {
+  return (0, import_react34.createElement)("nav", {
     className: navClass,
     style: props.style,
     "aria-label": props.ariaLabel ?? tt("paginationAria")
-  }, totalNode === null ? null : (0, import_react33.createElement)("span", { className: "dshpc-pagination__total" }, totalNode), (0, import_react33.createElement)("div", { className: "dshpc-pagination__pages" }, navButton("prev"), ...middle2, navButton("next")), sizeNode);
+  }, totalNode === null ? null : (0, import_react34.createElement)("span", { className: "dshpc-pagination__total" }, totalNode), (0, import_react34.createElement)("div", { className: "dshpc-pagination__pages" }, navButton("prev"), ...middle2, navButton("next")), sizeNode);
 }
 
 // dist/ui/display/table-shared.js
-var import_react35 = require("react");
+var import_react36 = require("react");
 
 // dist/ui/display/table-css.generated.js
 var TABLE_BASE_CSS = "/* \u2500\u2500 \u8868\u683C\u57FA\u7840\u5C42\uFF08\u7ED3\u6784 + \u4EA4\u4E92 + \u7A7A\u6001\uFF09\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u5916\u89C2\u5206\u6863 = \u5206\u7EC4\u4EF6 + \u5206\u6587\u4EF6\uFF1A\u672C\u6587\u4EF6\u53EA\u653E\u6240\u6709\u5916\u89C2\u5171\u7528\u7684\u90E8\u5206\uFF1B\n   \u8868\u5934\u5E95\u8272\u3001\u5206\u9694\u7EBF\u3001\u60AC\u6D6E / \u9009\u4E2D\u8272\u7531\u76AE\u80A4\u6587\u4EF6\u8D1F\u8D23\uFF08table-plain.css \u662F\u7B2C\u4E00\u6863\uFF09\u3002\n   \u76AE\u80A4\u9009\u62E9\u5668\u4E00\u5F8B\u6302\u5728 .dshpc-table--<skin> \u4E0B\uFF0C\u4E0E\u57FA\u7840\u5C42\u4E0D\u540C\u540D \u2014\u2014 \u6CE8\u5165\u987A\u5E8F\u4E0D\u5F71\u54CD\u80DC\u8D1F\n   \uFF08test/css-contract.test.mjs \u7981\u6B62\u8DE8\u5E38\u91CF\u540C\u540D\u9009\u62E9\u5668\uFF09\u3002\n   \u5706\u89D2\u88C1\u526A / \u6A2A\u5411\u6EDA\u52A8\u5F52\u8C03\u7528\u65B9\u5BB9\u5668\uFF0C\u672C\u5C42\u4E0D\u8BBE overflow\uFF1B\u4E5F\u4E0D\u505A\u8868\u5934\u5438\u9876\uFF1A\n   \u5206\u7EC4\u8868\u5934\u662F\u591A\u884C\uFF0C\u7EDF\u4E00 top:0 \u4F1A\u5728\u6EDA\u52A8\u65F6\u4E92\u76F8\u76D6\u4F4F\uFF08\u8981\u5438\u9876\u8BF7\u5728\u5916\u5C42\u5BB9\u5668\u5904\u7406\uFF09\u3002 */\n\n.dshpc-table{--dshpc-table-pad-x:var(--dshpc-space-3);--dshpc-table-head-h:44px;--dshpc-table-row-h:48px;\n  width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;box-sizing:border-box;\n  color:var(--dshpc-fg);font-size:var(--dshpc-font-md);line-height:var(--dshpc-line-md);}\n\n/* \u5BC6\u5EA6\u4E09\u6863\uFF1A\u53EA\u6539\u884C\u9AD8\u4E0E\u6C34\u5E73\u5185\u8DDD\uFF0C\u914D\u8272\u4E0E\u5206\u9694\u7EBF\u5F52\u76AE\u80A4\u3002compact / comfortable \u5404\u4E00\u884C\uFF0C\n   \u65B0\u589E\u6863\u4F4D\u5728\u6B64\u8FFD\u52A0\uFF1B\u5217\u7EA7 padding \u8D70\u5185\u8054 style \u8986\u76D6\uFF08\u4E0D\u5728\u8FD9\u91CC\u518D\u5F00\u4E00\u5957\u53D8\u91CF\uFF09\u3002\n   \u9ED8\u8BA4\u6C34\u5E73\u5185\u8DDD 12px\uFF08space-3\uFF09\u2014\u2014 \u53C2\u8003\u7A3F\u7684\u8272\u5757\u95F4\u8DDD\uFF0C16px \u504F\u677E\u3002 */\n.dshpc-table--density-compact{--dshpc-table-pad-x:var(--dshpc-space-2);--dshpc-table-head-h:36px;--dshpc-table-row-h:36px;}\n.dshpc-table--density-comfortable{--dshpc-table-pad-x:var(--dshpc-space-4);--dshpc-table-head-h:52px;--dshpc-table-row-h:60px;}\n\n.dshpc-table__head-cell,.dshpc-table__cell{box-sizing:border-box;padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  text-align:left;vertical-align:middle;font-weight:400;}\n\n/* \u8868\u5934 44 / \u6570\u636E\u884C 48 \u662F default \u6863\uFF08\u53C2\u8003\u7A3F\u5BC6\u5EA6\uFF09\uFF1Bheight \u5728 table-cell \u4E0A\u662F\u6700\u5C0F\u9AD8\uFF0C\n   \u591A\u884C\u5185\u5BB9\u4F1A\u81EA\u52A8\u628A\u884C\u6491\u9AD8\uFF0C\u4E0D\u4F1A\u88AB\u622A\u65AD\u3002 */\n.dshpc-table__head-cell{height:var(--dshpc-table-head-h);font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg-2);}\n.dshpc-table__head-cell--group{text-align:center;}\n.dshpc-table__cell{height:var(--dshpc-table-row-h);}\n\n.dshpc-table__head-cell--center,.dshpc-table__cell--center{text-align:center;}\n.dshpc-table__head-cell--right,.dshpc-table__cell--right{text-align:right;}\n\n.dshpc-table__row{transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);}\n/* \u53EA\u6709\u4F20\u4E86 onRowClick \u7684\u884C\u624D\u662F\u53EF\u70B9\u7684\uFF08\u6570\u636E\u5C5E\u6027\u7531\u7EC4\u4EF6\u6309\u6B64\u6253\uFF09\u3002 */\n.dshpc-table__row[data-interactive='true']{cursor:pointer;}\n.dshpc-table__row:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:-2px;}\n\n/* \u6591\u9A6C\u7EB9\u662F\u901A\u7528\u80FD\u529B\uFF08\u8868\u7EA7 striped \u5F00\u5173\uFF09\uFF0C\u653E\u5728\u57FA\u7840\u5C42\uFF1A\u5E95\u8272\u53D6 token\uFF0C\u5404\u6863\u76AE\u80A4\u4E0D\u5FC5\u5404\u81EA\u5B9E\u73B0\u3002\n   \u9009\u62E9\u5668\u523B\u610F\u53EA\u5230 3 \u4E2A\u7C7B\u7EA7\u522B\uFF08\u8868\u7EA7 + \u884C + :nth-child\uFF09\uFF1B\u76AE\u80A4\u5C42\u7684\u884C\u6001\u89C4\u5219\u5E26 __body \u4E0A\u4E0B\u6587\n   + \u5C5E\u6027\u9009\u62E9\u5668\uFF0C\u5FC5\u7136\u662F 4 \u7EA7 \u21D2 \u4E0E\u6CE8\u5165\u987A\u5E8F\u65E0\u5173\u5730\u538B\u8FC7\u5B83\u3002\n   2026-10-30 \u771F\u673A\u4E8B\u6545\uFF1A\u8FD9\u91CC\u66FE\u5199\u6EE1 4 \u7EA7\uFF08\u591A\u4E86\u4E00\u4E2A __body\uFF09\uFF0C\u4E0E\u9009\u4E2D\u7684 4 \u7EA7\u76F8\u540C \u21D2 \u57FA\u7840\u5C42\n   \u6BD4\u76AE\u80A4\u540E\u6CE8\u5165\uFF0C\u5076\u6570\u884C\u6C38\u8FDC\u88AB\u6591\u9A6C\u7EB9\u76D6\u4F4F\uFF08\u300C\u5355\u6570\u884C\u80FD\u9009\u4E2D\u3001\u53CC\u6570\u884C\u70B9\u4E86\u6CA1\u53CD\u5E94\u300D\uFF09\u3002 */\n.dshpc-table--striped .dshpc-table__row:nth-child(even){background:var(--dshpc-plate);}\n\n/* \u5206\u7EC4\u901A\u680F\uFF1A\u4E00\u4E2A\u8868\u683C\u91CC\u653E\u591A\u4E2A\u677F\u5757\uFF08\u5DE5\u4F5C\u533A A / \u5DE5\u4F5C\u533A B\uFF09\u65F6\uFF0C\u6BCF\u7EC4\u5148\u6765\u4E00\u884C\u6A2A\u8DE8\u5168\u90E8\u5217\u7684\u5927\u6807\u9898\uFF0C\n   \u7136\u540E\u624D\u662F\u8FD9\u4E00\u7EC4\u81EA\u5DF1\u7684\u8868\u5934\u4E0E\u6570\u636E\u884C\u3002\u7ED3\u6784 + \u5E95\u8272\u5F52\u57FA\u7840\u5C42\uFF08\u53EA\u7528 token\uFF0C\u5404\u6863\u76AE\u80A4\u5171\u540C\u6210\u7ACB\uFF09\uFF1B\n   \u901A\u680F\u5E95\u8D70 --dshpc-table-banner-bg\uFF08\u4E0E\u8868\u5934\u4E92\u6362\u7684\u90A3\u4E00\u6863\uFF0C2026-10-30 \u7528\u6237\u5B9A\uFF09\uFF1B\n   \u901A\u680F\u4E0E\u7EC4\u8868\u5934\u4E4B\u95F4\u753B\u4E00\u6761\u7EBF\uFF08\u7528\u6237 2026-10-30\uFF1A\u90A3\u4E4B\u95F4\u4E5F\u8981\u6709 border\uFF09\uFF1B\n   \u7EC4\u4E0E\u7EC4\u4E4B\u95F4\u7528\u901A\u680F\u9876\u7EBF\u9694\u5F00\uFF0C\u7B2C\u4E00\u7EC4\u9876\u90E8\u4E0D\u753B\uFF08\u5916\u6846\u5DF2\u7ECF\u5728\u90A3\u513F\uFF0C\u753B\u4E86\u5C31\u6210\u53CC\u7EBF\uFF09\u3002 */\n.dshpc-table__group-cell{height:var(--dshpc-table-head-h);padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  box-sizing:border-box;background:var(--dshpc-table-banner-bg);border-top:1px solid var(--dshpc-border);\n  border-bottom:1px solid var(--dshpc-border);\n  text-align:left;vertical-align:middle;font-size:var(--dshpc-font-sm);font-weight:600;color:var(--dshpc-fg);}\n.dshpc-table__group-body:first-of-type .dshpc-table__group-cell{border-top:0;}\n\n/* \u901A\u680F\u6807\u9898\u7684\u56FA\u5B9A\u6807\u7B7E\uFF08\u77ED\u7AD6\u7EBF\uFF09\u4E0E\u6392\u7248\u7531 SectionHead \u81EA\u5E26\uFF084px \u5706\u5934\uFF09\uFF0C\u672C\u5C42\u4E0D\u518D\u753B\u3002 */\n\n.dshpc-table__empty{height:80px;padding:0 var(--dshpc-space-4);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}\n\n/* \u52A0\u8F7D\u6001\u884C\uFF08\u52A0\u8F7D\u66F4\u591A / \u6CA1\u6709\u66F4\u591A / \u6574\u8868\u52A0\u8F7D\uFF09\uFF1A\u5355\u5143\u683C\u81EA\u8EAB\u4E0D\u753B\u8FB9\u6846\uFF08\u5E95\u90E8\u72B6\u6001\u884C\u7684\u9876\u7EBF\u7531\u76AE\u80A4\u8865\uFF09\uFF0C\u5185\u5BB9\u5C45\u4E2D\uFF1B\n   \u6574\u8868\u52A0\u8F7D\u9ED8\u8BA4\u5360\u4F4D 160px\uFF08\u53EF\u7531 loadingHeight \u8986\u76D6\uFF09\uFF0C\u5E95\u90E8\u90A3\u884C\u53EA\u5360\u4E00\u884C\u9AD8\u3002 */\n.dshpc-table__state-cell{padding:0;border:0;text-align:center;vertical-align:middle;}\n.dshpc-table__state{display:flex;align-items:center;justify-content:center;\n  gap:var(--dshpc-space-2);min-height:40px;padding:var(--dshpc-space-1) var(--dshpc-table-pad-x);\n  box-sizing:border-box;color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);}\n.dshpc-table__state--full{flex-direction:column;min-height:160px;gap:var(--dshpc-space-3);font-size:var(--dshpc-font-sm);}\n.dshpc-table__state-text{line-height:1;}\n/* \u5E95\u90E8\u54E8\u5175\uFF1A\u96F6\u9AD8\u3001\u65E0\u8FB9\u6846\u3001\u65E0\u5185\u5BB9\uFF0C\u53EA\u7ED9 IntersectionObserver \u4E00\u4E2A\u843D\u70B9\u3002 */\n.dshpc-table__sentinel>td{height:0;padding:0;border:0;line-height:0;}\n\n/* \u5185\u5EFA\u5206\u9875\u7684\u5916\u58F3\uFF1A\u8868\u683C\u5728\u4E0A\u3001\u5206\u9875\u6761\u5728\u4E0B\uFF0C\u95F4\u8DDD\u8D70 space-3\uFF08\u5206\u9875\u6761\u81EA\u5DF1\u7BA1\u5DE6\u53F3\u5BF9\u9F50\uFF09\u3002 */\n.dshpc-table-frame{display:flex;flex-direction:column;gap:var(--dshpc-space-3);}\n";
 
 // dist/ui/display/SectionHead.js
-var import_react34 = require("react");
+var import_react35 = require("react");
 
 // dist/ui/display/section-head-css.generated.js
 var SECTION_HEAD_CSS = "/* \u5206\u533A\u6807\u9898\u884C\uFF1A\u6807\u7B7E\uFF08\u53EF\u9009\uFF0C\u753B\u51FA\u6765\u7684\u77ED\u7AD6\u7EBF\uFF09/ icon + \u6807\u9898 + \u53F3\u4FA7\u63A7\u4EF6\u3002 */\n.dshpc-section-head{display:flex;align-items:center;gap:var(--dshpc-space-2);\n  margin-bottom:var(--dshpc-space-3);}\n.dshpc-section-head--flush{margin-bottom:0;}\n\n.dshpc-section-head__bar{flex:none;width:4px;height:1em;border-radius:999px;\n  font-size:var(--dshpc-font-lg);background:var(--dshpc-fg-2);}\n\n.dshpc-section-head__icon{display:inline-flex;align-items:center;flex:none;\n  line-height:var(--dshpc-line-lg);color:var(--dshpc-fg-3);}\n\n.dshpc-section-head__title{font-size:var(--dshpc-font-lg);line-height:var(--dshpc-line-lg);\n  font-weight:600;color:var(--dshpc-fg);flex:none;}\n\n.dshpc-section-head__right{flex:1;display:flex;align-items:center;\n  justify-content:flex-end;gap:var(--dshpc-space-2);min-width:0;}\n";
@@ -8169,11 +8259,11 @@ function SectionHead(props) {
     props.flush === true ? "dshpc-section-head--flush" : "",
     props.className ?? ""
   ].filter((s) => s !== "").join(" ");
-  return (0, import_react34.createElement)("div", { className: className2, style: props.style }, accent === false || accent === void 0 ? null : (0, import_react34.createElement)("span", {
+  return (0, import_react35.createElement)("div", { className: className2, style: props.style }, accent === false || accent === void 0 ? null : (0, import_react35.createElement)("span", {
     className: "dshpc-section-head__bar",
     "aria-hidden": "true",
     style: accent === "default" ? void 0 : barStyleOf(accent)
-  }), props.icon === void 0 ? null : (0, import_react34.createElement)("span", { className: "dshpc-section-head__icon" }, props.icon), (0, import_react34.createElement)("span", { className: "dshpc-section-head__title" }, props.title), props.right === void 0 ? null : (0, import_react34.createElement)("div", { className: "dshpc-section-head__right" }, props.right));
+  }), props.icon === void 0 ? null : (0, import_react35.createElement)("span", { className: "dshpc-section-head__icon" }, props.icon), (0, import_react35.createElement)("span", { className: "dshpc-section-head__title" }, props.title), props.right === void 0 ? null : (0, import_react35.createElement)("div", { className: "dshpc-section-head__right" }, props.right));
 }
 
 // dist/ui/display/table-logic.js
@@ -8257,13 +8347,13 @@ function tableShell(skinClass, props, options = {}) {
   const onRowClick = props.onRowClick;
   const density = props.density ?? "default";
   const borders = props.borders ?? "y";
-  const headRowOf = (cells, level) => (0, import_react35.createElement)("tr", { key: `head-${level}`, className: "dshpc-table__head-row" }, ...cells.map((cell) => {
+  const headRowOf = (cells, level) => (0, import_react36.createElement)("tr", { key: `head-${level}`, className: "dshpc-table__head-row" }, ...cells.map((cell) => {
     const group = cell.colSpan > 1;
     const firstLeafIndex = leafIndexByKey.get(cell.leafKeys[0] ?? "");
     const firstLeaf = firstLeafIndex === void 0 ? void 0 : leaves[firstLeafIndex];
     const className2 = `dshpc-table__head-cell${group ? " dshpc-table__head-cell--group" : ""}${alignClass("dshpc-table__head-cell", cell.column.align)}`;
     const tone = cell.column.headerTone;
-    return (0, import_react35.createElement)("th", {
+    return (0, import_react36.createElement)("th", {
       key: cell.column.key,
       scope: group ? "colgroup" : "col",
       colSpan: cell.colSpan > 1 ? cell.colSpan : void 0,
@@ -8301,7 +8391,7 @@ function tableShell(skinClass, props, options = {}) {
   };
   const dataRowsOf = (rows, offset4 = 0) => {
     const selectedBlocks = selectedBlocksOf(rows);
-    return rows.map((row2, index3) => (0, import_react35.createElement)("tr", {
+    return rows.map((row2, index3) => (0, import_react36.createElement)("tr", {
       key: row2.key,
       className: "dshpc-table__row",
       "data-selected": selectedBlocks[index3] === true ? "true" : void 0,
@@ -8327,7 +8417,7 @@ function tableShell(skinClass, props, options = {}) {
         content2 = cell;
       }
       const align = spec?.align ?? column.align;
-      return (0, import_react35.createElement)("td", {
+      return (0, import_react36.createElement)("td", {
         key: column.key,
         className: `dshpc-table__cell${alignClass("dshpc-table__cell", align)}`,
         style: padStyle(column),
@@ -8338,26 +8428,26 @@ function tableShell(skinClass, props, options = {}) {
     })));
   };
   const colSpan = leaves.length > 0 ? leaves.length : void 0;
-  const emptyRow = (0, import_react35.createElement)("tr", { key: "empty", className: "dshpc-table__row" }, (0, import_react35.createElement)("td", { className: "dshpc-table__empty", colSpan }, props.emptyText ?? tt("tableEmpty")));
-  const loadingRow = (0, import_react35.createElement)("tr", { key: "loading", className: "dshpc-table__state-row" }, (0, import_react35.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react35.createElement)("div", {
+  const emptyRow = (0, import_react36.createElement)("tr", { key: "empty", className: "dshpc-table__row" }, (0, import_react36.createElement)("td", { className: "dshpc-table__empty", colSpan }, props.emptyText ?? tt("tableEmpty")));
+  const loadingRow = (0, import_react36.createElement)("tr", { key: "loading", className: "dshpc-table__state-row" }, (0, import_react36.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react36.createElement)("div", {
     className: "dshpc-table__state dshpc-table__state--full",
     style: props.loadingHeight === void 0 ? void 0 : { height: `${props.loadingHeight}px` }
-  }, (0, import_react35.createElement)(Loader, { variant: "blocks", size: "xl", label: tt("tableLoading") }))));
+  }, (0, import_react36.createElement)(Loader, { variant: "blocks", size: "xl", label: tt("tableLoading") }))));
   const infinite = props.onLoadMore !== void 0;
   const loadingMore = infinite && props.loadingMore === true;
   const showNoMore = infinite && !loadingMore && props.hasMore === false && props.noMoreText !== false;
   const footerRows = [];
   if (loadingMore) {
-    footerRows.push((0, import_react35.createElement)("tr", { key: "more", className: "dshpc-table__state-row dshpc-table__state-row--footer" }, (0, import_react35.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react35.createElement)("div", { className: "dshpc-table__state" }, (0, import_react35.createElement)(Loader, { variant: "blocks", size: "md", label: tt("tableLoadingMore") })))));
+    footerRows.push((0, import_react36.createElement)("tr", { key: "more", className: "dshpc-table__state-row dshpc-table__state-row--footer" }, (0, import_react36.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react36.createElement)("div", { className: "dshpc-table__state" }, (0, import_react36.createElement)(Loader, { variant: "blocks", size: "md", label: tt("tableLoadingMore") })))));
   } else if (showNoMore) {
-    footerRows.push((0, import_react35.createElement)("tr", { key: "end", className: "dshpc-table__state-row dshpc-table__state-row--footer" }, (0, import_react35.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react35.createElement)("div", { className: "dshpc-table__state" }, (0, import_react35.createElement)("span", { className: "dshpc-table__state-text" }, props.noMoreText === void 0 ? tt("tableNoMore") : props.noMoreText)))));
+    footerRows.push((0, import_react36.createElement)("tr", { key: "end", className: "dshpc-table__state-row dshpc-table__state-row--footer" }, (0, import_react36.createElement)("td", { className: "dshpc-table__state-cell", colSpan }, (0, import_react36.createElement)("div", { className: "dshpc-table__state" }, (0, import_react36.createElement)("span", { className: "dshpc-table__state-text" }, props.noMoreText === void 0 ? tt("tableNoMore") : props.noMoreText)))));
   }
-  const sentinelRow = infinite && props.hasMore !== false && options.sentinelRef !== void 0 ? (0, import_react35.createElement)("tr", {
+  const sentinelRow = infinite && props.hasMore !== false && options.sentinelRef !== void 0 ? (0, import_react36.createElement)("tr", {
     key: "sentinel",
     ref: options.sentinelRef,
     className: "dshpc-table__sentinel",
     "aria-hidden": "true"
-  }, (0, import_react35.createElement)("td", { colSpan })) : null;
+  }, (0, import_react36.createElement)("td", { colSpan })) : null;
   const flatFoot = footerRows.length > 0 && (borders === "y" || borders === "none");
   const tableClass = [
     "dshpc-table",
@@ -8368,14 +8458,14 @@ function tableShell(skinClass, props, options = {}) {
     flatFoot ? "dshpc-table--foot-no-bottom" : "",
     props.className ?? ""
   ].filter((s) => s !== "").join(" ");
-  const groupFoot = footerRows.length > 0 || sentinelRow !== null ? (0, import_react35.createElement)("tbody", { key: "group-foot", className: "dshpc-table__body" }, ...footerRows, sentinelRow) : null;
+  const groupFoot = footerRows.length > 0 || sentinelRow !== null ? (0, import_react36.createElement)("tbody", { key: "group-foot", className: "dshpc-table__body" }, ...footerRows, sentinelRow) : null;
   const groups = props.groups ?? [];
   const body = groups.length > 0 ? [
-    ...groups.map((group, groupIndex) => (0, import_react35.createElement)(
+    ...groups.map((group, groupIndex) => (0, import_react36.createElement)(
       "tbody",
       { key: group.key, className: "dshpc-table__body dshpc-table__group-body" },
       // 通栏标题行：横跨所有列，充当这一组的「大标题」。
-      (0, import_react35.createElement)("tr", { className: "dshpc-table__group-row" }, (0, import_react35.createElement)(
+      (0, import_react36.createElement)("tr", { className: "dshpc-table__group-row" }, (0, import_react36.createElement)(
         "th",
         {
           className: "dshpc-table__group-cell",
@@ -8383,7 +8473,7 @@ function tableShell(skinClass, props, options = {}) {
           colSpan: leaves.length > 0 ? leaves.length : void 0
         },
         // 标题的固定标签（短竖线）与排版归 SectionHead —— Table 只负责把标题装进通栏。
-        (0, import_react35.createElement)(SectionHead, {
+        (0, import_react36.createElement)(SectionHead, {
           title: group.title,
           accent: props.groupAccent ?? "default",
           flush: true
@@ -8394,34 +8484,34 @@ function tableShell(skinClass, props, options = {}) {
     )),
     ...groupFoot === null ? [] : [groupFoot]
   ] : [
-    (0, import_react35.createElement)("tbody", { key: "body", className: "dshpc-table__body" }, props.loading === true && (props.rows?.length ?? 0) === 0 ? loadingRow : props.rows !== void 0 && props.rows.length > 0 ? dataRowsOf(props.rows) : emptyRow, ...footerRows, sentinelRow)
+    (0, import_react36.createElement)("tbody", { key: "body", className: "dshpc-table__body" }, props.loading === true && (props.rows?.length ?? 0) === 0 ? loadingRow : props.rows !== void 0 && props.rows.length > 0 ? dataRowsOf(props.rows) : emptyRow, ...footerRows, sentinelRow)
   ];
-  return (0, import_react35.createElement)(
+  return (0, import_react36.createElement)(
     "table",
     { className: tableClass, style: props.style, "aria-label": props.ariaLabel },
-    leaves.length === 0 ? null : (0, import_react35.createElement)("colgroup", null, ...leaves.map((column) => (0, import_react35.createElement)("col", {
+    leaves.length === 0 ? null : (0, import_react36.createElement)("colgroup", null, ...leaves.map((column) => (0, import_react36.createElement)("col", {
       key: column.key,
       style: widthOf(column.width) === void 0 ? void 0 : { width: widthOf(column.width) }
     }))),
     // 有分组时，每组的表头在各自的 tbody 里；单一表时表头在 thead。
-    groups.length > 0 ? null : (0, import_react35.createElement)("thead", { className: "dshpc-table__head" }, ...headRows.map((cells, level) => headRowOf(cells, level))),
+    groups.length > 0 ? null : (0, import_react36.createElement)("thead", { className: "dshpc-table__head" }, ...headRows.map((cells, level) => headRowOf(cells, level))),
     ...body
   );
 }
 
 // dist/ui/display/Table.js
 function useLoadMoreSentinel(props, enabled) {
-  const nodeRef = (0, import_react36.useRef)(null);
-  const onLoadMoreRef = (0, import_react36.useRef)(props.onLoadMore);
-  const blockedRef = (0, import_react36.useRef)(true);
-  (0, import_react36.useEffect)(() => {
+  const nodeRef = (0, import_react37.useRef)(null);
+  const onLoadMoreRef = (0, import_react37.useRef)(props.onLoadMore);
+  const blockedRef = (0, import_react37.useRef)(true);
+  (0, import_react37.useEffect)(() => {
     onLoadMoreRef.current = props.onLoadMore;
     blockedRef.current = !enabled || props.onLoadMore === void 0 || props.loading === true || props.loadingMore === true || props.hasMore === false;
   });
-  const refCallback = (0, import_react36.useRef)((node) => {
+  const refCallback = (0, import_react37.useRef)((node) => {
     nodeRef.current = node;
   }).current;
-  (0, import_react36.useEffect)(() => {
+  (0, import_react37.useEffect)(() => {
     if (!enabled || typeof IntersectionObserver === "undefined")
       return;
     const node = nodeRef.current;
@@ -8459,12 +8549,12 @@ function Table(props) {
   const total = local ? allRows.length : Math.max(0, Math.floor(pager.total ?? 0));
   const page = clampPage(pager.page, pageCountOf(total, pageSize));
   const rows = local ? allRows.slice((page - 1) * pageSize, page * pageSize) : allRows;
-  return (0, import_react36.createElement)(
+  return (0, import_react37.createElement)(
     "div",
     { className: "dshpc-table-frame" },
     // 分页与滚动加载二选一：分页模式下把底部加载相关 props 摘掉，避免同表两套翻页。
     tableShell("dshpc-table--plain", { ...props, rows, onLoadMore: void 0, loadingMore: void 0, hasMore: void 0, noMoreText: void 0 }, {}),
-    (0, import_react36.createElement)(Pagination, { ...pager, page, total, align: pager.align ?? "right" })
+    (0, import_react37.createElement)(Pagination, { ...pager, page, total, align: pager.align ?? "right" })
   );
 }
 
@@ -8609,11 +8699,11 @@ function broadcastNotify(message, opts) {
 }
 
 // dist/ui/feedback/Toast.js
-var import_react38 = require("react");
+var import_react39 = require("react");
 var import_client2 = require("react-dom/client");
 
 // node_modules/.pnpm/sonner@2.0.8_@types+react@18.3.31_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/sonner/dist/index.mjs
-var import_react37 = __toESM(require("react"), 1);
+var import_react38 = __toESM(require("react"), 1);
 var import_react_dom3 = __toESM(require("react-dom"), 1);
 function __insertCSS(code3) {
   if (!code3 || typeof document == "undefined") return;
@@ -8639,68 +8729,68 @@ var getAsset = (type3) => {
 };
 var bars = Array(12).fill(0);
 var Loader2 = ({ visible, className: className2 }) => {
-  return /* @__PURE__ */ import_react37.default.createElement("div", {
+  return /* @__PURE__ */ import_react38.default.createElement("div", {
     className: [
       "sonner-loading-wrapper",
       className2
     ].filter(Boolean).join(" "),
     "data-visible": visible
-  }, /* @__PURE__ */ import_react37.default.createElement("div", {
+  }, /* @__PURE__ */ import_react38.default.createElement("div", {
     className: "sonner-spinner"
-  }, bars.map((_, i2) => /* @__PURE__ */ import_react37.default.createElement("div", {
+  }, bars.map((_, i2) => /* @__PURE__ */ import_react38.default.createElement("div", {
     className: "sonner-loading-bar",
     key: `spinner-bar-${i2}`
   }))));
 };
-var SuccessIcon = /* @__PURE__ */ import_react37.default.createElement("svg", {
+var SuccessIcon = /* @__PURE__ */ import_react38.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react37.default.createElement("path", {
+}, /* @__PURE__ */ import_react38.default.createElement("path", {
   fillRule: "evenodd",
   d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z",
   clipRule: "evenodd"
 }));
-var WarningIcon = /* @__PURE__ */ import_react37.default.createElement("svg", {
+var WarningIcon = /* @__PURE__ */ import_react38.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react37.default.createElement("path", {
+}, /* @__PURE__ */ import_react38.default.createElement("path", {
   fillRule: "evenodd",
   d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z",
   clipRule: "evenodd"
 }));
-var InfoIcon = /* @__PURE__ */ import_react37.default.createElement("svg", {
+var InfoIcon = /* @__PURE__ */ import_react38.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react37.default.createElement("path", {
+}, /* @__PURE__ */ import_react38.default.createElement("path", {
   fillRule: "evenodd",
   d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z",
   clipRule: "evenodd"
 }));
-var ErrorIcon = /* @__PURE__ */ import_react37.default.createElement("svg", {
+var ErrorIcon = /* @__PURE__ */ import_react38.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 20 20",
   fill: "currentColor",
   height: "20",
   width: "20",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react37.default.createElement("path", {
+}, /* @__PURE__ */ import_react38.default.createElement("path", {
   fillRule: "evenodd",
   d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z",
   clipRule: "evenodd"
 }));
-var CloseIcon = /* @__PURE__ */ import_react37.default.createElement("svg", {
+var CloseIcon = /* @__PURE__ */ import_react38.default.createElement("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "12",
   height: "12",
@@ -8711,20 +8801,20 @@ var CloseIcon = /* @__PURE__ */ import_react37.default.createElement("svg", {
   strokeLinecap: "round",
   strokeLinejoin: "round",
   "aria-hidden": "true"
-}, /* @__PURE__ */ import_react37.default.createElement("line", {
+}, /* @__PURE__ */ import_react38.default.createElement("line", {
   x1: "18",
   y1: "6",
   x2: "6",
   y2: "18"
-}), /* @__PURE__ */ import_react37.default.createElement("line", {
+}), /* @__PURE__ */ import_react38.default.createElement("line", {
   x1: "6",
   y1: "6",
   x2: "18",
   y2: "18"
 }));
 var useIsDocumentHidden = () => {
-  const [isDocumentHidden, setIsDocumentHidden] = import_react37.default.useState(document.hidden);
-  import_react37.default.useEffect(() => {
+  const [isDocumentHidden, setIsDocumentHidden] = import_react38.default.useState(document.hidden);
+  import_react38.default.useEffect(() => {
     const callback = () => {
       setIsDocumentHidden(document.hidden);
     };
@@ -8908,7 +8998,7 @@ var Observer = class {
           "resolve",
           response
         ];
-        const isReactElementResponse = import_react37.default.isValidElement(response);
+        const isReactElementResponse = import_react38.default.isValidElement(response);
         if (isReactElementResponse) {
           shouldDismiss = false;
           this.create({
@@ -8920,7 +9010,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(`HTTP error! status: ${response.status}`) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(`HTTP error! status: ${response.status}`) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react37.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react38.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -8934,7 +9024,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(response) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(response) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react37.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react38.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -8948,7 +9038,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.success === "function" ? await data2.success(response) : data2.success;
           const description = typeof data2.description === "function" ? await data2.description(response) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react37.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react38.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -8968,7 +9058,7 @@ var Observer = class {
           shouldDismiss = false;
           const promiseData = typeof data2.error === "function" ? await data2.error(error) : data2.error;
           const description = typeof data2.description === "function" ? await data2.description(error) : data2.description;
-          const isExtendedResult = typeof promiseData === "object" && !import_react37.default.isValidElement(promiseData);
+          const isExtendedResult = typeof promiseData === "object" && !import_react38.default.isValidElement(promiseData);
           const toastSettings = isExtendedResult ? promiseData : {
             message: promiseData
           };
@@ -9069,18 +9159,18 @@ function getDefaultSwipeDirections(position) {
 var Toast = (props) => {
   var _toast_classNames, _toast_classNames1, _toast_classNames2, _toast_classNames3, _toast_classNames4, _toast_classNames5, _toast_classNames6, _toast_classNames7, _toast_classNames8;
   const { invert: ToasterInvert, toast: toast2, unstyled, interacting, setHeights, visibleToasts, heights, index: index3, toasts, expanded, removeToast, defaultRichColors, closeButton: closeButtonFromToaster, style: style2, cancelButtonStyle, actionButtonStyle, className: className2 = "", descriptionClassName = "", duration: durationFromToaster, position, gap, expandByDefault, classNames, icons, closeButtonAriaLabel = "Close toast" } = props;
-  const [swipeDirection, setSwipeDirection] = import_react37.default.useState(null);
-  const [swipeOutDirection, setSwipeOutDirection] = import_react37.default.useState(null);
-  const [mounted, setMounted] = import_react37.default.useState(false);
-  const [removed, setRemoved] = import_react37.default.useState(false);
-  const [swiping, setSwiping] = import_react37.default.useState(false);
-  const [swipeOut, setSwipeOut] = import_react37.default.useState(false);
-  const [isSwiped, setIsSwiped] = import_react37.default.useState(false);
-  const [offsetBeforeRemove, setOffsetBeforeRemove] = import_react37.default.useState(0);
-  const [initialHeight, setInitialHeight] = import_react37.default.useState(0);
-  const remainingTime = import_react37.default.useRef(toast2.duration || durationFromToaster || TOAST_LIFETIME);
-  const dragStartTime = import_react37.default.useRef(null);
-  const toastRef = import_react37.default.useRef(null);
+  const [swipeDirection, setSwipeDirection] = import_react38.default.useState(null);
+  const [swipeOutDirection, setSwipeOutDirection] = import_react38.default.useState(null);
+  const [mounted, setMounted] = import_react38.default.useState(false);
+  const [removed, setRemoved] = import_react38.default.useState(false);
+  const [swiping, setSwiping] = import_react38.default.useState(false);
+  const [swipeOut, setSwipeOut] = import_react38.default.useState(false);
+  const [isSwiped, setIsSwiped] = import_react38.default.useState(false);
+  const [offsetBeforeRemove, setOffsetBeforeRemove] = import_react38.default.useState(0);
+  const [initialHeight, setInitialHeight] = import_react38.default.useState(0);
+  const remainingTime = import_react38.default.useRef(toast2.duration || durationFromToaster || TOAST_LIFETIME);
+  const dragStartTime = import_react38.default.useRef(null);
+  const toastRef = import_react38.default.useRef(null);
   const isFront = index3 === 0;
   const isVisible = index3 + 1 <= visibleToasts;
   const toastType = toast2.type;
@@ -9088,27 +9178,27 @@ var Toast = (props) => {
   const dismissible = toast2.dismissible !== false;
   const toastClassname = toast2.className || "";
   const toastDescriptionClassname = toast2.descriptionClassName || "";
-  const heightIndex = import_react37.default.useMemo(() => heights.findIndex((height) => height.toastId === toast2.id) || 0, [
+  const heightIndex = import_react38.default.useMemo(() => heights.findIndex((height) => height.toastId === toast2.id) || 0, [
     heights,
     toast2.id
   ]);
-  const closeButton = import_react37.default.useMemo(() => {
+  const closeButton = import_react38.default.useMemo(() => {
     var _toast_closeButton;
     return (_toast_closeButton = toast2.closeButton) != null ? _toast_closeButton : closeButtonFromToaster;
   }, [
     toast2.closeButton,
     closeButtonFromToaster
   ]);
-  const duration = import_react37.default.useMemo(() => toast2.duration || durationFromToaster || TOAST_LIFETIME, [
+  const duration = import_react38.default.useMemo(() => toast2.duration || durationFromToaster || TOAST_LIFETIME, [
     toast2.duration,
     durationFromToaster
   ]);
-  const closeTimerStartTimeRef = import_react37.default.useRef(0);
-  const offset4 = import_react37.default.useRef(0);
-  const lastCloseTimerStartTimeRef = import_react37.default.useRef(0);
-  const pointerStartRef = import_react37.default.useRef(null);
+  const closeTimerStartTimeRef = import_react38.default.useRef(0);
+  const offset4 = import_react38.default.useRef(0);
+  const lastCloseTimerStartTimeRef = import_react38.default.useRef(0);
+  const pointerStartRef = import_react38.default.useRef(null);
   const [y, x] = position.split("-");
-  const toastsHeightBefore = import_react37.default.useMemo(() => {
+  const toastsHeightBefore = import_react38.default.useMemo(() => {
     return heights.reduce((prev, curr, reducerIndex) => {
       if (reducerIndex >= heightIndex) {
         return prev;
@@ -9120,7 +9210,7 @@ var Toast = (props) => {
     heightIndex
   ]);
   const isDocumentHidden = useIsDocumentHidden();
-  const swipeDirections = import_react37.default.useMemo(() => {
+  const swipeDirections = import_react38.default.useMemo(() => {
     var _props_swipeDirections;
     return (_props_swipeDirections = props.swipeDirections) != null ? _props_swipeDirections : getDefaultSwipeDirections(position);
   }, [
@@ -9129,19 +9219,19 @@ var Toast = (props) => {
   ]);
   const invert = toast2.invert || ToasterInvert;
   const disabled = toastType === "loading";
-  offset4.current = import_react37.default.useMemo(() => heightIndex * gap + toastsHeightBefore, [
+  offset4.current = import_react38.default.useMemo(() => heightIndex * gap + toastsHeightBefore, [
     heightIndex,
     toastsHeightBefore
   ]);
-  import_react37.default.useEffect(() => {
+  import_react38.default.useEffect(() => {
     remainingTime.current = duration;
   }, [
     duration
   ]);
-  import_react37.default.useEffect(() => {
+  import_react38.default.useEffect(() => {
     setMounted(true);
   }, []);
-  import_react37.default.useEffect(() => {
+  import_react38.default.useEffect(() => {
     const toastNode = toastRef.current;
     if (toastNode) {
       const height = toastNode.getBoundingClientRect().height;
@@ -9160,7 +9250,7 @@ var Toast = (props) => {
     setHeights,
     toast2.id
   ]);
-  import_react37.default.useLayoutEffect(() => {
+  import_react38.default.useLayoutEffect(() => {
     if (!mounted) return;
     const toastNode = toastRef.current;
     const originalHeight = toastNode.style.height;
@@ -9196,7 +9286,7 @@ var Toast = (props) => {
     toast2.action,
     toast2.cancel
   ]);
-  const deleteToast = import_react37.default.useCallback(() => {
+  const deleteToast = import_react38.default.useCallback(() => {
     setRemoved(true);
     setOffsetBeforeRemove(offset4.current);
     setHeights((h99) => h99.filter((height) => height.toastId !== toast2.id));
@@ -9209,7 +9299,7 @@ var Toast = (props) => {
     setHeights,
     offset4
   ]);
-  import_react37.default.useEffect(() => {
+  import_react38.default.useEffect(() => {
     if (toast2.promise && toastType === "loading" || toast2.duration === Infinity || toast2.type === "loading") return;
     let timeoutId;
     const pauseTimer = () => {
@@ -9241,7 +9331,7 @@ var Toast = (props) => {
     isDocumentHidden,
     deleteToast
   ]);
-  import_react37.default.useEffect(() => {
+  import_react38.default.useEffect(() => {
     if (toast2.delete) {
       deleteToast();
       toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
@@ -9254,19 +9344,19 @@ var Toast = (props) => {
     var _toast_classNames9;
     if (icons == null ? void 0 : icons.loading) {
       var _toast_classNames12;
-      return /* @__PURE__ */ import_react37.default.createElement("div", {
+      return /* @__PURE__ */ import_react38.default.createElement("div", {
         className: cn(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames12 = toast2.classNames) == null ? void 0 : _toast_classNames12.loader, "sonner-loader"),
         "data-visible": toastType === "loading"
       }, icons.loading);
     }
-    return /* @__PURE__ */ import_react37.default.createElement(Loader2, {
+    return /* @__PURE__ */ import_react38.default.createElement(Loader2, {
       className: cn(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames9 = toast2.classNames) == null ? void 0 : _toast_classNames9.loader),
       visible: toastType === "loading"
     });
   }
   const icon = toast2.icon || (icons == null ? void 0 : icons[toastType]) || getAsset(toastType);
   var _toast_richColors, _icons_close;
-  return /* @__PURE__ */ import_react37.default.createElement("li", {
+  return /* @__PURE__ */ import_react38.default.createElement("li", {
     tabIndex: 0,
     ref: toastRef,
     className: cn(className2, toastClassname, classNames == null ? void 0 : classNames.toast, toast2 == null ? void 0 : (_toast_classNames = toast2.classNames) == null ? void 0 : _toast_classNames.toast, classNames == null ? void 0 : classNames[toastTypeKey], toast2 == null ? void 0 : (_toast_classNames1 = toast2.classNames) == null ? void 0 : _toast_classNames1[toastTypeKey]),
@@ -9390,7 +9480,7 @@ var Toast = (props) => {
       (_toastRef_current = toastRef.current) == null ? void 0 : _toastRef_current.style.setProperty("--swipe-amount-x", `${swipeAmount.x}px`);
       (_toastRef_current1 = toastRef.current) == null ? void 0 : _toastRef_current1.style.setProperty("--swipe-amount-y", `${swipeAmount.y}px`);
     }
-  }, closeButton && !toast2.jsx && toastType !== "loading" ? /* @__PURE__ */ import_react37.default.createElement("button", {
+  }, closeButton && !toast2.jsx && toastType !== "loading" ? /* @__PURE__ */ import_react38.default.createElement("button", {
     "aria-label": closeButtonAriaLabel,
     "data-disabled": disabled,
     "data-close-button": true,
@@ -9400,19 +9490,19 @@ var Toast = (props) => {
       toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
     },
     className: cn(classNames == null ? void 0 : classNames.closeButton, toast2 == null ? void 0 : (_toast_classNames2 = toast2.classNames) == null ? void 0 : _toast_classNames2.closeButton)
-  }, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast2.icon || toast2.promise) && toast2.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast2.icon) ? /* @__PURE__ */ import_react37.default.createElement("div", {
+  }, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast2.icon || toast2.promise) && toast2.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast2.icon) ? /* @__PURE__ */ import_react38.default.createElement("div", {
     "data-icon": "",
     className: cn(classNames == null ? void 0 : classNames.icon, toast2 == null ? void 0 : (_toast_classNames3 = toast2.classNames) == null ? void 0 : _toast_classNames3.icon)
-  }, toastType === "loading" ? toast2.icon || getLoadingIcon() : toast2.promise ? getLoadingIcon() : null, toastType !== "loading" ? icon : null) : null, /* @__PURE__ */ import_react37.default.createElement("div", {
+  }, toastType === "loading" ? toast2.icon || getLoadingIcon() : toast2.promise ? getLoadingIcon() : null, toastType !== "loading" ? icon : null) : null, /* @__PURE__ */ import_react38.default.createElement("div", {
     "data-content": "",
     className: cn(classNames == null ? void 0 : classNames.content, toast2 == null ? void 0 : (_toast_classNames4 = toast2.classNames) == null ? void 0 : _toast_classNames4.content)
-  }, /* @__PURE__ */ import_react37.default.createElement("div", {
+  }, /* @__PURE__ */ import_react38.default.createElement("div", {
     "data-title": "",
     className: cn(classNames == null ? void 0 : classNames.title, toast2 == null ? void 0 : (_toast_classNames5 = toast2.classNames) == null ? void 0 : _toast_classNames5.title)
-  }, toast2.jsx ? toast2.jsx : typeof toast2.title === "function" ? toast2.title() : toast2.title), toast2.description ? /* @__PURE__ */ import_react37.default.createElement("div", {
+  }, toast2.jsx ? toast2.jsx : typeof toast2.title === "function" ? toast2.title() : toast2.title), toast2.description ? /* @__PURE__ */ import_react38.default.createElement("div", {
     "data-description": "",
     className: cn(descriptionClassName, toastDescriptionClassname, classNames == null ? void 0 : classNames.description, toast2 == null ? void 0 : (_toast_classNames6 = toast2.classNames) == null ? void 0 : _toast_classNames6.description)
-  }, typeof toast2.description === "function" ? toast2.description() : toast2.description) : null), /* @__PURE__ */ import_react37.default.isValidElement(toast2.cancel) ? toast2.cancel : toast2.cancel && isAction(toast2.cancel) ? /* @__PURE__ */ import_react37.default.createElement("button", {
+  }, typeof toast2.description === "function" ? toast2.description() : toast2.description) : null), /* @__PURE__ */ import_react38.default.isValidElement(toast2.cancel) ? toast2.cancel : toast2.cancel && isAction(toast2.cancel) ? /* @__PURE__ */ import_react38.default.createElement("button", {
     "data-button": true,
     "data-cancel": true,
     style: toast2.cancelButtonStyle || cancelButtonStyle,
@@ -9423,7 +9513,7 @@ var Toast = (props) => {
       deleteToast();
     },
     className: cn(classNames == null ? void 0 : classNames.cancelButton, toast2 == null ? void 0 : (_toast_classNames7 = toast2.classNames) == null ? void 0 : _toast_classNames7.cancelButton)
-  }, toast2.cancel.label) : null, /* @__PURE__ */ import_react37.default.isValidElement(toast2.action) ? toast2.action : toast2.action && isAction(toast2.action) ? /* @__PURE__ */ import_react37.default.createElement("button", {
+  }, toast2.cancel.label) : null, /* @__PURE__ */ import_react38.default.isValidElement(toast2.action) ? toast2.action : toast2.action && isAction(toast2.action) ? /* @__PURE__ */ import_react38.default.createElement("button", {
     "data-button": true,
     "data-action": true,
     style: toast2.actionButtonStyle || actionButtonStyle,
@@ -9485,13 +9575,13 @@ function assignOffset(defaultOffset, mobileOffset) {
   });
   return styles;
 }
-var Toaster = /* @__PURE__ */ import_react37.default.forwardRef(function Toaster2(props, ref) {
+var Toaster = /* @__PURE__ */ import_react38.default.forwardRef(function Toaster2(props, ref) {
   const { id: id3, invert, position = "bottom-right", hotkey = [
     "altKey",
     "KeyT"
   ], expand, closeButton, className: className2, offset: offset4, mobileOffset, theme: theme2 = "light", richColors, duration, style: style2, visibleToasts = VISIBLE_TOASTS_AMOUNT, toastOptions, dir = getDocumentDirection(), gap = GAP, icons, customAriaLabel, containerAriaLabel = "Notifications" } = props;
-  const [toasts, setToasts] = import_react37.default.useState([]);
-  const filteredToasts = import_react37.default.useMemo(() => {
+  const [toasts, setToasts] = import_react38.default.useState([]);
+  const filteredToasts = import_react38.default.useMemo(() => {
     if (id3) {
       return toasts.filter((toast2) => toast2.toasterId === id3);
     }
@@ -9500,7 +9590,7 @@ var Toaster = /* @__PURE__ */ import_react37.default.forwardRef(function Toaster
     toasts,
     id3
   ]);
-  const possiblePositions = import_react37.default.useMemo(() => {
+  const possiblePositions = import_react38.default.useMemo(() => {
     return Array.from(new Set([
       position
     ].concat(filteredToasts.filter((toast2) => toast2.position).map((toast2) => toast2.position))));
@@ -9508,15 +9598,15 @@ var Toaster = /* @__PURE__ */ import_react37.default.forwardRef(function Toaster
     filteredToasts,
     position
   ]);
-  const [heights, setHeights] = import_react37.default.useState([]);
-  const [expanded, setExpanded] = import_react37.default.useState(false);
-  const [interacting, setInteracting] = import_react37.default.useState(false);
-  const [actualTheme, setActualTheme] = import_react37.default.useState(theme2 !== "system" ? theme2 : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
-  const listRef = import_react37.default.useRef(null);
+  const [heights, setHeights] = import_react38.default.useState([]);
+  const [expanded, setExpanded] = import_react38.default.useState(false);
+  const [interacting, setInteracting] = import_react38.default.useState(false);
+  const [actualTheme, setActualTheme] = import_react38.default.useState(theme2 !== "system" ? theme2 : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
+  const listRef = import_react38.default.useRef(null);
   const hotkeyLabel = hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "");
-  const lastFocusedElementRef = import_react37.default.useRef(null);
-  const isFocusWithinRef = import_react37.default.useRef(false);
-  const removeToast = import_react37.default.useCallback((toastToRemove) => {
+  const lastFocusedElementRef = import_react38.default.useRef(null);
+  const isFocusWithinRef = import_react38.default.useRef(false);
+  const removeToast = import_react38.default.useCallback((toastToRemove) => {
     setToasts((toasts2) => {
       var _toasts_find;
       if (!((_toasts_find = toasts2.find((toast2) => toast2.id === toastToRemove.id)) == null ? void 0 : _toasts_find.delete)) {
@@ -9525,7 +9615,7 @@ var Toaster = /* @__PURE__ */ import_react37.default.forwardRef(function Toaster
       return toasts2.filter(({ id: id4 }) => id4 !== toastToRemove.id);
     });
   }, []);
-  import_react37.default.useEffect(() => {
+  import_react38.default.useEffect(() => {
     return ToastState.subscribe((toast2) => {
       if (toast2.dismiss) {
         requestAnimationFrame(() => {
@@ -9559,7 +9649,7 @@ var Toaster = /* @__PURE__ */ import_react37.default.forwardRef(function Toaster
       });
     });
   }, []);
-  import_react37.default.useEffect(() => {
+  import_react38.default.useEffect(() => {
     if (theme2 !== "system") {
       setActualTheme(theme2);
       return;
@@ -9597,14 +9687,14 @@ var Toaster = /* @__PURE__ */ import_react37.default.forwardRef(function Toaster
   }, [
     theme2
   ]);
-  import_react37.default.useEffect(() => {
+  import_react38.default.useEffect(() => {
     if (toasts.length <= 1) {
       setExpanded(false);
     }
   }, [
     toasts
   ]);
-  import_react37.default.useEffect(() => {
+  import_react38.default.useEffect(() => {
     const handleKeyDown = (event) => {
       var _listRef_current;
       const isHotkeyPressed = hotkey.length > 0 && hotkey.every((key) => event[key] || event.code === key);
@@ -9622,7 +9712,7 @@ var Toaster = /* @__PURE__ */ import_react37.default.forwardRef(function Toaster
   }, [
     hotkey
   ]);
-  import_react37.default.useEffect(() => {
+  import_react38.default.useEffect(() => {
     if (listRef.current) {
       return () => {
         if (lastFocusedElementRef.current) {
@@ -9639,7 +9729,7 @@ var Toaster = /* @__PURE__ */ import_react37.default.forwardRef(function Toaster
   ]);
   return (
     // Remove item from normal navigation flow, only available via hotkey
-    /* @__PURE__ */ import_react37.default.createElement("section", {
+    /* @__PURE__ */ import_react38.default.createElement("section", {
       ref,
       "aria-label": customAriaLabel != null ? customAriaLabel : `${containerAriaLabel} ${hotkeyLabel}`,
       tabIndex: -1,
@@ -9652,7 +9742,7 @@ var Toaster = /* @__PURE__ */ import_react37.default.forwardRef(function Toaster
       var _heights_;
       const [y, x] = position2.split("-");
       if (!filteredToasts.length) return null;
-      return /* @__PURE__ */ import_react37.default.createElement("ol", {
+      return /* @__PURE__ */ import_react38.default.createElement("ol", {
         key: position2,
         dir: dir === "auto" ? getDocumentDirection() : dir,
         tabIndex: -1,
@@ -9704,7 +9794,7 @@ var Toaster = /* @__PURE__ */ import_react37.default.forwardRef(function Toaster
         onPointerUp: () => setInteracting(false)
       }, filteredToasts.filter((toast2) => !toast2.position && index3 === 0 || toast2.position === position2).map((toast2, index4) => {
         var _toastOptions_duration, _toastOptions_closeButton;
-        return /* @__PURE__ */ import_react37.default.createElement(Toast, {
+        return /* @__PURE__ */ import_react38.default.createElement(Toast, {
           key: toast2.id,
           icons,
           index: index4,
@@ -9767,7 +9857,7 @@ function createToasterHost() {
   function renderToaster() {
     if (root === null)
       return;
-    root.render((0, import_react38.createElement)(Toaster, {
+    root.render((0, import_react39.createElement)(Toaster, {
       theme: currentTheme(),
       position,
       // richColors：success=绿整条 / error=红整条 / warning=黄整条（Sonner 自带）；
@@ -9833,7 +9923,7 @@ function createToasterHost() {
     const palette = notifyPalette(payload.variant, currentTheme());
     const duration = payload.durationMs;
     const actions2 = payload.actions;
-    const id3 = toast.custom(() => (0, import_react38.createElement)("div", {
+    const id3 = toast.custom(() => (0, import_react39.createElement)("div", {
       style: {
         display: "flex",
         alignItems: "center",
@@ -9849,7 +9939,7 @@ function createToasterHost() {
         fontSize: "14px",
         lineHeight: "20px"
       }
-    }, (0, import_react38.createElement)("span", {
+    }, (0, import_react39.createElement)("span", {
       style: {
         flexShrink: 0,
         width: "20px",
@@ -9862,9 +9952,9 @@ function createToasterHost() {
         fontSize: "13px",
         fontWeight: 700
       }
-    }, (0, import_react38.createElement)(FontIcon, { name: palette.glyph })), (0, import_react38.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react38.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react38.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px", whiteSpace: "pre-line" } }, payload.description) : null), actions2 !== void 0 && actions2.length > 0 ? (0, import_react38.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions2.slice(0, 2).map((a) => {
+    }, (0, import_react39.createElement)(FontIcon, { name: palette.glyph })), (0, import_react39.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react39.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react39.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px", whiteSpace: "pre-line" } }, payload.description) : null), actions2 !== void 0 && actions2.length > 0 ? (0, import_react39.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions2.slice(0, 2).map((a) => {
       const successSurface = payload.variant === "success";
-      return (0, import_react38.createElement)(Button, {
+      return (0, import_react39.createElement)(Button, {
         variant: successSurface ? "secondary" : a.variant ?? "info",
         ...successSurface ? { color: "var(--dshpc-surface-2)" } : {},
         size: "md",
@@ -9912,7 +10002,7 @@ function notifyPalette(variant, theme2) {
 }
 
 // dist/ui/inputs/Segmented.js
-var import_react39 = require("react");
+var import_react40 = require("react");
 
 // dist/ui/inputs/segmented-css.generated.js
 var SEGMENTED_CSS = `
@@ -10022,9 +10112,9 @@ function Segmented(props) {
   const value = props.value;
   const onChange = props.onChange;
   const sliding = !multiple && props.items.length > 1;
-  const rootRef = (0, import_react39.useRef)(null);
-  const [thumb, setThumb] = (0, import_react39.useState)(null);
-  const measure = (0, import_react39.useCallback)(() => {
+  const rootRef = (0, import_react40.useRef)(null);
+  const [thumb, setThumb] = (0, import_react40.useState)(null);
+  const measure = (0, import_react40.useCallback)(() => {
     const sel = rootRef.current?.querySelector('.dshpc-seg__item[aria-pressed="true"]');
     if (sel === void 0 || sel === null) {
       setThumb(null);
@@ -10033,7 +10123,7 @@ function Segmented(props) {
     const next = { left: sel.offsetLeft, top: sel.offsetTop, width: sel.offsetWidth, height: sel.offsetHeight };
     setThumb((cur2) => cur2 !== null && cur2.left === next.left && cur2.top === next.top && cur2.width === next.width && cur2.height === next.height ? cur2 : next);
   }, []);
-  (0, import_react39.useLayoutEffect)(() => {
+  (0, import_react40.useLayoutEffect)(() => {
     if (!sliding) {
       setThumb(null);
       return;
@@ -10050,7 +10140,7 @@ function Segmented(props) {
   const tone = props.tone;
   const toneClass = typeof tone === "string" ? ` dshpc-seg--tone-${tone}` : "";
   const toneStyle = tone !== void 0 && typeof tone !== "string" ? { "--seg-thumb": tone.bg, "--seg-on": tone.fg } : void 0;
-  return (0, import_react39.createElement)("div", {
+  return (0, import_react40.createElement)("div", {
     role: "group",
     "aria-label": props.label,
     id: props.id,
@@ -10059,7 +10149,7 @@ function Segmented(props) {
     className: `dshpc-seg dshpc-seg--${size4}${sliding ? " dshpc-seg--slide" : ""}${multiple ? " dshpc-seg--multiple" : ""}${props.block === true ? " dshpc-seg--block" : ""}${props.bordered === true ? " dshpc-seg--bordered" : ""}${toneClass}${props.className !== void 0 ? ` ${props.className}` : ""}`,
     style: toneStyle === void 0 ? props.style : { ...toneStyle, ...props.style }
   }, [
-    sliding && thumb !== null ? (0, import_react39.createElement)("span", {
+    sliding && thumb !== null ? (0, import_react40.createElement)("span", {
       key: "__thumb__",
       className: "dshpc-seg__thumb",
       "aria-hidden": true,
@@ -10090,7 +10180,7 @@ function Segmented(props) {
       const hasLabel = item.label !== void 0 && item.label !== null && item.label !== "";
       const hasIcon = item.icon !== void 0 && item.icon !== null;
       const iconOnly = hasIcon && !hasLabel && count4 === null && badge === null;
-      const itemButton = (0, import_react39.createElement)("button", {
+      const itemButton = (0, import_react40.createElement)("button", {
         key: item.value,
         type: "button",
         className: `dshpc-seg__item${iconOnly ? " dshpc-seg__item--icon-only" : ""}`,
@@ -10099,7 +10189,7 @@ function Segmented(props) {
         "aria-label": item.ariaLabel ?? (iconOnly ? item.tooltip : void 0),
         disabled,
         onClick: handle
-      }, hasIcon ? (0, import_react39.createElement)("span", { className: "dshpc-seg__icon" }, item.icon) : null, hasLabel ? item.label : null, count4 === null ? null : (0, import_react39.createElement)("span", { className: "dshpc-seg__count" }, count4), badge === null ? null : (0, import_react39.createElement)("span", { className: "dshpc-seg__badge" }, badge));
+      }, hasIcon ? (0, import_react40.createElement)("span", { className: "dshpc-seg__icon" }, item.icon) : null, hasLabel ? item.label : null, count4 === null ? null : (0, import_react40.createElement)("span", { className: "dshpc-seg__count" }, count4), badge === null ? null : (0, import_react40.createElement)("span", { className: "dshpc-seg__badge" }, badge));
       if (item.tooltip !== void 0 && renderer2 !== void 0) {
         return renderer2({ label: item.tooltip, side: "top", children: itemButton });
       }
@@ -10109,7 +10199,7 @@ function Segmented(props) {
 }
 
 // dist/ui/layout/SplitGroup.js
-var import_react40 = require("react");
+var import_react41 = require("react");
 
 // dist/ui/layout/split-group-css.generated.js
 var SPLIT_GROUP_CSS = "\n/* \u2500\u2500 \u62FC\u63A5\u5916\u58F3 SplitGroup \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u804C\u8D23\u53EA\u6709\u4E00\u6761\uFF1A\u628A\u4E24\u4E2A\u63A7\u4EF6\u5728\u5916\u89C2\u4E0A\u710A\u6210\u4E00\u4F53\uFF08\u5916\u6846 / \u5706\u89D2 / \u4E2D\u95F4 1px \u5206\u9694 / \u6574\u4F53\u805A\u7126\u5708\uFF09\u3002\n   \u5B83**\u4E0D\u6301\u72B6\u6001\u3001\u4E0D\u51FA\u8054\u52A8\u56DE\u8C03** \u2014\u2014 \u9009\u4E2D\u4E0E\u8054\u52A8\u5168\u8D70\u5185\u4EF6\u81EA\u5DF1\u7684 value / onChange\n   \uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF1A\u5916\u58F3\u4E0D\u5FC5\u77E5\u9053\u53F3\u8FB9\u90A3\u4E2A\u4E0B\u62C9\u7BA1\u4EC0\u4E48\uFF09\u3002\n\n   \u26A0\uFE0F \u4E0E\u5185\u4EF6\u7C7B\u540D\u6709\u610F\u8026\u5408\uFF1A\u5185\u4EF6\u662F Picker / Segmented \u65F6\u7531\u4E0B\u9762\u51E0\u6761\u89C4\u5219\u628A\u5B83\u4EEC\u81EA\u5DF1\u7684\n   \u8FB9\u6846 / \u5E95\u8272 / \u5706\u89D2\u4EA4\u51FA\u6765\uFF0C\u7531\u5916\u58F3\u7EDF\u4E00\u753B\u3002\u5185\u4EF6\u6539\u540D\u6216\u6539\u7ED3\u6784\u8981\u540C\u6B65\u6539\u8FD9\u91CC\uFF0C\n   \u5426\u5219\u4F1A\u51FA\u73B0\u53CC\u8FB9\u6846\u3001\u53CC\u5E95\u8272\u3002\n\n   \u9AD8\u5EA6\u4E0D\u5199\u6B7B\uFF1A\u5185\u4EF6\u81EA\u5DF1\u6309 size \u6863\uFF08sm 24 / md 28 / lg 32\uFF09\u6491\u5F00\uFF0C\u5916\u58F3\u8DDF\u7740\u957F\u3002\n   \u4E24\u683C\u8981\u7B49\u9AD8\uFF0C\u5C31\u7ED9\u5185\u4EF6\u4F20**\u540C\u4E00\u4E2A size**\u3002\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\u5916\u58F3\u5185\u4EF6\u7528 align-items:center\n   \u5C45\u4E2D\uFF08\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\uFF0C\u7528\u6237 2026-10-28 \u622A\u56FE\u53CD\u9988\u300C\u672C\u6708\u504F\u4E0A\u300D\u540E\u7684\u5904\u7406\uFF09\uFF1B**\u522B\u7528 height:100%**\uFF0C\n   \u5B83\u4F1A\u8986\u76D6\u4E09\u6863\u9AD8\u5EA6\uFF08\u4E0E --lg/--sm \u540C\u7279\u5F02\u6027\u4E14\u6CE8\u5165\u66F4\u665A\uFF09\u3002\n\n   \u5DE6\u683C\u7EDF\u4E00\u7070\u5E95\uFF08\u7528\u6237 2026-10-28 \u62CD\u677F\uFF09\uFF1A\u6ED1\u5757\u4FDD\u7559\u81EA\u5DF1\u7684\u7070\u8F68\uFF0C\u5DE6\u683C\u4E0B\u62C9\u628A\u5E95\u8272\u6362\u6210\n   surface-sunken\uFF1B\u53F3\u683C\u4FDD\u6301\u539F\u6837\u3002\u5C42\u6B21\u611F = \u5DE6\u683C\u662F\u300C\u6863\u4F4D/\u8303\u56F4\u300D\uFF0C\u53F3\u683C\u662F\u300C\u503C\u300D\u3002 */\n   .dshpc-split{display:inline-flex;align-items:stretch;max-width:100%;overflow:hidden;border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);background:var(--dshpc-surface-1);}\n   /* \u4E24\u683C\u5BBD\u5EA6\u90FD\u7531\u5185\u5BB9\u7ED9\uFF1B\u5BB9\u5668\u518D\u7A84\u4E5F\u8BA9\u5185\u4EF6\u81EA\u5DF1\u7701\u7565\uFF0C\u4E0D\u8BA9\u5916\u58F3\u88AB\u6491\u7834 */\n   .dshpc-split > *{min-width:0;max-width:100%;}\n   /* \u5206\u9694\uFF1A\u76F8\u90BB\u5144\u5F1F\u7684\u5DE6\u63CF\u8FB9\uFF0C\u4E0D\u989D\u5916\u63D2 DOM\uFF0Chover / focus \u65F6\u4E5F\u4E0D\u4F1A\u65AD */\n   .dshpc-split > * + *{box-sizing:border-box;border-left:1px solid var(--dshpc-border);}\n   /* \u6574\u4F53\u805A\u7126\uFF1A\u53EA\u5728**\u4E0B\u62C9\u5C55\u5F00**\u65F6\u753B\u4E00\u6574\u5708\uFF08\u5224\u636E\u662F\u5185\u4EF6\u7684 aria-expanded\uFF0C\u4E0D\u662F :focus-within\uFF09\u3002\n      2026-11-02 \u7528\u6237\u5B9A\u7A3F\uFF1A\u6ED1\u5757\u90A3\u683C\u662F\u300C\u9009\u4E2D\u300D\u4E0D\u662F\u300C\u8F93\u5165\u805A\u7126\u300D\uFF0C\u9F20\u6807\u70B9\u5B83\u4E0D\u8BE5\u8BA9\u6574\u6846\u5E38\u4EAE\uFF1B\n      \u800C\u4E14\u9009\u53D6\u503C\u540E\u7126\u70B9\u4F1A\u7559\u5728\u6309\u94AE\u4E0A\uFF0C\u7528 :focus-within \u4F1A\u4E00\u76F4\u4EAE\u7740\u3002 */\n   .dshpc-split:has(.dshpc-picker__trigger[aria-expanded='true']){border-color:var(--dshpc-focus);box-shadow:0 0 0 1px var(--dshpc-focus);}\n   /* Picker\uFF1A\u53BB\u6389\u81EA\u8EAB\u5916\u6846\u4E0E\u5E95\u8272\uFF1Bdisplay \u6539\u6210 flex\uFF0C\u6D88\u6389 inline-block \u884C\u76D2\u5E26\u6765\u7684\u57FA\u7EBF\u95F4\u9699\u3002\n      \u6CE8\u610F**\u4E0D\u80FD\u7528 height:100%**\uFF1A\u5B83\u4F1A\u548C .dshpc-picker__trigger--lg / --sm \u540C\u7279\u5F02\u6027\uFF08\u90FD\u662F\u4E24\u4E2A\u7C7B\uFF09\uFF0C\n      \u4E14 split-group.css \u5728 picker.css \u4E4B\u540E\u6CE8\u5165\uFF0C\u4F1A\u628A\u4E09\u6863\u9AD8\u5EA6\u5168\u5403\u6389\uFF08md/lg \u770B\u8D77\u6765\u4E00\u6837\u5927\uFF09\u3002\n      \u6539\u7528 align-items:center \u2014\u2014 \u540C size \u65F6\u4E24\u683C\u81EA\u7136\u7B49\u9AD8\u7684\u540C\u65F6\u6587\u5B57\u5782\u76F4\u5C45\u4E2D\uFF1B\u4E07\u4E00\u4E24\u683C size \u4E0D\u4E00\u81F4\uFF0C\n      \u8F83\u77EE\u7684\u683C\u4E5F\u53EA\u662F\u5C45\u4E2D\u3001\u4E0D\u4F1A\u9876\u5BF9\u9F50\u9732\u767D\u3002 */\n   .dshpc-split .dshpc-picker{display:flex;align-items:center;}\n   .dshpc-split .dshpc-picker__trigger{border:0;border-radius:0;background:transparent;}\n   .dshpc-split .dshpc-picker__trigger:focus-visible{outline:0;}\n   /* \u5DE6\u683C\u4E0B\u62C9\uFF1A\u7070\u5E95\uFF08\u6ED1\u5757\u7684\u7070\u8F68\u662F\u5B83\u81EA\u5DF1\u7684 --dshpc-seg-track\uFF0C\u4E0D\u5728\u8FD9\u91CC\u8986\u76D6\uFF09 */\n   .dshpc-split > :first-child .dshpc-picker__trigger{background:var(--dshpc-surface-sunken);}\n   /* Segmented\uFF1A\u53EA\u53BB\u5916\u5706\u89D2\u4E0E\u63CF\u8FB9\uFF0C\u7070\u8F68\u4FDD\u7559\uFF1Bpadding \u4FDD\u6301 3px \u4E0D\u52A8 \u2014\u2014 \u5B83\u662F\u9AD8\u5EA6\u5951\u7EA6\u7684\u4E00\u90E8\u5206\n    \uFF083 + item + 3 = control-h\uFF09\u3002bordered \u90A3\u6863\u53BB\u6389\u63CF\u8FB9\u3001\u628A\u8BA9\u7ED9\u63CF\u8FB9\u7684 1px \u8FD8\u56DE padding\uFF0C\n    \u5426\u5219\u4F1A\u6BD4\u53F3\u8FB9\u77EE 2px\u3002 */\n   .dshpc-split .dshpc-seg{border-radius:0;border:0;}\n   .dshpc-split .dshpc-seg--bordered{padding:3px;}\n";
@@ -10117,7 +10207,7 @@ var SPLIT_GROUP_CSS = "\n/* \u2500\u2500 \u62FC\u63A5\u5916\u58F3 SplitGroup \u2
 // dist/ui/layout/SplitGroup.js
 function SplitGroup(props) {
   ensureComponentStyles("split-group", SPLIT_GROUP_CSS);
-  return (0, import_react40.createElement)("div", {
+  return (0, import_react41.createElement)("div", {
     role: "group",
     "aria-label": props.label,
     id: props.id,
@@ -10127,14 +10217,14 @@ function SplitGroup(props) {
 }
 
 // dist/ui/inputs/InputGroup.js
-var import_react42 = require("react");
+var import_react43 = require("react");
 
 // dist/ui/inputs/Field.js
-var import_react41 = require("react");
+var import_react42 = require("react");
 function withHint(control, hint) {
   if (hint === void 0)
     return control;
-  return (0, import_react41.createElement)("span", { className: "dshpc-fieldwrap" }, control, (0, import_react41.createElement)(FieldHint, { text: hint }));
+  return (0, import_react42.createElement)("span", { className: "dshpc-fieldwrap" }, control, (0, import_react42.createElement)(FieldHint, { text: hint }));
 }
 function sizeClass(size4) {
   return size4 === "lg" ? "--lg" : size4 === "md" ? "--md" : "--sm";
@@ -10144,11 +10234,11 @@ function Input(props) {
   const { value, onChange, placeholder: placeholder2, size: size4 = "lg", error, disabled, type: type3, icon, className: className2, style: style2 } = props;
   const locked = useOverlayLocked();
   const off = disabled === true || locked;
-  const [focused, setFocused] = (0, import_react41.useState)(false);
-  const [hovered, setHovered] = (0, import_react41.useState)(false);
+  const [focused, setFocused] = (0, import_react42.useState)(false);
+  const [hovered, setHovered] = (0, import_react42.useState)(false);
   const search = type3 === "search";
   const showClear = search && value !== "" && (focused || hovered) && !off;
-  const input = (0, import_react41.createElement)("input", {
+  const input = (0, import_react42.createElement)("input", {
     ref: props.inputRef,
     type: type3 ?? "text",
     value,
@@ -10173,7 +10263,7 @@ function Input(props) {
   const hasIcon = icon !== void 0 && icon !== null;
   if (!hasIcon && !search)
     return withHint(input, props.hint);
-  return withHint((0, import_react41.createElement)(
+  return withHint((0, import_react42.createElement)(
     "span",
     {
       className: `dshpc-iwrap dshpc-iwrap${sizeClass(size4)}${showClear ? " dshpc-iwrap--clear" : ""}`,
@@ -10184,14 +10274,14 @@ function Input(props) {
         setHovered(false);
       }
     },
-    hasIcon ? (0, import_react41.createElement)("span", { className: "dshpc-iwrap__icon" }, icon) : null,
+    hasIcon ? (0, import_react42.createElement)("span", { className: "dshpc-iwrap__icon" }, icon) : null,
     input,
     // 只在 mousedown 上拦焦点：不拦的话 input 先 blur ⇒ 按钮被卸掉 ⇒ 随后的 click 落空。
-    showClear ? (0, import_react41.createElement)(IconButton, {
+    showClear ? (0, import_react42.createElement)(IconButton, {
       className: "dshpc-iwrap__clear",
       variant: "plain",
       size: size4,
-      icon: (0, import_react41.createElement)(FontIcon, { name: "common.base:guanbi" }),
+      icon: (0, import_react42.createElement)(FontIcon, { name: "common.base:guanbi" }),
       label: t("fieldClear"),
       onMouseDown: (event) => {
         event.preventDefault();
@@ -10207,8 +10297,8 @@ function NumberInput(props) {
   const { value, onChange, min: min2 = -Infinity, max: max2 = Infinity, step = 1, size: size4 = "lg", inputWidth, disabled, suffix: suffix2, label, decreaseLabel = t("fieldDecrease"), increaseLabel = t("fieldIncrease"), className: className2, style: style2 } = props;
   const locked = useOverlayLocked();
   const off = disabled === true || locked;
-  const [text2, setText] = (0, import_react41.useState)(String(value));
-  (0, import_react41.useEffect)(() => {
+  const [text2, setText] = (0, import_react42.useState)(String(value));
+  (0, import_react42.useEffect)(() => {
     setText(String(value));
   }, [value]);
   const clamp3 = (n) => Math.min(max2, Math.max(min2, n));
@@ -10234,18 +10324,18 @@ function NumberInput(props) {
     if (next !== value)
       onChange(next);
   };
-  return withHint((0, import_react41.createElement)(
+  return withHint((0, import_react42.createElement)(
     "div",
     {
       className: `dshpc-num dshpc-num${sizeClass(size4)}${off ? " dshpc-num--disabled" : ""}${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
       style: style2
     },
-    (0, import_react41.createElement)(IconButton, { variant: "plain", size: size4, icon: (0, import_react41.createElement)(FontIcon, { name: "common.base:jian" }), label: decreaseLabel, disabled: off, onClick: () => {
+    (0, import_react42.createElement)(IconButton, { variant: "plain", size: size4, icon: (0, import_react42.createElement)(FontIcon, { name: "common.base:jian" }), label: decreaseLabel, disabled: off, onClick: () => {
       bump(-1);
     } }),
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
     // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
-    (0, import_react41.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react41.createElement)("input", {
+    (0, import_react42.createElement)("span", { className: "dshpc-num__mid" }, (0, import_react42.createElement)("input", {
       className: "dshpc-num__input",
       ...inputWidth === void 0 ? {} : { style: { width: `${inputWidth}px` } },
       value: text2,
@@ -10262,8 +10352,8 @@ function NumberInput(props) {
         if (event.key === "Enter")
           commit(text2);
       }
-    }), suffix2 !== void 0 ? (0, import_react41.createElement)("span", { className: "dshpc-num__suffix" }, suffix2) : null),
-    (0, import_react41.createElement)(IconButton, { variant: "plain", size: size4, icon: (0, import_react41.createElement)(FontIcon, { name: "common.base:jia" }), label: increaseLabel, disabled: off, onClick: () => {
+    }), suffix2 !== void 0 ? (0, import_react42.createElement)("span", { className: "dshpc-num__suffix" }, suffix2) : null),
+    (0, import_react42.createElement)(IconButton, { variant: "plain", size: size4, icon: (0, import_react42.createElement)(FontIcon, { name: "common.base:jia" }), label: increaseLabel, disabled: off, onClick: () => {
       bump(1);
     } })
   ), props.hint);
@@ -10278,8 +10368,8 @@ function InputGroup(props) {
   ensureComponentStyles("field", FIELD_CSS);
   ensureComponentStyles("button", BUTTON_CSS);
   const { value, onChange, label, placeholder: placeholder2, size: size4 = "lg", height, error, disabled, actions: actions2 = [], undoable = false, undoLabel = t("inputUndo"), onSubmit } = props;
-  const committed = (0, import_react42.useRef)(value);
-  const [undoStack, setUndoStack] = (0, import_react42.useState)([]);
+  const committed = (0, import_react43.useRef)(value);
+  const [undoStack, setUndoStack] = (0, import_react43.useState)([]);
   const commit = () => {
     if (value === committed.current)
       return;
@@ -10297,8 +10387,8 @@ function InputGroup(props) {
   };
   const nodes = [];
   if (label !== void 0)
-    nodes.push((0, import_react42.createElement)("span", { key: "label", className: "dshpc-igroup__label" }, label));
-  nodes.push((0, import_react42.createElement)(Input, {
+    nodes.push((0, import_react43.createElement)("span", { key: "label", className: "dshpc-igroup__label" }, label));
+  nodes.push((0, import_react43.createElement)(Input, {
     key: "input",
     value,
     onChange,
@@ -10317,11 +10407,11 @@ function InputGroup(props) {
     }
   }));
   if (undoable) {
-    nodes.push((0, import_react42.createElement)(IconButton, {
+    nodes.push((0, import_react43.createElement)(IconButton, {
       key: "undo",
       variant: "plain",
       size: size4,
-      icon: (0, import_react42.createElement)(FontIcon, { name: "common.base:chexiao" }),
+      icon: (0, import_react43.createElement)(FontIcon, { name: "common.base:chexiao" }),
       label: undoLabel,
       disabled: disabled === true || undoStack.length === 0,
       onClick: undo2
@@ -10336,7 +10426,7 @@ function InputGroup(props) {
     };
     const off = disabled === true || action.disabled === true;
     const onlyIcon = action.label === void 0;
-    nodes.push(onlyIcon ? (0, import_react42.createElement)(IconButton, {
+    nodes.push(onlyIcon ? (0, import_react43.createElement)(IconButton, {
       key: `action-${String(i2)}`,
       variant: "plain",
       size: size4,
@@ -10344,7 +10434,7 @@ function InputGroup(props) {
       label: action.ariaLabel ?? t("inputAction"),
       disabled: off,
       onClick: run
-    }) : (0, import_react42.createElement)(Button, {
+    }) : (0, import_react43.createElement)(Button, {
       key: `action-${String(i2)}`,
       variant: action.variant ?? "info",
       size: size4,
@@ -10356,7 +10446,7 @@ function InputGroup(props) {
     }, action.label));
   });
   const className2 = `dshpc-igroup dshpc-igroup--${size4}${error === true ? " dshpc-igroup--error" : ""}${props.className !== void 0 && props.className !== "" ? ` ${props.className}` : ""}`;
-  return withHint((0, import_react42.createElement)("div", {
+  return withHint((0, import_react43.createElement)("div", {
     role: "group",
     "aria-label": props["aria-label"] ?? label,
     id: props.id,
@@ -10366,12 +10456,12 @@ function InputGroup(props) {
 }
 
 // dist/ui/inputs/Textarea.js
-var import_react43 = require("react");
+var import_react44 = require("react");
 function Textarea(props) {
   ensureComponentStyles("field", FIELD_CSS);
   const { value, onChange, placeholder: placeholder2, error, disabled, id: id3, rows, spellCheck, className: className2, style: style2 } = props;
   const off = disabled === true || useOverlayLocked();
-  const box = (0, import_react43.createElement)("textarea", {
+  const box = (0, import_react44.createElement)("textarea", {
     id: id3,
     rows,
     value,
@@ -10387,16 +10477,16 @@ function Textarea(props) {
   });
   if (props.hint === void 0)
     return box;
-  return (0, import_react43.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react43.createElement)(FieldHint, { text: props.hint }));
+  return (0, import_react44.createElement)("span", { className: "dshpc-fieldwrap dshpc-fieldwrap--block" }, box, (0, import_react44.createElement)(FieldHint, { text: props.hint }));
 }
 
 // dist/ui/inputs/Checkbox.js
-var import_react44 = require("react");
+var import_react45 = require("react");
 function Checkbox(props) {
   const { checked, onChange, label, accentColor, disabled, className: className2 } = props;
   const locked = useOverlayLocked();
   const off = disabled === true || locked;
-  return (0, import_react44.createElement)("label", {
+  return (0, import_react45.createElement)("label", {
     className: `dshpc-checkbox${className2 !== void 0 && className2 !== "" ? ` ${className2}` : ""}`,
     style: {
       display: "flex",
@@ -10406,7 +10496,7 @@ function Checkbox(props) {
       lineHeight: "var(--dshpc-line-md)",
       cursor: off ? "default" : "pointer"
     }
-  }, (0, import_react44.createElement)("input", {
+  }, (0, import_react45.createElement)("input", {
     type: "checkbox",
     checked,
     disabled: off,
@@ -10421,11 +10511,11 @@ function Checkbox(props) {
     onChange: (event) => {
       onChange(event.target.checked);
     }
-  }), label !== void 0 ? (0, import_react44.createElement)("span", null, label) : null);
+  }), label !== void 0 ? (0, import_react45.createElement)("span", null, label) : null);
 }
 
 // dist/ui/feedback/LoaderBar.js
-var import_react45 = require("react");
+var import_react46 = require("react");
 
 // dist/ui/feedback/loader-bar-css.generated.js
 var LOADER_BAR_CSS = "/* \u2500\u2500 LoaderBar\uFF1A\u80F6\u56CA\u4E0D\u5B9A\u8FDB\u5EA6 loading \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u6E90\u56FE\u5F62\u662F\u300C\u8F68\u9053 + \u84DD\u8272\u6BB5 + \u659C\u7EB9\u300D\u7684\u80F6\u56CA\u6761\u3002\u4E0E Loader \u540C\u65CF\uFF08Loader \u5BB6\u65CF\uFF1A\n   Loader \u901A\u7528\u56FE\u6807 / LoaderBar \u80F6\u56CA\u4E0D\u5B9A\u8FDB\u5EA6\uFF09\uFF0C\u540C\u6837\u53EA\u753B\u56FE\u5F62\uFF1A\u4E0D\u5E26\u80CC\u666F\u3001\u4E0D\u5E26\u5B9A\u4F4D\u3002\n\n   \u52A8\u7684\u662F**\u659C\u7EB9**\uFF0C\u4E0D\u662F\u84DD\u8272\u6BB5\uFF1A\u84DD\u8272\u90A3\u534A\u622A\u56FA\u5B9A\u4E0D\u52A8\uFF0C\u53EA\u6709\u5B83\u4E0A\u9762\u7684\u4E00\u9053\u9053\u7EC6\u659C\u6761\n   \u5728\u8D70\uFF0C\u770B\u7740\u50CF\u6761\u7EB9\u5728\u6D41\u52A8 / \u8F6C\u3002\u8FD9\u7B26\u5408\u6E90\u56FE\u610F\u56FE \u2014\u2014 \u659C\u7EB9\u672C\u6765\u5C31\u662F\u8868\u793A\u300C\u8FDB\u884C\u4E2D\u300D\u3002\n\n   \u5C3A\u5BF8\u6863\u6309**\u9AD8\u5EA6**\u7ED9\uFF08\u5BBD\u56FA\u5B9A 4:1\uFF09\uFF0C\u56E0\u4E3A\u56FE\u5F62\u672C\u8EAB\u662F\u6A2A\u6761\uFF0C\u65B9\u5F62\u5C3A\u5BF8\u8F74\u6CA1\u610F\u4E49\u3002 */\n\n.dshpc-loader-bar { display: inline-block; flex: none; vertical-align: middle; line-height: 0; }\n\n.dshpc-loader-bar--xs { width: 48px; height: 12px; }\n.dshpc-loader-bar--sm { width: 64px; height: 16px; }\n.dshpc-loader-bar--md { width: 96px; height: 24px; }\n.dshpc-loader-bar--lg { width: 128px; height: 32px; }\n.dshpc-loader-bar--xl { width: 192px; height: 48px; }\n\n/* \u659C\u7EB9\u5355\u5411\u5FAA\u73AF\u5E73\u79FB\u300285.333 \u662F\u4E00\u4E2A\u6761\u7EB9\u5468\u671F\uFF08\u6E90\u56FE\u76F8\u90BB\u659C\u7EBF\u7684\u95F4\u8DDD\uFF0C\u7528\u6237\u5355\u4F4D\uFF09\uFF1A\n   \u5E73\u79FB\u6574\u6574\u4E00\u4E2A\u5468\u671F\u540E\u4E0E\u539F\u56FE\u91CD\u5408 \u21D2 \u5FAA\u73AF\u5904\u770B\u4E0D\u51FA\u63A5\u7F1D\u3002\n   \u26A0\uFE0F \u8FD9\u4E2A\u6570\u5B57\u5FC5\u987B\u4E0E LoaderBar.ts \u91CC\u7684 STRIPE_PERIOD \u4E00\u81F4\uFF08\u7EC4\u4EF6\u9760\u5B83\u590D\u5236\u4E00\u4EFD\u5DE6\u4FA7\u8865\u56FE\uFF09\u3002\n   \u5916\u5C42 <g clip-path> \u9759\u6B62\u3001\u53EA\u52A8\u8FD9\u4E00\u5C42 \u2014\u2014 \u82E5\u628A clip \u4E0E transform \u653E\u540C\u4E00\u5C42\uFF0C\n   \u88C1\u526A\u6846\u4F1A\u8DDF\u7740\u4E00\u8D77\u79FB\uFF0C\u7B49\u4E8E\u6CA1\u88C1\uFF0C\u6761\u7EB9\u4F1A\u9732\u5230\u84DD\u8272\u6BB5\u5916\u9762\u3002 */\n.dshpc-loader-bar__stripe { animation: dshpc-loader-bar-flow .55s linear infinite; }\n@keyframes dshpc-loader-bar-flow {\n  from { transform: translateX(0) }\n  to { transform: translateX(85.333px) }\n}\n\n/* animated={false}\uFF1A\u6761\u7EB9\u505C\u5728\u539F\u4F4D\u3002 */\n.dshpc-loader-bar--still .dshpc-loader-bar__stripe { animation: none; }\n\n@media (prefers-reduced-motion: reduce) {\n  .dshpc-loader-bar__stripe { animation: none; }\n}\n";
@@ -10452,7 +10542,7 @@ function pathAt(paths, index3) {
 function LoaderBar(props) {
   ensureComponentStyles("loader-bar", LOADER_BAR_CSS);
   const { size: size4 = "md", animated = true, label, className: className2 } = props;
-  const clipId = `dshpc-loader-bar-clip-${(0, import_react45.useId)().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const clipId = `dshpc-loader-bar-clip-${(0, import_react46.useId)().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const track = pathAt(BAR_PATHS, TRACK_INDEX);
   const fill = pathAt(BAR_PATHS, FILL_INDEX);
   const stripe = pathAt(BAR_PATHS, STRIPE_INDEX);
@@ -10461,32 +10551,32 @@ function LoaderBar(props) {
     classes.push("dshpc-loader-bar--still");
   if (className2 !== void 0 && className2 !== "")
     classes.push(className2);
-  return (0, import_react45.createElement)("svg", {
+  return (0, import_react46.createElement)("svg", {
     className: classes.join(" "),
     viewBox: "0 384 1024 256",
     role: label === void 0 ? void 0 : "status",
     "aria-label": label,
     "aria-hidden": label === void 0 ? true : void 0,
     focusable: "false"
-  }, (0, import_react45.createElement)(
+  }, (0, import_react46.createElement)(
     "defs",
     null,
     // 直接拿「蓝色段」自己的路径当裁剪区：它左端是圆的、**右端是平直的**
     // （进度刚走到一大半，右边界是一条切面，不能带弧度）。
     // 早先用 rect + rx 裁，四个角都是圆的 ⇒ 右端被裁成弧形，看着像走满了。
-    (0, import_react45.createElement)("clipPath", { id: clipId }, (0, import_react45.createElement)("path", { d: fill.d }))
-  ), (0, import_react45.createElement)("path", { d: track.d, fill: track.fill }), (0, import_react45.createElement)("path", { d: fill.d, fill: fill.fill }), (0, import_react45.createElement)("g", { clipPath: `url(#${clipId})` }, (0, import_react45.createElement)(
+    (0, import_react46.createElement)("clipPath", { id: clipId }, (0, import_react46.createElement)("path", { d: fill.d }))
+  ), (0, import_react46.createElement)("path", { d: track.d, fill: track.fill }), (0, import_react46.createElement)("path", { d: fill.d, fill: fill.fill }), (0, import_react46.createElement)("g", { clipPath: `url(#${clipId})` }, (0, import_react46.createElement)(
     "g",
     { className: "dshpc-loader-bar__stripe" },
-    ...[0, 1, 2].map((step) => (0, import_react45.createElement)("g", {
+    ...[0, 1, 2].map((step) => (0, import_react46.createElement)("g", {
       key: step,
       transform: step === 0 ? void 0 : `translate(${String(-STRIPE_PERIOD * step)} 0)`
-    }, (0, import_react45.createElement)("path", { d: stripe.d, fill: stripe.fill })))
+    }, (0, import_react46.createElement)("path", { d: stripe.d, fill: stripe.fill })))
   )));
 }
 
 // dist/ui/feedback/Loading.js
-var import_react46 = require("react");
+var import_react47 = require("react");
 var import_client3 = require("react-dom/client");
 
 // dist/ui/feedback/loading-css.generated.js
@@ -10534,11 +10624,11 @@ function textOf(props) {
 }
 function LoadingToast(props) {
   ensureComponentStyles("loading", LOADING_CSS);
-  return (0, import_react46.createElement)("div", { className: "dshpc-loading-toast", role: "status", "aria-live": "polite" }, (0, import_react46.createElement)(Loader, { size: "sm" }), (0, import_react46.createElement)("span", null, textOf(props)));
+  return (0, import_react47.createElement)("div", { className: "dshpc-loading-toast", role: "status", "aria-live": "polite" }, (0, import_react47.createElement)(Loader, { size: "sm" }), (0, import_react47.createElement)("span", null, textOf(props)));
 }
 function LoadingBlock(props) {
   ensureComponentStyles("loading", LOADING_CSS);
-  return (0, import_react46.createElement)("div", { className: "dshpc-loading-block", role: "status", "aria-live": "polite" }, (0, import_react46.createElement)(Loader, { size: "md" }), (0, import_react46.createElement)("span", null, textOf(props)));
+  return (0, import_react47.createElement)("div", { className: "dshpc-loading-block", role: "status", "aria-live": "polite" }, (0, import_react47.createElement)(Loader, { size: "md" }), (0, import_react47.createElement)("span", null, textOf(props)));
 }
 function createLoadingHost() {
   const slot = createLoadingSlot();
@@ -10562,10 +10652,10 @@ function createLoadingHost() {
     ensureComponentStyles("loading", LOADING_CSS, getStyleKit());
     const { request } = state;
     const opacity = Math.min(1, Math.max(0, request.maskOpacity));
-    root.render((0, import_react46.createElement)("div", { className: loadingOverlayClass(request.position) }, request.mask ? (0, import_react46.createElement)("div", {
+    root.render((0, import_react47.createElement)("div", { className: loadingOverlayClass(request.position) }, request.mask ? (0, import_react47.createElement)("div", {
       className: "dshpc-loading-overlay__mask",
       style: { background: `rgba(0, 0, 0, ${opacity})` }
-    }) : null, request.variant === "block" ? (0, import_react46.createElement)(LoadingBlock, { text: request.text, translate: request.translate }) : (0, import_react46.createElement)(LoadingToast, { text: request.text, translate: request.translate })));
+    }) : null, request.variant === "block" ? (0, import_react47.createElement)(LoadingBlock, { text: request.text, translate: request.translate }) : (0, import_react47.createElement)(LoadingToast, { text: request.text, translate: request.translate })));
   }
   return {
     show(request) {
@@ -10596,38 +10686,6 @@ function showLoading(opts) {
 
 // dist/ui/display/LiveText.js
 var import_react48 = require("react");
-
-// dist/ui/infra/ticker.js
-var import_react47 = require("react");
-var tickerListeners = /* @__PURE__ */ new Set();
-var tickerTimer = null;
-var onVisibilityChange = () => {
-  for (const l of [...tickerListeners])
-    l();
-};
-var visibilityBound2 = false;
-function subscribeTicker(cb) {
-  tickerListeners.add(cb);
-  if (tickerTimer === null) {
-    tickerTimer = window.setInterval(() => {
-      for (const l of [...tickerListeners])
-        l();
-    }, 1e3);
-    if (!visibilityBound2 && typeof document !== "undefined") {
-      document.addEventListener("visibilitychange", onVisibilityChange);
-      visibilityBound2 = true;
-    }
-  }
-  return () => {
-    tickerListeners.delete(cb);
-    if (tickerListeners.size === 0 && tickerTimer !== null) {
-      window.clearInterval(tickerTimer);
-      tickerTimer = null;
-    }
-  };
-}
-
-// dist/ui/display/LiveText.js
 function LiveText(props) {
   const [, force] = (0, import_react48.useState)(0);
   const renderRef = (0, import_react48.useRef)(props.render);
@@ -64709,7 +64767,7 @@ var DICT2 = {
     tnNote: "\u672C\u9875\u53EA\u6F14\u793A\u6570\u636E\u9762\uFF1A\u72B6\u6001\u6C60\u3001\u8BA2\u9605\u3001\u4E8B\u4EF6\u603B\u7EBF\u3001\u8DE8\u9875\u540C\u6B65\u4E0E\u7ED3\u675F\u53E5\u67C4\u3002\u4EFB\u52A1\u3001\u6761\u6570\u3001revision\u3001\u65F6\u95F4\u4E0E\u4E8B\u4EF6\u5168\u90E8\u6765\u81EA\u771F\u5B9E API \u8C03\u7528\uFF0C\u6CA1\u6709\u6A21\u62DF\u6570\u636E\u3001\u6CA1\u6709\u5B9A\u65F6\u5668\u3001\u6CA1\u6709\u5360\u4F4D\u884C\u3002\u53EF\u6536\u8D77\u5F39\u7A97\u4E0E\u4E8B\u4EF6\u67E5\u770B\u63A7\u4EF6\u4E0D\u5728\u8FD9\u91CC\uFF0C\u7531\u540E\u7EED\u4EFB\u52A1\u5355\u72EC\u63D0\u4F9B\u3002",
     tnCrossPage: "\u8DE8\u9875\u6F14\u793A\uFF1A\u5728\u53E6\u4E00\u4E2A\u540C\u6E90\u6807\u7B7E\u9875\u6253\u5F00\u672C\u9875\uFF0C\u4E24\u8FB9\u5404\u81EA\u6CE8\u518C\u6216\u7ED3\u675F\u4EFB\u52A1\uFF0C\u5217\u8868\u4E0E\u4E8B\u4EF6\u4F1A\u5373\u65F6\u540C\u6B65\uFF1B\u5173\u6389\u5176\u4E2D\u4E00\u4E2A\u6807\u7B7E\u9875\u53EF\u770B\u5230 peer-left \u4E8B\u4EF6\u3002\u8DE8\u9875\u6761\u76EE\u80FD\u770B\u4E0D\u80FD\u70B9\u3002",
     tnBarTitle: "\u901A\u7528\u5C55\u793A\u680F",
-    tnBarHint: "\u5C01\u88C5\u597D\u7684\u5F62\u6001\uFF1A\u957F\u6761\u4E0E\u53EA\u56FE\u6807\uFF1B\u70B9\u5F00\u662F\u540E\u53F0\u6B63\u5728\u8DD1\u7684\u4EFB\u52A1",
+    tnBarHint: "\u89E6\u53D1\u5668\u7167\u4E0B\u62C9\u6846\u7684\u76AE\uFF1B\u70B9\u5F00\u6BCF\u884C\u6709\u52A8\u4F5C\u6309\u94AE\uFF08\u56FA\u5B9A\u6700\u5C0F\u53F7\uFF1A\u4E0D\u4F20\u8272\u7070\u5E95\u3001\u4F20 color \u6362\u5E95\u8272\uFF0C\u53EA\u4F20 icon \u662F\u6B63\u65B9\u5F62\uFF09\uFF1B\u6BCF\u6B21\u6CE8\u518C\u90FD\u968F\u673A\u751F\u6210 0/1/2 \u9897",
     tnOpsTitle: "\u771F\u5B9E\u64CD\u4F5C\u53F0",
     tnOpsHint: "\u6BCF\u4E2A\u6309\u94AE\u90FD\u8C03\u7528\u771F\u5B9E API\uFF1B\u53F3\u4FA7\u662F\u540C\u4E00\u5957\u8C03\u7528\u7684\u4EE3\u7801",
     tnRegisterReminder: "\u6CE8\u518C\u5230 dsh-task-reminder",
@@ -64737,6 +64795,11 @@ var DICT2 = {
     tnCountLabel: "\u663E\u793A / \u5168\u6C60",
     tnBadgeLocal: "\u672C\u9875\u521B\u5EFA \xB7 \u53EF\u8FD8\u539F",
     tnBadgeRemote: "\u8DE8\u9875\u6761\u76EE \xB7 \u80FD\u770B\u4E0D\u80FD\u70B9",
+    tnActionView: "\u67E5\u770B",
+    tnActionCancel: "\u53D6\u6D88",
+    tnActionShow: "\u663E\u793A",
+    tnActionClick: "\u70B9\u51FB",
+    tnActionRefresh: "\u5237\u65B0",
     secReference: "\u53C2\u8003\u4E0E\u7EA6\u5B9A",
     secActions: "\u52A8\u4F5C",
     secInputs: "\u5F55\u5165",
@@ -64972,7 +65035,7 @@ var DICT2 = {
     tnNote: "This page demos the data plane only: pool, subscription, event bus, cross-page sync and settlement handles. Rows, counts, revision, timestamps and events all come from real API calls \u2014 no mock data, no timers, no placeholder rows. Collapsible dialogs and the event-viewer control are not here; they arrive in separate tasks.",
     tnCrossPage: "Cross-page demo: open this page in another same-origin tab. Register or settle a task on either side and both lists and event streams update immediately; close one tab to see a peer-left event. Cross-page rows are view-only.",
     tnBarTitle: "Ready-made bar",
-    tnBarHint: "Pill and icon-only forms; click to list the running background tasks",
+    tnBarHint: "Trigger follows the dropdown skin; row actions are always the smallest size (grey by default, any color via color, icon-only renders as a square); every registration picks 0/1/2 buttons at random",
     tnOpsTitle: "Live controls",
     tnOpsHint: "Every button calls a real API; the code on the right is that same call",
     tnRegisterReminder: "Register to dsh-task-reminder",
@@ -65000,6 +65063,11 @@ var DICT2 = {
     tnCountLabel: "shown / total",
     tnBadgeLocal: "Created here \xB7 restorable",
     tnBadgeRemote: "Cross-page row \xB7 view only",
+    tnActionView: "View",
+    tnActionCancel: "Cancel",
+    tnActionShow: "Show",
+    tnActionClick: "Click",
+    tnActionRefresh: "Refresh",
     secReference: "Reference",
     secActions: "Actions",
     secInputs: "Inputs",
@@ -68111,12 +68179,12 @@ var docData = {
     },
     "prose": [
       {
-        "zh": "\u5C01\u88C5\u597D\u7684\u5C55\u793A\u680F\uFF1A\u672A\u5C55\u5F00\u662F\u4E00\u9897\u6309\u94AE\uFF0C\u5C55\u5F00\u4E86\u5217\u51FA\u540E\u53F0\u6B63\u5728\u8DD1\u7684\u4EFB\u52A1\u3002\u6570\u636E\u5168\u90E8\u6765\u81EA\u6C60\u672C\u8EAB\uFF08\u9879\u76EE\u7528 `setDefaultTaskProject()` \u8BBE\u4E00\u6B21\uFF09\uFF0C\u4E0D\u9700\u8981\u81EA\u5DF1 `useSyncExternalStore`\u3002\u4E24\u79CD\u5F62\u6001\uFF1A`pill`\uFF08\u56FE\u6807 + \u6587\u5B57 + \u8FD0\u884C\u6570\uFF0C\u9ED8\u8BA4\uFF09\u4E0E `icon`\uFF08\u53EA\u6709\u56FE\u6807\uFF0C\u6709\u4EFB\u52A1\u65F6\u53F3\u4E0A\u89D2\u4E00\u9897\u7EFF\u70B9\uFF09\u3002",
-        "en": "A ready-made bar: a button when collapsed, a list of running background tasks when open. All data comes from the pool itself (set the project once with `setDefaultTaskProject()`); no `useSyncExternalStore` on your side. Two forms: `pill` (icon, label and running count \u2014 the default) and `icon` (icon only, with a green dot while tasks run)."
+        "zh": "\u5C01\u88C5\u597D\u7684\u5C55\u793A\u680F\uFF1A\u672A\u5C55\u5F00\u662F\u4E00\u9897\u6309\u94AE\uFF0C\u5C55\u5F00\u4E86\u5217\u51FA\u540E\u53F0\u6B63\u5728\u8DD1\u7684\u4EFB\u52A1\u3002\u6570\u636E\u5168\u90E8\u6765\u81EA\u6C60\u672C\u8EAB\uFF08\u9879\u76EE\u7528 `setDefaultTaskProject()` \u8BBE\u4E00\u6B21\uFF09\uFF0C\u4E0D\u9700\u8981\u81EA\u5DF1 `useSyncExternalStore`\u3002\u89E6\u53D1\u5668\u4E0E\u4E0B\u62C9\u6846\uFF08Picker\uFF09\u540C\u6B3E\u76AE\uFF1A\u540C\u9AD8\u5EA6\u6863\u3001\u5B57\u53F7\u540C `Button` \u7684 md \u6863\uFF0813px\uFF0Csm \u6863 12px\uFF09\u30011px \u52A0\u91CD\u63CF\u8FB9\u3001md \u5706\u89D2\u3001\u53F3\u4FA7\u4E00\u9897 6px \u4E09\u89D2\u3002\u4E24\u79CD\u5F62\u6001\uFF1A`pill`\uFF08\u56FE\u6807 + \u6587\u5B57 + \u8FD0\u884C\u6570\uFF0C\u9ED8\u8BA4\uFF09\u4E0E `icon`\uFF08\u53EA\u6709\u56FE\u6807\uFF0C\u5BBD\u9AD8\u76F8\u7B49\u5373\u6B63\u65B9\u5F62\uFF0C\u6709\u4EFB\u52A1\u65F6\u53F3\u4E0A\u89D2\u4E00\u9897\u7EFF\u70B9\uFF09\u3002`size` \u4E09\u6863\uFF1Asm(24) / md(28\uFF0C\u9ED8\u8BA4) / lg(32)\u3002",
+        "en": "A ready-made bar: a button when collapsed, a list of running background tasks when open. All data comes from the pool itself (set the project once with `setDefaultTaskProject()`); no `useSyncExternalStore` on your side. The trigger wears the dropdown (Picker) skin: same height steps, the `Button` md font size (13px, 12px on sm), 1px heavy border, md radius, a 6px caret on the right. Two forms: `pill` (icon, label and running count \u2014 the default) and `icon` (icon only, square, with a green dot while tasks run). `size` has three steps: sm (24), md (28, default) and lg (32)."
       },
       {
-        "zh": "\u6BCF\u884C\u662F `ListRow`\uFF1A\u56FE\u6807 + \u6807\u9898 + \u5DF2\u8FD0\u884C\u591A\u4E45\uFF1B\u8BB0\u5F55\u5E26 `actions` \u65F6\u53F3\u4FA7\u51FA\u73B0\u6309\u94AE\uFF0C\u70B9\u5B83\u8C03 `runAction`\uFF08\u65B9\u6CD5\u5728\u521B\u5EFA\u90A3\u6761\u4EFB\u52A1\u7684\u90A3\u4E00\u9875\uFF0C\u8FD9\u91CC\u53EA\u62FF\u5F97\u5230\u6587\u6848\uFF09\u3002\u4EFB\u52A1\u6CA1\u4F20\u56FE\u6807\u5C31\u7528 `defaultIcon`\uFF08\u9ED8\u8BA4 `common.base:info`\uFF09\u3002",
-        "en": "Each row is a `ListRow`: icon, title and how long it has been running; when the record carries `actions`, a button appears and calls `runAction` (the method lives in the creating page, only the label crosses). Tasks without an icon fall back to `defaultIcon` (default `common.base:info`)."
+        "zh": "\u4E0B\u62C9\u91CC\u53EA\u753B\u9762\u677F\u4E00\u5C42\u6846\uFF0C\u884C\u4E0E\u884C\u4E4B\u95F4\u662F\u4E00\u6761\u865A\u7EBF\uFF0C\u884C\u672C\u8EAB\u4E0D\u5E26\u5E95\u8272 / \u63CF\u8FB9\u3002\u884C\u5185\u662F\u56FE\u6807 + \u6807\u9898 + `\u5DF2\u6267\u884C 00:00:01`\uFF08\u6BCF\u79D2\u8DF3\u52A8\uFF0C\u8D70\u6838\u5FC3\u552F\u4E00\u5FC3\u8DF3 `useNowMs`\uFF0C\u4E0D\u53E6\u8D77\u5B9A\u65F6\u5668\uFF09\u3002\u8BB0\u5F55\u5E26 `actions` \u65F6\u53F3\u4FA7\u6309\u987A\u5E8F\u753B\u51FA**\u5168\u90E8**\u6309\u94AE\uFF0C\u70B9\u7B2C i \u9897\u8C03 `runAction(id, i)`\uFF08\u65B9\u6CD5\u5728\u521B\u5EFA\u90A3\u6761\u4EFB\u52A1\u7684\u90A3\u4E00\u9875\uFF0C\u8FD9\u91CC\u53EA\u62FF\u5F97\u5230\u6587\u6848\u4E0E\u989C\u8272\uFF09\uFF1B\u884C\u5185\u6309\u94AE**\u56FA\u5B9A\u6700\u5C0F\u53F7**\uFF08sm\uFF09\uFF0C\u4E0D\u968F\u89E6\u53D1\u5668\u5C3A\u5BF8\u53D8\uFF1B\u4E0D\u4F20\u8272\u662F\u4E2D\u6027\u7070\u5E95\uFF08`secondary`\uFF09\uFF0C`actions[i].color` \u4F20\u4E86\u5C31\u7528\u8BE5\u8272\u5B9E\u5FC3\u5E95 + \u53CD\u8272\u6587\u5B57\uFF08`primary` \u6863\uFF0C\u4E24\u4E3B\u9898\u90FD\u8BFB\u5F97\u6E05\uFF09\uFF1B`actions[i].icon` \u4F20\u56FE\u6807\uFF08`\u5E93\u540D:\u56FE\u6807\u540D`\uFF09\uFF0C\u6CA1\u4F20\uFF08\u6216\u89E3\u6790\u4E0D\u51FA\uFF09\u5C31\u8865 `defaultIcon`\uFF08\u9ED8\u8BA4 CPU\uFF09\uFF0C\u4FDD\u8BC1\u6BCF\u9897\u6309\u94AE\u90FD\u6709\u56FE\u6807\u4F4D\u3001\u6587\u5B57\u8D77\u70B9\u5BF9\u9F50\uFF1B\u53EA\u6709 icon \u6CA1\u6709 label \u65F6\u753B\u6210**\u6B63\u65B9\u5F62**\u56FE\u6807\u94AE\u3002`icon` \u662F\u6D88\u8D39\u7AEF\u6807\u8BC6\u3001\u4E0D\u4FDD\u8BC1\u662F\u5B57\u4F53\u56FE\u6807\u540D\uFF0C\u89E3\u6790\u4E0D\u51FA\u5C31\u56DE\u843D `defaultIcon`\uFF08\u9ED8\u8BA4 `common.base:cpu`\uFF09\u3002\u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u56FE\u6807\u5B57\u5F62\u547C\u5438\uFF08CSS \u52A8\u753B\uFF0C\u65E0\u5B9A\u65F6\u5668\uFF09\u3002",
+        "en": "The panel draws a single frame: a dashed rule between rows, no per-row background or border. Each row shows icon, title and `Running 00:00:01` (ticks every second off the shared ticker `useNowMs`, no timer of its own). When the record carries `actions`, **all** buttons are drawn in order and the i-th one calls `runAction(id, i)` (the method lives in the creating page, only labels and colors cross). In-row buttons are always the smallest size (sm) and never follow the trigger; no color means the neutral filled `secondary`, an action `color` becomes the background with inverse text (`primary` tier), readable in both themes; `actions[i].icon` draws an icon (`lib:name`); without one (or when it cannot be resolved) `defaultIcon` (CPU) fills in, so every button keeps an icon slot and labels line up; an action with an icon but no label renders as a **square** icon button. `icon` is a consumer-side identifier, not necessarily a font icon name; anything unresolvable falls back to `defaultIcon` (default `common.base:cpu`). While tasks run the glyph breathes (CSS animation, no timers)."
       }
     ],
     "api": [
@@ -68130,6 +68198,15 @@ var docData = {
             "desc": {
               "zh": "\u5F62\u6001\uFF1A\u53EA\u56FE\u6807 / \u56FE\u6807 + \u6587\u5B57\u957F\u6761",
               "en": "Form: icon only, or icon plus a text pill"
+            }
+          },
+          {
+            "name": "size",
+            "type": "'sm' | 'md' | 'lg'",
+            "def": "'md'",
+            "desc": {
+              "zh": "\u5C3A\u5BF8\u6863\uFF0824 / 28 / 32\uFF09\uFF1B\u53EA\u56FE\u6807\u5F62\u6001\u5BBD\u9AD8\u76F8\u7B49\uFF0C\u6C38\u8FDC\u662F\u6B63\u65B9\u5F62",
+              "en": "Size step (24 / 28 / 32); the icon-only form is a square"
             }
           },
           {
@@ -68162,7 +68239,7 @@ var docData = {
           {
             "name": "defaultIcon",
             "type": "string",
-            "def": "'common.base:info'",
+            "def": "'common.base:cpu'",
             "desc": {
               "zh": "\u4EFB\u52A1\u6CA1\u5E26\u56FE\u6807\u65F6\u7684\u9ED8\u8BA4\u56FE\u6807\uFF08`\u5E93\u540D:\u56FE\u6807\u540D`\uFF09",
               "en": "Icon used when a task carries none (`lib:name`)"
@@ -68184,7 +68261,7 @@ var docData = {
       {
         "id": "ui-taskbar-example",
         "lang": "tsx",
-        "src": "import { TaskBar, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// app \u5165\u53E3\uFF1A\u9879\u76EE\u8BBE\u4E00\u6B21\uFF0C\u5C55\u793A\u680F\u4E0E notifyTask \u5171\u7528\u540C\u4E00\u4E2A\u9ED8\u8BA4\u9879\u76EE\nsetDefaultTaskProject('dsh-task-reminder')\n\n// \u957F\u6761\u5F62\u6001\uFF1A\u56FE\u6807 + \u6587\u5B57 + \u8FD0\u884C\u6570\uFF1B\u70B9\u5F00\u5217\u51FA\u540E\u53F0\u6B63\u5728\u8DD1\u7684\u4EFB\u52A1\nh(TaskBar, { groups: ['scan'] })\n\n// \u53EA\u56FE\u6807\u5F62\u6001\uFF1A\u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u53F3\u4E0A\u89D2\u4E00\u9897\u7EFF\u70B9\nh(TaskBar, { form: 'icon' })"
+        "src": "import { TaskBar, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// app \u5165\u53E3\uFF1A\u9879\u76EE\u8BBE\u4E00\u6B21\uFF0C\u5C55\u793A\u680F\u4E0E notifyTask \u5171\u7528\u540C\u4E00\u4E2A\u9ED8\u8BA4\u9879\u76EE\nsetDefaultTaskProject('dsh-task-reminder')\n\n// \u957F\u6761\u5F62\u6001\uFF1A\u56FE\u6807 + \u6587\u5B57 + \u8FD0\u884C\u6570\uFF1B\u70B9\u5F00\u5217\u51FA\u540E\u53F0\u6B63\u5728\u8DD1\u7684\u4EFB\u52A1\nh(TaskBar, { groups: ['scan'] })\n\n// \u53EA\u56FE\u6807\u5F62\u6001\uFF1A\u6B63\u65B9\u5F62\uFF08\u5BBD\u9AD8\u76F8\u7B49\uFF09\uFF0C\u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u53F3\u4E0A\u89D2\u4E00\u9897\u7EFF\u70B9\nh(TaskBar, { form: 'icon' })\n\n// \u5C3A\u5BF8\u4E09\u6863\uFF1Asm(24) / md(28\uFF0C\u9ED8\u8BA4) / lg(32)\nh(TaskBar, { form: 'icon', size: 'sm' })\n\n// \u4EFB\u52A1\u6302\u6309\u94AE\uFF1A\u6587\u6848 + \u53EF\u9009\u989C\u8272\uFF08\u4E0D\u4F20\u5C31\u662F\u9ED8\u8BA4\u7070\u5E95\uFF09\uFF0C\u4E00\u884C\u51E0\u9897\u5C31\u753B\u51E0\u9897\nconst handle = notifyTask('\u626B\u63CF\u5DE5\u4F5C\u533A', {\n  group: 'scan',\n  actions: [\n    { label: '\u67E5\u770B', run: () => openScan() },\n    { label: '\u53D6\u6D88', color: '#dc2626', run: () => handle.fail('cancelled') },\n  ],\n})"
       }
     ]
   },
@@ -69971,8 +70048,8 @@ h(SideSheet, {
         "en": "Two channels: the **pool** (`getSnapshot` / `subscribe`, feeds `useSyncExternalStore`) and the **event bus** (`subscribeTaskNotificationEvents`, one-off facts, no history). Use `notifyTask` for rows that appear in the list and can be ended; `notifyMessage` for a one-off announcement that stays out of it."
       },
       {
-        "zh": "\u6309\u94AE\uFF1A\u8981\u7ED9\u540E\u53F0\u6761\u76EE\u52A0\u300C\u62C9\u56DE\u6765\u300D\u8FD9\u7C7B\u64CD\u4F5C\uFF0C\u5C31\u4F20 `actions: [{ label, run }]`\u3002\u65B9\u6CD5\u7559\u5728\u521B\u5EFA\u9875\u5185\u5B58\u91CC\uFF0C\u8BB0\u5F55\u53EA\u5E26\u6587\u6848\uFF0C\u6240\u4EE5\u522B\u7684\u6807\u7B7E\u9875\u4E5F\u753B\u5F97\u51FA\u6309\u94AE\uFF0C\u70B9\u51FB\u4F1A\u53D1\u56DE\u521B\u5EFA\u9875\u6267\u884C\u3002",
-        "en": "Actions: to give a backgrounded row something to do, pass `actions: [{ label, run }]`. The method stays in the creating page's memory and only labels cross pages, so other tabs can render the buttons and a click is executed back on the creating page."
+        "zh": "\u6309\u94AE\uFF1A\u8981\u7ED9\u540E\u53F0\u6761\u76EE\u52A0\u300C\u62C9\u56DE\u6765\u300D\u8FD9\u7C7B\u64CD\u4F5C\uFF0C\u5C31\u4F20 `actions: [{ label?, icon?, color?, run }]`\uFF08`label` \u4E0E `icon` \u81F3\u5C11\u7ED9\u4E00\u4E2A\uFF09\u3002\u65B9\u6CD5\u7559\u5728\u521B\u5EFA\u9875\u5185\u5B58\u91CC\uFF0C\u8BB0\u5F55\u53EA\u5E26\u6587\u6848 / \u56FE\u6807\u6807\u8BC6 / \u989C\u8272\uFF0C\u6240\u4EE5\u522B\u7684\u6807\u7B7E\u9875\u4E5F\u753B\u5F97\u51FA\u6309\u94AE\uFF0C\u70B9\u51FB\u4F1A\u53D1\u56DE\u521B\u5EFA\u9875\u6267\u884C\u3002\u4E00\u6761\u8BB0\u5F55\u53EF\u5E26\u591A\u9897\u6309\u94AE\uFF0C\u5C55\u793A\u65B9\u6309\u987A\u5E8F\u5168\u753B\u51FA\u6765\uFF1B\u53EA\u7ED9 `icon` \u7684\u90A3\u9897\u662F\u6B63\u65B9\u5F62\u56FE\u6807\u94AE\u3002",
+        "en": "Actions: to give a backgrounded row something to do, pass `actions: [{ label?, icon?, color?, run }]` (at least one of `label` and `icon`). The method stays in the creating page's memory and only labels, icon ids and colors cross pages, so other tabs can render the buttons and a click is executed back on the creating page. A record may carry several buttons; the renderer draws them all in order, and an icon-without-label one becomes a square icon button."
       },
       {
         "zh": "\u5176\u4F59\u7EA6\u5B9A\uFF1A`detail` \u6536\u4EFB\u610F JSON \u503C\uFF08\u51FD\u6570\u4E0E\u7C7B\u5B9E\u4F8B\u5F53\u573A\u629B\u9519\uFF09\uFF1B`icon` / `iconSvg` \u53EA\u662F\u5B57\u7B26\u4E32\uFF0C\u6E32\u67D3\u4E0E\u6CE8\u5165\u5B89\u5168\u7531\u6D88\u8D39\u7AEF\u8D1F\u8D23\uFF1B\u4E24\u7EA7\u5206\u7EC4\u7528 `project`\uFF08`setDefaultTaskProject()` \u8BBE\u4E00\u6B21\uFF09+ `group`\uFF08\u7F3A\u7701 `default`\uFF09\u3002",
@@ -70212,17 +70289,17 @@ h(SideSheet, {
             "type": "readonly TaskNotificationAction[]",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6309\u94AE\uFF1A`{ label, run }` \u6570\u7EC4\uFF0Crun \u662F\u533F\u540D\u51FD\u6570\u3001\u4E0D\u8FDB\u6C60\u4E0D\u8FC7\u7EBF\uFF0C\u53EA\u5728\u521B\u5EFA\u9875\u6267\u884C\uFF1Blabel \u4E3A\u7A7A\u6216 run \u4E0D\u662F\u51FD\u6570\u65F6\u6CE8\u518C\u5F53\u573A\u629B\u9519",
-              "en": "Actions: an array of `{ label, run }`; run is an anonymous function that never enters the pool or the wire and runs only on the creating page. An empty label or a non-function run throws at registration"
+              "zh": "\u6309\u94AE\uFF1A`{ label?, icon?, color?, run }` \u6570\u7EC4\uFF0C`label` \u4E0E `icon` \u81F3\u5C11\u7ED9\u4E00\u4E2A\uFF1Brun \u662F\u533F\u540D\u51FD\u6570\u3001\u4E0D\u8FDB\u6C60\u4E0D\u8FC7\u7EBF\uFF0C\u53EA\u5728\u521B\u5EFA\u9875\u6267\u884C\uFF1B`color` \u662F\u4EFB\u610F CSS \u8272\u503C\uFF0C\u4E0D\u4F20\u7531\u5C55\u793A\u65B9\u7528\u9ED8\u8BA4\u6863\uFF1B\u4E24\u8005\u90FD\u7A7A\u3001run \u4E0D\u662F\u51FD\u6570\u6216 color \u4F20\u4E86\u7A7A\u4E32\u65F6\u6CE8\u518C\u5F53\u573A\u629B\u9519",
+              "en": "Actions: an array of `{ label?, icon?, color?, run }` with at least one of label and icon; run is an anonymous function that never enters the pool or the wire and runs only on the creating page. `color` is any CSS color, omitted means the renderer default. Both label and icon empty, a non-function run or a blank color throws at registration"
             }
           },
           {
             "name": "record.actions",
-            "type": "readonly { label: string }[] | undefined",
+            "type": "readonly { label?: string; icon?: string; color?: string }[] | undefined",
             "def": "undefined",
             "desc": {
-              "zh": "\u8DE8\u9875\u53EF\u89C1\u7684\u53EA\u6709\u6309\u94AE\u6587\u6848\uFF0C\u4E0B\u6807\u5373\u52A8\u4F5C id\uFF1B\u6CA1\u6709\u6309\u94AE\u7684\u8BB0\u5F55\u4E0D\u5E26\u8FD9\u4E2A\u5B57\u6BB5",
-              "en": "Only labels cross pages, and the index is the action id; rows without actions carry no such field"
+              "zh": "\u8DE8\u9875\u53EF\u89C1\u7684\u53EA\u6709\u6587\u6848 / \u56FE\u6807\u6807\u8BC6 / \u989C\u8272\uFF0C\u4E0B\u6807\u5373\u52A8\u4F5C id\uFF1B\u6CA1\u6709\u6309\u94AE\u7684\u8BB0\u5F55\u4E0D\u5E26\u8FD9\u4E2A\u5B57\u6BB5",
+              "en": "Only labels, icon ids and colors cross pages, and the index is the action id; rows without actions carry no such field"
             }
           },
           {
@@ -70313,7 +70390,7 @@ h(SideSheet, {
       {
         "id": "bt-actions-example",
         "lang": "ts",
-        "src": "import { notifyTask, taskNotifications } from 'dsh-plugin-core/ui'\n\n// \u2460 \u5F39\u7A97\u8FD9\u8FB9\uFF1A\u6309\u94AE\u540D + \u70B9\u5B83\u5E72\u4EC0\u4E48\u3002run \u5199\u533F\u540D\u51FD\u6570\u5C31\u884C\uFF0C\u4E0D\u7528\u8D77\u540D\nconst handle = notifyTask('\u6536\u5230\u786E\u8BA4', {\n  actions: [\n    { label: '\u91CD\u65B0\u6253\u5F00', run: () => reopenDialog() },\n    { label: '\u77E5\u9053\u4E86', run: () => handle.done() },\n  ],\n})\nhandle.background()\n\n// \u2461 \u901A\u77E5\u4E2D\u5FC3\u8FD9\u8FB9\uFF1A\u6587\u6848\u662F task.actions[i].label\uFF0C\u70B9\u51FB\u6309\u4E0B\u6807\u8C03\n//    \u65B9\u6CD5\u672C\u8EAB\u7559\u5728\u521B\u5EFA\u5B83\u7684\u9875\u9762\u91CC\uFF0C\u4E0D\u4F1A\u968F\u8BB0\u5F55\u4F20\u8FC7\u6765\nconst ok = await taskNotifications.runAction(handle.id, 0)\nif (!ok) showToast('\u8BE5\u4EFB\u52A1\u5DF2\u65E0\u6CD5\u8FD8\u539F')   // showToast \u7531\u8C03\u7528\u65B9\u63D0\u4F9B"
+        "src": "import { notifyTask, taskNotifications } from 'dsh-plugin-core/ui'\n\n// \u2460 \u5F39\u7A97\u8FD9\u8FB9\uFF1A\u6309\u94AE\u540D + \u70B9\u5B83\u5E72\u4EC0\u4E48\u3002run \u5199\u533F\u540D\u51FD\u6570\u5C31\u884C\uFF0C\u4E0D\u7528\u8D77\u540D\n//    color \u53EF\u9009\uFF1A\u4E0D\u4F20\u7528\u5C55\u793A\u65B9\u7684\u9ED8\u8BA4\u6863\uFF08\u7070\u5E95\uFF09\uFF0C\u4F20\u4E86\u5C31\u662F\u8BE5\u6309\u94AE\u7684\u5E95\u8272\n//    icon \u53EF\u9009\uFF1A\u53EA\u7ED9 icon \u4E0D\u7ED9 label\uFF0C\u5C55\u793A\u65B9\u4F1A\u753B\u6210\u6B63\u65B9\u5F62\u56FE\u6807\u94AE\nconst handle = notifyTask('\u6536\u5230\u786E\u8BA4', {\n  actions: [\n    { label: '\u91CD\u65B0\u6253\u5F00', run: () => reopenDialog() },\n    { label: '\u77E5\u9053\u4E86', color: '#16a34a', icon: 'common.base:gou', run: () => handle.done() },\n    { icon: 'common.base:shuaxin', run: () => reload() },\n  ],\n})\nhandle.background()\n\n// \u2461 \u901A\u77E5\u4E2D\u5FC3\u8FD9\u8FB9\uFF1A\u6587\u6848\u662F task.actions[i].label\uFF0C\u70B9\u51FB\u6309\u4E0B\u6807\u8C03\n//    \u65B9\u6CD5\u672C\u8EAB\u7559\u5728\u521B\u5EFA\u5B83\u7684\u9875\u9762\u91CC\uFF0C\u4E0D\u4F1A\u968F\u8BB0\u5F55\u4F20\u8FC7\u6765\nconst ok = await taskNotifications.runAction(handle.id, 0)\nif (!ok) showToast('\u8BE5\u4EFB\u52A1\u5DF2\u65E0\u6CD5\u8FD8\u539F')   // showToast \u7531\u8C03\u7528\u65B9\u63D0\u4F9B"
       },
       {
         "id": "bt-lifecycle-example",
@@ -74734,6 +74811,44 @@ var import_react107 = require("react");
 var DEMO_PROJECT = "dsh-plugin-core-demo";
 var SUB_REMINDER = "reminder";
 var SUB_LEDGER = "ledger";
+var ACTION_PRESETS = [
+  { labelKey: "tnActionView", icon: "common.base:chazhao" },
+  { labelKey: "tnActionClick", icon: "common.base:gou" },
+  { labelKey: "tnActionCancel", icon: "common.base:guanbi" },
+  { labelKey: "tnActionShow", icon: "common.base:info" },
+  { labelKey: "tnActionRefresh", icon: "common.base:shuaxin" }
+];
+var ICON_ONLY_ICONS = ["common.base:shezhi", "common.base:fuzhi", "common.base:shoucang", "common.base:cpu"];
+var ACTION_COLORS = ["#dc2626", "#0ea5e9", "#16a34a", "#7c3aed", "#ea580c", "#0891b2"];
+var TASK_ICONS = ["common.base:chazhao", "common.base:shuju", "common.base:shezhi", "common.base:fenxi"];
+function pickOne(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+function randomActions(ping) {
+  const count4 = Math.floor(Math.random() * 3);
+  const presets = [...ACTION_PRESETS];
+  const iconOnly = [...ICON_ONLY_ICONS];
+  return Array.from({ length: count4 }, () => {
+    const color = Math.random() < 0.5 ? void 0 : pickOne(ACTION_COLORS);
+    if (iconOnly.length > 0 && Math.random() < 0.3) {
+      const icon = iconOnly.splice(Math.floor(Math.random() * iconOnly.length), 1)[0];
+      return { icon, ...color === void 0 ? {} : { color }, run: () => {
+        ping(icon.split(":")[1] ?? icon);
+      } };
+    }
+    const preset = presets.splice(Math.floor(Math.random() * presets.length), 1)[0];
+    const label = t3(preset.labelKey);
+    const withIcon = Math.random() >= 0.3;
+    return {
+      label,
+      ...withIcon ? { icon: preset.icon } : {},
+      ...color === void 0 ? {} : { color },
+      run: () => {
+        ping(label);
+      }
+    };
+  });
+}
 setDefaultTaskProject(DEMO_PROJECT);
 var CODE_SUBSCRIBE = `import { useSyncExternalStore } from 'react'
 import { notifyTask, taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/ui'
@@ -74784,12 +74899,21 @@ function TaskNotificationsPage() {
   const localPending = [...handles.current.values()].filter((handle) => !handle.isSettled).length;
   function register(group, label) {
     serial.current += 1;
-    const handle = notifyTask(`${label} #${serial.current}`, { group, icon: group === SUB_REMINDER ? "base:shijian1" : "base:shuju" });
+    const index3 = serial.current;
+    const icon = Math.random() < 0.5 ? void 0 : pickOne(TASK_ICONS);
+    const ping = (actionLabel) => {
+      notify(`${label} #${index3} \xB7 ${actionLabel}`);
+    };
+    const handle = notifyTask(`${label} #${index3}`, {
+      group,
+      ...icon === void 0 ? {} : { icon },
+      actions: randomActions(ping)
+    });
     handles.current.set(handle.id, handle);
   }
   function broadcast() {
     serial.current += 1;
-    notifyMessage(`notice #${serial.current}`, { group: SUB_REMINDER, icon: "base:gou", level: "success" });
+    notifyMessage(`notice #${serial.current}`, { group: SUB_REMINDER, icon: "common.base:gou", level: "success" });
   }
   function withHandle(task, fn) {
     const handle = handles.current.get(task.id);
@@ -74899,9 +75023,11 @@ function TaskNotificationsPage() {
       (0, import_react107.createElement)(
         "div",
         { style: row },
-        // 同一份池、同一个过滤：长条与只图标两种形态，点开都是后台正在跑的任务
+        // 同一份池、同一个过滤：两种形态 × 中号 / 大号（最小号在这排不合适）
         (0, import_react107.createElement)(TaskBar, { groups }),
-        (0, import_react107.createElement)(TaskBar, { form: "icon", groups })
+        (0, import_react107.createElement)(TaskBar, { size: "lg", groups }),
+        (0, import_react107.createElement)(TaskBar, { form: "icon", groups }),
+        (0, import_react107.createElement)(TaskBar, { form: "icon", size: "lg", groups })
       )
     ),
     (0, import_react107.createElement)(
@@ -75086,7 +75212,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.31"}`],
             [t3("buildDemo"), `v${"0.35.31"}`],
-            [t3("buildStamp"), "261115-170016-131"]
+            [t3("buildStamp"), "261115-201130-075"]
           ].map(
             ([label, value]) => (0, import_react109.createElement)(
               "tr",
@@ -75406,7 +75532,7 @@ function DemoPage() {
           },
           (0, import_react111.createElement)("span", null, `core v${"0.35.31"}`),
           (0, import_react111.createElement)("span", null, `demo v${"0.35.31"}`),
-          (0, import_react111.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-170016-131")
+          (0, import_react111.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-201130-075")
         )
       )
     ),

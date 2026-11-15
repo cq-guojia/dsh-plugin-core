@@ -59,14 +59,24 @@ export type TaskNotificationDetail =
  * —— 与 VS Code 命令表、Chrome 通知按钮同一形态：边界上只走 id 与纯数据。
  */
 export interface TaskNotificationAction {
-  readonly label: string
+  /** 文案；与 `icon` 至少给一个。只给 `icon` 时展示方画成正方形图标钮。 */
+  readonly label?: string
+  /** 图标标识（`库名:图标名`）；与 `label` 至少给一个。 */
+  readonly icon?: string
+  /**
+   * 按钮色（任意 CSS 色值，如 `#dc2626` / `var(--dshpc-business)`）。
+   * 不传 = 用展示方的默认档；传了就是实心底色。跨页只传这个字符串本身。
+   */
+  readonly color?: string
   /** 点击时执行；匿名函数即可。抛错由池捕获并算作本次调用失败。 */
   readonly run: () => void
 }
 
-/** 记录里能跨页的那部分：只有文案。下标即动作 id。 */
+/** 记录里能跨页的那部分：文案 + 图标 + 可选按钮色。下标即动作 id。 */
 export interface TaskNotificationActionInfo {
-  readonly label: string
+  readonly label?: string
+  readonly icon?: string
+  readonly color?: string
 }
 
 /** Plain, structured-cloneable data. No functions, no ReactNode, no components. */
@@ -333,17 +343,33 @@ function assertOptionalText(source: object, keys: readonly string[]): void {
   }
 }
 
-/** 校验按钮并只抽出能跨页的部分（文案）；方法本体由调用方保管。 */
+/** 校验按钮并只抽出能跨页的部分（文案 / 图标 / 颜色）；方法本体由调用方保管。 */
 function normalizeActions(actions?: readonly TaskNotificationAction[]): readonly TaskNotificationActionInfo[] {
   if (actions === undefined) return []
   return actions.map((action) => {
-    if (typeof action.label !== 'string' || action.label.trim() === '') {
-      throw new Error('task notification action label must be a non-empty string')
+    if (action.label !== undefined && typeof action.label !== 'string') {
+      throw new Error('task notification action label must be a string')
+    }
+    if (action.icon !== undefined && typeof action.icon !== 'string') {
+      throw new Error('task notification action icon must be a string')
     }
     if (typeof action.run !== 'function') {
       throw new Error('task notification action run must be a function')
     }
-    return { label: action.label }
+    const label = action.label?.trim() ?? ''
+    const icon = action.icon?.trim() ?? ''
+    // 只有图标也算合法（展示方画成正方形图标钮）；两个都空就没法画，直接拒。
+    if (label === '' && icon === '') {
+      throw new Error('task notification action needs a non-empty label or icon')
+    }
+    if (action.color !== undefined && (typeof action.color !== 'string' || action.color.trim() === '')) {
+      throw new Error('task notification action color must be a non-empty string when provided')
+    }
+    return {
+      ...(label === '' ? {} : { label: action.label }),
+      ...(icon === '' ? {} : { icon: action.icon }),
+      ...(action.color === undefined ? {} : { color: action.color }),
+    }
   })
 }
 
@@ -532,13 +558,18 @@ function cloneDetail(value: TaskNotificationDetail | undefined): TaskNotificatio
 function isActionInfos(value: unknown): value is readonly TaskNotificationActionInfo[] {
   return (
     Array.isArray(value) &&
-    value.every(
-      (item) =>
-        isRecord(item) &&
-        Object.keys(item).length === 1 &&
-        typeof item.label === 'string' &&
-        item.label.trim() !== '',
-    )
+    value.every((item) => {
+      if (!isRecord(item)) return false
+      // 只认 label / icon / color 三个键：别让畸形分片借着体积校验混进池。
+      if (!Object.keys(item).every((key) => key === 'label' || key === 'icon' || key === 'color')) return false
+      if (!isOptionalString(item.label)) return false
+      if (!isOptionalString(item.icon)) return false
+      if (item.color !== undefined && (typeof item.color !== 'string' || item.color.trim() === '')) return false
+      // 文案与图标至少得有一个，否则这颗按钮画不出来。
+      const label = typeof item.label === 'string' ? item.label.trim() : ''
+      const icon = typeof item.icon === 'string' ? item.icon.trim() : ''
+      return label !== '' || icon !== ''
+    })
   )
 }
 

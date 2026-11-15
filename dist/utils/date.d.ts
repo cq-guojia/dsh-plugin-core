@@ -25,8 +25,15 @@ export declare function formatYmd(iso: string, opts?: {
 export declare function formatClock(iso: string | null | undefined, opts?: {
     fallback?: string;
 }): string;
-/** 时长：有小时 ⇒ `H:MM:SS`；不足 1 小时 ⇒ `MM:SS`。负数 / NaN ⇒ `-`。 */
-export declare function formatDurationHms(ms: number): string;
+/**
+ * 时长：有小时 ⇒ `H:MM:SS`；不足 1 小时 ⇒ `MM:SS`。负数 / NaN ⇒ `-`。
+ *
+ * `padHours` 打开后小时位固定两位（`00:00:01`），给「一直在跳」的计时要宽恒定、
+ * 不因进位左右抖动用（如 TaskBar 的已运行时）。
+ */
+export declare function formatDurationHms(ms: number, opts?: {
+    padHours?: boolean;
+}): string;
 /** 两个时刻是否同一天（本机时区）。 */
 export declare function sameCalendarDay(a: Date, b: Date): boolean;
 /**

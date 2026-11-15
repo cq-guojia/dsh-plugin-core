@@ -2811,12 +2811,12 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "封装好的展示栏：未展开是一颗按钮，展开了列出后台正在跑的任务。数据全部来自池本身（项目用 `setDefaultTaskProject()` 设一次），不需要自己 `useSyncExternalStore`。两种形态：`pill`（图标 + 文字 + 运行数，默认）与 `icon`（只有图标，有任务时右上角一颗绿点）。",
-        "en": "A ready-made bar: a button when collapsed, a list of running background tasks when open. All data comes from the pool itself (set the project once with `setDefaultTaskProject()`); no `useSyncExternalStore` on your side. Two forms: `pill` (icon, label and running count — the default) and `icon` (icon only, with a green dot while tasks run)."
+        "zh": "封装好的展示栏：未展开是一颗按钮，展开了列出后台正在跑的任务。数据全部来自池本身（项目用 `setDefaultTaskProject()` 设一次），不需要自己 `useSyncExternalStore`。触发器与下拉框（Picker）同款皮：同高度档、字号同 `Button` 的 md 档（13px，sm 档 12px）、1px 加重描边、md 圆角、右侧一颗 6px 三角。两种形态：`pill`（图标 + 文字 + 运行数，默认）与 `icon`（只有图标，宽高相等即正方形，有任务时右上角一颗绿点）。`size` 三档：sm(24) / md(28，默认) / lg(32)。",
+        "en": "A ready-made bar: a button when collapsed, a list of running background tasks when open. All data comes from the pool itself (set the project once with `setDefaultTaskProject()`); no `useSyncExternalStore` on your side. The trigger wears the dropdown (Picker) skin: same height steps, the `Button` md font size (13px, 12px on sm), 1px heavy border, md radius, a 6px caret on the right. Two forms: `pill` (icon, label and running count — the default) and `icon` (icon only, square, with a green dot while tasks run). `size` has three steps: sm (24), md (28, default) and lg (32)."
       },
       {
-        "zh": "每行是 `ListRow`：图标 + 标题 + 已运行多久；记录带 `actions` 时右侧出现按钮，点它调 `runAction`（方法在创建那条任务的那一页，这里只拿得到文案）。任务没传图标就用 `defaultIcon`（默认 `common.base:info`）。",
-        "en": "Each row is a `ListRow`: icon, title and how long it has been running; when the record carries `actions`, a button appears and calls `runAction` (the method lives in the creating page, only the label crosses). Tasks without an icon fall back to `defaultIcon` (default `common.base:info`)."
+        "zh": "下拉里只画面板一层框，行与行之间是一条虚线，行本身不带底色 / 描边。行内是图标 + 标题 + `已执行 00:00:01`（每秒跳动，走核心唯一心跳 `useNowMs`，不另起定时器）。记录带 `actions` 时右侧按顺序画出**全部**按钮，点第 i 颗调 `runAction(id, i)`（方法在创建那条任务的那一页，这里只拿得到文案与颜色）；行内按钮**固定最小号**（sm），不随触发器尺寸变；不传色是中性灰底（`secondary`），`actions[i].color` 传了就用该色实心底 + 反色文字（`primary` 档，两主题都读得清）；`actions[i].icon` 传图标（`库名:图标名`），没传（或解析不出）就补 `defaultIcon`（默认 CPU），保证每颗按钮都有图标位、文字起点对齐；只有 icon 没有 label 时画成**正方形**图标钮。`icon` 是消费端标识、不保证是字体图标名，解析不出就回落 `defaultIcon`（默认 `common.base:cpu`）。有任务在跑时图标字形呼吸（CSS 动画，无定时器）。",
+        "en": "The panel draws a single frame: a dashed rule between rows, no per-row background or border. Each row shows icon, title and `Running 00:00:01` (ticks every second off the shared ticker `useNowMs`, no timer of its own). When the record carries `actions`, **all** buttons are drawn in order and the i-th one calls `runAction(id, i)` (the method lives in the creating page, only labels and colors cross). In-row buttons are always the smallest size (sm) and never follow the trigger; no color means the neutral filled `secondary`, an action `color` becomes the background with inverse text (`primary` tier), readable in both themes; `actions[i].icon` draws an icon (`lib:name`); without one (or when it cannot be resolved) `defaultIcon` (CPU) fills in, so every button keeps an icon slot and labels line up; an action with an icon but no label renders as a **square** icon button. `icon` is a consumer-side identifier, not necessarily a font icon name; anything unresolvable falls back to `defaultIcon` (default `common.base:cpu`). While tasks run the glyph breathes (CSS animation, no timers)."
       }
     ],
     "api": [
@@ -2830,6 +2830,15 @@ export const docData = {
             "desc": {
               "zh": "形态：只图标 / 图标 + 文字长条",
               "en": "Form: icon only, or icon plus a text pill"
+            }
+          },
+          {
+            "name": "size",
+            "type": "'sm' | 'md' | 'lg'",
+            "def": "'md'",
+            "desc": {
+              "zh": "尺寸档（24 / 28 / 32）；只图标形态宽高相等，永远是正方形",
+              "en": "Size step (24 / 28 / 32); the icon-only form is a square"
             }
           },
           {
@@ -2862,7 +2871,7 @@ export const docData = {
           {
             "name": "defaultIcon",
             "type": "string",
-            "def": "'common.base:info'",
+            "def": "'common.base:cpu'",
             "desc": {
               "zh": "任务没带图标时的默认图标（`库名:图标名`）",
               "en": "Icon used when a task carries none (`lib:name`)"
@@ -2884,7 +2893,7 @@ export const docData = {
       {
         "id": "ui-taskbar-example",
         "lang": "tsx",
-        "src": "import { TaskBar, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// app 入口：项目设一次，展示栏与 notifyTask 共用同一个默认项目\nsetDefaultTaskProject('dsh-task-reminder')\n\n// 长条形态：图标 + 文字 + 运行数；点开列出后台正在跑的任务\nh(TaskBar, { groups: ['scan'] })\n\n// 只图标形态：有任务在跑时右上角一颗绿点\nh(TaskBar, { form: 'icon' })"
+        "src": "import { TaskBar, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// app 入口：项目设一次，展示栏与 notifyTask 共用同一个默认项目\nsetDefaultTaskProject('dsh-task-reminder')\n\n// 长条形态：图标 + 文字 + 运行数；点开列出后台正在跑的任务\nh(TaskBar, { groups: ['scan'] })\n\n// 只图标形态：正方形（宽高相等），有任务在跑时右上角一颗绿点\nh(TaskBar, { form: 'icon' })\n\n// 尺寸三档：sm(24) / md(28，默认) / lg(32)\nh(TaskBar, { form: 'icon', size: 'sm' })\n\n// 任务挂按钮：文案 + 可选颜色（不传就是默认灰底），一行几颗就画几颗\nconst handle = notifyTask('扫描工作区', {\n  group: 'scan',\n  actions: [\n    { label: '查看', run: () => openScan() },\n    { label: '取消', color: '#dc2626', run: () => handle.fail('cancelled') },\n  ],\n})"
       }
     ]
   },
@@ -4660,8 +4669,8 @@ export const docData = {
         "en": "Two channels: the **pool** (`getSnapshot` / `subscribe`, feeds `useSyncExternalStore`) and the **event bus** (`subscribeTaskNotificationEvents`, one-off facts, no history). Use `notifyTask` for rows that appear in the list and can be ended; `notifyMessage` for a one-off announcement that stays out of it."
       },
       {
-        "zh": "按钮：要给后台条目加「拉回来」这类操作，就传 `actions: [{ label, run }]`。方法留在创建页内存里，记录只带文案，所以别的标签页也画得出按钮，点击会发回创建页执行。",
-        "en": "Actions: to give a backgrounded row something to do, pass `actions: [{ label, run }]`. The method stays in the creating page's memory and only labels cross pages, so other tabs can render the buttons and a click is executed back on the creating page."
+        "zh": "按钮：要给后台条目加「拉回来」这类操作，就传 `actions: [{ label?, icon?, color?, run }]`（`label` 与 `icon` 至少给一个）。方法留在创建页内存里，记录只带文案 / 图标标识 / 颜色，所以别的标签页也画得出按钮，点击会发回创建页执行。一条记录可带多颗按钮，展示方按顺序全画出来；只给 `icon` 的那颗是正方形图标钮。",
+        "en": "Actions: to give a backgrounded row something to do, pass `actions: [{ label?, icon?, color?, run }]` (at least one of `label` and `icon`). The method stays in the creating page's memory and only labels, icon ids and colors cross pages, so other tabs can render the buttons and a click is executed back on the creating page. A record may carry several buttons; the renderer draws them all in order, and an icon-without-label one becomes a square icon button."
       },
       {
         "zh": "其余约定：`detail` 收任意 JSON 值（函数与类实例当场抛错）；`icon` / `iconSvg` 只是字符串，渲染与注入安全由消费端负责；两级分组用 `project`（`setDefaultTaskProject()` 设一次）+ `group`（缺省 `default`）。",
@@ -4901,17 +4910,17 @@ export const docData = {
             "type": "readonly TaskNotificationAction[]",
             "def": "—",
             "desc": {
-              "zh": "按钮：`{ label, run }` 数组，run 是匿名函数、不进池不过线，只在创建页执行；label 为空或 run 不是函数时注册当场抛错",
-              "en": "Actions: an array of `{ label, run }`; run is an anonymous function that never enters the pool or the wire and runs only on the creating page. An empty label or a non-function run throws at registration"
+              "zh": "按钮：`{ label?, icon?, color?, run }` 数组，`label` 与 `icon` 至少给一个；run 是匿名函数、不进池不过线，只在创建页执行；`color` 是任意 CSS 色值，不传由展示方用默认档；两者都空、run 不是函数或 color 传了空串时注册当场抛错",
+              "en": "Actions: an array of `{ label?, icon?, color?, run }` with at least one of label and icon; run is an anonymous function that never enters the pool or the wire and runs only on the creating page. `color` is any CSS color, omitted means the renderer default. Both label and icon empty, a non-function run or a blank color throws at registration"
             }
           },
           {
             "name": "record.actions",
-            "type": "readonly { label: string }[] | undefined",
+            "type": "readonly { label?: string; icon?: string; color?: string }[] | undefined",
             "def": "undefined",
             "desc": {
-              "zh": "跨页可见的只有按钮文案，下标即动作 id；没有按钮的记录不带这个字段",
-              "en": "Only labels cross pages, and the index is the action id; rows without actions carry no such field"
+              "zh": "跨页可见的只有文案 / 图标标识 / 颜色，下标即动作 id；没有按钮的记录不带这个字段",
+              "en": "Only labels, icon ids and colors cross pages, and the index is the action id; rows without actions carry no such field"
             }
           },
           {
@@ -5002,7 +5011,7 @@ export const docData = {
       {
         "id": "bt-actions-example",
         "lang": "ts",
-        "src": "import { notifyTask, taskNotifications } from 'dsh-plugin-core/ui'\n\n// ① 弹窗这边：按钮名 + 点它干什么。run 写匿名函数就行，不用起名\nconst handle = notifyTask('收到确认', {\n  actions: [\n    { label: '重新打开', run: () => reopenDialog() },\n    { label: '知道了', run: () => handle.done() },\n  ],\n})\nhandle.background()\n\n// ② 通知中心这边：文案是 task.actions[i].label，点击按下标调\n//    方法本身留在创建它的页面里，不会随记录传过来\nconst ok = await taskNotifications.runAction(handle.id, 0)\nif (!ok) showToast('该任务已无法还原')   // showToast 由调用方提供"
+        "src": "import { notifyTask, taskNotifications } from 'dsh-plugin-core/ui'\n\n// ① 弹窗这边：按钮名 + 点它干什么。run 写匿名函数就行，不用起名\n//    color 可选：不传用展示方的默认档（灰底），传了就是该按钮的底色\n//    icon 可选：只给 icon 不给 label，展示方会画成正方形图标钮\nconst handle = notifyTask('收到确认', {\n  actions: [\n    { label: '重新打开', run: () => reopenDialog() },\n    { label: '知道了', color: '#16a34a', icon: 'common.base:gou', run: () => handle.done() },\n    { icon: 'common.base:shuaxin', run: () => reload() },\n  ],\n})\nhandle.background()\n\n// ② 通知中心这边：文案是 task.actions[i].label，点击按下标调\n//    方法本身留在创建它的页面里，不会随记录传过来\nconst ok = await taskNotifications.runAction(handle.id, 0)\nif (!ok) showToast('该任务已无法还原')   // showToast 由调用方提供"
       },
       {
         "id": "bt-lifecycle-example",

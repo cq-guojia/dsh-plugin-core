@@ -2,6 +2,7 @@ import { createElement as h, useEffect, useRef, useState, useSyncExternalStore }
 import {
   Button,
   ListRow,
+  notify,
   notifyMessage,
   notifyTask,
   setDefaultTaskProject,
@@ -9,6 +10,7 @@ import {
   selectTaskNotifications,
   subscribeTaskNotificationEvents,
   TaskBar,
+  type TaskNotificationAction,
   type TaskNotificationDetail,
   type TaskNotificationEvent,
   type TaskNotificationHandle,
@@ -29,6 +31,58 @@ import { t } from '../i18n.js'
 const DEMO_PROJECT = 'dsh-plugin-core-demo'
 const SUB_REMINDER = 'reminder'
 const SUB_LEDGER = 'ledger'
+
+/**
+ * 演示用的按钮组：文案与图标**成对**给，别随机拼出「✕ 查看」这种错配。
+ * 同一个任务里按组取、取过的组不再用，所以一行不会出现两颗同名按钮。
+ */
+const ACTION_PRESETS = [
+  { labelKey: 'tnActionView', icon: 'common.base:chazhao' },
+  { labelKey: 'tnActionClick', icon: 'common.base:gou' },
+  { labelKey: 'tnActionCancel', icon: 'common.base:guanbi' },
+  { labelKey: 'tnActionShow', icon: 'common.base:info' },
+  { labelKey: 'tnActionRefresh', icon: 'common.base:shuaxin' },
+] as const
+/** 纯图标按钮（正方形）的候选。 */
+const ICON_ONLY_ICONS = ['common.base:shezhi', 'common.base:fuzhi', 'common.base:shoucang', 'common.base:cpu'] as const
+const ACTION_COLORS = ['#dc2626', '#0ea5e9', '#16a34a', '#7c3aed', '#ea580c', '#0891b2'] as const
+/** 任务自身的图标也随机，别每次都是同一颗。 */
+const TASK_ICONS = ['common.base:chazhao', 'common.base:shuju', 'common.base:shezhi', 'common.base:fenxi'] as const
+
+function pickOne<T>(list: readonly T[]): T {
+  return list[Math.floor(Math.random() * list.length)]
+}
+
+/**
+ * 每次注册随机造 0 / 1 / 2 颗按钮：数量随机（含「一颗都没有」）、文案随机、
+ * 颜色一半带一半不带、约三成只有图标没有文案（展示成正方形图标钮）。
+ * 点任一按钮都在创建页执行并弹 toast，能看出点的是哪一颗。
+ */
+function randomActions(ping: (text: string) => void): TaskNotificationAction[] {
+  const count = Math.floor(Math.random() * 3)
+  // 取过就从候选里删掉：同行不会出现两颗同样文字 / 同样图标的按钮。
+  const presets = [...ACTION_PRESETS]
+  const iconOnly = [...ICON_ONLY_ICONS]
+  return Array.from({ length: count }, () => {
+    const color = Math.random() < 0.5 ? undefined : pickOne(ACTION_COLORS)
+    // 三成做成纯图标按钮（正方形）
+    if (iconOnly.length > 0 && Math.random() < 0.3) {
+      const icon = iconOnly.splice(Math.floor(Math.random() * iconOnly.length), 1)[0]
+      // 纯图标按钮没有文案，toast 里就报「哪颗字形被点了」
+      return { icon, ...(color === undefined ? {} : { color }), run: () => { ping(icon.split(':')[1] ?? icon) } }
+    }
+    const preset = presets.splice(Math.floor(Math.random() * presets.length), 1)[0]
+    const label = t(preset.labelKey)
+    // 三成的文字按钮故意不传 icon：展示方补默认的 CPU 图标，文字起点照样对齐。
+    const withIcon = Math.random() >= 0.3
+    return {
+      label,
+      ...(withIcon ? { icon: preset.icon } : {}),
+      ...(color === undefined ? {} : { color }),
+      run: () => { ping(label) },
+    }
+  })
+}
 
 // 和真实插件一样：项目在入口处设置一次，之后只写二级分组
 setDefaultTaskProject(DEMO_PROJECT)
@@ -97,14 +151,23 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
 
   function register(group: string, label: string): void {
     serial.current += 1
-    const handle = notifyTask(`${label} #${serial.current}`, { group, icon: group === SUB_REMINDER ? 'base:shijian1' : 'base:shuju' })
+    const index = serial.current
+    // 一半任务带自己的图标、一半不带：不带的那行会回落本栏默认的 CPU 图标。
+    const icon = Math.random() < 0.5 ? undefined : pickOne(TASK_ICONS)
+    const ping = (actionLabel: string): void => { notify(`${label} #${index} · ${actionLabel}`) }
+    // 每次点注册都重新随机 0 / 1 / 2 颗按钮：各种文案、各种颜色、也可能只有图标。
+    const handle = notifyTask(`${label} #${index}`, {
+      group,
+      ...(icon === undefined ? {} : { icon }),
+      actions: randomActions(ping),
+    })
     handles.current.set(handle.id, handle)
   }
 
   /** 纯广播：列表不会多一行再少一行，只在事件区看到。 */
   function broadcast(): void {
     serial.current += 1
-    notifyMessage(`notice #${serial.current}`, { group: SUB_REMINDER, icon: 'base:gou', level: 'success' })
+    notifyMessage(`notice #${serial.current}`, { group: SUB_REMINDER, icon: 'common.base:gou', level: 'success' })
   }
 
   /** 每条任务按自己的 id 找句柄，互不覆盖；跨页条目没有本页句柄，不给按钮。 */
@@ -230,9 +293,11 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
       h(
         'div',
         { style: row },
-        // 同一份池、同一个过滤：长条与只图标两种形态，点开都是后台正在跑的任务
+        // 同一份池、同一个过滤：两种形态 × 中号 / 大号（最小号在这排不合适）
         h(TaskBar, { groups }),
+        h(TaskBar, { size: 'lg', groups }),
         h(TaskBar, { form: 'icon', groups }),
+        h(TaskBar, { form: 'icon', size: 'lg', groups }),
       ),
     ),
     h(
