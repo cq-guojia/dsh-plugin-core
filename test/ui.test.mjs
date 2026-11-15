@@ -5,7 +5,7 @@ import { createStyleKit } from '../dist/design/index.js'
 import { SEGMENTED_CSS } from '../dist/ui/inputs/segmented-css.generated.js'
 import { FIELD_CSS } from '../dist/ui/inputs/field-css.generated.js'
 import { BUTTON_CSS } from '../dist/ui/actions/button-css.generated.js'
-import { AlertModal, Button, Chip, ConfirmModal, IconButton, Input, InputGroup, Modal, Segmented, SideSheet, SplitGroup } from '../dist/ui/index.js'
+import { AlertModal, Button, Chip, ConfirmModal, Input, InputGroup, Modal, Segmented, SideSheet, SplitGroup } from '../dist/ui/index.js'
 import { isSuccess, isThenable } from '../dist/ui/infra/thenable.js'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -73,9 +73,9 @@ test('InputGroup 拼成一体：标题 → 输入框 → 撤销 → 按钮，顺
   const undoAt = html.indexOf('aria-label="撤销"')
   assert.ok(undoAt > html.indexOf('dshpc-input') && undoAt < html.indexOf('返回'), '撤销钮在动作之前')
   assert.match(html, /<button[^>]*disabled[^>]*aria-label="撤销"|aria-label="撤销"[^>]*disabled/, '没历史时撤销不可点')
-  // 只有图标的动作退化成 IconButton（正方形），文字动作仍走 Button
+  // 只有图标的动作自动变正方形（同一个 Button），文字动作照常带文案
   assert.match(html, /dshpc-btn--ghost/)
-  assert.match(html, /aria-label="提交"[^>]*class="dshpc-iconbtn/)
+  assert.match(html, /aria-label="提交"[^>]*class="[^"]*dshpc-btn--icon-only/)
   // 语义色走 Button 现成的档：默认 info，传什么档就是什么档
   const dflt = renderToStaticMarkup(createElement(InputGroup, {
     value: '', onChange() {}, actions: [{ label: '默认', onClick() {} }],
@@ -170,17 +170,15 @@ test('Button 宽度三轴互斥：固定宽优先，min/max 自动失效', () =>
   assert.match(maxOnly, /style="[^"]*max-width:100px/)
 })
 
-test('dense：两个按钮都只加修饰类，尺寸档与高度不变', () => {
+test('dense：有文字 / 纯图标都只加修饰类，尺寸档与高度不变', () => {
   const icon = createElement('i', null, 'I')
   const btn = renderToStaticMarkup(createElement(Button, { size: 'sm', dense: true, icon }, '文件'))
   assert.match(btn, /dshpc-btn--outline dshpc-btn--sm dshpc-btn--dense/, 'dense 是修饰类，不动 size 档')
-  const icb = renderToStaticMarkup(createElement(IconButton, { size: 'sm', dense: true, icon, label: '文件' }))
-  assert.match(icb, /dshpc-iconbtn--plain dshpc-iconbtn--sm dshpc-iconbtn--dense/)
+  const icb = renderToStaticMarkup(createElement(Button, { variant: 'ghost', size: 'sm', dense: true, icon, label: '文件' }))
+  assert.match(icb, /dshpc-btn--ghost dshpc-btn--sm dshpc-btn--dense dshpc-btn--icon-only/)
   assert.ok(!renderToStaticMarkup(createElement(Button, null, '文件')).includes('dense'), '默认不带 dense')
   assert.match(BUTTON_CSS, /\.dshpc-btn--dense\{--btn-pad:6px/)
   assert.match(BUTTON_CSS, /\.dshpc-btn--dense \.dshpc-btn__icon,.dshpc-btn--dense \.dshpc-btn__icon-end\{font-size:1\.25em/)
-  assert.match(BUTTON_CSS, /\.dshpc-iconbtn\.dshpc-iconbtn--dense svg\{width:1\.25em;height:1\.25em;\}/)
-  assert.ok(!/dshpc-iconbtn--dense > svg/.test(BUTTON_CSS), '不能用直接子选择器：官方图标外层可能有 wrapper，dense 会漏掉')
 })
 
 test('link 档内容层包住图标与文字，其余档 DOM 不变', () => {
@@ -194,13 +192,19 @@ test('link 档内容层包住图标与文字，其余档 DOM 不变', () => {
   assert.ok(!plain.includes('dshpc-btn__content'), '非 link 档不该多一层 DOM')
 })
 
-test('IconButton 图标不被 flex 压扁：padding:0 + svg flex:none', () => {
-  // 宿主实测：svg 是按钮的直接 flex item，flex-shrink:1 时被默认内距挤成 10px 宽，
-  // height 却照样随 dense 变 15px ⇒ 加号被压成窄条。那是布局收缩，不是层叠优先级，
-  // 所以给 width 加 !important 无效；必须禁止收缩并清掉宿主 button 默认内距。
-  assert.match(BUTTON_CSS, /\.dshpc-iconbtn\{[^}]*padding:0;/, '图标钮必须显式 padding:0')
-  assert.match(BUTTON_CSS, /\.dshpc-iconbtn svg\{[^}]*flex:none;/, 'svg 必须 flex:none，否则 width 会被布局压掉')
-  assert.ok(!/dshpc-iconbtn--dense svg\{[^}]*!important/.test(BUTTON_CSS), 'dense 靠层叠优先级就够，不需要 !important')
+test('纯图标钮 = 正方形：无 children 自动加 --icon-only，内距归零、边长吃档位变量', () => {
+  const icon = createElement('i', null, 'I')
+  const square = renderToStaticMarkup(createElement(Button, { icon, label: '刷新' }))
+  assert.match(square, /class="[^"]*dshpc-btn--icon-only/, '没有 children 就自动正方形')
+  assert.match(square, /aria-label="刷新"/, 'label 顶上无障碍名')
+  const withText = renderToStaticMarkup(createElement(Button, { icon }, '刷新'))
+  assert.ok(!withText.includes('dshpc-btn--icon-only'), '有文字就不是正方形')
+  assert.match(BUTTON_CSS, /\.dshpc-btn--icon-only\{[^}]*padding:0;/, '图标钮必须显式 padding:0')
+  assert.match(BUTTON_CSS, /\.dshpc-btn--icon-only\{[^}]*width:var\(--btn-square\)/, '边长吃同档高度变量')
+  assert.match(BUTTON_CSS, /\.dshpc-btn--sm\{[^}]*--btn-square:var\(--dshpc-control-h-sm\)/)
+  assert.match(BUTTON_CSS, /\.dshpc-btn--md\{[^}]*--btn-square:var\(--dshpc-control-h-md\)/)
+  assert.match(BUTTON_CSS, /\.dshpc-btn--lg\{[^}]*--btn-square:var\(--dshpc-control-h-lg\)/)
+  assert.ok(!/dshpc-iconbtn/.test(BUTTON_CSS), '独立的图标钮皮肤必须删干净')
 })
 
 test('Button 最大宽 + 纯文字标签：包 MarqueeText 折叠省略号', () => {
@@ -275,7 +279,7 @@ test('Button 受控 loading（别处刷新也能点亮它）：转圈 + 禁用�
   const busy = renderToStaticMarkup(createElement(Button, { loading: true }, '保存'))
   assert.ok(busy.includes('dshpc-loader'), '受控 loading 必须转圈')
   assert.ok(busy.includes('disabled'), '受控 loading 必须禁用')
-  assert.ok(busy.includes('aria-busy="true"'), '要有文字也照样声明正在忙（与 IconButton 一致）')
+  assert.ok(busy.includes('aria-busy="true"'), '要有文字也照样声明正在忙')
   assert.ok(!idle.includes('aria-busy'), '不转时不带 aria-busy')
 })
 
@@ -291,13 +295,13 @@ test('Button 转圈时两个图标位都让位，只留转圈 + 文字', () => {
   assert.ok(busy.includes('刷新'), '文字要留着')
 })
 
-test('IconButton 加载中：图标换成小圈 + 禁用，无障碍名与在忙状态都在', () => {
+test('纯图标钮加载中：图标换成小圈 + 禁用，无障碍名与在忙状态都在', () => {
   const icon = createElement('i', null, 'REFRESH')
-  const idle = renderToStaticMarkup(createElement(IconButton, { icon, label: '刷新' }))
+  const idle = renderToStaticMarkup(createElement(Button, { icon, label: '刷新' }))
   assert.ok(idle.includes('REFRESH'), '不转时图标在')
   assert.ok(!idle.includes('dshpc-loader'), '不转时没有圈')
 
-  const busy = renderToStaticMarkup(createElement(IconButton, { icon, label: '刷新', loading: true }))
+  const busy = renderToStaticMarkup(createElement(Button, { icon, label: '刷新', loading: true }))
   assert.ok(!busy.includes('REFRESH'), '图标位必须被转圈顶替')
   assert.ok(busy.includes('dshpc-loader'), '必须转圈')
   assert.ok(busy.includes('disabled'), '加载中必须禁用')

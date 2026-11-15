@@ -32,7 +32,7 @@ export { clampPage, pageCountOf, pageItems, pageRange, } from './navigation/pagi
 export { headerRows, isLeafColumn, isTableCellSpec, leafColumns, tableDepth, } from './display/table-logic.js';
 export { showToast, notify, connectToasts } from './feedback/notify.js';
 export { mountToasts } from './feedback/Toast.js';
-export { Button, IconButton } from './actions/Button.js';
+export { Button } from './actions/Button.js';
 export { Segmented } from './inputs/Segmented.js';
 export { SplitGroup } from './layout/SplitGroup.js';
 export { InputGroup, } from './inputs/InputGroup.js';

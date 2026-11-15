@@ -8,7 +8,7 @@
  * 的 token 档（space-2 / space-3）——用户反馈兄弟那套「左右比上下宽」在这两处窗口里不对称。
  * 行级内距（__row / __row-note / __banner）仍是兄弟数值，未动。
  *
- * 控件：能核心就核心（面包屑 = Button ghost、行尾 = Button outline、展开 / 图标 = IconButton、
+ * 控件：能核心就核心（面包屑 = Button ghost、行尾 = Button outline、展开 / 图标 = Button ghost、
  * 分段 = Segmented、文字 = MarqueeText）。核心控件自带的 padding / 高度 / 皮肤在本文件里
  * **按兄弟数值覆盖**（选择器带 .dshpc-fb 前缀提高特异性，确保盖得住控件默认值）。
  */
@@ -122,7 +122,7 @@
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 
-/* 展开开关：核心 IconButton，命中位 20×20 + 展开时转 90°（兄弟 .dsh-tdt-sv-tree-toggle{,-open}）。 */
+/* 展开开关：核心 Button 的纯图标形态，命中位 20×20 + 展开时转 90°（兄弟 .dsh-tdt-sv-tree-toggle{,-open}）。 */
 .dshpc-fb .dshpc-fb__row-toggle{
   appearance:none;background:0 0;border:none;flex:none;
   width:20px;height:20px;padding:0;margin:0;border-radius:var(--dshpc-radius-sm);

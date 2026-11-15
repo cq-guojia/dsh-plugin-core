@@ -112,7 +112,7 @@ Everything is built from tokens, takes its data through props, and follows the h
 #### Actions
 
 - `Button` — 18 appearance tiers (solid / outline / bare: `primary`, `secondary`, `danger`, `success`, `warning`, `info`, `outline`, `danger-outline`, `ghost`, `link`, plus the eight extended colors), three heights (24 / 28 / 32), leading and trailing icons, fixed / min / max width with marquee overflow, and automatic loading: return a Promise from `onClick` and the button spins, disables and restores itself — including on rejection.
-- `IconButton` — icon-only variant of the same, with the accessible name enforced.
+- Icon buttons are not a separate control: omit `children` on the same `Button` and it squares itself, with `label` (accessible name) required.
 - `Segmented` — single or multiple selection, optional 1px frame, per-item icon / count / badge, tone-colored selection.
 
 #### Inputs

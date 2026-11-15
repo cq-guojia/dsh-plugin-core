@@ -129,7 +129,7 @@ test('CSS 常量之间不得有同名选择器（含 @media 内；否则胜负�
   assert.deepEqual(clashes, [], `同名选择器跨 CSS 常量重复定义：\n${clashes.join('\n')}`)
 })
 
-test('chip 只有标签一套皮肤，图标按钮走 iconbtn', () => {
+test('chip 只有标签一套皮肤，图标按钮走 Button 的纯图标形态', () => {
   const holders = Object.entries(CONSTANTS)
     .filter(([, css]) => css.includes('.dshpc-chip'))
     .map(([name]) => name)
@@ -518,9 +518,9 @@ test('CodeViewer 在 flex 容器里撑满主轴（复制钮贴面板右缘）', 
   assert.match(CODE_VIEWER_CSS, /\.dshpc-cv\{[^}]*min-width:0/)
 })
 
-// 2026-11-08 真机反馈：__copy 曾写死 svg 16px，比核心 IconButton 的 1em 大一档。
-// 复制钮复用 IconButton ⇒ 图标尺寸只能由 button.css 的 .dshpc-iconbtn svg 决定。
-test('CodeViewer 复制钮不单独放大图标（跟随核心 IconButton 的 1em）', () => {
+// 2026-11-08 真机反馈：__copy 曾写死 svg 16px，比核心 1em 大一档。
+// 复制钮复用 Button 的纯图标形态 ⇒ 图标尺寸只能由 button.css 的 1em 规则决定。
+test('CodeViewer 复制钮不单独放大图标（跟随核心 1em）', () => {
   assert.ok(
     !/\.dshpc-cv__copy svg\{[^}]*(width|height):/.test(CODE_VIEWER_CSS),
     'code-viewer.css 不许覆盖复制钮 svg 尺寸：图标大小只认核心 1em',
@@ -561,7 +561,7 @@ test('按钮图标基线是 1em（与文字等大），dense 对字体图标同�
   )
   assert.match(
     BUTTON_CSS,
-    /\.dshpc-iconbtn\.dshpc-iconbtn--dense > \.dshpc-icon\{font-size:1\.25em/,
+    /\.dshpc-btn--dense \.dshpc-btn__icon[^{]*\{font-size:1\.25em/,
     'dense 放大档必须同时覆盖字体图标，不能只管 svg',
   )
 })

@@ -12,7 +12,6 @@ import {
   Checkbox,
   Chip,
   FieldHint,
-  IconButton,
   Input,
   InputGroup,
   LiveText,
@@ -218,8 +217,8 @@ const CODE_BTN_SIZE = `<Button size="sm" variant="outline" icon={<Icon name="com
 <Button variant="outline" iconRight={<Icon name="common.base:move-down"  />}>更多</Button>
 <Button variant="primary" block icon={<Icon name="common.base:gou"  />}>撑满父宽</Button>
 
-// 纯图标钮：label 是必填的无障碍名（同时作 title）
-<IconButton icon={<Icon name="common.base:jia"  />} label="plus" />`
+// 纯图标钮：不传 children 就自动正方形，label 是必填的无障碍名
+<Button variant="ghost" icon={<Icon name="common.base:jia"  />} label="plus" />`
 
 const CODE_BTN_STATE = `<Button variant="primary">默认</Button>
 <Button variant="primary" disabled>禁用</Button>
@@ -256,17 +255,16 @@ const CODE_BTN_WIDTH = `// 固定宽：写死宽度
 <Button variant="outline" width={120} minWidth={200} maxWidth={160}>固定宽优先</Button>`
 
 /** 图标按钮「尺寸 × 底色 × 图标档」一溜展示：右边代码与左边渲染逐条一致。 */
-const CODE_ICON_BTN_MATRIX = `// 纯图标：无底（plain） / 有底（background），size 三档同样适用
-<IconButton size="sm" icon={<Icon name="common.base:jia"  />} label="add" />
-<IconButton size="sm" background="var(--dshpc-business)" color="var(--dshpc-on-signal)"
-  icon={<Icon name="common.base:jia"  />} label="add" />
+const CODE_ICON_BTN_MATRIX = `// 纯图标（不传 children ⇒ 正方形）：无底（ghost） / 有底（info），size 三档同样适用
+<Button variant="ghost" size="sm" icon={<Icon name="common.base:jia"  />} label="add" />
+<Button variant="info" size="sm" icon={<Icon name="common.base:jia"  />} label="add" />
 
 // 图标 + 文字：无底（ghost） / 有底（info），size 三档同样适用
 <Button size="sm" variant="ghost" icon={<Icon name="common.base:jia"  />}>sm</Button>
 <Button size="sm" variant="info" icon={<Icon name="common.base:jia"  />}>sm</Button>
 
 // dense：全站唯一的放大档（1.25em），size 与高度不变、内距收紧；别给图标传 size 来放大
-<IconButton size="sm" dense icon={<Icon name="common.base:jia"  />} label="add" />
+<Button variant="ghost" size="sm" dense icon={<Icon name="common.base:jia"  />} label="add" />
 <Button size="sm" dense variant="info" icon={<Icon name="common.base:jia"  />}>sm</Button>`
 
 /** 图标按钮表格的列：行标签 + sm/md/lg 三档（表头与数据行共用，列才对得齐）。 */
@@ -289,10 +287,9 @@ function iconBtnTier(title: string, dense: boolean): ReturnType<typeof h>[] {
         icon: iconOf('plus'),
       }, size)
     }
-    return h(IconButton, {
+    return h(Button, {
       key, size, dense,
-      background: filled ? 'var(--dshpc-business)' : undefined,
-      color: filled ? 'var(--dshpc-on-signal)' : undefined,
+      variant: filled ? 'info' : 'ghost',
       icon: iconOf('plus'),
       label: `add ${size} ${filled ? 'solid' : 'plain'}`,
     })
@@ -381,16 +378,16 @@ export function ButtonPage(): ReturnType<typeof h> {
             h(Button, { variant: 'outline', block: true }, '无图标对照'))),
         h(Labeled, { label: t('btnIconOnly') },
           BUTTON_ICONS.slice(0, 6).map((item) =>
-            h(IconButton, { key: item.name, icon: h(Icon, { name: item.glyph }), label: item.name }))),
-        // 纯图标钮的配色轴：默认无底色；color 改图标色，background 给底色（用户 2026-11-02）
-        h(Labeled, { label: 'IconButton · color / background' },
-          h(IconButton, { icon: h(Icon, { name: BUTTON_ICONS[0].glyph }), label: '默认无底色' }),
-          h(IconButton, { icon: h(Icon, { name: BUTTON_ICONS[1].glyph }), label: '自定义图标色', color: '#7c3aed' }),
-          h(IconButton, { icon: h(Icon, { name: BUTTON_ICONS[2].glyph }), label: '自定义底色', color: '#fff', background: '#7c3aed' })),
+            h(Button, { key: item.name, variant: 'ghost', icon: h(Icon, { name: item.glyph }), label: item.name }))),
+        // 纯图标钮的配色轴：默认无底色；color 改图标色，实心档给底色
+        h(Labeled, { label: 'Button · 纯图标配色' },
+          h(Button, { variant: 'ghost', icon: h(Icon, { name: BUTTON_ICONS[0].glyph }), label: '默认无底色' }),
+          h(Button, { variant: 'ghost', icon: h(Icon, { name: BUTTON_ICONS[1].glyph }), label: '自定义图标色', color: '#7c3aed' }),
+          h(Button, { variant: 'primary', icon: h(Icon, { name: BUTTON_ICONS[2].glyph }), label: '自定义底色', color: '#7c3aed' })),
         // 纯图标钮也吃同一套 loading：图标位换成小圈，文字本来就没有
-        h(Labeled, { label: 'IconButton · loading' },
-          h(IconButton, { icon: h(Icon, { name: BUTTON_ICONS[0].glyph }), label: '刷新', onClick: async () => { await demoWait() } }),
-          h(IconButton, { variant: 'outline', icon: h(Icon, { name: BUTTON_ICONS[0].glyph }), label: '加载中', loading: true }))),
+        h(Labeled, { label: 'Button · 纯图标 loading' },
+          h(Button, { variant: 'ghost', icon: h(Icon, { name: BUTTON_ICONS[0].glyph }), label: '刷新', onClick: async () => { await demoWait() } }),
+          h(Button, { variant: 'outline', icon: h(Icon, { name: BUTTON_ICONS[0].glyph }), label: '加载中', loading: true }))),
     ),
 
     // 图标按钮：常规 / dense 两组，每组 4 行（纯图标 / 图标+文字 × 无底 / 有底），列是 sm/md/lg
@@ -475,7 +472,7 @@ const [kw, setKw] = useState('')
 
 // hint 参数版：问号提示由组件自己挂，不用手动拼 FieldHint
 <Input value={text} onChange={setText} placeholder="请输入用户名" hint="用户名只能包含字母、数字与连字符。" />
-// 搜索框：type="search" ⇒ 有内容时，鼠标移上去或聚焦都会显示右侧清除钮（数字框加减号同款 plain IconButton，原生那枚已隐掉）
+// 搜索框：type="search" ⇒ 有内容时，鼠标移上去或聚焦都会显示右侧清除钮（数字框加减号同款 plain Button，原生那枚已隐掉）
 // icon 是左侧图标槽（不吃点击，点在图标上照样聚焦）；图标尺寸按档取 fieldMetricsOf(size).icon
 <Input type="search" icon={<Icon name="common.base:chazhao"  />} value={kw} onChange={setKw} placeholder="搜索" />
 // 校验失败态：描红

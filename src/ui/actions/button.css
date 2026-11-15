@@ -1,5 +1,5 @@
 
-/* ── 按钮 / 图标钮 P2 ───────────────────────────────────────────────────
+/* ── 按钮（含纯图标形态）P2 ─────────────────────────────────────────────
    与 Segmented 同一条高度纪律：--dshpc-control-h-sm(24) / -md(28) / -lg(32)，
    有边框的 variant 用 1px 真边框 + 内部 padding 补回，**有边 / 无边同高**。
 
@@ -21,9 +21,13 @@
   box-sizing:border-box;border:1px solid var(--btn-border);border-radius:var(--dshpc-radius-md);
   background-color:var(--btn-bg);color:var(--btn-fg);font-family:inherit;font-weight:500;white-space:nowrap;cursor:pointer;
   transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),box-shadow var(--dshpc-dur-fast) var(--dshpc-ease),transform var(--dshpc-dur-fast) var(--dshpc-ease);}
-.dshpc-btn--sm{--btn-pad:10px;height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}
-.dshpc-btn--md{--btn-pad:12px;height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}
-.dshpc-btn--lg{--btn-pad:14px;height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}
+.dshpc-btn--sm{--btn-pad:10px;--btn-square:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);padding:0 var(--btn-pad);font-size:var(--dshpc-font-sm);line-height:1;}
+.dshpc-btn--md{--btn-pad:12px;--btn-square:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}
+.dshpc-btn--lg{--btn-pad:14px;--btn-square:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);padding:0 var(--btn-pad);font-size:var(--dshpc-font-md);line-height:1;}
+/* 纯图标钮（没有 children）：正方形，边长 = 同档高度，内距归零。
+   与文字钮同一个组件、同一套档位 —— 不再有独立的 IconButton 控件（用户 2026-11-15）。
+   单类选择器（宽度取变量）才能被调用点的双类名覆盖（如 .dshpc-fb .dshpc-fb__row-toggle）。 */
+.dshpc-btn--icon-only{--btn-pad:0;padding:0;flex:none;width:var(--btn-square);}
 /* block：撑满父宽（表单底栏 / 抽屉底部的主操作） */
 .dshpc-btn--block{display:flex;width:100%;}
 /* block + 前置图标 ⇒ 文字视觉居中（2026-10-19 用户点名）：
@@ -105,33 +109,6 @@
 .dshpc-btn--link:hover:not(:disabled) > .dshpc-btn__content::after{
   content:'';position:absolute;left:0;right:0;bottom:1px;height:1px;background:currentColor;}
 
-/* 图标钮：纯图标，方形；尺寸档的宽高与同档文字按钮等高、圆角统一吃 md（与 .dshpc-btn 同款，2026-10-28 拍板）
-   底色 / 图标色全走局部变量：默认**无底色**，消费方可传 color（图标色）/ background（底色）覆盖（用户 2026-11-02）。 */
-.dshpc-iconbtn{--icb-bg:transparent;--icb-bg-hover:var(--dshpc-hover);--icb-fg:var(--dshpc-fg-2);--icb-fg-hover:var(--dshpc-fg);
-  appearance:none;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0;
-  border:1px solid var(--icb-border,transparent);border-radius:var(--dshpc-radius-md);
-  background:var(--icb-bg);color:var(--icb-fg);
-  font-family:inherit;cursor:pointer;flex:none;
-  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),border-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease),opacity var(--dshpc-dur-fast) var(--dshpc-ease);}
-.dshpc-iconbtn--sm{width:var(--dshpc-control-h-sm);height:var(--dshpc-control-h-sm);font-size:var(--dshpc-font-sm);}
-.dshpc-iconbtn--md{width:var(--dshpc-control-h-md);height:var(--dshpc-control-h-md);font-size:var(--dshpc-font-md);}
-.dshpc-iconbtn--lg{width:var(--dshpc-control-h-lg);height:var(--dshpc-control-h-lg);font-size:var(--dshpc-font-md);}
-/* 图标与文字按钮同口径：官方 SVG 由 1em 接管，字体 <i> 直接继承按钮字号，两者 1:1。
-   ⚠️ flex:none 是硬约束：svg 是按钮的直接 flex item，默认 flex-shrink:1 会被按钮内距
-   挤成 10px 窄条；那是布局收缩，不是层叠优先级 —— 改 width、加 !important 都救不回来，
-   而 height 在交叉轴不受影响，于是图标被压扁变形。后代选择器兼容官方图标外的 wrapper。 */
-.dshpc-iconbtn svg{display:block;width:1em;height:1em;flex:none;}
-/* dense：只放大图标的 em 值，正方形宽高与高度档都不动；
-   1.25em 相对按钮字号 12/13 ⇒ 15/16.25px，与 .dshpc-btn--dense 一致。
-   字体图标是 <i> 直接子元素，得单独给它同一系数（svg 那条选择器管不到）。 */
-.dshpc-iconbtn.dshpc-iconbtn--dense svg{width:1.25em;height:1.25em;}
-.dshpc-iconbtn.dshpc-iconbtn--dense > .dshpc-icon{font-size:1.25em;}
-.dshpc-iconbtn--outline{--icb-bg:var(--dshpc-surface-1);--icb-border:var(--dshpc-border);}
-.dshpc-iconbtn--danger{--icb-fg:var(--dshpc-danger);--icb-bg-hover:var(--dshpc-danger-soft);--icb-fg-hover:var(--dshpc-danger);}
-.dshpc-iconbtn:hover:not(:disabled){background:var(--icb-bg-hover);color:var(--icb-fg-hover);}
-.dshpc-iconbtn:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:2px;}
-.dshpc-iconbtn:disabled{cursor:default;opacity:.4;}
-
 /* ── 行式文件按钮（图标 + 文件名）P2：**全站唯一实现**（2026-10-04 收编）──────────
    用途：「产出物 / 附件」那种**一行一个文件**的清单项（基础信息右栏产出物清单、附件区、
    执行记录页的展开区）。平时透明、**鼠标移上去才出浅底**（沿用用户 2026-10-03 定的观感）。
@@ -150,4 +127,4 @@
   padding:4px 6px;font-size:var(--dshpc-font-xs);}
 .dshpc-filechip--inline{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;font-size:var(--dshpc-font-sm);}
 
-@media (prefers-reduced-motion: reduce){.dshpc-btn,.dshpc-iconbtn,.dshpc-filechip{transition:none;}}
+@media (prefers-reduced-motion: reduce){.dshpc-btn,.dshpc-filechip{transition:none;}}

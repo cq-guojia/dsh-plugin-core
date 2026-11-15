@@ -25,7 +25,7 @@ export { headerRows, isLeafColumn, isTableCellSpec, leafColumns, tableDepth, typ
 export { showToast, notify, connectToasts } from './feedback/notify.js';
 export { mountToasts } from './feedback/Toast.js';
 export type { ToastVariant, ToastPosition, ToastOptions, ToastAction, ToastActionVariant, NotifyBaseOptions, LocalNotifyOptions, BroadcastNotifyOptions, NotifyOptions, } from './feedback/toast-queue.js';
-export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './actions/Button.js';
+export { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './actions/Button.js';
 export { Segmented, type SegmentedProps, type SegmentedTone } from './inputs/Segmented.js';
 export { SplitGroup, type SplitGroupProps } from './layout/SplitGroup.js';
 export { InputGroup, type InputGroupAction, type InputGroupProps, } from './inputs/InputGroup.js';

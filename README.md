@@ -114,7 +114,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 #### 动作
 
 - `Button`——18 档外观（实心 / 线框 / 无底：`primary`、`secondary`、`danger`、`success`、`warning`、`info`、`outline`、`danger-outline`、`ghost`、`link`，加扩展八色），三档高度（24 / 28 / 32），前置与后置图标，固定 / 最小 / 最大宽度（超长跑马灯），自动 loading：`onClick` 返回 Promise 就转圈、禁用、settle 后自恢复，reject 同样恢复。
-- `IconButton`——纯图标版本，无障碍名强制给。
+- 纯图标钮不是另一个控件：同一个 `Button` 不传 `children` 就自动变正方形，此时 `label`（无障碍名）必填。
 - `Segmented`——单选 / 多选、可选 1px 外框、段内图标 / 计数 / 角标、`tone` 换选中片配色。
 
 #### 录入

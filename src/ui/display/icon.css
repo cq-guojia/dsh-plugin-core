@@ -12,6 +12,6 @@
  *
  * 只接管 font-size / line-height：font-family、字形、颜色、深色 -dark 字形仍归平台基础类。
  * 显式传 size 的图标带内联 font-size，优先级最高，不受本规则影响。
- * 放大档（按钮 dense）由 button.css 的 .dshpc-iconbtn--dense 规则给出 em 系数。
+ * 放大档（按钮 dense）由 button.css 的 .dshpc-btn--dense 规则给出 em 系数。
  */
 i.dshpc-icon{font-size:inherit;line-height:1;}

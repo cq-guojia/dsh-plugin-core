@@ -8,7 +8,7 @@
  *  - {@link PlainNav}：越界形态（整条换成只读完整路径，不给会失败的入口）。
  */
 import { createElement as h, Fragment, type ReactNode, type RefObject } from 'react'
-import { Button, IconButton } from '../../ui/actions/Button.js'
+import { Button } from '../../ui/actions/Button.js'
 import { Chevron } from '../../ui/infra/chevron.js'
 import { MarqueeText } from '../../ui/display/MarqueeText.js'
 import { PanelClose } from '../../ui/infra/panel.js'
@@ -93,8 +93,8 @@ export function CrumbNav(props: CrumbNavProps): ReactNode {
     h(
       'div',
       { className: 'dshpc-fb__menu-wrap' },
-      h(IconButton, {
-        variant: 'plain',
+      h(Button, {
+        variant: 'ghost',
         size: 'md',
         icon: h(Chevron, { dir: 'down', size: 8 }),
         label: tt('explorerLevels'),

@@ -11,7 +11,7 @@
 // 数据真源 = 会话 keyed 流里的 present 工具调用 / turn 级 deliverables.presented（真实取数，禁模拟）。
 import { createElement as h, useState } from 'react';
 import { DisclosureRow, FileTypeIcon, IconChevronDownOutlineRegular, IconChevronUpOutlineRegular, IconDeliverDocRegular, IconFolderOpenOutlineRegular, fileExtension, } from '../../../ui/official.js';
-import { IconButton } from '../../../ui/actions/Button.js';
+import { Button } from '../../../ui/actions/Button.js';
 import { officialClass } from '../official-classes.js';
 const basename = (path) => path.slice(Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\')) + 1);
 /** 交付路径的所在目录；无分隔符（纯文件名）⇒ undefined，不出「在文件夹中显示」。 */
@@ -120,7 +120,8 @@ function DeliveredFileCard(props) {
         },
     }), h('span', { className: officialClass('Deliverables', 'fileIcon') ?? '' }, h(FileTypeIcon, { path: file.path })), h('div', { className: officialClass('Deliverables', 'fileBody') ?? '' }, h('div', { className: officialClass('Deliverables', 'details') ?? '' }, h('span', { className: officialClass('Deliverables', 'fileName') ?? '' }, name), h('span', { className: officialClass('Deliverables', 'description') ?? '', 'data-presented-description': true }, h('span', { className: officialClass('Deliverables', 'secondaryText') ?? '' }, cardDescription(file.description, metadata)), h('span', { className: officialClass('Deliverables', 'previewHint') ?? '' }, t('deliverPreviewHint')))), onReveal === undefined
         ? null
-        : h('div', { className: officialClass('Deliverables', 'actions') ?? '' }, h(IconButton, {
+        : h('div', { className: officialClass('Deliverables', 'actions') ?? '' }, h(Button, {
+            variant: 'ghost',
             size: 'sm',
             icon: h(IconFolderOpenOutlineRegular),
             label: t('deliverReveal'),

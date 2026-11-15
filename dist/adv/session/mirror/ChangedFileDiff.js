@@ -10,8 +10,8 @@
 // 高亮：官方 `useCodeHighlighter`（primitive hook）+ 官方 highlightedSide 映射口径
 // （按一侧收集文本 → 整段高亮 → 按行号回表）；语法未知 / 语法树未加载返回 undefined ⇒ 纯文本回落。
 import { createElement as h, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, IconCloseOutlineRegular, IconNowrapFillRegular, IconWrapFillRegular, languageForPath, useCodeHighlighter } from '../../../ui/official.js';
-import { IconButton } from '../../../ui/actions/Button.js';
+import { IconCloseOutlineRegular, IconNowrapFillRegular, IconWrapFillRegular, languageForPath, useCodeHighlighter } from '../../../ui/official.js';
+import { Button } from '../../../ui/actions/Button.js';
 import { officialClass } from '../official-classes.js';
 import { DIFF_MAX_RENDERED_LINES, changesDiffUrl, diffNoteKey, hunkHeader, hunkRows, parseChangesDiff, } from '../changes.js';
 import { t as defaultT } from '../../../utils/i18n.js';
@@ -157,18 +157,18 @@ export function ChangedFileDiff(props) {
     // 审阅态右上：换行开关（等价官方 ReviewTab 的 wrap 工具钮；图标语义同官方：开着显示「取消换行」）。
     preview
         ? null
-        : h(IconButton, {
-            variant: 'plain',
+        : h(Button, {
+            variant: 'ghost',
             size: 'md',
             icon: h(wrap ? IconNowrapFillRegular : IconWrapFillRegular, { size: 14 }),
             label: wrap ? t('diffNowrap') : t('diffWrap'),
             onClick: () => { setWrap((value) => !value); },
         }), 
-    // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个 IconButton + 官方 ✕，不自绘新样式）。
+    // 审阅态：行尾 ✕ 关闭（复用 FileBrowser 同一个纯图标 Button + 官方 ✕，不自绘新样式）。
     preview || onClose === undefined
         ? null
-        : h(IconButton, {
-            variant: 'plain',
+        : h(Button, {
+            variant: 'ghost',
             size: 'md',
             icon: h(IconCloseOutlineRegular, { size: 14 }),
             label: t('previewClose'),

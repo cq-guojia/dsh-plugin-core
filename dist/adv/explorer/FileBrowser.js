@@ -10,13 +10,13 @@
 //    本组件不再自绘拖拽条 / 侧边栏外壳；
 //  · 选择（picker）：`picker` + `onPick(picked)`（`path` 是**绝对路径**，另带工作区归属），点文件即回调。
 //
-// 控件纪律：能用核心控件的一律核心（ghost 面包屑 / IconButton / Segmented / MarqueeText）；
+// 控件纪律：能用核心控件的一律核心（ghost 面包屑 / Button 纯图标 / Segmented / MarqueeText）；
 // 核心没有的那一项 = ▾ 选层浮层，按兄弟项目 dsh-task-dispatch-table 的 `.dsh-tdt-sv-crumbs-*`
 // 逐像素照抄（间距 / 圆角 / 最大高度 / 空态），不自创度量。
 import { createElement as h, Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, } from 'react';
 import { writeClipboard, FileTypeIcon } from '../../ui/official.js';
 import { Chevron } from '../../ui/infra/chevron.js';
-import { Button, IconButton } from '../../ui/actions/Button.js';
+import { Button } from '../../ui/actions/Button.js';
 import { workspaceList } from '../../ui/infra/host-data.js';
 import { useLocale } from '../../ui/infra/locale.js';
 import { t } from '../../utils/i18n.js';
@@ -467,9 +467,9 @@ export function FileBrowser(props) {
                     rowAction();
             },
         }, 
-        // 展开 / 收起：核心 IconButton，20×20 命中位 + 展开时转 90°（与兄弟 .dsh-tdt-sv-tree-toggle 同款）。
-        h(IconButton, {
-            variant: 'plain',
+        // 展开 / 收起：核心 Button 纯图标形态，20×20 命中位 + 展开时转 90°（与兄弟 .dsh-tdt-sv-tree-toggle 同款）。
+        h(Button, {
+            variant: 'ghost',
             size: 'sm',
             className: `dshpc-fb__row-toggle${isOpen ? ' dshpc-fb__row-toggle--open' : ''}`,
             icon: h(Chevron, { dir: 'right', size: 8 }),

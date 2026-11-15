@@ -30,7 +30,7 @@ export interface ListRowProps {
  * 两个槽都自带垂直居中（`__main` 与 `__actions` 对称），调用方不必自己补 align-items；
  * 主内容内部怎么横排仍由调用方决定。
  *
- * 整行刻意**不渲染成 `<button>`**：调用方要在里面放 Button / IconButton，
+ * 整行刻意**不渲染成 `<button>`**：调用方要在里面放 Button，
  * 嵌 button 是非法 HTML。改用 `div[role=button] + tabIndex + Enter/Space`，
  * 与 `src/adv/explorer/landing.ts` 的既有口径一致。
  *
@@ -38,7 +38,7 @@ export interface ListRowProps {
  * h(ListRow, {
  *   onClick: () => open(file),
  *   selected: file.path === current,
- *   actions: h(IconButton, { size: 'sm', icon: ..., label: '移除', onClick: () => remove(file) }),
+ *   actions: h(Button, { variant: 'ghost', size: 'sm', icon: ..., label: '移除', onClick: () => remove(file) }),
  * }, h('span', null, file.name))
  * ```
  */

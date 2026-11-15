@@ -2,7 +2,7 @@
 /* ── 组合输入框 InputGroup ─────────────────────────────────────────────
    输入框 + 后置按钮（一枚或多枚）+ 可选前置标题，焊成一体。
    与 SplitGroup 同一套外观口径：外框 / 圆角 / 相邻 1px 分隔 / 整体聚焦圈都由外壳画，
-   内件（.dshpc-input / .dshpc-btn / .dshpc-iconbtn）把自己的边框、圆角、外圈交出来。
+   内件（.dshpc-input / .dshpc-btn，含纯图标钮 .dshpc-btn--icon-only）把自己的边框、圆角、外圈交出来。
 
    高度默认吃 --dshpc-control-h-*（sm 24 / md 28 / lg 32）；调用方要自定义就在根节点
    内联 height，这里让内件 height:100% 跟上 —— 内件档位高度只有 0,1,0，被本文件的
@@ -31,9 +31,8 @@
 
 /* 按钮格：交出边框与圆角；实心底色保留（右侧「确定」该有重量）。
    纯图标钮本身是固定宽的方块，这里改成按高度撑出的正方形，自定义高度时才不会变成竖长条。 */
-.dshpc-igroup > .dshpc-btn,.dshpc-igroup > .dshpc-iconbtn{flex:none;height:100%;border-radius:0;}
-.dshpc-igroup > .dshpc-iconbtn{width:auto;aspect-ratio:1;}
-.dshpc-igroup > .dshpc-btn{border:0;}
+.dshpc-igroup > .dshpc-btn{flex:none;height:100%;border-radius:0;border:0;}
+.dshpc-igroup > .dshpc-btn--icon-only{width:auto;aspect-ratio:1;}
 
 /* 分隔线：相邻兄弟的左描边，不额外插 DOM。后两条是给「清过边框」的格子补回来的，
    必须写成 0,2,0 且写在上面的 border:0 之后 —— 否则被 border:0 压掉，格子之间没分隔。 */

@@ -5,7 +5,7 @@
  * （核心 Segmented 高度由 CSS 定，不随档变）。
  */
 import { createElement as h, type ReactNode } from 'react'
-import { IconButton } from '../../ui/actions/Button.js'
+import { Button } from '../../ui/actions/Button.js'
 import { MarqueeText } from '../../ui/display/MarqueeText.js'
 import { Segmented } from '../../ui/inputs/Segmented.js'
 import { FontIcon } from '../../ui/display/font-icon.js'
@@ -57,15 +57,15 @@ export function PreviewTitleBar(props: PreviewTitleBarProps): ReactNode {
             onChange: (next: string) => onSourceViewChange(next === 'source'),
           })
         : null,
-    h(IconButton, {
-      variant: 'plain',
+    h(Button, {
+      variant: 'ghost',
       size: 'md',
       icon: h(FontIcon, { name: copied ? 'common.base:gou' : 'common.base:fuzhi' }),
       label: tt('previewCopyPath'),
       onClick: onCopyPath,
     }),
-    h(IconButton, {
-      variant: 'plain',
+    h(Button, {
+      variant: 'ghost',
       size: 'md',
       icon: h(FontIcon, { name: 'common.base:shuaxin' }),
       label: tt('previewRefresh'),

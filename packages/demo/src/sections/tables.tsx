@@ -5,9 +5,9 @@ import {
 } from 'react'
 
 import {
+  Button,
   Checkbox,
   Chip,
-  IconButton,
   Segmented,
   Table,
   type TableColumn,
@@ -132,7 +132,8 @@ function personCell(person: Person): ReturnType<typeof h> {
 }
 
 function rowsOf(): TableRow[] {
-  const actions = h(IconButton, {
+  const actions = h(Button, {
+    variant: 'ghost',
     icon: h(Icon, { name: 'common.base:move-down' }),
     label: 'Open study',
   })

@@ -20,7 +20,7 @@ import {
   IconFolderOpenOutlineRegular,
   fileExtension,
 } from '../../../ui/official.js'
-import { IconButton } from '../../../ui/actions/Button.js'
+import { Button } from '../../../ui/actions/Button.js'
 import { officialClass } from '../official-classes.js'
 import type { Translate } from '../../../utils/i18n.js'
 
@@ -172,7 +172,8 @@ function DeliveredFileCard(props: {
       onReveal === undefined
         ? null
         : h('div', { className: officialClass('Deliverables', 'actions') ?? '' },
-            h(IconButton, {
+            h(Button, {
+              variant: 'ghost',
               size: 'sm',
               icon: h(IconFolderOpenOutlineRegular),
               label: t('deliverReveal'),

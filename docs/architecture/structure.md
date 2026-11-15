@@ -30,7 +30,7 @@
 
 | 类 | 判据 | 成员（2026-11-11） |
 |---|---|---|
-| **动作** `actions` | 点它触发一次操作，本身不产生值 | Button、IconButton |
+| **动作** `actions` | 点它触发一次操作，本身不产生值 | Button |
 | **录入** `inputs` | 产生或修改一个值 | Input、NumberInput、PrefixedInput、Textarea、Checkbox、Segmented、Picker、DateTimePicker、WorkspacePicker、ModelPicker、InputGroup、CodeEditor |
 | **展示** `display` | 只呈现内容，不改变状态 | Card、StripCard、Surface、Chip、Table、ListRow、CodeViewer、MarqueeText、FlipText、LiveText、SectionHead、FieldHint、Icon |
 | **反馈** `feedback` | 表达「正在进行 / 刚完成 / 出错了」 | Modal、SideSheet、AlertModal、ConfirmModal、alertModal、confirmModal、Toast、host-toast、Loader、LoaderBar、Loading |
@@ -58,7 +58,7 @@ src/
 ├── ui/                     ② 控件（依赖 design）
 │   ├── index.ts               整包入口（纯 re-export 转发表，不复制实现）
 │   ├── official.ts            L1 官方 adapter —— 全仓唯一 import 官方 primitives 的地方
-│   ├── actions/               Button · IconButton（+ button.css / generated）
+│   ├── actions/               Button（+ button.css / generated）
 │   ├── inputs/                Field（Input/NumberInput/PrefixedInput）· Textarea · Checkbox
 │   │                          Segmented · Picker（+ picker-logic / picker-icons）
 │   │                          DateTimePicker（+ datetime-logic）· InputGroup
@@ -145,7 +145,7 @@ utils（谁都不依赖，谁都可以用）
 ① 入门        start     帮助索引 / 快速开始 / 参考
 ② 基础设施  infra      设计基础（token · 明暗） / 图标（官方 primitives + 字体库） / 通知任务中心
 ③ 控件        components
-   ├─ 动作    actions       Button · IconButton
+   ├─ 动作    actions       Button
    ├─ 录入    inputs        Input · NumberInput · PrefixedInput · Textarea · Checkbox
    │                        Segmented · Picker · DateTimePicker · WorkspacePicker
    │                        ModelPicker · InputGroup

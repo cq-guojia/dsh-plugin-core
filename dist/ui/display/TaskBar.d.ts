@@ -38,7 +38,7 @@ export interface TaskBarProps {
  * 通知任务中心的通用展示栏：未展开时是一颗按钮，展开后列出后台正在跑的任务。
  *
  * 数据面全部来自池本身（`taskNotifications` + `selectTaskNotifications`），不接 props 里的任务数组；
- * 触发器是 `Button`（长条）/ `IconButton`（纯图标，正方形）两档，下拉容器复用 `PanelSurface`（menu 档）。
+ * 触发器是 `Button`（长条）/ 纯图标（自动正方形）两档，下拉容器复用 `PanelSurface`（menu 档）。
  * 有任务在跑时图标字形呼吸（大小循环），表示后台确实在动；只做 CSS 动画，不跑定时器。
  *
  * 面板里**只画一条外框**：行与行之间是一条虚线，不给每行再套底色 / 描边 / 圆角

@@ -1,6 +1,6 @@
 import { createElement as h, useEffect, useState, useSyncExternalStore, } from 'react';
 import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react';
-import { Button, IconButton } from '../actions/Button.js';
+import { Button } from '../actions/Button.js';
 import { FontIcon, resolveIconName } from './font-icon.js';
 import { MarqueeText } from './MarqueeText.js';
 import { Chevron } from '../infra/chevron.js';
@@ -44,7 +44,7 @@ function Elapsed(props) {
  * 通知任务中心的通用展示栏：未展开时是一颗按钮，展开后列出后台正在跑的任务。
  *
  * 数据面全部来自池本身（`taskNotifications` + `selectTaskNotifications`），不接 props 里的任务数组；
- * 触发器是 `Button`（长条）/ `IconButton`（纯图标，正方形）两档，下拉容器复用 `PanelSurface`（menu 档）。
+ * 触发器是 `Button`（长条）/ 纯图标（自动正方形）两档，下拉容器复用 `PanelSurface`（menu 档）。
  * 有任务在跑时图标字形呼吸（大小循环），表示后台确实在动；只做 CSS 动画，不跑定时器。
  *
  * 面板里**只画一条外框**：行与行之间是一条虚线，不给每行再套底色 / 描边 / 圆角
@@ -155,26 +155,17 @@ export function TaskBar(props) {
             }, 
             // 记录里带几颗就画几颗：不传色 = 中性灰底（secondary）；
             // 传了色 = 该色实心底（primary 的反色文字，深底浅字，两主题都读得清）。
-            // 只有图标没有文案的那颗画成正方形图标钮（宽高相等），默认同样带灰底。
+            // 没有文案的那颗 Button 自己变正方形，label 顶上无障碍名 —— 分支与带文字的完全一致。
             actions.map((action, index) => {
                 const label = action.label === undefined || action.label === '' ? undefined : action.label;
                 const glyph = actionIconOf(action, defaultIcon);
-                if (label === undefined) {
-                    return h(IconButton, {
-                        key: `${task.id}-${index}`,
-                        size: actionSize,
-                        icon: h(FontIcon, { name: glyph }),
-                        label: glyph,
-                        background: action.color ?? 'var(--dshpc-hover)',
-                        onClick: () => { void taskNotifications.runAction(task.id, index); },
-                    });
-                }
                 return h(Button, {
                     key: `${task.id}-${index}`,
                     size: actionSize,
                     variant: action.color === undefined ? 'secondary' : 'primary',
                     ...(action.color === undefined ? {} : { color: action.color }),
                     icon: h(FontIcon, { name: glyph }),
+                    ...(label === undefined ? { label: glyph } : {}),
                     onClick: () => { void taskNotifications.runAction(task.id, index); },
                 }, label);
             })));

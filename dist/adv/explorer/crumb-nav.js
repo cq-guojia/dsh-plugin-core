@@ -8,7 +8,7 @@
  *  - {@link PlainNav}：越界形态（整条换成只读完整路径，不给会失败的入口）。
  */
 import { createElement as h, Fragment } from 'react';
-import { Button, IconButton } from '../../ui/actions/Button.js';
+import { Button } from '../../ui/actions/Button.js';
 import { Chevron } from '../../ui/infra/chevron.js';
 import { MarqueeText } from '../../ui/display/MarqueeText.js';
 import { PanelClose } from '../../ui/infra/panel.js';
@@ -42,8 +42,8 @@ export function CrumbNav(props) {
         : crumbs.length === 0
             ? crumbButton(tt('explorerRootName'), undefined, true)
             : crumbs.map((crumb, index) => h(Fragment, { key: crumb.path }, index > 0 ? h(Chevron, { dir: 'right', className: 'dshpc-fb__crumb-sep', size: 8 }) : null, crumbButton(crumb.label, () => onLoadDir(crumb.path))));
-    return h('nav', { className: 'dshpc-fb__bar', 'aria-label': tt('explorerCrumbsAria') }, h('div', { className: 'dshpc-fb__menu-wrap' }, h(IconButton, {
-        variant: 'plain',
+    return h('nav', { className: 'dshpc-fb__bar', 'aria-label': tt('explorerCrumbsAria') }, h('div', { className: 'dshpc-fb__menu-wrap' }, h(Button, {
+        variant: 'ghost',
         size: 'md',
         icon: h(Chevron, { dir: 'down', size: 8 }),
         label: tt('explorerLevels'),

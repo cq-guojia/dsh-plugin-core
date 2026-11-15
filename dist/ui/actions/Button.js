@@ -1,5 +1,5 @@
 /**
- * 按钮 / 图标钮 —— **全站唯一实现**（L2 组件皮肤，P2）
+ * 按钮 —— **全站唯一实现**（L2 组件皮肤，P2）
  *
  * 三轴模型：
  *  - `variant`：外观档（形态 + 语义色），共 18 档
@@ -10,13 +10,14 @@
  *  - `size`：`sm`(24) / `md`(28) / `lg`(32) —— 高度一律吃 `--dshpc-control-h-*`，
  *    **有边 / 无边同高**（边框在内部补回）
  *  - `block`：撑满父宽
- *  - `dense`：图标放大一档、内距收紧（高度不变），Button / IconButton 同名同义
+ *  - `dense`：图标放大一档、内距收紧（高度不变）
  *
  * 内容轴：`icon`（前置）/ `iconRight`（后置）/ `loading`（前置小圈并自动禁用）。
+ * **没有文字（不传 children）就是纯图标钮**：盒子自动变正方形（边长 = 同档高度），
+ * 此时必须给 `label` 当无障碍名 —— 不再有独立的 IconButton 控件（用户 2026-11-15）。
  * 颜色轴：任一档都可以再用 `color` 传任意 CSS 色值 —— 只覆盖 `--btn-*` 几个变量，
  * 不新增皮肤（皮肤只在自己的 `button.css` 真源里，构建期编译成字符串常量）。
  *
- * `IconButton` 是纯图标钮：`plain`（默认无底无边，hover 起灰底）/ `outline`（描边）/ `danger`（红）。
  * 兼容别名：`danger-ink` 仍是 `danger-outline` 的旧类名，可直接挂 className。
  *
  * ⚠️ 不许在任何使用点就地写按钮样式；要多一档外观 ⇒ 改基础层（一处改全站生效）。
@@ -59,9 +60,10 @@ function colorVars(variant, color) {
     };
 }
 /** 组装按钮 class（结构一套 + 轴类）。 */
-function buttonClass(variant, size, block, hasIcon, dense, extra) {
+function buttonClass(variant, size, block, hasIcon, dense, iconOnly, extra) {
     return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size}`
         + `${dense ? ' dshpc-btn--dense' : ''}`
+        + `${iconOnly ? ' dshpc-btn--icon-only' : ''}`
         + `${block ? ' dshpc-btn--block' : ''}`
         // 前置图标标记：block 时靠它把文字拉回视觉中心（见 button.css 的 --icon-start 规则）
         + `${hasIcon ? ' dshpc-btn--icon-start' : ''}`
@@ -95,15 +97,19 @@ function useAsyncClick(onClick, onBusyChange, onBusyStart) {
     };
     return { busy, click };
 }
+/** 纯图标钮漏 label 只报一次，别刷屏。 */
+let warnedNoLabel = false;
 /**
- * 渲染一个「图标 + 文案」按钮。
+ * 渲染一个按钮：有 `children` 就是文字钮，只有 `icon` 就是正方形纯图标钮。
  *
  * @param props 见 {@link ButtonProps}。
  * @returns 按钮元素。
  */
 export function Button(props) {
     ensureComponentStyles('button', BUTTON_CSS);
-    const { variant = 'outline', size = 'lg', icon, iconRight, color, loading: loadingProp = false, loadingText = true, block = false, dense = false, width, minWidth, maxWidth, className, style, children, onClick, onBusyChange, ...rest } = props;
+    const { variant = 'outline', size = 'lg', icon, iconRight, color, loading: loadingProp = false, loadingText = true, block = false, dense = false, width, minWidth, maxWidth, className, style, children, label, onClick, onBusyChange, ...rest } = props;
+    // 没有文案 = 纯图标钮：盒子走正方形（button.css 的 --icon-only），无障碍名只能靠 label。
+    const iconOnly = children === undefined || children === null;
     const btnRef = useRef(null);
     // 「有文案时的宽度」：只在非 loading 的布局里记，loading 时用它锁宽。
     const idleWidth = useRef(null);
@@ -167,6 +173,12 @@ export function Button(props) {
     const marqueeLabel = !hideText && maxWidth !== undefined && width === undefined && typeof children === 'string';
     // 文案没了，读屏名称得留住：字符串 children 自动补；复合 children 由调用方传 aria-label。
     const autoLabel = hideText && typeof children === 'string' ? children : undefined;
+    // 纯图标钮没有文字可读，label 就是它的名字 —— 漏了等于一颗无名按钮，当场报出来。
+    const ariaLabel = rest['aria-label'] ?? label ?? autoLabel;
+    if (iconOnly && ariaLabel === undefined && !warnedNoLabel) {
+        warnedNoLabel = true;
+        console.warn('[dsh-plugin-core] Button 没有 children 也没有 label：纯图标钮必须给 label 当无障碍名。');
+    }
     const attrs = {
         ...rest,
         // 核心全站不渲染原生 title：显式压掉，调用方即使经 rest 传也不会冒出 tooltip。
@@ -174,11 +186,11 @@ export function Button(props) {
         ref: btnRef,
         type: rest.type ?? 'button',
         disabled: rest.disabled === true || loading || locked,
-        // 与 IconButton 同一口径：文字还在，但让读屏知道它正在忙、不是单纯不可点
+        // 文字还在，但让读屏知道它正在忙、不是单纯不可点
         'aria-busy': loading || undefined,
-        ...(autoLabel !== undefined && rest['aria-label'] === undefined ? { 'aria-label': autoLabel } : {}),
+        ...(ariaLabel !== undefined ? { 'aria-label': ariaLabel } : {}),
         onClick: asyncClick.click,
-        className: buttonClass(variant, size, block, icon !== undefined && icon !== null && !loading, dense, className),
+        className: buttonClass(variant, size, block, icon !== undefined && icon !== null && !loading && !iconOnly, dense, iconOnly, className),
         style: { ...colorVars(variant, color), ...widthStyle, ...style },
     };
     const kids = [
@@ -204,43 +216,5 @@ export function Button(props) {
     return variant === 'link'
         ? h('button', attrs, h('span', { className: 'dshpc-btn__content' }, ...kids))
         : h('button', attrs, ...kids);
-}
-/**
- * 渲染一个纯图标按钮。
- *
- * @param props 见 {@link IconButtonProps}。
- * @returns 图标按钮元素。
- */
-export function IconButton(props) {
-    ensureComponentStyles('button', BUTTON_CSS);
-    const { variant = 'plain', size = 'lg', icon, label, color, background, loading: loadingProp = false, dense = false, className, style, onClick, onBusyChange, ...rest } = props;
-    const asyncClick = useAsyncClick(onClick, onBusyChange);
-    const loading = loadingProp || asyncClick.busy;
-    const locked = useOverlayLocked();
-    // 只覆盖 4 个局部变量：图标色 / 底色及其 hover 派生（不新增皮肤，皮肤仍在 button.css）。
-    const accent = {};
-    if (color !== undefined && color !== '') {
-        accent['--icb-fg'] = color;
-        accent['--icb-fg-hover'] = color;
-        accent['--icb-bg-hover'] = `color-mix(in srgb, ${color} 14%, transparent)`;
-    }
-    if (background !== undefined && background !== '') {
-        accent['--icb-bg'] = background;
-        accent['--icb-bg-hover'] = `color-mix(in srgb, ${background} 85%, var(--dshpc-fg))`;
-    }
-    const attrs = {
-        ...rest,
-        type: rest.type ?? 'button',
-        // 核心全站不渲染原生 title：显式压掉，调用方即使经 rest 传也不会冒出 tooltip。
-        title: undefined,
-        'aria-label': rest['aria-label'] ?? label,
-        // 无障碍名不变（仍是 label），只声明「正在忙」，读屏不会把圈读成内容
-        'aria-busy': loading || undefined,
-        disabled: rest.disabled === true || loading || locked,
-        onClick: asyncClick.click,
-        className: `dshpc-iconbtn dshpc-iconbtn--${variant} dshpc-iconbtn--${size}${dense ? ' dshpc-iconbtn--dense' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
-        style: { ...accent, ...style },
-    };
-    return h('button', attrs, loading ? h(Loader, { size: 'xs' }) : icon);
 }
 //# sourceMappingURL=Button.js.map

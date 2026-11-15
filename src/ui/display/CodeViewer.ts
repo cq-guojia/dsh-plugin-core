@@ -16,7 +16,7 @@
  * 禁用 prefers-color-scheme。
  */
 import { createElement as h, useState, type CSSProperties, type ReactElement } from 'react'
-import { IconButton } from '../actions/Button.js'
+import { Button } from '../actions/Button.js'
 import { writeClipboard } from '../official.js'
 import { FontIcon } from './font-icon.js'
 import type { Translate } from '../../utils/i18n.js'
@@ -67,7 +67,7 @@ export function CodeViewer(props: CodeViewerProps): ReactElement {
     className,
     style,
     focusLine: props.focusLine,
-    overlay: h(IconButton, {
+    overlay: h(Button, {
       variant: 'outline',
       size: 'md',
       icon: h(FontIcon, { name: copied ? 'common.base:gou' : 'common.base:fuzhi' }),

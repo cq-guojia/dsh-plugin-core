@@ -1420,8 +1420,8 @@ export const docData = {
   "button": {
     "id": "button",
     "heading": {
-      "zh": "Button / IconButton / Segmented",
-      "en": "Button / IconButton / Segmented"
+      "zh": "Button / Segmented",
+      "en": "Button / Segmented"
     },
     "prose": [
       {
@@ -1429,16 +1429,16 @@ export const docData = {
         "en": "Button offers 18 variant tiers (solid / outline / bare). hover/active use token-derived colors (no opacity). The eight extended tiers (purple/pink/cyan/teal/orange/indigo/rose/slate) are solid faces, same source as Chip/Card."
       },
       {
-        "zh": "IconButton：variant: plain|outline|danger（默认 plain，**无底色**）、size（默认 lg）、icon（必填）、label（必填，无障碍名）、color（图标色）、background（底色，不传即无底色）。",
-        "en": "IconButton: variant plain|outline|danger (default plain, **no background**), size (default lg), icon (required), label (required, accessible name), color (icon colour), background (fill; omitted = no fill)."
+        "zh": "没有独立的图标钮控件：**不传 `children` 就是纯图标钮**，同一个 Button 自动变正方形（边长 = 同档高度，内距归零），此时 `label` 必填、当无障碍名。文字钮、纯图标钮共用一套 variant / size / dense / loading，没有第二套皮肤。（0.36.0 起 `IconButton` 已移除：旧写法 `<IconButton icon={…} label={…} />` 一律改成 `<Button variant=\"ghost\" icon={…} label={…} />`。）",
+        "en": "There is no separate icon-button control: **omit `children` and the same Button becomes a square icon button** (side = height of its size step, padding zeroed), with `label` required as the accessible name. Text and icon buttons share one set of variant / size / dense / loading — no second skin."
       },
       {
-        "zh": "`dense` 是两者共用的紧凑图标档：`size` / 高度一律不变，图标放大一档、内距收紧（Button 的 `--btn-pad` 从 10/12/14 收到 6，图标容器从 0.875em 到 1.25em；IconButton 把图标 `<svg>` 的 `width/height` 从 1em 提到 1.25em，正方形宽高不变、四周留白变小）。两者 dense 下图标都是 sm 15px / md·lg 16.25px。IconButton 的按钮显式 `padding:0`、图标 `flex:none`：svg 是 flex item，不禁止收缩会被内距压成窄条，此时改 `width` 或加 `!important` 都无效。给描边细、缩到 sm 看不清的图标用（如文件类型 / 语言图标）；默认 false，原有按钮外观不变。",
-        "en": "`dense` is a shared compact-icon tier for both: `size` and height stay put while the icon grows one step and padding tightens (Button: `--btn-pad` 10/12/14 → 6, icon container 0.875em → 1.25em; IconButton: the icon `<svg>` goes from `width/height:1em` to `1.25em`, same square box, less breathing room). Both give sm 15px / md·lg 16.25px icons. An IconButton sets `padding:0` on itself and `flex:none` on the icon: the svg is a flex item, and without disabling shrinking the padding squeezes it into a narrow strip — changing `width` or adding `!important` cannot fix that. Use it for thin-stroke icons that vanish at `sm` (file-type / language glyphs). Defaults to false, so existing buttons are unchanged."
+        "zh": "`dense` 是紧凑图标档：`size` / 高度一律不变，图标放大一档（1em → 1.25em）、内距收紧（`--btn-pad` 从 10/12/14 收到 6），正方形宽高不动。给描边细、缩到 sm 看不清的图标用（如文件类型 / 语言图标）；默认 false，原有按钮外观不变。",
+        "en": "`dense` is a compact-icon tier: `size` and height stay put while the icon grows one step (1em → 1.25em) and padding tightens (`--btn-pad` 10/12/14 → 6); the square box does not change. Use it for thin-stroke icons that vanish at `sm` (file-type / language glyphs). Defaults to false, so existing buttons are unchanged."
       },
       {
-        "zh": "两者的 loading 语义一致：`onClick` 返回 Promise 就转圈（纯图标钮把图标位换成小圈，`aria-label` 不变、补 `aria-busy`），`onBusyChange` 把「在跑」报出去；受控 `loading` 与它取或 —— 别处刷新也能点亮同一颗按钮。转圈期间按钮自己的图标位（`icon` / `iconRight`）全部让位，只留转圈 + 文字。",
-        "en": "Both share one loading semantics: a Promise-returning `onClick` spins (an icon button swaps its icon for the spinner, keeps `aria-label` and adds `aria-busy`), `onBusyChange` reports \"running\", and the controlled `loading` prop is OR-ed in — an external refresh lights the same button too. While spinning, the button’s own icon slots (`icon` / `iconRight`) all step aside: spinner plus label only."
+        "zh": "loading 语义统一：`onClick` 返回 Promise 就转圈（纯图标钮把图标位换成小圈，`aria-label` 不变、补 `aria-busy`），`onBusyChange` 把「在跑」报出去；受控 `loading` 与它取或 —— 别处刷新也能点亮同一颗按钮。转圈期间按钮自己的图标位（`icon` / `iconRight`）全部让位，只留转圈 + 文字。",
+        "en": "One loading semantics: a Promise-returning `onClick` spins (an icon-only button swaps its icon for the spinner, keeps `aria-label` and adds `aria-busy`), `onBusyChange` reports \"running\", and the controlled `loading` prop is OR-ed in — an external refresh lights the same button too. While spinning, the button’s own icon slots (`icon` / `iconRight`) all step aside: spinner plus label only."
       },
       {
         "zh": "loading 会把前置圈插进按钮：无 icon 的按钮因此宽出 18px（圈 12 + 间距 6），把旁边的按钮挤开。要完全不跳有两条路：给 `width` 定宽（按最长文案 + 18px 留），或传 `loadingText={false}` 让 loading 时只剩一圈。",
@@ -1480,8 +1480,8 @@ export const docData = {
             "type": "boolean",
             "def": "false",
             "desc": {
-              "zh": "**唯一放大档**：高度不变，图标放大、内距收紧（Button / IconButton 同名同义）；不要改成给图标传 size",
-              "en": "**Only enlargement tier**: same height, larger icon and tighter padding (same prop on Button and IconButton); do not pass size to the icon instead"
+              "zh": "**唯一放大档**：高度不变，图标放大、内距收紧；不要改成给图标传 size",
+              "en": "**Only enlargement tier**: same height, larger icon and tighter padding; do not pass size to the icon instead"
             }
           },
           {
@@ -1500,6 +1500,24 @@ export const docData = {
             "desc": {
               "zh": "后置图标（展开箭头、外链）",
               "en": "Trailing icon (expand arrow, external link)"
+            }
+          },
+          {
+            "name": "children",
+            "type": "ReactNode",
+            "def": "—",
+            "desc": {
+              "zh": "文案 / 内容。**不传就是纯图标钮**（盒子自动正方形），常见搭配是 `variant=\"ghost\"` 无底、`info` 等实心档给底色",
+              "en": "Label / content. **Omit it and the button becomes a square icon button**; `variant=\"ghost\"` gives a bare one, solid tiers such as `info` give it a fill"
+            }
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "无障碍名。只有图标、没有 children 时**必填**（漏了会告警一颗无名按钮）；有文字时可省，传了就覆盖文字名",
+              "en": "Accessible name. **Required when there is no children**, otherwise the button has no name; optional with a label, where it overrides the text"
             }
           },
           {
@@ -2277,8 +2295,8 @@ export const docData = {
             "type": "InputGroupAction[]",
             "def": "—",
             "desc": {
-              "zh": "{ icon?, label?, variant?, disabled?, width?, loadingText?, ariaLabel?, onClick }；只给 icon 退化成正方形图标钮（ariaLabel 必给），给 label 走 Button；variant 默认 info，语义色就用 Button 现成的档（success / info / warning / danger），不另调色；**onClick 返回 Promise 时那枚按钮自动转圈禁用**，不用自己传 loading；转圈会把按钮撑宽并挤窄输入框，用 width 或 loadingText={false} 压住",
-              "en": "{ icon?, label?, variant?, disabled?, width?, loadingText?, ariaLabel?, onClick }; icon-only degrades to a square icon button (pass ariaLabel), a label renders a Button; variant defaults to info — for a semantic colour pass Button’s own variant (success / info / warning / danger) instead of a custom colour; **a Promise-returning onClick spins and disables that button** — no loading prop to manage; spinning widens the button and squeezes the input, so hold it with width or loadingText={false}"
+              "zh": "{ icon?, label?, variant?, disabled?, width?, loadingText?, ariaLabel?, onClick }；只给 icon 就是同一个 Button 的正方形纯图标形态（ariaLabel 必给），给 label 就是文字钮；variant 默认 info，语义色就用 Button 现成的档（success / info / warning / danger），不另调色；**onClick 返回 Promise 时那枚按钮自动转圈禁用**，不用自己传 loading；转圈会把按钮撑宽并挤窄输入框，用 width 或 loadingText={false} 压住",
+              "en": "{ icon?, label?, variant?, disabled?, width?, loadingText?, ariaLabel?, onClick }; icon-only is the same Button squared (pass ariaLabel), a label renders a text button; variant defaults to info — for a semantic colour pass Button’s own variant (success / info / warning / danger) instead of a custom colour; **a Promise-returning onClick spins and disables that button** — no loading prop to manage; spinning widens the button and squeezes the input, so hold it with width or loadingText={false}"
             }
           },
           {
@@ -2721,7 +2739,7 @@ export const docData = {
         "en": "One medium tier by default (min-height 28, same as Button md); no size axis; equal 8px padding on all four sides. The core sets a default 13px / 20px type scale (`--dshpc-font-md` / `--dshpc-line-md`, same as Table) — callers need not set it and can override it inline. `bordered` switches the edge on/off — the borderless tier keeps a transparent 1px placeholder so heights stay equal. `selected` only changes appearance; the caller owns the state."
       },
       {
-        "zh": "`hoverable` 默认跟随「整行可点」（可点行开、纯展示行关，与 Table 的 hover 口径一致），可显式开关；hover 取 `--dshpc-listrow-hover-bg`，只比常态深一点点（亮 9% 黑 / 暗 10% 白），不会把整行内容和文字对比度一起改掉；选中取 `--dshpc-listrow-selected-bg`（由 `--dshpc-slate` 派生，亮色 14% / 暗色 26% 两档，暗色不发黑）。整行不是 `<button>`：调用方要往里放 Button / IconButton，嵌 button 是非法 HTML；键盘走 Enter / Space，右侧操作槽挡住冒泡。",
+        "zh": "`hoverable` 默认跟随「整行可点」（可点行开、纯展示行关，与 Table 的 hover 口径一致），可显式开关；hover 取 `--dshpc-listrow-hover-bg`，只比常态深一点点（亮 9% 黑 / 暗 10% 白），不会把整行内容和文字对比度一起改掉；选中取 `--dshpc-listrow-selected-bg`（由 `--dshpc-slate` 派生，亮色 14% / 暗色 26% 两档，暗色不发黑）。整行不是 `<button>`：调用方要往里放 Button，嵌 button 是非法 HTML；键盘走 Enter / Space，右侧操作槽挡住冒泡。",
         "en": "`hoverable` follows row clickability by default (on for clickable rows, off for static ones, matching Table), and can be forced on/off. Hover uses `--dshpc-listrow-hover-bg`, only a touch deeper than the resting row (9% black light / 10% white dark), so it does not repaint the whole row or shift text contrast; selected uses `--dshpc-listrow-selected-bg` (derived from `--dshpc-slate`, 14% light / 26% dark, so the dark theme never goes black). The row is not a `<button>`: callers put Buttons inside it and nested buttons are invalid HTML. Keyboard uses Enter / Space; the actions slot stops propagation."
       }
     ],
@@ -2936,8 +2954,8 @@ export const docData = {
         "en": "A small tag. `tone`: neutral (default) / business / success / warning / danger; `size`: sm (default) / md (12px). Pass `onClick` to make it clickable."
       },
       {
-        "zh": "边界：只做「胶囊标签」。纯图标的小按钮请用 IconButton，别拿 Chip 当图标底板。",
-        "en": "Boundary: pill tags only. For an icon-only button use IconButton; never use Chip as an icon baseplate."
+        "zh": "边界：只做「胶囊标签」。纯图标的小按钮请用 Button 不传 children（自动正方形），别拿 Chip 当图标底板。",
+        "en": "Boundary: pill tags only. For an icon-only button use Button without children (it squares itself); never use Chip as an icon baseplate."
       }
     ],
     "api": [

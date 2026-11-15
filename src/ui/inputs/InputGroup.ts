@@ -2,7 +2,7 @@
  * 组合输入框 —— 输入框 + 后置按钮组（+ 可选前置标题）焊成一体（L2 组件皮肤，P3）
  *
  * 外观与 {@link SplitGroup} 同一套口径：外框 / 圆角 / 相邻 1px 分隔 / 整体聚焦圈都由外壳画，
- * 内件（Input、Button、IconButton）把自己的边框、圆角、外圈交出来。区别只有一条：
+ * 内件（Input、Button）把自己的边框、圆角、外圈交出来。区别只有一条：
  * **这里持状态** —— 输入值受控于调用方，提交点与撤销栈在控件内部。
  *
  * 用法：
@@ -18,7 +18,7 @@
  * 父级直接改 `value`（如外部清空）不算编辑，不进栈。
  */
 import { createElement as h, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { Button, IconButton, type ButtonVariant } from '../actions/Button.js'
+import { Button, type ButtonVariant } from '../actions/Button.js'
 import { Input, withHint, type FieldSize } from './Field.js'
 import { FontIcon } from '../display/font-icon.js'
 import { ensureComponentStyles } from '../infra/css.js'
@@ -49,7 +49,7 @@ export interface InputGroupAction {
   loadingText?: boolean
   /** 无障碍名：只有图标时必给（否则读屏只知道「按钮」）。 */
   ariaLabel?: string
-  /** 点击。**返回 Promise 时按钮自动转圈禁用**（同 Button / IconButton）。 */
+  /** 点击。**返回 Promise 时按钮自动转圈禁用**（同 Button）。 */
   onClick: () => unknown
 }
 
@@ -140,9 +140,9 @@ export function InputGroup(props: InputGroupProps): ReturnType<typeof h> {
     },
   }))
   if (undoable) {
-    nodes.push(h(IconButton, {
+    nodes.push(h(Button, {
       key: 'undo',
-      variant: 'plain',
+      variant: 'ghost',
       size,
       icon: h(FontIcon, { name: 'common.base:chexiao' }),
       label: undoLabel,
@@ -152,14 +152,14 @@ export function InputGroup(props: InputGroupProps): ReturnType<typeof h> {
   }
   actions.forEach((action, i) => {
     if (action.label === undefined && (action.icon === undefined || action.icon === null)) return
-    // 必须把返回值透出去：Button / IconButton 靠「返回值是不是 Promise」决定要不要转圈
+    // 必须把返回值透出去：Button 靠「返回值是不是 Promise」决定要不要转圈
     const run = (): unknown => { commit(); return action.onClick() }
     const off = disabled === true || action.disabled === true
     const onlyIcon = action.label === undefined
     nodes.push(onlyIcon
-      ? h(IconButton, {
+      ? h(Button, {
           key: `action-${String(i)}`,
-          variant: 'plain',
+          variant: 'ghost',
           size,
           icon: action.icon,
           label: action.ariaLabel ?? t('inputAction'),

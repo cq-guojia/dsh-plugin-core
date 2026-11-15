@@ -9,7 +9,7 @@
  * 高度一律吃 `--dshpc-control-h-*`；有边 / 无边同高（边框在内部补回）。
  */
 import { createElement as h, useEffect, useState } from 'react';
-import { IconButton } from '../actions/Button.js';
+import { Button } from '../actions/Button.js';
 import { FieldHint } from '../display/FieldHint.js';
 import { FontIcon } from '../display/font-icon.js';
 import { useOverlayLocked } from '../infra/overlay.js';
@@ -38,7 +38,7 @@ export function Input(props) {
     const [focused, setFocused] = useState(false);
     const [hovered, setHovered] = useState(false);
     // 搜索框的清空钮：在「有焦点 或 鼠标悬停」且「有内容」时出现（悬停也显，免去先点一下聚焦才能清的麻烦）。
-    // 原生 ::-webkit-search-cancel-button 由壳的 CSS 隐掉，换成与 NumberInput 加减号同款的 plain IconButton
+    // 原生 ::-webkit-search-cancel-button 由壳的 CSS 隐掉，换成与 NumberInput 加减号同款的 plain Button
     // （2026-10-28 用户：原生那个不好看）。
     const search = type === 'search';
     const showClear = search && value !== '' && (focused || hovered) && !off;
@@ -68,8 +68,8 @@ export function Input(props) {
     }, hasIcon ? h('span', { className: 'dshpc-iwrap__icon' }, icon) : null, input, 
     // 只在 mousedown 上拦焦点：不拦的话 input 先 blur ⇒ 按钮被卸掉 ⇒ 随后的 click 落空。
     showClear
-        ? h(IconButton, {
-            className: 'dshpc-iwrap__clear', variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:guanbi' }), label: t('fieldClear'),
+        ? h(Button, {
+            className: 'dshpc-iwrap__clear', variant: 'ghost', size, icon: h(FontIcon, { name: 'common.base:guanbi' }), label: t('fieldClear'),
             onMouseDown: (event) => { event.preventDefault(); },
             onClick: () => { onChange(''); },
         })
@@ -136,7 +136,7 @@ export function NumberInput(props) {
     return withHint(h('div', {
         className: `dshpc-num dshpc-num${sizeClass(size)}${off ? ' dshpc-num--disabled' : ''}${className !== undefined && className !== '' ? ` ${className}` : ''}`,
         style,
-    }, h(IconButton, { variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:jian' }), label: decreaseLabel, disabled: off, onClick: () => { bump(-1); } }), 
+    }, h(Button, { variant: 'ghost', size, icon: h(FontIcon, { name: 'common.base:jian' }), label: decreaseLabel, disabled: off, onClick: () => { bump(-1); } }), 
     // 中段（数字 + 后缀）成组居中：消费端把宽度拉大时，「−」钉最左、「+」钉最右、数字组始终居中
     // （用户 2026-10-18：加减号必须在最左 / 最右，宽度由消费端调）。
     h('span', { className: 'dshpc-num__mid' }, h('input', {
@@ -150,7 +150,7 @@ export function NumberInput(props) {
         onBlur: () => { commit(text); },
         onKeyDown: (event) => { if (event.key === 'Enter')
             commit(text); },
-    }), suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null), h(IconButton, { variant: 'plain', size, icon: h(FontIcon, { name: 'common.base:jia' }), label: increaseLabel, disabled: off, onClick: () => { bump(1); } })), props.hint);
+    }), suffix !== undefined ? h('span', { className: 'dshpc-num__suffix' }, suffix) : null), h(Button, { variant: 'ghost', size, icon: h(FontIcon, { name: 'common.base:jia' }), label: increaseLabel, disabled: off, onClick: () => { bump(1); } })), props.hint);
 }
 /**
  * 下拉锚点的统一样式（**全站唯一一份**）：`SelectField` 与 `TaskPicker` 共用 —— 两者是同一类锚点，

@@ -300,11 +300,11 @@ repeat it; callers can still override that tier inline.
 > EN: Icon sizing — one baseline, one enlargement tier
 
 2026-11-08 用户拍板：**图标尺寸只有一个真源** —— `button.css` 的 `svg{width:1em;height:1em}`
-（`.dshpc-iconbtn` / `.dshpc-btn__icon`），跟随各档 `--dshpc-font-*` token。调用方给图标组件传
+（`.dshpc-btn__icon`），跟随各档 `--dshpc-font-*` token。调用方给图标组件传
 `size={N}`、组件局部 CSS 写 `font-size:16px` 或 `svg{width:16px}`，都不许再决定图标大小。
 非按钮的图标容器（`overlay__lead` / `quick-toolbar__item` / `fb__row-icon`）补同一条 `1em` 后代规则，
-让 `size` 传参自动失效。**要放大只走 `dense`**：`1.25em`（`button.css` 两处），由 `Button` /
-`IconButton` 的 `dense` prop 开启，正方形盒与高度档都不动，不新增第二套皮肤。
+让 `size` 传参自动失效。**要放大只走 `dense`**：`1.25em`（`button.css` 两处），由 `Button` 的
+`dense` prop 开启，正方形盒与高度档都不动，不新增第二套皮肤。
 曾经 `code-viewer.css` 给复制钮写死 `svg{16px}`、`panel-dock.css` 给箭头写死 `font-size:16px`，
 都是在核心之外另立一套尺寸，真机上就是「同一个界面里图标忽大忽小」。
 

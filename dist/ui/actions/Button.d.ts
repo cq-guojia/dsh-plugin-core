@@ -56,51 +56,21 @@ export interface ButtonProps {
     className?: string;
     /** 追加样式（只允许补布局，不许覆盖皮肤）。 */
     style?: CSSProperties;
-    /** 文案 / 内容。 */
+    /** 文案 / 内容。**不传 = 纯图标钮**（盒子自动正方形，此时 `label` 必填）。 */
     children?: ReactNode;
+    /**
+     * 无障碍名。只有图标、没有文字时**必填**（读屏与 hover 都要它）；
+     * 有文字时可以省，传了就覆盖文字名。
+     */
+    label?: string;
     /** 其余原生 button 属性（type / disabled / title / aria-* / onClick …）原样透传。 */
     [key: string]: unknown;
 }
-export interface IconButtonProps {
-    /** 外观档（默认 plain：无底色、无边框）。 */
-    variant?: 'plain' | 'outline' | 'danger';
-    /** 高度档（默认 lg）。 */
-    size?: ButtonSize;
-    /** 紧凑图标档：宽高不变，图标放大、四周留白变小（与 Button.dense 同名同义）。 */
-    dense?: boolean;
-    /** 图标（必填）。 */
-    icon: ReactNode;
-    /** 无障碍名（必填）。 */
-    label: string;
-    /** 图标色（任意 CSS 色值）；hover 按它混出浅底。 */
-    color?: string;
-    /** 底色（任意 CSS 色值）；不传 = 无底色。hover 按它压深。 */
-    background?: string;
-    /** 加载中：图标位换成小圈并禁用（纯图标钮没有文字，圈就是它的全部内容）。与「点击自动 loading」取或。 */
-    loading?: boolean;
-    /** 点击回调；**返回 Promise 自动 loading**，settle 后恢复。 */
-    onClick?: (event: MouseEvent<HTMLButtonElement>) => unknown;
-    /** 把「这个按钮正在跑」报出去（如锁死所在弹窗）。 */
-    onBusyChange?: (busy: boolean) => void;
-    /** 追加 class。 */
-    className?: string;
-    /** 追加样式。 */
-    style?: CSSProperties;
-    /** 其余原生 button 属性原样透传。 */
-    [key: string]: unknown;
-}
 /**
- * 渲染一个「图标 + 文案」按钮。
+ * 渲染一个按钮：有 `children` 就是文字钮，只有 `icon` 就是正方形纯图标钮。
  *
  * @param props 见 {@link ButtonProps}。
  * @returns 按钮元素。
  */
 export declare function Button(props: ButtonProps): ReturnType<typeof h>;
-/**
- * 渲染一个纯图标按钮。
- *
- * @param props 见 {@link IconButtonProps}。
- * @returns 图标按钮元素。
- */
-export declare function IconButton(props: IconButtonProps): ReturnType<typeof h>;
 //# sourceMappingURL=Button.d.ts.map

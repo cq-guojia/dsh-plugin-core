@@ -209,7 +209,7 @@ export type {
   NotifyOptions,
 } from './feedback/toast-queue.js'
 
-export { Button, IconButton, type ButtonProps, type ButtonSize, type ButtonVariant, type IconButtonProps } from './actions/Button.js'
+export { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './actions/Button.js'
 export { Segmented, type SegmentedProps, type SegmentedTone } from './inputs/Segmented.js'
 export { SplitGroup, type SplitGroupProps } from './layout/SplitGroup.js'
 export {
