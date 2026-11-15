@@ -17,6 +17,22 @@ export type TaskNotificationStatus = 'running' | 'done' | 'failed';
 export type TaskNotificationDetail = string | number | boolean | null | readonly TaskNotificationDetail[] | {
     readonly [key: string]: TaskNotificationDetail;
 };
+/**
+ * 一条任务上的按钮：`label` 是显示文案，`run` 是点击时执行的方法。
+ *
+ * `run` 是函数，只能在创建它的页面里执行，所以它**不进池、不过线**：池只存 label，
+ * 方法按 `任务id#下标` 放在本页内存的注册表里。别的页面点按钮时，消息发回创建页由它执行
+ * —— 与 VS Code 命令表、Chrome 通知按钮同一形态：边界上只走 id 与纯数据。
+ */
+export interface TaskNotificationAction {
+    readonly label: string;
+    /** 点击时执行；匿名函数即可。抛错由池捕获并算作本次调用失败。 */
+    readonly run: () => void;
+}
+/** 记录里能跨页的那部分：只有文案。下标即动作 id。 */
+export interface TaskNotificationActionInfo {
+    readonly label: string;
+}
 /** Plain, structured-cloneable data. No functions, no ReactNode, no components. */
 export interface TaskNotificationRecord {
     readonly id: string;
@@ -34,6 +50,8 @@ export interface TaskNotificationRecord {
     /** 原始 SVG 源，消费端自行渲染；核心只存不解释，注入风险由调用方承担。 */
     readonly iconSvg?: string;
     readonly detail?: TaskNotificationDetail;
+    /** 按钮文案；下标即动作 id。方法本身留在创建页内存里，记录里不带函数。 */
+    readonly actions?: readonly TaskNotificationActionInfo[];
     readonly status: TaskNotificationStatus;
     readonly startedAt: number;
     readonly updatedAt: number;
@@ -57,6 +75,8 @@ export interface TaskNotificationInput {
     icon?: string;
     iconSvg?: string;
     detail?: TaskNotificationDetail;
+    /** 按钮：文案 + 点击执行的方法。方法不会被序列化，只在创建它的页面里执行。 */
+    actions?: readonly TaskNotificationAction[];
     /** 不进默认列表；默认关闭。开了之后默认带 5 分钟超时兜底。 */
     hidden?: boolean;
     /** 毫秒；0 = 不回收。缺省：hidden 用 5 分钟，可见任务不回收。 */
@@ -211,6 +231,11 @@ export interface TaskNotificationPool {
     broadcast(input: TaskNotificationMessageInput): TaskNotificationMessage;
     /** Settle every task this page still owns; handles are not needed. */
     settleLocal(reason?: string): number;
+    /**
+     * 执行一条任务的按钮（`actions[index]`）。本页条目立即执行；跨页条目发回创建页执行并等它回 ack
+     * （2s 没有回应算失败）。失败一律 false，不抛异常给调用方。
+     */
+    runAction(taskId: string, index: number): Promise<boolean>;
     canRestore(task: TaskNotificationRecord): boolean;
     /** Emits a local `restored` event. Returns false for cross-page tasks. */
     requestRestore(taskId: string): boolean;
@@ -242,6 +267,8 @@ export interface NotifyTaskOptions {
     group?: string;
     /** 入池即带的详情；任意 JSON 值，库内部克隆一份私有副本。 */
     detail?: TaskNotificationDetail;
+    /** 后台条目上的按钮：文案 + 点击执行的方法（匿名函数即可，不会被序列化）。 */
+    actions?: readonly TaskNotificationAction[];
     projectLabel?: string;
     groupLabel?: string;
     /** 图标标识（图标名 / 字体类名），核心不解释，消费端渲染。 */

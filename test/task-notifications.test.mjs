@@ -961,3 +961,234 @@ test('可见任务默认不回收：没有 timeoutMs 就一直挂着', async () 
   assert.equal(localTask(pool, handle)?.title, 'visible stays')
   handle.done()
 })
+
+// ── 按钮：方法留在本页，跨页只走 id 与文案 ──────────────────────────────────────
+
+test('按钮：记录里只有文案，runAction 执行注册时给的匿名函数', async () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const calls = []
+  const handle = pool.register({
+    group: 'g',
+    title: 'needs a click',
+    actions: [
+      { label: '重新打开', run: () => calls.push('reopen') },
+      { label: '知道了', run: () => calls.push('ack') },
+    ],
+  })
+  const row = localTask(pool, handle)
+  assert.deepEqual(row.actions, [{ label: '重新打开' }, { label: '知道了' }], '记录里只带文案')
+  assert.equal(row.actions[0].run, undefined, '函数不进池')
+  assert.equal(await pool.runAction(handle.id, 0), true)
+  assert.equal(await pool.runAction(handle.id, 1), true)
+  assert.equal(await pool.runAction(handle.id, 0), true, '同一个按钮可以再点一次（runner 不会被执行一次就删）')
+  assert.deepEqual(calls, ['reopen', 'ack', 'reopen'])
+  handle.done()
+})
+
+test('按钮：越界、没有动作、任务不存在、方法抛错，一律 false', async () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const plain = pool.register({ group: 'g', title: 'no actions' })
+  const empty = pool.register({ group: 'g', title: 'empty actions', actions: [] })
+  assert.equal(localTask(pool, empty)?.actions, undefined, '空数组不写字段')
+  const boom = pool.register({
+    group: 'g',
+    title: 'throws',
+    actions: [{ label: 'boom', run: () => { throw new Error('nope') } }],
+  })
+  const originalError = console.error
+  console.error = () => {}
+  try {
+    assert.equal(await pool.runAction(plain.id, 0), false, '没有动作')
+    assert.equal(await pool.runAction(empty.id, 0), false, '空动作数组')
+    assert.equal(await pool.runAction(boom.id, 1), false, '下标越界')
+    assert.equal(await pool.runAction(boom.id, 0), false, '抛错算失败，不冒到调用方')
+    assert.equal(await pool.runAction('no-such-task', 0), false, '任务不存在')
+  } finally {
+    console.error = originalError
+  }
+  plain.done()
+  empty.done()
+  boom.done()
+})
+
+test('按钮：任务结束与 dispose 都清掉方法，不留闭包', async () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  let called = 0
+  const handle = pool.register({
+    group: 'g',
+    title: 'brief',
+    actions: [{ label: 'go', run: () => { called += 1 } }],
+  })
+  assert.equal(await pool.runAction(handle.id, 0), true)
+  handle.done()
+  assert.equal(await pool.runAction(handle.id, 0), false, '结束就查不到')
+
+  const kept = pool.register({
+    group: 'g',
+    title: 'kept',
+    actions: [{ label: 'go', run: () => { called += 1 } }],
+  })
+  pool.dispose()
+  assert.equal(await pool.runAction(kept.id, 0), false, 'dispose 后条目还在也不能调')
+  assert.equal(called, 1)
+})
+
+test('按钮：label 为空或 run 不是函数当场抛错，池里不留行', () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  assert.throws(
+    () => pool.register({ group: 'g', title: 'bad label', actions: [{ label: '  ', run: () => {} }] }),
+    /label/,
+  )
+  assert.throws(
+    () => pool.register({ group: 'g', title: 'bad run', actions: [{ label: 'ok', run: 'nope' }] }),
+    /run/,
+  )
+  assert.equal(pool.getSnapshot().tasks.length, 0)
+})
+
+test('按钮跨页：B 点 A 的按钮，A 的匿名函数执行，B 拿到 true', async () => {
+  const channelName = testChannel()
+  const a = makePool(channelName, { origin: 'page-a' })
+  const b = makePool(channelName, { origin: 'page-b' })
+  const calls = []
+  try {
+    a.connect()
+    b.connect()
+    const handle = a.register({
+      group: 'g',
+      title: 'remote click',
+      actions: [
+        { label: '重新打开', run: () => calls.push('reopen') },
+        { label: '知道了', run: () => calls.push('ack') },
+      ],
+    })
+    await waitFor(() => b.getSnapshot().tasks.length === 1, 'B 看到 A 的条目')
+    const remote = b.getSnapshot().tasks[0]
+    assert.deepEqual(remote.actions, [{ label: '重新打开' }, { label: '知道了' }], '文案跨页可见')
+    // 并发两个 invoke：reqId 各自配对，互不串门
+    assert.deepEqual(await Promise.all([b.runAction(remote.id, 0), b.runAction(remote.id, 1)]), [true, true])
+    assert.deepEqual(calls.sort(), ['ack', 'reopen'])
+    assert.equal(await b.runAction(remote.id, 2), false, '越界不发请求')
+    handle.done()
+  } finally {
+    a.dispose()
+    b.dispose()
+  }
+})
+
+test('按钮跨页：owner 页不在了就没有 ack，超时按失败算', async () => {
+  const channelName = testChannel()
+  const pool = makePool(channelName, { origin: 'page-watcher' })
+  const sender = new BroadcastChannel(channelName)
+  sender.unref?.()
+  try {
+    pool.connect()
+    sender.postMessage({
+      kind: 'shard',
+      origin: 'page-ghost',
+      seq: 1,
+      tasks: [{ ...wireTask('page-ghost', 'g1'), actions: [{ label: 'go' }] }],
+    })
+    await waitFor(() => pool.getSnapshot().tasks.length === 1, '看到幽灵页的条目')
+    const started = Date.now()
+    assert.equal(await pool.runAction('g1', 0), false)
+    assert.ok(Date.now() - started >= 1900, '等满超时才给 false')
+  } finally {
+    sender.close()
+    pool.dispose()
+  }
+})
+
+test('按钮跨页：invoke 只执行点名的页面', async () => {
+  const channelName = testChannel()
+  const pool = makePool(channelName, { origin: 'page-a' })
+  const sender = new BroadcastChannel(channelName)
+  sender.unref?.()
+  let ran = 0
+  try {
+    pool.connect()
+    const handle = pool.register({
+      group: 'g',
+      title: 'mine',
+      actions: [{ label: 'go', run: () => { ran += 1 } }],
+    })
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    sender.postMessage({ kind: 'invoke', origin: 'page-x', reqId: 'r1', target: 'page-b', taskId: handle.id, index: 0 })
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    assert.equal(ran, 0, '点名别页不执行')
+    sender.postMessage({ kind: 'invoke', origin: 'page-x', reqId: 'r2', target: 'page-a', taskId: handle.id, index: 0 })
+    await waitFor(() => ran === 1, '点名本页才执行')
+    handle.done()
+  } finally {
+    sender.close()
+    pool.dispose()
+  }
+})
+
+test('按钮：已过回收窗口、还没被清扫的行不能点', async () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const handle = pool.register({
+    group: 'g',
+    title: 'expired',
+    hidden: true,
+    timeoutMs: 20,
+    actions: [{ label: 'go', run: () => {} }],
+  })
+  await new Promise((resolve) => setTimeout(resolve, 40))
+  assert.equal(await pool.runAction(handle.id, 0), false, '界面看不到的行不执行')
+})
+
+test('过期行被 update 触碰也不会复活成僵尸（publish 用 updater）', async () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const handle = pool.register({ group: 'g', title: 'expired then updated', hidden: true, timeoutMs: 20 })
+  await new Promise((resolve) => setTimeout(resolve, 40))
+  handle.update({ detail: 'late' })
+  assert.equal(localTask(pool, handle), undefined, '结算掉的行走不到快照里')
+  assert.equal(handle.isSettled, true)
+})
+
+test('分片被删后同 seq 重发能被接受，不会永久失明', async () => {
+  const channelName = testChannel()
+  const pool = makePool(channelName, { origin: 'page-watcher' })
+  const sender = new BroadcastChannel(channelName)
+  sender.unref?.()
+  try {
+    pool.connect()
+    sender.postMessage({ kind: 'shard', origin: 'page-x', seq: 5, tasks: [wireTask('page-x', 'x1')] })
+    await waitFor(() => pool.getSnapshot().tasks.length === 1, '先收到 seq=5')
+    sender.postMessage({ kind: 'bye', origin: 'page-x', seq: 6 })
+    await waitFor(() => pool.getSnapshot().tasks.length === 0, 'bye 后分片被删')
+    sender.postMessage({ kind: 'shard', origin: 'page-x', seq: 6, tasks: [wireTask('page-x', 'x1')] })
+    await waitFor(() => pool.getSnapshot().tasks.length === 1, '同 seq 的全量重新被接受')
+  } finally {
+    sender.close()
+    pool.dispose()
+  }
+})
+
+test('跨页畸形 actions 整条丢弃：空文案 / 不是数组', async () => {
+  const channelName = testChannel()
+  const pool = makePool(channelName, { origin: 'page-watcher' })
+  const sender = new BroadcastChannel(channelName)
+  sender.unref?.()
+  try {
+    pool.connect()
+    sender.postMessage({
+      kind: 'shard',
+      origin: 'page-x',
+      seq: 1,
+      tasks: [{ ...wireTask('page-x', 'x1'), actions: [{ label: '  ' }] }],
+    })
+    sender.postMessage({
+      kind: 'shard',
+      origin: 'page-x',
+      seq: 2,
+      tasks: [{ ...wireTask('page-x', 'x1'), actions: 'nope' }],
+    })
+    await new Promise((resolve) => setTimeout(resolve, 80))
+    assert.equal(pool.getSnapshot().tasks.length, 0, '坏 actions 不进池')
+  } finally {
+    sender.close()
+    pool.dispose()
+  }
+})

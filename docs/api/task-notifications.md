@@ -34,7 +34,7 @@
 
 > EN: Icons: `icon` (an icon name or icon-font class) and `iconSvg` (raw SVG source) are plain strings; core stores them without interpreting, and rendering plus injection safety are the consumer's job — components and ReactNodes cannot cross pages.
 
-NaN
+两级分组：`project`（项目）在 app 入口用 `setDefaultTaskProject()` 设一次，`group` 是项目内的二级分类（缺省 `default`）。读取三档：不传 / 空数组 = 本项目全部二级；一个或多个名字 = 本项目这几个二级；`'*'` = 所有项目所有二级。第三参 `{ project }` 可以换项目，`{ project: null }` 表示不限项目。项目名 core 取不到，所以必须有人设；`projectLabel` / `groupLabel` 只覆盖显示名。
 
 > EN: Two levels: `project` is set once at app start with `setDefaultTaskProject()`, and `group` is a second-level bucket inside it (default `default`). Reading has three tiers: omitted or empty = every group of the current project; one or more names = only those groups; `'*'` = every project and every group. A third argument `{ project }` switches projects, and `{ project: null }` drops the project filter. Core cannot discover a project name, so somebody must set it; `projectLabel` / `groupLabel` only override display names.
 
@@ -50,9 +50,13 @@ NaN
 
 > EN: The caller decides when a task ends: `done()` / `fail()` are idempotent, and `track(promise)` settles on both success and rejection while returning the original promise. `settled` resolves only on a real ending; collapsing emits a `backgrounded` event instead. This is the "two-state promise plus collapse as event" contract — callers still await ordinary two-state promises.
 
-跨页走浏览器原生 `BroadcastChannel`：每页广播自己那份全量分片并带单调 `seq`，旧序号、重复与畸形消息一律丢弃；`pagehide` / `pageshow` 覆盖标签页离开、bfcache 与休眠恢复。只覆盖同源标签页，不覆盖不同浏览器、不同 profile 或不同机器。跨页条目能看不能点，只有创建它的那一页能请求还原。
+按钮：注册时给 `actions: [{ label, run }]`，`run` 就是点按钮时要执行的方法（匿名函数即可），可以给多个。方法**不会被序列化**：记录里只存 `label`，所以别的标签页也看得见、画得出按钮；方法本体按 `任务id#下标` 留在创建它的页面内存里，页面一关就没了。点按钮调 `taskNotifications.runAction(task.id, index)`，返回 `Promise<boolean>`：本页条目立即执行，跨页条目发回创建页执行并等它回 ack，2 秒没有回应算失败。查不到方法（页面重挂、句柄丢了）、下标越界、方法抛错，一律 `false`——调用方据此提示「已无法还原」，不要当成功。方法随条目结束一起释放，不会一直攥着组件状态。
 
-> EN: Cross-page sync uses the native `BroadcastChannel`: each page broadcasts its own full shard with a monotonic `seq`; stale, duplicate and malformed messages are dropped. `pagehide` / `pageshow` cover tab teardown, bfcache and sleep/wake. Only same-origin tabs are covered — not other browsers, profiles or machines. Cross-page rows are read-only; only the owning page may request a restore.
+> EN: Actions: pass `actions: [{ label, run }]` at registration — `run` is the method to execute on click (an anonymous function is fine) and there can be several. Methods are **never serialized**: the record stores only `label`, so other tabs can see and render the buttons, while the method itself stays in the memory of the page that created it, keyed by `taskId#index`, and dies with that page. Click with `taskNotifications.runAction(task.id, index)`, which returns `Promise<boolean>`: local rows run immediately, rows from another page are sent back to the owner page and wait for its ack, and no answer within 2s counts as failure. A missing method (page reload, lost handle), an out-of-range index or a throwing action all resolve `false` — show "cannot restore any more" instead of assuming success. Methods are released together with the row, so they never keep component state alive.
+
+跨页走浏览器原生 `BroadcastChannel`：每页广播自己那份全量分片并带单调 `seq`，旧序号、重复与畸形消息一律丢弃；`pagehide` / `pageshow` 覆盖标签页离开、bfcache 与休眠恢复。只覆盖同源标签页，不覆盖不同浏览器、不同 profile 或不同机器。跨页条目能看、有 `actions` 的也能点（请求发回创建页执行）；`requestRestore` 仍是本页专用的旧通道，只发 `restored` 事件。
+
+> EN: Cross-page sync uses the native `BroadcastChannel`: each page broadcasts its own full shard with a monotonic `seq`; stale, duplicate and malformed messages are dropped. `pagehide` / `pageshow` cover tab teardown, bfcache and sleep/wake. Only same-origin tabs are covered — not other browsers, profiles or machines. Rows from another page are visible, and clickable when they carry `actions` (the request is executed by the owning page); `requestRestore` remains the local-only legacy path that just emits a `restored` event.
 
 页面消失要有人收尾，否则留下永远 `running` 的僵尸条目：它不属于本页、本页也没有它的句柄，谁都结束不掉。判活用浏览器原生 Web Locks——每页持一把以 origin 命名的锁，其他页用 `ifAvailable` 探测同名锁，立刻拿得到就说明那页已经不在了；探测只发生在收到分片与页面重新可见时，没有定时器，连续两次（间隔 250ms）都拿得到才清。`navigator.locks` 不可用时不清理，其余行为不变。崩溃掉的渲染进程规范不保证释放锁，那类残留留到浏览器重启。
 
@@ -82,9 +86,10 @@ NaN
 | `select(groups?, options?)` | `(groups?: TaskNotificationGroupFilter, options?: TaskNotificationSelectOptions) => readonly TaskNotificationRecord[]` | — | 不传 = 本项目全部二级 | 池内自带缓存的过滤；与 selectTaskNotifications 同一套三档语义 | Cached pool-level filtering; same three-tier contract as selectTaskNotifications |
 | `register(input)` | `(input: TaskNotificationInput) => TaskNotificationHandle` | — | — | 登记一条真实任务并返回句柄 | Registers a real task and returns its handle |
 | `settleLocal(reason?)` | `(reason?: string) => number` | — | — | 结束本页仍持有的全部任务并返回条数，不需要句柄；跨页条目不动 | Ends every task this page still owns and returns the count without needing a handle; rows from other pages are untouched |
-| `canRestore(task)` | `(task: TaskNotificationRecord) => boolean` | — | — | 只有本页创建的条目可还原 | Only rows created on this page can be restored |
-| `requestRestore(taskId)` | `(taskId: string) => boolean` | — | — | 发本地 restored 事件；跨页条目返回 false，不跨页传递 | Emits a local restored event; returns false for cross-page rows, never crosses pages |
-| `dispose()` | `() => void` | — | — | 关通道与摘监听，保留状态；下次 connect 会复活并重发全量分片 | Closes the channel and detaches listeners but keeps state; the next connect revives it and rebroadcasts a full shard |
+| `runAction(taskId, index)` | `(taskId: string, index: number) => Promise<boolean>` | — | — | 执行任务上的第 index 个按钮：本页立即执行；跨页发回创建页并等 ack（2s 超时）。查不到方法、越界、抛错一律 false | Runs the index-th action of a task: locally at once, or back on the owning page with an ack (2s timeout). Missing method, out-of-range index and throwing actions all resolve false |
+| `canRestore(task)` | `(task: TaskNotificationRecord) => boolean` | — | — | 旧 restored 通道的判据：只对本页条目为真。它**不参与按钮判定**——跨页条目 canRestore 为 false 但有 actions 时照样能点 | Judgement for the legacy restored channel: true only for rows of this page. It does **not** decide buttons — a row from another page returns false here yet stays clickable when it carries actions |
+| `requestRestore(taskId)` | `(taskId: string) => boolean` | — | — | 只发本地 restored 事件，跨页条目返回 false；新代码请用 actions + runAction | Emits a local restored event only and returns false for cross-page rows; new code should use actions + runAction |
+| `dispose()` | `() => void` | — | — | 关通道与摘监听，保留状态；下次 connect 会复活并重发全量分片。按钮方法随之清空，存活条目的按钮从此刻起不可执行（要恢复得重新 register） | Closes the channel and detaches listeners but keeps state; the next connect revives it and rebroadcasts a full shard. Action methods are dropped, so surviving rows stay unclickable from then on (re-register to get them back) |
 
 | 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|---|
@@ -92,13 +97,15 @@ NaN
 | `input.group` | `string` | — | 'default' | 二级分组：项目内的分类；不能是空字符串 | Second-level bucket inside the project; must not be empty |
 | `input.title` | `string` | 必填 | — | 条目标题 | Row title |
 | `input.detail` | `TaskNotificationDetail` | — | — | 任意 JSON 值（对象 / 数组 / 数字 / 布尔 / null）；入池前克隆私有副本，函数与类实例当场抛错 | Any JSON value (object / array / number / boolean / null); cloned into a private copy on the way in, while functions and class instances throw immediately |
+| `input.actions` | `readonly TaskNotificationAction[]` | — | — | 按钮：`{ label, run }` 数组，run 是匿名函数、不进池不过线，只在创建页执行；label 为空或 run 不是函数时注册当场抛错 | Actions: an array of `{ label, run }`; run is an anonymous function that never enters the pool or the wire and runs only on the creating page. An empty label or a non-function run throws at registration |
+| `record.actions` | `readonly { label: string }[] \| undefined` | — | undefined | 跨页可见的只有按钮文案，下标即动作 id；没有按钮的记录不带这个字段 | Only labels cross pages, and the index is the action id; rows without actions carry no such field |
 | `input.projectLabel / groupLabel` | `string` | — | — | 项目 / 分组的显示名覆盖 | Project / group display-name overrides |
 | `handle.update(patch)` | `(patch: TaskNotificationPatch) => void` | — | — | 只改纯数据字段，随时可调用 | Updates plain data fields, callable any time |
 | `handle.background()` | `() => void` | — | — | 标记收起并发 backgrounded 事件，不结算 | Marks the task backgrounded and emits a backgrounded event without settling |
 | `handle.done(detail?) / fail(reason?)` | `(detail?: TaskNotificationDetail) => void` | — | — | 幂等；成功后条目立刻移出池并发 settled 事件 | Idempotent; removes the row immediately and emits a settled event |
 | `handle.track(promise)` | `<T>(promise: Promise<T>) => Promise<T>` | — | — | 句柄已在手时的兜底收尾；返回原 Promise。包一段异步的日常写法是 notifyTask.run | Fallback settlement when the handle is already in hand; returns the original promise. The everyday way to wrap async work is notifyTask.run |
 | `handle.settled` | `Promise<TaskNotificationSettlement>` | — | — | 只在真正结束时兑现；收起不兑现 | Resolves only on a real ending, never on collapse |
-| `subscribeTaskNotificationEvents(listener)` | `(listener: TaskNotificationEventListener) => () => void` | — | — | 监听 registered / updated / backgrounded / settled / restored / peer-left | Listens for registered / updated / backgrounded / settled / restored / peer-left |
+| `subscribeTaskNotificationEvents(listener)` | `(listener: TaskNotificationEventListener) => () => void` | — | — | 监听 registered / updated / backgrounded / settled / message / restored / peer-left | Listens for registered / updated / backgrounded / settled / message / restored / peer-left |
 | `createTaskNotificationPool(options?)` | `(options?: TaskNotificationPoolOptions) => TaskNotificationPool` | — | — | 独立池；测试可注入 origin / channelName / offline / lifecycle / locks（locks: null 关掉失联清理） | Standalone pool; tests can inject origin / channelName / offline / lifecycle / locks (locks: null disables dead-page cleanup) |
 | `TASK_NOTIFICATIONS_LOCK_PREFIX` | `string` | — | — | 存活锁名前缀，后接本页 origin；协议升级时随键一起换命名空间 | Liveness lock-name prefix, followed by the page origin; the protocol bump carries it to a new namespace |
 
@@ -154,6 +161,26 @@ notifyMessage('已保存', { group: 'notice', icon: 'check', level: 'success' })
 // 句柄已经在手时才用得上的兜底：与 run 同一个收尾，不改变原 Promise 的结算语义
 // await handle.track(otherWork())   // otherWork(): Promise<void>，由调用方提供
 // await handle.settled              // 只在真正结束时兑现；收起不兑现
+```
+
+```ts id="bt-actions-example"
+import { notifyTask, taskNotifications } from 'dsh-plugin-core/ui'
+
+// ① 弹窗这边：按钮名 + 点它干什么。run 写匿名函数就行，不用起名
+const handle = notifyTask('收到确认', {
+  detail: { sessionId: 'abc' },
+  actions: [
+    { label: '重新打开', run: () => reopenDialog('abc') },
+    { label: '知道了', run: () => handle.done() },
+  ],
+})
+handle.background()   // 收起到后台
+
+// ② 通知中心这边：文案来自记录（task.actions[i].label），点击按【下标】调
+//    方法本身就在创建它的页面里，不会随记录传过来
+const ok = await taskNotifications.runAction(task.id, 0)
+// ok=false 只代表这次没触发成功（任务已结束、下标越界、方法没了或创建页没回应）
+if (!ok) showToast('该任务已无法还原')   // showToast 由调用方提供
 ```
 
 ## 更新日志

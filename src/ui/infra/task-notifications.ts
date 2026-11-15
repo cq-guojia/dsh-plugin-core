@@ -32,6 +32,8 @@ export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v2
 export const TASK_NOTIFICATIONS_PROJECT_KEY = Symbol.for('dsh-plugin-core/task-notifications/project/v2')
 /** 静默任务的默认回收窗口；与 TanStack Query 的 gcTime 默认值一致。 */
 export const TASK_NOTIFICATIONS_HIDDEN_TTL_MS = 5 * 60_000
+/** 跨页点按钮等 ack 的上限；超时按失败算，界面据此提示「已无法还原」。 */
+const INVOKE_TIMEOUT_MS = 2_000
 
 export type TaskNotificationStatus = 'running' | 'done' | 'failed'
 
@@ -48,6 +50,24 @@ export type TaskNotificationDetail =
   | null
   | readonly TaskNotificationDetail[]
   | { readonly [key: string]: TaskNotificationDetail }
+
+/**
+ * 一条任务上的按钮：`label` 是显示文案，`run` 是点击时执行的方法。
+ *
+ * `run` 是函数，只能在创建它的页面里执行，所以它**不进池、不过线**：池只存 label，
+ * 方法按 `任务id#下标` 放在本页内存的注册表里。别的页面点按钮时，消息发回创建页由它执行
+ * —— 与 VS Code 命令表、Chrome 通知按钮同一形态：边界上只走 id 与纯数据。
+ */
+export interface TaskNotificationAction {
+  readonly label: string
+  /** 点击时执行；匿名函数即可。抛错由池捕获并算作本次调用失败。 */
+  readonly run: () => void
+}
+
+/** 记录里能跨页的那部分：只有文案。下标即动作 id。 */
+export interface TaskNotificationActionInfo {
+  readonly label: string
+}
 
 /** Plain, structured-cloneable data. No functions, no ReactNode, no components. */
 export interface TaskNotificationRecord {
@@ -66,6 +86,8 @@ export interface TaskNotificationRecord {
   /** 原始 SVG 源，消费端自行渲染；核心只存不解释，注入风险由调用方承担。 */
   readonly iconSvg?: string
   readonly detail?: TaskNotificationDetail
+  /** 按钮文案；下标即动作 id。方法本身留在创建页内存里，记录里不带函数。 */
+  readonly actions?: readonly TaskNotificationActionInfo[]
   readonly status: TaskNotificationStatus
   readonly startedAt: number
   readonly updatedAt: number
@@ -90,6 +112,8 @@ export interface TaskNotificationInput {
   icon?: string
   iconSvg?: string
   detail?: TaskNotificationDetail
+  /** 按钮：文案 + 点击执行的方法。方法不会被序列化，只在创建它的页面里执行。 */
+  actions?: readonly TaskNotificationAction[]
   /** 不进默认列表；默认关闭。开了之后默认带 5 分钟超时兜底。 */
   hidden?: boolean
   /** 毫秒；0 = 不回收。缺省：hidden 用 5 分钟，可见任务不回收。 */
@@ -243,6 +267,11 @@ export interface TaskNotificationPool {
   broadcast(input: TaskNotificationMessageInput): TaskNotificationMessage
   /** Settle every task this page still owns; handles are not needed. */
   settleLocal(reason?: string): number
+  /**
+   * 执行一条任务的按钮（`actions[index]`）。本页条目立即执行；跨页条目发回创建页执行并等它回 ack
+   * （2s 没有回应算失败）。失败一律 false，不抛异常给调用方。
+   */
+  runAction(taskId: string, index: number): Promise<boolean>
   canRestore(task: TaskNotificationRecord): boolean
   /** Emits a local `restored` event. Returns false for cross-page tasks. */
   requestRestore(taskId: string): boolean
@@ -288,6 +317,20 @@ export function setDefaultTaskProject(project: string | undefined): void {
 
 export function getDefaultTaskProject(): string | undefined {
   return projectSlot()?.value
+}
+
+/** 校验按钮并只抽出能跨页的部分（文案）；方法本体由调用方保管。 */
+function normalizeActions(actions?: readonly TaskNotificationAction[]): readonly TaskNotificationActionInfo[] {
+  if (actions === undefined) return []
+  return actions.map((action) => {
+    if (typeof action.label !== 'string' || action.label.trim() === '') {
+      throw new Error('task notification action label must be a non-empty string')
+    }
+    if (typeof action.run !== 'function') {
+      throw new Error('task notification action run must be a function')
+    }
+    return { label: action.label }
+  })
 }
 
 function normalizeGroup(group?: string): string {
@@ -429,6 +472,10 @@ type WireMessage =
   /** 一次性广播：不携带任何状态，收到即 emit，不参与 baseline 与分片序号。 */
   | { kind: 'message'; origin: string; seq: number; message: TaskNotificationMessage }
   | { kind: 'bye'; origin: string; seq: number }
+  /** 请创建页执行某条任务的某个按钮：只带 id 与下标，函数在本页不会被序列化。 */
+  | { kind: 'invoke'; origin: string; reqId: string; target: string; taskId: string; index: number }
+  /** 创建页对 invoke 的回应：跑没跑成。没这条回应，发起页只能等到超时。 */
+  | { kind: 'invoked'; origin: string; reqId: string; ok: boolean }
 
 interface Shard {
   origin: string
@@ -467,9 +514,18 @@ function cloneDetail(value: TaskNotificationDetail | undefined): TaskNotificatio
     : (JSON.parse(JSON.stringify(value)) as TaskNotificationDetail)
 }
 
+/** 记录里只允许出现文案；带上函数说明发送方搞错了，直接当畸形消息丢掉。 */
+function isActionInfos(value: unknown): value is readonly TaskNotificationActionInfo[] {
+  return (
+    Array.isArray(value) &&
+    value.every((item) => isRecord(item) && typeof item.label === 'string' && item.label.trim() !== '')
+  )
+}
+
 function isTaskRecord(value: unknown): value is TaskNotificationRecord {
   if (!isRecord(value)) return false
   if (value.detail !== undefined && !isDetail(value.detail)) return false
+  if (value.actions !== undefined && !isActionInfos(value.actions)) return false
   return (
     typeof value.id === 'string' &&
     typeof value.project === 'string' &&
@@ -512,6 +568,30 @@ function parseMessage(value: unknown): WireMessage | null {
   if (value.kind === 'message') {
     if (typeof value.seq !== 'number' || !isWireMessageValue(value.message)) return null
     return { kind: 'message', origin: value.origin, seq: value.seq, message: value.message }
+  }
+  if (value.kind === 'invoke') {
+    if (
+      typeof value.reqId !== 'string' ||
+      typeof value.target !== 'string' ||
+      typeof value.taskId !== 'string' ||
+      typeof value.index !== 'number' ||
+      !Number.isSafeInteger(value.index) ||
+      value.index < 0
+    ) {
+      return null
+    }
+    return {
+      kind: 'invoke',
+      origin: value.origin,
+      reqId: value.reqId,
+      target: value.target,
+      taskId: value.taskId,
+      index: value.index,
+    }
+  }
+  if (value.kind === 'invoked') {
+    if (typeof value.reqId !== 'string' || typeof value.ok !== 'boolean') return null
+    return { kind: 'invoked', origin: value.origin, reqId: value.reqId, ok: value.ok }
   }
   if (value.kind === 'shard') {
     if (typeof value.seq !== 'number' || !Array.isArray(value.tasks)) return null
@@ -600,6 +680,13 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
   const locks = options.locks === undefined ? browserLocks() : options.locks
   /** Page -> settle function, so a task can be ended without the caller's handle. */
   const finishers = new Map<string, (outcome: 'done' | 'failed', reason?: string) => void>()
+  /**
+   * 按钮方法表：`任务id#下标` -> 调用方给的匿名函数。函数不过线、不进池，
+   * 所以这张表只存在于创建它的页面；条目结束就删，免得闭包攥住组件树。
+   */
+  const runners = new Map<string, () => void>()
+  /** 等 ack 的跨页调用：reqId -> 发起目标 + 兑现函数。超时由定时器兜底。 */
+  const pendingInvokes = new Map<string, { target: string; resolve: (ok: boolean) => void }>()
   /** Remotes currently being probed, so overlapping triggers do not stack up. */
   const probing = new Set<string>()
   let locksHeld = false
@@ -612,6 +699,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
   let idSeq = 0
   /** 广播消息自己的序号，不参与分片 seq，避免打乱 baseline 的比较。 */
   let messageSeq = 0
+  /** 跨页调用自己的序号，只用于配对 ack。 */
+  let invokeSeq = 0
   let channel: BroadcastChannel | null = null
   let everConnected = false
   let everPublished = false
@@ -670,9 +759,18 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     post(message)
   }
 
-  /** One write path: new local shard -> new snapshot -> local event -> cross-page message. */
-  function publish(nextTasks: readonly TaskNotificationRecord[], notice: WireNotice): void {
+  /**
+   * One write path: new local shard -> new snapshot -> local event -> cross-page message.
+   *
+   * 收 updater 而不是算好的数组：`expireLocal()` 会就地结算过期行并再写一次，
+   * 若用进来之前算的旧数组写回，刚清掉的行会被原样复活成没有 finisher 的僵尸。
+   */
+  function publish(
+    compute: (current: readonly TaskNotificationRecord[]) => readonly TaskNotificationRecord[],
+    notice: WireNotice,
+  ): void {
     expireLocal()
+    const nextTasks = compute(localShard())
     seq += 1
     revision += 1
     shards.set(origin, { origin, seq, tasks: Object.freeze([...nextTasks]) })
@@ -711,6 +809,69 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
 
   function find(id: string): TaskNotificationRecord | undefined {
     return localShard().find((task) => task.id === id)
+  }
+
+  /** 跨分片查一条任务：只认「记录自己声明的 origin 与所在分片一致」的那份，防伪造分片。 */
+  function locate(id: string): TaskNotificationRecord | undefined {
+    for (const shard of shards.values()) {
+      const hit = shard.tasks.find((task) => task.id === id && task.origin === shard.origin)
+      if (hit !== undefined) return hit
+    }
+    return undefined
+  }
+
+  function runnerKey(taskId: string, index: number): string {
+    return `${taskId}#${String(index)}`
+  }
+
+  /** 本页执行一个按钮；查不到方法、或方法抛错，都算失败。 */
+  function runLocal(taskId: string, index: number): boolean {
+    const run = runners.get(runnerKey(taskId, index))
+    if (run === undefined) return false
+    try {
+      const result: unknown = (run as () => unknown)()
+      // 调用方写成 async 时不让 rejection 变成 unhandled；按钮语义是「已触发」，不等它。
+      if (typeof (result as { then?: unknown } | null)?.then === 'function') {
+        void (result as Promise<unknown>).catch((error: unknown) => {
+          console.error('background task action failed', error)
+        })
+      }
+      return true
+    } catch (error) {
+      console.error('background task action failed', error)
+      return false
+    }
+  }
+
+  /** 跨页：请创建页执行，等它回 ack；没有 ack 就超时算失败。 */
+  function requestInvoke(target: string, taskId: string, index: number): Promise<boolean> {
+    if (channel === null) return Promise.resolve(false)
+    const reqId = `${origin}:inv:${String(++invokeSeq)}`
+    return new Promise<boolean>((resolve) => {
+      const timer = setTimeout(() => {
+        pendingInvokes.delete(reqId)
+        resolve(false)
+      }, INVOKE_TIMEOUT_MS)
+      pendingInvokes.set(reqId, {
+        target,
+        resolve: (ok) => {
+          clearTimeout(timer)
+          resolve(ok)
+        },
+      })
+      post({ kind: 'invoke', origin, reqId, target, taskId, index })
+    })
+  }
+
+  async function runAction(taskId: string, index: number): Promise<boolean> {
+    const record = locate(taskId)
+    if (record === undefined) return false
+    // 已过回收窗口、但还没被惰性清扫的行：界面已经看不到它，就不能再点。
+    if (record.timeoutMs !== undefined && Date.now() - record.updatedAt > record.timeoutMs) return false
+    // 下标越界 = 这一条根本没有这个按钮；跨页时同理，先按记录判，不白跑一趟。
+    if (record.actions?.[index] === undefined) return false
+    if (record.origin === origin) return runLocal(taskId, index)
+    return requestInvoke(record.origin, taskId, index)
   }
 
   function replace(tasks: readonly TaskNotificationRecord[], record: TaskNotificationRecord): readonly TaskNotificationRecord[] {
@@ -777,8 +938,24 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       bus().emit({ type: 'message', message: message.message, remote: true })
       return
     }
+    if (message.kind === 'invoke') {
+      // 频道是全页共享的：只执行点名本页的那条，别人的一律不理。
+      if (message.target !== origin) return
+      post({ kind: 'invoked', origin, reqId: message.reqId, ok: runLocal(message.taskId, message.index) })
+      return
+    }
+    if (message.kind === 'invoked') {
+      // 只认被点名那页回的 ack：否则同源任何页面都能抢答。
+      const entry = pendingInvokes.get(message.reqId)
+      if (entry === undefined || entry.target !== message.origin) return
+      pendingInvokes.delete(message.reqId)
+      entry.resolve(message.ok)
+      return
+    }
     const seen = knownSeq.get(message.origin) ?? 0
-    if (message.seq <= seen) return
+    // 分片已被删掉（bye / 判活清理）时重新接受：对端恢复后可能用同一个 seq 重发全量，
+    // 一律按「旧 seq 丢弃」会让这一页在对端永久消失，连带它的按钮也永远点不了。
+    if (message.seq <= seen && shards.has(message.origin)) return
     knownSeq.set(message.origin, message.seq)
     shards.set(message.origin, { origin: message.origin, seq: message.seq, tasks: Object.freeze([...message.tasks]) })
     revision += 1
@@ -855,6 +1032,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     if (project === null) throw new Error('task notification project cannot be null when registering')
     const group = normalizeGroup(input.group)
     const detail = cloneDetail(input.detail)
+    const actions = normalizeActions(input.actions)
+    const runs = input.actions?.map((action) => action.run) ?? []
     const hidden = input.hidden === true
     const timeoutMs = input.timeoutMs ?? (hidden ? TASK_NOTIFICATIONS_HIDDEN_TTL_MS : 0)
     if (timeoutMs < 0) throw new Error('task notification timeoutMs must be >= 0')
@@ -871,6 +1050,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       ...(input.iconSvg === undefined ? {} : { iconSvg: input.iconSvg }),
       title: input.title,
       ...(detail === undefined ? {} : { detail }),
+      ...(actions.length === 0 ? {} : { actions }),
       status: 'running',
       startedAt: now,
       updatedAt: now,
@@ -883,7 +1063,11 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     let resolveSettled: (value: TaskNotificationSettlement) => void = () => {}
     const settled = new Promise<TaskNotificationSettlement>((resolve) => { resolveSettled = resolve })
 
-    publish([...localShard(), record], { type: 'registered', task: record })
+    // 先放方法与 finisher 再 publish：条目一可见就必须可点、可收尾，中间不留空窗；
+    // 订阅者若在 publish 里抛错，句柄虽拿不到，settleLocal 仍能收掉这一条。
+    runs.forEach((run, index) => { runners.set(runnerKey(id, index), run) })
+    finishers.set(id, finish)
+    publish((current) => [...current, record], { type: 'registered', task: record })
 
     function finish(outcome: 'done' | 'failed', reason?: string): void {
       if (isSettled) return
@@ -891,6 +1075,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       if (current === undefined) return
       isSettled = true
       finishers.delete(id)
+      runs.forEach((_, index) => { runners.delete(runnerKey(id, index)) })
       const final: TaskNotificationRecord = {
         ...current,
         status: outcome === 'done' ? 'done' : 'failed',
@@ -898,13 +1083,11 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
         updatedAt: Date.now(),
       }
       publish(
-        localShard().filter((task) => task.id !== id),
+        (current) => current.filter((task) => task.id !== id),
         { type: 'settled', task: final, outcome },
       )
       resolveSettled({ outcome, reason, task: final })
     }
-
-    finishers.set(id, finish)
 
     const handle: TaskNotificationHandle = {
       id,
@@ -930,14 +1113,14 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
           // updatedAt 前移即「续期」：回收窗口从最后一次活动起算。
           updatedAt: Date.now(),
         }
-        publish(replace(localShard(), next), { type: 'updated', task: next })
+        publish((current) => replace(current, next), { type: 'updated', task: next })
       },
       background(): void {
         if (isSettled) return
         const current = find(id)
         if (current === undefined || current.backgrounded) return
         const next: TaskNotificationRecord = { ...current, backgrounded: true, updatedAt: Date.now() }
-        publish(replace(localShard(), next), { type: 'backgrounded', task: next })
+        publish((current) => replace(current, next), { type: 'backgrounded', task: next })
       },
       done(detail?: TaskNotificationDetail): void {
         if (detail !== undefined) handle.update({ detail })
@@ -988,6 +1171,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     register,
     broadcast,
     settleLocal,
+    runAction,
     canRestore: (task) => task.origin === origin,
     requestRestore(taskId): boolean {
       const record = find(taskId)
@@ -999,6 +1183,12 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     dispose(): void {
       onPageHide()
       detachLifecycle()
+      // 页面这一侧要走了：按钮方法连同闭包一起放掉；条目结束不了就留在池里，
+      // 点它只会拿到 false，不会调到已经没了的组件。
+      runners.clear()
+      // 等 ack 的那些直接判失败：对端可能已经执行了，但本页不再等。
+      for (const entry of pendingInvokes.values()) entry.resolve(false)
+      pendingInvokes.clear()
       if (channel !== null) {
         channel.onmessage = null
         channel.close()
@@ -1042,6 +1232,7 @@ export const taskNotifications: TaskNotificationPool = {
   register: (input) => globalPool().register(input),
   broadcast: (input) => globalPool().broadcast(input),
   settleLocal: (reason) => globalPool().settleLocal(reason),
+  runAction: (taskId, index) => globalPool().runAction(taskId, index),
   canRestore: (task) => globalPool().canRestore(task),
   requestRestore: (taskId) => globalPool().requestRestore(taskId),
   dispose: () => { globalPool().dispose() },
@@ -1054,6 +1245,8 @@ export interface NotifyTaskOptions {
   group?: string
   /** 入池即带的详情；任意 JSON 值，库内部克隆一份私有副本。 */
   detail?: TaskNotificationDetail
+  /** 后台条目上的按钮：文案 + 点击执行的方法（匿名函数即可，不会被序列化）。 */
+  actions?: readonly TaskNotificationAction[]
   projectLabel?: string
   groupLabel?: string
   /** 图标标识（图标名 / 字体类名），核心不解释，消费端渲染。 */
@@ -1085,6 +1278,7 @@ function notifyTaskBase(title: string, options: NotifyTaskOptions = {}): TaskNot
     ...(options.project === undefined ? {} : { project: options.project }),
     ...(options.group === undefined ? {} : { group: options.group }),
     ...(options.detail === undefined ? {} : { detail: options.detail }),
+    ...(options.actions === undefined ? {} : { actions: options.actions }),
     ...(options.projectLabel === undefined ? {} : { projectLabel: options.projectLabel }),
     ...(options.groupLabel === undefined ? {} : { groupLabel: options.groupLabel }),
     ...(options.icon === undefined ? {} : { icon: options.icon }),

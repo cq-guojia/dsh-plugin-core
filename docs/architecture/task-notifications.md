@@ -13,7 +13,7 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 
 - 数据只在本页与各同源标签页的**内存**里，进程或页面关闭即失；不落文件、不发请求、不轮询。
 - 跨页只传纯数据（结构化克隆可得），不带函数、组件、`ReactNode`、Promise。
-- 跨页条目**能看不能点**：只有创建它的那一页能还原弹窗（`origin` 判据）。
+- 跨页条目能看；带 `actions` 的也能点 —— 请求发回创建它的那一页执行（`origin` 判据），不是把方法传过去。
 - 不含任何模拟 / 占位数据。条数、时间、状态、分组全部来自真实注册与真实时钟。
 - 本阶段只提供新能力，不替换 `toast-host` / `loading-host` / `modal-host` 等既有机制。
 
@@ -55,6 +55,24 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 焊死，收起若立刻 resolve 会让调用方误判完成，不 resolve 又让调用点永久挂起。新契约是
 「Promise 两态（由 `settled` 表达）+ 收起作为事件」，调用方 `await` 的仍是正常两态，
 想跟踪收起就监听事件。弹窗侧在阶段 2 按此口径新开 API，不改现有 `confirmModal` / `alertModal` 签名。
+
+## 按钮与动作
+
+收起之后要能「拉回来」，靠的不是把方法传过去（函数过不了结构化克隆，这一点没有例外），而是**方法留在原地、只传 id**。
+
+- 注册时给 `actions: [{ label, run }]`。`run` 是匿名函数，只在创建它的页面里执行；`label` 是纯数据。
+- 记录里只有 `label`，下标就是动作 id；所以别的标签页也画得出按钮，点它时发 `invoke` 回创建页。
+- 方法存在池私有的 `runners: Map<taskId#index, fn>` 里，与 `finishers` 同生命周期：
+  `done` / `fail` / 超时回收 / `settleLocal` 结束即删，`dispose` 整表清空。不这么做就是闭包攥着组件树不放。
+- `runAction(taskId, index): Promise<boolean>`：本页条目立即执行；跨页条目发 `invoke` 等 `invoked` ack，
+  2s 没有回应按失败算。查不到方法、下标越界、方法抛错，一律 `false`，异常不冒给调用方。
+- `false` 只说明**这一次没触发成功**：任务不存在、下标越界、方法已被清掉（页面重挂、句柄丢了、创建页已 dispose）、
+  方法抛错，或跨页没人回 ack。它不等于「这条不可操作」——别的按钮、结束路径可能都还好；
+  要判断有没有按钮看 `record.actions`，不要看 `canRestore`（那是旧 restored 通道的判据）。
+
+先例：VS Code `registerCommand(id, 匿名回调)` 与 `showInformationMessage(msg, ...items)`（方法留在扩展进程，UI 只回选中的字符串）；
+Chrome 扩展通知的点击回调只有 `(notificationId, buttonIndex)`；Comlink `expose` 用闭包持有真实对象、消息只带 `path`。
+宿主自己的 `userQuestionPanels.reveal(sessionId, callId)` 也是同一手法。
 
 ## 对外两个入口
 
@@ -103,6 +121,7 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 - 读取三档见「快照契约」：本项目全部 → 本项目指定二级 → `'*'` 全站。
 - 已知边界：同页多个插件共用一个全局默认项目，谁的 UI 要读**别人**的项目必须显式传 `{ project }`。
 - 跨项目条目能看不能结束：`canRestore` 仍按 `origin` 判定，`settleLocal` 只清本页分片。
+  按钮不在这条限制里：跨页条目照样能点，走的是 `runAction` 的 `invoke` 回传。
 
 ## 失联页面清理
 
@@ -137,6 +156,9 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
   不会误删已恢复的分片。
 - 消息先过形状校验，畸形 / 外来消息直接丢，不进池。
 - 通知随分片一起广播，对端合并状态后按 `remote: true` 转发到本页事件总线；本地是 `false`。
+- `invoke` / `invoked` 是跨页按钮调用：`invoke` 只带 `taskId`、下标与 `reqId`，按 `target` 点名
+  创建页执行；创建页执行完回 `invoked`，发起页按 `reqId` 配对。两者都不带状态、不参与分片 `seq`
+  比较，形状不符直接丢。发起页 2s 收不到 `invoked` 就按失败算（创建页崩溃、被挂起或同一条已经结束）。
 
 这不覆盖不同浏览器、不同 profile、不同机器：那需要经共同服务进程的推送链，
 宿主 `HostWebServerLike` 目前只有请求-应答（`writeHead` / `end`），本阶段不做，只留扩展位置。
@@ -178,6 +200,7 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 
 ## 更新日志
 
+- 2026-11-15：新增按钮动作 `actions: [{ label, run }]` 与 `runAction(taskId, index): Promise<boolean>`——方法只留在创建页内存（`runners`，与 `finishers` 同生命周期），记录里只存 `label`；跨页点击发 `invoke` 回创建页、等 `invoked` ack（2s 超时按失败）。`requestRestore` 保留为本页旧通道
 - 2026-11-12：新增纯广播 `notifyMessage()`（只发 `message` 事件，不进池、不动快照，因此不闪）；任务与消息都支持 `icon` / `iconSvg`
 - 2026-11-12：两级分组（`project` + 二级 `group`）与协议 2；`setDefaultTaskProject()` 一次定型；`notifyTask` 改为 `(title, options?)`；`selectTaskNotifications` 改为三档 + `'*'` 全站；`detail` 放宽为任意 JSON 值（入池前克隆私有副本）
 - 2026-11-12：新增 `settleLocal()`（无需句柄地收尾本页条目）与失联页面清理（Web Locks 判活，无定时器，触发于收到分片 / 页面可见）；协议与 `bye` 路径不变

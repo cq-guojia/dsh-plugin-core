@@ -1625,6 +1625,7 @@ var TASK_NOTIFICATIONS_EVENTS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/
 var TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v2";
 var TASK_NOTIFICATIONS_PROJECT_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/project/v2");
 var TASK_NOTIFICATIONS_HIDDEN_TTL_MS = 5 * 6e4;
+var INVOKE_TIMEOUT_MS = 2e3;
 var EMPTY_TASKS = Object.freeze([]);
 var EMPTY_SNAPSHOT = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 });
 function projectSlot() {
@@ -1652,6 +1653,19 @@ function setDefaultTaskProject(project) {
 }
 function getDefaultTaskProject() {
   return projectSlot()?.value;
+}
+function normalizeActions(actions2) {
+  if (actions2 === void 0)
+    return [];
+  return actions2.map((action) => {
+    if (typeof action.label !== "string" || action.label.trim() === "") {
+      throw new Error("task notification action label must be a non-empty string");
+    }
+    if (typeof action.run !== "function") {
+      throw new Error("task notification action run must be a function");
+    }
+    return { label: action.label };
+  });
 }
 function normalizeGroup(group) {
   if (group === void 0)
@@ -1770,10 +1784,15 @@ function cloneDetail(value) {
   }
   return typeof structuredClone === "function" ? structuredClone(value) : JSON.parse(JSON.stringify(value));
 }
+function isActionInfos(value) {
+  return Array.isArray(value) && value.every((item) => isRecord(item) && typeof item.label === "string" && item.label.trim() !== "");
+}
 function isTaskRecord(value) {
   if (!isRecord(value))
     return false;
   if (value.detail !== void 0 && !isDetail(value.detail))
+    return false;
+  if (value.actions !== void 0 && !isActionInfos(value.actions))
     return false;
   return typeof value.id === "string" && typeof value.project === "string" && typeof value.group === "string" && typeof value.title === "string" && (value.status === "running" || value.status === "done" || value.status === "failed") && typeof value.startedAt === "number" && typeof value.updatedAt === "number" && typeof value.origin === "string" && typeof value.backgrounded === "boolean";
 }
@@ -1803,6 +1822,24 @@ function parseMessage(value) {
     if (typeof value.seq !== "number" || !isWireMessageValue(value.message))
       return null;
     return { kind: "message", origin: value.origin, seq: value.seq, message: value.message };
+  }
+  if (value.kind === "invoke") {
+    if (typeof value.reqId !== "string" || typeof value.target !== "string" || typeof value.taskId !== "string" || typeof value.index !== "number" || !Number.isSafeInteger(value.index) || value.index < 0) {
+      return null;
+    }
+    return {
+      kind: "invoke",
+      origin: value.origin,
+      reqId: value.reqId,
+      target: value.target,
+      taskId: value.taskId,
+      index: value.index
+    };
+  }
+  if (value.kind === "invoked") {
+    if (typeof value.reqId !== "string" || typeof value.ok !== "boolean")
+      return null;
+    return { kind: "invoked", origin: value.origin, reqId: value.reqId, ok: value.ok };
   }
   if (value.kind === "shard") {
     if (typeof value.seq !== "number" || !Array.isArray(value.tasks))
@@ -1876,6 +1913,8 @@ function createTaskNotificationPool(options = {}) {
   const bus = () => options.events ?? taskNotificationEvents;
   const locks = options.locks === void 0 ? browserLocks() : options.locks;
   const finishers = /* @__PURE__ */ new Map();
+  const runners = /* @__PURE__ */ new Map();
+  const pendingInvokes = /* @__PURE__ */ new Map();
   const probing = /* @__PURE__ */ new Set();
   let locksHeld = false;
   const store = createStore(() => EMPTY_SNAPSHOT);
@@ -1885,6 +1924,7 @@ function createTaskNotificationPool(options = {}) {
   let revision = 0;
   let idSeq2 = 0;
   let messageSeq = 0;
+  let invokeSeq = 0;
   let channel = null;
   let everConnected = false;
   let everPublished = false;
@@ -1935,8 +1975,9 @@ function createTaskNotificationPool(options = {}) {
     const message = { kind: "shard", origin, seq, tasks: tasks2, ...notice === void 0 ? {} : { notice } };
     post(message);
   }
-  function publish(nextTasks, notice) {
+  function publish(compute, notice) {
     expireLocal();
+    const nextTasks = compute(localShard());
     seq += 1;
     revision += 1;
     shards.set(origin, { origin, seq, tasks: Object.freeze([...nextTasks]) });
@@ -1970,6 +2011,65 @@ function createTaskNotificationPool(options = {}) {
   }
   function find2(id3) {
     return localShard().find((task) => task.id === id3);
+  }
+  function locate(id3) {
+    for (const shard of shards.values()) {
+      const hit = shard.tasks.find((task) => task.id === id3 && task.origin === shard.origin);
+      if (hit !== void 0)
+        return hit;
+    }
+    return void 0;
+  }
+  function runnerKey(taskId, index3) {
+    return `${taskId}#${String(index3)}`;
+  }
+  function runLocal(taskId, index3) {
+    const run = runners.get(runnerKey(taskId, index3));
+    if (run === void 0)
+      return false;
+    try {
+      const result = run();
+      if (typeof result?.then === "function") {
+        void result.catch((error) => {
+          console.error("background task action failed", error);
+        });
+      }
+      return true;
+    } catch (error) {
+      console.error("background task action failed", error);
+      return false;
+    }
+  }
+  function requestInvoke(target, taskId, index3) {
+    if (channel === null)
+      return Promise.resolve(false);
+    const reqId = `${origin}:inv:${String(++invokeSeq)}`;
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => {
+        pendingInvokes.delete(reqId);
+        resolve(false);
+      }, INVOKE_TIMEOUT_MS);
+      pendingInvokes.set(reqId, {
+        target,
+        resolve: (ok) => {
+          clearTimeout(timer);
+          resolve(ok);
+        }
+      });
+      post({ kind: "invoke", origin, reqId, target, taskId, index: index3 });
+    });
+  }
+  async function runAction(taskId, index3) {
+    const record = locate(taskId);
+    if (record === void 0)
+      return false;
+    if (record.timeoutMs !== void 0 && Date.now() - record.updatedAt > record.timeoutMs)
+      return false;
+    if (record.actions?.[index3] === void 0)
+      return false;
+    if (record.origin === origin)
+      return runLocal(taskId, index3);
+    return requestInvoke(record.origin, taskId, index3);
   }
   function replace2(tasks2, record) {
     return tasks2.map((task) => task.id === record.id ? record : task);
@@ -2027,8 +2127,22 @@ function createTaskNotificationPool(options = {}) {
       bus().emit({ type: "message", message: message.message, remote: true });
       return;
     }
+    if (message.kind === "invoke") {
+      if (message.target !== origin)
+        return;
+      post({ kind: "invoked", origin, reqId: message.reqId, ok: runLocal(message.taskId, message.index) });
+      return;
+    }
+    if (message.kind === "invoked") {
+      const entry = pendingInvokes.get(message.reqId);
+      if (entry === void 0 || entry.target !== message.origin)
+        return;
+      pendingInvokes.delete(message.reqId);
+      entry.resolve(message.ok);
+      return;
+    }
     const seen = knownSeq.get(message.origin) ?? 0;
-    if (message.seq <= seen)
+    if (message.seq <= seen && shards.has(message.origin))
       return;
     knownSeq.set(message.origin, message.seq);
     shards.set(message.origin, { origin: message.origin, seq: message.seq, tasks: Object.freeze([...message.tasks]) });
@@ -2098,6 +2212,8 @@ function createTaskNotificationPool(options = {}) {
       throw new Error("task notification project cannot be null when registering");
     const group = normalizeGroup(input.group);
     const detail = cloneDetail(input.detail);
+    const actions2 = normalizeActions(input.actions);
+    const runs = input.actions?.map((action) => action.run) ?? [];
     const hidden = input.hidden === true;
     const timeoutMs = input.timeoutMs ?? (hidden ? TASK_NOTIFICATIONS_HIDDEN_TTL_MS : 0);
     if (timeoutMs < 0)
@@ -2115,6 +2231,7 @@ function createTaskNotificationPool(options = {}) {
       ...input.iconSvg === void 0 ? {} : { iconSvg: input.iconSvg },
       title: input.title,
       ...detail === void 0 ? {} : { detail },
+      ...actions2.length === 0 ? {} : { actions: actions2 },
       status: "running",
       startedAt: now,
       updatedAt: now,
@@ -2129,7 +2246,11 @@ function createTaskNotificationPool(options = {}) {
     const settled = new Promise((resolve) => {
       resolveSettled = resolve;
     });
-    publish([...localShard(), record], { type: "registered", task: record });
+    runs.forEach((run, index3) => {
+      runners.set(runnerKey(id3, index3), run);
+    });
+    finishers.set(id3, finish);
+    publish((current3) => [...current3, record], { type: "registered", task: record });
     function finish(outcome, reason) {
       if (isSettled)
         return;
@@ -2138,16 +2259,18 @@ function createTaskNotificationPool(options = {}) {
         return;
       isSettled = true;
       finishers.delete(id3);
+      runs.forEach((_, index3) => {
+        runners.delete(runnerKey(id3, index3));
+      });
       const final = {
         ...current3,
         status: outcome === "done" ? "done" : "failed",
         reason,
         updatedAt: Date.now()
       };
-      publish(localShard().filter((task) => task.id !== id3), { type: "settled", task: final, outcome });
+      publish((current4) => current4.filter((task) => task.id !== id3), { type: "settled", task: final, outcome });
       resolveSettled({ outcome, reason, task: final });
     }
-    finishers.set(id3, finish);
     const handle = {
       id: id3,
       get isSettled() {
@@ -2176,7 +2299,7 @@ function createTaskNotificationPool(options = {}) {
           // updatedAt 前移即「续期」：回收窗口从最后一次活动起算。
           updatedAt: Date.now()
         };
-        publish(replace2(localShard(), next), { type: "updated", task: next });
+        publish((current4) => replace2(current4, next), { type: "updated", task: next });
       },
       background() {
         if (isSettled)
@@ -2185,7 +2308,7 @@ function createTaskNotificationPool(options = {}) {
         if (current3 === void 0 || current3.backgrounded)
           return;
         const next = { ...current3, backgrounded: true, updatedAt: Date.now() };
-        publish(replace2(localShard(), next), { type: "backgrounded", task: next });
+        publish((current4) => replace2(current4, next), { type: "backgrounded", task: next });
       },
       done(detail2) {
         if (detail2 !== void 0)
@@ -2232,6 +2355,7 @@ function createTaskNotificationPool(options = {}) {
     register,
     broadcast,
     settleLocal,
+    runAction,
     canRestore: (task) => task.origin === origin,
     requestRestore(taskId) {
       const record = find2(taskId);
@@ -2244,6 +2368,10 @@ function createTaskNotificationPool(options = {}) {
     dispose() {
       onPageHide();
       detachLifecycle();
+      runners.clear();
+      for (const entry of pendingInvokes.values())
+        entry.resolve(false);
+      pendingInvokes.clear();
       if (channel !== null) {
         channel.onmessage = null;
         channel.close();
@@ -2283,6 +2411,7 @@ var taskNotifications = {
   register: (input) => globalPool().register(input),
   broadcast: (input) => globalPool().broadcast(input),
   settleLocal: (reason) => globalPool().settleLocal(reason),
+  runAction: (taskId, index3) => globalPool().runAction(taskId, index3),
   canRestore: (task) => globalPool().canRestore(task),
   requestRestore: (taskId) => globalPool().requestRestore(taskId),
   dispose: () => {
@@ -2295,6 +2424,7 @@ function notifyTaskBase(title, options = {}) {
     ...options.project === void 0 ? {} : { project: options.project },
     ...options.group === void 0 ? {} : { group: options.group },
     ...options.detail === void 0 ? {} : { detail: options.detail },
+    ...options.actions === void 0 ? {} : { actions: options.actions },
     ...options.projectLabel === void 0 ? {} : { projectLabel: options.projectLabel },
     ...options.groupLabel === void 0 ? {} : { groupLabel: options.groupLabel },
     ...options.icon === void 0 ? {} : { icon: options.icon },
@@ -69591,7 +69721,7 @@ h(SideSheet, {
         "en": "Icons: `icon` (an icon name or icon-font class) and `iconSvg` (raw SVG source) are plain strings; core stores them without interpreting, and rendering plus injection safety are the consumer's job \u2014 components and ReactNodes cannot cross pages."
       },
       {
-        "zh": null,
+        "zh": "\u4E24\u7EA7\u5206\u7EC4\uFF1A`project`\uFF08\u9879\u76EE\uFF09\u5728 app \u5165\u53E3\u7528 `setDefaultTaskProject()` \u8BBE\u4E00\u6B21\uFF0C`group` \u662F\u9879\u76EE\u5185\u7684\u4E8C\u7EA7\u5206\u7C7B\uFF08\u7F3A\u7701 `default`\uFF09\u3002\u8BFB\u53D6\u4E09\u6863\uFF1A\u4E0D\u4F20 / \u7A7A\u6570\u7EC4 = \u672C\u9879\u76EE\u5168\u90E8\u4E8C\u7EA7\uFF1B\u4E00\u4E2A\u6216\u591A\u4E2A\u540D\u5B57 = \u672C\u9879\u76EE\u8FD9\u51E0\u4E2A\u4E8C\u7EA7\uFF1B`'*'` = \u6240\u6709\u9879\u76EE\u6240\u6709\u4E8C\u7EA7\u3002\u7B2C\u4E09\u53C2 `{ project }` \u53EF\u4EE5\u6362\u9879\u76EE\uFF0C`{ project: null }` \u8868\u793A\u4E0D\u9650\u9879\u76EE\u3002\u9879\u76EE\u540D core \u53D6\u4E0D\u5230\uFF0C\u6240\u4EE5\u5FC5\u987B\u6709\u4EBA\u8BBE\uFF1B`projectLabel` / `groupLabel` \u53EA\u8986\u76D6\u663E\u793A\u540D\u3002",
         "en": "Two levels: `project` is set once at app start with `setDefaultTaskProject()`, and `group` is a second-level bucket inside it (default `default`). Reading has three tiers: omitted or empty = every group of the current project; one or more names = only those groups; `'*'` = every project and every group. A third argument `{ project }` switches projects, and `{ project: null }` drops the project filter. Core cannot discover a project name, so somebody must set it; `projectLabel` / `groupLabel` only override display names."
       },
       {
@@ -69607,8 +69737,12 @@ h(SideSheet, {
         "en": 'The caller decides when a task ends: `done()` / `fail()` are idempotent, and `track(promise)` settles on both success and rejection while returning the original promise. `settled` resolves only on a real ending; collapsing emits a `backgrounded` event instead. This is the "two-state promise plus collapse as event" contract \u2014 callers still await ordinary two-state promises.'
       },
       {
-        "zh": "\u8DE8\u9875\u8D70\u6D4F\u89C8\u5668\u539F\u751F `BroadcastChannel`\uFF1A\u6BCF\u9875\u5E7F\u64AD\u81EA\u5DF1\u90A3\u4EFD\u5168\u91CF\u5206\u7247\u5E76\u5E26\u5355\u8C03 `seq`\uFF0C\u65E7\u5E8F\u53F7\u3001\u91CD\u590D\u4E0E\u7578\u5F62\u6D88\u606F\u4E00\u5F8B\u4E22\u5F03\uFF1B`pagehide` / `pageshow` \u8986\u76D6\u6807\u7B7E\u9875\u79BB\u5F00\u3001bfcache \u4E0E\u4F11\u7720\u6062\u590D\u3002\u53EA\u8986\u76D6\u540C\u6E90\u6807\u7B7E\u9875\uFF0C\u4E0D\u8986\u76D6\u4E0D\u540C\u6D4F\u89C8\u5668\u3001\u4E0D\u540C profile \u6216\u4E0D\u540C\u673A\u5668\u3002\u8DE8\u9875\u6761\u76EE\u80FD\u770B\u4E0D\u80FD\u70B9\uFF0C\u53EA\u6709\u521B\u5EFA\u5B83\u7684\u90A3\u4E00\u9875\u80FD\u8BF7\u6C42\u8FD8\u539F\u3002",
-        "en": "Cross-page sync uses the native `BroadcastChannel`: each page broadcasts its own full shard with a monotonic `seq`; stale, duplicate and malformed messages are dropped. `pagehide` / `pageshow` cover tab teardown, bfcache and sleep/wake. Only same-origin tabs are covered \u2014 not other browsers, profiles or machines. Cross-page rows are read-only; only the owning page may request a restore."
+        "zh": "\u6309\u94AE\uFF1A\u6CE8\u518C\u65F6\u7ED9 `actions: [{ label, run }]`\uFF0C`run` \u5C31\u662F\u70B9\u6309\u94AE\u65F6\u8981\u6267\u884C\u7684\u65B9\u6CD5\uFF08\u533F\u540D\u51FD\u6570\u5373\u53EF\uFF09\uFF0C\u53EF\u4EE5\u7ED9\u591A\u4E2A\u3002\u65B9\u6CD5**\u4E0D\u4F1A\u88AB\u5E8F\u5217\u5316**\uFF1A\u8BB0\u5F55\u91CC\u53EA\u5B58 `label`\uFF0C\u6240\u4EE5\u522B\u7684\u6807\u7B7E\u9875\u4E5F\u770B\u5F97\u89C1\u3001\u753B\u5F97\u51FA\u6309\u94AE\uFF1B\u65B9\u6CD5\u672C\u4F53\u6309 `\u4EFB\u52A1id#\u4E0B\u6807` \u7559\u5728\u521B\u5EFA\u5B83\u7684\u9875\u9762\u5185\u5B58\u91CC\uFF0C\u9875\u9762\u4E00\u5173\u5C31\u6CA1\u4E86\u3002\u70B9\u6309\u94AE\u8C03 `taskNotifications.runAction(task.id, index)`\uFF0C\u8FD4\u56DE `Promise<boolean>`\uFF1A\u672C\u9875\u6761\u76EE\u7ACB\u5373\u6267\u884C\uFF0C\u8DE8\u9875\u6761\u76EE\u53D1\u56DE\u521B\u5EFA\u9875\u6267\u884C\u5E76\u7B49\u5B83\u56DE ack\uFF0C2 \u79D2\u6CA1\u6709\u56DE\u5E94\u7B97\u5931\u8D25\u3002\u67E5\u4E0D\u5230\u65B9\u6CD5\uFF08\u9875\u9762\u91CD\u6302\u3001\u53E5\u67C4\u4E22\u4E86\uFF09\u3001\u4E0B\u6807\u8D8A\u754C\u3001\u65B9\u6CD5\u629B\u9519\uFF0C\u4E00\u5F8B `false`\u2014\u2014\u8C03\u7528\u65B9\u636E\u6B64\u63D0\u793A\u300C\u5DF2\u65E0\u6CD5\u8FD8\u539F\u300D\uFF0C\u4E0D\u8981\u5F53\u6210\u529F\u3002\u65B9\u6CD5\u968F\u6761\u76EE\u7ED3\u675F\u4E00\u8D77\u91CA\u653E\uFF0C\u4E0D\u4F1A\u4E00\u76F4\u6525\u7740\u7EC4\u4EF6\u72B6\u6001\u3002",
+        "en": 'Actions: pass `actions: [{ label, run }]` at registration \u2014 `run` is the method to execute on click (an anonymous function is fine) and there can be several. Methods are **never serialized**: the record stores only `label`, so other tabs can see and render the buttons, while the method itself stays in the memory of the page that created it, keyed by `taskId#index`, and dies with that page. Click with `taskNotifications.runAction(task.id, index)`, which returns `Promise<boolean>`: local rows run immediately, rows from another page are sent back to the owner page and wait for its ack, and no answer within 2s counts as failure. A missing method (page reload, lost handle), an out-of-range index or a throwing action all resolve `false` \u2014 show "cannot restore any more" instead of assuming success. Methods are released together with the row, so they never keep component state alive.'
+      },
+      {
+        "zh": "\u8DE8\u9875\u8D70\u6D4F\u89C8\u5668\u539F\u751F `BroadcastChannel`\uFF1A\u6BCF\u9875\u5E7F\u64AD\u81EA\u5DF1\u90A3\u4EFD\u5168\u91CF\u5206\u7247\u5E76\u5E26\u5355\u8C03 `seq`\uFF0C\u65E7\u5E8F\u53F7\u3001\u91CD\u590D\u4E0E\u7578\u5F62\u6D88\u606F\u4E00\u5F8B\u4E22\u5F03\uFF1B`pagehide` / `pageshow` \u8986\u76D6\u6807\u7B7E\u9875\u79BB\u5F00\u3001bfcache \u4E0E\u4F11\u7720\u6062\u590D\u3002\u53EA\u8986\u76D6\u540C\u6E90\u6807\u7B7E\u9875\uFF0C\u4E0D\u8986\u76D6\u4E0D\u540C\u6D4F\u89C8\u5668\u3001\u4E0D\u540C profile \u6216\u4E0D\u540C\u673A\u5668\u3002\u8DE8\u9875\u6761\u76EE\u80FD\u770B\u3001\u6709 `actions` \u7684\u4E5F\u80FD\u70B9\uFF08\u8BF7\u6C42\u53D1\u56DE\u521B\u5EFA\u9875\u6267\u884C\uFF09\uFF1B`requestRestore` \u4ECD\u662F\u672C\u9875\u4E13\u7528\u7684\u65E7\u901A\u9053\uFF0C\u53EA\u53D1 `restored` \u4E8B\u4EF6\u3002",
+        "en": "Cross-page sync uses the native `BroadcastChannel`: each page broadcasts its own full shard with a monotonic `seq`; stale, duplicate and malformed messages are dropped. `pagehide` / `pageshow` cover tab teardown, bfcache and sleep/wake. Only same-origin tabs are covered \u2014 not other browsers, profiles or machines. Rows from another page are visible, and clickable when they carry `actions` (the request is executed by the owning page); `requestRestore` remains the local-only legacy path that just emits a `restored` event."
       },
       {
         "zh": "\u9875\u9762\u6D88\u5931\u8981\u6709\u4EBA\u6536\u5C3E\uFF0C\u5426\u5219\u7559\u4E0B\u6C38\u8FDC `running` \u7684\u50F5\u5C38\u6761\u76EE\uFF1A\u5B83\u4E0D\u5C5E\u4E8E\u672C\u9875\u3001\u672C\u9875\u4E5F\u6CA1\u6709\u5B83\u7684\u53E5\u67C4\uFF0C\u8C01\u90FD\u7ED3\u675F\u4E0D\u6389\u3002\u5224\u6D3B\u7528\u6D4F\u89C8\u5668\u539F\u751F Web Locks\u2014\u2014\u6BCF\u9875\u6301\u4E00\u628A\u4EE5 origin \u547D\u540D\u7684\u9501\uFF0C\u5176\u4ED6\u9875\u7528 `ifAvailable` \u63A2\u6D4B\u540C\u540D\u9501\uFF0C\u7ACB\u523B\u62FF\u5F97\u5230\u5C31\u8BF4\u660E\u90A3\u9875\u5DF2\u7ECF\u4E0D\u5728\u4E86\uFF1B\u63A2\u6D4B\u53EA\u53D1\u751F\u5728\u6536\u5230\u5206\u7247\u4E0E\u9875\u9762\u91CD\u65B0\u53EF\u89C1\u65F6\uFF0C\u6CA1\u6709\u5B9A\u65F6\u5668\uFF0C\u8FDE\u7EED\u4E24\u6B21\uFF08\u95F4\u9694 250ms\uFF09\u90FD\u62FF\u5F97\u5230\u624D\u6E05\u3002`navigator.locks` \u4E0D\u53EF\u7528\u65F6\u4E0D\u6E05\u7406\uFF0C\u5176\u4F59\u884C\u4E3A\u4E0D\u53D8\u3002\u5D29\u6E83\u6389\u7684\u6E32\u67D3\u8FDB\u7A0B\u89C4\u8303\u4E0D\u4FDD\u8BC1\u91CA\u653E\u9501\uFF0C\u90A3\u7C7B\u6B8B\u7559\u7559\u5230\u6D4F\u89C8\u5668\u91CD\u542F\u3002",
@@ -69755,12 +69889,21 @@ h(SideSheet, {
             }
           },
           {
+            "name": "runAction(taskId, index)",
+            "type": "(taskId: string, index: number) => Promise<boolean>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6267\u884C\u4EFB\u52A1\u4E0A\u7684\u7B2C index \u4E2A\u6309\u94AE\uFF1A\u672C\u9875\u7ACB\u5373\u6267\u884C\uFF1B\u8DE8\u9875\u53D1\u56DE\u521B\u5EFA\u9875\u5E76\u7B49 ack\uFF082s \u8D85\u65F6\uFF09\u3002\u67E5\u4E0D\u5230\u65B9\u6CD5\u3001\u8D8A\u754C\u3001\u629B\u9519\u4E00\u5F8B false",
+              "en": "Runs the index-th action of a task: locally at once, or back on the owning page with an ack (2s timeout). Missing method, out-of-range index and throwing actions all resolve false"
+            }
+          },
+          {
             "name": "canRestore(task)",
             "type": "(task: TaskNotificationRecord) => boolean",
             "def": "\u2014",
             "desc": {
-              "zh": "\u53EA\u6709\u672C\u9875\u521B\u5EFA\u7684\u6761\u76EE\u53EF\u8FD8\u539F",
-              "en": "Only rows created on this page can be restored"
+              "zh": "\u65E7 restored \u901A\u9053\u7684\u5224\u636E\uFF1A\u53EA\u5BF9\u672C\u9875\u6761\u76EE\u4E3A\u771F\u3002\u5B83**\u4E0D\u53C2\u4E0E\u6309\u94AE\u5224\u5B9A**\u2014\u2014\u8DE8\u9875\u6761\u76EE canRestore \u4E3A false \u4F46\u6709 actions \u65F6\u7167\u6837\u80FD\u70B9",
+              "en": "Judgement for the legacy restored channel: true only for rows of this page. It does **not** decide buttons \u2014 a row from another page returns false here yet stays clickable when it carries actions"
             }
           },
           {
@@ -69768,8 +69911,8 @@ h(SideSheet, {
             "type": "(taskId: string) => boolean",
             "def": "\u2014",
             "desc": {
-              "zh": "\u53D1\u672C\u5730 restored \u4E8B\u4EF6\uFF1B\u8DE8\u9875\u6761\u76EE\u8FD4\u56DE false\uFF0C\u4E0D\u8DE8\u9875\u4F20\u9012",
-              "en": "Emits a local restored event; returns false for cross-page rows, never crosses pages"
+              "zh": "\u53EA\u53D1\u672C\u5730 restored \u4E8B\u4EF6\uFF0C\u8DE8\u9875\u6761\u76EE\u8FD4\u56DE false\uFF1B\u65B0\u4EE3\u7801\u8BF7\u7528 actions + runAction",
+              "en": "Emits a local restored event only and returns false for cross-page rows; new code should use actions + runAction"
             }
           },
           {
@@ -69777,8 +69920,8 @@ h(SideSheet, {
             "type": "() => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5173\u901A\u9053\u4E0E\u6458\u76D1\u542C\uFF0C\u4FDD\u7559\u72B6\u6001\uFF1B\u4E0B\u6B21 connect \u4F1A\u590D\u6D3B\u5E76\u91CD\u53D1\u5168\u91CF\u5206\u7247",
-              "en": "Closes the channel and detaches listeners but keeps state; the next connect revives it and rebroadcasts a full shard"
+              "zh": "\u5173\u901A\u9053\u4E0E\u6458\u76D1\u542C\uFF0C\u4FDD\u7559\u72B6\u6001\uFF1B\u4E0B\u6B21 connect \u4F1A\u590D\u6D3B\u5E76\u91CD\u53D1\u5168\u91CF\u5206\u7247\u3002\u6309\u94AE\u65B9\u6CD5\u968F\u4E4B\u6E05\u7A7A\uFF0C\u5B58\u6D3B\u6761\u76EE\u7684\u6309\u94AE\u4ECE\u6B64\u523B\u8D77\u4E0D\u53EF\u6267\u884C\uFF08\u8981\u6062\u590D\u5F97\u91CD\u65B0 register\uFF09",
+              "en": "Closes the channel and detaches listeners but keeps state; the next connect revives it and rebroadcasts a full shard. Action methods are dropped, so surviving rows stay unclickable from then on (re-register to get them back)"
             }
           }
         ]
@@ -69822,6 +69965,24 @@ h(SideSheet, {
             "desc": {
               "zh": "\u4EFB\u610F JSON \u503C\uFF08\u5BF9\u8C61 / \u6570\u7EC4 / \u6570\u5B57 / \u5E03\u5C14 / null\uFF09\uFF1B\u5165\u6C60\u524D\u514B\u9686\u79C1\u6709\u526F\u672C\uFF0C\u51FD\u6570\u4E0E\u7C7B\u5B9E\u4F8B\u5F53\u573A\u629B\u9519",
               "en": "Any JSON value (object / array / number / boolean / null); cloned into a private copy on the way in, while functions and class instances throw immediately"
+            }
+          },
+          {
+            "name": "input.actions",
+            "type": "readonly TaskNotificationAction[]",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6309\u94AE\uFF1A`{ label, run }` \u6570\u7EC4\uFF0Crun \u662F\u533F\u540D\u51FD\u6570\u3001\u4E0D\u8FDB\u6C60\u4E0D\u8FC7\u7EBF\uFF0C\u53EA\u5728\u521B\u5EFA\u9875\u6267\u884C\uFF1Blabel \u4E3A\u7A7A\u6216 run \u4E0D\u662F\u51FD\u6570\u65F6\u6CE8\u518C\u5F53\u573A\u629B\u9519",
+              "en": "Actions: an array of `{ label, run }`; run is an anonymous function that never enters the pool or the wire and runs only on the creating page. An empty label or a non-function run throws at registration"
+            }
+          },
+          {
+            "name": "record.actions",
+            "type": "readonly { label: string }[] | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "\u8DE8\u9875\u53EF\u89C1\u7684\u53EA\u6709\u6309\u94AE\u6587\u6848\uFF0C\u4E0B\u6807\u5373\u52A8\u4F5C id\uFF1B\u6CA1\u6709\u6309\u94AE\u7684\u8BB0\u5F55\u4E0D\u5E26\u8FD9\u4E2A\u5B57\u6BB5",
+              "en": "Only labels cross pages, and the index is the action id; rows without actions carry no such field"
             }
           },
           {
@@ -69883,8 +70044,8 @@ h(SideSheet, {
             "type": "(listener: TaskNotificationEventListener) => () => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u76D1\u542C registered / updated / backgrounded / settled / restored / peer-left",
-              "en": "Listens for registered / updated / backgrounded / settled / restored / peer-left"
+              "zh": "\u76D1\u542C registered / updated / backgrounded / settled / message / restored / peer-left",
+              "en": "Listens for registered / updated / backgrounded / settled / message / restored / peer-left"
             }
           },
           {
@@ -69918,6 +70079,11 @@ h(SideSheet, {
         "id": "bt-lifecycle-example",
         "lang": "ts",
         "src": "import { notifyTask, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// \u9879\u76EE\u5728 app \u5165\u53E3\u8BBE\u4E00\u6B21\uFF1Bcore \u53D6\u4E0D\u5230\u9879\u76EE\u540D\uFF0C\u6240\u4EE5\u5FC5\u987B\u6709\u4EBA\u544A\u8BC9\u5B83\nsetDefaultTaskProject('dsh-task-reminder')\n\n// \u2460 \u81EA\u5DF1\u7BA1\u7ED3\u675F\uFF1A\u62FF\u5230\u53E5\u67C4\uFF0C\u968F\u65F6\u66F4\u65B0\uFF0C\u81EA\u5DF1\u6536\u5C3E\nconst handle = notifyTask('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', { group: 'scan', detail: { done: 12, total: 40 } })\nhandle.background()   // \u53EA\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\u4EFB\u52A1\nhandle.done('\u626B\u63CF\u5B8C\u6210')\n// handle.fail('\u88AB\u7528\u6237\u53D6\u6D88')\n\n// \u2461 \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20\nawait notifyTask.run('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', () => runWork(), { group: 'scan' })\n\n// \u2462 \u53EA\u60F3\u5E7F\u64AD\u4E00\u53E5\uFF1A\u4E0D\u8FDB\u5217\u8868\uFF0C\u53EA\u53D1 message \u4E8B\u4EF6\uFF0C\u4E0D\u4F1A\u95EA\nnotifyMessage('\u5DF2\u4FDD\u5B58', { group: 'notice', icon: 'check', level: 'success' })\n\n// \u53E5\u67C4\u5DF2\u7ECF\u5728\u624B\u65F6\u624D\u7528\u5F97\u4E0A\u7684\u515C\u5E95\uFF1A\u4E0E run \u540C\u4E00\u4E2A\u6536\u5C3E\uFF0C\u4E0D\u6539\u53D8\u539F Promise \u7684\u7ED3\u7B97\u8BED\u4E49\n// await handle.track(otherWork())   // otherWork(): Promise<void>\uFF0C\u7531\u8C03\u7528\u65B9\u63D0\u4F9B\n// await handle.settled              // \u53EA\u5728\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0"
+      },
+      {
+        "id": "bt-actions-example",
+        "lang": "ts",
+        "src": "import { notifyTask, taskNotifications } from 'dsh-plugin-core/ui'\n\n// \u2460 \u5F39\u7A97\u8FD9\u8FB9\uFF1A\u6309\u94AE\u540D + \u70B9\u5B83\u5E72\u4EC0\u4E48\u3002run \u5199\u533F\u540D\u51FD\u6570\u5C31\u884C\uFF0C\u4E0D\u7528\u8D77\u540D\nconst handle = notifyTask('\u6536\u5230\u786E\u8BA4', {\n  detail: { sessionId: 'abc' },\n  actions: [\n    { label: '\u91CD\u65B0\u6253\u5F00', run: () => reopenDialog('abc') },\n    { label: '\u77E5\u9053\u4E86', run: () => handle.done() },\n  ],\n})\nhandle.background()   // \u6536\u8D77\u5230\u540E\u53F0\n\n// \u2461 \u901A\u77E5\u4E2D\u5FC3\u8FD9\u8FB9\uFF1A\u6587\u6848\u6765\u81EA\u8BB0\u5F55\uFF08task.actions[i].label\uFF09\uFF0C\u70B9\u51FB\u6309\u3010\u4E0B\u6807\u3011\u8C03\n//    \u65B9\u6CD5\u672C\u8EAB\u5C31\u5728\u521B\u5EFA\u5B83\u7684\u9875\u9762\u91CC\uFF0C\u4E0D\u4F1A\u968F\u8BB0\u5F55\u4F20\u8FC7\u6765\nconst ok = await taskNotifications.runAction(task.id, 0)\n// ok=false \u53EA\u4EE3\u8868\u8FD9\u6B21\u6CA1\u89E6\u53D1\u6210\u529F\uFF08\u4EFB\u52A1\u5DF2\u7ED3\u675F\u3001\u4E0B\u6807\u8D8A\u754C\u3001\u65B9\u6CD5\u6CA1\u4E86\u6216\u521B\u5EFA\u9875\u6CA1\u56DE\u5E94\uFF09\nif (!ok) showToast('\u8BE5\u4EFB\u52A1\u5DF2\u65E0\u6CD5\u8FD8\u539F')   // showToast \u7531\u8C03\u7528\u65B9\u63D0\u4F9B"
       }
     ]
   },
@@ -74669,7 +74835,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.31"}`],
             [t3("buildDemo"), `v${"0.35.31"}`],
-            [t3("buildStamp"), "261115-015349-312"]
+            [t3("buildStamp"), "261115-145441-392"]
           ].map(
             ([label, value]) => (0, import_react107.createElement)(
               "tr",
@@ -74989,7 +75155,7 @@ function DemoPage() {
           },
           (0, import_react109.createElement)("span", null, `core v${"0.35.31"}`),
           (0, import_react109.createElement)("span", null, `demo v${"0.35.31"}`),
-          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-015349-312")
+          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-145441-392")
         )
       )
     ),
