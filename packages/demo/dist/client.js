@@ -67004,7 +67004,7 @@ var docData = {
             "type": "string",
             "def": "\u2014",
             "desc": {
-              "zh": "\u81EA\u5B9A\u4E49\u5E95\u8272\uFF0C\u4E0E `color` \u6B63\u4EA4\uFF1A`color` \u7BA1\u5B57/\u56FE\u6807/\u63CF\u8FB9\uFF0C\u5B83\u53EA\u7BA1\u5E95\u3002\u7528\u4E8E\u300C\u6D45\u8272\u5E95 + \u540C\u8272\u7CFB\u56FE\u6807\u300D\uFF1Bhover / active \u7531\u8BE5\u5E95\u4E0E `--dshpc-fg` \u6DF7\u51FA\uFF0C\u660E\u6697\u81EA\u52A8\u8DDF\u968F\u3002\u5B9E\u5FC3\u6863\u540C\u65F6\u7ED9 `color` \u65F6\u4EE5\u5B83\u4E3A\u51C6",
+              "zh": "\u81EA\u5B9A\u4E49\u5E95\u8272\uFF0C\u4E0E `color` \u6B63\u4EA4\uFF1A`color` \u7BA1\u5B57/\u56FE\u6807/\u63CF\u8FB9\uFF0C\u5B83\u53EA\u7BA1\u5E95\u3002\u7528\u4E8E\u300C\u6D45\u8272\u5E95 + \u540C\u8272\u7CFB\u56FE\u6807\u300D\uFF1Bhover / active \u7531\u8BE5\u5E95\u4E0E `--dshpc-fg` \u6DF7\u51FA\uFF0C\u660E\u6697\u81EA\u52A8\u8DDF\u968F\u3002\u5B9E\u5FC3\u6863\u540C\u65F6\u7ED9 `color` \u65F6\u4EE5\u5B83\u4E3A\u51C6\u3002\u5B9E\u5FC3\u6863\u5B57\u8272\u662F\u53CD\u767D\uFF0C\u6D45\u5E95\u8BF7\u6539\u7528 `outline` / `ghost` + `color`",
               "en": "Custom background, orthogonal to `color` (which owns text/icon/border). Made for tinted fill plus same-hue icon; hover/active are mixed from it with `--dshpc-fg`, so both themes follow. Overrides a solid tier s `color`-as-fill when both are given"
             }
           },
@@ -75442,7 +75442,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.36.1"}`],
             [t3("buildDemo"), `v${"0.36.1"}`],
-            [t3("buildStamp"), "261116-000432-554"]
+            [t3("buildStamp"), "261116-001956-023"]
           ].map(
             ([label, value]) => (0, import_react109.createElement)(
               "tr",
@@ -75762,7 +75762,7 @@ function DemoPage() {
           },
           (0, import_react111.createElement)("span", null, `core v${"0.36.1"}`),
           (0, import_react111.createElement)("span", null, `demo v${"0.36.1"}`),
-          (0, import_react111.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261116-000432-554")
+          (0, import_react111.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261116-001956-023")
         )
       )
     ),

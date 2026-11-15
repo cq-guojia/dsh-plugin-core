@@ -67,6 +67,8 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 | 没有该键 | 正常新建 |
 | 记录离开池（`done` / `fail` / 超时 / `settleLocal`） | 键随之释放，下一次同名作业是新的一条 |
 
+注意：`timeoutMs` 缺省 0（不回收），所以没显式给窗口时，只有 `done` / `fail` / `settleLocal` 能让键释放 —— 作业型登记方要在 `finally` 里收尾，漏了会让同一个键一直被占（直到页面重载）。
+
 - 唯一性范围是 `(project, key)`，`group` 不参与 —— 同一件事不该落在两个二级分组里。
 - 键由**调用方**给，核心不解释含义、不校验语义，只做相等判等。它回答的是「这两条算不算同一件事」，所以只能用确定、且不会变的值：`['close', workspaceId, taskId]` 对；`['close', Date.now()]`、`['close', 标题]` 错——每次算出新键就等于每次都新开一条，等于没做去重。
 - 写法：字符串原样用；数组按元素归一化成稳定串（池里存成 `#` + JSON）。两种形态分属两个空间，手拼 `a:b` 不会和 `['a', 'b']` 撞成同一个键。只收扁平原值（字符串 / 有限数字）；空串、空数组、对象、`NaN` 当场抛错。
@@ -94,6 +96,7 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
   要判断有没有按钮看 `record.actions`，不要看 `canRestore`（那是旧 restored 通道的判据）。
 - 界面上「点了没反应」不再允许：`TaskBar` 拿到 `false` 就调 `onActionFailure`，没给回调时弹一次核心自带提示
   （`taskbarActionFailed`）。只提示不重试 —— 上面几种原因核心都自愈不了，重试只是再等 2s。
+  默认提示走 `notify()`，项目没挂 toast 宿主就还是静默，那种项目必须自己接 `onActionFailure`。
 - **回收是独立开关**：`timeoutMs` 缺省 **0 = 不回收**，与 `hidden` 无关（2026-11-15 反转：hidden 缺省 5 分钟会让还在跑的作业先被判失败）。
   代价是「不回收的行会留到页面重载」，所以作业型登记方必须在 `finally` 里 `done` / `fail`，否则同一个键下次 `ensure` 会被当成还在跑。
 

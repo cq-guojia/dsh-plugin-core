@@ -1534,7 +1534,7 @@ export const docData = {
             "type": "string",
             "def": "—",
             "desc": {
-              "zh": "自定义底色，与 `color` 正交：`color` 管字/图标/描边，它只管底。用于「浅色底 + 同色系图标」；hover / active 由该底与 `--dshpc-fg` 混出，明暗自动跟随。实心档同时给 `color` 时以它为准",
+              "zh": "自定义底色，与 `color` 正交：`color` 管字/图标/描边，它只管底。用于「浅色底 + 同色系图标」；hover / active 由该底与 `--dshpc-fg` 混出，明暗自动跟随。实心档同时给 `color` 时以它为准。实心档字色是反白，浅底请改用 `outline` / `ghost` + `color`",
               "en": "Custom background, orthogonal to `color` (which owns text/icon/border). Made for tinted fill plus same-hue icon; hover/active are mixed from it with `--dshpc-fg`, so both themes follow. Overrides a solid tier s `color`-as-fill when both are given"
             }
           },
