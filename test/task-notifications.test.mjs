@@ -1147,6 +1147,19 @@ test('过期行被 update 触碰也不会复活成僵尸（publish 用 updater�
   assert.equal(handle.isSettled, true)
 })
 
+test('过期行被 update 触碰时不再补发 updated 事件', async () => {
+  const bus = createTaskNotificationEventBus()
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null, events: bus })
+  const events = []
+  bus.subscribe((event) => events.push(event))
+  const handle = pool.register({ group: 'g', title: 'expired then updated', hidden: true, timeoutMs: 20 })
+  await new Promise((resolve) => setTimeout(resolve, 40))
+  handle.update({ detail: 'late' })
+  const updated = events.filter((event) => event.type === 'updated' && event.task.id === handle.id)
+  assert.equal(updated.length, 0, '已结算的行不该再发 updated')
+  assert.equal(handle.isSettled, true)
+})
+
 test('分片被删后同 seq 重发能被接受，不会永久失明', async () => {
   const channelName = testChannel()
   const pool = makePool(channelName, { origin: 'page-watcher' })
@@ -1160,6 +1173,16 @@ test('分片被删后同 seq 重发能被接受，不会永久失明', async () 
     await waitFor(() => pool.getSnapshot().tasks.length === 0, 'bye 后分片被删')
     sender.postMessage({ kind: 'shard', origin: 'page-x', seq: 6, tasks: [wireTask('page-x', 'x1')] })
     await waitFor(() => pool.getSnapshot().tasks.length === 1, '同 seq 的全量重新被接受')
+
+    // 比已知更旧的仍然丢：退役分片不能靠迟到消息复活
+    sender.postMessage({
+      kind: 'shard',
+      origin: 'page-x',
+      seq: 2,
+      tasks: [{ ...wireTask('page-x', 'x2'), title: 'stale' }],
+    })
+    await new Promise((resolve) => setTimeout(resolve, 60))
+    assert.deepEqual(pool.getSnapshot().tasks.map((task) => task.title), ['remote task'], '更旧的 seq 被丢弃')
   } finally {
     sender.close()
     pool.dispose()
@@ -1184,6 +1207,12 @@ test('跨页畸形 actions 整条丢弃：空文案 / 不是数组', async () =>
       origin: 'page-x',
       seq: 2,
       tasks: [{ ...wireTask('page-x', 'x1'), actions: 'nope' }],
+    })
+    sender.postMessage({
+      kind: 'shard',
+      origin: 'page-x',
+      seq: 3,
+      tasks: [{ ...wireTask('page-x', 'x1'), actions: [{ label: 'go', run: 'x' }] }],
     })
     await new Promise((resolve) => setTimeout(resolve, 80))
     assert.equal(pool.getSnapshot().tasks.length, 0, '坏 actions 不进池')

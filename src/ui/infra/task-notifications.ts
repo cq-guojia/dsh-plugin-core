@@ -514,11 +514,17 @@ function cloneDetail(value: TaskNotificationDetail | undefined): TaskNotificatio
     : (JSON.parse(JSON.stringify(value)) as TaskNotificationDetail)
 }
 
-/** 记录里只允许出现文案；带上函数说明发送方搞错了，直接当畸形消息丢掉。 */
+/** 记录里只允许出现文案；多出任何键（例如误带的 run）都算畸形消息，整条丢掉。 */
 function isActionInfos(value: unknown): value is readonly TaskNotificationActionInfo[] {
   return (
     Array.isArray(value) &&
-    value.every((item) => isRecord(item) && typeof item.label === 'string' && item.label.trim() !== '')
+    value.every(
+      (item) =>
+        isRecord(item) &&
+        Object.keys(item).length === 1 &&
+        typeof item.label === 'string' &&
+        item.label.trim() !== '',
+    )
   )
 }
 
@@ -764,13 +770,16 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
    *
    * 收 updater 而不是算好的数组：`expireLocal()` 会就地结算过期行并再写一次，
    * 若用进来之前算的旧数组写回，刚清掉的行会被原样复活成没有 finisher 的僵尸。
+   * updater 原样返回 `current` 表示「目标已经被就地结算」，此时不推快照、不发事件。
    */
   function publish(
     compute: (current: readonly TaskNotificationRecord[]) => readonly TaskNotificationRecord[],
     notice: WireNotice,
   ): void {
     expireLocal()
-    const nextTasks = compute(localShard())
+    const current = localShard()
+    const nextTasks = compute(current)
+    if (nextTasks === current) return
     seq += 1
     revision += 1
     shards.set(origin, { origin, seq, tasks: Object.freeze([...nextTasks]) })
@@ -953,9 +962,10 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       return
     }
     const seen = knownSeq.get(message.origin) ?? 0
-    // 分片已被删掉（bye / 判活清理）时重新接受：对端恢复后可能用同一个 seq 重发全量，
-    // 一律按「旧 seq 丢弃」会让这一页在对端永久消失，连带它的按钮也永远点不了。
-    if (message.seq <= seen && shards.has(message.origin)) return
+    // 分片已被删掉（bye / 判活清理）时接受「同 seq 重发」：对端恢复后可能用同一个 seq 发全量，
+    // 一律丢弃会让这一页在对端永久消失、按钮永远点不了。比已知更旧的仍然丢，别把退役分片复活。
+    if (message.seq < seen) return
+    if (message.seq === seen && shards.has(message.origin)) return
     knownSeq.set(message.origin, message.seq)
     shards.set(message.origin, { origin: message.origin, seq: message.seq, tasks: Object.freeze([...message.tasks]) })
     revision += 1
@@ -1113,14 +1123,21 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
           // updatedAt 前移即「续期」：回收窗口从最后一次活动起算。
           updatedAt: Date.now(),
         }
-        publish((current) => replace(current, next), { type: 'updated', task: next })
+        // 行可能在进入 publish 时被就地结算；那时原样返回，别补发一条 status 还是 running 的更新。
+        publish((current) => (current.some((task) => task.id === id) ? replace(current, next) : current), {
+          type: 'updated',
+          task: next,
+        })
       },
       background(): void {
         if (isSettled) return
         const current = find(id)
         if (current === undefined || current.backgrounded) return
         const next: TaskNotificationRecord = { ...current, backgrounded: true, updatedAt: Date.now() }
-        publish((current) => replace(current, next), { type: 'backgrounded', task: next })
+        publish((current) => (current.some((task) => task.id === id) ? replace(current, next) : current), {
+          type: 'backgrounded',
+          task: next,
+        })
       },
       done(detail?: TaskNotificationDetail): void {
         if (detail !== undefined) handle.update({ detail })

@@ -1785,7 +1785,7 @@ function cloneDetail(value) {
   return typeof structuredClone === "function" ? structuredClone(value) : JSON.parse(JSON.stringify(value));
 }
 function isActionInfos(value) {
-  return Array.isArray(value) && value.every((item) => isRecord(item) && typeof item.label === "string" && item.label.trim() !== "");
+  return Array.isArray(value) && value.every((item) => isRecord(item) && Object.keys(item).length === 1 && typeof item.label === "string" && item.label.trim() !== "");
 }
 function isTaskRecord(value) {
   if (!isRecord(value))
@@ -1977,7 +1977,10 @@ function createTaskNotificationPool(options = {}) {
   }
   function publish(compute, notice) {
     expireLocal();
-    const nextTasks = compute(localShard());
+    const current3 = localShard();
+    const nextTasks = compute(current3);
+    if (nextTasks === current3)
+      return;
     seq += 1;
     revision += 1;
     shards.set(origin, { origin, seq, tasks: Object.freeze([...nextTasks]) });
@@ -2142,7 +2145,9 @@ function createTaskNotificationPool(options = {}) {
       return;
     }
     const seen = knownSeq.get(message.origin) ?? 0;
-    if (message.seq <= seen && shards.has(message.origin))
+    if (message.seq < seen)
+      return;
+    if (message.seq === seen && shards.has(message.origin))
       return;
     knownSeq.set(message.origin, message.seq);
     shards.set(message.origin, { origin: message.origin, seq: message.seq, tasks: Object.freeze([...message.tasks]) });
@@ -2299,7 +2304,10 @@ function createTaskNotificationPool(options = {}) {
           // updatedAt 前移即「续期」：回收窗口从最后一次活动起算。
           updatedAt: Date.now()
         };
-        publish((current4) => replace2(current4, next), { type: "updated", task: next });
+        publish((current4) => current4.some((task) => task.id === id3) ? replace2(current4, next) : current4, {
+          type: "updated",
+          task: next
+        });
       },
       background() {
         if (isSettled)
@@ -2308,7 +2316,10 @@ function createTaskNotificationPool(options = {}) {
         if (current3 === void 0 || current3.backgrounded)
           return;
         const next = { ...current3, backgrounded: true, updatedAt: Date.now() };
-        publish((current4) => replace2(current4, next), { type: "backgrounded", task: next });
+        publish((current4) => current4.some((task) => task.id === id3) ? replace2(current4, next) : current4, {
+          type: "backgrounded",
+          task: next
+        });
       },
       done(detail2) {
         if (detail2 !== void 0)
@@ -69692,69 +69703,25 @@ h(SideSheet, {
   "task-notifications": {
     "id": "task-notifications",
     "heading": {
-      "zh": "\u8BA9\u957F\u8017\u65F6\u4EFB\u52A1\u767B\u8BB0\u3001\u8BA2\u9605\u4E0E\u8DE8\u9875\u53EF\u89C1",
-      "en": "Register, subscribe and observe long-running tasks"
+      "zh": "\u957F\u8017\u65F6\u4EFB\u52A1\uFF1A\u767B\u8BB0\u3001\u8BA2\u9605\u3001\u8DE8\u9875\u3001\u6309\u94AE",
+      "en": "Long tasks: register, subscribe, cross-page, actions"
     },
     "prose": [
       {
-        "zh": "\u4E24\u6761\u901A\u9053\u4E0D\u80FD\u4E92\u76F8\u66FF\u4EE3\uFF1A\u72B6\u6001\u6C60\u7ED9\u4EFB\u610F\u65F6\u523B\u53EF\u8BFB\u7684\u5168\u91CF\u5FEB\u7167\uFF0C\u53EF\u76F4\u63A5\u5582 `useSyncExternalStore`\uFF1B\u4E8B\u4EF6\u603B\u7EBF\u53EA\u6295\u9012\u4E00\u6B21\u6027\u4E8B\u5B9E\uFF0C\u4E0D\u7559\u5B58\u3002\u65B0\u5F00\u7684\u9875\u9762\u6CA1\u542C\u8FC7\u5386\u53F2\u4E8B\u4EF6\uFF0C\u9760 `hello` \u6362\u56DE\u5168\u91CF\u5206\u7247\u8865\u9F50\uFF1B\u53CD\u8FC7\u6765\uFF0C\u300C\u6536\u8D77\u300D\u662F\u4E00\u6B21\u6027\u4E8B\u5B9E\uFF0C\u8BFB\u5B8C\u5FEB\u7167\u770B\u4E0D\u51FA\u6765\uFF0C\u5FC5\u987B\u76D1\u542C\u4E8B\u4EF6\u3002",
-        "en": "Two channels that do not replace each other: the pool exposes a queryable full snapshot that feeds `useSyncExternalStore`; the event bus delivers one-off facts and keeps no history. A freshly opened page has heard no past events, so `hello` exchanges a full shard as baseline. Conversely, collapsing is a one-off fact invisible in a snapshot \u2014 listen to events for it."
+        "zh": "\u6570\u636E\u53EA\u5728\u5185\u5B58\uFF1A\u672C\u9875\u4E0E\u540C\u6E90\u6807\u7B7E\u9875\u5404\u4E00\u4EFD\uFF0C\u5237\u65B0\u6216\u5173\u9875\u5373\u5931\uFF1B\u4E0D\u843D\u6587\u4EF6\u3001\u4E0D\u53D1\u8BF7\u6C42\u3001\u4E0D\u8F6E\u8BE2\u3002\u8DE8\u9875\u53EA\u4F20\u7EAF\u6570\u636E\uFF08\u7ED3\u6784\u5316\u514B\u9686\u53EF\u5F97\uFF09\uFF0C\u4E0D\u5E26\u51FD\u6570\u3001\u7EC4\u4EF6\u6216 Promise\u3002",
+        "en": "Data lives in memory only: one copy per page and per same-origin tab, gone on reload or close \u2014 no files, no requests, no polling. Only plain structured-cloneable data crosses pages: no functions, components or promises."
       },
       {
-        "zh": "\u6570\u636E\u53EA\u5728\u5185\u5B58\uFF1A\u672C\u9875\u4E0E\u5404\u540C\u6E90\u6807\u7B7E\u9875\u5404\u6301\u4E00\u4EFD\uFF0C\u8FDB\u7A0B\u6216\u9875\u9762\u5173\u95ED\u5373\u5931\uFF1B\u4E0D\u843D\u6587\u4EF6\u3001\u4E0D\u53D1\u8BF7\u6C42\u3001\u4E0D\u8F6E\u8BE2\u3002\u8DE8\u9875\u6D88\u606F\u53EA\u80FD\u662F\u7ED3\u6784\u5316\u514B\u9686\u53EF\u5F97\u7684\u7EAF\u6570\u636E\uFF0C\u4E0D\u5E26\u51FD\u6570\u3001\u7EC4\u4EF6\u3001`ReactNode` \u6216 Promise\u3002\u6761\u76EE\u4E00\u5F8B\u6765\u81EA\u771F\u5B9E\u6CE8\u518C\u4E0E\u771F\u5B9E\u65F6\u949F\uFF0C\u5E93\u5185\u4E0D\u542B\u6A21\u62DF\u6216\u5360\u4F4D\u6570\u636E\u3002",
-        "en": "Data lives in memory only: one copy per page and per same-origin tab, gone when the process or page closes. No files, no requests, no polling. Cross-page messages are plain structured-cloneable data \u2014 no functions, components, `ReactNode` or promises. Every row comes from a real registration and the real clock; the library ships no mock or placeholder data."
+        "zh": "\u4E24\u6761\u901A\u9053\uFF1A**\u72B6\u6001\u6C60**\uFF08`getSnapshot` / `subscribe`\uFF0C\u53EF\u76F4\u63A5\u5582 `useSyncExternalStore`\uFF09\u4E0E**\u4E8B\u4EF6\u603B\u7EBF**\uFF08`subscribeTaskNotificationEvents`\uFF0C\u4E00\u6B21\u6027\u4E8B\u5B9E\uFF0C\u4E0D\u7559\u5B58\uFF09\u3002\u8981\u8FDB\u5217\u8868\u3001\u80FD\u88AB\u7ED3\u675F\u7684\u7528 `notifyTask`\uFF1B\u53EA\u64AD\u4E00\u53E5\u3001\u4E0D\u8FDB\u5217\u8868\u7684\u7528 `notifyMessage`\u3002",
+        "en": "Two channels: the **pool** (`getSnapshot` / `subscribe`, feeds `useSyncExternalStore`) and the **event bus** (`subscribeTaskNotificationEvents`, one-off facts, no history). Use `notifyTask` for rows that appear in the list and can be ended; `notifyMessage` for a one-off announcement that stays out of it."
       },
       {
-        "zh": "\u5FEB\u7167\u662F `{ tasks, revision }`\uFF0C`tasks` \u6309\u5F00\u59CB\u65F6\u95F4\u518D\u6309 id \u6392\u5E8F\uFF0C\u8DE8\u9875\u987A\u5E8F\u786E\u5B9A\uFF1B\u65E0\u53D8\u5316\u4E0D\u4EA7\u751F\u65B0\u5BF9\u8C61\uFF0C`getServerSnapshot()` \u6C38\u8FDC\u662F\u540C\u4E00\u4E2A\u51BB\u7ED3\u7A7A\u5FEB\u7167\u3002`selectTaskNotifications()` \u5BF9\u540C\u4E00\u5FEB\u7167\u4E0E\u540C\u4E00\u8FC7\u6EE4\u6761\u4EF6\u8FD4\u56DE\u540C\u4E00\u6570\u7EC4\u3002",
-        "en": "A snapshot is `{ tasks, revision }`; `tasks` sorts by start time then id, so order is identical across pages. No change means no new object, and `getServerSnapshot()` always returns the same frozen empty snapshot. `selectTaskNotifications()` returns the same array for the same snapshot and filter."
+        "zh": "\u6309\u94AE\uFF1A\u8981\u7ED9\u540E\u53F0\u6761\u76EE\u52A0\u300C\u62C9\u56DE\u6765\u300D\u8FD9\u7C7B\u64CD\u4F5C\uFF0C\u5C31\u4F20 `actions: [{ label, run }]`\u3002\u65B9\u6CD5\u7559\u5728\u521B\u5EFA\u9875\u5185\u5B58\u91CC\uFF0C\u8BB0\u5F55\u53EA\u5E26\u6587\u6848\uFF0C\u6240\u4EE5\u522B\u7684\u6807\u7B7E\u9875\u4E5F\u753B\u5F97\u51FA\u6309\u94AE\uFF0C\u70B9\u51FB\u4F1A\u53D1\u56DE\u521B\u5EFA\u9875\u6267\u884C\u3002",
+        "en": "Actions: to give a backgrounded row something to do, pass `actions: [{ label, run }]`. The method stays in the creating page's memory and only labels cross pages, so other tabs can render the buttons and a click is executed back on the creating page."
       },
       {
-        "zh": "\u4E24\u6761\u8DEF\uFF0C\u522B\u6DF7\u7528\uFF1A\u8981\u8FDB\u5217\u8868\u3001\u8981\u76D1\u63A7\u3001\u8981\u80FD\u88AB\u7ED3\u675F\u7684\uFF0C\u7528 `notifyTask`\uFF1B\u53EA\u60F3\u5E7F\u64AD\u4E00\u53E5\u3001\u4E0D\u9700\u8981\u7559\u5728\u5217\u8868\u91CC\u7684\uFF0C\u7528 `notifyMessage(title, options?)`\u3002\u540E\u8005**\u4E0D\u5199\u6C60\u3001\u4E0D\u52A8\u5FEB\u7167**\uFF08`revision` \u4E0D\u53D8\uFF09\uFF0C\u53EA\u53D1\u4E00\u4E2A `message` \u4E8B\u4EF6\uFF0C\u6240\u4EE5\u4E0D\u4F1A\u51FA\u73B0\u300C\u5217\u8868\u95EA\u4E00\u4E0B\u300D\u3002\u53CD\u8FC7\u6765\uFF0C\u7528 `notifyTask(...).done()` \u5192\u5145\u5E7F\u64AD\u4F1A\u5148 `registered` \u518D `settled`\uFF0C\u5FC5\u95EA\u4E00\u5E27\u3002",
-        "en": "Two paths, not interchangeable: use `notifyTask` when the row must appear in the list, be monitored and be endable; use `notifyMessage(title, options?)` when you only need to announce something and it should not stay in the list. The latter writes nothing to the pool and does not touch the snapshot (`revision` stays put) \u2014 it only emits a `message` event, so the list cannot flash. Faking a broadcast with `notifyTask(...).done()` emits `registered` then `settled` and always flashes one frame."
-      },
-      {
-        "zh": "\u60F3\u8BA9\u63D0\u793A\u5728\u6240\u6709\u9875\u9762\u90FD\u5F39\uFF1A`notify(msg, { broadcast: true })`\u3002\u672C\u9875**\u4E0D\u5355\u72EC\u5F39**\uFF0C\u53EA\u53D1\u5E7F\u64AD\uFF0C\u518D\u7531\u5185\u7F6E\u63A5\u6536\u7AEF\u6E32\u67D3 \u2014\u2014 \u4E00\u6761\u63D0\u793A\u53EA\u51FA\u73B0\u4E00\u6B21\uFF0C\u5F00\u51E0\u4E2A\u6807\u7B7E\u9875\u5C31\u5404\u5F39\u4E00\u6B21\uFF1B\u505C\u7559\u65F6\u957F\u4E0E\u672C\u9875\u63D0\u793A\u4E00\u81F4\uFF082600ms\uFF09\uFF0C\u4E0D\u968F\u6D88\u606F\u8D70\u3002\u63A5\u6536\u7AEF\u4E0D\u6302\u5728\u63D0\u793A\u754C\u9762\u4E0A\uFF1A\u9875\u9762\u52A0\u8F7D\u65F6\u8C03\u4E00\u6B21 `connectToasts()`\uFF08\u7EAF\u903B\u8F91\u3001\u96F6 DOM\uFF09\u5C31\u63A5\u597D\uFF0C\u754C\u9762\u7531 `mountToasts()` \u5355\u72EC\u6302 \u2014\u2014 \u5426\u5219\u300C\u6CA1\u5F39\u8FC7\u63D0\u793A\u7684\u9875\u9762\u300D\u6536\u4E0D\u5230\u5E7F\u64AD\u3002\u8DE8\u9875\u53EA\u80FD\u4F20\u7EAF\u6570\u636E\uFF0C\u6240\u4EE5\u5E26 `actions`\uFF08\u51FD\u6570\uFF09\u7684\u63D0\u793A\u65E0\u6CD5\u5E7F\u64AD\uFF1A\u7C7B\u578B\u4E0A `broadcast: true` \u5206\u652F\u628A `actions` \u58F0\u660E\u6210 `never`\uFF0C\u5199\u4E86\u5C31\u7F16\u8BD1\u4E0D\u8FC7\uFF1B\u7ED5\u8FC7\u7C7B\u578B\u7684 JS \u8C03\u7528\u65B9\u5728\u8FD0\u884C\u671F\u5F53\u573A\u629B\u9519\uFF0C\u4E0D\u9759\u9ED8\u4E22\u6309\u94AE\uFF08\u4E0E `detail` \u4F20\u51FD\u6570\u540C\u4E00\u53E3\u5F84\uFF09\u3002\u5E7F\u64AD\u53D1\u4E0D\u51FA\u53BB\u65F6\uFF08\u5982\u6CA1\u8BBE\u9ED8\u8BA4\u9879\u76EE\uFF09\u964D\u7EA7\u4E3A\u672C\u9875\u63D0\u793A\uFF0C\u6D88\u606F\u4E0D\u4E22\u3002\u53EA\u7528\u672C\u9875\u63D0\u793A\u7684\uFF0C\u76F4\u63A5 `notify(msg)`\uFF0C\u5B8C\u5168\u4E0D\u7ECF\u8FC7\u901A\u77E5\u4E2D\u5FC3\u3002",
-        "en": "To make a toast appear on every page, use `notify(msg, { broadcast: true })`. The current page does not render it directly \u2014 it broadcasts, and the built-in receiver renders, so one message shows once and every open tab shows its own copy; duration matches local toasts (2600ms) and is not carried by the message. The receiver is not tied to the toast UI: call `connectToasts()` once per page (pure logic, no DOM) and it is wired; `mountToasts()` mounts the UI separately \u2014 without it a page that never showed a toast would miss every broadcast. Only plain data crosses pages, so `actions` (functions) cannot be broadcast: on the `broadcast: true` branch `actions` is typed as `never`, so passing it does not compile, and a JS caller that bypasses types gets a runtime throw instead of a silently dropped button (same rule as passing a function as `detail`). If the broadcast cannot be sent (e.g. no default project set) it degrades to a local toast so the message is not lost. For a local toast, call `notify(msg)` \u2014 it never touches the hub."
-      },
-      {
-        "zh": "\u56FE\u6807\uFF1A`icon`\uFF08\u56FE\u6807\u540D / \u56FE\u6807\u5B57\u4F53\u7C7B\u540D\uFF09\u4E0E `iconSvg`\uFF08\u539F\u59CB SVG \u6E90\uFF09\u90FD\u53EA\u662F\u5B57\u7B26\u4E32\uFF0C\u6838\u5FC3\u53EA\u5B58\u4E0D\u89E3\u91CA\uFF0C\u6E32\u67D3\u4E0E\u6CE8\u5165\u5B89\u5168\u7531\u6D88\u8D39\u7AEF\u8D1F\u8D23 \u2014\u2014 \u7EC4\u4EF6\u548C ReactNode \u8DE8\u9875\u4F20\u4E0D\u4E86\u3002",
-        "en": "Icons: `icon` (an icon name or icon-font class) and `iconSvg` (raw SVG source) are plain strings; core stores them without interpreting, and rendering plus injection safety are the consumer's job \u2014 components and ReactNodes cannot cross pages."
-      },
-      {
-        "zh": "\u4E24\u7EA7\u5206\u7EC4\uFF1A`project`\uFF08\u9879\u76EE\uFF09\u5728 app \u5165\u53E3\u7528 `setDefaultTaskProject()` \u8BBE\u4E00\u6B21\uFF0C`group` \u662F\u9879\u76EE\u5185\u7684\u4E8C\u7EA7\u5206\u7C7B\uFF08\u7F3A\u7701 `default`\uFF09\u3002\u8BFB\u53D6\u4E09\u6863\uFF1A\u4E0D\u4F20 / \u7A7A\u6570\u7EC4 = \u672C\u9879\u76EE\u5168\u90E8\u4E8C\u7EA7\uFF1B\u4E00\u4E2A\u6216\u591A\u4E2A\u540D\u5B57 = \u672C\u9879\u76EE\u8FD9\u51E0\u4E2A\u4E8C\u7EA7\uFF1B`'*'` = \u6240\u6709\u9879\u76EE\u6240\u6709\u4E8C\u7EA7\u3002\u7B2C\u4E09\u53C2 `{ project }` \u53EF\u4EE5\u6362\u9879\u76EE\uFF0C`{ project: null }` \u8868\u793A\u4E0D\u9650\u9879\u76EE\u3002\u9879\u76EE\u540D core \u53D6\u4E0D\u5230\uFF0C\u6240\u4EE5\u5FC5\u987B\u6709\u4EBA\u8BBE\uFF1B`projectLabel` / `groupLabel` \u53EA\u8986\u76D6\u663E\u793A\u540D\u3002",
-        "en": "Two levels: `project` is set once at app start with `setDefaultTaskProject()`, and `group` is a second-level bucket inside it (default `default`). Reading has three tiers: omitted or empty = every group of the current project; one or more names = only those groups; `'*'` = every project and every group. A third argument `{ project }` switches projects, and `{ project: null }` drops the project filter. Core cannot discover a project name, so somebody must set it; `projectLabel` / `groupLabel` only override display names."
-      },
-      {
-        "zh": "`detail` \u6536\u4EFB\u610F JSON \u503C\uFF08\u5BF9\u8C61\u3001\u6570\u7EC4\u3001\u6570\u5B57\u3001\u5E03\u5C14\u3001null\uFF09\uFF0C\u5165\u6C60\u524D\u5E93\u53D6\u4E00\u4EFD\u79C1\u6709\u526F\u672C\uFF1A\u8C03\u7528\u65B9\u4E4B\u540E\u6539\u539F\u5BF9\u8C61\u4E0D\u4F1A\u6C61\u67D3\u72B6\u6001\uFF0C\u4E5F\u4E0D\u9700\u8981\u81EA\u5DF1 `JSON.stringify`\u3002\u51FD\u6570\u3001DOM \u8282\u70B9\u4E0E\u7C7B\u5B9E\u4F8B\u5F53\u573A\u629B\u9519\uFF0C\u4E0D\u4F1A\u7B49\u5230\u8DE8\u9875\u5E7F\u64AD\u65F6\u624D\u70B8\u3002",
-        "en": "`detail` accepts any JSON value (object, array, number, boolean, null); the pool takes a private copy on the way in, so later mutation by the caller cannot change stored state and no `JSON.stringify` is needed. Functions, DOM nodes and class instances throw right away instead of failing later during the cross-page broadcast."
-      },
-      {
-        "zh": "\u4E24\u4E2A\u5165\u53E3\u5206\u5DE5\u4E0E `oraPromise` / `toast.promise` / `withProgress` \u4E00\u81F4\uFF1A`notifyTask(title, options?)` \u8FD4\u56DE\u53E5\u67C4\uFF0C\u81EA\u5DF1\u6536\u5C3E\uFF1B`notifyTask.run(title, work, options?)` \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF0C\u6210\u529F\u4E0E\u5931\u8D25\u81EA\u52A8\u6536\u5C3E\u5E76\u900F\u4F20\u7ED3\u679C\u3002\u7B2C\u4E00\u53C2\u6052\u4E3A\u6807\u9898\uFF0C\u9879\u76EE\u6765\u81EA\u5168\u5C40\u9ED8\u8BA4\u3001\u4E8C\u7EA7\u5206\u7EC4\u6765\u81EA `options.group`\uFF0C\u4E24\u8005\u90FD\u80FD\u7701\uFF1B\u57FA\u7840\u5165\u53E3\u7684\u8FD4\u56DE\u7C7B\u578B\u4E0D\u968F\u53C2\u6570\u53D8\u5316\u3002\u9700\u8981\u5BF9\u8C61\u53C2\u6570\u6216\u6C60\u7EA7\u80FD\u529B\u65F6\u4ECD\u7528 `taskNotifications.register()`\u3002",
-        "en": "The two entries split the work the way `oraPromise` / `toast.promise` / `withProgress` do: `notifyTask(title, options?)` returns a handle you settle yourself, while `notifyTask.run(title, work, options?)` wraps an async task, settling it either way and passing the result through. The first argument is always the title: the project comes from the global default and the group from `options.group`, so both can be omitted, and the base entry never changes its return type based on its arguments. Use `taskNotifications.register()` when you need an options object or pool-level control."
-      },
-      {
-        "zh": "\u7ED3\u675F\u6743\u5728\u8C03\u7528\u65B9\uFF1A`done()` / `fail()` \u5E42\u7B49\uFF0C`track(promise)` \u8BA9\u6210\u529F\u4E0E reject \u8D70\u540C\u4E00\u6536\u5C3E\u4E14\u8FD4\u56DE\u539F Promise\u3002`settled` \u53EA\u5728\u4EFB\u52A1\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0\u5B83\uFF0C\u800C\u662F\u53D1\u4E00\u4E2A `backgrounded` \u4E8B\u4EF6\u3002\u8FD9\u5C31\u662F\u300CPromise \u4E24\u6001 + \u6536\u8D77\u4F5C\u4E3A\u4E8B\u4EF6\u300D\uFF0C\u8C03\u7528\u65B9 `await` \u7684\u4ECD\u662F\u6B63\u5E38\u4E24\u6001\u3002",
-        "en": 'The caller decides when a task ends: `done()` / `fail()` are idempotent, and `track(promise)` settles on both success and rejection while returning the original promise. `settled` resolves only on a real ending; collapsing emits a `backgrounded` event instead. This is the "two-state promise plus collapse as event" contract \u2014 callers still await ordinary two-state promises.'
-      },
-      {
-        "zh": "\u6309\u94AE\uFF1A\u6CE8\u518C\u65F6\u7ED9 `actions: [{ label, run }]`\uFF0C`run` \u5C31\u662F\u70B9\u6309\u94AE\u65F6\u8981\u6267\u884C\u7684\u65B9\u6CD5\uFF08\u533F\u540D\u51FD\u6570\u5373\u53EF\uFF09\uFF0C\u53EF\u4EE5\u7ED9\u591A\u4E2A\u3002\u65B9\u6CD5**\u4E0D\u4F1A\u88AB\u5E8F\u5217\u5316**\uFF1A\u8BB0\u5F55\u91CC\u53EA\u5B58 `label`\uFF0C\u6240\u4EE5\u522B\u7684\u6807\u7B7E\u9875\u4E5F\u770B\u5F97\u89C1\u3001\u753B\u5F97\u51FA\u6309\u94AE\uFF1B\u65B9\u6CD5\u672C\u4F53\u6309 `\u4EFB\u52A1id#\u4E0B\u6807` \u7559\u5728\u521B\u5EFA\u5B83\u7684\u9875\u9762\u5185\u5B58\u91CC\uFF0C\u9875\u9762\u4E00\u5173\u5C31\u6CA1\u4E86\u3002\u70B9\u6309\u94AE\u8C03 `taskNotifications.runAction(task.id, index)`\uFF0C\u8FD4\u56DE `Promise<boolean>`\uFF1A\u672C\u9875\u6761\u76EE\u7ACB\u5373\u6267\u884C\uFF0C\u8DE8\u9875\u6761\u76EE\u53D1\u56DE\u521B\u5EFA\u9875\u6267\u884C\u5E76\u7B49\u5B83\u56DE ack\uFF0C2 \u79D2\u6CA1\u6709\u56DE\u5E94\u7B97\u5931\u8D25\u3002\u67E5\u4E0D\u5230\u65B9\u6CD5\uFF08\u9875\u9762\u91CD\u6302\u3001\u53E5\u67C4\u4E22\u4E86\uFF09\u3001\u4E0B\u6807\u8D8A\u754C\u3001\u65B9\u6CD5\u629B\u9519\uFF0C\u4E00\u5F8B `false`\u2014\u2014\u8C03\u7528\u65B9\u636E\u6B64\u63D0\u793A\u300C\u5DF2\u65E0\u6CD5\u8FD8\u539F\u300D\uFF0C\u4E0D\u8981\u5F53\u6210\u529F\u3002\u65B9\u6CD5\u968F\u6761\u76EE\u7ED3\u675F\u4E00\u8D77\u91CA\u653E\uFF0C\u4E0D\u4F1A\u4E00\u76F4\u6525\u7740\u7EC4\u4EF6\u72B6\u6001\u3002",
-        "en": 'Actions: pass `actions: [{ label, run }]` at registration \u2014 `run` is the method to execute on click (an anonymous function is fine) and there can be several. Methods are **never serialized**: the record stores only `label`, so other tabs can see and render the buttons, while the method itself stays in the memory of the page that created it, keyed by `taskId#index`, and dies with that page. Click with `taskNotifications.runAction(task.id, index)`, which returns `Promise<boolean>`: local rows run immediately, rows from another page are sent back to the owner page and wait for its ack, and no answer within 2s counts as failure. A missing method (page reload, lost handle), an out-of-range index or a throwing action all resolve `false` \u2014 show "cannot restore any more" instead of assuming success. Methods are released together with the row, so they never keep component state alive.'
-      },
-      {
-        "zh": "\u8DE8\u9875\u8D70\u6D4F\u89C8\u5668\u539F\u751F `BroadcastChannel`\uFF1A\u6BCF\u9875\u5E7F\u64AD\u81EA\u5DF1\u90A3\u4EFD\u5168\u91CF\u5206\u7247\u5E76\u5E26\u5355\u8C03 `seq`\uFF0C\u65E7\u5E8F\u53F7\u3001\u91CD\u590D\u4E0E\u7578\u5F62\u6D88\u606F\u4E00\u5F8B\u4E22\u5F03\uFF1B`pagehide` / `pageshow` \u8986\u76D6\u6807\u7B7E\u9875\u79BB\u5F00\u3001bfcache \u4E0E\u4F11\u7720\u6062\u590D\u3002\u53EA\u8986\u76D6\u540C\u6E90\u6807\u7B7E\u9875\uFF0C\u4E0D\u8986\u76D6\u4E0D\u540C\u6D4F\u89C8\u5668\u3001\u4E0D\u540C profile \u6216\u4E0D\u540C\u673A\u5668\u3002\u8DE8\u9875\u6761\u76EE\u80FD\u770B\u3001\u6709 `actions` \u7684\u4E5F\u80FD\u70B9\uFF08\u8BF7\u6C42\u53D1\u56DE\u521B\u5EFA\u9875\u6267\u884C\uFF09\uFF1B`requestRestore` \u4ECD\u662F\u672C\u9875\u4E13\u7528\u7684\u65E7\u901A\u9053\uFF0C\u53EA\u53D1 `restored` \u4E8B\u4EF6\u3002",
-        "en": "Cross-page sync uses the native `BroadcastChannel`: each page broadcasts its own full shard with a monotonic `seq`; stale, duplicate and malformed messages are dropped. `pagehide` / `pageshow` cover tab teardown, bfcache and sleep/wake. Only same-origin tabs are covered \u2014 not other browsers, profiles or machines. Rows from another page are visible, and clickable when they carry `actions` (the request is executed by the owning page); `requestRestore` remains the local-only legacy path that just emits a `restored` event."
-      },
-      {
-        "zh": "\u9875\u9762\u6D88\u5931\u8981\u6709\u4EBA\u6536\u5C3E\uFF0C\u5426\u5219\u7559\u4E0B\u6C38\u8FDC `running` \u7684\u50F5\u5C38\u6761\u76EE\uFF1A\u5B83\u4E0D\u5C5E\u4E8E\u672C\u9875\u3001\u672C\u9875\u4E5F\u6CA1\u6709\u5B83\u7684\u53E5\u67C4\uFF0C\u8C01\u90FD\u7ED3\u675F\u4E0D\u6389\u3002\u5224\u6D3B\u7528\u6D4F\u89C8\u5668\u539F\u751F Web Locks\u2014\u2014\u6BCF\u9875\u6301\u4E00\u628A\u4EE5 origin \u547D\u540D\u7684\u9501\uFF0C\u5176\u4ED6\u9875\u7528 `ifAvailable` \u63A2\u6D4B\u540C\u540D\u9501\uFF0C\u7ACB\u523B\u62FF\u5F97\u5230\u5C31\u8BF4\u660E\u90A3\u9875\u5DF2\u7ECF\u4E0D\u5728\u4E86\uFF1B\u63A2\u6D4B\u53EA\u53D1\u751F\u5728\u6536\u5230\u5206\u7247\u4E0E\u9875\u9762\u91CD\u65B0\u53EF\u89C1\u65F6\uFF0C\u6CA1\u6709\u5B9A\u65F6\u5668\uFF0C\u8FDE\u7EED\u4E24\u6B21\uFF08\u95F4\u9694 250ms\uFF09\u90FD\u62FF\u5F97\u5230\u624D\u6E05\u3002`navigator.locks` \u4E0D\u53EF\u7528\u65F6\u4E0D\u6E05\u7406\uFF0C\u5176\u4F59\u884C\u4E3A\u4E0D\u53D8\u3002\u5D29\u6E83\u6389\u7684\u6E32\u67D3\u8FDB\u7A0B\u89C4\u8303\u4E0D\u4FDD\u8BC1\u91CA\u653E\u9501\uFF0C\u90A3\u7C7B\u6B8B\u7559\u7559\u5230\u6D4F\u89C8\u5668\u91CD\u542F\u3002",
-        "en": "A vanished page must be cleaned up, otherwise a row stays `running` forever: it belongs to another page, this page holds no handle for it, and nobody can end it. Liveness uses native Web Locks \u2014 each page holds a lock named after its origin, and other pages probe the same name with `ifAvailable`: getting it immediately means that page is gone. Probes run only when a shard arrives or the tab becomes visible, never on a timer, and only two successful probes 250ms apart drop a shard. Without `navigator.locks` nothing is cleaned up and everything else stays as before. A crashed renderer is not guaranteed to release its lock by the spec, so that residue lasts until the browser restarts."
-      },
-      {
-        "zh": "\u53E5\u67C4\u4F1A\u4E22\uFF1A\u7EC4\u4EF6\u91CD\u6302\u8F7D\u3001HMR\u3001\u9875\u9762\u5207\u8D70\u518D\u56DE\u6765\uFF0C`useRef` \u91CC\u7684\u53E5\u67C4\u5C31\u6CA1\u4E86\uFF0C\u4F46\u6761\u76EE\u8FD8\u5728\u6C60\u91CC\u3002`settleLocal(reason?)` \u7ED3\u675F\u672C\u9875\u4ECD\u6301\u6709\u7684\u5168\u90E8\u4EFB\u52A1\u5E76\u8FD4\u56DE\u6761\u6570\uFF0C\u4E0D\u9700\u8981\u53E5\u67C4\uFF1B\u8DE8\u9875\u6761\u76EE\u4E00\u5F8B\u4E0D\u52A8\u3002",
-        "en": "Handles get lost: a component remount, HMR or switching pages clears the `useRef` that held them while the row stays in the pool. `settleLocal(reason?)` ends every task this page still owns and returns the count, without needing a handle; rows owned by other pages are never touched."
-      },
-      {
-        "zh": "\u540C\u9875\u591A\u526F\u672C\u6536\u53E3\u5230 `globalThis[Symbol.for(...)]` \u4E0A\u7684\u540C\u4E00\u4E2A\u6C60\u4E0E\u540C\u4E00\u6761\u603B\u7EBF\uFF0C\u6CE8\u518C\u4E0E\u901A\u77E5\u4E0D\u4F1A\u91CD\u590D N \u6B21\uFF1B\u952E\u91CC\u5E26\u534F\u8BAE\u7248\u672C\uFF0C\u5F62\u72B6\u4E0D\u7B26\u76F4\u63A5\u62A5\u9519\u800C\u4E0D\u662F\u9759\u9ED8\u964D\u7EA7\u3002\u672C\u80FD\u529B\u662F\u6570\u636E\u9762\uFF1A\u53EF\u6536\u8D77\u5F39\u7A97\u3001\u4F8B\u5916\u63A7\u4EF6\u4E0E\u4E8B\u4EF6\u67E5\u770B\u63A7\u4EF6\u4E0D\u5C5E\u4E8E\u5B83\uFF0C\u7531\u540E\u7EED\u4EFB\u52A1\u5355\u72EC\u63D0\u4F9B\u3002",
-        "en": "Multiple copies on one page share a single pool and bus on `globalThis[Symbol.for(...)]`, so registration and notification never fire N times. Keys carry a protocol version; a shape mismatch throws instead of silently degrading. This capability is the data plane only: collapsible dialogs, exception controls and the event-viewer control are out of scope and arrive in separate tasks."
+        "zh": "\u5176\u4F59\u7EA6\u5B9A\uFF1A`detail` \u6536\u4EFB\u610F JSON \u503C\uFF08\u51FD\u6570\u4E0E\u7C7B\u5B9E\u4F8B\u5F53\u573A\u629B\u9519\uFF09\uFF1B`icon` / `iconSvg` \u53EA\u662F\u5B57\u7B26\u4E32\uFF0C\u6E32\u67D3\u4E0E\u6CE8\u5165\u5B89\u5168\u7531\u6D88\u8D39\u7AEF\u8D1F\u8D23\uFF1B\u4E24\u7EA7\u5206\u7EC4\u7528 `project`\uFF08`setDefaultTaskProject()` \u8BBE\u4E00\u6B21\uFF09+ `group`\uFF08\u7F3A\u7701 `default`\uFF09\u3002",
+        "en": "The rest: `detail` takes any JSON value (functions and class instances throw immediately); `icon` / `iconSvg` are plain strings and rendering plus injection safety are the consumer's job; two-level grouping uses `project` (set once via `setDefaultTaskProject()`) plus `group` (default `default`)."
       }
     ],
     "api": [
@@ -69893,8 +69860,8 @@ h(SideSheet, {
             "type": "(taskId: string, index: number) => Promise<boolean>",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6267\u884C\u4EFB\u52A1\u4E0A\u7684\u7B2C index \u4E2A\u6309\u94AE\uFF1A\u672C\u9875\u7ACB\u5373\u6267\u884C\uFF1B\u8DE8\u9875\u53D1\u56DE\u521B\u5EFA\u9875\u5E76\u7B49 ack\uFF082s \u8D85\u65F6\uFF09\u3002\u67E5\u4E0D\u5230\u65B9\u6CD5\u3001\u8D8A\u754C\u3001\u629B\u9519\u4E00\u5F8B false",
-              "en": "Runs the index-th action of a task: locally at once, or back on the owning page with an ack (2s timeout). Missing method, out-of-range index and throwing actions all resolve false"
+              "zh": "\u6267\u884C\u7B2C index \u4E2A\u6309\u94AE\uFF1A\u672C\u9875\u7ACB\u5373\u6267\u884C\uFF0C\u8DE8\u9875\u53D1\u56DE\u521B\u5EFA\u9875\u5E76\u7B49 ack\uFF082s \u8D85\u65F6\uFF09\u3002\u67E5\u4E0D\u5230\u65B9\u6CD5\u3001\u8D8A\u754C\u3001\u629B\u9519\u4E00\u5F8B false",
+              "en": "Runs the index-th action: locally at once, or back on the owning page with an ack (2s timeout). Missing method, out-of-range index and throwing actions all resolve false"
             }
           },
           {
@@ -69902,8 +69869,8 @@ h(SideSheet, {
             "type": "(task: TaskNotificationRecord) => boolean",
             "def": "\u2014",
             "desc": {
-              "zh": "\u65E7 restored \u901A\u9053\u7684\u5224\u636E\uFF1A\u53EA\u5BF9\u672C\u9875\u6761\u76EE\u4E3A\u771F\u3002\u5B83**\u4E0D\u53C2\u4E0E\u6309\u94AE\u5224\u5B9A**\u2014\u2014\u8DE8\u9875\u6761\u76EE canRestore \u4E3A false \u4F46\u6709 actions \u65F6\u7167\u6837\u80FD\u70B9",
-              "en": "Judgement for the legacy restored channel: true only for rows of this page. It does **not** decide buttons \u2014 a row from another page returns false here yet stays clickable when it carries actions"
+              "zh": "\u65E7 restored \u901A\u9053\u7684\u5224\u636E\uFF0C\u53EA\u5BF9\u672C\u9875\u6761\u76EE\u4E3A\u771F\uFF1B\u5B83\u4E0D\u51B3\u5B9A\u6309\u94AE\u80FD\u4E0D\u80FD\u70B9\uFF08\u90A3\u770B record.actions\uFF09",
+              "en": "Judgement for the legacy restored channel, true only for rows of this page; it does not decide buttons (record.actions does)"
             }
           },
           {
@@ -69911,8 +69878,8 @@ h(SideSheet, {
             "type": "(taskId: string) => boolean",
             "def": "\u2014",
             "desc": {
-              "zh": "\u53EA\u53D1\u672C\u5730 restored \u4E8B\u4EF6\uFF0C\u8DE8\u9875\u6761\u76EE\u8FD4\u56DE false\uFF1B\u65B0\u4EE3\u7801\u8BF7\u7528 actions + runAction",
-              "en": "Emits a local restored event only and returns false for cross-page rows; new code should use actions + runAction"
+              "zh": "\u53EA\u53D1\u672C\u5730 restored \u4E8B\u4EF6\uFF0C\u8DE8\u9875\u8FD4\u56DE false\uFF1B\u65B0\u4EE3\u7801\u7528 actions + runAction",
+              "en": "Emits a local restored event only and returns false for cross-page rows; new code uses actions + runAction"
             }
           },
           {
@@ -69920,8 +69887,8 @@ h(SideSheet, {
             "type": "() => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5173\u901A\u9053\u4E0E\u6458\u76D1\u542C\uFF0C\u4FDD\u7559\u72B6\u6001\uFF1B\u4E0B\u6B21 connect \u4F1A\u590D\u6D3B\u5E76\u91CD\u53D1\u5168\u91CF\u5206\u7247\u3002\u6309\u94AE\u65B9\u6CD5\u968F\u4E4B\u6E05\u7A7A\uFF0C\u5B58\u6D3B\u6761\u76EE\u7684\u6309\u94AE\u4ECE\u6B64\u523B\u8D77\u4E0D\u53EF\u6267\u884C\uFF08\u8981\u6062\u590D\u5F97\u91CD\u65B0 register\uFF09",
-              "en": "Closes the channel and detaches listeners but keeps state; the next connect revives it and rebroadcasts a full shard. Action methods are dropped, so surviving rows stay unclickable from then on (re-register to get them back)"
+              "zh": "\u5173\u901A\u9053\u4E0E\u6458\u76D1\u542C\uFF0C\u4FDD\u7559\u72B6\u6001\uFF0C\u4E0B\u6B21 connect \u4F1A\u590D\u6D3B\u5E76\u91CD\u53D1\u5206\u7247\uFF1B\u6309\u94AE\u65B9\u6CD5\u968F\u4E4B\u6E05\u7A7A\uFF0C\u5B58\u6D3B\u6761\u76EE\u7684\u6309\u94AE\u4ECE\u6B64\u523B\u8D77\u4E0D\u53EF\u6267\u884C",
+              "en": "Closes the channel and detaches listeners but keeps state; the next connect revives it and rebroadcasts a shard. Action methods are dropped, so surviving rows stay unclickable from then on"
             }
           }
         ]
@@ -69999,8 +69966,8 @@ h(SideSheet, {
             "type": "(patch: TaskNotificationPatch) => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u53EA\u6539\u7EAF\u6570\u636E\u5B57\u6BB5\uFF0C\u968F\u65F6\u53EF\u8C03\u7528",
-              "en": "Updates plain data fields, callable any time"
+              "zh": "\u53EA\u6539\u7EAF\u6570\u636E\u5B57\u6BB5\uFF0C\u968F\u65F6\u53EF\u8C03\u7528\uFF1Bactions \u6CE8\u518C\u65F6\u5B9A\u578B\uFF0C\u4E0D\u80FD\u6539",
+              "en": "Updates plain data fields, callable any time; actions are fixed at registration and cannot change"
             }
           },
           {
@@ -70071,19 +70038,19 @@ h(SideSheet, {
     ],
     "code": [
       {
-        "id": "bt-subscribe-example",
+        "id": "bt-actions-example",
         "lang": "ts",
-        "src": "import { useSyncExternalStore } from 'react'\nimport {\n  taskNotifications,\n  selectTaskNotifications,\n  subscribeTaskNotificationEvents,\n} from 'dsh-plugin-core/ui'\n\n// \u4E09\u4E2A\u53C2\u6570\u90FD\u7ED9\uFF1AgetServerSnapshot \u8BA9 SSR / \u975E\u5BBF\u4E3B\u73AF\u5883\u4E0D\u70B8\nconst snapshot = useSyncExternalStore(\n  taskNotifications.subscribe,\n  taskNotifications.getSnapshot,\n  taskNotifications.getServerSnapshot,\n)\n\n// \u4E09\u6863\uFF1A\u4E0D\u4F20 = \u672C\u9879\u76EE\u5168\u90E8\u4E8C\u7EA7\uFF1B\u6570\u7EC4 = \u672C\u9879\u76EE\u8FD9\u51E0\u4E2A\u4E8C\u7EA7\uFF1B'*' = \u5168\u7AD9\u6240\u6709\u9879\u76EE\nconst visible = selectTaskNotifications(snapshot, ['scan'])\nconst everything = selectTaskNotifications(snapshot, '*')\n\n// \u5E42\u7B49\uFF1A\u5F00\u540C\u6E90\u6807\u7B7E\u9875\u901A\u9053\uFF0C\u5E76\u5411\u5728\u7EBF\u9875\u9762\u8981\u4E00\u6B21\u5168\u91CF baseline\ntaskNotifications.connect()\n\n// \u4E8B\u4EF6\u662F\u4E00\u6B21\u6027\u4E8B\u5B9E\uFF0C\u4E0D\u7559\u5B58\uFF1B\u9000\u8BA2\u51FD\u6570\u7167\u5E38\u8C03\u7528\nconst off = subscribeTaskNotificationEvents((event) => {\n  if (event.type === 'backgrounded') {\n    // \u6536\u8D77\u53D1\u751F\u4E86\uFF1B\u4EFB\u52A1\u4ECD\u5728\u8DD1\uFF0C\u5FEB\u7167\u91CC\u4E5F\u770B\u5F97\u5230\n  }\n})\n// off() \u4E8E\u5378\u8F7D\u65F6\u8C03\u7528"
+        "src": "import { notifyTask, taskNotifications } from 'dsh-plugin-core/ui'\n\n// \u2460 \u5F39\u7A97\u8FD9\u8FB9\uFF1A\u6309\u94AE\u540D + \u70B9\u5B83\u5E72\u4EC0\u4E48\u3002run \u5199\u533F\u540D\u51FD\u6570\u5C31\u884C\uFF0C\u4E0D\u7528\u8D77\u540D\nconst handle = notifyTask('\u6536\u5230\u786E\u8BA4', {\n  actions: [\n    { label: '\u91CD\u65B0\u6253\u5F00', run: () => reopenDialog() },\n    { label: '\u77E5\u9053\u4E86', run: () => handle.done() },\n  ],\n})\nhandle.background()\n\n// \u2461 \u901A\u77E5\u4E2D\u5FC3\u8FD9\u8FB9\uFF1A\u6587\u6848\u662F task.actions[i].label\uFF0C\u70B9\u51FB\u6309\u4E0B\u6807\u8C03\n//    \u65B9\u6CD5\u672C\u8EAB\u7559\u5728\u521B\u5EFA\u5B83\u7684\u9875\u9762\u91CC\uFF0C\u4E0D\u4F1A\u968F\u8BB0\u5F55\u4F20\u8FC7\u6765\nconst ok = await taskNotifications.runAction(handle.id, 0)\nif (!ok) showToast('\u8BE5\u4EFB\u52A1\u5DF2\u65E0\u6CD5\u8FD8\u539F')   // showToast \u7531\u8C03\u7528\u65B9\u63D0\u4F9B"
       },
       {
         "id": "bt-lifecycle-example",
         "lang": "ts",
-        "src": "import { notifyTask, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// \u9879\u76EE\u5728 app \u5165\u53E3\u8BBE\u4E00\u6B21\uFF1Bcore \u53D6\u4E0D\u5230\u9879\u76EE\u540D\uFF0C\u6240\u4EE5\u5FC5\u987B\u6709\u4EBA\u544A\u8BC9\u5B83\nsetDefaultTaskProject('dsh-task-reminder')\n\n// \u2460 \u81EA\u5DF1\u7BA1\u7ED3\u675F\uFF1A\u62FF\u5230\u53E5\u67C4\uFF0C\u968F\u65F6\u66F4\u65B0\uFF0C\u81EA\u5DF1\u6536\u5C3E\nconst handle = notifyTask('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', { group: 'scan', detail: { done: 12, total: 40 } })\nhandle.background()   // \u53EA\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\u4EFB\u52A1\nhandle.done('\u626B\u63CF\u5B8C\u6210')\n// handle.fail('\u88AB\u7528\u6237\u53D6\u6D88')\n\n// \u2461 \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20\nawait notifyTask.run('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', () => runWork(), { group: 'scan' })\n\n// \u2462 \u53EA\u60F3\u5E7F\u64AD\u4E00\u53E5\uFF1A\u4E0D\u8FDB\u5217\u8868\uFF0C\u53EA\u53D1 message \u4E8B\u4EF6\uFF0C\u4E0D\u4F1A\u95EA\nnotifyMessage('\u5DF2\u4FDD\u5B58', { group: 'notice', icon: 'check', level: 'success' })\n\n// \u53E5\u67C4\u5DF2\u7ECF\u5728\u624B\u65F6\u624D\u7528\u5F97\u4E0A\u7684\u515C\u5E95\uFF1A\u4E0E run \u540C\u4E00\u4E2A\u6536\u5C3E\uFF0C\u4E0D\u6539\u53D8\u539F Promise \u7684\u7ED3\u7B97\u8BED\u4E49\n// await handle.track(otherWork())   // otherWork(): Promise<void>\uFF0C\u7531\u8C03\u7528\u65B9\u63D0\u4F9B\n// await handle.settled              // \u53EA\u5728\u771F\u6B63\u7ED3\u675F\u65F6\u5151\u73B0\uFF1B\u6536\u8D77\u4E0D\u5151\u73B0"
+        "src": "import { notifyTask, notifyMessage, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\nsetDefaultTaskProject('dsh-task-reminder')   // app \u5165\u53E3\u8BBE\u4E00\u6B21\n\n// \u2460 \u81EA\u5DF1\u7BA1\u7ED3\u675F\nconst handle = notifyTask('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', { group: 'scan', detail: { done: 12, total: 40 } })\nhandle.update({ detail: { done: 20, total: 40 } })\nhandle.background()          // \u6536\u8D77\u5230\u540E\u53F0\uFF1A\u53EA\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\nhandle.done('\u626B\u63CF\u5B8C\u6210')\n\n// \u2461 \u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20\nawait notifyTask.run('\u626B\u63CF\u5DE5\u4F5C\u533A\u6587\u4EF6', () => runWork(), { group: 'scan' })\n\n// \u2462 \u53EA\u5E7F\u64AD\u4E00\u53E5\uFF1A\u4E0D\u8FDB\u5217\u8868\u3001\u4E0D\u95EA\nnotifyMessage('\u5DF2\u4FDD\u5B58', { group: 'notice', icon: 'check', level: 'success' })"
       },
       {
-        "id": "bt-actions-example",
+        "id": "bt-subscribe-example",
         "lang": "ts",
-        "src": "import { notifyTask, taskNotifications } from 'dsh-plugin-core/ui'\n\n// \u2460 \u5F39\u7A97\u8FD9\u8FB9\uFF1A\u6309\u94AE\u540D + \u70B9\u5B83\u5E72\u4EC0\u4E48\u3002run \u5199\u533F\u540D\u51FD\u6570\u5C31\u884C\uFF0C\u4E0D\u7528\u8D77\u540D\nconst handle = notifyTask('\u6536\u5230\u786E\u8BA4', {\n  detail: { sessionId: 'abc' },\n  actions: [\n    { label: '\u91CD\u65B0\u6253\u5F00', run: () => reopenDialog('abc') },\n    { label: '\u77E5\u9053\u4E86', run: () => handle.done() },\n  ],\n})\nhandle.background()   // \u6536\u8D77\u5230\u540E\u53F0\n\n// \u2461 \u901A\u77E5\u4E2D\u5FC3\u8FD9\u8FB9\uFF1A\u6587\u6848\u6765\u81EA\u8BB0\u5F55\uFF08task.actions[i].label\uFF09\uFF0C\u70B9\u51FB\u6309\u3010\u4E0B\u6807\u3011\u8C03\n//    \u65B9\u6CD5\u672C\u8EAB\u5C31\u5728\u521B\u5EFA\u5B83\u7684\u9875\u9762\u91CC\uFF0C\u4E0D\u4F1A\u968F\u8BB0\u5F55\u4F20\u8FC7\u6765\nconst ok = await taskNotifications.runAction(task.id, 0)\n// ok=false \u53EA\u4EE3\u8868\u8FD9\u6B21\u6CA1\u89E6\u53D1\u6210\u529F\uFF08\u4EFB\u52A1\u5DF2\u7ED3\u675F\u3001\u4E0B\u6807\u8D8A\u754C\u3001\u65B9\u6CD5\u6CA1\u4E86\u6216\u521B\u5EFA\u9875\u6CA1\u56DE\u5E94\uFF09\nif (!ok) showToast('\u8BE5\u4EFB\u52A1\u5DF2\u65E0\u6CD5\u8FD8\u539F')   // showToast \u7531\u8C03\u7528\u65B9\u63D0\u4F9B"
+        "src": "import { useSyncExternalStore } from 'react'\nimport { taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/ui'\n\n// \u5FEB\u7167\u53EF\u76F4\u63A5\u5582 useSyncExternalStore\uFF1B\u4E09\u4E2A\u53C2\u6570\u90FD\u7ED9\uFF0CSSR / \u975E\u5BBF\u4E3B\u73AF\u5883\u4E0D\u70B8\nconst snapshot = useSyncExternalStore(\n  taskNotifications.subscribe,\n  taskNotifications.getSnapshot,\n  taskNotifications.getServerSnapshot,\n)\n\n// \u4E09\u6863\uFF1A\u4E0D\u4F20 = \u672C\u9879\u76EE\u5168\u90E8\u4E8C\u7EA7\uFF1B\u6570\u7EC4 = \u8FD9\u51E0\u4E2A\u4E8C\u7EA7\uFF1B'*' = \u5168\u7AD9\nconst mine = selectTaskNotifications(snapshot, ['scan'])\nconst everything = selectTaskNotifications(snapshot, '*')\n\n// \u5E42\u7B49\uFF1A\u5F00\u540C\u6E90\u6807\u7B7E\u9875\u901A\u9053\u5E76\u8981\u4E00\u6B21\u5168\u91CF baseline\ntaskNotifications.connect()"
       }
     ]
   },
@@ -74835,7 +74802,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.31"}`],
             [t3("buildDemo"), `v${"0.35.31"}`],
-            [t3("buildStamp"), "261115-145441-392"]
+            [t3("buildStamp"), "261115-153714-804"]
           ].map(
             ([label, value]) => (0, import_react107.createElement)(
               "tr",
@@ -75155,7 +75122,7 @@ function DemoPage() {
           },
           (0, import_react109.createElement)("span", null, `core v${"0.35.31"}`),
           (0, import_react109.createElement)("span", null, `demo v${"0.35.31"}`),
-          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-145441-392")
+          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-153714-804")
         )
       )
     ),
