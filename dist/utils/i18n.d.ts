@@ -11,7 +11,7 @@ export type UtilMessageKey = 'sessionLoading' | 'sessionFailed' | 'sessionEmpty'
 /** 会话里的图片块占位（非 vision 渲染处）。 */
  | 'sessionImage' | 'sessionImageOpenNamed' | 'sessionImageLoading' | 'sessionImageLoadFailed' | 'sessionImagePreview' | 'sessionImageClosePreview'
 /** 官方样式未命中时的可见提示。 */
- | 'sessionProbeStyle';
+ | 'sessionProbeStyle' | 'taskbarLabel' | 'taskbarCount' | 'taskbarEmpty';
 /** 文案函数：`vars` 用于填 `{n}` 这类占位。 */
 export type Translate = (key: UtilMessageKey, vars?: Record<string, number | string>) => string;
 /** 手动指定语言；传 `null` 恢复跟随宿主（测试 / 非宿主环境用）。 */

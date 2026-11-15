@@ -586,6 +586,9 @@ const DICT = {
         sessionImagePreview: '原图预览',
         sessionImageClosePreview: '关闭原图预览',
         sessionProbeStyle: '官方样式未命中（当前为自绘回退）',
+        taskbarLabel: '后台任务',
+        taskbarCount: '{n} 个运行中',
+        taskbarEmpty: '暂无后台任务',
     },
     en: {
         sessionLoading: 'Loading session…',
@@ -1164,6 +1167,9 @@ const DICT = {
         sessionImagePreview: 'Original image preview',
         sessionImageClosePreview: 'Close original image preview',
         sessionProbeStyle: 'Official styles not matched (using the self-drawn fallback)',
+        taskbarLabel: 'Background tasks',
+        taskbarCount: '{n} running',
+        taskbarEmpty: 'No background tasks',
     },
 };
 /** 手动覆盖（`setLocale`）；不覆盖就跟随宿主语言。 */

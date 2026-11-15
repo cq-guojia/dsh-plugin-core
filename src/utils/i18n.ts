@@ -593,6 +593,10 @@ export type UtilMessageKey =
   | 'sessionImageClosePreview'
   /** 官方样式未命中时的可见提示。 */
   | 'sessionProbeStyle'
+  // ── 通知任务中心：通用展示栏 ──
+  | 'taskbarLabel'
+  | 'taskbarCount'
+  | 'taskbarEmpty'
 
 /** 文案函数：`vars` 用于填 `{n}` 这类占位。 */
 export type Translate = (key: UtilMessageKey, vars?: Record<string, number | string>) => string
@@ -1178,6 +1182,9 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     sessionImagePreview: '原图预览',
     sessionImageClosePreview: '关闭原图预览',
     sessionProbeStyle: '官方样式未命中（当前为自绘回退）',
+    taskbarLabel: '后台任务',
+    taskbarCount: '{n} 个运行中',
+    taskbarEmpty: '暂无后台任务',
   },
   en: {
     sessionLoading: 'Loading session…',
@@ -1756,6 +1763,9 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     sessionImagePreview: 'Original image preview',
     sessionImageClosePreview: 'Close original image preview',
     sessionProbeStyle: 'Official styles not matched (using the self-drawn fallback)',
+    taskbarLabel: 'Background tasks',
+    taskbarCount: '{n} running',
+    taskbarEmpty: 'No background tasks',
   },
 }
 

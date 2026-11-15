@@ -8,6 +8,7 @@ import {
   taskNotifications,
   selectTaskNotifications,
   subscribeTaskNotificationEvents,
+  TaskBar,
   type TaskNotificationDetail,
   type TaskNotificationEvent,
   type TaskNotificationHandle,
@@ -221,6 +222,17 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
           { style: { ...mono, color: 'var(--dshpc-fg-4)' } },
           `${t('tnOpsNote')} · localPending=${localPending}`,
         ),
+      ),
+    ),
+    h(
+      Example,
+      { title: t('tnBarTitle'), hint: t('tnBarHint') },
+      h(
+        'div',
+        { style: row },
+        // 同一份池、同一个过滤：长条与只图标两种形态，点开都是后台正在跑的任务
+        h(TaskBar, { groups }),
+        h(TaskBar, { form: 'icon', groups }),
       ),
     ),
     h(

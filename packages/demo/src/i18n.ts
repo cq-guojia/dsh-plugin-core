@@ -29,6 +29,8 @@ export type DemoMessageKey =
   | 'icUsageHint'
   | 'tnNote'
   | 'tnCrossPage'
+  | 'tnBarTitle'
+  | 'tnBarHint'
   | 'tnOpsTitle'
   | 'tnOpsHint'
   | 'tnRegisterReminder'
@@ -299,6 +301,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     icUsageHint: '格子只复制名字，完整写法看右边',
     tnNote: '本页只演示数据面：状态池、订阅、事件总线、跨页同步与结束句柄。任务、条数、revision、时间与事件全部来自真实 API 调用，没有模拟数据、没有定时器、没有占位行。可收起弹窗与事件查看控件不在这里，由后续任务单独提供。',
     tnCrossPage: '跨页演示：在另一个同源标签页打开本页，两边各自注册或结束任务，列表与事件会即时同步；关掉其中一个标签页可看到 peer-left 事件。跨页条目能看不能点。',
+    tnBarTitle: '通用展示栏',
+    tnBarHint: '封装好的形态：长条与只图标；点开是后台正在跑的任务',
     tnOpsTitle: '真实操作台',
     tnOpsHint: '每个按钮都调用真实 API；右侧是同一套调用的代码',
     tnRegisterReminder: '注册到 dsh-task-reminder',
@@ -594,6 +598,8 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     icUsageHint: 'a cell copies just the name; the full form is on the right',
     tnNote: 'This page demos the data plane only: pool, subscription, event bus, cross-page sync and settlement handles. Rows, counts, revision, timestamps and events all come from real API calls — no mock data, no timers, no placeholder rows. Collapsible dialogs and the event-viewer control are not here; they arrive in separate tasks.',
     tnCrossPage: 'Cross-page demo: open this page in another same-origin tab. Register or settle a task on either side and both lists and event streams update immediately; close one tab to see a peer-left event. Cross-page rows are view-only.',
+    tnBarTitle: 'Ready-made bar',
+    tnBarHint: 'Pill and icon-only forms; click to list the running background tasks',
     tnOpsTitle: 'Live controls',
     tnOpsHint: 'Every button calls a real API; the code on the right is that same call',
     tnRegisterReminder: 'Register to dsh-task-reminder',

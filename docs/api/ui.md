@@ -536,6 +536,40 @@ h(ListRow, {
 h(ListRow, { bordered: true, hoverable: false }, '只读的一行')
 ```
 
+## TaskBar：通知任务中心展示栏
+
+> EN: TaskBar: task notification bar
+
+封装好的展示栏：未展开是一颗按钮，展开了列出后台正在跑的任务。数据全部来自池本身（项目用 `setDefaultTaskProject()` 设一次），不需要自己 `useSyncExternalStore`。两种形态：`pill`（图标 + 文字 + 运行数，默认）与 `icon`（只有图标，有任务时右上角一颗绿点）。
+
+> EN: A ready-made bar: a button when collapsed, a list of running background tasks when open. All data comes from the pool itself (set the project once with `setDefaultTaskProject()`); no `useSyncExternalStore` on your side. Two forms: `pill` (icon, label and running count — the default) and `icon` (icon only, with a green dot while tasks run).
+
+每行是 `ListRow`：图标 + 标题 + 已运行多久；记录带 `actions` 时右侧出现按钮，点它调 `runAction`（方法在创建那条任务的那一页，这里只拿得到文案）。任务没传图标就用 `defaultIcon`（默认 `common.base:info`）。
+
+> EN: Each row is a `ListRow`: icon, title and how long it has been running; when the record carries `actions`, a button appears and calls `runAction` (the method lives in the creating page, only the label crosses). Tasks without an icon fall back to `defaultIcon` (default `common.base:info`).
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `form` | `'icon' \| 'pill'` | 'pill' | 形态：只图标 / 图标 + 文字长条 | Form: icon only, or icon plus a text pill |
+| `groups` | `readonly string[] \| '*'` | 默认项目全部二级 | 过滤，与 `selectTaskNotifications` 同口径 | Filter, same contract as `selectTaskNotifications` |
+| `project / includeHidden` | `string \| null / boolean` | — / false | 换项目看 / 连 hidden 一起列 | Look at another project / include hidden rows |
+| `placement` | `'down' \| 'up'` | 'down' | 面板首选展开方向，空间不够自动翻 | Preferred panel direction; flips when space runs out |
+| `defaultIcon` | `string` | 'common.base:info' | 任务没带图标时的默认图标（`库名:图标名`） | Icon used when a task carries none (`lib:name`) |
+| `className / style` | `—` | — | 追加类 / 样式，只允许补布局 | Append class / style, layout patches only |
+
+```tsx id="ui-taskbar-example"
+import { TaskBar, setDefaultTaskProject } from 'dsh-plugin-core/ui'
+
+// app 入口：项目设一次，展示栏与 notifyTask 共用同一个默认项目
+setDefaultTaskProject('dsh-task-reminder')
+
+// 长条形态：图标 + 文字 + 运行数；点开列出后台正在跑的任务
+h(TaskBar, { groups: ['scan'] })
+
+// 只图标形态：有任务在跑时右上角一颗绿点
+h(TaskBar, { form: 'icon' })
+```
+
 ## Chip
 
 > EN: Chip

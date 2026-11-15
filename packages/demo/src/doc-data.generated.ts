@@ -2803,6 +2803,91 @@ export const docData = {
       }
     ]
   },
+  "task-bar": {
+    "id": "task-bar",
+    "heading": {
+      "zh": "TaskBar：通知任务中心展示栏",
+      "en": "TaskBar: task notification bar"
+    },
+    "prose": [
+      {
+        "zh": "封装好的展示栏：未展开是一颗按钮，展开了列出后台正在跑的任务。数据全部来自池本身（项目用 `setDefaultTaskProject()` 设一次），不需要自己 `useSyncExternalStore`。两种形态：`pill`（图标 + 文字 + 运行数，默认）与 `icon`（只有图标，有任务时右上角一颗绿点）。",
+        "en": "A ready-made bar: a button when collapsed, a list of running background tasks when open. All data comes from the pool itself (set the project once with `setDefaultTaskProject()`); no `useSyncExternalStore` on your side. Two forms: `pill` (icon, label and running count — the default) and `icon` (icon only, with a green dot while tasks run)."
+      },
+      {
+        "zh": "每行是 `ListRow`：图标 + 标题 + 已运行多久；记录带 `actions` 时右侧出现按钮，点它调 `runAction`（方法在创建那条任务的那一页，这里只拿得到文案）。任务没传图标就用 `defaultIcon`（默认 `common.base:info`）。",
+        "en": "Each row is a `ListRow`: icon, title and how long it has been running; when the record carries `actions`, a button appears and calls `runAction` (the method lives in the creating page, only the label crosses). Tasks without an icon fall back to `defaultIcon` (default `common.base:info`)."
+      }
+    ],
+    "api": [
+      {
+        "id": "ui-task-bar",
+        "rows": [
+          {
+            "name": "form",
+            "type": "'icon' | 'pill'",
+            "def": "'pill'",
+            "desc": {
+              "zh": "形态：只图标 / 图标 + 文字长条",
+              "en": "Form: icon only, or icon plus a text pill"
+            }
+          },
+          {
+            "name": "groups",
+            "type": "readonly string[] | '*'",
+            "def": "默认项目全部二级",
+            "desc": {
+              "zh": "过滤，与 `selectTaskNotifications` 同口径",
+              "en": "Filter, same contract as `selectTaskNotifications`"
+            }
+          },
+          {
+            "name": "project / includeHidden",
+            "type": "string | null / boolean",
+            "def": "— / false",
+            "desc": {
+              "zh": "换项目看 / 连 hidden 一起列",
+              "en": "Look at another project / include hidden rows"
+            }
+          },
+          {
+            "name": "placement",
+            "type": "'down' | 'up'",
+            "def": "'down'",
+            "desc": {
+              "zh": "面板首选展开方向，空间不够自动翻",
+              "en": "Preferred panel direction; flips when space runs out"
+            }
+          },
+          {
+            "name": "defaultIcon",
+            "type": "string",
+            "def": "'common.base:info'",
+            "desc": {
+              "zh": "任务没带图标时的默认图标（`库名:图标名`）",
+              "en": "Icon used when a task carries none (`lib:name`)"
+            }
+          },
+          {
+            "name": "className / style",
+            "type": "—",
+            "def": "—",
+            "desc": {
+              "zh": "追加类 / 样式，只允许补布局",
+              "en": "Append class / style, layout patches only"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "ui-taskbar-example",
+        "lang": "tsx",
+        "src": "import { TaskBar, setDefaultTaskProject } from 'dsh-plugin-core/ui'\n\n// app 入口：项目设一次，展示栏与 notifyTask 共用同一个默认项目\nsetDefaultTaskProject('dsh-task-reminder')\n\n// 长条形态：图标 + 文字 + 运行数；点开列出后台正在跑的任务\nh(TaskBar, { groups: ['scan'] })\n\n// 只图标形态：有任务在跑时右上角一颗绿点\nh(TaskBar, { form: 'icon' })"
+      }
+    ]
+  },
   "chip": {
     "id": "chip",
     "heading": {

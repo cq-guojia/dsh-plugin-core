@@ -48,6 +48,7 @@
     "./ui/surface": { "types": "./dist/ui/display/Surface.d.ts", "default": "./dist/ui/display/Surface.js" },
     "./ui/chip": { "types": "./dist/ui/display/Chip.d.ts", "default": "./dist/ui/display/Chip.js" },
     "./ui/list-row": { "types": "./dist/ui/display/ListRow.d.ts", "default": "./dist/ui/display/ListRow.js" },
+    "./ui/task-bar": { "types": "./dist/ui/display/TaskBar.d.ts", "default": "./dist/ui/display/TaskBar.js" },
     "./ui/table": { "types": "./dist/ui/display/Table.d.ts", "default": "./dist/ui/display/Table.js" },
     "./ui/table-logic": { "types": "./dist/ui/display/table-logic.d.ts", "default": "./dist/ui/display/table-logic.js" },
     "./ui/section-head": { "types": "./dist/ui/display/SectionHead.d.ts", "default": "./dist/ui/display/SectionHead.js" },

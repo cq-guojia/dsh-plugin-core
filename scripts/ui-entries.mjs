@@ -22,6 +22,7 @@ export const UI_ENTRIES = [
   ['./ui/surface', 'ui/display/Surface'],
   ['./ui/chip', 'ui/display/Chip'],
   ['./ui/list-row', 'ui/display/ListRow'],
+  ['./ui/task-bar', 'ui/display/TaskBar'],
   ['./ui/table', 'ui/display/Table'],
   ['./ui/table-logic', 'ui/display/table-logic'],
   ['./ui/section-head', 'ui/display/SectionHead'],
