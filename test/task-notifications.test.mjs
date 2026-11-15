@@ -8,6 +8,7 @@ import {
   TASK_NOTIFICATIONS_KEY,
   TASK_NOTIFICATIONS_LOCK_PREFIX,
   TASK_NOTIFICATIONS_PROTOCOL,
+  taskKey,
   taskNotificationEvents,
   taskNotifications,
   claimTaskNotificationEvents,
@@ -1362,6 +1363,159 @@ test('存活锁被浏览器拒绝：不漏 unhandled，refresh 会重试', async
     assert.equal(attempts, 2, 'refresh 重试')
   } finally {
     console.warn = originalWarn
+    pool.dispose()
+  }
+})
+
+test('taskKey：元组归一化成稳定串，与手写字符串分属两个空间', () => {
+  assert.equal(taskKey(['close', 'ws', 1]), taskKey(['close', 'ws', 1]))
+  assert.notEqual(taskKey(['close', 'ws', 1]), taskKey(['close', '1', 'ws']), '元素顺序敏感')
+  assert.notEqual(taskKey('a:b'), taskKey(['a', 'b']), '手拼分隔符不能和元组撞成同一个键')
+  assert.equal(taskKey('a:b'), 'a:b', '字符串原样使用')
+  assert.throws(() => taskKey(''), /non-empty string/)
+  assert.throws(() => taskKey('   '), /non-empty string/)
+  assert.throws(() => taskKey([]), /non-empty array/)
+  assert.throws(() => taskKey(['a', '', 'b']), /must be non-empty strings or finite numbers/)
+  assert.throws(() => taskKey(['a', {}]), /must be non-empty strings or finite numbers/)
+  assert.throws(() => taskKey(['a', Number.NaN]), /finite/)
+})
+
+test('业务键：同键重复登记只剩一条，内容按本次覆盖，句柄还是同一个', () => {
+  const pool = makePool(testChannel(), { origin: 'page-a', offline: true })
+  try {
+    const first = pool.register({ title: 'first', detail: 'a', key: ['close', 'ws', 't1'] })
+    const second = pool.register({ title: 'second', detail: 'b', key: ['close', 'ws', 't1'] })
+    assert.equal(pool.getSnapshot().tasks.length, 1, '不多出一条')
+    assert.equal(second, first, '复用同一个句柄，settled / isSettled 才连得上')
+    const record = pool.getSnapshot().tasks[0]
+    assert.equal(record.key, taskKey(['close', 'ws', 't1']))
+    assert.equal(record.title, 'second')
+    assert.equal(record.detail, 'b')
+    second.done()
+    assert.equal(pool.getSnapshot().tasks.length, 0)
+  } finally {
+    pool.dispose()
+  }
+})
+
+test('业务键：复用只覆盖本次给了的字段，反复 ensure 不会把分组 / 按钮弄没', () => {
+  const pool = makePool(testChannel(), { origin: 'page-a', offline: true })
+  try {
+    pool.register({ title: 'a', group: 'scan', key: 'k1', actions: [{ label: 'go', run: () => {} }] })
+    pool.register({ title: 'b', key: 'k1' })
+    const record = pool.getSnapshot().tasks[0]
+    assert.equal(record.title, 'b', '标题恒以本次为准')
+    assert.equal(record.group, 'scan', '没传分组就别动它')
+    assert.deepEqual(record.actions, [{ label: 'go' }], '没传按钮就留着上一组')
+
+    pool.register({ title: 'c', key: 'k1', actions: [] })
+    assert.equal(pool.getSnapshot().tasks[0].actions, undefined, '显式给空数组 = 清掉按钮')
+  } finally {
+    pool.dispose()
+  }
+})
+
+test('业务键：不同键 / 不同项目各自一条，互不顶替', () => {
+  const pool = makePool(testChannel(), { origin: 'page-a', offline: true })
+  try {
+    pool.register({ title: 'a', key: ['x', 1] })
+    pool.register({ title: 'b', key: ['x', 2] })
+    pool.register({ title: 'c', key: ['x', 1], project: 'other-project' })
+    assert.equal(pool.getSnapshot().tasks.length, 3, '键的唯一性范围是 (project, key)')
+  } finally {
+    pool.dispose()
+  }
+})
+
+test('ensure：created 交代是不是本页刚建；结束后同一个键能再登记一条新的', () => {
+  const pool = makePool(testChannel(), { origin: 'page-a', offline: true })
+  try {
+    const a = pool.ensure({ title: 'a', key: 'job' })
+    assert.equal(a.created, true)
+    const b = pool.ensure({ title: 'b', key: 'job' })
+    assert.equal(b.created, false, '复用的那次不该再起第二份活')
+    assert.equal(b.handle.id, a.handle.id)
+
+    a.handle.done()
+    const c = pool.ensure({ title: 'c', key: 'job' })
+    assert.equal(c.created, true, '键随记录离池释放')
+    assert.notEqual(c.handle.id, a.handle.id)
+    c.handle.done()
+  } finally {
+    pool.dispose()
+  }
+})
+
+test('业务键跨页：同键再登记直接抛冲突，不新增、也不返回假句柄', async () => {
+  const channelName = testChannel()
+  const a = makePool(channelName, { origin: 'page-a' })
+  const b = makePool(channelName, { origin: 'page-b' })
+  try {
+    a.connect()
+    b.connect()
+    a.register({ title: 'closing', key: ['close', 'ws', 't1'] })
+    await waitFor(() => b.getSnapshot().tasks.length === 1, 'B 看到 A 的同键条目')
+
+    assert.throws(
+      () => b.register({ title: 'closing again', key: ['close', 'ws', 't1'] }),
+      (error) => {
+        assert.equal(error.code, 'TASK_NOTIFICATION_CONFLICT')
+        assert.equal(error.ownerOrigin, 'page-a', '冲突要指出是哪一页占着')
+        assert.equal(error.key, taskKey(['close', 'ws', 't1']))
+        return true
+      },
+    )
+    assert.equal(b.getSnapshot().tasks.length, 1, '拒绝登记不能留下第二条')
+    assert.equal(b.getSnapshot().tasks[0].title, 'closing', '被拒的那次也不能改别人的条目')
+  } finally {
+    a.dispose()
+    b.dispose()
+  }
+})
+
+test('notifyTask.ensure：带键复用并交回 created', () => {
+  const first = notifyTask.ensure('ensure probe', { key: 'ensure-1' })
+  const second = notifyTask.ensure('ensure probe 2', { key: 'ensure-1' })
+  try {
+    assert.equal(first.created, true)
+    assert.equal(second.created, false)
+    assert.equal(second.handle.id, first.handle.id)
+  } finally {
+    first.handle.done()
+  }
+})
+
+test('notifyTask.run：同键已在跑 → reject 冲突，且不起第二份活；结束后可用同一键', async () => {
+  const handle = notifyTask('run key probe', { key: ['run', 'k'] })
+  let started = 0
+  try {
+    await assert.rejects(
+      notifyTask.run('run key probe 2', async () => { started += 1; return 'x' }, { key: ['run', 'k'] }),
+      (error) => error.code === 'TASK_NOTIFICATION_CONFLICT' && error.ownerOrigin === taskNotifications.origin,
+    )
+    assert.equal(started, 0, '撞键时 work 一次都不能跑')
+  } finally {
+    handle.done()
+  }
+  assert.equal(await notifyTask.run('run key probe 3', async () => 'y', { key: ['run', 'k'] }), 'y')
+})
+
+test('跨页畸形 key：空串整条丢弃，合法 key 正常入池', async () => {
+  const channelName = testChannel()
+  const pool = makePool(channelName, { origin: 'page-watcher' })
+  const sender = new BroadcastChannel(channelName)
+  sender.unref?.()
+  try {
+    pool.connect()
+    sender.postMessage({ kind: 'shard', origin: 'page-x', seq: 1, tasks: [{ ...wireTask('page-x', 'x1'), key: '' }] })
+    await new Promise((resolve) => setTimeout(resolve, 80))
+    assert.equal(pool.getSnapshot().tasks.length, 0, '空 key 的记录不进池')
+
+    sender.postMessage({ kind: 'shard', origin: 'page-x', seq: 2, tasks: [{ ...wireTask('page-x', 'x1'), key: 'k' }] })
+    await waitFor(() => pool.getSnapshot().tasks.length === 1, '合法 key 正常入池')
+    assert.equal(pool.getSnapshot().tasks[0].key, 'k')
+  } finally {
+    sender.close()
     pool.dispose()
   }
 })

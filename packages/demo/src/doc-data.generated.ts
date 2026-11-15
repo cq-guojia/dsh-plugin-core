@@ -4718,6 +4718,10 @@ export const docData = {
         "en": "Actions: to give a backgrounded row something to do, pass `actions: [{ label?, icon?, color?, run }]` (at least one of `label` and `icon`). The method stays in the creating page's memory and only labels, icon ids and colors cross pages, so other tabs can render the buttons and a click is executed back on the creating page. A record may carry several buttons; the renderer draws them all in order, and an icon-without-label one becomes a square icon button."
       },
       {
+        "zh": "业务键：`key` 让登记变成幂等 —— 同一个键在池里最多一条。同页重复登记就地更新那条并返回同一个句柄，别的页面占着同一个键则抛 `TaskNotificationConflictError`（作业在它那一页，给了也点不动）。键只能用稳定值：`['close', workspaceId, taskId]` 对，带时间 / 随机数 / 进度文案进去就等于每次都新开一条。想知道「这条是不是我刚起的」用 `notifyTask.ensure()` 的 `created`。",
+        "en": "Business key: `key` makes registration idempotent — at most one row per key. Re-registering on the same page updates that row in place and returns the same handle; a key held by another page throws `TaskNotificationConflictError` (the work lives there, so a handle would be a dead button). Keys must be stable values: `['close', workspaceId, taskId]` works, while timestamps, randomness or progress text mean a brand-new row every time. Use `created` from `notifyTask.ensure()` to tell whether you started it."
+      },
+      {
         "zh": "其余约定：`detail` 收任意 JSON 值（函数与类实例当场抛错）；`icon` / `iconSvg` 只是字符串，渲染与注入安全由消费端负责；两级分组用 `project`（`setDefaultTaskProject()` 设一次）+ `group`（缺省 `default`）。",
         "en": "The rest: `detail` takes any JSON value (functions and class instances throw immediately); `icon` / `iconSvg` are plain strings and rendering plus injection safety are the consumer's job; two-level grouping uses `project` (set once via `setDefaultTaskProject()`) plus `group` (default `default`)."
       }
@@ -4764,12 +4768,21 @@ export const docData = {
             }
           },
           {
+            "name": "notifyTask.ensure(title, options?)",
+            "type": "(title: string, options?: NotifyTaskOptions) => { handle: TaskNotificationHandle; created: boolean }",
+            "def": "—",
+            "desc": {
+              "zh": "幂等登记：带 key 时本页已有同键条目就地复用并返回同一个句柄；`created === false` 说明已经在跑，别再起第二份活",
+              "en": "Idempotent registration: with a key, a matching row on this page is reused and the same handle comes back. `created === false` means it is already running, so do not start a second job"
+            }
+          },
+          {
             "name": "notifyTask.run(title, work, options?)",
             "type": "<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions) => Promise<T>",
             "def": "—",
             "desc": {
-              "zh": "包住一段异步：成功 done、失败 fail，结果与异常原样透传",
-              "en": "Wraps an async task: done on success, fail on rejection, passing the result and error through"
+              "zh": "包住一段异步：成功 done、失败 fail，结果与异常原样透传；带 key 撞上已在跑的同键则 reject（不调用 work）",
+              "en": "Wraps an async task: done on success, fail on rejection, passing the result and error through. A key already running rejects without calling work"
             }
           },
           {
@@ -4840,8 +4853,17 @@ export const docData = {
             "type": "(input: TaskNotificationInput) => TaskNotificationHandle",
             "def": "—",
             "desc": {
-              "zh": "登记一条真实任务并返回句柄",
-              "en": "Registers a real task and returns its handle"
+              "zh": "登记一条真实任务并返回句柄；带 key 时同页重复登记就地复用（只要句柄、不要 created 就用它）",
+              "en": "Registers a real task and returns its handle; with a key, a repeat on the same page reuses the row (use it when you need the handle but not created)"
+            }
+          },
+          {
+            "name": "ensure(input)",
+            "type": "(input: TaskNotificationInput) => TaskNotificationClaim",
+            "def": "—",
+            "desc": {
+              "zh": "同上，另交回 `created`：false = 本页已有同键任务，别起第二份活",
+              "en": "Same as register, plus `created`: false means this page already has that key, so do not start a second job"
             }
           },
           {
@@ -4914,6 +4936,15 @@ export const docData = {
             }
           },
           {
+            "name": "input.key",
+            "type": "string | readonly (string | number)[]",
+            "def": "—",
+            "desc": {
+              "zh": "业务键：唯一性范围是 (project, key)；字符串原样用，元组按元素归一化成稳定串。只收扁平原值，空串 / 空数组 / 对象 / NaN 当场抛错",
+              "en": "Business key, unique per (project, key). Strings are used verbatim; tuples are normalized element-wise into a stable string. Flat primitives only — empty strings, empty arrays, objects and NaN throw immediately"
+            }
+          },
+          {
             "name": "input.title",
             "type": "string",
             "def": "—",
@@ -4969,6 +5000,33 @@ export const docData = {
             }
           },
           {
+            "name": "record.key",
+            "type": "string | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "归一化后的业务键；读侧拿它判断「这个任务是不是已经在处理中」，比对自己的键要用 `taskKey()` 算一次，别手拼",
+              "en": "The normalized business key; the read side uses it to tell whether the work is already running. Compare with your own key through `taskKey()` instead of hand-joining strings"
+            }
+          },
+          {
+            "name": "taskKey(key)",
+            "type": "(key: TaskKey) => string",
+            "def": "—",
+            "desc": {
+              "zh": "把业务键归一化成池里存的那串（元组 → `#` + JSON，字符串原样）；读写两侧用同一份才不会对不上",
+              "en": "Normalizes a business key into the stored form (tuples become # + JSON, strings stay verbatim); both sides must use it or they will disagree"
+            }
+          },
+          {
+            "name": "TaskNotificationConflictError",
+            "type": "class extends Error",
+            "def": "—",
+            "desc": {
+              "zh": "同键已在别的页面登记时抛出；带 `code`（值为 TASK_NOTIFICATION_CONFLICT）、`key` 与 `ownerOrigin`。判冲突用 `code`（core 被打进每个插件副本，跨副本 `instanceof` 不可靠）",
+              "en": "Thrown when another page holds the key; carries `code` (TASK_NOTIFICATION_CONFLICT), `key` and `ownerOrigin`. Judge by `code`, since core is inlined into each plugin bundle and `instanceof` is unreliable across copies"
+            }
+          },
+          {
             "name": "input.projectLabel / groupLabel",
             "type": "string",
             "def": "—",
@@ -4982,8 +5040,8 @@ export const docData = {
             "type": "(patch: TaskNotificationPatch) => void",
             "def": "—",
             "desc": {
-              "zh": "只改纯数据字段，随时可调用；actions 注册时定型，不能改",
-              "en": "Updates plain data fields, callable any time; actions are fixed at registration and cannot change"
+              "zh": "只改纯数据字段，随时可调用；按钮改不了 —— 换一组要带同一个 key 重新登记",
+              "en": "Updates plain data fields, callable any time. Buttons cannot change through it — re-register with the same key to swap them"
             }
           },
           {
@@ -5053,6 +5111,11 @@ export const docData = {
       }
     ],
     "code": [
+      {
+        "id": "bt-keyed-example",
+        "lang": "ts",
+        "src": "import { notifyTask, taskKey, taskNotifications } from 'dsh-plugin-core/ui'\n\n// 键 = 「让这两条算同一件事」的那几个值。稳定、可枚举，不放时间 / 随机数 / 进度文案。\nconst key = ['close', workspaceId, taskId]\n\n// ① 只是要它在那儿：反复登记也只有一条，内容按最后一次刷新，句柄还是同一个\nconst handle = notifyTask('正在结案', { key, timeoutMs: 30 * 60_000 })\nhandle.done('已结案')\n\n// ② 还要知道「是不是我刚起的」：created === false 说明本页已经在跑，别再起第二份活\nconst task = notifyTask.ensure('正在结案', { key })\nif (task.created) void closeTask(workspaceId, taskId).finally(() => task.handle.done())\n\n// ③ 读侧判断「这个任务是不是已经在处理中」：记录带着归一化后的键\nconst running = taskNotifications.select('*').some((t) => t.key === taskKey(key))"
+      },
       {
         "id": "bt-actions-example",
         "lang": "ts",

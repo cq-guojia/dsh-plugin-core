@@ -1716,6 +1716,37 @@ function requireProject(project) {
   }
   return fallback;
 }
+var TASK_KEY_TUPLE_PREFIX = "#";
+function taskKey(key) {
+  if (typeof key === "string") {
+    if (key.trim() === "")
+      throw new Error("task notification key must be a non-empty string");
+    return key;
+  }
+  if (!Array.isArray(key) || key.length === 0) {
+    throw new Error("task notification key must be a non-empty array of strings and numbers");
+  }
+  for (const part of key) {
+    if (typeof part === "number") {
+      if (!Number.isFinite(part))
+        throw new Error("task notification key numbers must be finite");
+      continue;
+    }
+    if (typeof part !== "string" || part === "") {
+      throw new Error("task notification key parts must be non-empty strings or finite numbers");
+    }
+  }
+  return TASK_KEY_TUPLE_PREFIX + JSON.stringify(key);
+}
+var TaskNotificationConflictError = class extends Error {
+  constructor(key, ownerOrigin) {
+    super(`task notification key is already running: ${key} (owner ${ownerOrigin})`);
+    this.code = "TASK_NOTIFICATION_CONFLICT";
+    this.name = "TaskNotificationConflictError";
+    this.key = key;
+    this.ownerOrigin = ownerOrigin;
+  }
+};
 var SELECT_CACHE = /* @__PURE__ */ new WeakMap();
 function selectTaskNotifications(snapshot, groups, options = {}) {
   const allProjects = groups === "*" && options.project === void 0;
@@ -1845,6 +1876,8 @@ function isTaskRecord(value) {
   if (!isOptionalString(value.projectLabel))
     return false;
   if (!isOptionalString(value.groupLabel))
+    return false;
+  if (value.key !== void 0 && (typeof value.key !== "string" || value.key === ""))
     return false;
   if (!isOptionalString(value.icon))
     return false;
@@ -1976,6 +2009,7 @@ function createTaskNotificationPool(options = {}) {
   const bus = () => options.events ?? taskNotificationEvents;
   const locks = options.locks === void 0 ? browserLocks() : options.locks;
   const finishers = /* @__PURE__ */ new Map();
+  const handles = /* @__PURE__ */ new Map();
   const runners = /* @__PURE__ */ new Map();
   const pendingInvokes = /* @__PURE__ */ new Map();
   const probing = /* @__PURE__ */ new Set();
@@ -2081,6 +2115,9 @@ function createTaskNotificationPool(options = {}) {
   function find2(id3) {
     return localShard().find((task) => task.id === id3);
   }
+  function findByKey(project, key) {
+    return store.getState().tasks.find((task) => task.project === project && task.key === key);
+  }
   function locate(id3) {
     for (const shard of shards.values()) {
       const hit = shard.tasks.find((task) => task.id === id3 && task.origin === shard.origin);
@@ -2142,6 +2179,11 @@ function createTaskNotificationPool(options = {}) {
   }
   function replace2(tasks2, record) {
     return tasks2.map((task) => task.id === record.id ? record : task);
+  }
+  function withoutActions(task) {
+    const next = { ...task };
+    delete next.actions;
+    return next;
   }
   function holdLiveness() {
     if (offline || locksHeld || locks === null)
@@ -2294,10 +2336,11 @@ function createTaskNotificationPool(options = {}) {
     holdLiveness();
     post({ kind: "hello", origin });
   }
-  function register(input) {
+  function ensure(input) {
     const project = requireProject(input.project);
     if (project === null)
       throw new Error("task notification project cannot be null when registering");
+    const key = input.key === void 0 ? void 0 : taskKey(input.key);
     const group = normalizeGroup(input.group);
     const detail = cloneDetail(input.detail);
     const actions2 = normalizeActions(input.actions);
@@ -2311,10 +2354,48 @@ function createTaskNotificationPool(options = {}) {
       throw new Error("task notification title must be a string");
     assertOptionalText(input, ["projectLabel", "groupLabel", "icon", "iconSvg"]);
     connect();
+    if (key !== void 0) {
+      const existing = findByKey(project, key);
+      if (existing !== void 0) {
+        if (existing.origin !== origin)
+          throw new TaskNotificationConflictError(key, existing.origin);
+        const handle2 = handles.get(existing.id);
+        if (handle2 !== void 0) {
+          if (input.actions !== void 0) {
+            for (const runnerId of [...runners.keys()]) {
+              if (runnerId.startsWith(`${existing.id}#`))
+                runners.delete(runnerId);
+            }
+            runs.forEach((run, index3) => {
+              runners.set(runnerKey(existing.id, index3), run);
+            });
+          }
+          const next = {
+            ...input.actions === void 0 ? existing : withoutActions(existing),
+            title: input.title,
+            ...detail === void 0 ? {} : { detail },
+            ...input.group === void 0 ? {} : { group },
+            ...input.projectLabel === void 0 ? {} : { projectLabel: input.projectLabel },
+            ...input.groupLabel === void 0 ? {} : { groupLabel: input.groupLabel },
+            ...input.icon === void 0 ? {} : { icon: input.icon },
+            ...input.iconSvg === void 0 ? {} : { iconSvg: input.iconSvg },
+            ...input.hidden === void 0 ? {} : { hidden: input.hidden },
+            ...input.actions === void 0 || actions2.length === 0 ? {} : { actions: actions2 },
+            updatedAt: Date.now()
+          };
+          publish((current3) => current3.some((task) => task.id === existing.id) ? replace2(current3, next) : current3, {
+            type: "updated",
+            task: next
+          });
+          return { handle: handle2, created: false };
+        }
+      }
+    }
     const now = Date.now();
     const id3 = `${origin}:${String(++idSeq2)}`;
     const record = {
       id: id3,
+      ...key === void 0 ? {} : { key },
       project,
       group,
       ...input.projectLabel === void 0 ? {} : { projectLabel: input.projectLabel },
@@ -2342,28 +2423,6 @@ function createTaskNotificationPool(options = {}) {
       runners.set(runnerKey(id3, index3), run);
     });
     finishers.set(id3, finish);
-    publish((current3) => [...current3, record], { type: "registered", task: record });
-    function finish(outcome, reason) {
-      if (isSettled)
-        return;
-      const current3 = find2(id3);
-      if (current3 === void 0)
-        return;
-      isSettled = true;
-      finishers.delete(id3);
-      runs.forEach((_, index3) => {
-        runners.delete(runnerKey(id3, index3));
-      });
-      const reasonText = reason === void 0 ? void 0 : String(reason);
-      const final = {
-        ...current3,
-        status: outcome === "done" ? "done" : "failed",
-        ...reasonText === void 0 ? {} : { reason: reasonText },
-        updatedAt: Date.now()
-      };
-      publish((current4) => current4.filter((task) => task.id !== id3), { type: "settled", task: final, outcome });
-      resolveSettled({ outcome, reason: reasonText, task: final });
-    }
     const handle = {
       id: id3,
       get isSettled() {
@@ -2428,7 +2487,32 @@ function createTaskNotificationPool(options = {}) {
         return promise;
       }
     };
-    return handle;
+    handles.set(id3, handle);
+    publish((current3) => [...current3, record], { type: "registered", task: record });
+    function finish(outcome, reason) {
+      if (isSettled)
+        return;
+      const current3 = find2(id3);
+      if (current3 === void 0)
+        return;
+      isSettled = true;
+      finishers.delete(id3);
+      handles.delete(id3);
+      for (const runnerId of [...runners.keys()]) {
+        if (runnerId.startsWith(`${id3}#`))
+          runners.delete(runnerId);
+      }
+      const reasonText = reason === void 0 ? void 0 : String(reason);
+      const final = {
+        ...current3,
+        status: outcome === "done" ? "done" : "failed",
+        ...reasonText === void 0 ? {} : { reason: reasonText },
+        updatedAt: Date.now()
+      };
+      publish((current4) => current4.filter((task) => task.id !== id3), { type: "settled", task: final, outcome });
+      resolveSettled({ outcome, reason: reasonText, task: final });
+    }
+    return { handle, created: true };
   }
   function settleLocal(reason) {
     let settledCount = 0;
@@ -2453,7 +2537,8 @@ function createTaskNotificationPool(options = {}) {
     connect,
     refresh,
     select: (groups, options2) => selectTaskNotifications(store.getState(), groups, options2),
-    register,
+    register: (input) => ensure(input).handle,
+    ensure,
     broadcast,
     settleLocal,
     runAction,
@@ -2510,6 +2595,7 @@ var taskNotifications = {
   },
   select: (groups, options) => globalPool().select(groups, options),
   register: (input) => globalPool().register(input),
+  ensure: (input) => globalPool().ensure(input),
   broadcast: (input) => globalPool().broadcast(input),
   settleLocal: (reason) => globalPool().settleLocal(reason),
   runAction: (taskId, index3) => globalPool().runAction(taskId, index3),
@@ -2519,11 +2605,12 @@ var taskNotifications = {
     globalPool().dispose();
   }
 };
-function notifyTaskBase(title, options = {}) {
-  return taskNotifications.register({
+function notifyTaskInput(title, options) {
+  return {
     title,
     ...options.project === void 0 ? {} : { project: options.project },
     ...options.group === void 0 ? {} : { group: options.group },
+    ...options.key === void 0 ? {} : { key: options.key },
     ...options.detail === void 0 ? {} : { detail: options.detail },
     ...options.actions === void 0 ? {} : { actions: options.actions },
     ...options.projectLabel === void 0 ? {} : { projectLabel: options.projectLabel },
@@ -2532,7 +2619,13 @@ function notifyTaskBase(title, options = {}) {
     ...options.iconSvg === void 0 ? {} : { iconSvg: options.iconSvg },
     ...options.hidden === void 0 ? {} : { hidden: options.hidden },
     ...options.timeoutMs === void 0 ? {} : { timeoutMs: options.timeoutMs }
-  });
+  };
+}
+function notifyTaskBase(title, options = {}) {
+  return taskNotifications.register(notifyTaskInput(title, options));
+}
+function ensureTask(title, options = {}) {
+  return taskNotifications.ensure(notifyTaskInput(title, options));
 }
 function notifyMessage(title, options = {}) {
   return taskNotifications.broadcast({
@@ -2546,7 +2639,18 @@ function notifyMessage(title, options = {}) {
   });
 }
 function runTask(title, work, options = {}) {
-  const handle = notifyTaskBase(title, options);
+  let claim2;
+  let key;
+  try {
+    key = options.key === void 0 ? void 0 : taskKey(options.key);
+    claim2 = taskNotifications.ensure(notifyTaskInput(title, options));
+  } catch (error) {
+    return Promise.reject(error);
+  }
+  if (key !== void 0 && !claim2.created) {
+    return Promise.reject(new TaskNotificationConflictError(key, taskNotifications.origin));
+  }
+  const handle = claim2.handle;
   let pending;
   try {
     pending = typeof work === "function" ? work() : work;
@@ -2556,7 +2660,7 @@ function runTask(title, work, options = {}) {
   }
   return handle.track(pending);
 }
-var notifyTask = Object.assign(notifyTaskBase, { run: runTask });
+var notifyTask = Object.assign(notifyTaskBase, { ensure: ensureTask, run: runTask });
 var taskNotificationEvents = {
   subscribe: (listener) => globalBus().subscribe(listener),
   emit: (event) => {
@@ -70084,6 +70188,10 @@ h(SideSheet, {
         "en": "Actions: to give a backgrounded row something to do, pass `actions: [{ label?, icon?, color?, run }]` (at least one of `label` and `icon`). The method stays in the creating page's memory and only labels, icon ids and colors cross pages, so other tabs can render the buttons and a click is executed back on the creating page. A record may carry several buttons; the renderer draws them all in order, and an icon-without-label one becomes a square icon button."
       },
       {
+        "zh": "\u4E1A\u52A1\u952E\uFF1A`key` \u8BA9\u767B\u8BB0\u53D8\u6210\u5E42\u7B49 \u2014\u2014 \u540C\u4E00\u4E2A\u952E\u5728\u6C60\u91CC\u6700\u591A\u4E00\u6761\u3002\u540C\u9875\u91CD\u590D\u767B\u8BB0\u5C31\u5730\u66F4\u65B0\u90A3\u6761\u5E76\u8FD4\u56DE\u540C\u4E00\u4E2A\u53E5\u67C4\uFF0C\u522B\u7684\u9875\u9762\u5360\u7740\u540C\u4E00\u4E2A\u952E\u5219\u629B `TaskNotificationConflictError`\uFF08\u4F5C\u4E1A\u5728\u5B83\u90A3\u4E00\u9875\uFF0C\u7ED9\u4E86\u4E5F\u70B9\u4E0D\u52A8\uFF09\u3002\u952E\u53EA\u80FD\u7528\u7A33\u5B9A\u503C\uFF1A`['close', workspaceId, taskId]` \u5BF9\uFF0C\u5E26\u65F6\u95F4 / \u968F\u673A\u6570 / \u8FDB\u5EA6\u6587\u6848\u8FDB\u53BB\u5C31\u7B49\u4E8E\u6BCF\u6B21\u90FD\u65B0\u5F00\u4E00\u6761\u3002\u60F3\u77E5\u9053\u300C\u8FD9\u6761\u662F\u4E0D\u662F\u6211\u521A\u8D77\u7684\u300D\u7528 `notifyTask.ensure()` \u7684 `created`\u3002",
+        "en": "Business key: `key` makes registration idempotent \u2014 at most one row per key. Re-registering on the same page updates that row in place and returns the same handle; a key held by another page throws `TaskNotificationConflictError` (the work lives there, so a handle would be a dead button). Keys must be stable values: `['close', workspaceId, taskId]` works, while timestamps, randomness or progress text mean a brand-new row every time. Use `created` from `notifyTask.ensure()` to tell whether you started it."
+      },
+      {
         "zh": "\u5176\u4F59\u7EA6\u5B9A\uFF1A`detail` \u6536\u4EFB\u610F JSON \u503C\uFF08\u51FD\u6570\u4E0E\u7C7B\u5B9E\u4F8B\u5F53\u573A\u629B\u9519\uFF09\uFF1B`icon` / `iconSvg` \u53EA\u662F\u5B57\u7B26\u4E32\uFF0C\u6E32\u67D3\u4E0E\u6CE8\u5165\u5B89\u5168\u7531\u6D88\u8D39\u7AEF\u8D1F\u8D23\uFF1B\u4E24\u7EA7\u5206\u7EC4\u7528 `project`\uFF08`setDefaultTaskProject()` \u8BBE\u4E00\u6B21\uFF09+ `group`\uFF08\u7F3A\u7701 `default`\uFF09\u3002",
         "en": "The rest: `detail` takes any JSON value (functions and class instances throw immediately); `icon` / `iconSvg` are plain strings and rendering plus injection safety are the consumer's job; two-level grouping uses `project` (set once via `setDefaultTaskProject()`) plus `group` (default `default`)."
       }
@@ -70130,12 +70238,21 @@ h(SideSheet, {
             }
           },
           {
+            "name": "notifyTask.ensure(title, options?)",
+            "type": "(title: string, options?: NotifyTaskOptions) => { handle: TaskNotificationHandle; created: boolean }",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5E42\u7B49\u767B\u8BB0\uFF1A\u5E26 key \u65F6\u672C\u9875\u5DF2\u6709\u540C\u952E\u6761\u76EE\u5C31\u5730\u590D\u7528\u5E76\u8FD4\u56DE\u540C\u4E00\u4E2A\u53E5\u67C4\uFF1B`created === false` \u8BF4\u660E\u5DF2\u7ECF\u5728\u8DD1\uFF0C\u522B\u518D\u8D77\u7B2C\u4E8C\u4EFD\u6D3B",
+              "en": "Idempotent registration: with a key, a matching row on this page is reused and the same handle comes back. `created === false` means it is already running, so do not start a second job"
+            }
+          },
+          {
             "name": "notifyTask.run(title, work, options?)",
             "type": "<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions) => Promise<T>",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20",
-              "en": "Wraps an async task: done on success, fail on rejection, passing the result and error through"
+              "zh": "\u5305\u4F4F\u4E00\u6BB5\u5F02\u6B65\uFF1A\u6210\u529F done\u3001\u5931\u8D25 fail\uFF0C\u7ED3\u679C\u4E0E\u5F02\u5E38\u539F\u6837\u900F\u4F20\uFF1B\u5E26 key \u649E\u4E0A\u5DF2\u5728\u8DD1\u7684\u540C\u952E\u5219 reject\uFF08\u4E0D\u8C03\u7528 work\uFF09",
+              "en": "Wraps an async task: done on success, fail on rejection, passing the result and error through. A key already running rejects without calling work"
             }
           },
           {
@@ -70206,8 +70323,17 @@ h(SideSheet, {
             "type": "(input: TaskNotificationInput) => TaskNotificationHandle",
             "def": "\u2014",
             "desc": {
-              "zh": "\u767B\u8BB0\u4E00\u6761\u771F\u5B9E\u4EFB\u52A1\u5E76\u8FD4\u56DE\u53E5\u67C4",
-              "en": "Registers a real task and returns its handle"
+              "zh": "\u767B\u8BB0\u4E00\u6761\u771F\u5B9E\u4EFB\u52A1\u5E76\u8FD4\u56DE\u53E5\u67C4\uFF1B\u5E26 key \u65F6\u540C\u9875\u91CD\u590D\u767B\u8BB0\u5C31\u5730\u590D\u7528\uFF08\u53EA\u8981\u53E5\u67C4\u3001\u4E0D\u8981 created \u5C31\u7528\u5B83\uFF09",
+              "en": "Registers a real task and returns its handle; with a key, a repeat on the same page reuses the row (use it when you need the handle but not created)"
+            }
+          },
+          {
+            "name": "ensure(input)",
+            "type": "(input: TaskNotificationInput) => TaskNotificationClaim",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u540C\u4E0A\uFF0C\u53E6\u4EA4\u56DE `created`\uFF1Afalse = \u672C\u9875\u5DF2\u6709\u540C\u952E\u4EFB\u52A1\uFF0C\u522B\u8D77\u7B2C\u4E8C\u4EFD\u6D3B",
+              "en": "Same as register, plus `created`: false means this page already has that key, so do not start a second job"
             }
           },
           {
@@ -70280,6 +70406,15 @@ h(SideSheet, {
             }
           },
           {
+            "name": "input.key",
+            "type": "string | readonly (string | number)[]",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u4E1A\u52A1\u952E\uFF1A\u552F\u4E00\u6027\u8303\u56F4\u662F (project, key)\uFF1B\u5B57\u7B26\u4E32\u539F\u6837\u7528\uFF0C\u5143\u7EC4\u6309\u5143\u7D20\u5F52\u4E00\u5316\u6210\u7A33\u5B9A\u4E32\u3002\u53EA\u6536\u6241\u5E73\u539F\u503C\uFF0C\u7A7A\u4E32 / \u7A7A\u6570\u7EC4 / \u5BF9\u8C61 / NaN \u5F53\u573A\u629B\u9519",
+              "en": "Business key, unique per (project, key). Strings are used verbatim; tuples are normalized element-wise into a stable string. Flat primitives only \u2014 empty strings, empty arrays, objects and NaN throw immediately"
+            }
+          },
+          {
             "name": "input.title",
             "type": "string",
             "def": "\u2014",
@@ -70335,6 +70470,33 @@ h(SideSheet, {
             }
           },
           {
+            "name": "record.key",
+            "type": "string | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "\u5F52\u4E00\u5316\u540E\u7684\u4E1A\u52A1\u952E\uFF1B\u8BFB\u4FA7\u62FF\u5B83\u5224\u65AD\u300C\u8FD9\u4E2A\u4EFB\u52A1\u662F\u4E0D\u662F\u5DF2\u7ECF\u5728\u5904\u7406\u4E2D\u300D\uFF0C\u6BD4\u5BF9\u81EA\u5DF1\u7684\u952E\u8981\u7528 `taskKey()` \u7B97\u4E00\u6B21\uFF0C\u522B\u624B\u62FC",
+              "en": "The normalized business key; the read side uses it to tell whether the work is already running. Compare with your own key through `taskKey()` instead of hand-joining strings"
+            }
+          },
+          {
+            "name": "taskKey(key)",
+            "type": "(key: TaskKey) => string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u628A\u4E1A\u52A1\u952E\u5F52\u4E00\u5316\u6210\u6C60\u91CC\u5B58\u7684\u90A3\u4E32\uFF08\u5143\u7EC4 \u2192 `#` + JSON\uFF0C\u5B57\u7B26\u4E32\u539F\u6837\uFF09\uFF1B\u8BFB\u5199\u4E24\u4FA7\u7528\u540C\u4E00\u4EFD\u624D\u4E0D\u4F1A\u5BF9\u4E0D\u4E0A",
+              "en": "Normalizes a business key into the stored form (tuples become # + JSON, strings stay verbatim); both sides must use it or they will disagree"
+            }
+          },
+          {
+            "name": "TaskNotificationConflictError",
+            "type": "class extends Error",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u540C\u952E\u5DF2\u5728\u522B\u7684\u9875\u9762\u767B\u8BB0\u65F6\u629B\u51FA\uFF1B\u5E26 `code`\uFF08\u503C\u4E3A TASK_NOTIFICATION_CONFLICT\uFF09\u3001`key` \u4E0E `ownerOrigin`\u3002\u5224\u51B2\u7A81\u7528 `code`\uFF08core \u88AB\u6253\u8FDB\u6BCF\u4E2A\u63D2\u4EF6\u526F\u672C\uFF0C\u8DE8\u526F\u672C `instanceof` \u4E0D\u53EF\u9760\uFF09",
+              "en": "Thrown when another page holds the key; carries `code` (TASK_NOTIFICATION_CONFLICT), `key` and `ownerOrigin`. Judge by `code`, since core is inlined into each plugin bundle and `instanceof` is unreliable across copies"
+            }
+          },
+          {
             "name": "input.projectLabel / groupLabel",
             "type": "string",
             "def": "\u2014",
@@ -70348,8 +70510,8 @@ h(SideSheet, {
             "type": "(patch: TaskNotificationPatch) => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u53EA\u6539\u7EAF\u6570\u636E\u5B57\u6BB5\uFF0C\u968F\u65F6\u53EF\u8C03\u7528\uFF1Bactions \u6CE8\u518C\u65F6\u5B9A\u578B\uFF0C\u4E0D\u80FD\u6539",
-              "en": "Updates plain data fields, callable any time; actions are fixed at registration and cannot change"
+              "zh": "\u53EA\u6539\u7EAF\u6570\u636E\u5B57\u6BB5\uFF0C\u968F\u65F6\u53EF\u8C03\u7528\uFF1B\u6309\u94AE\u6539\u4E0D\u4E86 \u2014\u2014 \u6362\u4E00\u7EC4\u8981\u5E26\u540C\u4E00\u4E2A key \u91CD\u65B0\u767B\u8BB0",
+              "en": "Updates plain data fields, callable any time. Buttons cannot change through it \u2014 re-register with the same key to swap them"
             }
           },
           {
@@ -70419,6 +70581,11 @@ h(SideSheet, {
       }
     ],
     "code": [
+      {
+        "id": "bt-keyed-example",
+        "lang": "ts",
+        "src": "import { notifyTask, taskKey, taskNotifications } from 'dsh-plugin-core/ui'\n\n// \u952E = \u300C\u8BA9\u8FD9\u4E24\u6761\u7B97\u540C\u4E00\u4EF6\u4E8B\u300D\u7684\u90A3\u51E0\u4E2A\u503C\u3002\u7A33\u5B9A\u3001\u53EF\u679A\u4E3E\uFF0C\u4E0D\u653E\u65F6\u95F4 / \u968F\u673A\u6570 / \u8FDB\u5EA6\u6587\u6848\u3002\nconst key = ['close', workspaceId, taskId]\n\n// \u2460 \u53EA\u662F\u8981\u5B83\u5728\u90A3\u513F\uFF1A\u53CD\u590D\u767B\u8BB0\u4E5F\u53EA\u6709\u4E00\u6761\uFF0C\u5185\u5BB9\u6309\u6700\u540E\u4E00\u6B21\u5237\u65B0\uFF0C\u53E5\u67C4\u8FD8\u662F\u540C\u4E00\u4E2A\nconst handle = notifyTask('\u6B63\u5728\u7ED3\u6848', { key, timeoutMs: 30 * 60_000 })\nhandle.done('\u5DF2\u7ED3\u6848')\n\n// \u2461 \u8FD8\u8981\u77E5\u9053\u300C\u662F\u4E0D\u662F\u6211\u521A\u8D77\u7684\u300D\uFF1Acreated === false \u8BF4\u660E\u672C\u9875\u5DF2\u7ECF\u5728\u8DD1\uFF0C\u522B\u518D\u8D77\u7B2C\u4E8C\u4EFD\u6D3B\nconst task = notifyTask.ensure('\u6B63\u5728\u7ED3\u6848', { key })\nif (task.created) void closeTask(workspaceId, taskId).finally(() => task.handle.done())\n\n// \u2462 \u8BFB\u4FA7\u5224\u65AD\u300C\u8FD9\u4E2A\u4EFB\u52A1\u662F\u4E0D\u662F\u5DF2\u7ECF\u5728\u5904\u7406\u4E2D\u300D\uFF1A\u8BB0\u5F55\u5E26\u7740\u5F52\u4E00\u5316\u540E\u7684\u952E\nconst running = taskNotifications.select('*').some((t) => t.key === taskKey(key))"
+      },
       {
         "id": "bt-actions-example",
         "lang": "ts",
@@ -75244,9 +75411,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.36.0"}`],
-            [t3("buildDemo"), `v${"0.36.0"}`],
-            [t3("buildStamp"), "261115-224144-486"]
+            [t3("buildCore"), `v${"0.36.1"}`],
+            [t3("buildDemo"), `v${"0.36.1"}`],
+            [t3("buildStamp"), "261115-232325-225"]
           ].map(
             ([label, value]) => (0, import_react109.createElement)(
               "tr",
@@ -75564,9 +75731,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react111.createElement)("span", null, `core v${"0.36.0"}`),
-          (0, import_react111.createElement)("span", null, `demo v${"0.36.0"}`),
-          (0, import_react111.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-224144-486")
+          (0, import_react111.createElement)("span", null, `core v${"0.36.1"}`),
+          (0, import_react111.createElement)("span", null, `demo v${"0.36.1"}`),
+          (0, import_react111.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-232325-225")
         )
       )
     ),

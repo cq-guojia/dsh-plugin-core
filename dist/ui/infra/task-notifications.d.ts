@@ -43,9 +43,18 @@ export interface TaskNotificationActionInfo {
     readonly icon?: string;
     readonly color?: string;
 }
+/**
+ * 业务键：调用方给的身份。核心不解释含义、不做模式校验，只做相等判等 ——
+ * 同一个键在池里最多对应一条记录。
+ *
+ * 传字符串就原样用；传数组（元组）按元素归一化成稳定串，免得手拼分隔符把两件事撞成一个键。
+ */
+export type TaskKey = string | readonly (string | number)[];
 /** Plain, structured-cloneable data. No functions, no ReactNode, no components. */
 export interface TaskNotificationRecord {
     readonly id: string;
+    /** 归一化后的业务键（`taskKey()` 的结果）；同一 (project, key) 同时最多一条。 */
+    readonly key?: string;
     /** First level: the project that owns this task. */
     readonly project: string;
     /** Second level: a group inside that project. Never empty; defaults to 'default'. */
@@ -80,6 +89,11 @@ export interface TaskNotificationInput {
     /** Second level; defaults to 'default'. */
     group?: string;
     readonly title: string;
+    /**
+     * 业务键。同页已有同键条目 → 就地更新这条并复用同一个句柄（不新增）；
+     * 别的页面已有同键条目 → 抛 `TaskNotificationConflictError`（作业在它那一页，给了也点不动）。
+     */
+    key?: TaskKey;
     projectLabel?: string;
     groupLabel?: string;
     icon?: string;
@@ -153,6 +167,14 @@ export interface TaskNotificationHandle {
     fail(reason?: string): void;
     /** Promise-settle fallback: success and rejection both close the task. */
     track<T>(promise: Promise<T>): Promise<T>;
+}
+/**
+ * 登记结果。`created === false` 说明本页已经有同键任务并复用了它 ——
+ * 调用方不要为同一件事再起第二份活（作业只该有一个执行者，收尾也归它）。
+ */
+export interface TaskNotificationClaim {
+    readonly handle: TaskNotificationHandle;
+    readonly created: boolean;
 }
 export interface TaskNotificationSnapshot {
     readonly tasks: readonly TaskNotificationRecord[];
@@ -241,6 +263,8 @@ export interface TaskNotificationPool {
     refresh(): void;
     select(groups?: TaskNotificationGroupFilter, options?: TaskNotificationSelectOptions): readonly TaskNotificationRecord[];
     register(input: TaskNotificationInput): TaskNotificationHandle;
+    /** 幂等登记：带 `key` 时就地复用本页同键条目，并告诉你这条是不是刚建的。 */
+    ensure(input: TaskNotificationInput): TaskNotificationClaim;
     /** 纯广播：只出 `message` 事件，不写池、不动快照。 */
     broadcast(input: TaskNotificationMessageInput): TaskNotificationMessage;
     /** Settle every task this page still owns; handles are not needed. */
@@ -258,6 +282,26 @@ export interface TaskNotificationPool {
 /** Set once at app start. `undefined` clears it (tests rely on this). */
 export declare function setDefaultTaskProject(project: string | undefined): void;
 export declare function getDefaultTaskProject(): string | undefined;
+/**
+ * 归一化业务键：元组按元素序列化（顺序与边界都由 JSON 保证），字符串原样。
+ *
+ * 只收扁平原值。对象 / 函数 / 时间戳当键会让「同一件事」每次算出不同键，等于没去重，
+ * 所以在这里当场拒绝，而不是悄悄放行成「每次都是新的一条」。
+ */
+export declare function taskKey(key: TaskKey): string;
+/**
+ * 同一个键已经在**别的页面**登记着：那条作业的方法在它那一页，本页拿着也点不动，
+ * 所以不返回假句柄，直接拒绝，让调用方提示「已在别处进行中」。
+ *
+ * 判冲突请用 `code`（core 被打进每个插件 bundle，跨副本 `instanceof` 不可靠）。
+ */
+export declare class TaskNotificationConflictError extends Error {
+    readonly code = "TASK_NOTIFICATION_CONFLICT";
+    readonly key: string;
+    /** 持有该键的页面 origin。 */
+    readonly ownerOrigin: string;
+    constructor(key: string, ownerOrigin: string);
+}
 /**
  * Three tiers, in that order:
  *   - no filter / empty array: every group of the current project;
@@ -279,6 +323,8 @@ export interface NotifyTaskOptions {
     project?: string;
     /** 二级分组：缺省 'default'。 */
     group?: string;
+    /** 业务键：同页重复登记就地复用同一条，跨页则抛冲突（见 `TaskNotificationInput.key`）。 */
+    key?: TaskKey;
     /** 入池即带的详情；任意 JSON 值，库内部克隆一份私有副本。 */
     detail?: TaskNotificationDetail;
     /** 后台条目上的按钮：文案 + 点击执行的方法（匿名函数即可，不会被序列化）。 */
@@ -303,6 +349,8 @@ export interface NotifyTaskOptions {
  */
 export interface NotifyTask {
     (title: string, options?: NotifyTaskOptions): TaskNotificationHandle;
+    /** 幂等登记：带 key 时本页已有同键条目就地复用，并告诉你这条是不是刚建的。 */
+    ensure(title: string, options?: NotifyTaskOptions): TaskNotificationClaim;
     /** 包住一段异步：成功走 done、失败走 fail，结果与异常原样透传。 */
     run<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions): Promise<T>;
 }

@@ -79,9 +79,19 @@ export interface TaskNotificationActionInfo {
   readonly color?: string
 }
 
+/**
+ * 业务键：调用方给的身份。核心不解释含义、不做模式校验，只做相等判等 ——
+ * 同一个键在池里最多对应一条记录。
+ *
+ * 传字符串就原样用；传数组（元组）按元素归一化成稳定串，免得手拼分隔符把两件事撞成一个键。
+ */
+export type TaskKey = string | readonly (string | number)[]
+
 /** Plain, structured-cloneable data. No functions, no ReactNode, no components. */
 export interface TaskNotificationRecord {
   readonly id: string
+  /** 归一化后的业务键（`taskKey()` 的结果）；同一 (project, key) 同时最多一条。 */
+  readonly key?: string
   /** First level: the project that owns this task. */
   readonly project: string
   /** Second level: a group inside that project. Never empty; defaults to 'default'. */
@@ -117,6 +127,11 @@ export interface TaskNotificationInput {
   /** Second level; defaults to 'default'. */
   group?: string
   readonly title: string
+  /**
+   * 业务键。同页已有同键条目 → 就地更新这条并复用同一个句柄（不新增）；
+   * 别的页面已有同键条目 → 抛 `TaskNotificationConflictError`（作业在它那一页，给了也点不动）。
+   */
+  key?: TaskKey
   projectLabel?: string
   groupLabel?: string
   icon?: string
@@ -200,6 +215,15 @@ export interface TaskNotificationHandle {
   track<T>(promise: Promise<T>): Promise<T>
 }
 
+/**
+ * 登记结果。`created === false` 说明本页已经有同键任务并复用了它 ——
+ * 调用方不要为同一件事再起第二份活（作业只该有一个执行者，收尾也归它）。
+ */
+export interface TaskNotificationClaim {
+  readonly handle: TaskNotificationHandle
+  readonly created: boolean
+}
+
 export interface TaskNotificationSnapshot {
   readonly tasks: readonly TaskNotificationRecord[]
   /** Real monotonic counter of state changes on this page. */
@@ -277,6 +301,8 @@ export interface TaskNotificationPool {
     options?: TaskNotificationSelectOptions,
   ): readonly TaskNotificationRecord[]
   register(input: TaskNotificationInput): TaskNotificationHandle
+  /** 幂等登记：带 `key` 时就地复用本页同键条目，并告诉你这条是不是刚建的。 */
+  ensure(input: TaskNotificationInput): TaskNotificationClaim
   /** 纯广播：只出 `message` 事件，不写池、不动快照。 */
   broadcast(input: TaskNotificationMessageInput): TaskNotificationMessage
   /** Settle every task this page still owns; handles are not needed. */
@@ -389,6 +415,55 @@ function requireProject(project?: string | null): string | null {
     )
   }
   return fallback
+}
+
+/** 元组键在池里存成「前缀 + JSON」，与手写字符串键分属两个空间，互不撞。 */
+const TASK_KEY_TUPLE_PREFIX = '#'
+
+/**
+ * 归一化业务键：元组按元素序列化（顺序与边界都由 JSON 保证），字符串原样。
+ *
+ * 只收扁平原值。对象 / 函数 / 时间戳当键会让「同一件事」每次算出不同键，等于没去重，
+ * 所以在这里当场拒绝，而不是悄悄放行成「每次都是新的一条」。
+ */
+export function taskKey(key: TaskKey): string {
+  if (typeof key === 'string') {
+    if (key.trim() === '') throw new Error('task notification key must be a non-empty string')
+    return key
+  }
+  if (!Array.isArray(key) || key.length === 0) {
+    throw new Error('task notification key must be a non-empty array of strings and numbers')
+  }
+  for (const part of key as readonly (string | number)[]) {
+    if (typeof part === 'number') {
+      if (!Number.isFinite(part)) throw new Error('task notification key numbers must be finite')
+      continue
+    }
+    if (typeof part !== 'string' || part === '') {
+      throw new Error('task notification key parts must be non-empty strings or finite numbers')
+    }
+  }
+  return TASK_KEY_TUPLE_PREFIX + JSON.stringify(key)
+}
+
+/**
+ * 同一个键已经在**别的页面**登记着：那条作业的方法在它那一页，本页拿着也点不动，
+ * 所以不返回假句柄，直接拒绝，让调用方提示「已在别处进行中」。
+ *
+ * 判冲突请用 `code`（core 被打进每个插件 bundle，跨副本 `instanceof` 不可靠）。
+ */
+export class TaskNotificationConflictError extends Error {
+  readonly code = 'TASK_NOTIFICATION_CONFLICT'
+  readonly key: string
+  /** 持有该键的页面 origin。 */
+  readonly ownerOrigin: string
+
+  constructor(key: string, ownerOrigin: string) {
+    super(`task notification key is already running: ${key} (owner ${ownerOrigin})`)
+    this.name = 'TaskNotificationConflictError'
+    this.key = key
+    this.ownerOrigin = ownerOrigin
+  }
 }
 
 /** Per-snapshot derived cache: same snapshot + same filter returns the SAME array. */
@@ -584,6 +659,8 @@ function isTaskRecord(value: unknown): value is TaskNotificationRecord {
   // 可选字段也要看类型：畸形分片不能借着「没校验」把负数窗口、NaN 时间塞进池。
   if (!isOptionalString(value.projectLabel)) return false
   if (!isOptionalString(value.groupLabel)) return false
+  // 空键等于「没有键」，跨页复制过来只会让判重失灵；整条当畸形消息丢掉。
+  if (value.key !== undefined && (typeof value.key !== 'string' || value.key === '')) return false
   if (!isOptionalString(value.icon)) return false
   if (!isOptionalString(value.iconSvg)) return false
   if (!isOptionalString(value.reason)) return false
@@ -749,6 +826,11 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
   /** Page -> settle function, so a task can be ended without the caller's handle. */
   const finishers = new Map<string, (outcome: 'done' | 'failed', reason?: string) => void>()
   /**
+   * 本页句柄表：同键再次登记必须返回**同一个**句柄 ——
+   * 否则第二次拿到的 `settled` / `isSettled` 跟真实结算对不上。结束即删。
+   */
+  const handles = new Map<string, TaskNotificationHandle>()
+  /**
    * 按钮方法表：`任务id#下标` -> 调用方给的匿名函数。函数不过线、不进池，
    * 所以这张表只存在于创建它的页面；条目结束就删，免得闭包攥住组件树。
    */
@@ -886,6 +968,14 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     return localShard().find((task) => task.id === id)
   }
 
+  /**
+   * 按键找正在跑的条目：看的是合并后的快照（过期行已在 collect 里滤掉），本页与远端一视同仁。
+   * 池里的记录恒为 running —— 结束即移出，所以「存在」就等于「正在处理中」。
+   */
+  function findByKey(project: string, key: string): TaskNotificationRecord | undefined {
+    return store.getState().tasks.find((task) => task.project === project && task.key === key)
+  }
+
   /** 跨分片查一条任务：只认「记录自己声明的 origin 与所在分片一致」的那份，防伪造分片。 */
   function locate(id: string): TaskNotificationRecord | undefined {
     for (const shard of shards.values()) {
@@ -951,6 +1041,13 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
 
   function replace(tasks: readonly TaskNotificationRecord[], record: TaskNotificationRecord): readonly TaskNotificationRecord[] {
     return tasks.map((task) => (task.id === record.id ? record : task))
+  }
+
+  /** 复用一条记录时要换掉按钮：先摘掉旧的 actions 字段，空数组等同于「没有按钮」。 */
+  function withoutActions(task: TaskNotificationRecord): TaskNotificationRecord {
+    const next = { ...task }
+    delete (next as { actions?: readonly TaskNotificationActionInfo[] }).actions
+    return next
   }
 
   /** Claim the page-level liveness lock. Called on connect / refresh, idempotent. */
@@ -1124,10 +1221,15 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     post({ kind: 'hello', origin })
   }
 
-  function register(input: TaskNotificationInput): TaskNotificationHandle {
+  /**
+   * 幂等登记的实做：带 `key` 且本页已有同键条目 → 就地更新那一条并复用它的句柄（`created: false`）。
+   * 别的页面占着同一个键 → 抛冲突，因为作业在它那一页，本页拿到也点不动。
+   */
+  function ensure(input: TaskNotificationInput): TaskNotificationClaim {
     // Resolve before touching the pool: a missing project must not leave a row behind.
     const project = requireProject(input.project)
     if (project === null) throw new Error('task notification project cannot be null when registering')
+    const key = input.key === undefined ? undefined : taskKey(input.key)
     const group = normalizeGroup(input.group)
     const detail = cloneDetail(input.detail)
     const actions = normalizeActions(input.actions)
@@ -1141,10 +1243,48 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     if (typeof input.title !== 'string') throw new Error('task notification title must be a string')
     assertOptionalText(input, ['projectLabel', 'groupLabel', 'icon', 'iconSvg'])
     connect()
+
+    if (key !== undefined) {
+      const existing = findByKey(project, key)
+      if (existing !== undefined) {
+        if (existing.origin !== origin) throw new TaskNotificationConflictError(key, existing.origin)
+        const handle = handles.get(existing.id)
+        // 句柄在才算真复用；没有句柄只可能是 publish 期间的重入，那种情况按新条目处理。
+        if (handle !== undefined) {
+          // 按钮换成本次给的那组：重挂载后的新闭包才是此刻活着的那份。
+          if (input.actions !== undefined) {
+            for (const runnerId of [...runners.keys()]) {
+              if (runnerId.startsWith(`${existing.id}#`)) runners.delete(runnerId)
+            }
+            runs.forEach((run, index) => { runners.set(runnerKey(existing.id, index), run) })
+          }
+          // 内容以本次调用为准，但只覆盖真正给了的字段：反复 ensure 不会把上一次挂的分组 / 按钮弄没。
+          const next: TaskNotificationRecord = {
+            ...(input.actions === undefined ? existing : withoutActions(existing)),
+            title: input.title,
+            ...(detail === undefined ? {} : { detail }),
+            ...(input.group === undefined ? {} : { group }),
+            ...(input.projectLabel === undefined ? {} : { projectLabel: input.projectLabel }),
+            ...(input.groupLabel === undefined ? {} : { groupLabel: input.groupLabel }),
+            ...(input.icon === undefined ? {} : { icon: input.icon }),
+            ...(input.iconSvg === undefined ? {} : { iconSvg: input.iconSvg }),
+            ...(input.hidden === undefined ? {} : { hidden: input.hidden }),
+            ...(input.actions === undefined || actions.length === 0 ? {} : { actions }),
+            updatedAt: Date.now(),
+          }
+          publish((current) => (current.some((task) => task.id === existing.id) ? replace(current, next) : current), {
+            type: 'updated',
+            task: next,
+          })
+          return { handle, created: false }
+        }
+      }
+    }
     const now = Date.now()
     const id = `${origin}:${String(++idSeq)}`
     const record: TaskNotificationRecord = {
       id,
+      ...(key === undefined ? {} : { key }),
       project,
       group,
       ...(input.projectLabel === undefined ? {} : { projectLabel: input.projectLabel }),
@@ -1166,34 +1306,10 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     let resolveSettled: (value: TaskNotificationSettlement) => void = () => {}
     const settled = new Promise<TaskNotificationSettlement>((resolve) => { resolveSettled = resolve })
 
-    // 先放方法与 finisher 再 publish：条目一可见就必须可点、可收尾，中间不留空窗；
-    // 订阅者若在 publish 里抛错，句柄虽拿不到，settleLocal 仍能收掉这一条。
+    // 先放方法、finisher 与句柄再 publish：条目一可见就必须可点、可收尾、能被同键复用，
+    // 中间不留空窗。订阅者若在 publish 里抛错，句柄虽拿不到，settleLocal 仍能收掉这一条。
     runs.forEach((run, index) => { runners.set(runnerKey(id, index), run) })
     finishers.set(id, finish)
-    publish((current) => [...current, record], { type: 'registered', task: record })
-
-    function finish(outcome: 'done' | 'failed', reason?: string): void {
-      if (isSettled) return
-      const current = find(id)
-      if (current === undefined) return
-      isSettled = true
-      finishers.delete(id)
-      runs.forEach((_, index) => { runners.delete(runnerKey(id, index)) })
-      // reason 一律转成字符串：JS 调用方传数字 / Error 时，字段类型坏了会让整页分片在对端被丢。
-      const reasonText = reason === undefined ? undefined : String(reason)
-      const final: TaskNotificationRecord = {
-        ...current,
-        status: outcome === 'done' ? 'done' : 'failed',
-        ...(reasonText === undefined ? {} : { reason: reasonText }),
-        updatedAt: Date.now(),
-      }
-      publish(
-        (current) => current.filter((task) => task.id !== id),
-        { type: 'settled', task: final, outcome },
-      )
-      resolveSettled({ outcome, reason: reasonText, task: final })
-    }
-
     const handle: TaskNotificationHandle = {
       id,
       get isSettled(): boolean { return isSettled },
@@ -1252,7 +1368,36 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
         return promise
       },
     }
-    return handle
+    handles.set(id, handle)
+    publish((current) => [...current, record], { type: 'registered', task: record })
+
+    function finish(outcome: 'done' | 'failed', reason?: string): void {
+      if (isSettled) return
+      const current = find(id)
+      if (current === undefined) return
+      isSettled = true
+      finishers.delete(id)
+      handles.delete(id)
+      // 按钮可能被同键复用换过，按 id 前缀清，别只清注册时那一组。
+      for (const runnerId of [...runners.keys()]) {
+        if (runnerId.startsWith(`${id}#`)) runners.delete(runnerId)
+      }
+      // reason 一律转成字符串：JS 调用方传数字 / Error 时，字段类型坏了会让整页分片在对端被丢。
+      const reasonText = reason === undefined ? undefined : String(reason)
+      const final: TaskNotificationRecord = {
+        ...current,
+        status: outcome === 'done' ? 'done' : 'failed',
+        ...(reasonText === undefined ? {} : { reason: reasonText }),
+        updatedAt: Date.now(),
+      }
+      publish(
+        (current) => current.filter((task) => task.id !== id),
+        { type: 'settled', task: final, outcome },
+      )
+      resolveSettled({ outcome, reason: reasonText, task: final })
+    }
+
+    return { handle, created: true }
   }
 
   /**
@@ -1283,7 +1428,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     connect,
     refresh,
     select: (groups, options) => selectTaskNotifications(store.getState(), groups, options),
-    register,
+    register: (input) => ensure(input).handle,
+    ensure,
     broadcast,
     settleLocal,
     runAction,
@@ -1345,6 +1491,7 @@ export const taskNotifications: TaskNotificationPool = {
   refresh: () => { globalPool().refresh() },
   select: (groups, options) => globalPool().select(groups, options),
   register: (input) => globalPool().register(input),
+  ensure: (input) => globalPool().ensure(input),
   broadcast: (input) => globalPool().broadcast(input),
   settleLocal: (reason) => globalPool().settleLocal(reason),
   runAction: (taskId, index) => globalPool().runAction(taskId, index),
@@ -1358,6 +1505,8 @@ export interface NotifyTaskOptions {
   project?: string
   /** 二级分组：缺省 'default'。 */
   group?: string
+  /** 业务键：同页重复登记就地复用同一条，跨页则抛冲突（见 `TaskNotificationInput.key`）。 */
+  key?: TaskKey
   /** 入池即带的详情；任意 JSON 值，库内部克隆一份私有副本。 */
   detail?: TaskNotificationDetail
   /** 后台条目上的按钮：文案 + 点击执行的方法（匿名函数即可，不会被序列化）。 */
@@ -1383,15 +1532,18 @@ export interface NotifyTaskOptions {
  */
 export interface NotifyTask {
   (title: string, options?: NotifyTaskOptions): TaskNotificationHandle
+  /** 幂等登记：带 key 时本页已有同键条目就地复用，并告诉你这条是不是刚建的。 */
+  ensure(title: string, options?: NotifyTaskOptions): TaskNotificationClaim
   /** 包住一段异步：成功走 done、失败走 fail，结果与异常原样透传。 */
   run<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions): Promise<T>
 }
 
-function notifyTaskBase(title: string, options: NotifyTaskOptions = {}): TaskNotificationHandle {
-  return taskNotifications.register({
+function notifyTaskInput(title: string, options: NotifyTaskOptions): TaskNotificationInput {
+  return {
     title,
     ...(options.project === undefined ? {} : { project: options.project }),
     ...(options.group === undefined ? {} : { group: options.group }),
+    ...(options.key === undefined ? {} : { key: options.key }),
     ...(options.detail === undefined ? {} : { detail: options.detail }),
     ...(options.actions === undefined ? {} : { actions: options.actions }),
     ...(options.projectLabel === undefined ? {} : { projectLabel: options.projectLabel }),
@@ -1400,7 +1552,15 @@ function notifyTaskBase(title: string, options: NotifyTaskOptions = {}): TaskNot
     ...(options.iconSvg === undefined ? {} : { iconSvg: options.iconSvg }),
     ...(options.hidden === undefined ? {} : { hidden: options.hidden }),
     ...(options.timeoutMs === undefined ? {} : { timeoutMs: options.timeoutMs }),
-  })
+  }
+}
+
+function notifyTaskBase(title: string, options: NotifyTaskOptions = {}): TaskNotificationHandle {
+  return taskNotifications.register(notifyTaskInput(title, options))
+}
+
+function ensureTask(title: string, options: NotifyTaskOptions = {}): TaskNotificationClaim {
+  return taskNotifications.ensure(notifyTaskInput(title, options))
 }
 
 export interface NotifyMessageOptions {
@@ -1437,7 +1597,20 @@ function runTask<T>(
   work: Promise<T> | (() => Promise<T>),
   options: NotifyTaskOptions = {},
 ): Promise<T> {
-  const handle = notifyTaskBase(title, options)
+  let claim: TaskNotificationClaim
+  let key: string | undefined
+  try {
+    key = options.key === undefined ? undefined : taskKey(options.key)
+    claim = taskNotifications.ensure(notifyTaskInput(title, options))
+  } catch (error) {
+    // 异步入口一律 reject：缺项目、坏 key、跨页冲突都别同步抛出去。
+    return Promise.reject(error)
+  }
+  // 同键已在本页跑着：它没法既不起第二份活、又返回这段 work 的结果，只能拒绝。
+  if (key !== undefined && !claim.created) {
+    return Promise.reject(new TaskNotificationConflictError(key, taskNotifications.origin))
+  }
+  const handle = claim.handle
   let pending: Promise<T>
   try {
     pending = typeof work === 'function' ? work() : work
@@ -1449,7 +1622,7 @@ function runTask<T>(
   return handle.track(pending)
 }
 
-export const notifyTask: NotifyTask = Object.assign(notifyTaskBase, { run: runTask })
+export const notifyTask: NotifyTask = Object.assign(notifyTaskBase, { ensure: ensureTask, run: runTask })
 
 export const taskNotificationEvents: TaskNotificationEventBus = {
   subscribe: (listener) => globalBus().subscribe(listener),

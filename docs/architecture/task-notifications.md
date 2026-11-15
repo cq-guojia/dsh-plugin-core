@@ -56,6 +56,28 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 「Promise 两态（由 `settled` 表达）+ 收起作为事件」，调用方 `await` 的仍是正常两态，
 想跟踪收起就监听事件。弹窗侧在阶段 2 按此口径新开 API，不改现有 `confirmModal` / `alertModal` 签名。
 
+## 业务键与幂等登记
+
+带 `key` 的登记是**幂等**的：同一个键在一个项目里同时最多对应一条记录。
+
+| 情形 | 行为 |
+|---|---|
+| 本页已有同键条目 | 就地更新那一条（只覆盖本次给了的字段），返回**同一个**句柄；不新增、不发 `registered` |
+| 别的页面已有同键条目 | 抛 `TaskNotificationConflictError`（`code: 'TASK_NOTIFICATION_CONFLICT'`，带 `key` 与 `ownerOrigin`），不返回假句柄 |
+| 没有该键 | 正常新建 |
+| 记录离开池（`done` / `fail` / 超时 / `settleLocal`） | 键随之释放，下一次同名作业是新的一条 |
+
+- 唯一性范围是 `(project, key)`，`group` 不参与 —— 同一件事不该落在两个二级分组里。
+- 键由**调用方**给，核心不解释含义、不校验语义，只做相等判等。它回答的是「这两条算不算同一件事」，所以只能用确定、且不会变的值：`['close', workspaceId, taskId]` 对；`['close', Date.now()]`、`['close', 标题]` 错——每次算出新键就等于每次都新开一条，等于没做去重。
+- 写法：字符串原样用；数组按元素归一化成稳定串（池里存成 `#` + JSON）。两种形态分属两个空间，手拼 `a:b` 不会和 `['a', 'b']` 撞成同一个键。只收扁平原值（字符串 / 有限数字）；空串、空数组、对象、`NaN` 当场抛错。
+- 读侧拿到的是 `record.key`（归一化后的串）。业务要拿自己的键比对，用同一份 `taskKey()` 算，别自己拼。
+- 「这条是不是我刚起的」看 `notifyTask.ensure(...)` 的 `created`：`false` 说明本页已有同键任务，**别再起第二份活**——作业只该有一个执行者，`done` / `fail` 也归它。`notifyTask.run` 撞键时直接 reject 且不调用 `work()`：它没法既不起第二份活、又返回这段 work 的结果。
+- 键会进快照、界面与日志，**别放敏感信息**（与 Temporal 对 Workflow Id 的警告同源）；核心不做运行时检查。
+- 复用一条记录时 `actions` 一并换成本次给的那组方法（重挂载后的新闭包才是活着的那份）；不传就保留上一组，传空数组等于清空。`timeoutMs` 与 `hidden` 的默认值只在**首次**登记时定，复用沿用原记录（`update` 同样改不了窗口，只能靠活动续期）。
+- 已知边界：判重看的是已合并的快照，刚打开、还没收到对端分片的页面看不见别人的键（约一个广播往返）。要硬保证得用 `navigator.locks` 给键持锁，代价是登记变异步，本阶段不做。
+
+> 先例：Temporal 的 Workflow Id 保证「同 ID 同时最多一个在跑、Close 后可复用」，运行中再启动由 `WorkflowIdConflictPolicy` 决定（默认 `Fail`，也可 `Use Existing`）；Sonner `{ id }`、Chrome `notifications.create(id)`、Web Notification `tag` 都是同键就地替换；Web Locks / `docker --name` / VS Code command id 在跨上下文时一律报冲突。能在单上下文替换、跨上下文只能拒绝，是因为**执行体在谁手里**——跨页给句柄等于给假按钮。
+
 ## 按钮与动作
 
 收起之后要能「拉回来」，靠的不是把方法传过去（函数过不了结构化克隆，这一点没有例外），而是**方法留在原地、只传 id**。
@@ -63,7 +85,8 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 - 注册时给 `actions: [{ label, run }]`。`run` 是匿名函数，只在创建它的页面里执行；`label` 是纯数据。
 - 记录里只有 `label`，下标就是动作 id；所以别的标签页也画得出按钮，点它时发 `invoke` 回创建页。
 - 方法存在池私有的 `runners: Map<taskId#index, fn>` 里，与 `finishers` 同生命周期：
-  `done` / `fail` / 超时回收 / `settleLocal` 结束即删，`dispose` 整表清空。不这么做就是闭包攥着组件树不放。
+  `done` / `fail` / 超时回收 / `settleLocal` 结束即删（按 `id#` 前缀清），`dispose` 整表清空。不这么做就是闭包攥着组件树不放。
+  带同一个 `key` 重新登记时整组换成本次给的方法 —— 重挂载后的新闭包才是活着的那份。
 - `runAction(taskId, index): Promise<boolean>`：本页条目立即执行；跨页条目发 `invoke` 等 `invoked` ack，
   2s 没有回应按失败算。查不到方法、下标越界、方法抛错，一律 `false`，异常不冒给调用方。
 - `false` 只说明**这一次没触发成功**：任务不存在、下标越界、方法已被清掉（页面重挂、句柄丢了、创建页已 dispose）、
@@ -81,7 +104,8 @@ Chrome 扩展通知的点击回调只有 `(notificationId, buttonIndex)`；Comli
 | 入口 | 形态 | 先例 |
 |---|---|---|
 | `notifyTask(title, options?)` → 句柄 | 自己管结束 | `ora(text)` 返回实例；`toast.loading(msg)` 返回 id |
-| `notifyTask.run(title, work, options?)` → `work` 的原结果 | 自动收尾（成功 `done`、失败 `fail`） | `oraPromise(p)`、`toast.promise(p, opts)`、`window.withProgress(opts, task)` |
+| `notifyTask.ensure(title, options?)` → `{ handle, created }` | 幂等登记，带 `key` 时复用本页同键条目 | Temporal `Use Existing`（返回运行中那条的引用） |
+| `notifyTask.run(title, work, options?)` → `work` 的原结果 | 自动收尾（成功 `done`、失败 `fail`）；带 `key` 撞上已在跑的同键则 reject | `oraPromise(p)`、`toast.promise(p, opts)`、`window.withProgress(opts, task)` |
 
 - 第一个参数恒为标题：项目来自 `setDefaultTaskProject()`，二级分组来自 `options.group`，两者都能省。
 - `work` 收 `Promise` 或返回 `Promise` 的函数（函数形式让任务在调用后才启动），与 `oraPromise` / `toast.promise` 相同。
@@ -174,6 +198,10 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 `globalThis[Symbol.for(...)]` 上，同页所有副本共享同一个池、同一条总线，注册与通知不会重复 N 次。
 键里带协议版本；宿主存在但形状不符时**直接报错**，不静默复用、不降级兜底。
 
+已知边界：新加的池方法只存在于新副本上。同页若有**旧副本先占住**宿主，它没有 `ensure`，
+新副本调 `ensure` 会当场拿到 `TypeError`（老方法 `register` / `runAction` 等照旧可用）。
+处置是把那个插件重装到带 `ensure` 的版本，不是加兜底。
+
 ## 依赖
 
 `zustand@5.1.0` 的 `zustand/vanilla`（`createStore`）只在本模块内部使用：`getState` /
@@ -205,6 +233,7 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 
 ## 更新日志
 
+- 2026-11-15：新增业务键幂等登记 —— `key`（字符串 / 元组）、`record.key`、`taskKey()`、`notifyTask.ensure()` / `pool.ensure()`（返回 `{ handle, created }`）、跨页 `TaskNotificationConflictError`；同页同键就地更新并复用同一句柄，键随记录离池释放；`notifyTask.run` 撞键 reject 且不跑 `work`
 - 2026-11-15：收拾几处既有缺陷——存活锁被拒不再漏成 unhandled（复位并在 `refresh` / bfcache 恢复时重试，`offline` 池不申请）、记录可选字段与写入侧入参同套校验（`timeoutMs` 有限非负、`reason` 转字符串）、`update({ hidden: false })` 能取消隐藏、广播序号只自增一次、跨页陈旧判据只放行「同 seq 重发」
 - 2026-11-15：新增按钮动作 `actions: [{ label, run }]` 与 `runAction(taskId, index): Promise<boolean>`——方法只留在创建页内存（`runners`，与 `finishers` 同生命周期），记录里只存 `label`；跨页点击发 `invoke` 回创建页、等 `invoked` ack（2s 超时按失败）。`requestRestore` 保留为本页旧通道
 - 2026-11-12：新增纯广播 `notifyMessage()`（只发 `message` 事件，不进池、不动快照，因此不闪）；任务与消息都支持 `icon` / `iconSvg`
