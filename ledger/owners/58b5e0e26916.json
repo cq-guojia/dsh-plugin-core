@@ -2,7 +2,7 @@
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
     "20261115-1510-39a9-通知任务中心业务键幂等登记": {"category": "建设", "created": "2026-11-15 15:10:22", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-15 15:10:22", "status": "doing", "tags": ["通知中心", "幂等", "任务池", "契约"], "title": "通知任务中心业务键幂等登记", "updated": "2026-11-15 15:24:12", "worklog": "worklog/202611/15-1510-39a9-通知任务中心业务键幂等登记.md"},
-    "20261115-1549-497b-通知任务中心后台作业四处收尾": {"category": "建设", "created": "2026-11-15 15:49:30", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-15 15:49:30", "status": "doing", "tags": ["通知中心", "后台任务", "按钮", "契约"], "title": "通知任务中心后台作业四处收尾", "updated": "2026-11-15 15:50:03", "worklog": "worklog/202611/15-1549-497b-通知任务中心后台作业四处收尾.md"}
+    "20261115-1549-497b-通知任务中心后台作业四处收尾": {"category": "建设", "created": "2026-11-15 15:49:30", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-15 15:49:30", "status": "doing", "tags": ["通知中心", "后台任务", "按钮", "契约"], "title": "通知任务中心后台作业四处收尾", "updated": "2026-11-15 15:53:10", "worklog": "worklog/202611/15-1549-497b-通知任务中心后台作业四处收尾.md"}
   },
   "version": "20261022000000"
 }
