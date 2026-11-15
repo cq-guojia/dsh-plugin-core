@@ -1,8 +1,9 @@
 # 20261115-1413-973d-合并-iconbutton-进-button: 合并 IconButton 进 Button
 
 - **Tags**: Button, 控件, 重构
-- **Status**: doing · 2026-11-15 14:42:39 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: done · 2026-11-15 14:51:48 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-15 14:13:13 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-15 14:51:48 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -48,3 +49,4 @@
 - 2026-11-15 14:13:13 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-11-15 14:20:01 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 删掉 IconButton（src/ui/actions/Button.ts 及 button.css 的 .dshpc-iconbtn），改为 Button 无 children 自动 dshpc-btn--icon-only 正方形 + label 顶 aria-label；14 处调用点与 6 处 CSS 覆盖同步改完，build/test(557)/typecheck/build:demo 全绿
 - 2026-11-15 14:42:39 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 复核零残留后发版 0.36.0：tag v0.36.0 已推（core/demo 同号）；跨仓两个消费方锁着旧版本 0.35.x，升级时才需迁移
+- 2026-11-15 14:51:48 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed: IconButton 并入 Button（无 children 自动正方形 + label 顶无障碍名），本仓零残留；557 项测试全过，0.36.0 已发版、tag v0.36.0 已推
