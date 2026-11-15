@@ -379,6 +379,48 @@ test('休眠恢复：pagehide 删掉的分片在 pageshow 后能重新广播回�
   }
 })
 
+test('bfcache 恢复（persisted）会重新申请存活锁', () => {
+  const channelName = testChannel()
+  const win = new EventTarget()
+  const doc = new EventTarget()
+  doc.visibilityState = 'visible'
+  const g = globalThis
+  const hadWindow = Object.hasOwn(g, 'window')
+  const hadDoc = Object.hasOwn(g, 'document')
+  const oldWindow = g.window
+  const oldDoc = g.document
+  g.window = win
+  g.document = doc
+  const holds = []
+  const pool = createTaskNotificationPool({
+    events: createTaskNotificationEventBus(),
+    lifecycle: true,
+    channelName,
+    origin: 'page-bfcache',
+    locks: {
+      hold: (name) => {
+        holds.push(name)
+        return new Promise(() => {})
+      },
+      free: async () => true,
+    },
+  })
+  try {
+    pool.connect()
+    assert.equal(holds.length, 1, 'connect 持一把')
+    const restored = new Event('pageshow')
+    Object.defineProperty(restored, 'persisted', { value: true })
+    win.dispatchEvent(restored)
+    assert.equal(holds.length, 2, 'bfcache 恢复必须重新持锁，否则会被对端判死')
+  } finally {
+    pool.dispose()
+    if (hadWindow) g.window = oldWindow
+    else delete g.window
+    if (hadDoc) g.document = oldDoc
+    else delete g.document
+  }
+})
+
 test('dispose 后可复活：重连自动补发全量分片，不留幽灵也不永久封死', async () => {
   const channelName = testChannel()
   const a = makePool(channelName, { origin: 'page-a' })
@@ -976,6 +1018,16 @@ test('fail 传非字符串也落成字符串', async () => {
   handle.fail(404)
   const settlement = await handle.settled
   assert.equal(settlement.task.reason, '404')
+  assert.equal(settlement.reason, '404')
+})
+
+test('update 也拦坏字段：非字符串图标当场抛，记录不被污染', () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const handle = pool.register({ group: 'g', title: 'guard update' })
+  assert.throws(() => handle.update({ icon: 123 }), /icon/)
+  assert.throws(() => handle.update({ title: 42 }), /title/)
+  assert.equal(localTask(pool, handle)?.icon, undefined)
+  handle.done()
 })
 
 test('可见任务默认不回收：没有 timeoutMs 就一直挂着', async () => {

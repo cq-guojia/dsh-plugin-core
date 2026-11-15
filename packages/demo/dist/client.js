@@ -1654,6 +1654,14 @@ function setDefaultTaskProject(project) {
 function getDefaultTaskProject() {
   return projectSlot()?.value;
 }
+function assertOptionalText(source, keys2) {
+  const fields = source;
+  for (const key of keys2) {
+    if (fields[key] !== void 0 && typeof fields[key] !== "string") {
+      throw new Error(`task notification ${key} must be a string`);
+    }
+  }
+}
 function normalizeActions(actions2) {
   if (actions2 === void 0)
     return [];
@@ -1935,6 +1943,7 @@ function createTaskNotificationPool(options = {}) {
   const pendingInvokes = /* @__PURE__ */ new Map();
   const probing = /* @__PURE__ */ new Set();
   let locksHeld = false;
+  let lockAttempt = 0;
   const store = createStore(() => EMPTY_SNAPSHOT);
   const shards = /* @__PURE__ */ new Map();
   const knownSeq = /* @__PURE__ */ new Map();
@@ -2101,10 +2110,19 @@ function createTaskNotificationPool(options = {}) {
     if (offline || locksHeld || locks === null)
       return;
     locksHeld = true;
-    void Promise.resolve(locks.hold(lockNameFor(origin))).catch((error) => {
+    lockAttempt += 1;
+    const attempt = lockAttempt;
+    const failed = (error) => {
+      if (attempt !== lockAttempt)
+        return;
       locksHeld = false;
       console.warn("[dsh-plugin-core] \u5B58\u6D3B\u9501\u7533\u8BF7\u5931\u8D25\uFF0C\u5176\u5B83\u9875\u9762\u53EF\u80FD\u628A\u672C\u9875\u5224\u4E3A\u5DF2\u79BB\u5F00", error);
-    });
+    };
+    try {
+      void Promise.resolve(locks.hold(lockNameFor(origin))).catch(failed);
+    } catch (error) {
+      failed(error);
+    }
   }
   function dropRemoteShard(pageOrigin) {
     if (!shards.delete(pageOrigin))
@@ -2254,12 +2272,7 @@ function createTaskNotificationPool(options = {}) {
     }
     if (typeof input.title !== "string")
       throw new Error("task notification title must be a string");
-    for (const key of ["projectLabel", "groupLabel", "icon", "iconSvg"]) {
-      const field = input[key];
-      if (field !== void 0 && typeof field !== "string") {
-        throw new Error(`task notification ${key} must be a string`);
-      }
-    }
+    assertOptionalText(input, ["projectLabel", "groupLabel", "icon", "iconSvg"]);
     connect();
     const now = Date.now();
     const id3 = `${origin}:${String(++idSeq2)}`;
@@ -2312,7 +2325,7 @@ function createTaskNotificationPool(options = {}) {
         updatedAt: Date.now()
       };
       publish((current4) => current4.filter((task) => task.id !== id3), { type: "settled", task: final, outcome });
-      resolveSettled({ outcome, reason, task: final });
+      resolveSettled({ outcome, reason: reasonText, task: final });
     }
     const handle = {
       id: id3,
@@ -2327,6 +2340,7 @@ function createTaskNotificationPool(options = {}) {
         if (patch.group !== void 0 && patch.group.trim() === "") {
           throw new Error("task notification group must be a non-empty string");
         }
+        assertOptionalText(patch, ["title", "groupLabel", "icon", "iconSvg"]);
         const current3 = find2(id3);
         if (current3 === void 0)
           return;
@@ -69965,6 +69979,24 @@ h(SideSheet, {
             }
           },
           {
+            "name": "input.hidden",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u4E0D\u8FDB\u9ED8\u8BA4\u5217\u8868\uFF1B\u5F00\u4E86\u4E4B\u540E\u9ED8\u8BA4 5 \u5206\u949F\u515C\u5E95\u3002\u53EF\u5728 `update` \u91CC\u5207\u6362\uFF08\u4F20 false \u80FD\u53D6\u6D88\uFF09",
+              "en": "Kept out of the default list; hidden rows default to a 5-minute TTL. Switchable through `update` (false un-hides)"
+            }
+          },
+          {
+            "name": "input.timeoutMs",
+            "type": "number",
+            "def": "hidden ? 5 \u5206\u949F : 0",
+            "desc": {
+              "zh": "\u56DE\u6536\u7A97\u53E3\uFF0C\u4ECE\u6700\u540E\u4E00\u6B21\u6D3B\u52A8\u8D77\u7B97\uFF1B\u5FC5\u987B\u662F\u6709\u9650\u6570\u4E14 \u2265 0\uFF0C0 \u8868\u793A\u6C38\u4E0D\u56DE\u6536",
+              "en": "Reclamation window counted from the last activity; must be finite and \u2265 0, where 0 means never"
+            }
+          },
+          {
             "name": "input.detail",
             "type": "TaskNotificationDetail",
             "def": "\u2014",
@@ -74841,7 +74873,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.31"}`],
             [t3("buildDemo"), `v${"0.35.31"}`],
-            [t3("buildStamp"), "261115-155943-742"]
+            [t3("buildStamp"), "261115-164600-561"]
           ].map(
             ([label, value]) => (0, import_react107.createElement)(
               "tr",
@@ -75161,7 +75193,7 @@ function DemoPage() {
           },
           (0, import_react109.createElement)("span", null, `core v${"0.35.31"}`),
           (0, import_react109.createElement)("span", null, `demo v${"0.35.31"}`),
-          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-155943-742")
+          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-164600-561")
         )
       )
     ),

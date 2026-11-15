@@ -52,6 +52,8 @@
 | `input.project` | `string` | 二者必有一个 | 全局默认项目 | 一级分组；不传则取 setDefaultTaskProject 的值，两者都没有就抛错 | First-level project; falls back to setDefaultTaskProject, and throws when neither exists |
 | `input.group` | `string` | — | 'default' | 二级分组：项目内的分类；不能是空字符串 | Second-level bucket inside the project; must not be empty |
 | `input.title` | `string` | 必填 | — | 条目标题 | Row title |
+| `input.hidden` | `boolean` | — | false | 不进默认列表；开了之后默认 5 分钟兜底。可在 `update` 里切换（传 false 能取消） | Kept out of the default list; hidden rows default to a 5-minute TTL. Switchable through `update` (false un-hides) |
+| `input.timeoutMs` | `number` | — | hidden ? 5 分钟 : 0 | 回收窗口，从最后一次活动起算；必须是有限数且 ≥ 0，0 表示永不回收 | Reclamation window counted from the last activity; must be finite and ≥ 0, where 0 means never |
 | `input.detail` | `TaskNotificationDetail` | — | — | 任意 JSON 值（对象 / 数组 / 数字 / 布尔 / null）；入池前克隆私有副本，函数与类实例当场抛错 | Any JSON value (object / array / number / boolean / null); cloned into a private copy on the way in, while functions and class instances throw immediately |
 | `input.actions` | `readonly TaskNotificationAction[]` | — | — | 按钮：`{ label, run }` 数组，run 是匿名函数、不进池不过线，只在创建页执行；label 为空或 run 不是函数时注册当场抛错 | Actions: an array of `{ label, run }`; run is an anonymous function that never enters the pool or the wire and runs only on the creating page. An empty label or a non-function run throws at registration |
 | `record.actions` | `readonly { label: string }[] \| undefined` | — | undefined | 跨页可见的只有按钮文案，下标即动作 id；没有按钮的记录不带这个字段 | Only labels cross pages, and the index is the action id; rows without actions carry no such field |

@@ -4785,6 +4785,24 @@ export const docData = {
             }
           },
           {
+            "name": "input.hidden",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "不进默认列表；开了之后默认 5 分钟兜底。可在 `update` 里切换（传 false 能取消）",
+              "en": "Kept out of the default list; hidden rows default to a 5-minute TTL. Switchable through `update` (false un-hides)"
+            }
+          },
+          {
+            "name": "input.timeoutMs",
+            "type": "number",
+            "def": "hidden ? 5 分钟 : 0",
+            "desc": {
+              "zh": "回收窗口，从最后一次活动起算；必须是有限数且 ≥ 0，0 表示永不回收",
+              "en": "Reclamation window counted from the last activity; must be finite and ≥ 0, where 0 means never"
+            }
+          },
+          {
             "name": "input.detail",
             "type": "TaskNotificationDetail",
             "def": "—",

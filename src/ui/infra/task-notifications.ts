@@ -323,6 +323,16 @@ export function getDefaultTaskProject(): string | undefined {
   return projectSlot()?.value
 }
 
+/** 字符串字段：要么不传，要么是字符串。写入侧与收线侧用同一套，坏值在本页就抛。 */
+function assertOptionalText(source: object, keys: readonly string[]): void {
+  const fields = source as Record<string, unknown>
+  for (const key of keys) {
+    if (fields[key] !== undefined && typeof fields[key] !== 'string') {
+      throw new Error(`task notification ${key} must be a string`)
+    }
+  }
+}
+
 /** 校验按钮并只抽出能跨页的部分（文案）；方法本体由调用方保管。 */
 function normalizeActions(actions?: readonly TaskNotificationAction[]): readonly TaskNotificationActionInfo[] {
   if (actions === undefined) return []
@@ -717,6 +727,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
   /** Remotes currently being probed, so overlapping triggers do not stack up. */
   const probing = new Set<string>()
   let locksHeld = false
+  /** 存活锁的申请代次：只认最新一代的失败，避免旧 rejection 把新标记复位。 */
+  let lockAttempt = 0
 
   const store = createStore<TaskNotificationSnapshot>(() => EMPTY_SNAPSHOT)
   const shards = new Map<string, Shard>()
@@ -915,11 +927,20 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     // offline 池从不广播分片，没人会探测它，申请锁只是给别人的 mock 添噪音。
     if (offline || locksHeld || locks === null) return
     locksHeld = true
-    // 被拒绝时既不能漏成 unhandled，也不能假装拿到了锁：复位标记，下一次 connect / refresh 重试。
-    void Promise.resolve(locks.hold(lockNameFor(origin))).catch((error: unknown) => {
+    lockAttempt += 1
+    const attempt = lockAttempt
+    // 只有「最新一次申请」的失败才复位：bfcache 恢复后旧申请迟到的 rejection 不能把新标记打掉。
+    const failed = (error: unknown): void => {
+      if (attempt !== lockAttempt) return
       locksHeld = false
       console.warn('[dsh-plugin-core] 存活锁申请失败，其它页面可能把本页判为已离开', error)
-    })
+    }
+    // 被拒绝既不能漏成 unhandled，也不能假装拿到了锁；同步抛错（mock / 垫片）同理。
+    try {
+      void Promise.resolve(locks.hold(lockNameFor(origin))).catch(failed)
+    } catch (error) {
+      failed(error)
+    }
   }
 
   /** A page vanished without `bye`: drop its shard and say so. */
@@ -1087,12 +1108,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     }
     // 写入侧自己也验：一条非法记录会让整页分片在对端被整片丢弃，不能只靠收线侧兜。
     if (typeof input.title !== 'string') throw new Error('task notification title must be a string')
-    for (const key of ['projectLabel', 'groupLabel', 'icon', 'iconSvg'] as const) {
-      const field = input[key]
-      if (field !== undefined && typeof field !== 'string') {
-        throw new Error(`task notification ${key} must be a string`)
-      }
-    }
+    assertOptionalText(input, ['projectLabel', 'groupLabel', 'icon', 'iconSvg'])
     connect()
     const now = Date.now()
     const id = `${origin}:${String(++idSeq)}`
@@ -1144,7 +1160,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
         (current) => current.filter((task) => task.id !== id),
         { type: 'settled', task: final, outcome },
       )
-      resolveSettled({ outcome, reason, task: final })
+      resolveSettled({ outcome, reason: reasonText, task: final })
     }
 
     const handle: TaskNotificationHandle = {
@@ -1157,6 +1173,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
         if (patch.group !== undefined && patch.group.trim() === '') {
           throw new Error('task notification group must be a non-empty string')
         }
+        // 与 register 同一套：坏值在本页抛，别让它造出一条过不了收线校验的记录（那会让整页分片在对端被丢）。
+        assertOptionalText(patch, ['title', 'groupLabel', 'icon', 'iconSvg'])
         const current = find(id)
         if (current === undefined) return
         const next: TaskNotificationRecord = {
