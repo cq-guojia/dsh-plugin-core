@@ -227,8 +227,12 @@ export interface TaskNotificationEventBus {
  * "is that page still there?" without timers, heartbeats or replies.
  */
 export interface TaskNotificationLockManager {
-  /** Hold a lock until the page goes away. Idempotent per name. */
-  hold(name: string): void
+  /**
+   * Hold a lock until the page goes away. Idempotent per name.
+   * 浏览器拒绝申请时（不透明 origin、存储分区、策略禁用）可以返回被拒的 promise；
+   * 池会捕获它并在下一次 connect / refresh 重试，不会漏成 unhandled rejection。
+   */
+  hold(name: string): void | Promise<void>
   /** true = no context holds that name right now, i.e. that page is gone. */
   free(name: string): Promise<boolean>
 }
@@ -528,18 +532,35 @@ function isActionInfos(value: unknown): value is readonly TaskNotificationAction
   )
 }
 
+function isOptionalString(value: unknown): boolean {
+  return value === undefined || typeof value === 'string'
+}
+
 function isTaskRecord(value: unknown): value is TaskNotificationRecord {
   if (!isRecord(value)) return false
   if (value.detail !== undefined && !isDetail(value.detail)) return false
   if (value.actions !== undefined && !isActionInfos(value.actions)) return false
+  // 可选字段也要看类型：畸形分片不能借着「没校验」把负数窗口、NaN 时间塞进池。
+  if (!isOptionalString(value.projectLabel)) return false
+  if (!isOptionalString(value.groupLabel)) return false
+  if (!isOptionalString(value.icon)) return false
+  if (!isOptionalString(value.iconSvg)) return false
+  if (!isOptionalString(value.reason)) return false
+  if (value.hidden !== undefined && typeof value.hidden !== 'boolean') return false
+  if (
+    value.timeoutMs !== undefined &&
+    (typeof value.timeoutMs !== 'number' || !Number.isFinite(value.timeoutMs) || value.timeoutMs < 0)
+  ) {
+    return false
+  }
   return (
     typeof value.id === 'string' &&
     typeof value.project === 'string' &&
     typeof value.group === 'string' &&
     typeof value.title === 'string' &&
     (value.status === 'running' || value.status === 'done' || value.status === 'failed') &&
-    typeof value.startedAt === 'number' &&
-    typeof value.updatedAt === 'number' &&
+    Number.isFinite(value.startedAt) &&
+    Number.isFinite(value.updatedAt) &&
     typeof value.origin === 'string' &&
     typeof value.backgrounded === 'boolean'
   )
@@ -662,9 +683,9 @@ function browserLocks(): TaskNotificationLockManager | null {
   const locks = typeof navigator === 'undefined' ? undefined : navigator.locks
   if (locks === undefined || locks === null || typeof locks.request !== 'function') return null
   return {
-    hold(name: string): void {
-      // Never resolves: the lock lives as long as this page does.
-      void locks.request(name, () => new Promise<void>(() => {}))
+    hold(name: string): Promise<void> {
+      // Never resolves while the page lives; rejects if the browser refuses the request.
+      return locks.request(name, () => new Promise<void>(() => {})).then(() => undefined)
     },
     free(name: string): Promise<boolean> {
       // ifAvailable: no queueing. Getting the lock here means nobody held it,
@@ -799,8 +820,10 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     if (project === null) throw new Error('task notification project cannot be null when broadcasting')
     const group = normalizeGroup(input.group)
     const detail = cloneDetail(input.detail)
+    messageSeq += 1
+    const messageSeqForThis = messageSeq
     const message: TaskNotificationMessage = {
-      id: `${origin}:msg:${String(++messageSeq)}`,
+      id: `${origin}:msg:${String(messageSeqForThis)}`,
       project,
       group,
       title: input.title,
@@ -812,7 +835,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     }
     bus().emit({ type: 'message', message, remote: false })
     connect()
-    post({ kind: 'message', origin, seq: ++messageSeq, message })
+    post({ kind: 'message', origin, seq: messageSeqForThis, message })
     return message
   }
 
@@ -887,11 +910,16 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     return tasks.map((task) => (task.id === record.id ? record : task))
   }
 
-  /** Claim the page-level liveness lock. Called on connect, idempotent. */
+  /** Claim the page-level liveness lock. Called on connect / refresh, idempotent. */
   function holdLiveness(): void {
-    if (locksHeld || locks === null) return
+    // offline 池从不广播分片，没人会探测它，申请锁只是给别人的 mock 添噪音。
+    if (offline || locksHeld || locks === null) return
     locksHeld = true
-    locks.hold(lockNameFor(origin))
+    // 被拒绝时既不能漏成 unhandled，也不能假装拿到了锁：复位标记，下一次 connect / refresh 重试。
+    void Promise.resolve(locks.hold(lockNameFor(origin))).catch((error: unknown) => {
+      locksHeld = false
+      console.warn('[dsh-plugin-core] 存活锁申请失败，其它页面可能把本页判为已离开', error)
+    })
   }
 
   /** A page vanished without `bye`: drop its shard and say so. */
@@ -979,7 +1007,13 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     post({ kind: 'bye', origin, seq })
   }
 
-  function onPageShow(): void {
+  function onPageShow(event: PageTransitionEvent): void {
+    // bfcache 恢复：文档没有卸载，UA 却已按规范释放了本页的锁。不重新申请，
+    // 对端两次探测都会拿到锁，把本页刚重发的分片再删掉，两个标签来回抖。
+    if (event.persisted) {
+      locksHeld = false
+      holdLiveness()
+    }
     connect()
     // bfcache / 休眠恢复：pagehide 已让对端删掉本页分片。seq 必须前进后重发，
     // 否则对端会拿「已知 seq」把这份全量分片当旧消息丢掉，本页任务永久消失。
@@ -1033,6 +1067,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
   }
 
   function refresh(): void {
+    // 顺便重试存活锁：上次被浏览器拒绝时，这里补一次。
+    holdLiveness()
     post({ kind: 'hello', origin })
   }
 
@@ -1046,7 +1082,17 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     const runs = input.actions?.map((action) => action.run) ?? []
     const hidden = input.hidden === true
     const timeoutMs = input.timeoutMs ?? (hidden ? TASK_NOTIFICATIONS_HIDDEN_TTL_MS : 0)
-    if (timeoutMs < 0) throw new Error('task notification timeoutMs must be >= 0')
+    if (!Number.isFinite(timeoutMs) || timeoutMs < 0) {
+      throw new Error('task notification timeoutMs must be a finite number >= 0')
+    }
+    // 写入侧自己也验：一条非法记录会让整页分片在对端被整片丢弃，不能只靠收线侧兜。
+    if (typeof input.title !== 'string') throw new Error('task notification title must be a string')
+    for (const key of ['projectLabel', 'groupLabel', 'icon', 'iconSvg'] as const) {
+      const field = input[key]
+      if (field !== undefined && typeof field !== 'string') {
+        throw new Error(`task notification ${key} must be a string`)
+      }
+    }
     connect()
     const now = Date.now()
     const id = `${origin}:${String(++idSeq)}`
@@ -1086,10 +1132,12 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       isSettled = true
       finishers.delete(id)
       runs.forEach((_, index) => { runners.delete(runnerKey(id, index)) })
+      // reason 一律转成字符串：JS 调用方传数字 / Error 时，字段类型坏了会让整页分片在对端被丢。
+      const reasonText = reason === undefined ? undefined : String(reason)
       const final: TaskNotificationRecord = {
         ...current,
         status: outcome === 'done' ? 'done' : 'failed',
-        reason,
+        ...(reasonText === undefined ? {} : { reason: reasonText }),
         updatedAt: Date.now(),
       }
       publish(
@@ -1119,7 +1167,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
           ...(patch.groupLabel === undefined ? {} : { groupLabel: patch.groupLabel }),
           ...(patch.icon === undefined ? {} : { icon: patch.icon }),
           ...(patch.iconSvg === undefined ? {} : { iconSvg: patch.iconSvg }),
-          ...(patch.hidden === undefined ? {} : patch.hidden ? { hidden: true } : {}),
+          // false 也要显式写：否则 `...current` 里的旧 true 会盖住它，收起再也取消不掉。
+          ...(patch.hidden === undefined ? {} : { hidden: patch.hidden }),
           // updatedAt 前移即「续期」：回收窗口从最后一次活动起算。
           updatedAt: Date.now(),
         }

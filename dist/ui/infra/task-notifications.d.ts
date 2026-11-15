@@ -196,8 +196,12 @@ export interface TaskNotificationEventBus {
  * "is that page still there?" without timers, heartbeats or replies.
  */
 export interface TaskNotificationLockManager {
-    /** Hold a lock until the page goes away. Idempotent per name. */
-    hold(name: string): void;
+    /**
+     * Hold a lock until the page goes away. Idempotent per name.
+     * 浏览器拒绝申请时（不透明 origin、存储分区、策略禁用）可以返回被拒的 promise；
+     * 池会捕获它并在下一次 connect / refresh 重试，不会漏成 unhandled rejection。
+     */
+    hold(name: string): void | Promise<void>;
     /** true = no context holds that name right now, i.e. that page is gone. */
     free(name: string): Promise<boolean>;
 }

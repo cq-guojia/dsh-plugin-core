@@ -130,9 +130,13 @@ Chrome 扩展通知的点击回调只有 `(notificationId, buttonIndex)`；Comli
 判活用浏览器原生 **Web Locks**，不用心跳：
 
 - 每页 `connect()` 时持一把以 origin 命名的锁（`TASK_NOTIFICATIONS_LOCK_PREFIX + origin`），永不主动释放。
+  申请可能被浏览器拒绝（不透明 origin、存储分区、策略禁用），也可能在 bfcache 恢复时已被 UA 释放：
+  这两种情况都要**重新申请**（`refresh()` 与 `pageshow(persisted)` 会补），被拒时只告警、不假装拿到了。
 - 其他页对已知远端 origin 用 `{ ifAvailable: true }` 探测同名锁：**立刻拿得到 = 没有持有者 = 那页已经不在了**；回调返回即释放，探测本身不留痕迹。
 - 探测时机只有真实事件：**收到分片**、**页面重新可见**。没有定时器，空闲或后台标签零开销。
 - 防误判：连续两次探测（间隔 250ms）都拿得到才清，刚启动、还没拿锁的页不会被误删。
+- 已知边界：某页始终拿不到锁（被拒且一直没重试成功）时，对端两探后仍会清掉它的分片。这不叫误判，
+  是该页自己没证明活着；它下次 `publish` 会带新 `seq` 把分片补回去。
 - 清理动作与 `bye` 完全同路径：删该 origin 分片 → `revision` 递增 → 发 `peer-left` 事件。
 - `navigator.locks` 不存在（老浏览器）→ 不做清理，其余行为不变；`createTaskNotificationPool({ locks: null })` 可显式关闭。
 
@@ -154,7 +158,8 @@ Chrome 扩展通知的点击回调只有 `(notificationId, buttonIndex)`；Comli
 - `pagehide` 广播 `bye`，对端移除该分片；`pageshow` / 标签页重新可见时递增 `seq` 重发全量分片
   并再要一次 baseline，覆盖 bfcache 与后台休眠。迟到 `bye` 的 `seq` 小于已知值时忽略，
   不会误删已恢复的分片。
-- 消息先过形状校验，畸形 / 外来消息直接丢，不进池。
+- 消息先过形状校验，畸形 / 外来消息直接丢，不进池。分片是整片校验的：**一条坏记录会带走同一片里的其他记录**，
+  所以写入侧（`register` 的 `timeoutMs` / 字符串字段、`fail` 的 `reason`）按同一套规则先验，坏值在本页就抛。
 - 通知随分片一起广播，对端合并状态后按 `remote: true` 转发到本页事件总线；本地是 `false`。
 - `invoke` / `invoked` 是跨页按钮调用：`invoke` 只带 `taskId`、下标与 `reqId`，按 `target` 点名
   创建页执行；创建页执行完回 `invoked`，发起页按 `reqId` 配对。两者都不带状态、不参与分片 `seq`
@@ -200,6 +205,7 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 
 ## 更新日志
 
+- 2026-11-15：收拾几处既有缺陷——存活锁被拒不再漏成 unhandled（复位并在 `refresh` / bfcache 恢复时重试，`offline` 池不申请）、记录可选字段与写入侧入参同套校验（`timeoutMs` 有限非负、`reason` 转字符串）、`update({ hidden: false })` 能取消隐藏、广播序号只自增一次、跨页陈旧判据只放行「同 seq 重发」
 - 2026-11-15：新增按钮动作 `actions: [{ label, run }]` 与 `runAction(taskId, index): Promise<boolean>`——方法只留在创建页内存（`runners`，与 `finishers` 同生命周期），记录里只存 `label`；跨页点击发 `invoke` 回创建页、等 `invoked` ack（2s 超时按失败）。`requestRestore` 保留为本页旧通道
 - 2026-11-12：新增纯广播 `notifyMessage()`（只发 `message` 事件，不进池、不动快照，因此不闪）；任务与消息都支持 `icon` / `iconSvg`
 - 2026-11-12：两级分组（`project` + 二级 `group`）与协议 2；`setDefaultTaskProject()` 一次定型；`notifyTask` 改为 `(title, options?)`；`selectTaskNotifications` 改为三档 + `'*'` 全站；`detail` 放宽为任意 JSON 值（入池前克隆私有副本）

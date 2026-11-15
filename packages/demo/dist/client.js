@@ -1787,6 +1787,9 @@ function cloneDetail(value) {
 function isActionInfos(value) {
   return Array.isArray(value) && value.every((item) => isRecord(item) && Object.keys(item).length === 1 && typeof item.label === "string" && item.label.trim() !== "");
 }
+function isOptionalString(value) {
+  return value === void 0 || typeof value === "string";
+}
 function isTaskRecord(value) {
   if (!isRecord(value))
     return false;
@@ -1794,7 +1797,22 @@ function isTaskRecord(value) {
     return false;
   if (value.actions !== void 0 && !isActionInfos(value.actions))
     return false;
-  return typeof value.id === "string" && typeof value.project === "string" && typeof value.group === "string" && typeof value.title === "string" && (value.status === "running" || value.status === "done" || value.status === "failed") && typeof value.startedAt === "number" && typeof value.updatedAt === "number" && typeof value.origin === "string" && typeof value.backgrounded === "boolean";
+  if (!isOptionalString(value.projectLabel))
+    return false;
+  if (!isOptionalString(value.groupLabel))
+    return false;
+  if (!isOptionalString(value.icon))
+    return false;
+  if (!isOptionalString(value.iconSvg))
+    return false;
+  if (!isOptionalString(value.reason))
+    return false;
+  if (value.hidden !== void 0 && typeof value.hidden !== "boolean")
+    return false;
+  if (value.timeoutMs !== void 0 && (typeof value.timeoutMs !== "number" || !Number.isFinite(value.timeoutMs) || value.timeoutMs < 0)) {
+    return false;
+  }
+  return typeof value.id === "string" && typeof value.project === "string" && typeof value.group === "string" && typeof value.title === "string" && (value.status === "running" || value.status === "done" || value.status === "failed") && Number.isFinite(value.startedAt) && Number.isFinite(value.updatedAt) && typeof value.origin === "string" && typeof value.backgrounded === "boolean";
 }
 function isNotice(value) {
   if (!isRecord(value) || !isTaskRecord(value.task))
@@ -1897,8 +1915,8 @@ function browserLocks() {
     return null;
   return {
     hold(name2) {
-      void locks.request(name2, () => new Promise(() => {
-      }));
+      return locks.request(name2, () => new Promise(() => {
+      })).then(() => void 0);
     },
     free(name2) {
       return locks.request(name2, { ifAvailable: true }, (lock) => lock === null).then((occupied) => occupied === false).catch(() => false);
@@ -1996,8 +2014,10 @@ function createTaskNotificationPool(options = {}) {
       throw new Error("task notification project cannot be null when broadcasting");
     const group = normalizeGroup(input.group);
     const detail = cloneDetail(input.detail);
+    messageSeq += 1;
+    const messageSeqForThis = messageSeq;
     const message = {
-      id: `${origin}:msg:${String(++messageSeq)}`,
+      id: `${origin}:msg:${String(messageSeqForThis)}`,
       project,
       group,
       title: input.title,
@@ -2009,7 +2029,7 @@ function createTaskNotificationPool(options = {}) {
     };
     bus().emit({ type: "message", message, remote: false });
     connect();
-    post({ kind: "message", origin, seq: ++messageSeq, message });
+    post({ kind: "message", origin, seq: messageSeqForThis, message });
     return message;
   }
   function find2(id3) {
@@ -2078,10 +2098,13 @@ function createTaskNotificationPool(options = {}) {
     return tasks2.map((task) => task.id === record.id ? record : task);
   }
   function holdLiveness() {
-    if (locksHeld || locks === null)
+    if (offline || locksHeld || locks === null)
       return;
     locksHeld = true;
-    locks.hold(lockNameFor(origin));
+    void Promise.resolve(locks.hold(lockNameFor(origin))).catch((error) => {
+      locksHeld = false;
+      console.warn("[dsh-plugin-core] \u5B58\u6D3B\u9501\u7533\u8BF7\u5931\u8D25\uFF0C\u5176\u5B83\u9875\u9762\u53EF\u80FD\u628A\u672C\u9875\u5224\u4E3A\u5DF2\u79BB\u5F00", error);
+    });
   }
   function dropRemoteShard(pageOrigin) {
     if (!shards.delete(pageOrigin))
@@ -2160,7 +2183,11 @@ function createTaskNotificationPool(options = {}) {
   function onPageHide() {
     post({ kind: "bye", origin, seq });
   }
-  function onPageShow() {
+  function onPageShow(event) {
+    if (event.persisted) {
+      locksHeld = false;
+      holdLiveness();
+    }
     connect();
     seq += 1;
     knownSeq.set(origin, seq);
@@ -2209,6 +2236,7 @@ function createTaskNotificationPool(options = {}) {
     }
   }
   function refresh() {
+    holdLiveness();
     post({ kind: "hello", origin });
   }
   function register(input) {
@@ -2221,8 +2249,17 @@ function createTaskNotificationPool(options = {}) {
     const runs = input.actions?.map((action) => action.run) ?? [];
     const hidden = input.hidden === true;
     const timeoutMs = input.timeoutMs ?? (hidden ? TASK_NOTIFICATIONS_HIDDEN_TTL_MS : 0);
-    if (timeoutMs < 0)
-      throw new Error("task notification timeoutMs must be >= 0");
+    if (!Number.isFinite(timeoutMs) || timeoutMs < 0) {
+      throw new Error("task notification timeoutMs must be a finite number >= 0");
+    }
+    if (typeof input.title !== "string")
+      throw new Error("task notification title must be a string");
+    for (const key of ["projectLabel", "groupLabel", "icon", "iconSvg"]) {
+      const field = input[key];
+      if (field !== void 0 && typeof field !== "string") {
+        throw new Error(`task notification ${key} must be a string`);
+      }
+    }
     connect();
     const now = Date.now();
     const id3 = `${origin}:${String(++idSeq2)}`;
@@ -2267,10 +2304,11 @@ function createTaskNotificationPool(options = {}) {
       runs.forEach((_, index3) => {
         runners.delete(runnerKey(id3, index3));
       });
+      const reasonText = reason === void 0 ? void 0 : String(reason);
       const final = {
         ...current3,
         status: outcome === "done" ? "done" : "failed",
-        reason,
+        ...reasonText === void 0 ? {} : { reason: reasonText },
         updatedAt: Date.now()
       };
       publish((current4) => current4.filter((task) => task.id !== id3), { type: "settled", task: final, outcome });
@@ -2300,7 +2338,8 @@ function createTaskNotificationPool(options = {}) {
           ...patch.groupLabel === void 0 ? {} : { groupLabel: patch.groupLabel },
           ...patch.icon === void 0 ? {} : { icon: patch.icon },
           ...patch.iconSvg === void 0 ? {} : { iconSvg: patch.iconSvg },
-          ...patch.hidden === void 0 ? {} : patch.hidden ? { hidden: true } : {},
+          // false 也要显式写：否则 `...current` 里的旧 true 会盖住它，收起再也取消不掉。
+          ...patch.hidden === void 0 ? {} : { hidden: patch.hidden },
           // updatedAt 前移即「续期」：回收窗口从最后一次活动起算。
           updatedAt: Date.now()
         };
@@ -74802,7 +74841,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.35.31"}`],
             [t3("buildDemo"), `v${"0.35.31"}`],
-            [t3("buildStamp"), "261115-153714-804"]
+            [t3("buildStamp"), "261115-155943-742"]
           ].map(
             ([label, value]) => (0, import_react107.createElement)(
               "tr",
@@ -75122,7 +75161,7 @@ function DemoPage() {
           },
           (0, import_react109.createElement)("span", null, `core v${"0.35.31"}`),
           (0, import_react109.createElement)("span", null, `demo v${"0.35.31"}`),
-          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-153714-804")
+          (0, import_react109.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-155943-742")
         )
       )
     ),

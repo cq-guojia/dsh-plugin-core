@@ -953,6 +953,31 @@ test('回收窗口按最后一次活动起算：持续 update 的任务不会被
   assert.equal(localTask(pool, handle), undefined, '停止活动后到点被收')
 })
 
+test('update({ hidden: false }) 能把收起取消掉', () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const handle = pool.register({ group: 'g', title: 'hide then show', hidden: true })
+  assert.equal(selectTaskNotifications(pool.getSnapshot()).length, 0, '先隐藏')
+  handle.update({ hidden: false })
+  assert.equal(selectTaskNotifications(pool.getSnapshot()).length, 1, '取消隐藏后回到默认视图')
+  handle.done()
+})
+
+test('register 拒绝会污染分片的入参：Infinity 窗口、非字符串标题 / 显示名', () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  assert.throws(() => pool.register({ group: 'g', title: 'bad ttl', timeoutMs: Number.POSITIVE_INFINITY }), /timeoutMs/)
+  assert.throws(() => pool.register({ group: 'g', title: 42 }), /title/)
+  assert.throws(() => pool.register({ group: 'g', title: 'bad label type', projectLabel: 5 }), /projectLabel/)
+  assert.equal(pool.getSnapshot().tasks.length, 0)
+})
+
+test('fail 传非字符串也落成字符串', async () => {
+  const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
+  const handle = pool.register({ group: 'g', title: 'coerce' })
+  handle.fail(404)
+  const settlement = await handle.settled
+  assert.equal(settlement.task.reason, '404')
+})
+
 test('可见任务默认不回收：没有 timeoutMs 就一直挂着', async () => {
   const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
   const handle = pool.register({ group: 'g', title: 'visible stays' })
@@ -1218,6 +1243,73 @@ test('跨页畸形 actions 整条丢弃：空文案 / 不是数组', async () =>
     assert.equal(pool.getSnapshot().tasks.length, 0, '坏 actions 不进池')
   } finally {
     sender.close()
+    pool.dispose()
+  }
+})
+
+test('跨页畸形记录：可选字段类型不对也整条丢弃', async () => {
+  const channelName = testChannel()
+  const pool = makePool(channelName, { origin: 'page-watcher' })
+  const sender = new BroadcastChannel(channelName)
+  sender.unref?.()
+  try {
+    pool.connect()
+    sender.postMessage({
+      kind: 'shard',
+      origin: 'page-x',
+      seq: 1,
+      tasks: [{ ...wireTask('page-x', 'x1'), timeoutMs: -1 }],
+    })
+    sender.postMessage({
+      kind: 'shard',
+      origin: 'page-x',
+      seq: 2,
+      tasks: [{ ...wireTask('page-x', 'x1'), startedAt: Number.NaN }],
+    })
+    sender.postMessage({
+      kind: 'shard',
+      origin: 'page-x',
+      seq: 3,
+      tasks: [{ ...wireTask('page-x', 'x1'), hidden: 'yes' }],
+    })
+    await new Promise((resolve) => setTimeout(resolve, 80))
+    assert.equal(pool.getSnapshot().tasks.length, 0, '类型不对的记录不进池')
+  } finally {
+    sender.close()
+    pool.dispose()
+  }
+})
+
+test('存活锁被浏览器拒绝：不漏 unhandled，refresh 会重试', async () => {
+  const channelName = testChannel()
+  let attempts = 0
+  const manager = {
+    hold: () => {
+      attempts += 1
+      return Promise.reject(new Error('denied by policy'))
+    },
+    free: async () => true,
+  }
+  const warnings = []
+  const originalWarn = console.warn
+  console.warn = (first) => warnings.push(String(first))
+  const pool = createTaskNotificationPool({
+    events: createTaskNotificationEventBus(),
+    lifecycle: false,
+    channelName,
+    origin: 'page-denied',
+    locks: manager,
+  })
+  try {
+    pool.connect()
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    assert.equal(attempts, 1, 'connect 申请一次')
+    assert.ok(warnings.some((line) => line.includes('存活锁')), '被拒绝要有告警，不能静默')
+    pool.refresh()
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    assert.equal(attempts, 2, 'refresh 重试')
+  } finally {
+    console.warn = originalWarn
     pool.dispose()
   }
 })
