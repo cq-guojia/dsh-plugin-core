@@ -598,6 +598,7 @@ export type UtilMessageKey =
   | 'taskbarCount'
   | 'taskbarEmpty'
   | 'taskbarElapsed'
+  | 'taskbarActionFailed'
 
 /** 文案函数：`vars` 用于填 `{n}` 这类占位。 */
 export type Translate = (key: UtilMessageKey, vars?: Record<string, number | string>) => string
@@ -1187,6 +1188,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     taskbarCount: '{n} 个运行中',
     taskbarEmpty: '暂无后台任务',
     taskbarElapsed: '已执行 {time}',
+    taskbarActionFailed: '这条任务的操作已失效，可能是发起它的页面已刷新或关闭',
   },
   en: {
     sessionLoading: 'Loading session…',
@@ -1769,6 +1771,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     taskbarCount: '{n} running',
     taskbarEmpty: 'No background tasks',
     taskbarElapsed: 'Running {time}',
+    taskbarActionFailed: 'That action is no longer available — the page that started the task was refreshed or closed',
   },
 }
 

@@ -92,6 +92,10 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
 - `false` 只说明**这一次没触发成功**：任务不存在、下标越界、方法已被清掉（页面重挂、句柄丢了、创建页已 dispose）、
   方法抛错，或跨页没人回 ack。它不等于「这条不可操作」——别的按钮、结束路径可能都还好；
   要判断有没有按钮看 `record.actions`，不要看 `canRestore`（那是旧 restored 通道的判据）。
+- 界面上「点了没反应」不再允许：`TaskBar` 拿到 `false` 就调 `onActionFailure`，没给回调时弹一次核心自带提示
+  （`taskbarActionFailed`）。只提示不重试 —— 上面几种原因核心都自愈不了，重试只是再等 2s。
+- **回收是独立开关**：`timeoutMs` 缺省 **0 = 不回收**，与 `hidden` 无关（2026-11-15 反转：hidden 缺省 5 分钟会让还在跑的作业先被判失败）。
+  代价是「不回收的行会留到页面重载」，所以作业型登记方必须在 `finally` 里 `done` / `fail`，否则同一个键下次 `ensure` 会被当成还在跑。
 
 先例：VS Code `registerCommand(id, 匿名回调)` 与 `showInformationMessage(msg, ...items)`（方法留在扩展进程，UI 只回选中的字符串）；
 Chrome 扩展通知的点击回调只有 `(notificationId, buttonIndex)`；Comlink `expose` 用闭包持有真实对象、消息只带 `path`。
@@ -234,6 +238,7 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 ## 更新日志
 
 - 2026-11-15：新增业务键幂等登记 —— `key`（字符串 / 元组）、`record.key`、`taskKey()`、`notifyTask.ensure()` / `pool.ensure()`（返回 `{ handle, created }`）、跨页 `TaskNotificationConflictError`；同页同键就地更新并复用同一句柄，键随记录离池释放；`notifyTask.run` 撞键 reject 且不跑 `work`
+- 2026-11-15：后台作业三处收口 —— `Button` 补回 `background` 底色轴（与 `color` 正交）、`hidden` 与回收解耦（`timeoutMs` 缺省 0，删 `TASK_NOTIFICATIONS_HIDDEN_TTL_MS`）、`TaskBar` 动作失败不再静默（`onActionFailure` + 自带提示 `taskbarActionFailed`）
 - 2026-11-15：收拾几处既有缺陷——存活锁被拒不再漏成 unhandled（复位并在 `refresh` / bfcache 恢复时重试，`offline` 池不申请）、记录可选字段与写入侧入参同套校验（`timeoutMs` 有限非负、`reason` 转字符串）、`update({ hidden: false })` 能取消隐藏、广播序号只自增一次、跨页陈旧判据只放行「同 seq 重发」
 - 2026-11-15：新增按钮动作 `actions: [{ label, run }]` 与 `runAction(taskId, index): Promise<boolean>`——方法只留在创建页内存（`runners`，与 `finishers` 同生命周期），记录里只存 `label`；跨页点击发 `invoke` 回创建页、等 `invoked` ack（2s 超时按失败）。`requestRestore` 保留为本页旧通道
 - 2026-11-12：新增纯广播 `notifyMessage()`（只发 `message` 事件，不进池、不动快照，因此不闪）；任务与消息都支持 `icon` / `iconSvg`

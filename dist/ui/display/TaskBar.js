@@ -8,6 +8,7 @@ import { PanelSurface } from '../infra/panel.js';
 import { ensureComponentStyles } from '../infra/css.js';
 import { useLocale } from '../infra/locale.js';
 import { useNowMs } from '../infra/ticker.js';
+import { notify } from '../feedback/notify.js';
 import { t } from '../../utils/i18n.js';
 import { formatDurationHms } from '../../utils/date.js';
 import { selectTaskNotifications, taskNotifications, } from '../infra/task-notifications.js';
@@ -62,7 +63,7 @@ export function TaskBar(props) {
     ensureComponentStyles('task-bar', TASK_BAR_CSS);
     // 切语言要重渲，否则计数与空态文字停在旧语种。
     useLocale();
-    const { form = 'pill', size = 'md', groups, project, includeHidden, placement = 'down', defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className, style, } = props;
+    const { form = 'pill', size = 'md', groups, project, includeHidden, onActionFailure, placement = 'down', defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className, style, } = props;
     // 行内动作按钮一律最小号：面板里的动作是次要操作，不跟着触发器尺寸变（2026-11-15 用户）。
     const actionSize = 'sm';
     // 宽度三轴与 Button 同口径：固定宽优先，min / max 只在 width 未设时生效。
@@ -166,7 +167,17 @@ export function TaskBar(props) {
                     ...(action.color === undefined ? {} : { color: action.color }),
                     icon: h(FontIcon, { name: glyph }),
                     ...(label === undefined ? { label: glyph } : {}),
-                    onClick: () => { void taskNotifications.runAction(task.id, index); },
+                    onClick: () => {
+                        void taskNotifications.runAction(task.id, index).then((ok) => {
+                            if (ok)
+                                return;
+                            // 没生效一律要吭声：有回调交回调，否则核心给一次提示。
+                            if (onActionFailure !== undefined)
+                                onActionFailure({ task, index, ...(label === undefined ? {} : { label }) });
+                            else
+                                notify(t('taskbarActionFailed'));
+                        });
+                    },
                 }, label);
             })));
     }

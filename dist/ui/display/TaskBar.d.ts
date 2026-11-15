@@ -1,8 +1,19 @@
 import { type CSSProperties, type ReactNode } from 'react';
 import { type ButtonSize } from '../actions/Button.js';
-import { type TaskNotificationGroupFilter } from '../infra/task-notifications.js';
+import { type TaskNotificationGroupFilter, type TaskNotificationRecord } from '../infra/task-notifications.js';
 /** 展示形态：只图标 / 图标 + 文字长条。 */
 export type TaskBarForm = 'icon' | 'pill';
+/**
+ * 动作没执行成功时的载荷。三种来源：条目已不在 / 已过回收窗口、下标越界、
+ * 创建这条任务的页面没了（跨页 2s 等不到 ack）—— 核心都自愈不了，只能报出来。
+ */
+export interface TaskActionFailure {
+    task: TaskNotificationRecord;
+    /** 动作下标（记录里 `actions` 的第几位）。 */
+    index: number;
+    /** 动作上的文案；没配就没有。 */
+    label?: string;
+}
 export interface TaskBarProps {
     /** `icon` = 只有图标（有任务在跑时右上角带绿点）；`pill` = 图标 + 文字长条。默认 `pill`。 */
     form?: TaskBarForm;
@@ -17,6 +28,11 @@ export interface TaskBarProps {
     project?: string | null;
     /** 连 `hidden` 任务一起列（默认不列）。 */
     includeHidden?: boolean;
+    /**
+     * 行内按钮点了但没生效时调它（条目已失效 / 方法在别页且等不到 ack / 下标越界）。
+     * 不传就由本栏弹一次核心自带提示 —— 「点了没反应」不该是静默的。
+     */
+    onActionFailure?: (failure: TaskActionFailure) => void;
     /** 面板首选展开方向，默认向下；空间不够会自动翻。 */
     placement?: 'down' | 'up';
     /** 任务没带图标时用的默认图标（`库名:图标名`）。 */

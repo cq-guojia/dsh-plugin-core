@@ -980,7 +980,8 @@ var DICT = {
     taskbarLabel: "\u540E\u53F0\u4EFB\u52A1",
     taskbarCount: "{n} \u4E2A\u8FD0\u884C\u4E2D",
     taskbarEmpty: "\u6682\u65E0\u540E\u53F0\u4EFB\u52A1",
-    taskbarElapsed: "\u5DF2\u6267\u884C {time}"
+    taskbarElapsed: "\u5DF2\u6267\u884C {time}",
+    taskbarActionFailed: "\u8FD9\u6761\u4EFB\u52A1\u7684\u64CD\u4F5C\u5DF2\u5931\u6548\uFF0C\u53EF\u80FD\u662F\u53D1\u8D77\u5B83\u7684\u9875\u9762\u5DF2\u5237\u65B0\u6216\u5173\u95ED"
   },
   en: {
     sessionLoading: "Loading session\u2026",
@@ -1562,7 +1563,8 @@ var DICT = {
     taskbarLabel: "Background tasks",
     taskbarCount: "{n} running",
     taskbarEmpty: "No background tasks",
-    taskbarElapsed: "Running {time}"
+    taskbarElapsed: "Running {time}",
+    taskbarActionFailed: "That action is no longer available \u2014 the page that started the task was refreshed or closed"
   }
 };
 var override = null;
@@ -1632,7 +1634,6 @@ var TASK_NOTIFICATIONS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-no
 var TASK_NOTIFICATIONS_EVENTS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/events/v2");
 var TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v2";
 var TASK_NOTIFICATIONS_PROJECT_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/project/v2");
-var TASK_NOTIFICATIONS_HIDDEN_TTL_MS = 5 * 6e4;
 var INVOKE_TIMEOUT_MS = 2e3;
 var EMPTY_TASKS = Object.freeze([]);
 var EMPTY_SNAPSHOT = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 });
@@ -2346,7 +2347,7 @@ function createTaskNotificationPool(options = {}) {
     const actions2 = normalizeActions(input.actions);
     const runs = input.actions?.map((action) => action.run) ?? [];
     const hidden = input.hidden === true;
-    const timeoutMs = input.timeoutMs ?? (hidden ? TASK_NOTIFICATIONS_HIDDEN_TTL_MS : 0);
+    const timeoutMs = input.timeoutMs ?? 0;
     if (!Number.isFinite(timeoutMs) || timeoutMs < 0) {
       throw new Error("task notification timeoutMs must be a finite number >= 0");
     }
@@ -5999,24 +6000,27 @@ var SOLID_VARIANTS = [
   "rose",
   "slate"
 ];
-function colorVars(variant, color) {
-  if (color === void 0 || color === "")
-    return void 0;
-  if (SOLID_VARIANTS.includes(variant)) {
-    return {
-      "--btn-bg": color,
-      // 亮色主题下 --dshpc-fg 是黑 ⇒ 压深；暗色下是白 ⇒ 提亮。两边都能明确看出变化。
-      "--btn-bg-hover": `color-mix(in srgb, ${color} 82%, var(--dshpc-fg))`,
-      "--btn-bg-active": `color-mix(in srgb, ${color} 70%, var(--dshpc-fg))`
-    };
+function colorVars(variant, color, background2) {
+  const vars = {};
+  if (color !== void 0 && color !== "") {
+    if (SOLID_VARIANTS.includes(variant)) {
+      vars["--btn-bg"] = color;
+      vars["--btn-bg-hover"] = `color-mix(in srgb, ${color} 82%, var(--dshpc-fg))`;
+      vars["--btn-bg-active"] = `color-mix(in srgb, ${color} 70%, var(--dshpc-fg))`;
+    } else {
+      vars["--btn-fg"] = color;
+      vars["--btn-fg-hover"] = color;
+      vars["--btn-border"] = color;
+      vars["--btn-bg-hover"] = `color-mix(in srgb, ${color} 12%, transparent)`;
+      vars["--btn-bg-active"] = `color-mix(in srgb, ${color} 18%, transparent)`;
+    }
   }
-  return {
-    "--btn-fg": color,
-    "--btn-fg-hover": color,
-    "--btn-border": color,
-    "--btn-bg-hover": `color-mix(in srgb, ${color} 12%, transparent)`,
-    "--btn-bg-active": `color-mix(in srgb, ${color} 18%, transparent)`
-  };
+  if (background2 !== void 0 && background2 !== "") {
+    vars["--btn-bg"] = background2;
+    vars["--btn-bg-hover"] = `color-mix(in srgb, ${background2} 88%, var(--dshpc-fg))`;
+    vars["--btn-bg-active"] = `color-mix(in srgb, ${background2} 76%, var(--dshpc-fg))`;
+  }
+  return Object.keys(vars).length === 0 ? void 0 : vars;
 }
 function buttonClass(variant, size4, block2, hasIcon, dense, iconOnly, extra) {
   return `dshpc-btn dshpc-btn--${variant} dshpc-btn--${size4}${dense ? " dshpc-btn--dense" : ""}${iconOnly ? " dshpc-btn--icon-only" : ""}${block2 ? " dshpc-btn--block" : ""}${hasIcon ? " dshpc-btn--icon-start" : ""}${extra !== void 0 && extra !== "" ? ` ${extra}` : ""}`;
@@ -6046,7 +6050,7 @@ function useAsyncClick(onClick, onBusyChange, onBusyStart) {
 var warnedNoLabel = false;
 function Button(props) {
   ensureComponentStyles("button", BUTTON_CSS);
-  const { variant = "outline", size: size4 = "lg", icon, iconRight, color, loading: loadingProp = false, loadingText = true, block: block2 = false, dense = false, width, minWidth, maxWidth, className: className2, style: style2, children, label, onClick, onBusyChange, ...rest } = props;
+  const { variant = "outline", size: size4 = "lg", icon, iconRight, color, background: background2, loading: loadingProp = false, loadingText = true, block: block2 = false, dense = false, width, minWidth, maxWidth, className: className2, style: style2, children, label, onClick, onBusyChange, ...rest } = props;
   const iconOnly = children === void 0 || children === null;
   const btnRef = (0, import_react15.useRef)(null);
   const idleWidth = (0, import_react15.useRef)(null);
@@ -6115,7 +6119,7 @@ function Button(props) {
     ...ariaLabel !== void 0 ? { "aria-label": ariaLabel } : {},
     onClick: asyncClick.click,
     className: buttonClass(variant, size4, block2, icon !== void 0 && icon !== null && !loading && !iconOnly, dense, iconOnly, className2),
-    style: { ...colorVars(variant, color), ...widthStyle, ...style2 }
+    style: { ...colorVars(variant, color, background2), ...widthStyle, ...style2 }
   };
   const kids = [
     loading ? (0, import_react15.createElement)("span", { className: "dshpc-btn__icon" }, (0, import_react15.createElement)(Loader, { size: "xs" })) : icon !== void 0 && icon !== null ? (0, import_react15.createElement)("span", { className: "dshpc-btn__icon" }, icon) : null,
@@ -8025,6 +8029,146 @@ function useNowMs() {
   return nowMs;
 }
 
+// dist/ui/feedback/toast-queue.js
+var TOAST_QUEUE_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/toast-queue");
+var MAX_PENDING = 20;
+function queue() {
+  const g = globalThis;
+  let q = g[TOAST_QUEUE_KEY];
+  if (q === void 0) {
+    q = { listeners: /* @__PURE__ */ new Set(), pending: [] };
+    g[TOAST_QUEUE_KEY] = q;
+  }
+  return q;
+}
+function enqueue(q, payload) {
+  q.pending.push({ payload, at: Date.now() });
+  if (q.pending.length > MAX_PENDING)
+    q.pending.splice(0, q.pending.length - MAX_PENDING);
+}
+function deliver(listener, payload) {
+  try {
+    listener(payload);
+    return true;
+  } catch (error) {
+    console.warn(`[dsh-plugin-core] toast \u6E32\u67D3\u5931\u8D25\uFF1A${String(error)}`);
+    return false;
+  }
+}
+function pushToast(payload) {
+  const q = queue();
+  if (q.listeners.size === 0) {
+    enqueue(q, payload);
+    return;
+  }
+  let shown = false;
+  for (const listener of q.listeners) {
+    if (deliver(listener, payload))
+      shown = true;
+  }
+  if (!shown)
+    enqueue(q, payload);
+}
+function subscribeToasts(listener) {
+  const q = queue();
+  q.listeners.add(listener);
+  const now = Date.now();
+  for (const item of q.pending.splice(0)) {
+    if (now - item.at > item.payload.durationMs)
+      continue;
+    if (!deliver(listener, item.payload))
+      enqueue(q, item.payload);
+  }
+  return () => {
+    q.listeners.delete(listener);
+  };
+}
+
+// dist/ui/feedback/notify-bridge.js
+var NOTIFY_BRIDGE_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/notify-bridge");
+var BROADCAST_TOAST_MS = 2600;
+function isNotifyBridgeConnected() {
+  return globalThis[NOTIFY_BRIDGE_KEY] !== void 0;
+}
+function toPayload(message) {
+  const detail = message.detail;
+  return {
+    message: message.title,
+    variant: message.level,
+    style: "card",
+    ...typeof detail === "string" ? { description: detail } : {},
+    durationMs: BROADCAST_TOAST_MS
+  };
+}
+function ensureNotifyBridge(render) {
+  const g = globalThis;
+  if (g[NOTIFY_BRIDGE_KEY] !== void 0)
+    return;
+  let unsubscribe;
+  try {
+    taskNotifications.connect();
+    unsubscribe = subscribeTaskNotificationEvents((event) => {
+      if (event.type !== "message")
+        return;
+      render(toPayload(event.message));
+    });
+    g[NOTIFY_BRIDGE_KEY] = { unsubscribe };
+  } catch (error) {
+    console.warn(`[dsh-plugin-core] \u5E7F\u64AD\u63A5\u6536\u7AEF\u63A5\u7EBF\u5931\u8D25\uFF1A${String(error)}`);
+  }
+}
+
+// dist/ui/feedback/notify.js
+var DEFAULT_MS = 2600;
+function connectToasts() {
+  ensureNotifyBridge((payload) => {
+    pushToast(payload);
+  });
+}
+function cardPayload(message, opts) {
+  return {
+    message,
+    variant: opts?.variant ?? "info",
+    style: "card",
+    description: opts?.description,
+    durationMs: opts?.durationMs ?? DEFAULT_MS,
+    actions: opts?.actions,
+    position: opts?.position
+  };
+}
+function notify(message, opts) {
+  if (opts?.broadcast === true) {
+    broadcastNotify(message, opts);
+    return;
+  }
+  pushToast(cardPayload(message, opts));
+}
+function broadcastNotify(message, opts) {
+  if (opts.actions !== void 0) {
+    throw new Error("notify({ broadcast: true }) cannot carry actions: functions cannot cross pages (pass a plain-data message, or use a local toast)");
+  }
+  if (opts.description !== void 0 && typeof opts.description !== "string") {
+    throw new TypeError("notify({ broadcast: true }) description must be a string: only plain data crosses pages");
+  }
+  if (typeof document === "undefined") {
+    pushToast(cardPayload(message, opts));
+    return;
+  }
+  if (getDefaultTaskProject() === void 0 || !isNotifyBridgeConnected()) {
+    console.warn("[dsh-plugin-core] \u5E7F\u64AD\u6761\u4EF6\u4E0D\u6EE1\u8DB3\uFF0C\u964D\u7EA7\u4E3A\u672C\u9875\u63D0\u793A\uFF08\u9700\u8BBE\u9ED8\u8BA4\u9879\u76EE\u5E76\u5728\u9875\u9762\u52A0\u8F7D\u65F6\u8C03 connectToasts()\uFF09");
+    pushToast(cardPayload(message, opts));
+    return;
+  }
+  try {
+    notifyMessage(message, {
+      level: opts.variant ?? "info",
+      ...opts.description === void 0 ? {} : { detail: opts.description }
+    });
+  } catch (error) {
+    console.warn(`[dsh-plugin-core] notify({ broadcast: true }) \u5E7F\u64AD\u672A\u5B8C\u5168\u9001\u8FBE\uFF1A${String(error)}`);
+  }
+}
+
 // dist/ui/display/task-bar-css.generated.js
 var TASK_BAR_CSS = "/* \u2500\u2500 TaskBar \xB7 \u901A\u77E5\u4EFB\u52A1\u4E2D\u5FC3\u7684\u901A\u7528\u5C55\u793A\u680F \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u89E6\u53D1\u5668\u672C\u4F53\u662F Button\uFF08\u957F\u6761 / \u7EAF\u56FE\u6807\u6B63\u65B9\u5F62\uFF09\u7684\u63CF\u8FB9\u6863\uFF1A\n   \u5706\u89D2 / \u8FB9\u6846 / hover / \u7126\u70B9\u73AF\u5168\u5728 button.css\uFF0C\u672C\u6587\u4EF6\u53EA\u8865\u5B83\u6CA1\u6709\u7684\uFF1A\n   \u56FE\u6807\u4F4D\u7684\u5C0F\u7EFF\u70B9\u4E0E\u547C\u5438\u3001\u8BA1\u6570\u6587\u6848\u3001\u4E0B\u62C9\u91CC\u300C\u4E00\u6761\u865A\u7EBF\u4E00\u683C\u300D\u7684\u6392\u7248\u3002\n   \u4E0B\u62C9\u5BB9\u5668\u8D70 PanelSurface(menu)\uFF0C\u8FD9\u91CC\u53EA\u7ED9\u5BBD\u5EA6\u4E0E\u6EDA\u52A8\u533A\uFF0C\u4E0D\u6539\u9762\u677F\u76AE\u80A4\u3002 */\n\n.dshpc-taskbar{display:inline-flex;}\n\n/* \u89E6\u53D1\u5668\uFF1A\u6574\u6BB5\u76AE\u80A4\u7167\u4E0B\u62C9\u6846\uFF08Picker \u7684 trigger\uFF09\u6765 \u2014\u2014 \u540C\u9AD8\u5EA6\u6863\u3001\u540C 1px \u52A0\u91CD\u63CF\u8FB9\u3001\n   \u540C md \u5706\u89D2\u3001\u540C 8px \u5DE6\u53F3\u5185\u8DDD\uFF1B\u53F3\u4FA7\u4E09\u89D2\u4E5F\u5C31 6px\uFF0C\u522B\u518D\u653E\u5927\u4E00\u53F7\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4E00\u5957\u76AE\uFF1A--pill \u662F\u56FE\u6807 + \u6587\u5B57 + \u8BA1\u6570 + \u4E09\u89D2\uFF0C--icon \u53EA\u6709\u56FE\u6807\u4E14\u5BBD\u9AD8\u76F8\u7B49\u3002 */\n.dshpc-taskbar__trigger{\n  display:inline-flex;align-items:center;gap:6px;box-sizing:border-box;\n  height:28px;padding:0 8px;\n  color:var(--dshpc-fg);background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);\n  font-family:inherit;font-size:var(--dshpc-font-md);line-height:1;cursor:pointer;\n}\n.dshpc-taskbar__trigger:hover{background:var(--dshpc-hover);}\n.dshpc-taskbar__trigger:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-taskbar__trigger--sm{height:24px;font-size:var(--dshpc-font-sm);}\n.dshpc-taskbar__trigger--lg{height:32px;}\n.dshpc-taskbar__trigger--icon{justify-content:center;padding:0;width:28px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--sm{width:24px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--lg{width:32px;}\n/* \u6587\u5B57\u5403\u5269\u4F59\u5BBD\uFF1A\u5B9A\u5BBD / \u7ED9\u4E86\u4E0A\u9650\u65F6\u5148\u538B\u5B83\uFF08\u56FE\u6807\u3001\u8BA1\u6570\u3001\u4E09\u89D2\u90FD\u662F flex:none \u4E0D\u8BA9\u4F4D\uFF09\u3002\n   \u7701\u7565\u53F7\u4E0E hover \u8DD1\u9A6C\u706F\u7531 MarqueeText\uFF08.dshpc-mq\uFF09\u81EA\u5DF1\u7BA1\uFF0C\u672C\u6587\u4EF6\u53EA\u7ED9\u53EF\u6536\u7F29\u7684\u5916\u58F3\u3002 */\n.dshpc-taskbar__label{flex:0 1 auto;min-width:0;white-space:nowrap;}\n.dshpc-taskbar__count{flex:none;}\n.dshpc-taskbar__caret{flex:none;color:var(--dshpc-fg-3);margin-left:2px;}\n\n/* \u56FE\u6807\u4F4D\uFF1A\u7EFF\u70B9\u9489\u5728\u53F3\u4E0A\u89D2\uFF0C\u4E0D\u53C2\u4E0E\u5E03\u5C40\u3002\n   \u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u53EA\u6709\u5B57\u5F62\u81EA\u5DF1\u547C\u5438\uFF08\u5927\u5C0F\u5FAA\u73AF\uFF09\u2014\u2014 \u7EFF\u70B9\u8DDF\u7740\u7F29\u653E\u4F1A\u6643\u4F4D\u7F6E\uFF0C\u6240\u4EE5\u52A8\u753B\u6302\u5728 <i> \u4E0A\u3002 */\n.dshpc-taskbar__iconwrap{position:relative;display:inline-flex;align-items:center;justify-content:center;}\n.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:dshpc-taskbar-breathe 1.6s var(--dshpc-ease) infinite;}\n@keyframes dshpc-taskbar-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}\n@media (prefers-reduced-motion:reduce){.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:none}}\n.dshpc-taskbar__dot{\n  position:absolute;top:-2px;right:-3px;width:5px;height:5px;border-radius:50%;\n  background:var(--dshpc-success);box-shadow:0 0 0 2px var(--dshpc-surface-base);\n}\n.dshpc-taskbar__count{color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;margin-left:2px;}\n\n/* \u9762\u677F\u53EA\u8865\u5E03\u5C40\uFF1A\u5BBD\u5EA6\u8DDF\u7740\u89C6\u53E3\u6536\uFF0C\u5185\u8DDD\u5F52\u96F6 \u2014\u2014 \u884C\u81EA\u5DF1\u5E26\u5185\u8DDD\uFF0C\u865A\u7EBF\u624D\u80FD\u4E00\u6761\u901A\u5230\u5E95\u3002 */\n.dshpc-taskbar__panel{width:min(400px,calc(100vw - 24px));padding:0;overflow:hidden;}\n.dshpc-taskbar__list{max-height:320px;overflow:auto;}\n.dshpc-taskbar__empty{\n  padding:var(--dshpc-space-4) var(--dshpc-space-3);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n}\n\n/* \u4E00\u683C\u4E00\u6761\u865A\u7EBF\uFF1A\u884C\u4E0E\u884C\u4E4B\u95F4\u53EA\u753B\u5206\u9694\u7EBF\uFF0C\u884C\u672C\u8EAB\u4E0D\u5957\u5E95 / \u4E0D\u63CF\u8FB9 / \u4E0D\u5706\u89D2 \u2014\u2014 \u9762\u677F\u5DF2\u7ECF\u662F\u4E00\u5C42\u6846\u3002 */\n.dshpc-taskbar__item{\n  display:flex;align-items:center;gap:var(--dshpc-space-2);\n  padding:var(--dshpc-space-2) var(--dshpc-space-3);\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-taskbar__item + .dshpc-taskbar__item{border-top:1px dashed var(--dshpc-border);}\n/* \u884C hover\uFF082026-11-15 \u7528\u6237\uFF1A\u8DDF\u8868\u683C\u9009\u4E2D\u90A3\u79CD\u84DD\u5DEE\u4E0D\u591A\u3001\u6216\u66F4\u6D45\u7684\u6781\u6DE1\u84DD\uFF09\u3002\n   \u53EA\u662F\u300C\u9F20\u6807\u5728\u8FD9\u513F\u300D\u7684\u53CD\u9988 \u2014\u2014 \u884C\u4E0D\u7ED9 cursor / \u7126\u70B9\u73AF\uFF0C\u4E5F\u6CA1\u6709\u70B9\u51FB\u884C\u4E3A\uFF1B\u9009\u4E2D\u6001\u4E0D\u505A\u3002 */\n.dshpc-taskbar__item:hover{background:var(--dshpc-taskbar-row-hover);}\n@media (prefers-reduced-motion:reduce){.dshpc-taskbar__item{transition:none}}\n\n/* \u884C\u5185\uFF1A\u56FE\u6807 + \u4E24\u884C\u6587\u5B57 + \u53F3\u4FA7\u52A8\u4F5C\u3002\u56FE\u6807\u4E0D\u5E26\u5E95\u677F\uFF0C\u53EA\u7559\u5B57\u5F62\u3002 */\n.dshpc-taskbar__row-icon{flex:none;display:inline-flex;align-items:center;color:var(--dshpc-fg-2);}\n.dshpc-taskbar__row-main{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1 1 auto;}\n.dshpc-taskbar__row-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}\n.dshpc-taskbar__row-meta{font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);}\n.dshpc-taskbar__row-actions{flex:none;display:inline-flex;align-items:center;gap:var(--dshpc-space-1);}\n";
 
@@ -8045,7 +8189,7 @@ function Elapsed(props) {
 function TaskBar(props) {
   ensureComponentStyles("task-bar", TASK_BAR_CSS);
   useLocale();
-  const { form = "pill", size: size4 = "md", groups, project, includeHidden, placement = "down", defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className: className2, style: style2 } = props;
+  const { form = "pill", size: size4 = "md", groups, project, includeHidden, onActionFailure, placement = "down", defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className: className2, style: style2 } = props;
   const actionSize = "sm";
   const triggerWidth = {};
   if (form === "pill") {
@@ -8148,7 +8292,14 @@ function TaskBar(props) {
           icon: (0, import_react32.createElement)(FontIcon, { name: glyph }),
           ...label === void 0 ? { label: glyph } : {},
           onClick: () => {
-            void taskNotifications.runAction(task.id, index3);
+            void taskNotifications.runAction(task.id, index3).then((ok) => {
+              if (ok)
+                return;
+              if (onActionFailure !== void 0)
+                onActionFailure({ task, index: index3, ...label === void 0 ? {} : { label } });
+              else
+                notify(t("taskbarActionFailed"));
+            });
           }
         }, label);
       })
@@ -8646,146 +8797,6 @@ function Table(props) {
     tableShell("dshpc-table--plain", { ...props, rows, onLoadMore: void 0, loadingMore: void 0, hasMore: void 0, noMoreText: void 0 }, {}),
     (0, import_react37.createElement)(Pagination, { ...pager, page, total, align: pager.align ?? "right" })
   );
-}
-
-// dist/ui/feedback/toast-queue.js
-var TOAST_QUEUE_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/toast-queue");
-var MAX_PENDING = 20;
-function queue() {
-  const g = globalThis;
-  let q = g[TOAST_QUEUE_KEY];
-  if (q === void 0) {
-    q = { listeners: /* @__PURE__ */ new Set(), pending: [] };
-    g[TOAST_QUEUE_KEY] = q;
-  }
-  return q;
-}
-function enqueue(q, payload) {
-  q.pending.push({ payload, at: Date.now() });
-  if (q.pending.length > MAX_PENDING)
-    q.pending.splice(0, q.pending.length - MAX_PENDING);
-}
-function deliver(listener, payload) {
-  try {
-    listener(payload);
-    return true;
-  } catch (error) {
-    console.warn(`[dsh-plugin-core] toast \u6E32\u67D3\u5931\u8D25\uFF1A${String(error)}`);
-    return false;
-  }
-}
-function pushToast(payload) {
-  const q = queue();
-  if (q.listeners.size === 0) {
-    enqueue(q, payload);
-    return;
-  }
-  let shown = false;
-  for (const listener of q.listeners) {
-    if (deliver(listener, payload))
-      shown = true;
-  }
-  if (!shown)
-    enqueue(q, payload);
-}
-function subscribeToasts(listener) {
-  const q = queue();
-  q.listeners.add(listener);
-  const now = Date.now();
-  for (const item of q.pending.splice(0)) {
-    if (now - item.at > item.payload.durationMs)
-      continue;
-    if (!deliver(listener, item.payload))
-      enqueue(q, item.payload);
-  }
-  return () => {
-    q.listeners.delete(listener);
-  };
-}
-
-// dist/ui/feedback/notify-bridge.js
-var NOTIFY_BRIDGE_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/notify-bridge");
-var BROADCAST_TOAST_MS = 2600;
-function isNotifyBridgeConnected() {
-  return globalThis[NOTIFY_BRIDGE_KEY] !== void 0;
-}
-function toPayload(message) {
-  const detail = message.detail;
-  return {
-    message: message.title,
-    variant: message.level,
-    style: "card",
-    ...typeof detail === "string" ? { description: detail } : {},
-    durationMs: BROADCAST_TOAST_MS
-  };
-}
-function ensureNotifyBridge(render) {
-  const g = globalThis;
-  if (g[NOTIFY_BRIDGE_KEY] !== void 0)
-    return;
-  let unsubscribe;
-  try {
-    taskNotifications.connect();
-    unsubscribe = subscribeTaskNotificationEvents((event) => {
-      if (event.type !== "message")
-        return;
-      render(toPayload(event.message));
-    });
-    g[NOTIFY_BRIDGE_KEY] = { unsubscribe };
-  } catch (error) {
-    console.warn(`[dsh-plugin-core] \u5E7F\u64AD\u63A5\u6536\u7AEF\u63A5\u7EBF\u5931\u8D25\uFF1A${String(error)}`);
-  }
-}
-
-// dist/ui/feedback/notify.js
-var DEFAULT_MS = 2600;
-function connectToasts() {
-  ensureNotifyBridge((payload) => {
-    pushToast(payload);
-  });
-}
-function cardPayload(message, opts) {
-  return {
-    message,
-    variant: opts?.variant ?? "info",
-    style: "card",
-    description: opts?.description,
-    durationMs: opts?.durationMs ?? DEFAULT_MS,
-    actions: opts?.actions,
-    position: opts?.position
-  };
-}
-function notify(message, opts) {
-  if (opts?.broadcast === true) {
-    broadcastNotify(message, opts);
-    return;
-  }
-  pushToast(cardPayload(message, opts));
-}
-function broadcastNotify(message, opts) {
-  if (opts.actions !== void 0) {
-    throw new Error("notify({ broadcast: true }) cannot carry actions: functions cannot cross pages (pass a plain-data message, or use a local toast)");
-  }
-  if (opts.description !== void 0 && typeof opts.description !== "string") {
-    throw new TypeError("notify({ broadcast: true }) description must be a string: only plain data crosses pages");
-  }
-  if (typeof document === "undefined") {
-    pushToast(cardPayload(message, opts));
-    return;
-  }
-  if (getDefaultTaskProject() === void 0 || !isNotifyBridgeConnected()) {
-    console.warn("[dsh-plugin-core] \u5E7F\u64AD\u6761\u4EF6\u4E0D\u6EE1\u8DB3\uFF0C\u964D\u7EA7\u4E3A\u672C\u9875\u63D0\u793A\uFF08\u9700\u8BBE\u9ED8\u8BA4\u9879\u76EE\u5E76\u5728\u9875\u9762\u52A0\u8F7D\u65F6\u8C03 connectToasts()\uFF09");
-    pushToast(cardPayload(message, opts));
-    return;
-  }
-  try {
-    notifyMessage(message, {
-      level: opts.variant ?? "info",
-      ...opts.description === void 0 ? {} : { detail: opts.description }
-    });
-  } catch (error) {
-    console.warn(`[dsh-plugin-core] notify({ broadcast: true }) \u5E7F\u64AD\u672A\u5B8C\u5168\u9001\u8FBE\uFF1A${String(error)}`);
-  }
 }
 
 // dist/ui/feedback/Toast.js
@@ -66984,8 +66995,17 @@ var docData = {
             "type": "string",
             "def": "\u2014",
             "desc": {
-              "zh": "\u81EA\u5B9A\u4E49\u4E3B\u8272\uFF1A\u5B9E\u5FC3\u6863\u4F5C\u5E95\u8272\uFF0C\u7EBF\u6846 / \u65E0\u5E95\u6863\u4F5C\u4E3B\u8272",
-              "en": "Custom main color: background for solid tiers, main color for outline/bare"
+              "zh": "\u81EA\u5B9A\u4E49\u4E3B\u8272\uFF1A\u5B9E\u5FC3\u6863\u4F5C\u5E95\u8272\uFF0C\u7EBF\u6846 / \u65E0\u5E95\u6863\u4F5C\u4E3B\u8272\uFF08\u5B57\u8272 + \u63CF\u8FB9\uFF09",
+              "en": "Custom main color: background for solid tiers, main color (text + border) for outline/bare"
+            }
+          },
+          {
+            "name": "background",
+            "type": "string",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u81EA\u5B9A\u4E49\u5E95\u8272\uFF0C\u4E0E `color` \u6B63\u4EA4\uFF1A`color` \u7BA1\u5B57/\u56FE\u6807/\u63CF\u8FB9\uFF0C\u5B83\u53EA\u7BA1\u5E95\u3002\u7528\u4E8E\u300C\u6D45\u8272\u5E95 + \u540C\u8272\u7CFB\u56FE\u6807\u300D\uFF1Bhover / active \u7531\u8BE5\u5E95\u4E0E `--dshpc-fg` \u6DF7\u51FA\uFF0C\u660E\u6697\u81EA\u52A8\u8DDF\u968F\u3002\u5B9E\u5FC3\u6863\u540C\u65F6\u7ED9 `color` \u65F6\u4EE5\u5B83\u4E3A\u51C6",
+              "en": "Custom background, orthogonal to `color` (which owns text/icon/border). Made for tinted fill plus same-hue icon; hover/active are mixed from it with `--dshpc-fg`, so both themes follow. Overrides a solid tier s `color`-as-fill when both are given"
             }
           },
           {
@@ -68334,6 +68354,15 @@ var docData = {
             "desc": {
               "zh": "\u6362\u9879\u76EE\u770B / \u8FDE hidden \u4E00\u8D77\u5217",
               "en": "Look at another project / include hidden rows"
+            }
+          },
+          {
+            "name": "onActionFailure",
+            "type": "(failure: TaskActionFailure) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u884C\u5185\u6309\u94AE\u70B9\u4E86\u6CA1\u751F\u6548\u65F6\u8C03\u5B83\uFF08\u6761\u76EE\u5DF2\u5931\u6548 / \u65B9\u6CD5\u5728\u522B\u9875\u4E14\u7B49\u4E0D\u5230 ack / \u4E0B\u6807\u8D8A\u754C\uFF09\u3002\u4E0D\u4F20\u5C31\u7531\u672C\u680F\u5F39\u4E00\u6B21\u6838\u5FC3\u81EA\u5E26\u63D0\u793A `taskbarActionFailed` \u2014\u2014 \u4E0D\u518D\u9759\u9ED8",
+              "en": "Called when an inline button did not take effect (row gone, method on another page and no ack, index out of range). Without it the bar raises the built-in `taskbarActionFailed` notice instead of staying silent"
             }
           },
           {
@@ -70429,17 +70458,17 @@ h(SideSheet, {
             "type": "boolean",
             "def": "false",
             "desc": {
-              "zh": "\u4E0D\u8FDB\u9ED8\u8BA4\u5217\u8868\uFF1B\u5F00\u4E86\u4E4B\u540E\u9ED8\u8BA4 5 \u5206\u949F\u515C\u5E95\u3002\u53EF\u5728 `update` \u91CC\u5207\u6362\uFF08\u4F20 false \u80FD\u53D6\u6D88\uFF09",
-              "en": "Kept out of the default list; hidden rows default to a 5-minute TTL. Switchable through `update` (false un-hides)"
+              "zh": "\u4E0D\u8FDB\u9ED8\u8BA4\u5217\u8868\uFF0C**\u53EA\u8868\u8FBE\u8FD9\u4E00\u4EF6\u4E8B**\uFF08\u56DE\u6536\u89C1 `timeoutMs`\uFF09\u3002\u53EF\u5728 `update` \u91CC\u5207\u6362\uFF08\u4F20 false \u80FD\u53D6\u6D88\uFF09",
+              "en": "Kept out of the default list \u2014 that is all it means (see `timeoutMs` for reclamation). Switchable through `update` (false un-hides)"
             }
           },
           {
             "name": "input.timeoutMs",
             "type": "number",
-            "def": "hidden ? 5 \u5206\u949F : 0",
+            "def": "0",
             "desc": {
-              "zh": "\u56DE\u6536\u7A97\u53E3\uFF0C\u4ECE\u6700\u540E\u4E00\u6B21\u6D3B\u52A8\u8D77\u7B97\uFF1B\u5FC5\u987B\u662F\u6709\u9650\u6570\u4E14 \u2265 0\uFF0C0 \u8868\u793A\u6C38\u4E0D\u56DE\u6536",
-              "en": "Reclamation window counted from the last activity; must be finite and \u2265 0, where 0 means never"
+              "zh": "\u56DE\u6536\u7A97\u53E3\uFF0C\u4ECE\u6700\u540E\u4E00\u6B21\u6D3B\u52A8\u8D77\u7B97\uFF1B\u5FC5\u987B\u662F\u6709\u9650\u6570\u4E14 \u2265 0\uFF0C**\u7F3A\u7701 0 = \u4E0D\u56DE\u6536**\uFF08\u4E0E hidden \u65E0\u5173\uFF09\u3002\u4F1A\u81EA\u5DF1\u8DD1\u5B8C\u7684\u77ED\u4EFB\u52A1\u60F3\u515C\u5E95\u5C31\u663E\u5F0F\u7ED9\u4E00\u4E2A\u503C\uFF1B\u4F5C\u4E1A\u578B\u4EFB\u52A1\u522B\u7ED9\uFF0C\u5426\u5219\u4F5C\u4E1A\u8FD8\u5728\u8DD1\u5C31\u5148\u88AB\u5224\u5931\u8D25",
+              "en": "Reclamation window counted from the last activity; must be finite and \u2265 0, and defaults to 0 = never (independent of hidden). Short self-terminating tasks may pass a value as a backstop; long jobs must not, or the row is failed while the work still runs"
             }
           },
           {
@@ -75413,7 +75442,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.36.1"}`],
             [t3("buildDemo"), `v${"0.36.1"}`],
-            [t3("buildStamp"), "261115-232325-225"]
+            [t3("buildStamp"), "261116-000432-554"]
           ].map(
             ([label, value]) => (0, import_react109.createElement)(
               "tr",
@@ -75733,7 +75762,7 @@ function DemoPage() {
           },
           (0, import_react111.createElement)("span", null, `core v${"0.36.1"}`),
           (0, import_react111.createElement)("span", null, `demo v${"0.36.1"}`),
-          (0, import_react111.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261115-232325-225")
+          (0, import_react111.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261116-000432-554")
         )
       )
     ),

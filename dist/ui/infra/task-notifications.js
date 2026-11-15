@@ -29,8 +29,6 @@ export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-no
 export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v2';
 /** Default project lives on a global symbol: every inlined copy must see one value. */
 export const TASK_NOTIFICATIONS_PROJECT_KEY = Symbol.for('dsh-plugin-core/task-notifications/project/v2');
-/** 静默任务的默认回收窗口；与 TanStack Query 的 gcTime 默认值一致。 */
-export const TASK_NOTIFICATIONS_HIDDEN_TTL_MS = 5 * 60000;
 /** 跨页点按钮等 ack 的上限；超时按失败算，界面据此提示「已无法还原」。 */
 const INVOKE_TIMEOUT_MS = 2000;
 const EMPTY_TASKS = Object.freeze([]);
@@ -906,7 +904,7 @@ export function createTaskNotificationPool(options = {}) {
         const actions = normalizeActions(input.actions);
         const runs = input.actions?.map((action) => action.run) ?? [];
         const hidden = input.hidden === true;
-        const timeoutMs = input.timeoutMs ?? (hidden ? TASK_NOTIFICATIONS_HIDDEN_TTL_MS : 0);
+        const timeoutMs = input.timeoutMs ?? 0;
         if (!Number.isFinite(timeoutMs) || timeoutMs < 0) {
             throw new Error('task notification timeoutMs must be a finite number >= 0');
         }

@@ -590,6 +590,7 @@ const DICT = {
         taskbarCount: '{n} 个运行中',
         taskbarEmpty: '暂无后台任务',
         taskbarElapsed: '已执行 {time}',
+        taskbarActionFailed: '这条任务的操作已失效，可能是发起它的页面已刷新或关闭',
     },
     en: {
         sessionLoading: 'Loading session…',
@@ -1172,6 +1173,7 @@ const DICT = {
         taskbarCount: '{n} running',
         taskbarEmpty: 'No background tasks',
         taskbarElapsed: 'Running {time}',
+        taskbarActionFailed: 'That action is no longer available — the page that started the task was refreshed or closed',
     },
 };
 /** 手动覆盖（`setLocale`）；不覆盖就跟随宿主语言。 */

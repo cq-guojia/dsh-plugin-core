@@ -1525,8 +1525,17 @@ export const docData = {
             "type": "string",
             "def": "—",
             "desc": {
-              "zh": "自定义主色：实心档作底色，线框 / 无底档作主色",
-              "en": "Custom main color: background for solid tiers, main color for outline/bare"
+              "zh": "自定义主色：实心档作底色，线框 / 无底档作主色（字色 + 描边）",
+              "en": "Custom main color: background for solid tiers, main color (text + border) for outline/bare"
+            }
+          },
+          {
+            "name": "background",
+            "type": "string",
+            "def": "—",
+            "desc": {
+              "zh": "自定义底色，与 `color` 正交：`color` 管字/图标/描边，它只管底。用于「浅色底 + 同色系图标」；hover / active 由该底与 `--dshpc-fg` 混出，明暗自动跟随。实心档同时给 `color` 时以它为准",
+              "en": "Custom background, orthogonal to `color` (which owns text/icon/border). Made for tinted fill plus same-hue icon; hover/active are mixed from it with `--dshpc-fg`, so both themes follow. Overrides a solid tier s `color`-as-fill when both are given"
             }
           },
           {
@@ -2875,6 +2884,15 @@ export const docData = {
             "desc": {
               "zh": "换项目看 / 连 hidden 一起列",
               "en": "Look at another project / include hidden rows"
+            }
+          },
+          {
+            "name": "onActionFailure",
+            "type": "(failure: TaskActionFailure) => void",
+            "def": "—",
+            "desc": {
+              "zh": "行内按钮点了没生效时调它（条目已失效 / 方法在别页且等不到 ack / 下标越界）。不传就由本栏弹一次核心自带提示 `taskbarActionFailed` —— 不再静默",
+              "en": "Called when an inline button did not take effect (row gone, method on another page and no ack, index out of range). Without it the bar raises the built-in `taskbarActionFailed` notice instead of staying silent"
             }
           },
           {
@@ -4959,17 +4977,17 @@ export const docData = {
             "type": "boolean",
             "def": "false",
             "desc": {
-              "zh": "不进默认列表；开了之后默认 5 分钟兜底。可在 `update` 里切换（传 false 能取消）",
-              "en": "Kept out of the default list; hidden rows default to a 5-minute TTL. Switchable through `update` (false un-hides)"
+              "zh": "不进默认列表，**只表达这一件事**（回收见 `timeoutMs`）。可在 `update` 里切换（传 false 能取消）",
+              "en": "Kept out of the default list — that is all it means (see `timeoutMs` for reclamation). Switchable through `update` (false un-hides)"
             }
           },
           {
             "name": "input.timeoutMs",
             "type": "number",
-            "def": "hidden ? 5 分钟 : 0",
+            "def": "0",
             "desc": {
-              "zh": "回收窗口，从最后一次活动起算；必须是有限数且 ≥ 0，0 表示永不回收",
-              "en": "Reclamation window counted from the last activity; must be finite and ≥ 0, where 0 means never"
+              "zh": "回收窗口，从最后一次活动起算；必须是有限数且 ≥ 0，**缺省 0 = 不回收**（与 hidden 无关）。会自己跑完的短任务想兜底就显式给一个值；作业型任务别给，否则作业还在跑就先被判失败",
+              "en": "Reclamation window counted from the last activity; must be finite and ≥ 0, and defaults to 0 = never (independent of hidden). Short self-terminating tasks may pass a value as a backstop; long jobs must not, or the row is failed while the work still runs"
             }
           },
           {

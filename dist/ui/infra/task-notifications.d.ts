@@ -5,8 +5,6 @@ export declare const TASK_NOTIFICATIONS_EVENTS_KEY: unique symbol;
 export declare const TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v2";
 /** Default project lives on a global symbol: every inlined copy must see one value. */
 export declare const TASK_NOTIFICATIONS_PROJECT_KEY: unique symbol;
-/** 静默任务的默认回收窗口；与 TanStack Query 的 gcTime 默认值一致。 */
-export declare const TASK_NOTIFICATIONS_HIDDEN_TTL_MS: number;
 export type TaskNotificationStatus = 'running' | 'done' | 'failed';
 /**
  * Detail payload: any JSON value. Objects and arrays cross pages through the
@@ -101,9 +99,13 @@ export interface TaskNotificationInput {
     detail?: TaskNotificationDetail;
     /** 按钮：文案 + 点击执行的方法。方法不会被序列化，只在创建它的页面里执行。 */
     actions?: readonly TaskNotificationAction[];
-    /** 不进默认列表；默认关闭。开了之后默认带 5 分钟超时兜底。 */
+    /** 不进默认列表。**只表达这一件事**：回收是另一件事，见 `timeoutMs`。 */
     hidden?: boolean;
-    /** 毫秒；0 = 不回收。缺省：hidden 用 5 分钟，可见任务不回收。 */
+    /**
+     * 回收窗口（毫秒）。**缺省 0 = 不回收**，与 hidden 与否无关 —— 后台作业型任务被打断的代价
+     * 远大于留一条记录的代价（2026-11-15：原先 hidden 缺省 5 分钟，作业还在跑就先被判失败）。
+     * 会自己跑完的短任务想兜底，显式给一个值。
+     */
     timeoutMs?: number;
 }
 export interface TaskNotificationPatch {
@@ -335,9 +337,9 @@ export interface NotifyTaskOptions {
     icon?: string;
     /** 原始 SVG 源，消费端自行渲染。 */
     iconSvg?: string;
-    /** 不进默认列表（仍进池、仍可 await）；不设 timeoutMs 时默认 5 分钟兜底。 */
+    /** 不进默认列表（仍进池、仍可 await）；与回收无关。 */
     hidden?: boolean;
-    /** 毫秒；0 = 不回收。缺省：hidden 用 5 分钟，可见任务不回收。 */
+    /** 回收窗口（毫秒）；缺省 0 = 不回收，想兜底就显式给。 */
     timeoutMs?: number;
 }
 /**

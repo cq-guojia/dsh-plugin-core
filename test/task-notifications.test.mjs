@@ -957,14 +957,18 @@ test('hidden 跨页：对端也照 hidden 处理', async () => {
   watcher.dispose()
 })
 
-test('hidden 默认 5 分钟兜底：条目带 timeoutMs，可见任务默认不带', () => {
+// 2026-11-15：hidden 只表达「不进列表」，回收是另一件事 —— 作业还在跑就先被判失败是线上事故。
+test('hidden 与回收无关：缺省不带 timeoutMs，显式给了才回收', () => {
   const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
   const silent = pool.register({ group: 'g', title: 'silent default', hidden: true })
   const normal = pool.register({ group: 'g', title: 'visible default' })
-  assert.equal(localTask(pool, silent)?.timeoutMs, 5 * 60_000)
+  const bounded = pool.register({ group: 'g', title: 'bounded silent', hidden: true, timeoutMs: 30_000 })
+  assert.equal(localTask(pool, silent)?.timeoutMs, undefined)
   assert.equal(localTask(pool, normal)?.timeoutMs, undefined)
+  assert.equal(localTask(pool, bounded)?.timeoutMs, 30_000)
   silent.done()
   normal.done()
+  bounded.done()
 })
 
 function localTask(pool, handle) {

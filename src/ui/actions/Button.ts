@@ -17,6 +17,8 @@
  * 此时必须给 `label` 当无障碍名 —— 不再有独立的 IconButton 控件（用户 2026-11-15）。
  * 颜色轴：任一档都可以再用 `color` 传任意 CSS 色值 —— 只覆盖 `--btn-*` 几个变量，
  * 不新增皮肤（皮肤只在自己的 `button.css` 真源里，构建期编译成字符串常量）。
+ * 底色另有独立一条轴 `background`：与 `color` 正交，用于「浅色底 + 同色系字/图标」
+ * （2026-11-15 用户：合并 IconButton 后少了这条，消费方得自己覆盖变量）。
  *
  * 兼容别名：`danger-ink` 仍是 `danger-outline` 的旧类名，可直接挂 className。
  *
@@ -76,6 +78,12 @@ export interface ButtonProps {
    * 实心档作底色、描边与文字档作主色；hover / active 由基础层按该色混出。
    */
   color?: string
+  /**
+   * 自定义底色（任意 CSS 色值）。与 `color` 正交：`color` 管字/图标/描边，它只管底。
+   * hover / active 由底色与 `--dshpc-fg` 混出，明暗两主题自动跟随。
+   * 实心档也给 `color` 时会覆盖它 —— 实心档的 `color` 本来就在管底色。
+   */
+  background?: string
   /** 加载中：文案前显示同色小圈，并自动禁用点击。与「点击自动 loading」是或关系，任一为真就转圈。 */
   loading?: boolean
   /**
@@ -126,24 +134,30 @@ export interface ButtonProps {
   [key: string]: unknown
 }
 
-/** 把自定义颜色翻译成 5 个局部变量（只覆盖 token，不新增皮肤）。 */
-function colorVars(variant: ButtonVariant, color: string | undefined): CSSProperties | undefined {
-  if (color === undefined || color === '') return undefined
-  if (SOLID_VARIANTS.includes(variant)) {
-    return {
-      '--btn-bg': color,
+/** 把自定义颜色 / 底色翻译成局部变量（只覆盖 token，不新增皮肤）。 */
+function colorVars(variant: ButtonVariant, color: string | undefined, background: string | undefined): CSSProperties | undefined {
+  const vars: Record<string, string> = {}
+  if (color !== undefined && color !== '') {
+    if (SOLID_VARIANTS.includes(variant)) {
+      vars['--btn-bg'] = color
       // 亮色主题下 --dshpc-fg 是黑 ⇒ 压深；暗色下是白 ⇒ 提亮。两边都能明确看出变化。
-      '--btn-bg-hover': `color-mix(in srgb, ${color} 82%, var(--dshpc-fg))`,
-      '--btn-bg-active': `color-mix(in srgb, ${color} 70%, var(--dshpc-fg))`,
-    } as CSSProperties
+      vars['--btn-bg-hover'] = `color-mix(in srgb, ${color} 82%, var(--dshpc-fg))`
+      vars['--btn-bg-active'] = `color-mix(in srgb, ${color} 70%, var(--dshpc-fg))`
+    } else {
+      vars['--btn-fg'] = color
+      vars['--btn-fg-hover'] = color
+      vars['--btn-border'] = color
+      vars['--btn-bg-hover'] = `color-mix(in srgb, ${color} 12%, transparent)`
+      vars['--btn-bg-active'] = `color-mix(in srgb, ${color} 18%, transparent)`
+    }
   }
-  return {
-    '--btn-fg': color,
-    '--btn-fg-hover': color,
-    '--btn-border': color,
-    '--btn-bg-hover': `color-mix(in srgb, ${color} 12%, transparent)`,
-    '--btn-bg-active': `color-mix(in srgb, ${color} 18%, transparent)`,
-  } as CSSProperties
+  // 底色最后写：实心档的 `color` 也在管底色，显式给了 background 就以它为准。
+  if (background !== undefined && background !== '') {
+    vars['--btn-bg'] = background
+    vars['--btn-bg-hover'] = `color-mix(in srgb, ${background} 88%, var(--dshpc-fg))`
+    vars['--btn-bg-active'] = `color-mix(in srgb, ${background} 76%, var(--dshpc-fg))`
+  }
+  return Object.keys(vars).length === 0 ? undefined : vars as CSSProperties
 }
 
 /** 组装按钮 class（结构一套 + 轴类）。 */
@@ -203,7 +217,7 @@ let warnedNoLabel = false
 export function Button(props: ButtonProps): ReturnType<typeof h> {
   ensureComponentStyles('button', BUTTON_CSS)
   const {
-    variant = 'outline', size = 'lg', icon, iconRight, color, loading: loadingProp = false,
+    variant = 'outline', size = 'lg', icon, iconRight, color, background, loading: loadingProp = false,
     loadingText = true,
     block = false, dense = false, width, minWidth, maxWidth, className, style, children, label,
     onClick, onBusyChange, ...rest
@@ -281,7 +295,7 @@ export function Button(props: ButtonProps): ReturnType<typeof h> {
     ...(ariaLabel !== undefined ? { 'aria-label': ariaLabel } : {}),
     onClick: asyncClick.click,
     className: buttonClass(variant, size, block, icon !== undefined && icon !== null && !loading && !iconOnly, dense, iconOnly, className),
-    style: { ...colorVars(variant, color), ...widthStyle, ...style },
+    style: { ...colorVars(variant, color, background), ...widthStyle, ...style },
   }
   const kids = [
     loading

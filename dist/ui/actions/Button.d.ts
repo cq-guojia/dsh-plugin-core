@@ -17,6 +17,12 @@ export interface ButtonProps {
      * 实心档作底色、描边与文字档作主色；hover / active 由基础层按该色混出。
      */
     color?: string;
+    /**
+     * 自定义底色（任意 CSS 色值）。与 `color` 正交：`color` 管字/图标/描边，它只管底。
+     * hover / active 由底色与 `--dshpc-fg` 混出，明暗两主题自动跟随。
+     * 实心档也给 `color` 时会覆盖它 —— 实心档的 `color` 本来就在管底色。
+     */
+    background?: string;
     /** 加载中：文案前显示同色小圈，并自动禁用点击。与「点击自动 loading」是或关系，任一为真就转圈。 */
     loading?: boolean;
     /**
