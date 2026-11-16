@@ -10,6 +10,7 @@ import type {
   InvokeResult,
   ServerCreateInput,
   ServerCreateResult,
+  ServerNoticePage,
   ServerTaskEvent,
   ServerTaskPage,
   ServerTaskRecord,
@@ -96,6 +97,16 @@ export function createHttpTaskBackend(options: HttpTaskBackendOptions): TaskBack
       return await response.json() as ServerTaskPage
     },
     follow,
+    async listNotices(projects: readonly string[], sinceCursor?: string): Promise<ServerNoticePage> {
+      const query = new URLSearchParams({ projects: projects.join(',') })
+      if (sinceCursor !== undefined) query.set('since', sinceCursor)
+      const response = await doFetch(`${base}/notices?${query.toString()}`, { headers: options.headers?.() })
+      if (!response.ok) throw new Error(`task notices failed: ${response.status}`)
+      return await response.json() as ServerNoticePage
+    },
+    async ackNotices(projects: readonly string[], cursor: string): Promise<void> {
+      await post('/notices/ack', { projects, cursor })
+    },
     async poll(keys: readonly string[]): Promise<readonly ServerTaskRecord[]> {
       return post<readonly ServerTaskRecord[]>('/poll', { keys })
     },

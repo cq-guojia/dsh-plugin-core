@@ -1,10 +1,10 @@
 import { type TaskBackend } from './authoritative.js';
 import { getDefaultTaskProject, setDefaultTaskProject, type NotifyDetail, type NotifyLevel, type NotifyMessage, type NotifyMessageOptions } from '../../runtime/notify.js';
 /** Protocol version lives in the keys: a different wire shape gets its own host. */
-export declare const TASK_NOTIFICATIONS_PROTOCOL = 4;
+export declare const TASK_NOTIFICATIONS_PROTOCOL = 5;
 export declare const TASK_NOTIFICATIONS_KEY: unique symbol;
 export declare const TASK_NOTIFICATIONS_EVENTS_KEY: unique symbol;
-export declare const TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v4";
+export declare const TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v5";
 /** Default project lives on a global symbol: every inlined copy must see one value. */
 export declare const TASK_NOTIFICATIONS_PROJECT_KEY: unique symbol;
 /** 默认分组的读写实做在 runtime，这里保留既有导出名（对外契约不变）。 */
@@ -210,6 +210,20 @@ export interface TaskNotificationClaim {
     readonly handle: TaskNotificationHandle;
     readonly created: boolean;
 }
+/**
+ * 服务端权威任务的句柄：只有身份与终态等待，没有可被页面写的方法。
+ * 终态由服务端判定，update/touch/background/done/fail/track 在类型上就不存在。
+ */
+export interface AuthoritativeHandle {
+    readonly id: string;
+    readonly isSettled: boolean;
+    readonly settled: Promise<TaskNotificationSettlement>;
+}
+/** 服务端权威登记结果。created === false 表示服务端已存在同键作业，不要重复起。 */
+export interface AuthoritativeClaim {
+    readonly handle: AuthoritativeHandle;
+    readonly created: boolean;
+}
 export interface TaskNotificationSnapshot {
     readonly tasks: readonly TaskNotificationRecord[];
     /** Real monotonic counter of state changes on this page. */
@@ -242,6 +256,20 @@ export type TaskNotificationEvent = {
     readonly type: 'peer-left';
     readonly origin: string;
     readonly remote: true;
+}
+/** 权威模式下用户点了任务上的按钮；点击页本地发，不跨页。 */
+ | {
+    readonly type: 'action';
+    readonly taskId: string;
+    readonly task: TaskNotificationRecord;
+    readonly actionId?: string;
+    readonly index: number;
+    readonly ok: boolean;
+    readonly reason?: string;
+    readonly result?: TaskNotificationDetail;
+    /** 权威命令的幂等键，供迟到结果复查。 */
+    readonly idempotencyKey?: string;
+    readonly remote: false;
 };
 export type TaskNotificationEventListener = (event: TaskNotificationEvent) => void;
 export interface TaskNotificationEventBus {
@@ -294,7 +322,7 @@ export interface TaskNotificationPool {
     /** 幂等登记：带 `key` 时就地复用本页同键条目，并告诉你这条是不是刚建的。 */
     ensure(input: TaskNotificationInput): TaskNotificationClaim;
     /** 服务端权威登记：服务端原子 create 决定 created，页面不写本地记录。 */
-    ensureServer(input: TaskNotificationInput): Promise<TaskNotificationClaim>;
+    ensureServer(input: TaskNotificationInput): Promise<AuthoritativeClaim>;
     /** 纯广播：只出 `message` 事件，不写池、不动快照。 */
     broadcast(input: TaskNotificationMessageInput): TaskNotificationMessage;
     /**
@@ -352,7 +380,7 @@ export declare function createTaskNotificationEventBus(): TaskNotificationEventB
 export declare function claimTaskNotifications(create: () => TaskNotificationPool): TaskNotificationPool;
 export declare function claimTaskNotificationEvents(create: () => TaskNotificationEventBus): TaskNotificationEventBus;
 /** One lock per page, named by origin. Bumping the protocol gives a clean namespace. */
-export declare const TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v4/";
+export declare const TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v5/";
 export declare function createTaskNotificationPool(options?: TaskNotificationPoolOptions): TaskNotificationPool;
 export declare const taskNotifications: TaskNotificationPool;
 export interface NotifyTaskOptions {
@@ -400,7 +428,7 @@ export interface NotifyTask {
      */
     background(title: string, options?: NotifyTaskOptions): TaskNotificationClaim;
     /** 服务端权威登记：服务端原子 create 决定 created；必须已 setTaskBackend。 */
-    server(title: string, options?: NotifyTaskOptions): Promise<TaskNotificationClaim>;
+    server(title: string, options?: NotifyTaskOptions): Promise<AuthoritativeClaim>;
     /** 包住一段异步：成功走 done、失败走 fail，结果与异常原样透传。 */
     run<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions): Promise<T>;
 }

@@ -6,13 +6,16 @@
  * 归属都由消费方的 TaskCenterStore 负责，本文件只做 HTTP 形状转换。
  */
 import type { HostContextLike, HostHttpRequest } from './index.js';
-import type { AckRequest, InvokeRequest, ServerCreateInput, ServerTaskEvent, ServerTaskPage, ServerTaskRecord } from '../adv/tasks/authoritative.js';
+import type { AckRequest, InvokeRequest, ServerCreateInput, ServerNoticePage, ServerTaskEvent, ServerTaskPage, ServerTaskRecord } from '../adv/tasks/authoritative.js';
 export interface TaskCenterStore {
     create(input: ServerCreateInput, viewer?: string): Promise<{
         created: boolean;
         record: ServerTaskRecord;
     }>;
     list(project: string, cursor?: string, viewer?: string): Promise<ServerTaskPage>;
+    /** 通道 B：未确认的终态通知，notificationId 与 cursor 由服务端生成且稳定。 */
+    listNotices(projects: readonly string[], sinceCursor: string | undefined, viewer?: string): Promise<ServerNoticePage>;
+    ackNotices(projects: readonly string[], cursor: string, viewer?: string): Promise<void>;
     invoke(request: InvokeRequest, viewer?: string): Promise<{
         ok: boolean;
         result?: unknown;

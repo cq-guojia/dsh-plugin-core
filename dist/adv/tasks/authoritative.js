@@ -5,9 +5,9 @@ function newIdempotencyKey(clientId) {
     return `${clientId}:${Date.now().toString(36)}:${idempotencySeq.toString(36)}:${random}`;
 }
 /**
- * version 单调合并，返回**真正变更的行**（不是全量 seen），避免重复触发终态 ack。
- * 终态是一道单向门：一旦见过版本 v 的终态，v 及以下的任何行都不得再改这条记录，
- * 否则同版本 tombstone 后到的 running 会把已结算任务复活。
+ * version 单调合并，返回真正变更的行。终态是一道单向门：
+ * 一旦见过版本 v 的终态，v 及以下的任何行都不得再改这条记录。
+ * 注意：这里只更新投影与终态门，**不 emit 通知**——通知只由通道 B 投递。
  */
 function mergeInto(state, rows) {
     const accepted = [];
@@ -18,7 +18,7 @@ function mergeInto(state, rows) {
         if (row.version < seenVersion)
             continue;
         const terminal = state.terminal.get(row.key);
-        if (terminal !== undefined && row.version <= terminal.version)
+        if (terminal !== undefined && row.version <= terminal)
             continue;
         const current = state.seen.get(row.key);
         if (current !== undefined && current.version > row.version)
@@ -27,26 +27,30 @@ function mergeInto(state, rows) {
             continue;
         state.seen.set(row.key, row);
         state.watermark.set(row.key, row.version);
-        if (row.tombstone === true || row.state !== 'running') {
-            state.terminal.set(row.key, { version: row.version, acked: false });
-        }
+        if (row.tombstone === true || row.state !== 'running')
+            state.terminal.set(row.key, row.version);
         accepted.push(row);
     }
     return accepted;
 }
 export function createAuthoritativeEngine(options) {
-    const { onChange, onTerminal, clientId } = options;
+    const { onChange, onNotice, clientId } = options;
     const rebaseMinMs = options.rebaseMinMs ?? 5000;
+    const actionTimeoutMs = options.actionTimeoutMs ?? 5000;
     const backends = new Map();
     const projects = new Map();
-    /** 每个后端实例一条连接：不同 project 可能走不同后端，不能让首个后端代收全部。 */
+    /** 每个后端实例一条连接：不同 project 可能走不同后端。 */
     const followers = new Map();
     let started = false;
     let disposed = false;
     let lastRebase = 0;
     let reconnectFailures = 0;
     let reconnectTimer = null;
-    /** 同一 (key,actionId,version) 在结果缓存窗口内复用幂等键，响应丢失时重试返回同一结果。 */
+    /** 通道 B 的确认游标：按 clientId 隔离、服务端下发，连续成功前缀推进。 */
+    const noticeCursors = new Map();
+    let noticePumping = false;
+    let noticePending = false;
+    function clientCursor() { return noticeCursors.get(clientId); }
     const invokes = new Map();
     const INVOKE_CACHE_MS = 60000;
     function invokeCacheKey(project, key, actionId, version) {
@@ -72,20 +76,68 @@ export function createAuthoritativeEngine(options) {
         onChange(Object.freeze(all));
     }
     function applyRows(project, rows) {
-        const state = projectState(project);
-        const accepted = mergeInto(state, rows);
-        if (accepted.length === 0)
+        if (mergeInto(projectState(project), rows).length === 0)
             return;
-        for (const row of accepted) {
-            if (row.tombstone !== true && row.state === 'running')
-                continue;
-            const terminal = state.terminal.get(row.key);
-            if (terminal === undefined || terminal.version !== row.version || terminal.acked)
-                continue;
-            terminal.acked = true;
-            onTerminal?.(row);
-        }
         emitChange();
+    }
+    /**
+     * 通道 B：拉取并投递未确认通知。emit 同步（运行时吞监听者异常），因此
+     * onNotice 返回即视为投递成功，推进连续成功前缀的游标后批量 ack。
+     * ack 失败时内存游标不前进，下次重新拉；串行化防止并发重复投递。
+     */
+    async function pumpNotices() {
+        if (disposed || !started || backends.size === 0)
+            return;
+        // pumping 期间的新提示记 pending，结束后补拉一轮，不吞事件。
+        if (noticePumping) {
+            noticePending = true;
+            return;
+        }
+        noticePumping = true;
+        try {
+            do {
+                noticePending = false;
+                const projectsNow = [...backends.keys()];
+                const backend = backends.get(projectsNow[0] ?? '');
+                if (backend === undefined)
+                    return;
+                let cursor = clientCursor();
+                const seenCursors = new Set();
+                // keyset 分页拉全未确认通知。seenCursors 是死循环兜底：服务端必须按 cursor 过滤，
+                // 但若实现有误重复返回同一页，这里必须停，不能把测试/页面挂死。
+                for (;;) {
+                    if (disposed)
+                        return;
+                    if (cursor !== undefined) {
+                        if (seenCursors.has(cursor))
+                            return;
+                        seenCursors.add(cursor);
+                    }
+                    const page = await backend.listNotices(projectsNow, cursor);
+                    if (disposed || page.notices.length === 0)
+                        break;
+                    let delivered = 0;
+                    for (const notice of page.notices) {
+                        onNotice(notice);
+                        cursor = notice.cursor;
+                        delivered += 1;
+                    }
+                    if (delivered > 0 && cursor !== undefined) {
+                        await backend.ackNotices(projectsNow, cursor);
+                        noticeCursors.set(clientId, cursor);
+                    }
+                    if (page.nextCursor === undefined || page.nextCursor === cursor)
+                        break;
+                    cursor = page.nextCursor;
+                }
+            } while (noticePending && !disposed);
+        }
+        catch {
+            // 通知拉取失败不影响投影；下次 follow 提示 / 可见时重试。
+        }
+        finally {
+            noticePumping = false;
+        }
     }
     function advanceCursor(project, event) {
         const state = projectState(project);
@@ -100,8 +152,6 @@ export function createAuthoritativeEngine(options) {
         const generation = state.epoch;
         try {
             let cursor = state.cursor;
-            let first = true;
-            // keyset 分页：按服务端给的 nextCursor 续拉，直到没有下一页。
             while (!disposed && generation === state.epoch) {
                 const page = await backend.list(project, cursor);
                 if (disposed || generation !== state.epoch)
@@ -114,8 +164,6 @@ export function createAuthoritativeEngine(options) {
                 if (page.nextCursor === undefined || page.nextCursor === cursor)
                     break;
                 cursor = page.nextCursor;
-                if (first)
-                    first = false;
             }
             if (disposed || generation !== state.epoch)
                 return;
@@ -124,7 +172,7 @@ export function createAuthoritativeEngine(options) {
             startFollow();
         }
         catch {
-            // 查询失败不判死、不降级：服务端 watchdog 是权威，下一帧/下次可见再试。
+            // 查询失败不判死、不降级：服务端 watchdog 是权威。
         }
     }
     function startFollow() {
@@ -152,9 +200,10 @@ export function createAuthoritativeEngine(options) {
                     return;
                 if (event.kind === 'upsert')
                     applyRows(project, event.rows);
+                else if (event.kind === 'notice-available')
+                    void pumpNotices();
                 advanceCursor(project, event);
             }, () => {
-                // 只作废这条连接覆盖的项目；指数退避 + jitter 防重连风暴。
                 for (const project of owned) {
                     const state = projects.get(project);
                     if (state !== undefined)
@@ -177,19 +226,20 @@ export function createAuthoritativeEngine(options) {
         if (disposed)
             return;
         await Promise.all([...backends.keys()].map((project) => rebase(project)));
+        void pumpNotices();
     }
     return {
         attach(project, backend) {
             if (disposed)
                 throw new Error('authoritative engine is disposed');
             if (typeof backend.list !== 'function' || typeof backend.follow !== 'function'
+                || typeof backend.listNotices !== 'function' || typeof backend.ackNotices !== 'function'
                 || typeof backend.invoke !== 'function' || typeof backend.ack !== 'function') {
-                throw new Error(`task backend for ${project} must provide list/follow/invoke/ack`);
+                throw new Error(`task backend for ${project} must provide list/follow/listNotices/ackNotices/invoke/ack`);
             }
             backends.set(project, backend);
             projectState(project);
             if (started) {
-                // 后端集合变了：旧 follow 的 projects 列表不含新项目，必须断开重建。
                 const wasStarted = started;
                 this.stop();
                 started = wasStarted;
@@ -249,24 +299,36 @@ export function createAuthoritativeEngine(options) {
                 }
                 if (entry.result !== undefined)
                     return entry.result;
-                const result = await backend.invoke({
-                    project,
-                    key,
-                    actionId,
-                    token: action.token,
-                    version: record.version,
-                    idempotencyKey: entry.idempotencyKey,
-                });
-                // 只缓存成功：失败（含服务端明确拒绝）不封死 60 秒，token 仍有效时可重试。
-                if (result.ok) {
-                    entry.result = result;
-                    entry.at = Date.now();
+                let timer = null;
+                try {
+                    const timed = new Promise((_, reject) => {
+                        timer = setTimeout(() => reject(new Error('action timeout')), actionTimeoutMs);
+                    });
+                    const raw = await Promise.race([backend.invoke({
+                            project, key, actionId,
+                            token: action.token,
+                            version: record.version,
+                            idempotencyKey: entry.idempotencyKey,
+                        }), timed]);
+                    const result = { ...raw, idempotencyKey: entry.idempotencyKey };
+                    if (result.ok) {
+                        entry.result = result;
+                        entry.at = Date.now();
+                    }
+                    return result;
                 }
-                return result;
+                finally {
+                    if (timer !== null)
+                        clearTimeout(timer);
+                }
             }
             catch (error) {
                 return { ok: false, reason: error instanceof Error ? error.message : String(error) };
             }
+        },
+        /** 暴露幂等键供上层在 action 事件里回传，迟到结果由它抑制二次 emit。 */
+        idempotencyKeyFor(project, key, actionId, version) {
+            return invokes.get(invokeCacheKey(project, key, actionId, version))?.idempotencyKey;
         },
         async acknowledge(request) {
             const backend = backends.get(request.project);
@@ -286,9 +348,7 @@ export function createAuthoritativeEngine(options) {
         has(project) {
             return backends.has(project);
         },
-        /** 停止连接但保留后端与已水合状态；pool.dispose → connect 后可重新 follow。 */
         stop() {
-            // 先让在途 baseline / poll 的代次失效，再断连接；否则旧结果回来会重启 follow。
             for (const state of projects.values())
                 state.epoch += 1;
             for (const off of followers.values())

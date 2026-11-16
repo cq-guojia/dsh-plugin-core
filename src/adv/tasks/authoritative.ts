@@ -1,12 +1,13 @@
 /**
  * 服务端权威任务的客户端调和器。
  *
- * 真值在消费方服务端：时钟、判死、枚举、命令执行都不在页面里。本模块只做三件事：
- * 1. 开页时把服务端在跑任务水合成投影；
- * 2. 按单调 version 合并增量（含终态墓碑），过滤迟到与乱序；
- * 3. 按钮按 actionId + 服务端下发的 token 发命令，不依赖任何页面闭包。
+ * 两条通道各司其职，绝不混用：
+ *   A. 在跑投影——list/follow 只水合 running；tombstone 只更新本地终态门，不 emit、不 ack。
+ *   B. 终态通知——listNotices/ackNotices 拉未确认通知，emit 后按连续成功前缀 ack。
+ * 这样基线回放（含 tombstone）永远不会造成「任务结束」的重复通知。
  *
- * 零 React / 零 DOM；transport 由调用方注入，Node 自检可直接用内存 fake。
+ * 真值、判死、时钟、命令执行全在消费方服务端；本模块只做投影、调和、通知投递。
+ * 零 React / 零 DOM；transport 注入，Node 自检可用内存 fake。
  */
 import type { TaskNotificationDetail } from './pool.js'
 
@@ -76,10 +77,25 @@ export interface ServerTaskPage {
   readonly snapshotVersion: number
 }
 
-/** 增量事件，follow 流的一帧。 */
+/** 增量事件，follow 流的一帧。notice-available 只提示「有未处理通知」，不携带通知本体。 */
 export type ServerTaskEvent =
   | { readonly kind: 'upsert'; readonly rows: readonly ServerTaskRecord[] }
   | { readonly kind: 'cursor'; readonly cursor: string; readonly serverNow: number }
+  | { readonly kind: 'notice-available' }
+
+/** 一条服务端终态通知。notificationId 由服务端生成且稳定，供去重与 ack。 */
+export interface ServerNotice {
+  readonly notificationId: string
+  readonly project: string
+  readonly record: ServerTaskRecord
+  /** 由服务端下发，核心不自拼；服务端按它判未确认项。 */
+  readonly cursor: string
+}
+
+export interface ServerNoticePage {
+  readonly notices: readonly ServerNotice[]
+  readonly nextCursor?: string
+}
 
 export interface InvokeRequest {
   readonly project: string
@@ -95,21 +111,19 @@ export interface InvokeResult {
   readonly ok: boolean
   readonly result?: TaskNotificationDetail
   readonly reason?: string
+  /** 本次命令的幂等键，供 action 事件回传、迟到结果复查。 */
+  readonly idempotencyKey?: string
 }
 
 export interface AckRequest {
   readonly project: string
-  readonly key: string
-  readonly version: number
-  /** 通知类别：settled / failed 等。 */
-  readonly kind: string
-  /** 客户端持久游标，重开后保持不变。 */
+  /** 通知确认推进到的游标（服务端下发的 cursor，核心不自拼）。 */
   readonly cursor: string
 }
 
 /**
- * 消费方注入的后端能力。`list` / `follow` / `invoke` / `ack` 是必需的：
- * 缺任一项就没有完整恢复能力，注册时直接报错，不静默降级。
+ * 消费方注入的后端能力。list/follow/listNotices/ackNotices/invoke/ack 全部必需：
+ * 缺任一项就没有完整恢复与通知能力，注册时直接报错，不静默降级。
  */
 export interface TaskBackend {
   create?(input: ServerCreateInput): Promise<ServerCreateResult>
@@ -121,16 +135,23 @@ export interface TaskBackend {
     onError: (project: string, error: unknown) => void,
   ): () => void
   poll?(keys: readonly string[]): Promise<readonly ServerTaskRecord[]>
+  /** 拉取未确认的终态通知（通道 B）。 */
+  listNotices(projects: readonly string[], sinceCursor?: string): Promise<ServerNoticePage>
+  /** 按连续成功前缀推进确认游标，服务端幂等。 */
+  ackNotices(projects: readonly string[], cursor: string): Promise<void>
   invoke(request: InvokeRequest): Promise<InvokeResult>
   ack(request: AckRequest): Promise<void>
 }
 
 export interface AuthoritativeEngineOptions {
   readonly onChange: (records: readonly ServerTaskRecord[]) => void
-  readonly onTerminal?: (record: ServerTaskRecord) => void
+  /** 通道 B：一条未确认通知投递到前端。 emit 成功后才推进 ack 游标。 */
+  readonly onNotice: (notice: ServerNotice) => void
   readonly clientId: string
   /** 重新基线的最小间隔，默认 5 秒；visibilitychange 去重。 */
   readonly rebaseMinMs?: number
+  /** 命令超时，默认 5000ms。 */
+  readonly actionTimeoutMs?: number
 }
 
 type ProjectState = {
@@ -138,10 +159,8 @@ type ProjectState = {
   snapshotVersion: number
   epoch: number
   seen: Map<string, ServerTaskRecord>
-  /** 每个 key 已知的最高版本；只挡更旧的，不挡同版本其他状态。 */
   watermark: Map<string, number>
-  /** 终态版本下界：>= 该版本的任何行都不得再改这条记录。 */
-  terminal: Map<string, { version: number; acked: boolean }>
+  terminal: Map<string, number>
 }
 
 let idempotencySeq = 0
@@ -153,9 +172,9 @@ function newIdempotencyKey(clientId: string): string {
 }
 
 /**
- * version 单调合并，返回**真正变更的行**（不是全量 seen），避免重复触发终态 ack。
- * 终态是一道单向门：一旦见过版本 v 的终态，v 及以下的任何行都不得再改这条记录，
- * 否则同版本 tombstone 后到的 running 会把已结算任务复活。
+ * version 单调合并，返回真正变更的行。终态是一道单向门：
+ * 一旦见过版本 v 的终态，v 及以下的任何行都不得再改这条记录。
+ * 注意：这里只更新投影与终态门，**不 emit 通知**——通知只由通道 B 投递。
  */
 function mergeInto(state: ProjectState, rows: readonly ServerTaskRecord[]): readonly ServerTaskRecord[] {
   const accepted: ServerTaskRecord[] = []
@@ -164,33 +183,37 @@ function mergeInto(state: ProjectState, rows: readonly ServerTaskRecord[]): read
     const seenVersion = state.watermark.get(row.key) ?? -1
     if (row.version < seenVersion) continue
     const terminal = state.terminal.get(row.key)
-    if (terminal !== undefined && row.version <= terminal.version) continue
+    if (terminal !== undefined && row.version <= terminal) continue
     const current = state.seen.get(row.key)
     if (current !== undefined && current.version > row.version) continue
     if (current !== undefined && current.version === row.version && current.state === row.state) continue
     state.seen.set(row.key, row)
     state.watermark.set(row.key, row.version)
-    if (row.tombstone === true || row.state !== 'running') {
-      state.terminal.set(row.key, { version: row.version, acked: false })
-    }
+    if (row.tombstone === true || row.state !== 'running') state.terminal.set(row.key, row.version)
     accepted.push(row)
   }
   return accepted
 }
 
 export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
-  const { onChange, onTerminal, clientId } = options
+  const { onChange, onNotice, clientId } = options
   const rebaseMinMs = options.rebaseMinMs ?? 5_000
+  const actionTimeoutMs = options.actionTimeoutMs ?? 5_000
   const backends = new Map<string, TaskBackend>()
   const projects = new Map<string, ProjectState>()
-  /** 每个后端实例一条连接：不同 project 可能走不同后端，不能让首个后端代收全部。 */
+  /** 每个后端实例一条连接：不同 project 可能走不同后端。 */
   const followers = new Map<TaskBackend, () => void>()
   let started = false
   let disposed = false
   let lastRebase = 0
   let reconnectFailures = 0
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null
-  /** 同一 (key,actionId,version) 在结果缓存窗口内复用幂等键，响应丢失时重试返回同一结果。 */
+  /** 通道 B 的确认游标：按 clientId 隔离、服务端下发，连续成功前缀推进。 */
+  const noticeCursors = new Map<string, string | undefined>()
+  let noticePumping = false
+  let noticePending = false
+  function clientCursor(): string | undefined { return noticeCursors.get(clientId) }
+
   const invokes = new Map<string, { idempotencyKey: string; result?: InvokeResult; at: number }>()
   const INVOKE_CACHE_MS = 60_000
   function invokeCacheKey(project: string, key: string, actionId: string, version: number): string {
@@ -218,17 +241,57 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
   }
 
   function applyRows(project: string, rows: readonly ServerTaskRecord[]): void {
-    const state = projectState(project)
-    const accepted = mergeInto(state, rows)
-    if (accepted.length === 0) return
-    for (const row of accepted) {
-      if (row.tombstone !== true && row.state === 'running') continue
-      const terminal = state.terminal.get(row.key)
-      if (terminal === undefined || terminal.version !== row.version || terminal.acked) continue
-      terminal.acked = true
-      onTerminal?.(row)
-    }
+    if (mergeInto(projectState(project), rows).length === 0) return
     emitChange()
+  }
+
+  /**
+   * 通道 B：拉取并投递未确认通知。emit 同步（运行时吞监听者异常），因此
+   * onNotice 返回即视为投递成功，推进连续成功前缀的游标后批量 ack。
+   * ack 失败时内存游标不前进，下次重新拉；串行化防止并发重复投递。
+   */
+  async function pumpNotices(): Promise<void> {
+    if (disposed || !started || backends.size === 0) return
+    // pumping 期间的新提示记 pending，结束后补拉一轮，不吞事件。
+    if (noticePumping) { noticePending = true; return }
+    noticePumping = true
+    try {
+      do {
+        noticePending = false
+        const projectsNow = [...backends.keys()]
+        const backend = backends.get(projectsNow[0] ?? '')
+        if (backend === undefined) return
+        let cursor = clientCursor()
+        const seenCursors = new Set<string>()
+        // keyset 分页拉全未确认通知。seenCursors 是死循环兜底：服务端必须按 cursor 过滤，
+        // 但若实现有误重复返回同一页，这里必须停，不能把测试/页面挂死。
+        for (;;) {
+          if (disposed) return
+          if (cursor !== undefined) {
+            if (seenCursors.has(cursor)) return
+            seenCursors.add(cursor)
+          }
+          const page = await backend.listNotices(projectsNow, cursor)
+          if (disposed || page.notices.length === 0) break
+          let delivered = 0
+          for (const notice of page.notices) {
+            onNotice(notice)
+            cursor = notice.cursor
+            delivered += 1
+          }
+          if (delivered > 0 && cursor !== undefined) {
+            await backend.ackNotices(projectsNow, cursor)
+            noticeCursors.set(clientId, cursor)
+          }
+          if (page.nextCursor === undefined || page.nextCursor === cursor) break
+          cursor = page.nextCursor
+        }
+      } while (noticePending && !disposed)
+    } catch {
+      // 通知拉取失败不影响投影；下次 follow 提示 / 可见时重试。
+    } finally {
+      noticePumping = false
+    }
   }
 
   function advanceCursor(project: string, event: ServerTaskEvent): void {
@@ -243,8 +306,6 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
     const generation = state.epoch
     try {
       let cursor: string | undefined = state.cursor
-      let first = true
-      // keyset 分页：按服务端给的 nextCursor 续拉，直到没有下一页。
       while (!disposed && generation === state.epoch) {
         const page = await backend.list(project, cursor)
         if (disposed || generation !== state.epoch) return
@@ -253,14 +314,13 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
         state.snapshotVersion = page.snapshotVersion
         if (page.nextCursor === undefined || page.nextCursor === cursor) break
         cursor = page.nextCursor
-        if (first) first = false
       }
       if (disposed || generation !== state.epoch) return
       state.cursor = cursor
       reconnectFailures = 0
       startFollow()
     } catch {
-      // 查询失败不判死、不降级：服务端 watchdog 是权威，下一帧/下次可见再试。
+      // 查询失败不判死、不降级：服务端 watchdog 是权威。
     }
   }
 
@@ -285,10 +345,10 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
         (project, event) => {
           if (disposed || !owned.includes(project)) return
           if (event.kind === 'upsert') applyRows(project, event.rows)
+          else if (event.kind === 'notice-available') void pumpNotices()
           advanceCursor(project, event)
         },
         () => {
-          // 只作废这条连接覆盖的项目；指数退避 + jitter 防重连风暴。
           for (const project of owned) {
             const state = projects.get(project)
             if (state !== undefined) state.epoch += 1
@@ -310,19 +370,20 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
   async function rebaseAll(): Promise<void> {
     if (disposed) return
     await Promise.all([...backends.keys()].map((project) => rebase(project)))
+    void pumpNotices()
   }
 
   return {
     attach(project: string, backend: TaskBackend): void {
       if (disposed) throw new Error('authoritative engine is disposed')
       if (typeof backend.list !== 'function' || typeof backend.follow !== 'function'
+        || typeof backend.listNotices !== 'function' || typeof backend.ackNotices !== 'function'
         || typeof backend.invoke !== 'function' || typeof backend.ack !== 'function') {
-        throw new Error(`task backend for ${project} must provide list/follow/invoke/ack`)
+        throw new Error(`task backend for ${project} must provide list/follow/listNotices/ackNotices/invoke/ack`)
       }
       backends.set(project, backend)
       projectState(project)
       if (started) {
-        // 后端集合变了：旧 follow 的 projects 列表不含新项目，必须断开重建。
         const wasStarted = started
         this.stop()
         started = wasStarted
@@ -376,23 +437,33 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
           invokes.set(cacheKey, entry)
         }
         if (entry.result !== undefined) return entry.result
-        const result = await backend.invoke({
-          project,
-          key,
-          actionId,
-          token: action.token,
-          version: record.version,
-          idempotencyKey: entry.idempotencyKey,
-        })
-        // 只缓存成功：失败（含服务端明确拒绝）不封死 60 秒，token 仍有效时可重试。
-        if (result.ok) {
-          entry.result = result
-          entry.at = Date.now()
+        let timer: ReturnType<typeof setTimeout> | null = null
+        try {
+          const timed = new Promise<never>((_, reject) => {
+            timer = setTimeout(() => reject(new Error('action timeout')), actionTimeoutMs)
+          })
+          const raw = await Promise.race([backend.invoke({
+            project, key, actionId,
+            token: action.token,
+            version: record.version,
+            idempotencyKey: entry.idempotencyKey,
+          }), timed])
+          const result: InvokeResult = { ...raw, idempotencyKey: entry.idempotencyKey }
+          if (result.ok) {
+            entry.result = result
+            entry.at = Date.now()
+          }
+          return result
+        } finally {
+          if (timer !== null) clearTimeout(timer)
         }
-        return result
       } catch (error) {
         return { ok: false, reason: error instanceof Error ? error.message : String(error) }
       }
+    },
+    /** 暴露幂等键供上层在 action 事件里回传，迟到结果由它抑制二次 emit。 */
+    idempotencyKeyFor(project: string, key: string, actionId: string, version: number): string | undefined {
+      return invokes.get(invokeCacheKey(project, key, actionId, version))?.idempotencyKey
     },
     async acknowledge(request: AckRequest): Promise<void> {
       const backend = backends.get(request.project)
@@ -409,9 +480,7 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
     has(project: string): boolean {
       return backends.has(project)
     },
-    /** 停止连接但保留后端与已水合状态；pool.dispose → connect 后可重新 follow。 */
     stop(): void {
-      // 先让在途 baseline / poll 的代次失效，再断连接；否则旧结果回来会重启 follow。
       for (const state of projects.values()) state.epoch += 1
       for (const off of followers.values()) off()
       followers.clear()

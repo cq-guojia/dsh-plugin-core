@@ -70,6 +70,27 @@ export function serveTaskCenter(ctx, options) {
         }
         send(res, 200, await options.store.list(project, cursor, viewer));
     });
+    route('/notices', async (req, res, viewer) => {
+        const url = new URL(req.url ?? '', 'http://localhost');
+        const projects = (url.searchParams.get('projects') ?? '').split(',').filter((item) => item !== '');
+        if (projects.length === 0) {
+            send(res, 400, { error: 'missing projects' });
+            return;
+        }
+        const since = url.searchParams.get('since') ?? undefined;
+        send(res, 200, await options.store.listNotices(projects, since, viewer));
+    });
+    route('/notices/ack', async (req, res, viewer) => {
+        const body = await readBody(req);
+        const projects = Array.isArray(body.projects) ? body.projects.filter((item) => typeof item === 'string') : [];
+        const cursor = typeof body.cursor === 'string' ? body.cursor : '';
+        if (projects.length === 0 || cursor === '') {
+            send(res, 400, { error: 'missing projects or cursor' });
+            return;
+        }
+        await options.store.ackNotices(projects, cursor, viewer);
+        send(res, 200, { ok: true });
+    });
     route('/invoke', async (req, res, viewer) => {
         const body = await readBody(req);
         send(res, 200, await options.store.invoke(body, viewer));

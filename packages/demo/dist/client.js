@@ -70023,12 +70023,16 @@ h(SideSheet, {
     },
     "prose": [
       {
-        "zh": "\u65E7\u7684\u72B6\u6001\u6E90\u6A21\u5F0F\u53EA\u662F\u300C\u6309\u5DF2\u77E5 key \u95EE\u670D\u52A1\u7AEF\u300D\uFF1A\u9875\u9762\u5168\u5173\u540E\u62FF\u4E0D\u5230 key\uFF0C\u5237\u65B0\u4F1A\u628A\u65F6\u949F\u4ECE\u96F6\u7B97\u8D77\uFF0C\u6309\u94AE handler \u4E5F\u968F\u9875\u9762\u9500\u6BC1\u3002\u8981\u5B8C\u6574\u6062\u590D\uFF0C\u6539\u7528 `taskNotifications.setTaskBackend(project, backend)` + `notifyTask.server(title, options)`\u3002\u540E\u7AEF\u5FC5\u987B\u63D0\u4F9B `list / follow / invoke / ack` \u56DB\u4E2A\u80FD\u529B\uFF0C\u7F3A\u4E00\u5373\u6CE8\u518C\u5931\u8D25\u2014\u2014\u4E0D\u505A\u9759\u9ED8\u964D\u7EA7\u3002",
-        "en": "The status-source mode only asks the server about keys it already knows: after every page closes there are no keys, a reload restarts the clock, and action handlers die with the page. For full recovery use `taskNotifications.setTaskBackend(project, backend)` plus `notifyTask.server(title, options)`. A backend must provide `list / follow / invoke / ack`; registering otherwise throws \u2014 there is no silent fallback."
+        "zh": "\u65E7\u7684\u72B6\u6001\u6E90\u6A21\u5F0F\u53EA\u662F\u300C\u6309\u5DF2\u77E5 key \u95EE\u670D\u52A1\u7AEF\u300D\uFF1A\u9875\u9762\u5168\u5173\u540E\u62FF\u4E0D\u5230 key\uFF0C\u5237\u65B0\u4F1A\u628A\u65F6\u949F\u4ECE\u96F6\u7B97\u8D77\uFF0C\u6309\u94AE handler \u4E5F\u968F\u9875\u9762\u9500\u6BC1\u3002\u8981\u5B8C\u6574\u6062\u590D\uFF0C\u6539\u7528 `taskNotifications.setTaskBackend(project, backend)` + `notifyTask.server(title, options)`\u3002\u540E\u7AEF\u5FC5\u987B\u63D0\u4F9B `list / follow / listNotices / ackNotices / invoke / ack` \u516D\u4E2A\u80FD\u529B\uFF0C\u7F3A\u4E00\u5373\u6CE8\u518C\u5931\u8D25\u2014\u2014\u4E0D\u505A\u9759\u9ED8\u964D\u7EA7\u3002",
+        "en": "The status-source mode only asks the server about keys it already knows: after every page closes there are no keys, a reload restarts the clock, and action handlers die with the page. For full recovery use `taskNotifications.setTaskBackend(project, backend)` plus `notifyTask.server(title, options)`. A backend must provide `list / follow / listNotices / ackNotices / invoke / ack`; registering otherwise throws \u2014 there is no silent fallback."
       },
       {
-        "zh": "\u771F\u6E90\u5728\u670D\u52A1\u7AEF\uFF1A\u539F\u5B50 `create` \u51B3\u5B9A `created`\uFF0C`startedAt / deadlineAt / version` \u7531\u670D\u52A1\u7AEF\u751F\u6210\uFF0C\u8D85\u65F6\u4E0E\u79DF\u7EA6\u7531\u670D\u52A1\u7AEF watchdog \u5224\u5B9A\uFF0C\u7EC8\u6001\u6309 TTL \u6E05\u7406\u3002\u6838\u5FC3\u53EA\u6309\u5355\u8C03 version \u5408\u5E76\u57FA\u7EBF\u3001\u5206\u9875\u4E0E\u589E\u91CF\uFF0C\u7EC8\u6001\u5893\u7891\u6321\u4F4F\u8FDF\u5230\u5FEB\u7167\uFF1B\u6309\u94AE\u662F `{id, token, expiresAt}` \u63CF\u8FF0\uFF0C`runAction` \u6309 actionId \u8D70\u670D\u52A1\u7AEF\u547D\u4EE4\uFF0C\u4E0D\u4F9D\u8D56\u9875\u9762\u95ED\u5305\u3002\u7ED3\u679C\u901A\u77E5\u6309 `(project, scope, key, version, kind)` \u53BB\u91CD\u5E76 ack\uFF1B\u672A\u786E\u8BA4\u7684\u4E0B\u6B21\u5F00\u9875\u8865\u53D1\u3002",
-        "en": "The server owns the truth: atomic `create` decides `created`; `startedAt / deadlineAt / version` come from the server; a server watchdog decides timeouts and lease expiry; terminal records are cleared by TTL. The core only merges baseline, pages and deltas by monotonic version, with terminal tombstones blocking late snapshots. Actions are `{id, token, expiresAt}` descriptors and `runAction` dispatches by actionId to the server, never through page closures. Result notices are deduplicated by `(project, scope, key, version, kind)` and acked; unacked notices replay on the next page open."
+        "zh": "\u4E24\u6761\u901A\u9053\u5404\u53F8\u5176\u804C\uFF1A\u901A\u9053 A\uFF08`list / follow`\uFF09\u53EA\u6C34\u5408\u5728\u8DD1\u4EFB\u52A1\uFF0C\u7EC8\u6001\u5893\u7891\u53EA\u66F4\u65B0\u672C\u5730\u7EC8\u6001\u95E8\uFF0C\u7EDD\u4E0D\u53D1 `settled`\u3001\u7EDD\u4E0D ack\uFF1B\u901A\u9053 B\uFF08`listNotices / ackNotices`\uFF09\u4E13\u95E8\u6295\u9012\u672A\u786E\u8BA4\u7684\u7EC8\u6001\u901A\u77E5\uFF0C\u4E8B\u4EF6\u53D1\u51FA\u540E\u624D\u6309\u8FDE\u7EED\u6210\u529F\u524D\u7F00 ack\u3002\u56E0\u6B64\u9875\u9762\u91CD\u5F00\u540E\u57FA\u7EBF\u56DE\u653E\u4E0D\u4F1A\u9020\u6210\u91CD\u590D\u901A\u77E5\uFF0C\u672A\u786E\u8BA4\u7684\u901A\u77E5\u4ECD\u4F1A\u901A\u8FC7\u901A\u9053 B \u9001\u8FBE\u3002",
+        "en": "Two channels with separate jobs: channel A (`list / follow`) only hydrates running tasks; a terminal tombstone only updates the local terminal gate and never emits `settled` nor acks. Channel B (`listNotices / ackNotices`) delivers unacknowledged terminal notices; the cursor advances only after the event is emitted. A page reopen therefore never duplicates a notice from baseline replay, and unacknowledged notices still arrive through channel B."
+      },
+      {
+        "zh": "\u771F\u6E90\u5728\u670D\u52A1\u7AEF\uFF1A\u539F\u5B50 `create` \u51B3\u5B9A `created`\uFF0C`startedAt / deadlineAt / version` \u7531\u670D\u52A1\u7AEF\u751F\u6210\uFF0C\u8D85\u65F6\u4E0E\u79DF\u7EA6\u7531\u670D\u52A1\u7AEF watchdog \u5224\u5B9A\uFF0C\u7EC8\u6001\u6309 TTL \u6E05\u7406\u3002\u6838\u5FC3\u53EA\u6309\u5355\u8C03 version \u5408\u5E76\u57FA\u7EBF\u3001\u5206\u9875\u4E0E\u589E\u91CF\uFF1B\u6309\u94AE\u662F `{id, token, expiresAt}` \u63CF\u8FF0\uFF0C`runAction` \u6309 actionId \u8D70\u670D\u52A1\u7AEF\u547D\u4EE4\uFF0C\u4E0D\u4F9D\u8D56\u9875\u9762\u95ED\u5305\u3002\u70B9\u51FB\u6309\u94AE\u4F1A\u5411 `taskNotificationEvents` \u53D1 `action` \u4E8B\u4EF6\uFF08\u542B\u4EFB\u52A1\u5FEB\u7167\u3001actionId\u3001ok\u3001reason\u3001result\uFF09\uFF0C\u6D88\u8D39\u65B9\u636E\u6B64\u628A\u754C\u9762\u5E26\u56DE\u6765\u3002\u6743\u5A01\u53E5\u67C4\u53EA\u6709 `id / isSettled / settled`\uFF0C\u6CA1\u6709 update/touch/background/done/fail/track\u2014\u2014\u7EC8\u6001\u7531\u670D\u52A1\u7AEF\u5224\u5B9A\uFF0C\u7F16\u8BD1\u671F\u5373\u963B\u6B62\u8BEF\u7528\u3002",
+        "en": "The server owns the truth: atomic `create` decides `created`; `startedAt / deadlineAt / version` come from the server; a server watchdog decides timeouts and lease expiry; terminal records are cleared by TTL. Actions are `{id, token, expiresAt}` descriptors and `runAction` dispatches by actionId to the server, never through page closures. Every click emits an `action` event to `taskNotificationEvents` (with task snapshot, actionId, ok, reason, result) so consumers can restore their UI. An authoritative handle exposes only `id / isSettled / settled`; update/touch/background/done/fail/track do not exist \u2014 the server decides terminal state, and the type system prevents misuse."
       }
     ],
     "api": [
@@ -70040,17 +70044,17 @@ h(SideSheet, {
             "type": "(project: string, backend: TaskBackend) => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5207\u6362\u5230\u670D\u52A1\u7AEF\u6743\u5A01\u6A21\u5F0F\uFF1B\u5FC5\u987B\u63D0\u4F9B list/follow/invoke/ack\uFF0C\u5426\u5219\u629B\u9519",
-              "en": "Switches to authoritative mode; list/follow/invoke/ack are mandatory or registration throws"
+              "zh": "\u5207\u6362\u5230\u670D\u52A1\u7AEF\u6743\u5A01\u6A21\u5F0F\uFF1B\u5FC5\u987B\u63D0\u4F9B list/follow/listNotices/ackNotices/invoke/ack\uFF0C\u5426\u5219\u629B\u9519",
+              "en": "Switches to authoritative mode; list/follow/listNotices/ackNotices/invoke/ack are mandatory or registration throws"
             }
           },
           {
             "name": "notifyTask.server(title, options?)",
-            "type": "(title: string, options?: NotifyTaskOptions) => Promise<TaskNotificationClaim>",
+            "type": "(title: string, options?: NotifyTaskOptions) => Promise<AuthoritativeClaim>",
             "def": "\u2014",
             "desc": {
-              "zh": "\u670D\u52A1\u7AEF\u539F\u5B50 create \u767B\u8BB0\uFF1B\u5FC5\u987B\u6709 key\uFF0Ccreated === false \u65F6\u4E0D\u8981\u8D77\u7B2C\u4E8C\u4EFD\u4F5C\u4E1A",
-              "en": "Registers through server-side atomic create; a key is required, and created === false means do not start a second job"
+              "zh": "\u670D\u52A1\u7AEF\u539F\u5B50 create \u767B\u8BB0\uFF1B\u53E5\u67C4\u53EA\u6709 id/isSettled/settled\uFF0C\u6CA1\u6709\u53EF\u88AB\u9875\u9762\u5199\u7684\u65B9\u6CD5",
+              "en": "Registers through server-side atomic create; the handle exposes only id/isSettled/settled with no page-writable methods"
             }
           },
           {
@@ -74820,7 +74824,7 @@ function mergeInto(state, rows) {
     if (row3.version < seenVersion)
       continue;
     const terminal = state.terminal.get(row3.key);
-    if (terminal !== void 0 && row3.version <= terminal.version)
+    if (terminal !== void 0 && row3.version <= terminal)
       continue;
     const current3 = state.seen.get(row3.key);
     if (current3 !== void 0 && current3.version > row3.version)
@@ -74829,16 +74833,16 @@ function mergeInto(state, rows) {
       continue;
     state.seen.set(row3.key, row3);
     state.watermark.set(row3.key, row3.version);
-    if (row3.tombstone === true || row3.state !== "running") {
-      state.terminal.set(row3.key, { version: row3.version, acked: false });
-    }
+    if (row3.tombstone === true || row3.state !== "running")
+      state.terminal.set(row3.key, row3.version);
     accepted.push(row3);
   }
   return accepted;
 }
 function createAuthoritativeEngine(options) {
-  const { onChange, onTerminal, clientId } = options;
+  const { onChange, onNotice, clientId } = options;
   const rebaseMinMs = options.rebaseMinMs ?? 5e3;
+  const actionTimeoutMs = options.actionTimeoutMs ?? 5e3;
   const backends = /* @__PURE__ */ new Map();
   const projects = /* @__PURE__ */ new Map();
   const followers = /* @__PURE__ */ new Map();
@@ -74847,6 +74851,12 @@ function createAuthoritativeEngine(options) {
   let lastRebase = 0;
   let reconnectFailures = 0;
   let reconnectTimer = null;
+  const noticeCursors = /* @__PURE__ */ new Map();
+  let noticePumping = false;
+  let noticePending = false;
+  function clientCursor() {
+    return noticeCursors.get(clientId);
+  }
   const invokes = /* @__PURE__ */ new Map();
   const INVOKE_CACHE_MS = 6e4;
   function invokeCacheKey(project, key, actionId, version) {
@@ -74872,20 +74882,57 @@ function createAuthoritativeEngine(options) {
     onChange(Object.freeze(all));
   }
   function applyRows(project, rows) {
-    const state = projectState(project);
-    const accepted = mergeInto(state, rows);
-    if (accepted.length === 0)
+    if (mergeInto(projectState(project), rows).length === 0)
       return;
-    for (const row3 of accepted) {
-      if (row3.tombstone !== true && row3.state === "running")
-        continue;
-      const terminal = state.terminal.get(row3.key);
-      if (terminal === void 0 || terminal.version !== row3.version || terminal.acked)
-        continue;
-      terminal.acked = true;
-      onTerminal?.(row3);
-    }
     emitChange();
+  }
+  async function pumpNotices() {
+    if (disposed || !started || backends.size === 0)
+      return;
+    if (noticePumping) {
+      noticePending = true;
+      return;
+    }
+    noticePumping = true;
+    try {
+      do {
+        noticePending = false;
+        const projectsNow = [...backends.keys()];
+        const backend = backends.get(projectsNow[0] ?? "");
+        if (backend === void 0)
+          return;
+        let cursor2 = clientCursor();
+        const seenCursors = /* @__PURE__ */ new Set();
+        for (; ; ) {
+          if (disposed)
+            return;
+          if (cursor2 !== void 0) {
+            if (seenCursors.has(cursor2))
+              return;
+            seenCursors.add(cursor2);
+          }
+          const page = await backend.listNotices(projectsNow, cursor2);
+          if (disposed || page.notices.length === 0)
+            break;
+          let delivered = 0;
+          for (const notice of page.notices) {
+            onNotice(notice);
+            cursor2 = notice.cursor;
+            delivered += 1;
+          }
+          if (delivered > 0 && cursor2 !== void 0) {
+            await backend.ackNotices(projectsNow, cursor2);
+            noticeCursors.set(clientId, cursor2);
+          }
+          if (page.nextCursor === void 0 || page.nextCursor === cursor2)
+            break;
+          cursor2 = page.nextCursor;
+        }
+      } while (noticePending && !disposed);
+    } catch {
+    } finally {
+      noticePumping = false;
+    }
   }
   function advanceCursor2(project, event) {
     const state = projectState(project);
@@ -74900,7 +74947,6 @@ function createAuthoritativeEngine(options) {
     const generation = state.epoch;
     try {
       let cursor2 = state.cursor;
-      let first = true;
       while (!disposed && generation === state.epoch) {
         const page = await backend.list(project, cursor2);
         if (disposed || generation !== state.epoch)
@@ -74913,8 +74959,6 @@ function createAuthoritativeEngine(options) {
         if (page.nextCursor === void 0 || page.nextCursor === cursor2)
           break;
         cursor2 = page.nextCursor;
-        if (first)
-          first = false;
       }
       if (disposed || generation !== state.epoch)
         return;
@@ -74949,6 +74993,8 @@ function createAuthoritativeEngine(options) {
           return;
         if (event.kind === "upsert")
           applyRows(project, event.rows);
+        else if (event.kind === "notice-available")
+          void pumpNotices();
         advanceCursor2(project, event);
       }, () => {
         for (const project of owned) {
@@ -74973,13 +75019,14 @@ function createAuthoritativeEngine(options) {
     if (disposed)
       return;
     await Promise.all([...backends.keys()].map((project) => rebase(project)));
+    void pumpNotices();
   }
   return {
     attach(project, backend) {
       if (disposed)
         throw new Error("authoritative engine is disposed");
-      if (typeof backend.list !== "function" || typeof backend.follow !== "function" || typeof backend.invoke !== "function" || typeof backend.ack !== "function") {
-        throw new Error(`task backend for ${project} must provide list/follow/invoke/ack`);
+      if (typeof backend.list !== "function" || typeof backend.follow !== "function" || typeof backend.listNotices !== "function" || typeof backend.ackNotices !== "function" || typeof backend.invoke !== "function" || typeof backend.ack !== "function") {
+        throw new Error(`task backend for ${project} must provide list/follow/listNotices/ackNotices/invoke/ack`);
       }
       backends.set(project, backend);
       projectState(project);
@@ -75042,22 +75089,36 @@ function createAuthoritativeEngine(options) {
         }
         if (entry.result !== void 0)
           return entry.result;
-        const result = await backend.invoke({
-          project,
-          key,
-          actionId,
-          token: action.token,
-          version: record.version,
-          idempotencyKey: entry.idempotencyKey
-        });
-        if (result.ok) {
-          entry.result = result;
-          entry.at = Date.now();
+        let timer = null;
+        try {
+          const timed = new Promise((_, reject) => {
+            timer = setTimeout(() => reject(new Error("action timeout")), actionTimeoutMs);
+          });
+          const raw = await Promise.race([backend.invoke({
+            project,
+            key,
+            actionId,
+            token: action.token,
+            version: record.version,
+            idempotencyKey: entry.idempotencyKey
+          }), timed]);
+          const result = { ...raw, idempotencyKey: entry.idempotencyKey };
+          if (result.ok) {
+            entry.result = result;
+            entry.at = Date.now();
+          }
+          return result;
+        } finally {
+          if (timer !== null)
+            clearTimeout(timer);
         }
-        return result;
       } catch (error) {
         return { ok: false, reason: error instanceof Error ? error.message : String(error) };
       }
+    },
+    /** 暴露幂等键供上层在 action 事件里回传，迟到结果由它抑制二次 emit。 */
+    idempotencyKeyFor(project, key, actionId, version) {
+      return invokes.get(invokeCacheKey(project, key, actionId, version))?.idempotencyKey;
     },
     async acknowledge(request) {
       const backend = backends.get(request.project);
@@ -75077,7 +75138,6 @@ function createAuthoritativeEngine(options) {
     has(project) {
       return backends.has(project);
     },
-    /** 停止连接但保留后端与已水合状态；pool.dispose → connect 后可重新 follow。 */
     stop() {
       for (const state of projects.values())
         state.epoch += 1;
@@ -75102,10 +75162,10 @@ function createAuthoritativeEngine(options) {
 var import_react106 = require("react");
 
 // dist/adv/tasks/pool.js
-var TASK_NOTIFICATIONS_PROTOCOL = 4;
-var TASK_NOTIFICATIONS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/v4");
-var TASK_NOTIFICATIONS_EVENTS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/events/v4");
-var TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v4";
+var TASK_NOTIFICATIONS_PROTOCOL = 5;
+var TASK_NOTIFICATIONS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/v5");
+var TASK_NOTIFICATIONS_EVENTS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/events/v5");
+var TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v5";
 var SERVER_SHARD_ORIGIN = "__server__";
 var INVOKE_TIMEOUT_MS = 2e3;
 var DEFAULT_LEASE_MS = 5 * 6e4;
@@ -75360,7 +75420,7 @@ function makeOrigin2() {
 function compareTasks(a, b) {
   return a.startedAt - b.startedAt || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 }
-var TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v4/";
+var TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v5/";
 function lockNameFor(pageOrigin) {
   return `${TASK_NOTIFICATIONS_LOCK_PREFIX}${pageOrigin}`;
 }
@@ -75436,29 +75496,33 @@ function createTaskNotificationPool(options = {}) {
   }
   const serverSettlers = /* @__PURE__ */ new Map();
   const serverHandles = /* @__PURE__ */ new Map();
+  const deliveredNotices = /* @__PURE__ */ new Set();
+  const settledResults = /* @__PURE__ */ new Map();
+  function deliverTerminal(notice) {
+    const row3 = notice.record;
+    const cacheKey = `${row3.project}:${row3.key}`;
+    if (deliveredNotices.has(notice.notificationId))
+      return;
+    deliveredNotices.add(notice.notificationId);
+    const projection = serverRecordToProjection(row3);
+    const settlement = {
+      outcome: row3.state === "done" ? "done" : "failed",
+      reason: row3.reason,
+      task: projection
+    };
+    settledResults.set(cacheKey, settlement);
+    bus().emit({ type: "settled", outcome: settlement.outcome, task: projection, remote: false });
+    const waiter = serverSettlers.get(cacheKey);
+    if (waiter !== void 0) {
+      serverSettlers.delete(cacheKey);
+      serverHandles.delete(cacheKey);
+      waiter(settlement);
+    }
+  }
   const authoritative = createAuthoritativeEngine({
     clientId: origin,
     onChange: publishServerRows,
-    onTerminal: (row3) => {
-      const waiter = serverSettlers.get(`${row3.project}:${row3.key}`);
-      if (waiter !== void 0) {
-        serverSettlers.delete(`${row3.project}:${row3.key}`);
-        serverHandles.delete(`${row3.project}:${row3.key}`);
-        waiter({
-          outcome: row3.state === "done" ? "done" : "failed",
-          reason: row3.reason,
-          task: serverRecordToProjection(row3)
-        });
-      }
-      void authoritative.acknowledge({
-        project: row3.project,
-        key: row3.key,
-        version: row3.version,
-        kind: row3.state === "done" ? "settled" : "failed",
-        cursor: `${row3.project}:${row3.key}:${row3.version}`
-      }).catch(() => {
-      });
-    }
+    onNotice: deliverTerminal
   });
   let seq = 0;
   let revision = 0;
@@ -75729,19 +75793,64 @@ function createTaskNotificationPool(options = {}) {
       post({ kind: "invoke", origin, reqId, target, taskId, index: index3 });
     });
   }
+  function emitAction(taskId, snapshot, index3, ok, actionId, reason, result, idempotencyKey) {
+    bus().emit({
+      type: "action",
+      taskId,
+      task: snapshot,
+      ...actionId === void 0 ? {} : { actionId },
+      index: index3,
+      ok,
+      ...reason === void 0 ? {} : { reason },
+      ...result === void 0 ? {} : { result },
+      ...idempotencyKey === void 0 ? {} : { idempotencyKey },
+      remote: false
+    });
+  }
+  function serverFallbackSnapshot(taskId) {
+    const rest = taskId.startsWith(`${SERVER_SHARD_ORIGIN}:`) ? taskId.slice(SERVER_SHARD_ORIGIN.length + 1) : "";
+    const separator = rest.indexOf(":");
+    const project = separator >= 0 ? rest.slice(0, separator) : "";
+    const key = separator >= 0 ? rest.slice(separator + 1) : "";
+    return {
+      id: taskId,
+      ...key === "" ? {} : { key },
+      project,
+      group: "default",
+      title: "",
+      status: "failed",
+      startedAt: 0,
+      updatedAt: 0,
+      origin: SERVER_SHARD_ORIGIN,
+      backgrounded: false
+    };
+  }
   async function runAction(taskId, index3) {
     const record = locate(taskId);
-    if (record === void 0)
+    const isServer = record?.origin === SERVER_SHARD_ORIGIN || record === void 0 && taskId.startsWith(`${SERVER_SHARD_ORIGIN}:`);
+    if (record === void 0) {
+      if (isServer)
+        emitAction(taskId, serverFallbackSnapshot(taskId), index3, false, void 0, "task unavailable");
       return false;
-    if (record.timeoutMs !== void 0 && Date.now() - record.updatedAt > record.timeoutMs)
+    }
+    if (record.timeoutMs !== void 0 && Date.now() - record.updatedAt > record.timeoutMs) {
+      if (isServer)
+        emitAction(taskId, record, index3, false, record.actions?.[index3]?.id, "task expired");
       return false;
+    }
     const action = record.actions?.[index3];
-    if (action === void 0)
+    if (action === void 0) {
+      if (isServer)
+        emitAction(taskId, record, index3, false, void 0, "action unavailable");
       return false;
-    if (record.origin === SERVER_SHARD_ORIGIN) {
-      if (record.key === void 0 || action.id === void 0)
+    }
+    if (isServer) {
+      if (record.key === void 0 || action.id === void 0) {
+        emitAction(taskId, record, index3, false, action.id, "action unavailable");
         return false;
+      }
       const result = await authoritative.runAction(record.project, record.key, action.id);
+      emitAction(taskId, record, index3, result.ok, action.id, result.reason, result.result, result.idempotencyKey);
       return result.ok;
     }
     if (record.origin === origin)
@@ -76127,33 +76236,27 @@ function createTaskNotificationPool(options = {}) {
     let handle = serverHandles.get(keyOfHandle);
     if (handle === void 0) {
       let isSettled = false;
+      let resolveSettled = () => {
+      };
       const settled = new Promise((resolve) => {
+        resolveSettled = resolve;
+      });
+      handle = { id: id3, get isSettled() {
+        return isSettled;
+      }, settled };
+      serverHandles.set(keyOfHandle, handle);
+      const cached = settledResults.get(keyOfHandle);
+      if (cached !== void 0) {
+        settledResults.delete(keyOfHandle);
+        serverHandles.delete(keyOfHandle);
+        isSettled = true;
+        resolveSettled(cached);
+      } else {
         serverSettlers.set(keyOfHandle, (value) => {
           isSettled = true;
-          resolve(value);
+          resolveSettled(value);
         });
-      });
-      handle = {
-        id: id3,
-        get isSettled() {
-          return isSettled;
-        },
-        settled,
-        update() {
-        },
-        touch() {
-        },
-        background() {
-        },
-        done() {
-        },
-        fail() {
-        },
-        track(promise) {
-          return promise;
-        }
-      };
-      serverHandles.set(keyOfHandle, handle);
+      }
     }
     const created = await authoritative.create({
       project,
@@ -76244,6 +76347,8 @@ function createTaskNotificationPool(options = {}) {
       authoritative.stop();
       serverSettlers.clear();
       serverHandles.clear();
+      settledResults.clear();
+      deliveredNotices.clear();
       if (channel !== null) {
         channel.onmessage = null;
         channel.close();
@@ -76916,9 +77021,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.37.0"}`],
-            [t3("buildDemo"), `v${"0.37.0"}`],
-            [t3("buildStamp"), "261116-221818-033"]
+            [t3("buildCore"), `v${"0.38.0"}`],
+            [t3("buildDemo"), `v${"0.38.0"}`],
+            [t3("buildStamp"), "261117-001024-297"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77237,9 +77342,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.37.0"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.37.0"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261116-221818-033")
+          (0, import_react112.createElement)("span", null, `core v${"0.38.0"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.38.0"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-001024-297")
         )
       )
     ),

@@ -69,6 +69,18 @@ export function createHttpTaskBackend(options) {
             return await response.json();
         },
         follow,
+        async listNotices(projects, sinceCursor) {
+            const query = new URLSearchParams({ projects: projects.join(',') });
+            if (sinceCursor !== undefined)
+                query.set('since', sinceCursor);
+            const response = await doFetch(`${base}/notices?${query.toString()}`, { headers: options.headers?.() });
+            if (!response.ok)
+                throw new Error(`task notices failed: ${response.status}`);
+            return await response.json();
+        },
+        async ackNotices(projects, cursor) {
+            await post('/notices/ack', { projects, cursor });
+        },
         async poll(keys) {
             return post('/poll', { keys });
         },

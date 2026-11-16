@@ -1,12 +1,13 @@
 /**
  * 服务端权威任务的客户端调和器。
  *
- * 真值在消费方服务端：时钟、判死、枚举、命令执行都不在页面里。本模块只做三件事：
- * 1. 开页时把服务端在跑任务水合成投影；
- * 2. 按单调 version 合并增量（含终态墓碑），过滤迟到与乱序；
- * 3. 按钮按 actionId + 服务端下发的 token 发命令，不依赖任何页面闭包。
+ * 两条通道各司其职，绝不混用：
+ *   A. 在跑投影——list/follow 只水合 running；tombstone 只更新本地终态门，不 emit、不 ack。
+ *   B. 终态通知——listNotices/ackNotices 拉未确认通知，emit 后按连续成功前缀 ack。
+ * 这样基线回放（含 tombstone）永远不会造成「任务结束」的重复通知。
  *
- * 零 React / 零 DOM；transport 由调用方注入，Node 自检可直接用内存 fake。
+ * 真值、判死、时钟、命令执行全在消费方服务端；本模块只做投影、调和、通知投递。
+ * 零 React / 零 DOM；transport 注入，Node 自检可用内存 fake。
  */
 import type { TaskNotificationDetail } from './pool.js';
 /** 服务端权威任务的状态。 */
@@ -69,7 +70,7 @@ export interface ServerTaskPage {
     readonly nextCursor?: string;
     readonly snapshotVersion: number;
 }
-/** 增量事件，follow 流的一帧。 */
+/** 增量事件，follow 流的一帧。notice-available 只提示「有未处理通知」，不携带通知本体。 */
 export type ServerTaskEvent = {
     readonly kind: 'upsert';
     readonly rows: readonly ServerTaskRecord[];
@@ -77,7 +78,21 @@ export type ServerTaskEvent = {
     readonly kind: 'cursor';
     readonly cursor: string;
     readonly serverNow: number;
+} | {
+    readonly kind: 'notice-available';
 };
+/** 一条服务端终态通知。notificationId 由服务端生成且稳定，供去重与 ack。 */
+export interface ServerNotice {
+    readonly notificationId: string;
+    readonly project: string;
+    readonly record: ServerTaskRecord;
+    /** 由服务端下发，核心不自拼；服务端按它判未确认项。 */
+    readonly cursor: string;
+}
+export interface ServerNoticePage {
+    readonly notices: readonly ServerNotice[];
+    readonly nextCursor?: string;
+}
 export interface InvokeRequest {
     readonly project: string;
     readonly key: string;
@@ -91,34 +106,39 @@ export interface InvokeResult {
     readonly ok: boolean;
     readonly result?: TaskNotificationDetail;
     readonly reason?: string;
+    /** 本次命令的幂等键，供 action 事件回传、迟到结果复查。 */
+    readonly idempotencyKey?: string;
 }
 export interface AckRequest {
     readonly project: string;
-    readonly key: string;
-    readonly version: number;
-    /** 通知类别：settled / failed 等。 */
-    readonly kind: string;
-    /** 客户端持久游标，重开后保持不变。 */
+    /** 通知确认推进到的游标（服务端下发的 cursor，核心不自拼）。 */
     readonly cursor: string;
 }
 /**
- * 消费方注入的后端能力。`list` / `follow` / `invoke` / `ack` 是必需的：
- * 缺任一项就没有完整恢复能力，注册时直接报错，不静默降级。
+ * 消费方注入的后端能力。list/follow/listNotices/ackNotices/invoke/ack 全部必需：
+ * 缺任一项就没有完整恢复与通知能力，注册时直接报错，不静默降级。
  */
 export interface TaskBackend {
     create?(input: ServerCreateInput): Promise<ServerCreateResult>;
     list(project: string, cursor?: string): Promise<ServerTaskPage>;
     follow(projects: readonly string[], cursorByProject: Readonly<Record<string, string>>, onEvent: (project: string, event: ServerTaskEvent) => void, onError: (project: string, error: unknown) => void): () => void;
     poll?(keys: readonly string[]): Promise<readonly ServerTaskRecord[]>;
+    /** 拉取未确认的终态通知（通道 B）。 */
+    listNotices(projects: readonly string[], sinceCursor?: string): Promise<ServerNoticePage>;
+    /** 按连续成功前缀推进确认游标，服务端幂等。 */
+    ackNotices(projects: readonly string[], cursor: string): Promise<void>;
     invoke(request: InvokeRequest): Promise<InvokeResult>;
     ack(request: AckRequest): Promise<void>;
 }
 export interface AuthoritativeEngineOptions {
     readonly onChange: (records: readonly ServerTaskRecord[]) => void;
-    readonly onTerminal?: (record: ServerTaskRecord) => void;
+    /** 通道 B：一条未确认通知投递到前端。 emit 成功后才推进 ack 游标。 */
+    readonly onNotice: (notice: ServerNotice) => void;
     readonly clientId: string;
     /** 重新基线的最小间隔，默认 5 秒；visibilitychange 去重。 */
     readonly rebaseMinMs?: number;
+    /** 命令超时，默认 5000ms。 */
+    readonly actionTimeoutMs?: number;
 }
 export declare function createAuthoritativeEngine(options: AuthoritativeEngineOptions): {
     attach(project: string, backend: TaskBackend): void;
@@ -128,10 +148,11 @@ export declare function createAuthoritativeEngine(options: AuthoritativeEngineOp
     find(project: string, key: string): ServerTaskRecord | undefined;
     all(): readonly ServerTaskRecord[];
     runAction(project: string, key: string, actionId: string): Promise<InvokeResult>;
+    /** 暴露幂等键供上层在 action 事件里回传，迟到结果由它抑制二次 emit。 */
+    idempotencyKeyFor(project: string, key: string, actionId: string, version: number): string | undefined;
     acknowledge(request: AckRequest): Promise<void>;
     create(input: ServerCreateInput): Promise<ServerCreateResult | undefined>;
     has(project: string): boolean;
-    /** 停止连接但保留后端与已水合状态；pool.dispose → connect 后可重新 follow。 */
     stop(): void;
     dispose(): void;
 };

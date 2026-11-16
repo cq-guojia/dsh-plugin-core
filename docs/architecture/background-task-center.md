@@ -80,11 +80,13 @@ src/
 
 旧的状态源模式只按**已知 key** 问服务端，存在四个缺口：页面全关后拿不到 key、时钟起点存在页面内存、看护随页面关闭而停、按钮 handler 随页面销毁。要完整恢复，使用 `setTaskBackend(project, backend)` + `notifyTask.server()`：
 
-1. 后端**必须**提供 `list`（基线分页）、`follow`（长连接增量）、`invoke`（按 actionId + token 执行命令）、`ack`（通知确认）；注册时校验，缺项即抛，不静默降级到轮询。
+1. 后端**必须**提供 `list / follow / listNotices / ackNotices / invoke / ack` 六项能力；注册时校验，缺项即抛，不静默降级到轮询。
 2. 服务端是唯一真源：原子 `create` 决定 `created`；`startedAt / deadlineAt / version` 由服务端生成；判死与总上限由服务端 watchdog 执行；终态按 TTL 清理。
 3. 核心只做投影与调和：按单调 version 合并基线/分页/增量，终态墓碑挡住迟到快照；按钮只存描述，执行走服务端命令。
-4. 通知按 `(project, scope, key, version, kind)` 去重并 ack，未确认的下次开页补发。
-5. 该模式下的记录写入专用分片 `__server__`，不参与跨页 bye；页面关闭只断连接，不删服务端任务。
+4. **两条通道分离**：通道 A（`list / follow`）只水合在跑任务，终态墓碑只更新本地终态门，**不 emit `settled`、不 ack**；通道 B（`listNotices / ackNotices`）专职投递未确认的终态通知，`notificationId / cursor` 由服务端生成，事件发出后按连续成功前缀 ack（at-least-once，不追求 exactly-once）。这样页面重开时基线回放不会重复通知，未确认通知仍能送达。
+5. 按钮点击向 `taskNotificationEvents` 发 `action` 事件（task 快照 + actionId + index + ok + reason + result），消费方据此恢复界面，不必另开通知通道。
+6. 权威句柄只有 `id / isSettled / settled`，没有 update/touch/background/done/fail/track——终态由服务端判定，编译期即阻止误用。
+7. 该模式下的记录写入专用分片 `__server__`，不参与跨页 bye；页面关闭只断连接，不删服务端任务。
 
 ## 4. 与成熟方案的对应
 

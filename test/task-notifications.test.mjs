@@ -101,7 +101,7 @@ test('全局单例：多副本 claim 只建一次，且键是 Symbol.for 全局�
     })
     assert.equal(busCreated, 1)
     assert.equal(busA, busB)
-    assert.equal(TASK_NOTIFICATIONS_KEY, Symbol.for('dsh-plugin-core/task-notifications/v4'))
+    assert.equal(TASK_NOTIFICATIONS_KEY, Symbol.for('dsh-plugin-core/task-notifications/v5'))
   } finally {
     g[TASK_NOTIFICATIONS_KEY] = originalPool
     g[TASK_NOTIFICATIONS_EVENTS_KEY] = originalBus

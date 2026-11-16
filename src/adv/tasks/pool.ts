@@ -25,6 +25,7 @@ import { createStore } from '../../runtime/store.js'
 import {
   createAuthoritativeEngine,
   type AuthoritativeEngine,
+  type ServerNotice,
   type ServerTaskRecord,
   type TaskBackend,
 } from './authoritative.js'
@@ -47,12 +48,12 @@ import {
 } from '../../runtime/notify.js'
 
 /** Protocol version lives in the keys: a different wire shape gets its own host. */
-export const TASK_NOTIFICATIONS_PROTOCOL = 4
-export const TASK_NOTIFICATIONS_KEY = Symbol.for('dsh-plugin-core/task-notifications/v4')
-export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-notifications/events/v4')
-export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v4'
+export const TASK_NOTIFICATIONS_PROTOCOL = 5
+export const TASK_NOTIFICATIONS_KEY = Symbol.for('dsh-plugin-core/task-notifications/v5')
+export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-notifications/events/v5')
+export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v5'
 /** Default project lives on a global symbol: every inlined copy must see one value. */
-export const TASK_NOTIFICATIONS_PROJECT_KEY = Symbol.for('dsh-plugin-core/task-notifications/project/v4')
+export const TASK_NOTIFICATIONS_PROJECT_KEY = Symbol.for('dsh-plugin-core/task-notifications/project/v5')
 /** 服务端权威投影专用的分片名；它不参与跨页 bye，只由本模块的调和器写入。 */
 const SERVER_SHARD_ORIGIN = '__server__'
 
@@ -289,6 +290,22 @@ export interface TaskNotificationClaim {
   readonly created: boolean
 }
 
+/**
+ * 服务端权威任务的句柄：只有身份与终态等待，没有可被页面写的方法。
+ * 终态由服务端判定，update/touch/background/done/fail/track 在类型上就不存在。
+ */
+export interface AuthoritativeHandle {
+  readonly id: string
+  readonly isSettled: boolean
+  readonly settled: Promise<TaskNotificationSettlement>
+}
+
+/** 服务端权威登记结果。created === false 表示服务端已存在同键作业，不要重复起。 */
+export interface AuthoritativeClaim {
+  readonly handle: AuthoritativeHandle
+  readonly created: boolean
+}
+
 export interface TaskNotificationSnapshot {
   readonly tasks: readonly TaskNotificationRecord[]
   /** Real monotonic counter of state changes on this page. */
@@ -308,6 +325,20 @@ export type TaskNotificationEvent =
   /** Never crosses pages: restoring a dialog is local by contract. */
   | { readonly type: 'restored'; readonly taskId: string; readonly remote: false }
   | { readonly type: 'peer-left'; readonly origin: string; readonly remote: true }
+  /** 权威模式下用户点了任务上的按钮；点击页本地发，不跨页。 */
+  | {
+      readonly type: 'action'
+      readonly taskId: string
+      readonly task: TaskNotificationRecord
+      readonly actionId?: string
+      readonly index: number
+      readonly ok: boolean
+      readonly reason?: string
+      readonly result?: TaskNotificationDetail
+      /** 权威命令的幂等键，供迟到结果复查。 */
+      readonly idempotencyKey?: string
+      readonly remote: false
+    }
 
 export type TaskNotificationEventListener = (event: TaskNotificationEvent) => void
 
@@ -367,7 +398,7 @@ export interface TaskNotificationPool {
   /** 幂等登记：带 `key` 时就地复用本页同键条目，并告诉你这条是不是刚建的。 */
   ensure(input: TaskNotificationInput): TaskNotificationClaim
   /** 服务端权威登记：服务端原子 create 决定 created，页面不写本地记录。 */
-  ensureServer(input: TaskNotificationInput): Promise<TaskNotificationClaim>
+  ensureServer(input: TaskNotificationInput): Promise<AuthoritativeClaim>
   /** 纯广播：只出 `message` 事件，不写池、不动快照。 */
   broadcast(input: TaskNotificationMessageInput): TaskNotificationMessage
   /**
@@ -744,7 +775,7 @@ function compareTasks(a: TaskNotificationRecord, b: TaskNotificationRecord): num
 }
 
 /** One lock per page, named by origin. Bumping the protocol gives a clean namespace. */
-export const TASK_NOTIFICATIONS_LOCK_PREFIX = 'dsh-plugin-core/task-notifications/v4/'
+export const TASK_NOTIFICATIONS_LOCK_PREFIX = 'dsh-plugin-core/task-notifications/v5/'
 
 function lockNameFor(pageOrigin: string): string {
   return `${TASK_NOTIFICATIONS_LOCK_PREFIX}${pageOrigin}`
@@ -853,33 +884,40 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     store.setState({ tasks: collect(), revision }, true)
   }
 
-  /** 服务端权威任务的句柄等待者：终态到达时兑现，不依赖创建页存活。 */
+  /** 服务端权威任务的句柄等待者：终态通知到达时兑现，不依赖创建页存活。 */
   const serverSettlers = new Map<string, (value: TaskNotificationSettlement) => void>()
   /** 同 key 复用同一句柄；重开页面后新旧调用拿到的是同一个 settled Promise。 */
-  const serverHandles = new Map<string, TaskNotificationHandle>()
+  const serverHandles = new Map<string, AuthoritativeHandle>()
+  /** 通道 B 已投递的通知 id：跨页/重开由服务端 cursor 去重，这里挡同页 follow 重入。 */
+  const deliveredNotices = new Set<string>()
+  /** 终态结果缓存：通知早于 ensureServer 注册 waiter 时，用它兑现后建的句柄。 */
+  const settledResults = new Map<string, TaskNotificationSettlement>()
+
+  function deliverTerminal(notice: ServerNotice): void {
+    const row = notice.record
+    const cacheKey = `${row.project}:${row.key}`
+    if (deliveredNotices.has(notice.notificationId)) return
+    deliveredNotices.add(notice.notificationId)
+    const projection = serverRecordToProjection(row)
+    const settlement: TaskNotificationSettlement = {
+      outcome: row.state === 'done' ? 'done' : 'failed',
+      reason: row.reason,
+      task: projection,
+    }
+    settledResults.set(cacheKey, settlement)
+    bus().emit({ type: 'settled', outcome: settlement.outcome, task: projection, remote: false })
+    const waiter = serverSettlers.get(cacheKey)
+    if (waiter !== undefined) {
+      serverSettlers.delete(cacheKey)
+      serverHandles.delete(cacheKey)
+      waiter(settlement)
+    }
+  }
 
   const authoritative: AuthoritativeEngine = createAuthoritativeEngine({
     clientId: origin,
     onChange: publishServerRows,
-    onTerminal: (row) => {
-      const waiter = serverSettlers.get(`${row.project}:${row.key}`)
-      if (waiter !== undefined) {
-        serverSettlers.delete(`${row.project}:${row.key}`)
-        serverHandles.delete(`${row.project}:${row.key}`)
-        waiter({
-          outcome: row.state === 'done' ? 'done' : 'failed',
-          reason: row.reason,
-          task: serverRecordToProjection(row),
-        })
-      }
-      void authoritative.acknowledge({
-        project: row.project,
-        key: row.key,
-        version: row.version,
-        kind: row.state === 'done' ? 'settled' : 'failed',
-        cursor: `${row.project}:${row.key}:${row.version}`,
-      }).catch(() => {})
-    },
+    onNotice: deliverTerminal,
   })
 
   let seq = 0
@@ -1205,18 +1243,80 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     })
   }
 
+  /** 权威任务的按钮点击一律对外发 action 事件；找不到记录时给最小快照，保证界面能带回。 */
+  function emitAction(
+    taskId: string,
+    snapshot: TaskNotificationRecord,
+    index: number,
+    ok: boolean,
+    actionId?: string,
+    reason?: string,
+    result?: TaskNotificationDetail,
+    idempotencyKey?: string,
+  ): void {
+    bus().emit({
+      type: 'action',
+      taskId,
+      task: snapshot,
+      ...(actionId === undefined ? {} : { actionId }),
+      index,
+      ok,
+      ...(reason === undefined ? {} : { reason }),
+      ...(result === undefined ? {} : { result }),
+      ...(idempotencyKey === undefined ? {} : { idempotencyKey }),
+      remote: false,
+    })
+  }
+
+  function serverFallbackSnapshot(taskId: string): TaskNotificationRecord {
+    // id 形如 `__server__:<project>:<key>`；解析出来回填，保证消费方能还原界面。
+    const rest = taskId.startsWith(`${SERVER_SHARD_ORIGIN}:`) ? taskId.slice(SERVER_SHARD_ORIGIN.length + 1) : ''
+    const separator = rest.indexOf(':')
+    const project = separator >= 0 ? rest.slice(0, separator) : ''
+    const key = separator >= 0 ? rest.slice(separator + 1) : ''
+    return {
+      id: taskId,
+      ...(key === '' ? {} : { key }),
+      project,
+      group: 'default',
+      title: '',
+      status: 'failed',
+      startedAt: 0,
+      updatedAt: 0,
+      origin: SERVER_SHARD_ORIGIN,
+      backgrounded: false,
+    }
+  }
+
   async function runAction(taskId: string, index: number): Promise<boolean> {
     const record = locate(taskId)
-    if (record === undefined) return false
+    // 权威模式的 id 形如 `__server__:<project>:<key>`；记录已被水合移除时仍认得出。
+    const isServer = record?.origin === SERVER_SHARD_ORIGIN
+      || (record === undefined && taskId.startsWith(`${SERVER_SHARD_ORIGIN}:`))
+    // 权威模式的所有失败路径都要发事件（early-return 前先发）。
+    if (record === undefined) {
+      if (isServer) emitAction(taskId, serverFallbackSnapshot(taskId), index, false, undefined, 'task unavailable')
+      return false
+    }
     // 已过回收窗口、但还没被惰性清扫的行：界面已经看不到它，就不能再点。
-    if (record.timeoutMs !== undefined && Date.now() - record.updatedAt > record.timeoutMs) return false
+    if (record.timeoutMs !== undefined && Date.now() - record.updatedAt > record.timeoutMs) {
+      if (isServer) emitAction(taskId, record, index, false, record.actions?.[index]?.id, 'task expired')
+      return false
+    }
     // 下标越界 = 这一条根本没有这个按钮；跨页时同理，先按记录判，不白跑一趟。
     const action = record.actions?.[index]
-    if (action === undefined) return false
+    if (action === undefined) {
+      if (isServer) emitAction(taskId, record, index, false, undefined, 'action unavailable')
+      return false
+    }
     // 服务端权威投影：命令走 token，不经页面闭包、不跨页 ack。
-    if (record.origin === SERVER_SHARD_ORIGIN) {
-      if (record.key === undefined || action.id === undefined) return false
+    if (isServer) {
+      if (record.key === undefined || action.id === undefined) {
+        emitAction(taskId, record, index, false, action.id, 'action unavailable')
+        return false
+      }
       const result = await authoritative.runAction(record.project, record.key, action.id)
+      emitAction(taskId, record, index, result.ok, action.id, result.reason, result.result, result.idempotencyKey)
       return result.ok
     }
     if (record.origin === origin) return runLocal(taskId, index)
@@ -1614,7 +1714,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
    * 服务端权威任务的登记：服务端原子 create 是作业启动的唯一触发点。
    * 页面只拿句柄与投影，不写本地记录；因此不存在「同 key 两条」或重开清零。
    */
-  async function ensureServer(input: TaskNotificationInput): Promise<TaskNotificationClaim> {
+  async function ensureServer(input: TaskNotificationInput): Promise<AuthoritativeClaim> {
     const project = requireProject(input.project)
     if (project === null) throw new Error('task notification project cannot be null when registering')
     if (input.key === undefined) throw new Error('server task requires a key')
@@ -1628,21 +1728,20 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     let handle = serverHandles.get(keyOfHandle)
     if (handle === undefined) {
       let isSettled = false
-      const settled = new Promise<TaskNotificationSettlement>((resolve) => {
-        serverSettlers.set(keyOfHandle, (value) => { isSettled = true; resolve(value) })
-      })
-      handle = {
-        id,
-        get isSettled() { return isSettled },
-        settled,
-        update() {},
-        touch() {},
-        background() {},
-        done() {},
-        fail() {},
-        track<T>(promise: Promise<T>): Promise<T> { return promise },
-      }
+      let resolveSettled: (value: TaskNotificationSettlement) => void = () => {}
+      const settled = new Promise<TaskNotificationSettlement>((resolve) => { resolveSettled = resolve })
+      handle = { id, get isSettled() { return isSettled }, settled }
       serverHandles.set(keyOfHandle, handle)
+      // 通知可能早于本次登记到达（重开页基线拉到终态）：用缓存立即兑现，不留 pending。
+      const cached = settledResults.get(keyOfHandle)
+      if (cached !== undefined) {
+        settledResults.delete(keyOfHandle)
+        serverHandles.delete(keyOfHandle)
+        isSettled = true
+        resolveSettled(cached)
+      } else {
+        serverSettlers.set(keyOfHandle, (value) => { isSettled = true; resolveSettled(value) })
+      }
     }
     const created = await authoritative.create({
       project,
@@ -1743,6 +1842,8 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       authoritative.stop()
       serverSettlers.clear()
       serverHandles.clear()
+      settledResults.clear()
+      deliveredNotices.clear()
       if (channel !== null) {
         channel.onmessage = null
         channel.close()
@@ -1842,7 +1943,7 @@ export interface NotifyTask {
    */
   background(title: string, options?: NotifyTaskOptions): TaskNotificationClaim
   /** 服务端权威登记：服务端原子 create 决定 created；必须已 setTaskBackend。 */
-  server(title: string, options?: NotifyTaskOptions): Promise<TaskNotificationClaim>
+  server(title: string, options?: NotifyTaskOptions): Promise<AuthoritativeClaim>
   /** 包住一段异步：成功走 done、失败走 fail，结果与异常原样透传。 */
   run<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions): Promise<T>
 }
@@ -1879,7 +1980,7 @@ function backgroundTask(title: string, options: NotifyTaskOptions = {}): TaskNot
   return taskNotifications.ensure(notifyTaskInput(title, { ...options, serverBacked: true }))
 }
 
-function serverTask(title: string, options: NotifyTaskOptions = {}): Promise<TaskNotificationClaim> {
+function serverTask(title: string, options: NotifyTaskOptions = {}): Promise<AuthoritativeClaim> {
   if (options.key === undefined) return Promise.reject(new Error('notifyTask.server requires a key'))
   return taskNotifications.ensureServer(notifyTaskInput(title, { ...options, serverBacked: true }))
 }

@@ -10,6 +10,7 @@ import type {
   AckRequest,
   InvokeRequest,
   ServerCreateInput,
+  ServerNoticePage,
   ServerTaskEvent,
   ServerTaskPage,
   ServerTaskRecord,
@@ -26,6 +27,9 @@ type StreamingResponse = {
 export interface TaskCenterStore {
   create(input: ServerCreateInput, viewer?: string): Promise<{ created: boolean; record: ServerTaskRecord }>
   list(project: string, cursor?: string, viewer?: string): Promise<ServerTaskPage>
+  /** 通道 B：未确认的终态通知，notificationId 与 cursor 由服务端生成且稳定。 */
+  listNotices(projects: readonly string[], sinceCursor: string | undefined, viewer?: string): Promise<ServerNoticePage>
+  ackNotices(projects: readonly string[], cursor: string, viewer?: string): Promise<void>
   invoke(request: InvokeRequest, viewer?: string): Promise<{ ok: boolean; result?: unknown; reason?: string }>
   ack(request: AckRequest, viewer?: string): Promise<void>
   /** 订阅增量；viewer 由服务端鉴权得出，回调里必须按它过滤归属。 */
@@ -98,6 +102,23 @@ export function serveTaskCenter(ctx: HostContextLike, options: TaskCenterRouteOp
     const cursor = url.searchParams.get('cursor') ?? undefined
     if (project === '') { send(res, 400, { error: 'missing project' }); return }
     send(res, 200, await options.store.list(project, cursor, viewer))
+  })
+
+  route('/notices', async (req, res, viewer) => {
+    const url = new URL(req.url ?? '', 'http://localhost')
+    const projects = (url.searchParams.get('projects') ?? '').split(',').filter((item) => item !== '')
+    if (projects.length === 0) { send(res, 400, { error: 'missing projects' }); return }
+    const since = url.searchParams.get('since') ?? undefined
+    send(res, 200, await options.store.listNotices(projects, since, viewer))
+  })
+
+  route('/notices/ack', async (req, res, viewer) => {
+    const body = await readBody(req)
+    const projects = Array.isArray(body.projects) ? body.projects.filter((item): item is string => typeof item === 'string') : []
+    const cursor = typeof body.cursor === 'string' ? body.cursor : ''
+    if (projects.length === 0 || cursor === '') { send(res, 400, { error: 'missing projects or cursor' }); return }
+    await options.store.ackNotices(projects, cursor, viewer)
+    send(res, 200, { ok: true })
   })
 
   route('/invoke', async (req, res, viewer) => {
