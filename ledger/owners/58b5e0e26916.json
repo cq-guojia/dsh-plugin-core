@@ -1,6 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
+    "20261116-0952-574f-后台任务中心服务端执行实现": {"category": "建设", "created": "2026-11-16 09:52:24", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-16 09:52:24", "status": "doing", "tags": ["后台任务", "真源", "心跳", "幂等", "租约"], "title": "后台任务中心服务端执行实现", "updated": "2026-11-16 09:52:24", "worklog": "worklog/202611/16-0952-574f-后台任务中心服务端执行实现.md"}
   },
   "version": "20261022000000"
 }
