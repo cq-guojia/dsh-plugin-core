@@ -82,10 +82,10 @@ export const ALL_SECTIONS: SectionDef[] = [
   { id: 'quickstart', group: 'start', titleKey: 'secQuickstart', render: () => h(QuickstartPage, null) },
   { id: 'reference', group: 'start', titleKey: 'secReference', render: () => h(ReferencePage, null) },
 
-  // ② 基础设施：设计层（design）+ 运行时底座（runtime）
+  // ② 基础设施：设计层（design）→ 图标 → 运行时底座（程序底座排最后）
   { id: 'foundation', group: 'infra', titleKey: 'secFoundation', render: () => h(FoundationPage, null) },
-  { id: 'runtime', group: 'infra', titleKey: 'secRuntime', render: () => h(RuntimePage, null) },
   { id: 'icons', group: 'infra', titleKey: 'secIcons', render: () => h(IconsPage, null) },
+  { id: 'runtime', group: 'infra', titleKey: 'secRuntime', render: () => h(RuntimePage, null) },
 
   // ③ 控件：一页一类，页内按控件族顺序排列
   { id: 'actions', group: 'components', titleKey: 'secActions', render: () => h(ButtonPage, null) },

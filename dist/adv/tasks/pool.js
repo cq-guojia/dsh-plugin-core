@@ -34,6 +34,13 @@ export const TASK_NOTIFICATIONS_PROJECT_KEY = Symbol.for('dsh-plugin-core/task-n
 export { getDefaultTaskProject, setDefaultTaskProject };
 /** 跨页点按钮等 ack 的上限；超时按失败算，界面据此提示「已无法还原」。 */
 const INVOKE_TIMEOUT_MS = 2000;
+/** 服务端任务缺省租约：5 分钟。短租约可续，负责发现「不再证明活着」的作业。 */
+const DEFAULT_LEASE_MS = 5 * 60000;
+/**
+ * pull 心跳缺省轮询周期：1 分钟。实际间隔取 `min(本值, 最短租约/2)`，
+ * 保证一个租约窗口内至少问两次（一次失败还有一次补问）。
+ */
+const DEFAULT_POLL_INTERVAL_MS = 60000;
 const EMPTY_TASKS = Object.freeze([]);
 const EMPTY_SNAPSHOT = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 });
 /** 字符串字段：要么不传，要么是字符串。写入侧与收线侧用同一套，坏值在本页就抛。 */
@@ -245,6 +252,16 @@ function isTaskRecord(value) {
         (typeof value.timeoutMs !== 'number' || !Number.isFinite(value.timeoutMs) || value.timeoutMs < 0)) {
         return false;
     }
+    if (value.serverBacked !== undefined && typeof value.serverBacked !== 'boolean')
+        return false;
+    if (value.leaseMs !== undefined &&
+        (typeof value.leaseMs !== 'number' || !Number.isFinite(value.leaseMs) || value.leaseMs <= 0)) {
+        return false;
+    }
+    if (value.maxDurationMs !== undefined &&
+        (typeof value.maxDurationMs !== 'number' || !Number.isFinite(value.maxDurationMs) || value.maxDurationMs < 0)) {
+        return false;
+    }
     return (typeof value.id === 'string' &&
         typeof value.project === 'string' &&
         typeof value.group === 'string' &&
@@ -382,6 +399,15 @@ export function createTaskNotificationPool(options = {}) {
     const pendingInvokes = new Map();
     /** Remotes currently being probed, so overlapping triggers do not stack up. */
     const probing = new Set();
+    /** project -> 批量状态源。一个项目只有一个，后者覆盖前者。 */
+    const statusSources = new Map();
+    /** taskId -> 最后一次成功确认存活的时刻；只为本页持有的服务端任务维护。 */
+    const serverRenewedAt = new Map();
+    /** 服务端任务的心跳定时器；一条定时器同时管批量探测与双时钟检查。 */
+    let pollTimer = null;
+    let polling = false;
+    /** dispose 会 +1：在途探测回来时借此认出自己已过期，不再结算也不再排定时器。 */
+    let pollGeneration = 0;
     let locksHeld = false;
     /** 存活锁的申请代次：只认最新一代的失败，避免旧 rejection 把新标记复位。 */
     let lockAttempt = 0;
@@ -475,6 +501,133 @@ export function createTaskNotificationPool(options = {}) {
             }
         }
     }
+    // ── 服务端任务心跳：批量 pull + 双时钟 ────────────────────────────────────
+    // 只有本页持有 finisher 的任务才被看护与结算；远端分片只是投影。
+    function isServerTask(task) {
+        return task.serverBacked === true && finishers.has(task.id);
+    }
+    /** 归集本页在跑的服务端任务，按项目分组，一次请求覆盖该项目全部 key。 */
+    function groupServerKeys() {
+        const grouped = new Map();
+        for (const task of localShard()) {
+            if (!isServerTask(task) || task.key === undefined)
+                continue;
+            const bucket = grouped.get(task.project);
+            if (bucket === undefined)
+                grouped.set(task.project, [task.key]);
+            else
+                bucket.push(task.key);
+        }
+        return grouped;
+    }
+    /** 找到本页某项目下、某归一化 key 对应的任务（服务端回报按 key 对号）。 */
+    function findServerTask(project, key) {
+        return localShard().find((task) => isServerTask(task) && task.project === project && task.key === key);
+    }
+    /** 本轮批量问一次：每个项目一次调用；抛错或漏 key 都只当「本轮没确认」。 */
+    async function pollStatus(generation) {
+        const grouped = groupServerKeys();
+        if (grouped.size === 0)
+            return;
+        for (const [project, keys] of grouped) {
+            const source = statusSources.get(project);
+            if (source === undefined)
+                continue; // 没注册状态源 = 本轮无法确认；租约会兜底
+            let rows;
+            try {
+                rows = await source([...keys]);
+            }
+            catch {
+                continue; // 查询失败本轮什么都不做：既不续租，也不判死
+            }
+            if (generation !== pollGeneration)
+                return; // dispose 后回来的结果一律丢弃
+            if (!Array.isArray(rows))
+                continue;
+            for (const row of rows) {
+                if (row === null || typeof row !== 'object')
+                    continue;
+                const target = findServerTask(project, row.key);
+                if (target === undefined)
+                    continue;
+                const finish = finishers.get(target.id);
+                if (finish === undefined)
+                    continue; // 轮询期间已被别处结算
+                const now = Date.now();
+                if (row.state === 'running') {
+                    serverRenewedAt.set(target.id, now);
+                }
+                else if (row.state === 'done' || row.state === 'failed') {
+                    serverRenewedAt.delete(target.id);
+                    finish(row.state === 'done' ? 'done' : 'failed', row.reason);
+                }
+            }
+        }
+    }
+    /**
+     * 双时钟：短租约从最后一次确认起算（可续），总上限从 startedAt 起算（不可续）。
+     * 与状态源回报分开：即使探测一直说 running，maxDurationMs 到点也照样结算。
+     */
+    function checkServerClocks() {
+        const now = Date.now();
+        for (const task of [...localShard()]) {
+            if (!isServerTask(task))
+                continue;
+            const finish = finishers.get(task.id);
+            if (finish === undefined)
+                continue;
+            if (task.maxDurationMs !== undefined && task.maxDurationMs > 0 && now - task.startedAt >= task.maxDurationMs) {
+                serverRenewedAt.delete(task.id);
+                finish('failed', 'max duration exceeded');
+                continue;
+            }
+            const leaseMs = task.leaseMs ?? DEFAULT_LEASE_MS;
+            const last = serverRenewedAt.get(task.id) ?? task.startedAt;
+            if (now - last >= leaseMs) {
+                serverRenewedAt.delete(task.id);
+                finish('failed', 'lease expired');
+            }
+        }
+    }
+    /** 轮询周期 = min(缺省周期, 最短租约/2)；没有服务端任务就不起定时器。 */
+    function serverPollInterval() {
+        let interval = DEFAULT_POLL_INTERVAL_MS;
+        let found = false;
+        for (const task of localShard()) {
+            if (!isServerTask(task))
+                continue;
+            found = true;
+            const leaseMs = task.leaseMs ?? DEFAULT_LEASE_MS;
+            interval = Math.min(interval, Math.max(1, Math.floor(leaseMs / 2)));
+        }
+        return found ? Math.max(1, interval) : null;
+    }
+    function clearPollTimer() {
+        if (pollTimer === null)
+            return;
+        clearTimeout(pollTimer);
+        pollTimer = null;
+    }
+    function schedulePoll() {
+        clearPollTimer();
+        const interval = serverPollInterval();
+        if (interval === null)
+            return;
+        const timer = setTimeout(() => {
+            pollTimer = null;
+            checkServerClocks();
+            // 探测是异步的；用 running 标记防重入，避免上一次没回来又排一轮。
+            if (!polling) {
+                polling = true;
+                const generation = pollGeneration;
+                void pollStatus(generation).catch(() => { }).finally(() => {
+                    polling = false;
+                });
+            }
+            schedulePoll();
+        }, interval);
+        pollTimer = timer;
+    }
     function post(message) {
         if (channel === null)
             return;
@@ -513,6 +666,7 @@ export function createTaskNotificationPool(options = {}) {
         emit(notice, false);
         broadcastShard(notice);
         scheduleExpiry();
+        schedulePoll();
     }
     /**
      * 纯广播：**不写池、不动快照**，所以订阅列表不会因为它多一行再少一行。
@@ -779,6 +933,7 @@ export function createTaskNotificationPool(options = {}) {
         }
         // dispose 期间摘掉的回收定时器在这里补回来（条目和 updatedAt 都还在）。
         scheduleExpiry();
+        schedulePoll();
     }
     function refresh() {
         // 顺便重试存活锁：上次被浏览器拒绝时，这里补一次。
@@ -803,6 +958,18 @@ export function createTaskNotificationPool(options = {}) {
         const timeoutMs = input.timeoutMs ?? 0;
         if (!Number.isFinite(timeoutMs) || timeoutMs < 0) {
             throw new Error('task notification timeoutMs must be a finite number >= 0');
+        }
+        const serverBacked = input.serverBacked === true;
+        if (serverBacked && key === undefined) {
+            throw new Error('task notification serverBacked requires a key');
+        }
+        const leaseMs = input.leaseMs ?? DEFAULT_LEASE_MS;
+        if (!Number.isFinite(leaseMs) || leaseMs <= 0) {
+            throw new Error('task notification leaseMs must be a finite number > 0');
+        }
+        const maxDurationMs = input.maxDurationMs ?? 0;
+        if (!Number.isFinite(maxDurationMs) || maxDurationMs < 0) {
+            throw new Error('task notification maxDurationMs must be a finite number >= 0');
         }
         // 写入侧自己也验：一条非法记录会让整页分片在对端被整片丢弃，不能只靠收线侧兜。
         if (typeof input.title !== 'string')
@@ -868,7 +1035,11 @@ export function createTaskNotificationPool(options = {}) {
             backgrounded: false,
             ...(hidden ? { hidden: true } : {}),
             ...(timeoutMs > 0 ? { timeoutMs } : {}),
+            ...(serverBacked ? { serverBacked: true, leaseMs, maxDurationMs } : {}),
         };
+        // 登记即第一次确认：租约从这一刻起算（不是等第一次探测）。
+        if (serverBacked)
+            serverRenewedAt.set(id, now);
         let isSettled = false;
         let resolveSettled = () => { };
         const settled = new Promise((resolve) => { resolveSettled = resolve; });
@@ -911,6 +1082,15 @@ export function createTaskNotificationPool(options = {}) {
                     task: next,
                 });
             },
+            touch() {
+                if (isSettled)
+                    return;
+                const current = find(id);
+                if (current === undefined || current.serverBacked !== true)
+                    return;
+                // 可选加速：只把租约从现在起算，不改快照、不发事件；不调用也不影响 pull 看护。
+                serverRenewedAt.set(id, Date.now());
+            },
             background() {
                 if (isSettled)
                     return;
@@ -947,6 +1127,7 @@ export function createTaskNotificationPool(options = {}) {
             isSettled = true;
             finishers.delete(id);
             handles.delete(id);
+            serverRenewedAt.delete(id);
             // 按钮可能被同键复用换过，按 id 前缀清，别只清注册时那一组。
             for (const runnerId of [...runners.keys()]) {
                 if (runnerId.startsWith(`${id}#`))
@@ -996,6 +1177,17 @@ export function createTaskNotificationPool(options = {}) {
         register: (input) => ensure(input).handle,
         ensure,
         broadcast,
+        setStatusSource(project, source) {
+            if (typeof project !== 'string' || project.trim() === '') {
+                throw new Error('task notification status source project must be a non-empty string');
+            }
+            if (typeof source !== 'function') {
+                throw new Error('task notification status source must be a function');
+            }
+            statusSources.set(project, source);
+            // 新状态源可能让原本没法确认的任务恢复；立刻重排一次探测。
+            schedulePoll();
+        },
         settleLocal,
         runAction,
         canRestore: (task) => task.origin === origin,
@@ -1011,6 +1203,10 @@ export function createTaskNotificationPool(options = {}) {
             onPageHide();
             detachLifecycle();
             clearExpiryTimer();
+            // 探测定时器与租约检查一并停掉：卸载后不许再改状态（设计契约 §3.4）。
+            // generation 先 +1，让在途探测回来时认出自己过期（否则它会 finish→publish 又排定时器）。
+            pollGeneration += 1;
+            clearPollTimer();
             // 页面这一侧要走了：按钮方法连同闭包一起放掉；条目结束不了就留在池里，
             // 点它只会拿到 false，不会调到已经没了的组件。
             runners.clear();
@@ -1059,6 +1255,7 @@ export const taskNotifications = {
     register: (input) => globalPool().register(input),
     ensure: (input) => globalPool().ensure(input),
     broadcast: (input) => globalPool().broadcast(input),
+    setStatusSource: (project, source) => { globalPool().setStatusSource(project, source); },
     settleLocal: (reason) => globalPool().settleLocal(reason),
     runAction: (taskId, index) => globalPool().runAction(taskId, index),
     canRestore: (task) => globalPool().canRestore(task),
@@ -1079,6 +1276,9 @@ function notifyTaskInput(title, options) {
         ...(options.iconSvg === undefined ? {} : { iconSvg: options.iconSvg }),
         ...(options.hidden === undefined ? {} : { hidden: options.hidden }),
         ...(options.timeoutMs === undefined ? {} : { timeoutMs: options.timeoutMs }),
+        ...(options.serverBacked === undefined ? {} : { serverBacked: options.serverBacked }),
+        ...(options.leaseMs === undefined ? {} : { leaseMs: options.leaseMs }),
+        ...(options.maxDurationMs === undefined ? {} : { maxDurationMs: options.maxDurationMs }),
     };
 }
 function notifyTaskBase(title, options = {}) {
@@ -1086,6 +1286,9 @@ function notifyTaskBase(title, options = {}) {
 }
 function ensureTask(title, options = {}) {
     return taskNotifications.ensure(notifyTaskInput(title, options));
+}
+function backgroundTask(title, options = {}) {
+    return taskNotifications.ensure(notifyTaskInput(title, { ...options, serverBacked: true }));
 }
 /**
  * 纯广播：只发一个 `message` 事件，**不进池、不进列表**，所以不会有「出现一帧又消失」的闪动。
@@ -1123,7 +1326,11 @@ function runTask(title, work, options = {}) {
     }
     return handle.track(pending);
 }
-export const notifyTask = Object.assign(notifyTaskBase, { ensure: ensureTask, run: runTask });
+export const notifyTask = Object.assign(notifyTaskBase, {
+    ensure: ensureTask,
+    background: backgroundTask,
+    run: runTask,
+});
 export const taskNotificationEvents = {
     subscribe: (listener) => globalBus().subscribe(listener),
     emit: (event) => { globalBus().emit(event); },

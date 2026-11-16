@@ -4,7 +4,7 @@
 
 一个插件要把长任务交给服务端执行、且要求刷新页面或关掉标签页后任务继续跑、回到页面还能看到真实进度时，按这篇接入。做完得到：一个按稳定 key 幂等登记的任务中心条目，由核心主动批量问服务端状态来续租与结算。纯页面内的短任务用 `notifyTask.run` 即可，不需要这篇。
 
-> 本文是确认设计的接入契约，代码里的 `setStatusSource` / `touch` / `StatusRow` 是这组能力的约定形态；当前已落地的对外 API 以 `docs/api/task-notifications.md` 为准。设计依据见 `docs/architecture/background-task-center.md`。
+> 本文的接口均已落地，签名以 `docs/api/task-notifications.md` 为准；设计依据见 `docs/architecture/background-task-center.md`。
 
 ## 前置条件
 
@@ -27,7 +27,7 @@
      return rows.map((row) => ({
        key: row.key,
        state: row.state,                          // 'running' | 'done' | 'failed'
-       ...(row.error ? { error: row.error } : {}),
+       ...(row.reason ? { reason: row.reason } : {}),
      })) satisfies StatusRow[]
    })
    ```
@@ -56,7 +56,7 @@
 
 5. **交给核心结算。** 状态源返回 `done` 核心即完成、返回 `failed` 核心即失败；查询抛错时本轮不续租也不判死，让租约自然到期。消费方不要在状态源里直接替核心结算。
 
-6. **卸载时清理。** 组件或插件卸载调用 `dispose()`，探测定时器与租约定时器一起清掉，不留悬挂定时器。
+6. **卸载时清理。** 组件或插件卸载调用 `dispose()`，心跳定时器（批量探测 + 双时钟检查）一并停掉，不留悬挂定时器。
 
 ## 验证
 
@@ -87,3 +87,5 @@
 ## 更新日志
 
 - 2026-11-16 17:38:04：新增服务端任务接入契约：状态源、稳定 key、后端任务号存放与常见失败
+- 2026-11-16 18:01:41：接入接口已落地，StatusRow 失败字段对齐为 reason，dispose 定时器口径与代码一致
+- 2026-11-16 20:33:57：审计修正：dispose 一并丢弃在途探测结果

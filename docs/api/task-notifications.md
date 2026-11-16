@@ -4,15 +4,15 @@
 
 本文件由 `scripts/gen-docs.mjs` 从同名 `.doc.ts` 生成，请勿手改。
 
-导出：notifyTask、notifyMessage、TaskBar、useTasks、taskNotifications、taskKey、TaskNotificationConflictError、taskNotificationEvents、TASK_NOTIFICATIONS_LOCK_PREFIX、TASK_NOTIFICATIONS_PROJECT_KEY、setDefaultTaskProject、getDefaultTaskProject、createTaskNotificationPool、createTaskNotificationEventBus、selectTaskNotifications、subscribeTaskNotificationEvents、emitTaskNotificationEvent
+导出：notifyTask、notifyMessage、TaskBar、useTasks、taskNotifications、taskKey、StatusRow、StatusSource、TaskNotificationConflictError、taskNotificationEvents、TASK_NOTIFICATIONS_LOCK_PREFIX、TASK_NOTIFICATIONS_PROJECT_KEY、setDefaultTaskProject、getDefaultTaskProject、createTaskNotificationPool、createTaskNotificationEventBus、selectTaskNotifications、subscribeTaskNotificationEvents、emitTaskNotificationEvent
 
 ## 长耗时任务：登记、订阅、跨页、按钮
 
 > EN: Long tasks: register, subscribe, cross-page, actions
 
-这里叫**后台任务中心**：它只是借了 runtime 的跨页通知能力搬运状态，本身是「登记 → 订阅 → 结束」的任务池，和「发一条句子就完」的通知是两回事（纯广播看 `notifyMessage`）。数据只在内存：本页与同源标签页各一份，刷新或关页即失；不落文件、不发请求、不轮询。跨页只传纯数据（结构化克隆可得），不带函数、组件或 Promise。
+这里叫**后台任务中心**：它借 runtime 的跨页通知能力搬运状态，本身是「登记 → 订阅 → 结束」的任务池，和「发一条句子就完」的通知是两回事（纯广播看 `notifyMessage`）。默认这条路径不落盘、不发请求：本页与同源标签页各持一份内存投影，刷新即失。要服务端执行、刷新后照常看护的，走下面的**服务端任务**（`notifyTask.background` + 状态源）。跨页只传纯数据（结构化克隆可得），不带函数、组件或 Promise。
 
-> EN: This is the **background task hub**: it borrows the runtime cross-page notification channel to move state around, but it is a "register → subscribe → settle" pool, not a "send one sentence and forget" notification (plain broadcasts are `notifyMessage`). Data lives in memory only: one copy per page and per same-origin tab, gone on reload or close — no files, no requests, no polling. Only plain structured-cloneable data crosses pages: no functions, components or promises.
+> EN: This is the **background task hub**: it borrows the runtime cross-page notification channel to move state around, but it is a "register → subscribe → settle" pool, not a "send one sentence and forget" notification (plain broadcasts are `notifyMessage`). The default path writes nothing and makes no requests: each page and same-origin tab holds an in-memory projection that is gone on reload. For work that runs on a server and stays watched after a reload, use **server-backed tasks** below (`notifyTask.background` + a status source). Only plain structured-cloneable data crosses pages: no functions, components or promises.
 
 两条通道：**状态池**（`getSnapshot` / `subscribe`，可直接喂 `useSyncExternalStore`）与**事件总线**（`subscribeTaskNotificationEvents`，一次性事实，不留存）。要进列表、能被结束的用 `notifyTask`；只播一句、不进列表的用 `notifyMessage`。
 
@@ -51,7 +51,7 @@
 | `runAction(taskId, index)` | `(taskId: string, index: number) => Promise<boolean>` | — | — | 执行第 index 个按钮：本页立即执行，跨页发回创建页并等 ack（2s 超时）。查不到方法、越界、抛错一律 false | Runs the index-th action: locally at once, or back on the owning page with an ack (2s timeout). Missing method, out-of-range index and throwing actions all resolve false |
 | `canRestore(task)` | `(task: TaskNotificationRecord) => boolean` | — | — | 旧 restored 通道的判据，只对本页条目为真；它不决定按钮能不能点（那看 record.actions） | Judgement for the legacy restored channel, true only for rows of this page; it does not decide buttons (record.actions does) |
 | `requestRestore(taskId)` | `(taskId: string) => boolean` | — | — | 只发本地 restored 事件，跨页返回 false；新代码用 actions + runAction | Emits a local restored event only and returns false for cross-page rows; new code uses actions + runAction |
-| `dispose()` | `() => void` | — | — | 关通道与摘监听，保留状态，下次 connect 会复活并重发分片；按钮方法随之清空，存活条目的按钮从此刻起不可执行 | Closes the channel and detaches listeners but keeps state; the next connect revives it and rebroadcasts a shard. Action methods are dropped, so surviving rows stay unclickable from then on |
+| `dispose()` | `() => void` | — | — | 关通道与摘监听、停掉心跳定时器，在途探测的结果也一律丢弃（卸载后不改状态）；保留池状态，下次 connect 会复活并重发分片；按钮方法随之清空，存活条目的按钮从此刻起不可执行 | Closes the channel, detaches listeners and stops the heartbeat timer; an in-flight probe result is also discarded so nothing changes state after unload. Pool state is kept and the next connect revives it and rebroadcasts a shard. Action methods are dropped, so surviving rows stay unclickable from then on |
 
 | 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|---|
@@ -148,6 +148,63 @@ const everything = selectTaskNotifications(snapshot, '*')
 
 // 幂等：开同源标签页通道并要一次全量 baseline
 taskNotifications.connect()
+```
+
+## 服务端任务：状态源、双时钟与幂等
+
+> EN: Server-backed tasks: status source, two clocks and idempotency
+
+服务端执行的长任务用 `notifyTask.background(title, options)` 登记，它等价于 `ensure` 加 `serverBacked: true`，必须有稳定的 `key`。作业**一开始就登记**，不等用户「收起」——收起只是关前端展示。每个项目注册**一个**批量状态源 `setStatusSource(project, (keys) => StatusRow[])`，核心按 `min(轮询周期, 租约/2)` 一次问该项目全部在跑的 key，不是逐任务轮询。拿到 `running` 续租，`done` / `failed` 立即结算；状态源抛错或漏 key 都只算本轮没确认，不误杀、也不续租。
+
+> EN: Register long server-side jobs with `notifyTask.background(title, options)` — the same as `ensure` plus `serverBacked: true`, and a stable `key` is required. Register the job **when it starts**, not when the user collapses the UI; collapsing only hides the front end. Register **one** batch status source per project via `setStatusSource(project, (keys) => StatusRow[])`. The core asks all running keys of that project in one call every `min(poll interval, lease/2)` — never per-task. `running` renews the lease, `done`/`failed` settles at once; a thrown or incomplete reply counts as "not confirmed this round" — no false kill, no renewal.
+
+双时钟：`leaseMs`（缺省 5 分钟）是**可续**短租约，从最后一次确认起算，发现「不再证明活着」的作业；`maxDurationMs`（缺省 0 = 不限）从 `startedAt` 起算，**续租不重置**，到点无条件结算为 `failed(max duration exceeded)`，拦住无限续命的僵尸。只有持有执行权的本页会探测与结算；别的标签页只是投影。卸载调 `dispose()` 会一并停掉探测与租约定时器。at-least-once 是前提：服务端处理器必须幂等，`key` 只防重复提交、不替代幂等。
+
+> EN: Two clocks: `leaseMs` (default 5 min) is the **renewable** short lease counted from the last confirmation, catching work that stops proving it is alive; `maxDurationMs` (default 0 = unlimited) counts from `startedAt` and is **not reset by renewal**, settling as `failed(max duration exceeded)` on arrival to stop immortal zombies. Only the owning page probes and settles; other tabs are projections. `dispose()` stops both the probe and lease timers. Delivery is at-least-once: server handlers must be idempotent, and `key` only prevents duplicate submission — it does not replace idempotency.
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `notifyTask.background(title, options?)` | `(title: string, options?: NotifyTaskOptions) => TaskNotificationClaim` | — | 登记服务端任务（= ensure + serverBacked）；必须有 key。`created === false` 时不要起第二份服务端作业 | Registers a server-backed task (= ensure + serverBacked); a key is required. When `created === false`, do not start a second server job |
+| `taskNotifications.setStatusSource(project, source)` | `(project: string, source: StatusSource) => void` | — | 按项目注册一个批量状态源，后者覆盖前者；source 签名 (keys) => StatusRow[] \| Promise<StatusRow[]> | Registers one batch status source per project, later ones replace earlier; source is (keys) => StatusRow[] \| Promise<StatusRow[]> |
+| `StatusRow` | `{ key: string; state: "running" \| "done" \| "failed"; reason?: string }` | — | 状态源回报的一行：key 是归一化后的业务键，state 决定续租或结算，reason 是失败原因 | One row from a status source: key is the normalized business key, state decides renewal or settlement, reason is the failure text |
+| `input.serverBacked` | `boolean` | false | 标为服务端任务：必须有 key，由状态源看护而非 timeoutMs 回收 | Marks a server-backed task: requires a key, watched by a status source instead of timeoutMs |
+| `input.leaseMs` | `number` | 300000 | 可续短租约（毫秒），从最后一次确认起算；必须 > 0。轮询周期取 min(60s, leaseMs/2) | Renewable short lease in ms from the last confirmation; must be > 0. Poll interval is min(60s, leaseMs/2) |
+| `input.maxDurationMs` | `number` | 0 | 总执行上限（毫秒），从 startedAt 算、续租不重置；0 = 不设上限。到点结算为 failed(max duration exceeded) | Total execution cap in ms from startedAt, never reset by renewal; 0 = no cap. On arrival settles as failed(max duration exceeded) |
+| `handle.touch()` | `() => void` | — | 可选加速：把租约从现在起算；只对服务端任务有效，不调用也不影响 pull 看护 | Optional acceleration: renews the lease from now; only for server-backed tasks, and skipping it does not affect pull watching |
+
+```ts id="bt-server-example"
+import {
+  taskNotifications,
+  notifyTask,
+  type StatusRow,
+} from 'dsh-plugin-core/adv/tasks'
+
+// ① 每个项目注册一个批量状态源：核心周期性调用，一次问该项目全部在跑的 key。
+//    响应询问是必须实现的；抛错 / 漏 key 都只算本轮没确认，租约会兜底。
+taskNotifications.setStatusSource('dsh-task-dispatch-table', async (keys) => {
+  const rows = await api.queryJobsByKeys(keys)   // api 由消费方提供
+  return rows.map((row) => ({
+    key: row.key,
+    state: row.state,                            // 'running' | 'done' | 'failed'
+    ...(row.reason ? { reason: row.reason } : {}),
+  })) satisfies StatusRow[]
+})
+
+// ② 作业一开始就登记，不等用户「收起」。created === false 就别起第二份作业。
+const claim = notifyTask.background('正在结案', {
+  key: ['close', workspaceId, taskId],
+  group: 'close',
+  detail: { workspaceId, taskId },               // 展示用；后端任务号存服务端
+  leaseMs: 5 * 60_000,                           // 可续短租约，缺省 5 分钟
+  maxDurationMs: 30 * 60_000,                    // 总上限，从 startedAt 算、续租不重置
+})
+if (!claim.created) return
+await api.submitCloseJob({ workspaceId, taskId })
+
+// ③ 可选加速：主动续租 / 改展示数据。不写也能靠 pull 正常看护。
+claim.handle.touch()
+claim.handle.update({ detail: { phase: '正在写回' } })
+// 结束时由状态源回报 done / failed，核心据此结算（不要在状态源里替核心结算）。
 ```
 
 ## useTasks：React 读取入口

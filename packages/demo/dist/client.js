@@ -69494,8 +69494,8 @@ h(SideSheet, {
     },
     "prose": [
       {
-        "zh": "\u8FD9\u91CC\u53EB**\u540E\u53F0\u4EFB\u52A1\u4E2D\u5FC3**\uFF1A\u5B83\u53EA\u662F\u501F\u4E86 runtime \u7684\u8DE8\u9875\u901A\u77E5\u80FD\u529B\u642C\u8FD0\u72B6\u6001\uFF0C\u672C\u8EAB\u662F\u300C\u767B\u8BB0 \u2192 \u8BA2\u9605 \u2192 \u7ED3\u675F\u300D\u7684\u4EFB\u52A1\u6C60\uFF0C\u548C\u300C\u53D1\u4E00\u6761\u53E5\u5B50\u5C31\u5B8C\u300D\u7684\u901A\u77E5\u662F\u4E24\u56DE\u4E8B\uFF08\u7EAF\u5E7F\u64AD\u770B `notifyMessage`\uFF09\u3002\u6570\u636E\u53EA\u5728\u5185\u5B58\uFF1A\u672C\u9875\u4E0E\u540C\u6E90\u6807\u7B7E\u9875\u5404\u4E00\u4EFD\uFF0C\u5237\u65B0\u6216\u5173\u9875\u5373\u5931\uFF1B\u4E0D\u843D\u6587\u4EF6\u3001\u4E0D\u53D1\u8BF7\u6C42\u3001\u4E0D\u8F6E\u8BE2\u3002\u8DE8\u9875\u53EA\u4F20\u7EAF\u6570\u636E\uFF08\u7ED3\u6784\u5316\u514B\u9686\u53EF\u5F97\uFF09\uFF0C\u4E0D\u5E26\u51FD\u6570\u3001\u7EC4\u4EF6\u6216 Promise\u3002",
-        "en": 'This is the **background task hub**: it borrows the runtime cross-page notification channel to move state around, but it is a "register \u2192 subscribe \u2192 settle" pool, not a "send one sentence and forget" notification (plain broadcasts are `notifyMessage`). Data lives in memory only: one copy per page and per same-origin tab, gone on reload or close \u2014 no files, no requests, no polling. Only plain structured-cloneable data crosses pages: no functions, components or promises.'
+        "zh": "\u8FD9\u91CC\u53EB**\u540E\u53F0\u4EFB\u52A1\u4E2D\u5FC3**\uFF1A\u5B83\u501F runtime \u7684\u8DE8\u9875\u901A\u77E5\u80FD\u529B\u642C\u8FD0\u72B6\u6001\uFF0C\u672C\u8EAB\u662F\u300C\u767B\u8BB0 \u2192 \u8BA2\u9605 \u2192 \u7ED3\u675F\u300D\u7684\u4EFB\u52A1\u6C60\uFF0C\u548C\u300C\u53D1\u4E00\u6761\u53E5\u5B50\u5C31\u5B8C\u300D\u7684\u901A\u77E5\u662F\u4E24\u56DE\u4E8B\uFF08\u7EAF\u5E7F\u64AD\u770B `notifyMessage`\uFF09\u3002\u9ED8\u8BA4\u8FD9\u6761\u8DEF\u5F84\u4E0D\u843D\u76D8\u3001\u4E0D\u53D1\u8BF7\u6C42\uFF1A\u672C\u9875\u4E0E\u540C\u6E90\u6807\u7B7E\u9875\u5404\u6301\u4E00\u4EFD\u5185\u5B58\u6295\u5F71\uFF0C\u5237\u65B0\u5373\u5931\u3002\u8981\u670D\u52A1\u7AEF\u6267\u884C\u3001\u5237\u65B0\u540E\u7167\u5E38\u770B\u62A4\u7684\uFF0C\u8D70\u4E0B\u9762\u7684**\u670D\u52A1\u7AEF\u4EFB\u52A1**\uFF08`notifyTask.background` + \u72B6\u6001\u6E90\uFF09\u3002\u8DE8\u9875\u53EA\u4F20\u7EAF\u6570\u636E\uFF08\u7ED3\u6784\u5316\u514B\u9686\u53EF\u5F97\uFF09\uFF0C\u4E0D\u5E26\u51FD\u6570\u3001\u7EC4\u4EF6\u6216 Promise\u3002",
+        "en": 'This is the **background task hub**: it borrows the runtime cross-page notification channel to move state around, but it is a "register \u2192 subscribe \u2192 settle" pool, not a "send one sentence and forget" notification (plain broadcasts are `notifyMessage`). The default path writes nothing and makes no requests: each page and same-origin tab holds an in-memory projection that is gone on reload. For work that runs on a server and stays watched after a reload, use **server-backed tasks** below (`notifyTask.background` + a status source). Only plain structured-cloneable data crosses pages: no functions, components or promises.'
       },
       {
         "zh": "\u4E24\u6761\u901A\u9053\uFF1A**\u72B6\u6001\u6C60**\uFF08`getSnapshot` / `subscribe`\uFF0C\u53EF\u76F4\u63A5\u5582 `useSyncExternalStore`\uFF09\u4E0E**\u4E8B\u4EF6\u603B\u7EBF**\uFF08`subscribeTaskNotificationEvents`\uFF0C\u4E00\u6B21\u6027\u4E8B\u5B9E\uFF0C\u4E0D\u7559\u5B58\uFF09\u3002\u8981\u8FDB\u5217\u8868\u3001\u80FD\u88AB\u7ED3\u675F\u7684\u7528 `notifyTask`\uFF1B\u53EA\u64AD\u4E00\u53E5\u3001\u4E0D\u8FDB\u5217\u8868\u7684\u7528 `notifyMessage`\u3002",
@@ -69695,8 +69695,8 @@ h(SideSheet, {
             "type": "() => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5173\u901A\u9053\u4E0E\u6458\u76D1\u542C\uFF0C\u4FDD\u7559\u72B6\u6001\uFF0C\u4E0B\u6B21 connect \u4F1A\u590D\u6D3B\u5E76\u91CD\u53D1\u5206\u7247\uFF1B\u6309\u94AE\u65B9\u6CD5\u968F\u4E4B\u6E05\u7A7A\uFF0C\u5B58\u6D3B\u6761\u76EE\u7684\u6309\u94AE\u4ECE\u6B64\u523B\u8D77\u4E0D\u53EF\u6267\u884C",
-              "en": "Closes the channel and detaches listeners but keeps state; the next connect revives it and rebroadcasts a shard. Action methods are dropped, so surviving rows stay unclickable from then on"
+              "zh": "\u5173\u901A\u9053\u4E0E\u6458\u76D1\u542C\u3001\u505C\u6389\u5FC3\u8DF3\u5B9A\u65F6\u5668\uFF0C\u5728\u9014\u63A2\u6D4B\u7684\u7ED3\u679C\u4E5F\u4E00\u5F8B\u4E22\u5F03\uFF08\u5378\u8F7D\u540E\u4E0D\u6539\u72B6\u6001\uFF09\uFF1B\u4FDD\u7559\u6C60\u72B6\u6001\uFF0C\u4E0B\u6B21 connect \u4F1A\u590D\u6D3B\u5E76\u91CD\u53D1\u5206\u7247\uFF1B\u6309\u94AE\u65B9\u6CD5\u968F\u4E4B\u6E05\u7A7A\uFF0C\u5B58\u6D3B\u6761\u76EE\u7684\u6309\u94AE\u4ECE\u6B64\u523B\u8D77\u4E0D\u53EF\u6267\u884C",
+              "en": "Closes the channel, detaches listeners and stops the heartbeat timer; an in-flight probe result is also discarded so nothing changes state after unload. Pool state is kept and the next connect revives it and rebroadcasts a shard. Action methods are dropped, so surviving rows stay unclickable from then on"
             }
           }
         ]
@@ -69918,6 +69918,100 @@ h(SideSheet, {
         "id": "bt-subscribe-example",
         "lang": "ts",
         "src": "import { useSyncExternalStore } from 'react'\nimport { taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/adv/tasks'\n\n// \u5FEB\u7167\u53EF\u76F4\u63A5\u5582 useSyncExternalStore\uFF1B\u4E09\u4E2A\u53C2\u6570\u90FD\u7ED9\uFF0CSSR / \u975E\u5BBF\u4E3B\u73AF\u5883\u4E0D\u70B8\nconst snapshot = useSyncExternalStore(\n  taskNotifications.subscribe,\n  taskNotifications.getSnapshot,\n  taskNotifications.getServerSnapshot,\n)\n\n// \u4E09\u6863\uFF1A\u4E0D\u4F20 = \u672C\u9879\u76EE\u5168\u90E8\u4E8C\u7EA7\uFF1B\u6570\u7EC4 = \u8FD9\u51E0\u4E2A\u4E8C\u7EA7\uFF1B'*' = \u5168\u7AD9\nconst mine = selectTaskNotifications(snapshot, ['scan'])\nconst everything = selectTaskNotifications(snapshot, '*')\n\n// \u5E42\u7B49\uFF1A\u5F00\u540C\u6E90\u6807\u7B7E\u9875\u901A\u9053\u5E76\u8981\u4E00\u6B21\u5168\u91CF baseline\ntaskNotifications.connect()"
+      }
+    ]
+  },
+  "bt-server-task": {
+    "id": "bt-server-task",
+    "heading": {
+      "zh": "\u670D\u52A1\u7AEF\u4EFB\u52A1\uFF1A\u72B6\u6001\u6E90\u3001\u53CC\u65F6\u949F\u4E0E\u5E42\u7B49",
+      "en": "Server-backed tasks: status source, two clocks and idempotency"
+    },
+    "prose": [
+      {
+        "zh": "\u670D\u52A1\u7AEF\u6267\u884C\u7684\u957F\u4EFB\u52A1\u7528 `notifyTask.background(title, options)` \u767B\u8BB0\uFF0C\u5B83\u7B49\u4EF7\u4E8E `ensure` \u52A0 `serverBacked: true`\uFF0C\u5FC5\u987B\u6709\u7A33\u5B9A\u7684 `key`\u3002\u4F5C\u4E1A**\u4E00\u5F00\u59CB\u5C31\u767B\u8BB0**\uFF0C\u4E0D\u7B49\u7528\u6237\u300C\u6536\u8D77\u300D\u2014\u2014\u6536\u8D77\u53EA\u662F\u5173\u524D\u7AEF\u5C55\u793A\u3002\u6BCF\u4E2A\u9879\u76EE\u6CE8\u518C**\u4E00\u4E2A**\u6279\u91CF\u72B6\u6001\u6E90 `setStatusSource(project, (keys) => StatusRow[])`\uFF0C\u6838\u5FC3\u6309 `min(\u8F6E\u8BE2\u5468\u671F, \u79DF\u7EA6/2)` \u4E00\u6B21\u95EE\u8BE5\u9879\u76EE\u5168\u90E8\u5728\u8DD1\u7684 key\uFF0C\u4E0D\u662F\u9010\u4EFB\u52A1\u8F6E\u8BE2\u3002\u62FF\u5230 `running` \u7EED\u79DF\uFF0C`done` / `failed` \u7ACB\u5373\u7ED3\u7B97\uFF1B\u72B6\u6001\u6E90\u629B\u9519\u6216\u6F0F key \u90FD\u53EA\u7B97\u672C\u8F6E\u6CA1\u786E\u8BA4\uFF0C\u4E0D\u8BEF\u6740\u3001\u4E5F\u4E0D\u7EED\u79DF\u3002",
+        "en": 'Register long server-side jobs with `notifyTask.background(title, options)` \u2014 the same as `ensure` plus `serverBacked: true`, and a stable `key` is required. Register the job **when it starts**, not when the user collapses the UI; collapsing only hides the front end. Register **one** batch status source per project via `setStatusSource(project, (keys) => StatusRow[])`. The core asks all running keys of that project in one call every `min(poll interval, lease/2)` \u2014 never per-task. `running` renews the lease, `done`/`failed` settles at once; a thrown or incomplete reply counts as "not confirmed this round" \u2014 no false kill, no renewal.'
+      },
+      {
+        "zh": "\u53CC\u65F6\u949F\uFF1A`leaseMs`\uFF08\u7F3A\u7701 5 \u5206\u949F\uFF09\u662F**\u53EF\u7EED**\u77ED\u79DF\u7EA6\uFF0C\u4ECE\u6700\u540E\u4E00\u6B21\u786E\u8BA4\u8D77\u7B97\uFF0C\u53D1\u73B0\u300C\u4E0D\u518D\u8BC1\u660E\u6D3B\u7740\u300D\u7684\u4F5C\u4E1A\uFF1B`maxDurationMs`\uFF08\u7F3A\u7701 0 = \u4E0D\u9650\uFF09\u4ECE `startedAt` \u8D77\u7B97\uFF0C**\u7EED\u79DF\u4E0D\u91CD\u7F6E**\uFF0C\u5230\u70B9\u65E0\u6761\u4EF6\u7ED3\u7B97\u4E3A `failed(max duration exceeded)`\uFF0C\u62E6\u4F4F\u65E0\u9650\u7EED\u547D\u7684\u50F5\u5C38\u3002\u53EA\u6709\u6301\u6709\u6267\u884C\u6743\u7684\u672C\u9875\u4F1A\u63A2\u6D4B\u4E0E\u7ED3\u7B97\uFF1B\u522B\u7684\u6807\u7B7E\u9875\u53EA\u662F\u6295\u5F71\u3002\u5378\u8F7D\u8C03 `dispose()` \u4F1A\u4E00\u5E76\u505C\u6389\u63A2\u6D4B\u4E0E\u79DF\u7EA6\u5B9A\u65F6\u5668\u3002at-least-once \u662F\u524D\u63D0\uFF1A\u670D\u52A1\u7AEF\u5904\u7406\u5668\u5FC5\u987B\u5E42\u7B49\uFF0C`key` \u53EA\u9632\u91CD\u590D\u63D0\u4EA4\u3001\u4E0D\u66FF\u4EE3\u5E42\u7B49\u3002",
+        "en": "Two clocks: `leaseMs` (default 5 min) is the **renewable** short lease counted from the last confirmation, catching work that stops proving it is alive; `maxDurationMs` (default 0 = unlimited) counts from `startedAt` and is **not reset by renewal**, settling as `failed(max duration exceeded)` on arrival to stop immortal zombies. Only the owning page probes and settles; other tabs are projections. `dispose()` stops both the probe and lease timers. Delivery is at-least-once: server handlers must be idempotent, and `key` only prevents duplicate submission \u2014 it does not replace idempotency."
+      }
+    ],
+    "api": [
+      {
+        "id": "bt-server-task-api",
+        "rows": [
+          {
+            "name": "notifyTask.background(title, options?)",
+            "type": "(title: string, options?: NotifyTaskOptions) => TaskNotificationClaim",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u767B\u8BB0\u670D\u52A1\u7AEF\u4EFB\u52A1\uFF08= ensure + serverBacked\uFF09\uFF1B\u5FC5\u987B\u6709 key\u3002`created === false` \u65F6\u4E0D\u8981\u8D77\u7B2C\u4E8C\u4EFD\u670D\u52A1\u7AEF\u4F5C\u4E1A",
+              "en": "Registers a server-backed task (= ensure + serverBacked); a key is required. When `created === false`, do not start a second server job"
+            }
+          },
+          {
+            "name": "taskNotifications.setStatusSource(project, source)",
+            "type": "(project: string, source: StatusSource) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6309\u9879\u76EE\u6CE8\u518C\u4E00\u4E2A\u6279\u91CF\u72B6\u6001\u6E90\uFF0C\u540E\u8005\u8986\u76D6\u524D\u8005\uFF1Bsource \u7B7E\u540D (keys) => StatusRow[] | Promise<StatusRow[]>",
+              "en": "Registers one batch status source per project, later ones replace earlier; source is (keys) => StatusRow[] | Promise<StatusRow[]>"
+            }
+          },
+          {
+            "name": "StatusRow",
+            "type": '{ key: string; state: "running" | "done" | "failed"; reason?: string }',
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u72B6\u6001\u6E90\u56DE\u62A5\u7684\u4E00\u884C\uFF1Akey \u662F\u5F52\u4E00\u5316\u540E\u7684\u4E1A\u52A1\u952E\uFF0Cstate \u51B3\u5B9A\u7EED\u79DF\u6216\u7ED3\u7B97\uFF0Creason \u662F\u5931\u8D25\u539F\u56E0",
+              "en": "One row from a status source: key is the normalized business key, state decides renewal or settlement, reason is the failure text"
+            }
+          },
+          {
+            "name": "input.serverBacked",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u6807\u4E3A\u670D\u52A1\u7AEF\u4EFB\u52A1\uFF1A\u5FC5\u987B\u6709 key\uFF0C\u7531\u72B6\u6001\u6E90\u770B\u62A4\u800C\u975E timeoutMs \u56DE\u6536",
+              "en": "Marks a server-backed task: requires a key, watched by a status source instead of timeoutMs"
+            }
+          },
+          {
+            "name": "input.leaseMs",
+            "type": "number",
+            "def": "300000",
+            "desc": {
+              "zh": "\u53EF\u7EED\u77ED\u79DF\u7EA6\uFF08\u6BEB\u79D2\uFF09\uFF0C\u4ECE\u6700\u540E\u4E00\u6B21\u786E\u8BA4\u8D77\u7B97\uFF1B\u5FC5\u987B > 0\u3002\u8F6E\u8BE2\u5468\u671F\u53D6 min(60s, leaseMs/2)",
+              "en": "Renewable short lease in ms from the last confirmation; must be > 0. Poll interval is min(60s, leaseMs/2)"
+            }
+          },
+          {
+            "name": "input.maxDurationMs",
+            "type": "number",
+            "def": "0",
+            "desc": {
+              "zh": "\u603B\u6267\u884C\u4E0A\u9650\uFF08\u6BEB\u79D2\uFF09\uFF0C\u4ECE startedAt \u7B97\u3001\u7EED\u79DF\u4E0D\u91CD\u7F6E\uFF1B0 = \u4E0D\u8BBE\u4E0A\u9650\u3002\u5230\u70B9\u7ED3\u7B97\u4E3A failed(max duration exceeded)",
+              "en": "Total execution cap in ms from startedAt, never reset by renewal; 0 = no cap. On arrival settles as failed(max duration exceeded)"
+            }
+          },
+          {
+            "name": "handle.touch()",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u53EF\u9009\u52A0\u901F\uFF1A\u628A\u79DF\u7EA6\u4ECE\u73B0\u5728\u8D77\u7B97\uFF1B\u53EA\u5BF9\u670D\u52A1\u7AEF\u4EFB\u52A1\u6709\u6548\uFF0C\u4E0D\u8C03\u7528\u4E5F\u4E0D\u5F71\u54CD pull \u770B\u62A4",
+              "en": "Optional acceleration: renews the lease from now; only for server-backed tasks, and skipping it does not affect pull watching"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "bt-server-example",
+        "lang": "ts",
+        "src": "import {\n  taskNotifications,\n  notifyTask,\n  type StatusRow,\n} from 'dsh-plugin-core/adv/tasks'\n\n// \u2460 \u6BCF\u4E2A\u9879\u76EE\u6CE8\u518C\u4E00\u4E2A\u6279\u91CF\u72B6\u6001\u6E90\uFF1A\u6838\u5FC3\u5468\u671F\u6027\u8C03\u7528\uFF0C\u4E00\u6B21\u95EE\u8BE5\u9879\u76EE\u5168\u90E8\u5728\u8DD1\u7684 key\u3002\n//    \u54CD\u5E94\u8BE2\u95EE\u662F\u5FC5\u987B\u5B9E\u73B0\u7684\uFF1B\u629B\u9519 / \u6F0F key \u90FD\u53EA\u7B97\u672C\u8F6E\u6CA1\u786E\u8BA4\uFF0C\u79DF\u7EA6\u4F1A\u515C\u5E95\u3002\ntaskNotifications.setStatusSource('dsh-task-dispatch-table', async (keys) => {\n  const rows = await api.queryJobsByKeys(keys)   // api \u7531\u6D88\u8D39\u65B9\u63D0\u4F9B\n  return rows.map((row) => ({\n    key: row.key,\n    state: row.state,                            // 'running' | 'done' | 'failed'\n    ...(row.reason ? { reason: row.reason } : {}),\n  })) satisfies StatusRow[]\n})\n\n// \u2461 \u4F5C\u4E1A\u4E00\u5F00\u59CB\u5C31\u767B\u8BB0\uFF0C\u4E0D\u7B49\u7528\u6237\u300C\u6536\u8D77\u300D\u3002created === false \u5C31\u522B\u8D77\u7B2C\u4E8C\u4EFD\u4F5C\u4E1A\u3002\nconst claim = notifyTask.background('\u6B63\u5728\u7ED3\u6848', {\n  key: ['close', workspaceId, taskId],\n  group: 'close',\n  detail: { workspaceId, taskId },               // \u5C55\u793A\u7528\uFF1B\u540E\u7AEF\u4EFB\u52A1\u53F7\u5B58\u670D\u52A1\u7AEF\n  leaseMs: 5 * 60_000,                           // \u53EF\u7EED\u77ED\u79DF\u7EA6\uFF0C\u7F3A\u7701 5 \u5206\u949F\n  maxDurationMs: 30 * 60_000,                    // \u603B\u4E0A\u9650\uFF0C\u4ECE startedAt \u7B97\u3001\u7EED\u79DF\u4E0D\u91CD\u7F6E\n})\nif (!claim.created) return\nawait api.submitCloseJob({ workspaceId, taskId })\n\n// \u2462 \u53EF\u9009\u52A0\u901F\uFF1A\u4E3B\u52A8\u7EED\u79DF / \u6539\u5C55\u793A\u6570\u636E\u3002\u4E0D\u5199\u4E5F\u80FD\u9760 pull \u6B63\u5E38\u770B\u62A4\u3002\nclaim.handle.touch()\nclaim.handle.update({ detail: { phase: '\u6B63\u5728\u5199\u56DE' } })\n// \u7ED3\u675F\u65F6\u7531\u72B6\u6001\u6E90\u56DE\u62A5 done / failed\uFF0C\u6838\u5FC3\u636E\u6B64\u7ED3\u7B97\uFF08\u4E0D\u8981\u5728\u72B6\u6001\u6E90\u91CC\u66FF\u6838\u5FC3\u7ED3\u7B97\uFF09\u3002"
       }
     ]
   },
@@ -74659,6 +74753,8 @@ var TASK_NOTIFICATIONS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-no
 var TASK_NOTIFICATIONS_EVENTS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/events/v2");
 var TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v2";
 var INVOKE_TIMEOUT_MS = 2e3;
+var DEFAULT_LEASE_MS = 5 * 6e4;
+var DEFAULT_POLL_INTERVAL_MS = 6e4;
 var EMPTY_TASKS = Object.freeze([]);
 var EMPTY_SNAPSHOT = Object.freeze({ tasks: EMPTY_TASKS, revision: 0 });
 function assertOptionalText(source, keys2) {
@@ -74828,6 +74924,14 @@ function isTaskRecord(value) {
   if (value.timeoutMs !== void 0 && (typeof value.timeoutMs !== "number" || !Number.isFinite(value.timeoutMs) || value.timeoutMs < 0)) {
     return false;
   }
+  if (value.serverBacked !== void 0 && typeof value.serverBacked !== "boolean")
+    return false;
+  if (value.leaseMs !== void 0 && (typeof value.leaseMs !== "number" || !Number.isFinite(value.leaseMs) || value.leaseMs <= 0)) {
+    return false;
+  }
+  if (value.maxDurationMs !== void 0 && (typeof value.maxDurationMs !== "number" || !Number.isFinite(value.maxDurationMs) || value.maxDurationMs < 0)) {
+    return false;
+  }
   return typeof value.id === "string" && typeof value.project === "string" && typeof value.group === "string" && typeof value.title === "string" && (value.status === "running" || value.status === "done" || value.status === "failed") && Number.isFinite(value.startedAt) && Number.isFinite(value.updatedAt) && typeof value.origin === "string" && typeof value.backgrounded === "boolean";
 }
 function isNotice(value) {
@@ -74927,6 +75031,11 @@ function createTaskNotificationPool(options = {}) {
   const runners = /* @__PURE__ */ new Map();
   const pendingInvokes = /* @__PURE__ */ new Map();
   const probing = /* @__PURE__ */ new Set();
+  const statusSources = /* @__PURE__ */ new Map();
+  const serverRenewedAt = /* @__PURE__ */ new Map();
+  let pollTimer = null;
+  let polling = false;
+  let pollGeneration = 0;
   let locksHeld = false;
   let lockAttempt = 0;
   const store = createStore2(() => EMPTY_SNAPSHOT);
@@ -74997,6 +75106,121 @@ function createTaskNotificationPool(options = {}) {
       }
     }
   }
+  function isServerTask(task) {
+    return task.serverBacked === true && finishers.has(task.id);
+  }
+  function groupServerKeys() {
+    const grouped = /* @__PURE__ */ new Map();
+    for (const task of localShard()) {
+      if (!isServerTask(task) || task.key === void 0)
+        continue;
+      const bucket = grouped.get(task.project);
+      if (bucket === void 0)
+        grouped.set(task.project, [task.key]);
+      else
+        bucket.push(task.key);
+    }
+    return grouped;
+  }
+  function findServerTask(project, key) {
+    return localShard().find((task) => isServerTask(task) && task.project === project && task.key === key);
+  }
+  async function pollStatus(generation) {
+    const grouped = groupServerKeys();
+    if (grouped.size === 0)
+      return;
+    for (const [project, keys2] of grouped) {
+      const source = statusSources.get(project);
+      if (source === void 0)
+        continue;
+      let rows;
+      try {
+        rows = await source([...keys2]);
+      } catch {
+        continue;
+      }
+      if (generation !== pollGeneration)
+        return;
+      if (!Array.isArray(rows))
+        continue;
+      for (const row3 of rows) {
+        if (row3 === null || typeof row3 !== "object")
+          continue;
+        const target = findServerTask(project, row3.key);
+        if (target === void 0)
+          continue;
+        const finish = finishers.get(target.id);
+        if (finish === void 0)
+          continue;
+        const now = Date.now();
+        if (row3.state === "running") {
+          serverRenewedAt.set(target.id, now);
+        } else if (row3.state === "done" || row3.state === "failed") {
+          serverRenewedAt.delete(target.id);
+          finish(row3.state === "done" ? "done" : "failed", row3.reason);
+        }
+      }
+    }
+  }
+  function checkServerClocks() {
+    const now = Date.now();
+    for (const task of [...localShard()]) {
+      if (!isServerTask(task))
+        continue;
+      const finish = finishers.get(task.id);
+      if (finish === void 0)
+        continue;
+      if (task.maxDurationMs !== void 0 && task.maxDurationMs > 0 && now - task.startedAt >= task.maxDurationMs) {
+        serverRenewedAt.delete(task.id);
+        finish("failed", "max duration exceeded");
+        continue;
+      }
+      const leaseMs = task.leaseMs ?? DEFAULT_LEASE_MS;
+      const last2 = serverRenewedAt.get(task.id) ?? task.startedAt;
+      if (now - last2 >= leaseMs) {
+        serverRenewedAt.delete(task.id);
+        finish("failed", "lease expired");
+      }
+    }
+  }
+  function serverPollInterval() {
+    let interval2 = DEFAULT_POLL_INTERVAL_MS;
+    let found = false;
+    for (const task of localShard()) {
+      if (!isServerTask(task))
+        continue;
+      found = true;
+      const leaseMs = task.leaseMs ?? DEFAULT_LEASE_MS;
+      interval2 = Math.min(interval2, Math.max(1, Math.floor(leaseMs / 2)));
+    }
+    return found ? Math.max(1, interval2) : null;
+  }
+  function clearPollTimer() {
+    if (pollTimer === null)
+      return;
+    clearTimeout(pollTimer);
+    pollTimer = null;
+  }
+  function schedulePoll() {
+    clearPollTimer();
+    const interval2 = serverPollInterval();
+    if (interval2 === null)
+      return;
+    const timer = setTimeout(() => {
+      pollTimer = null;
+      checkServerClocks();
+      if (!polling) {
+        polling = true;
+        const generation = pollGeneration;
+        void pollStatus(generation).catch(() => {
+        }).finally(() => {
+          polling = false;
+        });
+      }
+      schedulePoll();
+    }, interval2);
+    pollTimer = timer;
+  }
   function post(message) {
     if (channel === null)
       return;
@@ -75028,6 +75252,7 @@ function createTaskNotificationPool(options = {}) {
     emit(notice, false);
     broadcastShard(notice);
     scheduleExpiry();
+    schedulePoll();
   }
   function broadcast(input) {
     return notifyMessage(input.title, input);
@@ -75248,6 +75473,7 @@ function createTaskNotificationPool(options = {}) {
       broadcastShard();
     }
     scheduleExpiry();
+    schedulePoll();
   }
   function refresh() {
     holdLiveness();
@@ -75266,6 +75492,18 @@ function createTaskNotificationPool(options = {}) {
     const timeoutMs = input.timeoutMs ?? 0;
     if (!Number.isFinite(timeoutMs) || timeoutMs < 0) {
       throw new Error("task notification timeoutMs must be a finite number >= 0");
+    }
+    const serverBacked = input.serverBacked === true;
+    if (serverBacked && key === void 0) {
+      throw new Error("task notification serverBacked requires a key");
+    }
+    const leaseMs = input.leaseMs ?? DEFAULT_LEASE_MS;
+    if (!Number.isFinite(leaseMs) || leaseMs <= 0) {
+      throw new Error("task notification leaseMs must be a finite number > 0");
+    }
+    const maxDurationMs = input.maxDurationMs ?? 0;
+    if (!Number.isFinite(maxDurationMs) || maxDurationMs < 0) {
+      throw new Error("task notification maxDurationMs must be a finite number >= 0");
     }
     if (typeof input.title !== "string")
       throw new Error("task notification title must be a string");
@@ -75328,8 +75566,11 @@ function createTaskNotificationPool(options = {}) {
       origin,
       backgrounded: false,
       ...hidden ? { hidden: true } : {},
-      ...timeoutMs > 0 ? { timeoutMs } : {}
+      ...timeoutMs > 0 ? { timeoutMs } : {},
+      ...serverBacked ? { serverBacked: true, leaseMs, maxDurationMs } : {}
     };
+    if (serverBacked)
+      serverRenewedAt.set(id3, now);
     let isSettled = false;
     let resolveSettled = () => {
     };
@@ -75375,6 +75616,14 @@ function createTaskNotificationPool(options = {}) {
           task: next
         });
       },
+      touch() {
+        if (isSettled)
+          return;
+        const current3 = find2(id3);
+        if (current3 === void 0 || current3.serverBacked !== true)
+          return;
+        serverRenewedAt.set(id3, Date.now());
+      },
       background() {
         if (isSettled)
           return;
@@ -75415,6 +75664,7 @@ function createTaskNotificationPool(options = {}) {
       isSettled = true;
       finishers.delete(id3);
       handles.delete(id3);
+      serverRenewedAt.delete(id3);
       for (const runnerId of [...runners.keys()]) {
         if (runnerId.startsWith(`${id3}#`))
           runners.delete(runnerId);
@@ -75457,6 +75707,16 @@ function createTaskNotificationPool(options = {}) {
     register: (input) => ensure(input).handle,
     ensure,
     broadcast,
+    setStatusSource(project, source) {
+      if (typeof project !== "string" || project.trim() === "") {
+        throw new Error("task notification status source project must be a non-empty string");
+      }
+      if (typeof source !== "function") {
+        throw new Error("task notification status source must be a function");
+      }
+      statusSources.set(project, source);
+      schedulePoll();
+    },
     settleLocal,
     runAction,
     canRestore: (task) => task.origin === origin,
@@ -75472,6 +75732,8 @@ function createTaskNotificationPool(options = {}) {
       onPageHide();
       detachLifecycle();
       clearExpiryTimer();
+      pollGeneration += 1;
+      clearPollTimer();
       runners.clear();
       for (const entry of pendingInvokes.values())
         entry.resolve(false);
@@ -75515,6 +75777,9 @@ var taskNotifications = {
   register: (input) => globalPool().register(input),
   ensure: (input) => globalPool().ensure(input),
   broadcast: (input) => globalPool().broadcast(input),
+  setStatusSource: (project, source) => {
+    globalPool().setStatusSource(project, source);
+  },
   settleLocal: (reason) => globalPool().settleLocal(reason),
   runAction: (taskId, index3) => globalPool().runAction(taskId, index3),
   canRestore: (task) => globalPool().canRestore(task),
@@ -75536,7 +75801,10 @@ function notifyTaskInput(title, options) {
     ...options.icon === void 0 ? {} : { icon: options.icon },
     ...options.iconSvg === void 0 ? {} : { iconSvg: options.iconSvg },
     ...options.hidden === void 0 ? {} : { hidden: options.hidden },
-    ...options.timeoutMs === void 0 ? {} : { timeoutMs: options.timeoutMs }
+    ...options.timeoutMs === void 0 ? {} : { timeoutMs: options.timeoutMs },
+    ...options.serverBacked === void 0 ? {} : { serverBacked: options.serverBacked },
+    ...options.leaseMs === void 0 ? {} : { leaseMs: options.leaseMs },
+    ...options.maxDurationMs === void 0 ? {} : { maxDurationMs: options.maxDurationMs }
   };
 }
 function notifyTaskBase(title, options = {}) {
@@ -75544,6 +75812,9 @@ function notifyTaskBase(title, options = {}) {
 }
 function ensureTask(title, options = {}) {
   return taskNotifications.ensure(notifyTaskInput(title, options));
+}
+function backgroundTask(title, options = {}) {
+  return taskNotifications.ensure(notifyTaskInput(title, { ...options, serverBacked: true }));
 }
 function runTask(title, work, options = {}) {
   let claim2;
@@ -75567,7 +75838,11 @@ function runTask(title, work, options = {}) {
   }
   return handle.track(pending);
 }
-var notifyTask = Object.assign(notifyTaskBase, { ensure: ensureTask, run: runTask });
+var notifyTask = Object.assign(notifyTaskBase, {
+  ensure: ensureTask,
+  background: backgroundTask,
+  run: runTask
+});
 var taskNotificationEvents = {
   subscribe: (listener) => globalBus().subscribe(listener),
   emit: (event) => {
@@ -76125,9 +76400,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.36.1"}`],
-            [t3("buildDemo"), `v${"0.36.1"}`],
-            [t3("buildStamp"), "261116-173909-527"]
+            [t3("buildCore"), `v${"0.36.2"}`],
+            [t3("buildDemo"), `v${"0.36.2"}`],
+            [t3("buildStamp"), "261116-203527-831"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76163,10 +76438,10 @@ var ALL_SECTIONS = [
   { id: "help-index", group: "start", titleKey: "secHelpIndex", render: () => (0, import_react111.createElement)(HelpIndexPage, null) },
   { id: "quickstart", group: "start", titleKey: "secQuickstart", render: () => (0, import_react111.createElement)(QuickstartPage, null) },
   { id: "reference", group: "start", titleKey: "secReference", render: () => (0, import_react111.createElement)(ReferencePage, null) },
-  // ② 基础设施：设计层（design）+ 运行时底座（runtime）
+  // ② 基础设施：设计层（design）→ 图标 → 运行时底座（程序底座排最后）
   { id: "foundation", group: "infra", titleKey: "secFoundation", render: () => (0, import_react111.createElement)(FoundationPage, null) },
-  { id: "runtime", group: "infra", titleKey: "secRuntime", render: () => (0, import_react111.createElement)(RuntimePage, null) },
   { id: "icons", group: "infra", titleKey: "secIcons", render: () => (0, import_react111.createElement)(IconsPage, null) },
+  { id: "runtime", group: "infra", titleKey: "secRuntime", render: () => (0, import_react111.createElement)(RuntimePage, null) },
   // ③ 控件：一页一类，页内按控件族顺序排列
   { id: "actions", group: "components", titleKey: "secActions", render: () => (0, import_react111.createElement)(ButtonPage, null) },
   { id: "inputs", group: "components", titleKey: "secInputs", render: stack(InputPage, PickerPage, DateTimePage) },
@@ -76446,9 +76721,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.36.1"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.36.1"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261116-173909-527")
+          (0, import_react112.createElement)("span", null, `core v${"0.36.2"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.36.2"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261116-203527-831")
         )
       )
     ),

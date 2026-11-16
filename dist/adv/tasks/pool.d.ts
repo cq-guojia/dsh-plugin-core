@@ -49,6 +49,23 @@ export interface TaskNotificationActionInfo {
  * 传字符串就原样用；传数组（元组）按元素归一化成稳定串，免得手拼分隔符把两件事撞成一个键。
  */
 export type TaskKey = string | readonly (string | number)[];
+/** 服务端作业的一次状态回报，按归一化后的业务键对齐一条任务。 */
+export interface StatusRow {
+    /** 归一化后的业务键（`taskKey()` 的结果）；与登记时的键相等才认。 */
+    readonly key: string;
+    /** `running` 续租；`done` / `failed` 立即结算。 */
+    readonly state: 'running' | 'done' | 'failed';
+    /** 失败原因；仅 `state === 'failed'` 有意义。 */
+    readonly reason?: string;
+}
+/**
+ * 状态源：按项目注册一个，核心批量问一批 key。
+ *
+ * `serverBacked` 任务靠它看护：核心周期性调用，一次传入该项目全部在跑的 key，
+ * 消费方按 key 查服务端真值并原样回报。抛错 / 漏 key 都只算「本轮没确认」，
+ * 不结算，交由租约到期兜底。
+ */
+export type StatusSource = (keys: readonly string[]) => readonly StatusRow[] | Promise<readonly StatusRow[]>;
 /** Plain, structured-cloneable data. No functions, no ReactNode, no components. */
 export interface TaskNotificationRecord {
     readonly id: string;
@@ -80,6 +97,12 @@ export interface TaskNotificationRecord {
     readonly hidden?: boolean;
     /** 回收窗口（毫秒）。以最后一次活动（updatedAt）起算，到点由池结算为 failed。 */
     readonly timeoutMs?: number;
+    /** 服务端执行任务：携带稳定业务键，由状态源批量探测看护。 */
+    readonly serverBacked?: boolean;
+    /** 可续短租约（毫秒），缺省 5 分钟；连续未确认即结算 failed。 */
+    readonly leaseMs?: number;
+    /** 总执行上限（毫秒），从 startedAt 算、续租不重置；0 = 不设上限。 */
+    readonly maxDurationMs?: number;
     readonly reason?: string;
 }
 export interface TaskNotificationInput {
@@ -108,6 +131,15 @@ export interface TaskNotificationInput {
      * 会自己跑完的短任务想兜底，显式给一个值。
      */
     timeoutMs?: number;
+    /**
+     * 标为服务端执行任务：必须有 `key`，由状态源批量探测看护，而非 timeoutMs 回收。
+     * 作业从一开始就登记进池；「收起」只是关前端展示，不是此时才登记。
+     */
+    serverBacked?: boolean;
+    /** 可续短租约（毫秒），缺省 5 分钟。0 / 负数按非法拒。 */
+    leaseMs?: number;
+    /** 总执行上限（毫秒），从 startedAt 算、续租不重置。缺省 0 = 不设上限。 */
+    maxDurationMs?: number;
 }
 export interface TaskNotificationPatch {
     title?: string;
@@ -155,6 +187,8 @@ export interface TaskNotificationHandle {
     /** Settles only when the task really ends; collapsing never settles it. */
     readonly settled: Promise<TaskNotificationSettlement>;
     update(patch: TaskNotificationPatch): void;
+    /** 可选加速：本轮立即续租；不调用也不影响看护（核心主动 pull 是主路径）。 */
+    touch(): void;
     background(): void;
     done(detail?: TaskNotificationDetail): void;
     fail(reason?: string): void;
@@ -254,6 +288,11 @@ export interface TaskNotificationPool {
     ensure(input: TaskNotificationInput): TaskNotificationClaim;
     /** 纯广播：只出 `message` 事件，不写池、不动快照。 */
     broadcast(input: TaskNotificationMessageInput): TaskNotificationMessage;
+    /**
+     * 按项目注册一个批量状态源，重复注册覆盖旧的。服务端任务靠它看护：
+     * 核心一次传入该项目全部在跑的 key，消费方回一批 `StatusRow`。
+     */
+    setStatusSource(project: string, source: StatusSource): void;
     /** Settle every task this page still owns; handles are not needed. */
     settleLocal(reason?: string): number;
     /**
@@ -323,6 +362,12 @@ export interface NotifyTaskOptions {
     hidden?: boolean;
     /** 回收窗口（毫秒）；缺省 0 = 不回收，想兜底就显式给。 */
     timeoutMs?: number;
+    /** 标为服务端执行任务：必须带 `key`，由状态源看护而非 timeoutMs 回收。 */
+    serverBacked?: boolean;
+    /** 可续短租约（毫秒），缺省 5 分钟。 */
+    leaseMs?: number;
+    /** 总执行上限（毫秒），从 startedAt 算、续租不重置；缺省 0 = 不设上限。 */
+    maxDurationMs?: number;
 }
 /**
  * 日常入口：只要一个标题，项目和二级分组都能省。
@@ -335,6 +380,11 @@ export interface NotifyTask {
     (title: string, options?: NotifyTaskOptions): TaskNotificationHandle;
     /** 幂等登记：带 key 时本页已有同键条目就地复用，并告诉你这条是不是刚建的。 */
     ensure(title: string, options?: NotifyTaskOptions): TaskNotificationClaim;
+    /**
+     * 登记一条服务端执行任务（等价于 ensure + serverBacked）。返回 claim：
+     * `created === false` 时不要起第二份服务端作业。
+     */
+    background(title: string, options?: NotifyTaskOptions): TaskNotificationClaim;
     /** 包住一段异步：成功走 done、失败走 fail，结果与异常原样透传。 */
     run<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions): Promise<T>;
 }

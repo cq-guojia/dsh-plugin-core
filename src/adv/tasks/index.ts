@@ -27,6 +27,8 @@ export {
   type NotifyMessageOptions,
   type NotifyTask,
   type NotifyTaskOptions,
+  type StatusRow,
+  type StatusSource,
   type TaskKey,
   type TaskNotificationAction,
   type TaskNotificationActionInfo,
