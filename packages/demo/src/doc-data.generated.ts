@@ -5431,6 +5431,66 @@ export const docData = {
       }
     ]
   },
+  "bt-authoritative": {
+    "id": "bt-authoritative",
+    "heading": {
+      "zh": "服务端权威任务：恢复、判死与命令",
+      "en": "Authoritative server tasks: recovery, watchdog and commands"
+    },
+    "prose": [
+      {
+        "zh": "旧的状态源模式只是「按已知 key 问服务端」：页面全关后拿不到 key，刷新会把时钟从零算起，按钮 handler 也随页面销毁。要完整恢复，改用 `taskNotifications.setTaskBackend(project, backend)` + `notifyTask.server(title, options)`。后端必须提供 `list / follow / invoke / ack` 四个能力，缺一即注册失败——不做静默降级。",
+        "en": "The status-source mode only asks the server about keys it already knows: after every page closes there are no keys, a reload restarts the clock, and action handlers die with the page. For full recovery use `taskNotifications.setTaskBackend(project, backend)` plus `notifyTask.server(title, options)`. A backend must provide `list / follow / invoke / ack`; registering otherwise throws — there is no silent fallback."
+      },
+      {
+        "zh": "真源在服务端：原子 `create` 决定 `created`，`startedAt / deadlineAt / version` 由服务端生成，超时与租约由服务端 watchdog 判定，终态按 TTL 清理。核心只按单调 version 合并基线、分页与增量，终态墓碑挡住迟到快照；按钮是 `{id, token, expiresAt}` 描述，`runAction` 按 actionId 走服务端命令，不依赖页面闭包。结果通知按 `(project, scope, key, version, kind)` 去重并 ack；未确认的下次开页补发。",
+        "en": "The server owns the truth: atomic `create` decides `created`; `startedAt / deadlineAt / version` come from the server; a server watchdog decides timeouts and lease expiry; terminal records are cleared by TTL. The core only merges baseline, pages and deltas by monotonic version, with terminal tombstones blocking late snapshots. Actions are `{id, token, expiresAt}` descriptors and `runAction` dispatches by actionId to the server, never through page closures. Result notices are deduplicated by `(project, scope, key, version, kind)` and acked; unacked notices replay on the next page open."
+      }
+    ],
+    "api": [
+      {
+        "id": "bt-authoritative-api",
+        "rows": [
+          {
+            "name": "taskNotifications.setTaskBackend(project, backend)",
+            "type": "(project: string, backend: TaskBackend) => void",
+            "def": "—",
+            "desc": {
+              "zh": "切换到服务端权威模式；必须提供 list/follow/invoke/ack，否则抛错",
+              "en": "Switches to authoritative mode; list/follow/invoke/ack are mandatory or registration throws"
+            }
+          },
+          {
+            "name": "notifyTask.server(title, options?)",
+            "type": "(title: string, options?: NotifyTaskOptions) => Promise<TaskNotificationClaim>",
+            "def": "—",
+            "desc": {
+              "zh": "服务端原子 create 登记；必须有 key，created === false 时不要起第二份作业",
+              "en": "Registers through server-side atomic create; a key is required, and created === false means do not start a second job"
+            }
+          },
+          {
+            "name": "createHttpTaskBackend(options)",
+            "type": "(options: HttpTaskBackendOptions) => TaskBackend",
+            "def": "—",
+            "desc": {
+              "zh": "HTTP transport；从 dsh-plugin-core/adv/tasks/http-backend 导入，长连接断开由引擎退避重连",
+              "en": "HTTP transport from dsh-plugin-core/adv/tasks/http-backend; the engine reconnects a dropped stream with backoff"
+            }
+          },
+          {
+            "name": "serveTaskCenter(ctx, options)",
+            "type": "(ctx: HostContextLike, options: TaskCenterRouteOptions) => () => void",
+            "def": "—",
+            "desc": {
+              "zh": "宿主侧路由装配（dsh-plugin-core/host/task-center）；authorize 必填，宿主不提供全局鉴权",
+              "en": "Host-side route wiring (dsh-plugin-core/host/task-center); authorize is mandatory because the host provides no global auth"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "bt-use-tasks": {
     "id": "bt-use-tasks",
     "heading": {

@@ -22,14 +22,17 @@
  * opened lazily on the first connect(); Node and SSR can import this module.
  */
 import { createStore } from '../../runtime/store.js';
+import { createAuthoritativeEngine, } from './authoritative.js';
 import { claimEventBus, cloneDetail, createEventBus, getDefaultTaskProject, isDetail, isEventBusLike, normalizeGroup, openBroadcastChannel, resolveProject, setDefaultTaskProject, notifyMessage as publishNotification, } from '../../runtime/notify.js';
 /** Protocol version lives in the keys: a different wire shape gets its own host. */
-export const TASK_NOTIFICATIONS_PROTOCOL = 2;
-export const TASK_NOTIFICATIONS_KEY = Symbol.for('dsh-plugin-core/task-notifications/v2');
-export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-notifications/events/v2');
-export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v2';
+export const TASK_NOTIFICATIONS_PROTOCOL = 4;
+export const TASK_NOTIFICATIONS_KEY = Symbol.for('dsh-plugin-core/task-notifications/v4');
+export const TASK_NOTIFICATIONS_EVENTS_KEY = Symbol.for('dsh-plugin-core/task-notifications/events/v4');
+export const TASK_NOTIFICATIONS_CHANNEL = 'dsh-plugin-core/task-notifications/v4';
 /** Default project lives on a global symbol: every inlined copy must see one value. */
-export const TASK_NOTIFICATIONS_PROJECT_KEY = Symbol.for('dsh-plugin-core/task-notifications/project/v2');
+export const TASK_NOTIFICATIONS_PROJECT_KEY = Symbol.for('dsh-plugin-core/task-notifications/project/v4');
+/** 服务端权威投影专用的分片名；它不参与跨页 bye，只由本模块的调和器写入。 */
+const SERVER_SHARD_ORIGIN = '__server__';
 /** 默认分组的读写实做在 runtime，这里保留既有导出名（对外契约不变）。 */
 export { getDefaultTaskProject, setDefaultTaskProject };
 /** 跨页点按钮等 ack 的上限；超时按失败算，界面据此提示「已无法还原」。 */
@@ -207,8 +210,8 @@ function isActionInfos(value) {
         value.every((item) => {
             if (!isRecord(item))
                 return false;
-            // 只认 label / icon / color 三个键：别让畸形分片借着体积校验混进池。
-            if (!Object.keys(item).every((key) => key === 'label' || key === 'icon' || key === 'color'))
+            // 只认 id / label / icon / color 四个键：别让畸形分片借着体积校验混进池。
+            if (!Object.keys(item).every((key) => key === 'id' || key === 'label' || key === 'icon' || key === 'color'))
                 return false;
             if (!isOptionalString(item.label))
                 return false;
@@ -262,6 +265,10 @@ function isTaskRecord(value) {
         (typeof value.maxDurationMs !== 'number' || !Number.isFinite(value.maxDurationMs) || value.maxDurationMs < 0)) {
         return false;
     }
+    if (value.version !== undefined && (typeof value.version !== 'number' || !Number.isFinite(value.version)))
+        return false;
+    if (value.deadlineAt !== undefined && (typeof value.deadlineAt !== 'number' || !Number.isFinite(value.deadlineAt)))
+        return false;
     return (typeof value.id === 'string' &&
         typeof value.project === 'string' &&
         typeof value.group === 'string' &&
@@ -348,7 +355,7 @@ function compareTasks(a, b) {
     return a.startedAt - b.startedAt || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 }
 /** One lock per page, named by origin. Bumping the protocol gives a clean namespace. */
-export const TASK_NOTIFICATIONS_LOCK_PREFIX = 'dsh-plugin-core/task-notifications/v2/';
+export const TASK_NOTIFICATIONS_LOCK_PREFIX = 'dsh-plugin-core/task-notifications/v4/';
 function lockNameFor(pageOrigin) {
     return `${TASK_NOTIFICATIONS_LOCK_PREFIX}${pageOrigin}`;
 }
@@ -414,6 +421,70 @@ export function createTaskNotificationPool(options = {}) {
     const store = createStore(() => EMPTY_SNAPSHOT);
     const shards = new Map();
     const knownSeq = new Map();
+    /** 把服务端记录转成池里的只读投影：保留可展示字段，不携带 token/result 正文。 */
+    function serverRecordToProjection(row) {
+        return {
+            id: `${SERVER_SHARD_ORIGIN}:${row.project}:${row.key}`,
+            key: row.key,
+            project: row.project,
+            group: row.group,
+            ...(row.groupLabel === undefined ? {} : { groupLabel: row.groupLabel }),
+            ...(row.projectLabel === undefined ? {} : { projectLabel: row.projectLabel }),
+            ...(row.icon === undefined ? {} : { icon: row.icon }),
+            ...(row.iconSvg === undefined ? {} : { iconSvg: row.iconSvg }),
+            title: row.title,
+            ...(row.detail === undefined ? {} : { detail: row.detail }),
+            ...(row.actions.length === 0
+                ? {}
+                : { actions: row.actions.map(({ id, label, icon, color }) => ({ ...(id === '' ? {} : { id }), label, icon, color })) }),
+            status: row.state === 'running' ? 'running' : row.state,
+            startedAt: row.startedAt,
+            updatedAt: row.updatedAt,
+            origin: SERVER_SHARD_ORIGIN,
+            backgrounded: false,
+            ...(row.hidden === true ? { hidden: true } : {}),
+            ...(row.reason === undefined ? {} : { reason: row.reason }),
+            version: row.version,
+            deadlineAt: row.deadlineAt,
+        };
+    }
+    function publishServerRows(rows) {
+        const projections = rows.map(serverRecordToProjection);
+        shards.set(SERVER_SHARD_ORIGIN, {
+            origin: SERVER_SHARD_ORIGIN,
+            seq: 0,
+            tasks: Object.freeze(projections),
+        });
+        revision += 1;
+        store.setState({ tasks: collect(), revision }, true);
+    }
+    /** 服务端权威任务的句柄等待者：终态到达时兑现，不依赖创建页存活。 */
+    const serverSettlers = new Map();
+    /** 同 key 复用同一句柄；重开页面后新旧调用拿到的是同一个 settled Promise。 */
+    const serverHandles = new Map();
+    const authoritative = createAuthoritativeEngine({
+        clientId: origin,
+        onChange: publishServerRows,
+        onTerminal: (row) => {
+            const waiter = serverSettlers.get(`${row.project}:${row.key}`);
+            if (waiter !== undefined) {
+                serverSettlers.delete(`${row.project}:${row.key}`);
+                serverHandles.delete(`${row.project}:${row.key}`);
+                waiter({
+                    outcome: row.state === 'done' ? 'done' : 'failed',
+                    reason: row.reason,
+                    task: serverRecordToProjection(row),
+                });
+            }
+            void authoritative.acknowledge({
+                project: row.project,
+                key: row.key,
+                version: row.version,
+                kind: row.state === 'done' ? 'settled' : 'failed',
+                cursor: `${row.project}:${row.key}:${row.version}`,
+            }).catch(() => { });
+        },
+    });
     let seq = 0;
     let revision = 0;
     let idSeq = 0;
@@ -747,8 +818,16 @@ export function createTaskNotificationPool(options = {}) {
         if (record.timeoutMs !== undefined && Date.now() - record.updatedAt > record.timeoutMs)
             return false;
         // 下标越界 = 这一条根本没有这个按钮；跨页时同理，先按记录判，不白跑一趟。
-        if (record.actions?.[index] === undefined)
+        const action = record.actions?.[index];
+        if (action === undefined)
             return false;
+        // 服务端权威投影：命令走 token，不经页面闭包、不跨页 ack。
+        if (record.origin === SERVER_SHARD_ORIGIN) {
+            if (record.key === undefined || action.id === undefined)
+                return false;
+            const result = await authoritative.runAction(record.project, record.key, action.id);
+            return result.ok;
+        }
         if (record.origin === origin)
             return runLocal(taskId, index);
         return requestInvoke(record.origin, taskId, index);
@@ -934,11 +1013,13 @@ export function createTaskNotificationPool(options = {}) {
         // dispose 期间摘掉的回收定时器在这里补回来（条目和 updatedAt 都还在）。
         scheduleExpiry();
         schedulePoll();
+        authoritative.start();
     }
     function refresh() {
         // 顺便重试存活锁：上次被浏览器拒绝时，这里补一次。
         holdLiveness();
         post({ kind: 'hello', origin });
+        authoritative.visible();
     }
     /**
      * 幂等登记的实做：带 `key` 且本页已有同键条目 → 就地更新那一条并复用它的句柄（`created: false`）。
@@ -960,6 +1041,9 @@ export function createTaskNotificationPool(options = {}) {
             throw new Error('task notification timeoutMs must be a finite number >= 0');
         }
         const serverBacked = input.serverBacked === true;
+        if (serverBacked && key !== undefined && authoritative.has(project)) {
+            throw new Error('authoritative project requires ensureServer(), not ensure()');
+        }
         if (serverBacked && key === undefined) {
             throw new Error('task notification serverBacked requires a key');
         }
@@ -1147,6 +1231,56 @@ export function createTaskNotificationPool(options = {}) {
         return { handle, created: true };
     }
     /**
+     * 服务端权威任务的登记：服务端原子 create 是作业启动的唯一触发点。
+     * 页面只拿句柄与投影，不写本地记录；因此不存在「同 key 两条」或重开清零。
+     */
+    async function ensureServer(input) {
+        const project = requireProject(input.project);
+        if (project === null)
+            throw new Error('task notification project cannot be null when registering');
+        if (input.key === undefined)
+            throw new Error('server task requires a key');
+        if (!authoritative.has(project)) {
+            throw new Error(`project ${project} has no authoritative backend; call setTaskBackend first`);
+        }
+        const key = taskKey(input.key);
+        const id = `${SERVER_SHARD_ORIGIN}:${project}:${key}`;
+        const keyOfHandle = `${project}:${key}`;
+        // 先建 waiter / 复用已有句柄，再调 create：create 可能在返回前就触发终态。
+        let handle = serverHandles.get(keyOfHandle);
+        if (handle === undefined) {
+            let isSettled = false;
+            const settled = new Promise((resolve) => {
+                serverSettlers.set(keyOfHandle, (value) => { isSettled = true; resolve(value); });
+            });
+            handle = {
+                id,
+                get isSettled() { return isSettled; },
+                settled,
+                update() { },
+                touch() { },
+                background() { },
+                done() { },
+                fail() { },
+                track(promise) { return promise; },
+            };
+            serverHandles.set(keyOfHandle, handle);
+        }
+        const created = await authoritative.create({
+            project,
+            key,
+            group: normalizeGroup(input.group),
+            title: input.title,
+            ...(input.detail === undefined ? {} : { detail: cloneDetail(input.detail) }),
+            ...(input.timeoutMs === undefined ? {} : { timeoutMs: input.timeoutMs }),
+            ...(input.leaseMs === undefined ? {} : { leaseMs: input.leaseMs }),
+            ...(input.maxDurationMs === undefined ? {} : { maxDurationMs: input.maxDurationMs }),
+        });
+        if (created === undefined)
+            throw new Error(`project ${project} backend does not support create`);
+        return { handle, created: created.created };
+    }
+    /**
      * End every task this page still owns, whether or not the caller kept its
      * handle (component remount, HMR, page switch). Cross-page rows are untouched:
      * only their owning page may settle them.
@@ -1176,6 +1310,7 @@ export function createTaskNotificationPool(options = {}) {
         select: (groups, options) => selectTaskNotifications(store.getState(), groups, options),
         register: (input) => ensure(input).handle,
         ensure,
+        ensureServer,
         broadcast,
         setStatusSource(project, source) {
             if (typeof project !== 'string' || project.trim() === '') {
@@ -1184,9 +1319,24 @@ export function createTaskNotificationPool(options = {}) {
             if (typeof source !== 'function') {
                 throw new Error('task notification status source must be a function');
             }
+            if (authoritative.has(project)) {
+                throw new Error(`project ${project} is in authoritative mode; setStatusSource is not allowed`);
+            }
             statusSources.set(project, source);
             // 新状态源可能让原本没法确认的任务恢复；立刻重排一次探测。
             schedulePoll();
+        },
+        setTaskBackend(project, backend) {
+            if (typeof project !== 'string' || project.trim() === '') {
+                throw new Error('task backend project must be a non-empty string');
+            }
+            // 旧 serverBacked 任务仍在本地心跳里：两套模式同开必然互相结算，切换前先拒绝。
+            if (store.getState().tasks.some((task) => task.project === project && task.serverBacked === true)) {
+                throw new Error(`project ${project} still has legacy serverBacked tasks; settle them before switching`);
+            }
+            statusSources.delete(project);
+            authoritative.attach(project, backend);
+            authoritative.start();
         },
         settleLocal,
         runAction,
@@ -1214,6 +1364,9 @@ export function createTaskNotificationPool(options = {}) {
             for (const entry of pendingInvokes.values())
                 entry.resolve(false);
             pendingInvokes.clear();
+            authoritative.stop();
+            serverSettlers.clear();
+            serverHandles.clear();
             if (channel !== null) {
                 channel.onmessage = null;
                 channel.close();
@@ -1254,8 +1407,10 @@ export const taskNotifications = {
     select: (groups, options) => globalPool().select(groups, options),
     register: (input) => globalPool().register(input),
     ensure: (input) => globalPool().ensure(input),
+    ensureServer: (input) => globalPool().ensureServer(input),
     broadcast: (input) => globalPool().broadcast(input),
     setStatusSource: (project, source) => { globalPool().setStatusSource(project, source); },
+    setTaskBackend: (project, backend) => { globalPool().setTaskBackend(project, backend); },
     settleLocal: (reason) => globalPool().settleLocal(reason),
     runAction: (taskId, index) => globalPool().runAction(taskId, index),
     canRestore: (task) => globalPool().canRestore(task),
@@ -1289,6 +1444,11 @@ function ensureTask(title, options = {}) {
 }
 function backgroundTask(title, options = {}) {
     return taskNotifications.ensure(notifyTaskInput(title, { ...options, serverBacked: true }));
+}
+function serverTask(title, options = {}) {
+    if (options.key === undefined)
+        return Promise.reject(new Error('notifyTask.server requires a key'));
+    return taskNotifications.ensureServer(notifyTaskInput(title, { ...options, serverBacked: true }));
 }
 /**
  * 纯广播：只发一个 `message` 事件，**不进池、不进列表**，所以不会有「出现一帧又消失」的闪动。
@@ -1329,6 +1489,7 @@ function runTask(title, work, options = {}) {
 export const notifyTask = Object.assign(notifyTaskBase, {
     ensure: ensureTask,
     background: backgroundTask,
+    server: serverTask,
     run: runTask,
 });
 export const taskNotificationEvents = {

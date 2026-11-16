@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-core",
-  "version": "0.36.2",
+  "version": "0.37.0",
   "packageManager": "pnpm@12.3.4",
   "description": "Shared base for DSH plugins: design tokens, UI controls, utils, workspace explorer, session preview",
   "keywords": [
@@ -34,6 +34,10 @@
       "types": "./dist/host/index.d.ts",
       "default": "./dist/host/index.js"
     },
+    "./host/task-center": {
+      "types": "./dist/host/task-center.d.ts",
+      "default": "./dist/host/task-center.js"
+    },
     "./adv/explorer": {
       "types": "./dist/adv/explorer/index.d.ts",
       "default": "./dist/adv/explorer/index.js"
@@ -49,6 +53,10 @@
     "./adv/tasks": {
       "types": "./dist/adv/tasks/index.d.ts",
       "default": "./dist/adv/tasks/index.js"
+    },
+    "./adv/tasks/http-backend": {
+      "types": "./dist/adv/tasks/http-backend.d.ts",
+      "default": "./dist/adv/tasks/http-backend.js"
     },
     "./runtime": {
       "types": "./dist/runtime/index.d.ts",

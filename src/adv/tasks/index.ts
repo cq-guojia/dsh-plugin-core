@@ -1,5 +1,20 @@
 // tasks —— 后台任务中心（一整块功能：池 + React 读取入口 + 任务条）。
 // 通知广播的实做在 `runtime/notify`，这里只转发；对外入口见 package.json 的 `./adv/tasks`。
+export {
+  createAuthoritativeEngine,
+  type AuthoritativeEngine,
+  type AckRequest,
+  type InvokeRequest,
+  type InvokeResult,
+  type ServerCreateInput,
+  type ServerCreateResult,
+  type ServerTaskAction,
+  type ServerTaskEvent,
+  type ServerTaskPage,
+  type ServerTaskRecord,
+  type ServerTaskState,
+  type TaskBackend,
+} from './authoritative.js'
 export { TaskBar, type TaskActionFailure, type TaskBarForm, type TaskBarProps } from './TaskBar.js'
 export { useTasks, type UseTasksOptions, type UseTasksResult } from './useTasks.js'
 export {

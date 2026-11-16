@@ -70015,6 +70015,66 @@ h(SideSheet, {
       }
     ]
   },
+  "bt-authoritative": {
+    "id": "bt-authoritative",
+    "heading": {
+      "zh": "\u670D\u52A1\u7AEF\u6743\u5A01\u4EFB\u52A1\uFF1A\u6062\u590D\u3001\u5224\u6B7B\u4E0E\u547D\u4EE4",
+      "en": "Authoritative server tasks: recovery, watchdog and commands"
+    },
+    "prose": [
+      {
+        "zh": "\u65E7\u7684\u72B6\u6001\u6E90\u6A21\u5F0F\u53EA\u662F\u300C\u6309\u5DF2\u77E5 key \u95EE\u670D\u52A1\u7AEF\u300D\uFF1A\u9875\u9762\u5168\u5173\u540E\u62FF\u4E0D\u5230 key\uFF0C\u5237\u65B0\u4F1A\u628A\u65F6\u949F\u4ECE\u96F6\u7B97\u8D77\uFF0C\u6309\u94AE handler \u4E5F\u968F\u9875\u9762\u9500\u6BC1\u3002\u8981\u5B8C\u6574\u6062\u590D\uFF0C\u6539\u7528 `taskNotifications.setTaskBackend(project, backend)` + `notifyTask.server(title, options)`\u3002\u540E\u7AEF\u5FC5\u987B\u63D0\u4F9B `list / follow / invoke / ack` \u56DB\u4E2A\u80FD\u529B\uFF0C\u7F3A\u4E00\u5373\u6CE8\u518C\u5931\u8D25\u2014\u2014\u4E0D\u505A\u9759\u9ED8\u964D\u7EA7\u3002",
+        "en": "The status-source mode only asks the server about keys it already knows: after every page closes there are no keys, a reload restarts the clock, and action handlers die with the page. For full recovery use `taskNotifications.setTaskBackend(project, backend)` plus `notifyTask.server(title, options)`. A backend must provide `list / follow / invoke / ack`; registering otherwise throws \u2014 there is no silent fallback."
+      },
+      {
+        "zh": "\u771F\u6E90\u5728\u670D\u52A1\u7AEF\uFF1A\u539F\u5B50 `create` \u51B3\u5B9A `created`\uFF0C`startedAt / deadlineAt / version` \u7531\u670D\u52A1\u7AEF\u751F\u6210\uFF0C\u8D85\u65F6\u4E0E\u79DF\u7EA6\u7531\u670D\u52A1\u7AEF watchdog \u5224\u5B9A\uFF0C\u7EC8\u6001\u6309 TTL \u6E05\u7406\u3002\u6838\u5FC3\u53EA\u6309\u5355\u8C03 version \u5408\u5E76\u57FA\u7EBF\u3001\u5206\u9875\u4E0E\u589E\u91CF\uFF0C\u7EC8\u6001\u5893\u7891\u6321\u4F4F\u8FDF\u5230\u5FEB\u7167\uFF1B\u6309\u94AE\u662F `{id, token, expiresAt}` \u63CF\u8FF0\uFF0C`runAction` \u6309 actionId \u8D70\u670D\u52A1\u7AEF\u547D\u4EE4\uFF0C\u4E0D\u4F9D\u8D56\u9875\u9762\u95ED\u5305\u3002\u7ED3\u679C\u901A\u77E5\u6309 `(project, scope, key, version, kind)` \u53BB\u91CD\u5E76 ack\uFF1B\u672A\u786E\u8BA4\u7684\u4E0B\u6B21\u5F00\u9875\u8865\u53D1\u3002",
+        "en": "The server owns the truth: atomic `create` decides `created`; `startedAt / deadlineAt / version` come from the server; a server watchdog decides timeouts and lease expiry; terminal records are cleared by TTL. The core only merges baseline, pages and deltas by monotonic version, with terminal tombstones blocking late snapshots. Actions are `{id, token, expiresAt}` descriptors and `runAction` dispatches by actionId to the server, never through page closures. Result notices are deduplicated by `(project, scope, key, version, kind)` and acked; unacked notices replay on the next page open."
+      }
+    ],
+    "api": [
+      {
+        "id": "bt-authoritative-api",
+        "rows": [
+          {
+            "name": "taskNotifications.setTaskBackend(project, backend)",
+            "type": "(project: string, backend: TaskBackend) => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5207\u6362\u5230\u670D\u52A1\u7AEF\u6743\u5A01\u6A21\u5F0F\uFF1B\u5FC5\u987B\u63D0\u4F9B list/follow/invoke/ack\uFF0C\u5426\u5219\u629B\u9519",
+              "en": "Switches to authoritative mode; list/follow/invoke/ack are mandatory or registration throws"
+            }
+          },
+          {
+            "name": "notifyTask.server(title, options?)",
+            "type": "(title: string, options?: NotifyTaskOptions) => Promise<TaskNotificationClaim>",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u670D\u52A1\u7AEF\u539F\u5B50 create \u767B\u8BB0\uFF1B\u5FC5\u987B\u6709 key\uFF0Ccreated === false \u65F6\u4E0D\u8981\u8D77\u7B2C\u4E8C\u4EFD\u4F5C\u4E1A",
+              "en": "Registers through server-side atomic create; a key is required, and created === false means do not start a second job"
+            }
+          },
+          {
+            "name": "createHttpTaskBackend(options)",
+            "type": "(options: HttpTaskBackendOptions) => TaskBackend",
+            "def": "\u2014",
+            "desc": {
+              "zh": "HTTP transport\uFF1B\u4ECE dsh-plugin-core/adv/tasks/http-backend \u5BFC\u5165\uFF0C\u957F\u8FDE\u63A5\u65AD\u5F00\u7531\u5F15\u64CE\u9000\u907F\u91CD\u8FDE",
+              "en": "HTTP transport from dsh-plugin-core/adv/tasks/http-backend; the engine reconnects a dropped stream with backoff"
+            }
+          },
+          {
+            "name": "serveTaskCenter(ctx, options)",
+            "type": "(ctx: HostContextLike, options: TaskCenterRouteOptions) => () => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u5BBF\u4E3B\u4FA7\u8DEF\u7531\u88C5\u914D\uFF08dsh-plugin-core/host/task-center\uFF09\uFF1Bauthorize \u5FC5\u586B\uFF0C\u5BBF\u4E3B\u4E0D\u63D0\u4F9B\u5168\u5C40\u9274\u6743",
+              "en": "Host-side route wiring (dsh-plugin-core/host/task-center); authorize is mandatory because the host provides no global auth"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "bt-use-tasks": {
     "id": "bt-use-tasks",
     "heading": {
@@ -74744,14 +74804,309 @@ function PaginationPage() {
 // packages/demo/src/sections/task-notifications.tsx
 var import_react108 = require("react");
 
+// dist/adv/tasks/authoritative.js
+var idempotencySeq = 0;
+function newIdempotencyKey(clientId) {
+  idempotencySeq += 1;
+  const random = Math.random().toString(36).slice(2);
+  return `${clientId}:${Date.now().toString(36)}:${idempotencySeq.toString(36)}:${random}`;
+}
+function mergeInto(state, rows) {
+  const accepted = [];
+  for (const row3 of rows) {
+    if (!Number.isFinite(row3.version))
+      continue;
+    const seenVersion = state.watermark.get(row3.key) ?? -1;
+    if (row3.version < seenVersion)
+      continue;
+    const terminal = state.terminal.get(row3.key);
+    if (terminal !== void 0 && row3.version <= terminal.version)
+      continue;
+    const current3 = state.seen.get(row3.key);
+    if (current3 !== void 0 && current3.version > row3.version)
+      continue;
+    if (current3 !== void 0 && current3.version === row3.version && current3.state === row3.state)
+      continue;
+    state.seen.set(row3.key, row3);
+    state.watermark.set(row3.key, row3.version);
+    if (row3.tombstone === true || row3.state !== "running") {
+      state.terminal.set(row3.key, { version: row3.version, acked: false });
+    }
+    accepted.push(row3);
+  }
+  return accepted;
+}
+function createAuthoritativeEngine(options) {
+  const { onChange, onTerminal, clientId } = options;
+  const rebaseMinMs = options.rebaseMinMs ?? 5e3;
+  const backends = /* @__PURE__ */ new Map();
+  const projects = /* @__PURE__ */ new Map();
+  const followers = /* @__PURE__ */ new Map();
+  let started = false;
+  let disposed = false;
+  let lastRebase = 0;
+  let reconnectFailures = 0;
+  let reconnectTimer = null;
+  const invokes = /* @__PURE__ */ new Map();
+  const INVOKE_CACHE_MS = 6e4;
+  function invokeCacheKey(project, key, actionId, version) {
+    return `${project}:${key}:${actionId}:${version}`;
+  }
+  function projectState(project) {
+    let state = projects.get(project);
+    if (state === void 0) {
+      state = { snapshotVersion: -1, epoch: 0, seen: /* @__PURE__ */ new Map(), watermark: /* @__PURE__ */ new Map(), terminal: /* @__PURE__ */ new Map() };
+      projects.set(project, state);
+    }
+    return state;
+  }
+  function emitChange() {
+    const all = [];
+    for (const state of projects.values()) {
+      for (const row3 of state.seen.values()) {
+        if (row3.tombstone === true || row3.state !== "running")
+          continue;
+        all.push(row3);
+      }
+    }
+    onChange(Object.freeze(all));
+  }
+  function applyRows(project, rows) {
+    const state = projectState(project);
+    const accepted = mergeInto(state, rows);
+    if (accepted.length === 0)
+      return;
+    for (const row3 of accepted) {
+      if (row3.tombstone !== true && row3.state === "running")
+        continue;
+      const terminal = state.terminal.get(row3.key);
+      if (terminal === void 0 || terminal.version !== row3.version || terminal.acked)
+        continue;
+      terminal.acked = true;
+      onTerminal?.(row3);
+    }
+    emitChange();
+  }
+  function advanceCursor2(project, event) {
+    const state = projectState(project);
+    if (event.kind === "cursor")
+      state.cursor = event.cursor;
+  }
+  async function rebase(project) {
+    const backend = backends.get(project);
+    if (backend === void 0 || disposed)
+      return;
+    const state = projectState(project);
+    const generation = state.epoch;
+    try {
+      let cursor2 = state.cursor;
+      let first = true;
+      while (!disposed && generation === state.epoch) {
+        const page = await backend.list(project, cursor2);
+        if (disposed || generation !== state.epoch)
+          return;
+        if (page.rows.length > 0)
+          applyRows(project, page.rows);
+        if (page.snapshotVersion < state.snapshotVersion)
+          break;
+        state.snapshotVersion = page.snapshotVersion;
+        if (page.nextCursor === void 0 || page.nextCursor === cursor2)
+          break;
+        cursor2 = page.nextCursor;
+        if (first)
+          first = false;
+      }
+      if (disposed || generation !== state.epoch)
+        return;
+      state.cursor = cursor2;
+      reconnectFailures = 0;
+      startFollow();
+    } catch {
+    }
+  }
+  function startFollow() {
+    if (disposed || backends.size === 0)
+      return;
+    const byBackend = /* @__PURE__ */ new Map();
+    for (const [project, backend] of backends) {
+      const bucket = byBackend.get(backend);
+      if (bucket === void 0)
+        byBackend.set(backend, [project]);
+      else
+        bucket.push(project);
+    }
+    for (const [backend, owned] of byBackend) {
+      if (followers.has(backend))
+        continue;
+      const cursors = {};
+      for (const project of owned) {
+        const state = projects.get(project);
+        if (state?.cursor !== void 0)
+          cursors[project] = state.cursor;
+      }
+      followers.set(backend, backend.follow(owned, cursors, (project, event) => {
+        if (disposed || !owned.includes(project))
+          return;
+        if (event.kind === "upsert")
+          applyRows(project, event.rows);
+        advanceCursor2(project, event);
+      }, () => {
+        for (const project of owned) {
+          const state = projects.get(project);
+          if (state !== void 0)
+            state.epoch += 1;
+        }
+        followers.get(backend)?.();
+        followers.delete(backend);
+        if (disposed || reconnectTimer !== null)
+          return;
+        reconnectFailures += 1;
+        const delay = Math.min(15e3, 250 * 2 ** Math.min(reconnectFailures, 6)) + Math.random() * 250;
+        reconnectTimer = setTimeout(() => {
+          reconnectTimer = null;
+          void rebaseAll();
+        }, delay);
+      }));
+    }
+  }
+  async function rebaseAll() {
+    if (disposed)
+      return;
+    await Promise.all([...backends.keys()].map((project) => rebase(project)));
+  }
+  return {
+    attach(project, backend) {
+      if (disposed)
+        throw new Error("authoritative engine is disposed");
+      if (typeof backend.list !== "function" || typeof backend.follow !== "function" || typeof backend.invoke !== "function" || typeof backend.ack !== "function") {
+        throw new Error(`task backend for ${project} must provide list/follow/invoke/ack`);
+      }
+      backends.set(project, backend);
+      projectState(project);
+      if (started) {
+        const wasStarted = started;
+        this.stop();
+        started = wasStarted;
+        void rebaseAll();
+      }
+    },
+    start() {
+      if (started || disposed)
+        return;
+      started = true;
+      void rebaseAll();
+    },
+    visible() {
+      const now = Date.now();
+      if (now - lastRebase < rebaseMinMs)
+        return;
+      lastRebase = now;
+      void rebaseAll();
+    },
+    refresh(project) {
+      if (project === void 0)
+        void rebaseAll();
+      else
+        void rebase(project);
+    },
+    find(project, key) {
+      return projectState(project).seen.get(key);
+    },
+    all() {
+      const all = [];
+      for (const state of projects.values()) {
+        for (const row3 of state.seen.values()) {
+          if (row3.tombstone === true || row3.state !== "running")
+            continue;
+          all.push(row3);
+        }
+      }
+      return Object.freeze(all);
+    },
+    async runAction(project, key, actionId) {
+      try {
+        const backend = backends.get(project);
+        const record = projectState(project).seen.get(key);
+        const action = record?.actions.find((item) => item.id === actionId);
+        if (backend === void 0 || record === void 0 || action === void 0) {
+          return { ok: false, reason: "action unavailable" };
+        }
+        if (!action.enabled || action.expiresAt <= Date.now() || action.version !== void 0 && action.version !== record.version) {
+          return { ok: false, reason: "action expired" };
+        }
+        const cacheKey = invokeCacheKey(project, key, actionId, record.version);
+        let entry = invokes.get(cacheKey);
+        if (entry === void 0 || Date.now() - entry.at > INVOKE_CACHE_MS) {
+          entry = { idempotencyKey: newIdempotencyKey(clientId), at: Date.now() };
+          invokes.set(cacheKey, entry);
+        }
+        if (entry.result !== void 0)
+          return entry.result;
+        const result = await backend.invoke({
+          project,
+          key,
+          actionId,
+          token: action.token,
+          version: record.version,
+          idempotencyKey: entry.idempotencyKey
+        });
+        if (result.ok) {
+          entry.result = result;
+          entry.at = Date.now();
+        }
+        return result;
+      } catch (error) {
+        return { ok: false, reason: error instanceof Error ? error.message : String(error) };
+      }
+    },
+    async acknowledge(request) {
+      const backend = backends.get(request.project);
+      if (backend === void 0)
+        return;
+      await backend.ack(request);
+    },
+    async create(input) {
+      const backend = backends.get(input.project);
+      if (backend?.create === void 0)
+        return void 0;
+      const result = await backend.create(input);
+      if (result.record !== void 0)
+        applyRows(input.project, [result.record]);
+      return result;
+    },
+    has(project) {
+      return backends.has(project);
+    },
+    /** 停止连接但保留后端与已水合状态；pool.dispose → connect 后可重新 follow。 */
+    stop() {
+      for (const state of projects.values())
+        state.epoch += 1;
+      for (const off of followers.values())
+        off();
+      followers.clear();
+      started = false;
+      if (reconnectTimer !== null)
+        clearTimeout(reconnectTimer);
+      reconnectTimer = null;
+    },
+    dispose() {
+      disposed = true;
+      this.stop();
+      projects.clear();
+      invokes.clear();
+    }
+  };
+}
+
 // dist/adv/tasks/TaskBar.js
 var import_react106 = require("react");
 
 // dist/adv/tasks/pool.js
-var TASK_NOTIFICATIONS_PROTOCOL = 2;
-var TASK_NOTIFICATIONS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/v2");
-var TASK_NOTIFICATIONS_EVENTS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/events/v2");
-var TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v2";
+var TASK_NOTIFICATIONS_PROTOCOL = 4;
+var TASK_NOTIFICATIONS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/v4");
+var TASK_NOTIFICATIONS_EVENTS_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/task-notifications/events/v4");
+var TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v4";
+var SERVER_SHARD_ORIGIN = "__server__";
 var INVOKE_TIMEOUT_MS = 2e3;
 var DEFAULT_LEASE_MS = 5 * 6e4;
 var DEFAULT_POLL_INTERVAL_MS = 6e4;
@@ -74884,7 +75239,7 @@ function isActionInfos(value) {
   return Array.isArray(value) && value.every((item) => {
     if (!isRecord6(item))
       return false;
-    if (!Object.keys(item).every((key) => key === "label" || key === "icon" || key === "color"))
+    if (!Object.keys(item).every((key) => key === "id" || key === "label" || key === "icon" || key === "color"))
       return false;
     if (!isOptionalString(item.label))
       return false;
@@ -74932,6 +75287,10 @@ function isTaskRecord(value) {
   if (value.maxDurationMs !== void 0 && (typeof value.maxDurationMs !== "number" || !Number.isFinite(value.maxDurationMs) || value.maxDurationMs < 0)) {
     return false;
   }
+  if (value.version !== void 0 && (typeof value.version !== "number" || !Number.isFinite(value.version)))
+    return false;
+  if (value.deadlineAt !== void 0 && (typeof value.deadlineAt !== "number" || !Number.isFinite(value.deadlineAt)))
+    return false;
   return typeof value.id === "string" && typeof value.project === "string" && typeof value.group === "string" && typeof value.title === "string" && (value.status === "running" || value.status === "done" || value.status === "failed") && Number.isFinite(value.startedAt) && Number.isFinite(value.updatedAt) && typeof value.origin === "string" && typeof value.backgrounded === "boolean";
 }
 function isNotice(value) {
@@ -75001,7 +75360,7 @@ function makeOrigin2() {
 function compareTasks(a, b) {
   return a.startedAt - b.startedAt || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 }
-var TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v2/";
+var TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v4/";
 function lockNameFor(pageOrigin) {
   return `${TASK_NOTIFICATIONS_LOCK_PREFIX}${pageOrigin}`;
 }
@@ -75041,6 +75400,66 @@ function createTaskNotificationPool(options = {}) {
   const store = createStore2(() => EMPTY_SNAPSHOT);
   const shards = /* @__PURE__ */ new Map();
   const knownSeq = /* @__PURE__ */ new Map();
+  function serverRecordToProjection(row3) {
+    return {
+      id: `${SERVER_SHARD_ORIGIN}:${row3.project}:${row3.key}`,
+      key: row3.key,
+      project: row3.project,
+      group: row3.group,
+      ...row3.groupLabel === void 0 ? {} : { groupLabel: row3.groupLabel },
+      ...row3.projectLabel === void 0 ? {} : { projectLabel: row3.projectLabel },
+      ...row3.icon === void 0 ? {} : { icon: row3.icon },
+      ...row3.iconSvg === void 0 ? {} : { iconSvg: row3.iconSvg },
+      title: row3.title,
+      ...row3.detail === void 0 ? {} : { detail: row3.detail },
+      ...row3.actions.length === 0 ? {} : { actions: row3.actions.map(({ id: id3, label, icon, color }) => ({ ...id3 === "" ? {} : { id: id3 }, label, icon, color })) },
+      status: row3.state === "running" ? "running" : row3.state,
+      startedAt: row3.startedAt,
+      updatedAt: row3.updatedAt,
+      origin: SERVER_SHARD_ORIGIN,
+      backgrounded: false,
+      ...row3.hidden === true ? { hidden: true } : {},
+      ...row3.reason === void 0 ? {} : { reason: row3.reason },
+      version: row3.version,
+      deadlineAt: row3.deadlineAt
+    };
+  }
+  function publishServerRows(rows) {
+    const projections = rows.map(serverRecordToProjection);
+    shards.set(SERVER_SHARD_ORIGIN, {
+      origin: SERVER_SHARD_ORIGIN,
+      seq: 0,
+      tasks: Object.freeze(projections)
+    });
+    revision += 1;
+    store.setState({ tasks: collect(), revision }, true);
+  }
+  const serverSettlers = /* @__PURE__ */ new Map();
+  const serverHandles = /* @__PURE__ */ new Map();
+  const authoritative = createAuthoritativeEngine({
+    clientId: origin,
+    onChange: publishServerRows,
+    onTerminal: (row3) => {
+      const waiter = serverSettlers.get(`${row3.project}:${row3.key}`);
+      if (waiter !== void 0) {
+        serverSettlers.delete(`${row3.project}:${row3.key}`);
+        serverHandles.delete(`${row3.project}:${row3.key}`);
+        waiter({
+          outcome: row3.state === "done" ? "done" : "failed",
+          reason: row3.reason,
+          task: serverRecordToProjection(row3)
+        });
+      }
+      void authoritative.acknowledge({
+        project: row3.project,
+        key: row3.key,
+        version: row3.version,
+        kind: row3.state === "done" ? "settled" : "failed",
+        cursor: `${row3.project}:${row3.key}:${row3.version}`
+      }).catch(() => {
+      });
+    }
+  });
   let seq = 0;
   let revision = 0;
   let idSeq2 = 0;
@@ -75316,8 +75735,15 @@ function createTaskNotificationPool(options = {}) {
       return false;
     if (record.timeoutMs !== void 0 && Date.now() - record.updatedAt > record.timeoutMs)
       return false;
-    if (record.actions?.[index3] === void 0)
+    const action = record.actions?.[index3];
+    if (action === void 0)
       return false;
+    if (record.origin === SERVER_SHARD_ORIGIN) {
+      if (record.key === void 0 || action.id === void 0)
+        return false;
+      const result = await authoritative.runAction(record.project, record.key, action.id);
+      return result.ok;
+    }
     if (record.origin === origin)
       return runLocal(taskId, index3);
     return requestInvoke(record.origin, taskId, index3);
@@ -75474,10 +75900,12 @@ function createTaskNotificationPool(options = {}) {
     }
     scheduleExpiry();
     schedulePoll();
+    authoritative.start();
   }
   function refresh() {
     holdLiveness();
     post({ kind: "hello", origin });
+    authoritative.visible();
   }
   function ensure(input) {
     const project = requireProject(input.project);
@@ -75494,6 +75922,9 @@ function createTaskNotificationPool(options = {}) {
       throw new Error("task notification timeoutMs must be a finite number >= 0");
     }
     const serverBacked = input.serverBacked === true;
+    if (serverBacked && key !== void 0 && authoritative.has(project)) {
+      throw new Error("authoritative project requires ensureServer(), not ensure()");
+    }
     if (serverBacked && key === void 0) {
       throw new Error("task notification serverBacked requires a key");
     }
@@ -75681,6 +76112,63 @@ function createTaskNotificationPool(options = {}) {
     }
     return { handle, created: true };
   }
+  async function ensureServer(input) {
+    const project = requireProject(input.project);
+    if (project === null)
+      throw new Error("task notification project cannot be null when registering");
+    if (input.key === void 0)
+      throw new Error("server task requires a key");
+    if (!authoritative.has(project)) {
+      throw new Error(`project ${project} has no authoritative backend; call setTaskBackend first`);
+    }
+    const key = taskKey(input.key);
+    const id3 = `${SERVER_SHARD_ORIGIN}:${project}:${key}`;
+    const keyOfHandle = `${project}:${key}`;
+    let handle = serverHandles.get(keyOfHandle);
+    if (handle === void 0) {
+      let isSettled = false;
+      const settled = new Promise((resolve) => {
+        serverSettlers.set(keyOfHandle, (value) => {
+          isSettled = true;
+          resolve(value);
+        });
+      });
+      handle = {
+        id: id3,
+        get isSettled() {
+          return isSettled;
+        },
+        settled,
+        update() {
+        },
+        touch() {
+        },
+        background() {
+        },
+        done() {
+        },
+        fail() {
+        },
+        track(promise) {
+          return promise;
+        }
+      };
+      serverHandles.set(keyOfHandle, handle);
+    }
+    const created = await authoritative.create({
+      project,
+      key,
+      group: normalizeGroup(input.group),
+      title: input.title,
+      ...input.detail === void 0 ? {} : { detail: cloneDetail(input.detail) },
+      ...input.timeoutMs === void 0 ? {} : { timeoutMs: input.timeoutMs },
+      ...input.leaseMs === void 0 ? {} : { leaseMs: input.leaseMs },
+      ...input.maxDurationMs === void 0 ? {} : { maxDurationMs: input.maxDurationMs }
+    });
+    if (created === void 0)
+      throw new Error(`project ${project} backend does not support create`);
+    return { handle, created: created.created };
+  }
   function settleLocal(reason) {
     let settledCount = 0;
     for (const task of [...localShard()]) {
@@ -75706,6 +76194,7 @@ function createTaskNotificationPool(options = {}) {
     select: (groups, options2) => selectTaskNotifications(store.getState(), groups, options2),
     register: (input) => ensure(input).handle,
     ensure,
+    ensureServer,
     broadcast,
     setStatusSource(project, source) {
       if (typeof project !== "string" || project.trim() === "") {
@@ -75714,8 +76203,22 @@ function createTaskNotificationPool(options = {}) {
       if (typeof source !== "function") {
         throw new Error("task notification status source must be a function");
       }
+      if (authoritative.has(project)) {
+        throw new Error(`project ${project} is in authoritative mode; setStatusSource is not allowed`);
+      }
       statusSources.set(project, source);
       schedulePoll();
+    },
+    setTaskBackend(project, backend) {
+      if (typeof project !== "string" || project.trim() === "") {
+        throw new Error("task backend project must be a non-empty string");
+      }
+      if (store.getState().tasks.some((task) => task.project === project && task.serverBacked === true)) {
+        throw new Error(`project ${project} still has legacy serverBacked tasks; settle them before switching`);
+      }
+      statusSources.delete(project);
+      authoritative.attach(project, backend);
+      authoritative.start();
     },
     settleLocal,
     runAction,
@@ -75738,6 +76241,9 @@ function createTaskNotificationPool(options = {}) {
       for (const entry of pendingInvokes.values())
         entry.resolve(false);
       pendingInvokes.clear();
+      authoritative.stop();
+      serverSettlers.clear();
+      serverHandles.clear();
       if (channel !== null) {
         channel.onmessage = null;
         channel.close();
@@ -75776,9 +76282,13 @@ var taskNotifications = {
   select: (groups, options) => globalPool().select(groups, options),
   register: (input) => globalPool().register(input),
   ensure: (input) => globalPool().ensure(input),
+  ensureServer: (input) => globalPool().ensureServer(input),
   broadcast: (input) => globalPool().broadcast(input),
   setStatusSource: (project, source) => {
     globalPool().setStatusSource(project, source);
+  },
+  setTaskBackend: (project, backend) => {
+    globalPool().setTaskBackend(project, backend);
   },
   settleLocal: (reason) => globalPool().settleLocal(reason),
   runAction: (taskId, index3) => globalPool().runAction(taskId, index3),
@@ -75816,6 +76326,11 @@ function ensureTask(title, options = {}) {
 function backgroundTask(title, options = {}) {
   return taskNotifications.ensure(notifyTaskInput(title, { ...options, serverBacked: true }));
 }
+function serverTask(title, options = {}) {
+  if (options.key === void 0)
+    return Promise.reject(new Error("notifyTask.server requires a key"));
+  return taskNotifications.ensureServer(notifyTaskInput(title, { ...options, serverBacked: true }));
+}
 function runTask(title, work, options = {}) {
   let claim2;
   let key;
@@ -75841,6 +76356,7 @@ function runTask(title, work, options = {}) {
 var notifyTask = Object.assign(notifyTaskBase, {
   ensure: ensureTask,
   background: backgroundTask,
+  server: serverTask,
   run: runTask
 });
 var taskNotificationEvents = {
@@ -76400,9 +76916,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.36.2"}`],
-            [t3("buildDemo"), `v${"0.36.2"}`],
-            [t3("buildStamp"), "261116-203527-831"]
+            [t3("buildCore"), `v${"0.37.0"}`],
+            [t3("buildDemo"), `v${"0.37.0"}`],
+            [t3("buildStamp"), "261116-221818-033"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76721,9 +77237,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.36.2"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.36.2"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261116-203527-831")
+          (0, import_react112.createElement)("span", null, `core v${"0.37.0"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.37.0"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261116-221818-033")
         )
       )
     ),

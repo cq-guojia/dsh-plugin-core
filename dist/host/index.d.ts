@@ -1,3 +1,4 @@
+export { serveTaskCenter, type TaskCenterRouteOptions, type TaskCenterStore } from './task-center.js';
 /**
  * 宿主侧数据面：把「供应商 → 模型」目录挂成一条只读 HTTP 路由，供 client 侧自取。
  *

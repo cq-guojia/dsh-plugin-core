@@ -1,9 +1,10 @@
+import { type TaskBackend } from './authoritative.js';
 import { getDefaultTaskProject, setDefaultTaskProject, type NotifyDetail, type NotifyLevel, type NotifyMessage, type NotifyMessageOptions } from '../../runtime/notify.js';
 /** Protocol version lives in the keys: a different wire shape gets its own host. */
-export declare const TASK_NOTIFICATIONS_PROTOCOL = 2;
+export declare const TASK_NOTIFICATIONS_PROTOCOL = 4;
 export declare const TASK_NOTIFICATIONS_KEY: unique symbol;
 export declare const TASK_NOTIFICATIONS_EVENTS_KEY: unique symbol;
-export declare const TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v2";
+export declare const TASK_NOTIFICATIONS_CHANNEL = "dsh-plugin-core/task-notifications/v4";
 /** Default project lives on a global symbol: every inlined copy must see one value. */
 export declare const TASK_NOTIFICATIONS_PROJECT_KEY: unique symbol;
 /** 默认分组的读写实做在 runtime，这里保留既有导出名（对外契约不变）。 */
@@ -36,8 +37,10 @@ export interface TaskNotificationAction {
     /** 点击时执行；匿名函数即可。抛错由池捕获并算作本次调用失败。 */
     readonly run: () => void;
 }
-/** 记录里能跨页的那部分：文案 + 图标 + 可选按钮色。下标即动作 id。 */
+/** 记录里能交给展示层的那部分：文案 + 图标 + 可选按钮色。 */
 export interface TaskNotificationActionInfo {
+    /** 服务端权威模式下的命令 id；旧模式省略，用数组下标。 */
+    readonly id?: string;
     readonly label?: string;
     readonly icon?: string;
     readonly color?: string;
@@ -103,6 +106,10 @@ export interface TaskNotificationRecord {
     readonly leaseMs?: number;
     /** 总执行上限（毫秒），从 startedAt 算、续租不重置；0 = 不设上限。 */
     readonly maxDurationMs?: number;
+    /** 服务端权威投影：服务端生成的单调版本，用于合并乱序增量。 */
+    readonly version?: number;
+    /** 服务端权威投影：绝对截止时间，仅用于展示，判死在服务端。 */
+    readonly deadlineAt?: number;
     readonly reason?: string;
 }
 export interface TaskNotificationInput {
@@ -286,6 +293,8 @@ export interface TaskNotificationPool {
     register(input: TaskNotificationInput): TaskNotificationHandle;
     /** 幂等登记：带 `key` 时就地复用本页同键条目，并告诉你这条是不是刚建的。 */
     ensure(input: TaskNotificationInput): TaskNotificationClaim;
+    /** 服务端权威登记：服务端原子 create 决定 created，页面不写本地记录。 */
+    ensureServer(input: TaskNotificationInput): Promise<TaskNotificationClaim>;
     /** 纯广播：只出 `message` 事件，不写池、不动快照。 */
     broadcast(input: TaskNotificationMessageInput): TaskNotificationMessage;
     /**
@@ -293,6 +302,11 @@ export interface TaskNotificationPool {
      * 核心一次传入该项目全部在跑的 key，消费方回一批 `StatusRow`。
      */
     setStatusSource(project: string, source: StatusSource): void;
+    /**
+     * 切到服务端权威模式：必须提供 list/follow/invoke/ack，缺一即抛。
+     * 同一 project 只能有一种模式；新回调覆盖旧状态源并打印一次性提示。
+     */
+    setTaskBackend(project: string, backend: TaskBackend): void;
     /** Settle every task this page still owns; handles are not needed. */
     settleLocal(reason?: string): number;
     /**
@@ -338,7 +352,7 @@ export declare function createTaskNotificationEventBus(): TaskNotificationEventB
 export declare function claimTaskNotifications(create: () => TaskNotificationPool): TaskNotificationPool;
 export declare function claimTaskNotificationEvents(create: () => TaskNotificationEventBus): TaskNotificationEventBus;
 /** One lock per page, named by origin. Bumping the protocol gives a clean namespace. */
-export declare const TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v2/";
+export declare const TASK_NOTIFICATIONS_LOCK_PREFIX = "dsh-plugin-core/task-notifications/v4/";
 export declare function createTaskNotificationPool(options?: TaskNotificationPoolOptions): TaskNotificationPool;
 export declare const taskNotifications: TaskNotificationPool;
 export interface NotifyTaskOptions {
@@ -385,6 +399,8 @@ export interface NotifyTask {
      * `created === false` 时不要起第二份服务端作业。
      */
     background(title: string, options?: NotifyTaskOptions): TaskNotificationClaim;
+    /** 服务端权威登记：服务端原子 create 决定 created；必须已 setTaskBackend。 */
+    server(title: string, options?: NotifyTaskOptions): Promise<TaskNotificationClaim>;
     /** 包住一段异步：成功走 done、失败走 fail，结果与异常原样透传。 */
     run<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions): Promise<T>;
 }
