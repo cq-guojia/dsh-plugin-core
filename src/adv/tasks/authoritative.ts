@@ -135,7 +135,12 @@ export interface TaskBackend {
     onError: (project: string, error: unknown) => void,
   ): () => void
   poll?(keys: readonly string[]): Promise<readonly ServerTaskRecord[]>
-  /** 拉取未确认的终态通知（通道 B）。 */
+  /**
+   * 拉取未确认的终态通知（通道 B）。
+   * cursor 是「该后端整条通知流」的 keyset 游标（对该后端所有 project 共享、全局单调递增），
+   * projects 只用于结果过滤、不切分游标空间；ackNotices 的 cursor 与之同一空间。
+   * 因此同一后端服务多 project 时共用一个游标即可，不同后端各有独立游标。
+   */
   listNotices(projects: readonly string[], sinceCursor?: string): Promise<ServerNoticePage>
   /** 按连续成功前缀推进确认游标，服务端幂等。 */
   ackNotices(projects: readonly string[], cursor: string): Promise<void>
@@ -208,11 +213,34 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
   let lastRebase = 0
   let reconnectFailures = 0
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null
-  /** 通道 B 的确认游标：按 clientId 隔离、服务端下发，连续成功前缀推进。 */
-  const noticeCursors = new Map<string, string | undefined>()
+  /** 通道 B 的确认游标：每个后端一条独立通知流，各自按 clientId 隔离；服务端下发、连续成功前缀推进。 */
+  const noticeCursors = new Map<TaskBackend, Map<string, string | undefined>>()
   let noticePumping = false
   let noticePending = false
-  function clientCursor(): string | undefined { return noticeCursors.get(clientId) }
+  /** stop / dispose 时自增，作废在途 pump；它不得再投递通知或推进游标。 */
+  let pumpGeneration = 0
+  function clientCursor(backend: TaskBackend): string | undefined {
+    return noticeCursors.get(backend)?.get(clientId)
+  }
+  function setClientCursor(backend: TaskBackend, cursor: string): void {
+    let byClient = noticeCursors.get(backend)
+    if (byClient === undefined) {
+      byClient = new Map<string, string | undefined>()
+      noticeCursors.set(backend, byClient)
+    }
+    byClient.set(clientId, cursor)
+  }
+
+  /** 后端 → 它负责的 project。通知与 follow 都按这条归属分组，绝不跨后端代查。 */
+  function byBackend(): Map<TaskBackend, string[]> {
+    const grouped = new Map<TaskBackend, string[]>()
+    for (const [project, backend] of backends) {
+      const bucket = grouped.get(backend)
+      if (bucket === undefined) grouped.set(backend, [project])
+      else bucket.push(project)
+    }
+    return grouped
+  }
 
   const invokes = new Map<string, { idempotencyKey: string; result?: InvokeResult; at: number }>()
   const INVOKE_CACHE_MS = 60_000
@@ -246,51 +274,74 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
   }
 
   /**
-   * 通道 B：拉取并投递未确认通知。emit 同步（运行时吞监听者异常），因此
-   * onNotice 返回即视为投递成功，推进连续成功前缀的游标后批量 ack。
-   * ack 失败时内存游标不前进，下次重新拉；串行化防止并发重复投递。
+   * 单个后端的通道 B：只拉它自己负责的 project，用它自己的游标推进与 ack。
+   * 不同后端可能是不同服务 / 不同鉴权域，拿一个后端代查全部会静默丢通知。
+   * generation 用于作废 stop() 前发出的在途 pump：stop 后它不得再 onNotice / ack。
+   */
+  async function pumpBackendNotices(
+    backend: TaskBackend,
+    projects: readonly string[],
+    generation: number,
+  ): Promise<void> {
+    let cursor = clientCursor(backend)
+    const seenCursors = new Set<string>()
+    // keyset 分页拉全未确认通知。seenCursors 是死循环兜底：服务端必须按 cursor 过滤，
+    // 但若实现有误重复返回同一页，这里必须停，不能把测试/页面挂死。
+    for (;;) {
+      if (disposed || generation !== pumpGeneration) return
+      if (cursor !== undefined) {
+        if (seenCursors.has(cursor)) return
+        seenCursors.add(cursor)
+      }
+      const page = await backend.listNotices(projects, cursor)
+      if (disposed || generation !== pumpGeneration || page.notices.length === 0) return
+      let delivered = 0
+      for (const notice of page.notices) {
+        onNotice(notice)
+        cursor = notice.cursor
+        delivered += 1
+      }
+      if (delivered > 0 && cursor !== undefined) {
+        await backend.ackNotices(projects, cursor)
+        if (disposed || generation !== pumpGeneration) return
+        setClientCursor(backend, cursor)
+      }
+      if (page.nextCursor === undefined || page.nextCursor === cursor) return
+      cursor = page.nextCursor
+    }
+  }
+
+  /**
+   * 通道 B 总入口：按后端归属逐个 pump，各后端通知流与游标彼此隔离。
+   * emit 同步（运行时吞监听者异常），因此 onNotice 返回即视为投递成功，
+   * 推进连续成功前缀的游标后 ack；ack 失败时内存游标不前进，下次重新拉。
+   * pumping 期间的新提示记 pending，结束后补拉一轮；串行化防止并发重复投递。
+   * 每个后端单独 try/catch：一个后端故障不得挡住其他后端的通知。
    */
   async function pumpNotices(): Promise<void> {
     if (disposed || !started || backends.size === 0) return
-    // pumping 期间的新提示记 pending，结束后补拉一轮，不吞事件。
     if (noticePumping) { noticePending = true; return }
     noticePumping = true
+    const generation = pumpGeneration
     try {
       do {
         noticePending = false
-        const projectsNow = [...backends.keys()]
-        const backend = backends.get(projectsNow[0] ?? '')
-        if (backend === undefined) return
-        let cursor = clientCursor()
-        const seenCursors = new Set<string>()
-        // keyset 分页拉全未确认通知。seenCursors 是死循环兜底：服务端必须按 cursor 过滤，
-        // 但若实现有误重复返回同一页，这里必须停，不能把测试/页面挂死。
-        for (;;) {
-          if (disposed) return
-          if (cursor !== undefined) {
-            if (seenCursors.has(cursor)) return
-            seenCursors.add(cursor)
+        for (const [backend, projects] of byBackend()) {
+          if (disposed || generation !== pumpGeneration) return
+          try {
+            await pumpBackendNotices(backend, projects, generation)
+          } catch {
+            // 单后端拉取失败不影响其余后端；下次提示 / 可见时重试。
           }
-          const page = await backend.listNotices(projectsNow, cursor)
-          if (disposed || page.notices.length === 0) break
-          let delivered = 0
-          for (const notice of page.notices) {
-            onNotice(notice)
-            cursor = notice.cursor
-            delivered += 1
-          }
-          if (delivered > 0 && cursor !== undefined) {
-            await backend.ackNotices(projectsNow, cursor)
-            noticeCursors.set(clientId, cursor)
-          }
-          if (page.nextCursor === undefined || page.nextCursor === cursor) break
-          cursor = page.nextCursor
         }
-      } while (noticePending && !disposed)
+      } while (noticePending && !disposed && generation === pumpGeneration)
     } catch {
       // 通知拉取失败不影响投影；下次 follow 提示 / 可见时重试。
     } finally {
       noticePumping = false
+      // 在途 pump 被 stop() 作废、或重挂期间有新提示进来时，pending 仍为 true 但没人再拉：
+      // 这里补拉一轮，避免那次提示被吞到下次偶发事件才处理。新一轮用当前 pumpGeneration。
+      if (noticePending && started && !disposed) void pumpNotices()
     }
   }
 
@@ -326,13 +377,7 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
 
   function startFollow(): void {
     if (disposed || backends.size === 0) return
-    const byBackend = new Map<TaskBackend, string[]>()
-    for (const [project, backend] of backends) {
-      const bucket = byBackend.get(backend)
-      if (bucket === undefined) byBackend.set(backend, [project])
-      else bucket.push(project)
-    }
-    for (const [backend, owned] of byBackend) {
+    for (const [backend, owned] of byBackend()) {
       if (followers.has(backend)) continue
       const cursors: Record<string, string> = {}
       for (const project of owned) {
@@ -383,6 +428,12 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
       }
       backends.set(project, backend)
       projectState(project)
+      // 重挂到新后端实例时，旧实例不再服务任何 project，其游标条目应回收；
+      // 仍被其他 project 共用的后端保留游标，避免重复投递。
+      const active = new Set(backends.values())
+      for (const stale of noticeCursors.keys()) {
+        if (!active.has(stale)) noticeCursors.delete(stale)
+      }
       if (started) {
         const wasStarted = started
         this.stop()
@@ -481,6 +532,9 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
       return backends.has(project)
     },
     stop(): void {
+      // 作废在途 pump：它此后不得 onNotice / ack。游标保留——重连后从已确认点续拉，
+      // 不因一次断连就重头投递全部通知（at-least-once 下会重复 emit）。
+      pumpGeneration += 1
       for (const state of projects.values()) state.epoch += 1
       for (const off of followers.values()) off()
       followers.clear()
@@ -493,6 +547,7 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
       this.stop()
       projects.clear()
       invokes.clear()
+      noticeCursors.clear()
     },
   }
 }

@@ -70027,8 +70027,12 @@ h(SideSheet, {
         "en": "The status-source mode only asks the server about keys it already knows: after every page closes there are no keys, a reload restarts the clock, and action handlers die with the page. For full recovery use `taskNotifications.setTaskBackend(project, backend)` plus `notifyTask.server(title, options)`. A backend must provide `list / follow / listNotices / ackNotices / invoke / ack`; registering otherwise throws \u2014 there is no silent fallback."
       },
       {
-        "zh": "\u4E24\u6761\u901A\u9053\u5404\u53F8\u5176\u804C\uFF1A\u901A\u9053 A\uFF08`list / follow`\uFF09\u53EA\u6C34\u5408\u5728\u8DD1\u4EFB\u52A1\uFF0C\u7EC8\u6001\u5893\u7891\u53EA\u66F4\u65B0\u672C\u5730\u7EC8\u6001\u95E8\uFF0C\u7EDD\u4E0D\u53D1 `settled`\u3001\u7EDD\u4E0D ack\uFF1B\u901A\u9053 B\uFF08`listNotices / ackNotices`\uFF09\u4E13\u95E8\u6295\u9012\u672A\u786E\u8BA4\u7684\u7EC8\u6001\u901A\u77E5\uFF0C\u4E8B\u4EF6\u53D1\u51FA\u540E\u624D\u6309\u8FDE\u7EED\u6210\u529F\u524D\u7F00 ack\u3002\u56E0\u6B64\u9875\u9762\u91CD\u5F00\u540E\u57FA\u7EBF\u56DE\u653E\u4E0D\u4F1A\u9020\u6210\u91CD\u590D\u901A\u77E5\uFF0C\u672A\u786E\u8BA4\u7684\u901A\u77E5\u4ECD\u4F1A\u901A\u8FC7\u901A\u9053 B \u9001\u8FBE\u3002",
-        "en": "Two channels with separate jobs: channel A (`list / follow`) only hydrates running tasks; a terminal tombstone only updates the local terminal gate and never emits `settled` nor acks. Channel B (`listNotices / ackNotices`) delivers unacknowledged terminal notices; the cursor advances only after the event is emitted. A page reopen therefore never duplicates a notice from baseline replay, and unacknowledged notices still arrive through channel B."
+        "zh": "\u4E24\u6761\u901A\u9053\u5404\u53F8\u5176\u804C\uFF1A\u901A\u9053 A\uFF08`list / follow`\uFF09\u53EA\u6C34\u5408\u5728\u8DD1\u4EFB\u52A1\uFF0C\u7EC8\u6001\u5893\u7891\u53EA\u66F4\u65B0\u672C\u5730\u7EC8\u6001\u95E8\uFF0C\u7EDD\u4E0D\u53D1 `settled`\u3001\u7EDD\u4E0D ack\uFF1B\u901A\u9053 B\uFF08`listNotices / ackNotices`\uFF09\u4E13\u95E8\u6295\u9012\u672A\u786E\u8BA4\u7684\u7EC8\u6001\u901A\u77E5\uFF0C\u4E8B\u4EF6\u53D1\u51FA\u540E\u624D\u6309\u8FDE\u7EED\u6210\u529F\u524D\u7F00 ack\u3002\u56E0\u6B64\u9875\u9762\u91CD\u5F00\u540E\u57FA\u7EBF\u56DE\u653E\u4E0D\u4F1A\u9020\u6210\u91CD\u590D\u901A\u77E5\uFF0C\u672A\u786E\u8BA4\u7684\u901A\u77E5\u4ECD\u4F1A\u901A\u8FC7\u901A\u9053 B \u9001\u8FBE\u3002\u901A\u9053 B \u6309\u540E\u7AEF\u5F52\u5C5E\u5206\u7EC4\uFF1A\u6BCF\u4E2A\u540E\u7AEF\u53EA\u67E5\u81EA\u5DF1\u6CE8\u518C\u7684 project\u3001\u7528\u81EA\u5DF1\u7684\u6E38\u6807\u63A8\u8FDB\u4E0E ack\uFF0C\u7EDD\u4E0D\u62FF\u9996\u4E2A\u540E\u7AEF\u4EE3\u67E5\u5168\u90E8\u9879\u76EE\u2014\u2014\u4E0D\u540C\u540E\u7AEF\u53EF\u80FD\u662F\u4E0D\u540C\u670D\u52A1\u6216\u4E0D\u540C\u9274\u6743\u57DF\u3002",
+        "en": "Two channels with separate jobs: channel A (`list / follow`) only hydrates running tasks; a terminal tombstone only updates the local terminal gate and never emits `settled` nor acks. Channel B (`listNotices / ackNotices`) delivers unacknowledged terminal notices; the cursor advances only after the event is emitted. A page reopen therefore never duplicates a notice from baseline replay, and unacknowledged notices still arrive through channel B. Channel B is grouped by backend ownership: each backend queries only the projects registered to it and advances/acks with its own cursor \u2014 it never queries all projects through whichever backend was registered first, since backends may be different services or auth domains."
+      },
+      {
+        "zh": "\u524D\u7AEF\u7684\u901A\u77E5\u53BB\u91CD id \u4E0E\u7EC8\u6001\u4EA4\u63A5\u7ED3\u679C\u7528\u6709\u754C LRU \u7F13\u5B58\uFF08\u4E0A\u9650 512\uFF09\uFF0C\u4E0D\u4F1A\u968F\u957F\u65F6\u95F4\u5F00\u9875\u65E0\u9650\u589E\u957F\uFF1B\u8DE8\u9875 / \u91CD\u5F00\u53BB\u91CD\u9760\u670D\u52A1\u7AEF cursor\u3002\u53E5\u67C4\u5151\u73B0\u4EE5\u767B\u8BB0\u65F6\u670D\u52A1\u7AEF\u539F\u5B50 create \u8FD4\u56DE\u7684\u6743\u5A01\u8BB0\u5F55\u4E3A\u771F\u6E90\uFF0C\u672C\u5730\u7F13\u5B58\u53EA\u662F\u300C\u901A\u77E5\u65E9\u4E8E waiter\u300D\u7684\u5FEB\u8DEF\u5F84\u2014\u2014\u6DD8\u6C70\u540E\u4ECD\u80FD\u5151\u73B0\u3001\u4E0D\u7559 pending\uFF0C\u4E14\u540C key \u91CD\u5EFA\u4E0D\u4F1A\u88AB\u4E0A\u4E00\u8F6E\u7EC8\u6001\u9519\u8BEF\u5151\u73B0\u3002",
+        "en": 'Notification de-duplication ids and terminal handoff results on the client use a bounded LRU cache (limit 512) and never grow without bound on a long-lived page. Cross-page / reopen de-duplication relies on the server cursor. Settling an authoritative handle uses the authoritative record returned by the server atomic create at registration as the source of truth; the local cache is only a fast path for "notice before waiter" \u2014 eviction still settles without leaving a pending handle, and reusing a key can never settle a fresh handle with the previous instance terminal.'
       },
       {
         "zh": "\u771F\u6E90\u5728\u670D\u52A1\u7AEF\uFF1A\u539F\u5B50 `create` \u51B3\u5B9A `created`\uFF0C`startedAt / deadlineAt / version` \u7531\u670D\u52A1\u7AEF\u751F\u6210\uFF0C\u8D85\u65F6\u4E0E\u79DF\u7EA6\u7531\u670D\u52A1\u7AEF watchdog \u5224\u5B9A\uFF0C\u7EC8\u6001\u6309 TTL \u6E05\u7406\u3002\u6838\u5FC3\u53EA\u6309\u5355\u8C03 version \u5408\u5E76\u57FA\u7EBF\u3001\u5206\u9875\u4E0E\u589E\u91CF\uFF1B\u6309\u94AE\u662F `{id, token, expiresAt}` \u63CF\u8FF0\uFF0C`runAction` \u6309 actionId \u8D70\u670D\u52A1\u7AEF\u547D\u4EE4\uFF0C\u4E0D\u4F9D\u8D56\u9875\u9762\u95ED\u5305\u3002\u70B9\u51FB\u6309\u94AE\u4F1A\u5411 `taskNotificationEvents` \u53D1 `action` \u4E8B\u4EF6\uFF08\u542B\u4EFB\u52A1\u5FEB\u7167\u3001actionId\u3001ok\u3001reason\u3001result\uFF09\uFF0C\u6D88\u8D39\u65B9\u636E\u6B64\u628A\u754C\u9762\u5E26\u56DE\u6765\u3002\u6743\u5A01\u53E5\u67C4\u53EA\u6709 `id / isSettled / settled`\uFF0C\u6CA1\u6709 update/touch/background/done/fail/track\u2014\u2014\u7EC8\u6001\u7531\u670D\u52A1\u7AEF\u5224\u5B9A\uFF0C\u7F16\u8BD1\u671F\u5373\u963B\u6B62\u8BEF\u7528\u3002",
@@ -74854,8 +74858,28 @@ function createAuthoritativeEngine(options) {
   const noticeCursors = /* @__PURE__ */ new Map();
   let noticePumping = false;
   let noticePending = false;
-  function clientCursor() {
-    return noticeCursors.get(clientId);
+  let pumpGeneration = 0;
+  function clientCursor(backend) {
+    return noticeCursors.get(backend)?.get(clientId);
+  }
+  function setClientCursor(backend, cursor2) {
+    let byClient = noticeCursors.get(backend);
+    if (byClient === void 0) {
+      byClient = /* @__PURE__ */ new Map();
+      noticeCursors.set(backend, byClient);
+    }
+    byClient.set(clientId, cursor2);
+  }
+  function byBackend() {
+    const grouped = /* @__PURE__ */ new Map();
+    for (const [project, backend] of backends) {
+      const bucket = grouped.get(backend);
+      if (bucket === void 0)
+        grouped.set(backend, [project]);
+      else
+        bucket.push(project);
+    }
+    return grouped;
   }
   const invokes = /* @__PURE__ */ new Map();
   const INVOKE_CACHE_MS = 6e4;
@@ -74886,6 +74910,37 @@ function createAuthoritativeEngine(options) {
       return;
     emitChange();
   }
+  async function pumpBackendNotices(backend, projects2, generation) {
+    let cursor2 = clientCursor(backend);
+    const seenCursors = /* @__PURE__ */ new Set();
+    for (; ; ) {
+      if (disposed || generation !== pumpGeneration)
+        return;
+      if (cursor2 !== void 0) {
+        if (seenCursors.has(cursor2))
+          return;
+        seenCursors.add(cursor2);
+      }
+      const page = await backend.listNotices(projects2, cursor2);
+      if (disposed || generation !== pumpGeneration || page.notices.length === 0)
+        return;
+      let delivered = 0;
+      for (const notice of page.notices) {
+        onNotice(notice);
+        cursor2 = notice.cursor;
+        delivered += 1;
+      }
+      if (delivered > 0 && cursor2 !== void 0) {
+        await backend.ackNotices(projects2, cursor2);
+        if (disposed || generation !== pumpGeneration)
+          return;
+        setClientCursor(backend, cursor2);
+      }
+      if (page.nextCursor === void 0 || page.nextCursor === cursor2)
+        return;
+      cursor2 = page.nextCursor;
+    }
+  }
   async function pumpNotices() {
     if (disposed || !started || backends.size === 0)
       return;
@@ -74894,44 +74949,24 @@ function createAuthoritativeEngine(options) {
       return;
     }
     noticePumping = true;
+    const generation = pumpGeneration;
     try {
       do {
         noticePending = false;
-        const projectsNow = [...backends.keys()];
-        const backend = backends.get(projectsNow[0] ?? "");
-        if (backend === void 0)
-          return;
-        let cursor2 = clientCursor();
-        const seenCursors = /* @__PURE__ */ new Set();
-        for (; ; ) {
-          if (disposed)
+        for (const [backend, projects2] of byBackend()) {
+          if (disposed || generation !== pumpGeneration)
             return;
-          if (cursor2 !== void 0) {
-            if (seenCursors.has(cursor2))
-              return;
-            seenCursors.add(cursor2);
+          try {
+            await pumpBackendNotices(backend, projects2, generation);
+          } catch {
           }
-          const page = await backend.listNotices(projectsNow, cursor2);
-          if (disposed || page.notices.length === 0)
-            break;
-          let delivered = 0;
-          for (const notice of page.notices) {
-            onNotice(notice);
-            cursor2 = notice.cursor;
-            delivered += 1;
-          }
-          if (delivered > 0 && cursor2 !== void 0) {
-            await backend.ackNotices(projectsNow, cursor2);
-            noticeCursors.set(clientId, cursor2);
-          }
-          if (page.nextCursor === void 0 || page.nextCursor === cursor2)
-            break;
-          cursor2 = page.nextCursor;
         }
-      } while (noticePending && !disposed);
+      } while (noticePending && !disposed && generation === pumpGeneration);
     } catch {
     } finally {
       noticePumping = false;
+      if (noticePending && started && !disposed)
+        void pumpNotices();
     }
   }
   function advanceCursor2(project, event) {
@@ -74971,15 +75006,7 @@ function createAuthoritativeEngine(options) {
   function startFollow() {
     if (disposed || backends.size === 0)
       return;
-    const byBackend = /* @__PURE__ */ new Map();
-    for (const [project, backend] of backends) {
-      const bucket = byBackend.get(backend);
-      if (bucket === void 0)
-        byBackend.set(backend, [project]);
-      else
-        bucket.push(project);
-    }
-    for (const [backend, owned] of byBackend) {
+    for (const [backend, owned] of byBackend()) {
       if (followers.has(backend))
         continue;
       const cursors = {};
@@ -75030,6 +75057,11 @@ function createAuthoritativeEngine(options) {
       }
       backends.set(project, backend);
       projectState(project);
+      const active = new Set(backends.values());
+      for (const stale of noticeCursors.keys()) {
+        if (!active.has(stale))
+          noticeCursors.delete(stale);
+      }
       if (started) {
         const wasStarted = started;
         this.stop();
@@ -75139,6 +75171,7 @@ function createAuthoritativeEngine(options) {
       return backends.has(project);
     },
     stop() {
+      pumpGeneration += 1;
       for (const state of projects.values())
         state.epoch += 1;
       for (const off of followers.values())
@@ -75154,6 +75187,7 @@ function createAuthoritativeEngine(options) {
       this.stop();
       projects.clear();
       invokes.clear();
+      noticeCursors.clear();
     }
   };
 }
@@ -75494,29 +75528,73 @@ function createTaskNotificationPool(options = {}) {
     revision += 1;
     store.setState({ tasks: collect(), revision }, true);
   }
+  const NOTICE_CACHE_LIMIT = 512;
+  function boundedLru(limit) {
+    const entries2 = /* @__PURE__ */ new Map();
+    const refresh2 = (key, value) => {
+      entries2.delete(key);
+      entries2.set(key, value);
+    };
+    return {
+      has(key) {
+        if (!entries2.has(key))
+          return false;
+        refresh2(key, entries2.get(key));
+        return true;
+      },
+      get(key) {
+        if (!entries2.has(key))
+          return void 0;
+        const value = entries2.get(key);
+        refresh2(key, value);
+        return value;
+      },
+      set(key, value) {
+        refresh2(key, value);
+        if (entries2.size > limit) {
+          const oldest = entries2.keys().next();
+          if (!oldest.done)
+            entries2.delete(oldest.value);
+        }
+      },
+      delete(key) {
+        entries2.delete(key);
+      },
+      clear() {
+        entries2.clear();
+      }
+    };
+  }
   const serverSettlers = /* @__PURE__ */ new Map();
   const serverHandles = /* @__PURE__ */ new Map();
-  const deliveredNotices = /* @__PURE__ */ new Set();
-  const settledResults = /* @__PURE__ */ new Map();
+  const deliveredNotices = boundedLru(NOTICE_CACHE_LIMIT);
+  const settledResults = boundedLru(NOTICE_CACHE_LIMIT);
+  function settlementOf(row3) {
+    if (row3.state !== "done" && row3.state !== "failed")
+      return void 0;
+    return {
+      outcome: row3.state,
+      reason: row3.reason,
+      task: serverRecordToProjection(row3)
+    };
+  }
   function deliverTerminal(notice) {
     const row3 = notice.record;
     const cacheKey = `${row3.project}:${row3.key}`;
     if (deliveredNotices.has(notice.notificationId))
       return;
-    deliveredNotices.add(notice.notificationId);
-    const projection = serverRecordToProjection(row3);
-    const settlement = {
-      outcome: row3.state === "done" ? "done" : "failed",
-      reason: row3.reason,
-      task: projection
-    };
-    settledResults.set(cacheKey, settlement);
-    bus().emit({ type: "settled", outcome: settlement.outcome, task: projection, remote: false });
+    const settlement = settlementOf(row3);
+    if (settlement === void 0)
+      return;
+    deliveredNotices.set(notice.notificationId, true);
+    bus().emit({ type: "settled", outcome: settlement.outcome, task: settlement.task, remote: false });
     const waiter = serverSettlers.get(cacheKey);
     if (waiter !== void 0) {
       serverSettlers.delete(cacheKey);
       serverHandles.delete(cacheKey);
       waiter(settlement);
+    } else {
+      settledResults.set(cacheKey, settlement);
     }
   }
   const authoritative = createAuthoritativeEngine({
@@ -76245,18 +76323,10 @@ function createTaskNotificationPool(options = {}) {
         return isSettled;
       }, settled };
       serverHandles.set(keyOfHandle, handle);
-      const cached = settledResults.get(keyOfHandle);
-      if (cached !== void 0) {
-        settledResults.delete(keyOfHandle);
-        serverHandles.delete(keyOfHandle);
+      serverSettlers.set(keyOfHandle, (value) => {
         isSettled = true;
-        resolveSettled(cached);
-      } else {
-        serverSettlers.set(keyOfHandle, (value) => {
-          isSettled = true;
-          resolveSettled(value);
-        });
-      }
+        resolveSettled(value);
+      });
     }
     const created = await authoritative.create({
       project,
@@ -76270,6 +76340,28 @@ function createTaskNotificationPool(options = {}) {
     });
     if (created === void 0)
       throw new Error(`project ${project} backend does not support create`);
+    const waiter = serverSettlers.get(keyOfHandle);
+    if (waiter !== void 0) {
+      const authoritative2 = settlementOf(created.record);
+      if (authoritative2 !== void 0) {
+        settledResults.delete(keyOfHandle);
+        serverSettlers.delete(keyOfHandle);
+        serverHandles.delete(keyOfHandle);
+        waiter(authoritative2);
+      } else if (created.created === false) {
+        const cached = settledResults.get(keyOfHandle);
+        if (cached !== void 0 && cached.task.version !== void 0 && cached.task.version > created.record.version) {
+          settledResults.delete(keyOfHandle);
+          serverSettlers.delete(keyOfHandle);
+          serverHandles.delete(keyOfHandle);
+          waiter(cached);
+        } else {
+          settledResults.delete(keyOfHandle);
+        }
+      } else {
+        settledResults.delete(keyOfHandle);
+      }
+    }
     return { handle, created: created.created };
   }
   function settleLocal(reason) {
@@ -77021,9 +77113,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.38.0"}`],
-            [t3("buildDemo"), `v${"0.38.0"}`],
-            [t3("buildStamp"), "261117-001024-297"]
+            [t3("buildCore"), `v${"0.39.0"}`],
+            [t3("buildDemo"), `v${"0.39.0"}`],
+            [t3("buildStamp"), "261117-010232-936"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77342,9 +77434,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.38.0"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.38.0"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-001024-297")
+          (0, import_react112.createElement)("span", null, `core v${"0.39.0"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.39.0"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-010232-936")
         )
       )
     ),

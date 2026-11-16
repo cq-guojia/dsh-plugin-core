@@ -884,33 +884,81 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     store.setState({ tasks: collect(), revision }, true)
   }
 
+  /**
+   * 有界 LRU：长生命周期页面里通知 id 去重与终态交接不能无限增长（成熟缓存库的通行做法：
+   * 到达容量上限淘汰最久未用项）。get/has 都刷新最近使用，淘汰按插入序头项。
+   * 本地缓存只是快路径：跨页/重开去重由服务端 cursor 兜底，缓存淘汰后的交接以
+   * ensureServer 调 create 返回的权威记录为真源（见 ensureServer）。
+   */
+  const NOTICE_CACHE_LIMIT = 512
+  function boundedLru<V>(limit: number) {
+    const entries = new Map<string, V>()
+    const refresh = (key: string, value: V): void => {
+      entries.delete(key)
+      entries.set(key, value)
+    }
+    return {
+      has(key: string): boolean {
+        if (!entries.has(key)) return false
+        refresh(key, entries.get(key) as V)
+        return true
+      },
+      get(key: string): V | undefined {
+        if (!entries.has(key)) return undefined
+        const value = entries.get(key) as V
+        refresh(key, value)
+        return value
+      },
+      set(key: string, value: V): void {
+        refresh(key, value)
+        if (entries.size > limit) {
+          const oldest = entries.keys().next()
+          if (!oldest.done) entries.delete(oldest.value)
+        }
+      },
+      delete(key: string): void { entries.delete(key) },
+      clear(): void { entries.clear() },
+    }
+  }
+
   /** 服务端权威任务的句柄等待者：终态通知到达时兑现，不依赖创建页存活。 */
   const serverSettlers = new Map<string, (value: TaskNotificationSettlement) => void>()
   /** 同 key 复用同一句柄；重开页面后新旧调用拿到的是同一个 settled Promise。 */
   const serverHandles = new Map<string, AuthoritativeHandle>()
-  /** 通道 B 已投递的通知 id：跨页/重开由服务端 cursor 去重，这里挡同页 follow 重入。 */
-  const deliveredNotices = new Set<string>()
-  /** 终态结果缓存：通知早于 ensureServer 注册 waiter 时，用它兑现后建的句柄。 */
-  const settledResults = new Map<string, TaskNotificationSettlement>()
+  /** 通道 B 已投递的通知 id：跨页/重开由服务端 cursor 去重，这里挡同页 follow 重入。有界。 */
+  const deliveredNotices = boundedLru<true>(NOTICE_CACHE_LIMIT)
+  /** 终态结果缓存：通知早于 ensureServer 注册 waiter 时，用它兑现后建的句柄。有界。 */
+  const settledResults = boundedLru<TaskNotificationSettlement>(NOTICE_CACHE_LIMIT)
+
+  /** 只有明确的 done/failed 才是终态；tombstone 但仍是 running 的异常记录不兑现，避免误判 outcome。 */
+  function settlementOf(row: ServerTaskRecord): TaskNotificationSettlement | undefined {
+    if (row.state !== 'done' && row.state !== 'failed') return undefined
+    return {
+      outcome: row.state,
+      reason: row.reason,
+      task: serverRecordToProjection(row),
+    }
+  }
 
   function deliverTerminal(notice: ServerNotice): void {
     const row = notice.record
     const cacheKey = `${row.project}:${row.key}`
     if (deliveredNotices.has(notice.notificationId)) return
-    deliveredNotices.add(notice.notificationId)
-    const projection = serverRecordToProjection(row)
-    const settlement: TaskNotificationSettlement = {
-      outcome: row.state === 'done' ? 'done' : 'failed',
-      reason: row.reason,
-      task: projection,
-    }
-    settledResults.set(cacheKey, settlement)
-    bus().emit({ type: 'settled', outcome: settlement.outcome, task: projection, remote: false })
+    const settlement = settlementOf(row)
+    // 异常记录（tombstone 但非 done/failed）不当终态，也不占用通知 id：
+    // 服务端随后用同一 id 补发正常终态时仍能被投递，不会自锁成永久 pending。
+    if (settlement === undefined) return
+    deliveredNotices.set(notice.notificationId, true)
+    bus().emit({ type: 'settled', outcome: settlement.outcome, task: settlement.task, remote: false })
     const waiter = serverSettlers.get(cacheKey)
     if (waiter !== undefined) {
+      // 当场兑现：绝不写交接缓存。缓存只服务「通知早于 waiter」的未消费交接，
+      // 写入已消费的结果会让后续同 key 重建的新句柄拿到上一轮任务的终态。
       serverSettlers.delete(cacheKey)
       serverHandles.delete(cacheKey)
       waiter(settlement)
+    } else {
+      settledResults.set(cacheKey, settlement)
     }
   }
 
@@ -1724,7 +1772,7 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
     const key = taskKey(input.key)
     const id = `${SERVER_SHARD_ORIGIN}:${project}:${key}`
     const keyOfHandle = `${project}:${key}`
-    // 先建 waiter / 复用已有句柄，再调 create：create 可能在返回前就触发终态。
+    // 先建 waiter / 复用已有句柄，再调 create：create 往返期间到达的通知由 waiter 当场兑现。
     let handle = serverHandles.get(keyOfHandle)
     if (handle === undefined) {
       let isSettled = false
@@ -1732,17 +1780,12 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       const settled = new Promise<TaskNotificationSettlement>((resolve) => { resolveSettled = resolve })
       handle = { id, get isSettled() { return isSettled }, settled }
       serverHandles.set(keyOfHandle, handle)
-      // 通知可能早于本次登记到达（重开页基线拉到终态）：用缓存立即兑现，不留 pending。
-      const cached = settledResults.get(keyOfHandle)
-      if (cached !== undefined) {
-        settledResults.delete(keyOfHandle)
-        serverHandles.delete(keyOfHandle)
-        isSettled = true
-        resolveSettled(cached)
-      } else {
-        serverSettlers.set(keyOfHandle, (value) => { isSettled = true; resolveSettled(value) })
-      }
+      serverSettlers.set(keyOfHandle, (value) => { isSettled = true; resolveSettled(value) })
     }
+
+    // create 是服务端原子登记，返回的 record 才是「这个 key 现在指向哪个任务」的真源。
+    // 绝不用本地投影 / 旧交接缓存判断终态：同 key 重建后，投影里还留着上一轮的终态，
+    // 拿它兑现会把新句柄错误地当成旧任务已完成。
     const created = await authoritative.create({
       project,
       key,
@@ -1754,6 +1797,36 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
       ...(input.maxDurationMs === undefined ? {} : { maxDurationMs: input.maxDurationMs }),
     })
     if (created === undefined) throw new Error(`project ${project} backend does not support create`)
+
+    // 往返期间通知可能已命中 waiter（句柄已清），此时幂等跳过。
+    const waiter = serverSettlers.get(keyOfHandle)
+    if (waiter !== undefined) {
+      const authoritative = settlementOf(created.record)
+      if (authoritative !== undefined) {
+        // create 返回终态：服务端说这个 key 已完成，用它兑现，丢掉可能残留的旧交接项。
+        settledResults.delete(keyOfHandle)
+        serverSettlers.delete(keyOfHandle)
+        serverHandles.delete(keyOfHandle)
+        waiter(authoritative)
+      } else if (created.created === false) {
+        // key 已存在且服务端仍报 running：本地同 key 终态缓存只能来自同一实例
+        // （服务端 version 单调）。只有终态版本严格高于 create 记录才认——相等时服务端
+        // 说它仍在跑，以服务端为准；低于则是上一轮残留，一律丢弃。
+        const cached = settledResults.get(keyOfHandle)
+        if (cached !== undefined && cached.task.version !== undefined
+          && cached.task.version > created.record.version) {
+          settledResults.delete(keyOfHandle)
+          serverSettlers.delete(keyOfHandle)
+          serverHandles.delete(keyOfHandle)
+          waiter(cached)
+        } else {
+          settledResults.delete(keyOfHandle)
+        }
+      } else {
+        // 新建实例：任何同 key 缓存终态都属于旧任务，一律丢弃，等新通知。
+        settledResults.delete(keyOfHandle)
+      }
+    }
     return { handle, created: created.created }
   }
 

@@ -369,10 +369,13 @@ test('反馈②：页面重开后，未确认的终态通知仍能投递 settled
   pool2.dispose()
 })
 
-test('终态通知早于 ensureServer 注册 waiter 时，后建句柄用缓存立即兑现', async () => {
+test('终态通知早于 ensureServer 时，同实例的交接缓存立即兑现，不留 pending', async () => {
   setDefaultTaskProject(PROJECT)
   const terminal = row({ key: 'early', version: 2, state: 'done', tombstone: true })
   const fake = fakeBackend([], [noticeFor(terminal, 'early-notice')])
+  // create 返回同 key 仍存在的实例（created:false），其 version 不高于终态通知版本，
+  // 于是用交接缓存兑现——这正是「通知早于 waiter」要解决的竞态。
+  fake.backend.create = async () => ({ created: false, record: row({ key: 'early', version: 1 }) })
   const events = []
   const bus = { subscribe() { return () => {} }, emit(e) { events.push(e) } }
   const pool = createTaskNotificationPool({
@@ -382,7 +385,7 @@ test('终态通知早于 ensureServer 注册 waiter 时，后建句柄用缓存�
   pool.setTaskBackend(PROJECT, fake.backend)
   // 开页自动 pump 已消费通知（此时还没有 waiter），settled 事件已发出。
   await waitFor(() => events.some((e) => e.type === 'settled'), 'early settled event')
-  // 业务随后才登记同 key：句柄必须用缓存立即兑现，不能永久 pending。
+  // 业务随后才登记同 key：句柄必须用同一实例的交接缓存立即兑现，不能永久 pending。
   const claim = await pool.ensureServer({ title: 'x', key: 'early' })
   const settlement = await Promise.race([
     claim.handle.settled,
@@ -407,5 +410,178 @@ test('反馈③：权威句柄没有 update/touch/background/done/fail/track', a
   }
   assert.equal(typeof claim.handle.id, 'string')
   assert.ok(claim.handle.settled instanceof Promise)
+  pool.dispose()
+})
+
+function noticeBackend(notice) {
+  const calls = { listNotices: [], ackNotices: [] }
+  return {
+    calls,
+    backend: {
+      async list() { return { rows: [], snapshotVersion: 1 } },
+      follow() { return () => {} },
+      async listNotices(projects, since) {
+        calls.listNotices.push([...projects])
+        return { notices: since === undefined ? [notice] : [] }
+      },
+      async ackNotices(projects, cursor) { calls.ackNotices.push({ projects: [...projects], cursor }) },
+      async invoke() { return { ok: true } },
+      async ack() {},
+    },
+  }
+}
+
+test('实现问题②：通知按后端归属分别查询与 ack，不拿首后端代查全部 project', async () => {
+  const a = 'backend-project-a'
+  const b = 'backend-project-b'
+  const noticeA = {
+    notificationId: 'na', project: a, cursor: 'ca',
+    record: row({ project: a, key: 'ka', state: 'done', tombstone: true }),
+  }
+  const noticeB = {
+    notificationId: 'nb', project: b, cursor: 'cb',
+    record: row({ project: b, key: 'kb', state: 'failed', tombstone: true, reason: '超时' }),
+  }
+  const fa = noticeBackend(noticeA)
+  const fb = noticeBackend(noticeB)
+  const seen = []
+  const engine = createAuthoritativeEngine({
+    clientId: 'multi-backend', onChange() {}, onNotice(n) { seen.push(n) },
+  })
+  engine.attach(a, fa.backend)
+  engine.attach(b, fb.backend)
+  engine.start()
+  await waitFor(() => seen.length === 2, 'both notices delivered')
+
+  assert.deepEqual(fa.calls.listNotices, [[a]])
+  assert.deepEqual(fb.calls.listNotices, [[b]])
+  assert.deepEqual(fa.calls.ackNotices.map((c) => c.projects), [[a]])
+  assert.deepEqual(fb.calls.ackNotices.map((c) => c.projects), [[b]])
+  assert.equal(fa.calls.ackNotices[0].cursor, 'ca')
+  assert.equal(fb.calls.ackNotices[0].cursor, 'cb')
+  assert.deepEqual(seen.map((n) => n.notificationId).sort(), ['na', 'nb'])
+  engine.dispose()
+})
+
+test('实现问题②：单后端通知拉取失败不挡住其他后端投递', async () => {
+  const bad = 'backend-bad'
+  const good = 'backend-good'
+  const goodNotice = {
+    notificationId: 'good-n', project: good, cursor: 'good-c',
+    record: row({ project: good, key: 'gk', state: 'done', tombstone: true }),
+  }
+  const fb = noticeBackend(goodNotice)
+  const badBackend = {
+    async list() { return { rows: [], snapshotVersion: 1 } },
+    follow() { return () => {} },
+    async listNotices() { throw new Error('auth down') },
+    async ackNotices() {},
+    async invoke() { return { ok: true } },
+    async ack() {},
+  }
+  const seen = []
+  const engine = createAuthoritativeEngine({
+    clientId: 'backend-isolation', onChange() {}, onNotice(n) { seen.push(n) },
+  })
+  engine.attach(bad, badBackend)
+  engine.attach(good, fb.backend)
+  engine.start()
+  await waitFor(() => seen.length === 1, 'good backend notice survived bad backend failure')
+  assert.deepEqual(seen.map((n) => n.notificationId), ['good-n'])
+  engine.dispose()
+})
+
+test('实现问题①：通道 A 的 tombstone 回放不兑现句柄；create 返回的终态才兑现', async () => {
+  setDefaultTaskProject(PROJECT)
+  const terminal = row({ key: 'baseline-terminal', version: 4, state: 'failed', tombstone: true, reason: '基线终态' })
+  const fake = fakeBackend([terminal])
+  // 让服务端 create 对该 key 返回权威终态（同 key 已存在，created:false）。
+  fake.backend.create = async (input) => ({ created: false, record: { ...terminal, key: input.key } })
+  const pool = createTaskNotificationPool({
+    channelName: `authoritative-test/${process.pid}/${Math.random()}`,
+    lifecycle: false, locks: null,
+  })
+  pool.setTaskBackend(PROJECT, fake.backend)
+  await waitFor(() => fake.calls.lists > 0, 'initial rebase')
+
+  const claim = await pool.ensureServer({ title: 'x', key: 'baseline-terminal' })
+  const settlement = await Promise.race([
+    claim.handle.settled,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('handle pending')), 1000)),
+  ])
+  assert.equal(settlement.outcome, 'failed')
+  assert.equal(settlement.reason, '基线终态')
+  assert.equal(claim.handle.isSettled, true)
+  // 投影里的 tombstone 本身绝不 emit settled；兑现走的是 create 的权威记录。
+  pool.dispose()
+})
+
+test('实现问题①：重建同 key 时，旧终态缓存不会兑现新句柄，只认 create 的当前版本', async () => {
+  setDefaultTaskProject(PROJECT)
+  const oldTerminal = row({ key: 'reuse', version: 2, state: 'done', tombstone: true, reason: '上一轮完成' })
+  const notices = [noticeFor(oldTerminal, 'old-done')]
+  const fake = fakeBackend([], notices)
+  const events = []
+  const bus = { subscribe() { return () => {} }, emit(e) { events.push(e) } }
+  const pool = createTaskNotificationPool({
+    channelName: `authoritative-test/${process.pid}/${Math.random()}`,
+    lifecycle: false, locks: null, events: bus,
+  })
+  pool.setTaskBackend(PROJECT, fake.backend)
+  await waitFor(() => events.some((e) => e.type === 'settled'), 'old notice delivered')
+
+  // 新实例：create 报 created:true + 更新版本的 running 记录。旧终态缓存必须被丢弃。
+  const freshRunning = row({ key: 'reuse', version: 9, state: 'running', tombstone: false })
+  fake.backend.create = async () => ({ created: true, record: freshRunning })
+  const claim = await pool.ensureServer({ title: 'x', key: 'reuse' })
+  assert.equal(claim.created, true)
+  let settled = false
+  claim.handle.settled.then(() => { settled = true })
+  await new Promise((resolve) => setTimeout(resolve, 30))
+  assert.equal(settled, false, 'fresh handle must not be settled by the previous instance terminal')
+
+  // 新实例的终态通知到达后才兑现。
+  const newTerminal = row({ key: 'reuse', version: 10, state: 'failed', tombstone: true, reason: '本轮失败' })
+  fake.queueNotice(noticeFor(newTerminal, 'new-done'))
+  fake.emit(PROJECT, { kind: 'notice-available' })
+  const settlement = await Promise.race([
+    claim.handle.settled,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('handle pending')), 1000)),
+  ])
+  assert.equal(settlement.outcome, 'failed')
+  assert.equal(settlement.reason, '本轮失败')
+  pool.dispose()
+})
+
+test('实现问题①：通知数超过有界缓存上限后，create 的权威记录仍能兑现最早 key', async () => {
+  setDefaultTaskProject(PROJECT)
+  const count = 600 // 超过 pool.ts 的 NOTICE_CACHE_LIMIT=512，确保最早一条已被淘汰
+  const notices = []
+  for (let i = 0; i < count; i += 1) {
+    const record = row({ key: `bulk-${i}`, version: 2, state: 'done', tombstone: true })
+    notices.push({ notificationId: `bulk-n-${i}`, project: PROJECT, record, cursor: `bulk-c-${i}` })
+  }
+  const fake = fakeBackend([], notices)
+  fake.backend.create = async (input) => {
+    const match = notices.find((n) => n.record.key === input.key)
+    return { created: false, record: match.record }
+  }
+  const events = []
+  const bus = { subscribe() { return () => {} }, emit(e) { events.push(e) } }
+  const pool = createTaskNotificationPool({
+    channelName: `authoritative-test/${process.pid}/${Math.random()}`,
+    lifecycle: false, locks: null, events: bus,
+  })
+  pool.setTaskBackend(PROJECT, fake.backend)
+  await waitFor(() => events.filter((e) => e.type === 'settled').length === count, 'all notices delivered')
+
+  // 最早的 key 交接缓存项已被 LRU 淘汰；create 返回权威终态仍能兑现，不留 pending。
+  const claim = await pool.ensureServer({ title: 'x', key: 'bulk-0' })
+  const settlement = await Promise.race([
+    claim.handle.settled,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('handle pending after eviction')), 1000)),
+  ])
+  assert.equal(settlement.outcome, 'done')
+  assert.equal(claim.handle.isSettled, true)
   pool.dispose()
 })

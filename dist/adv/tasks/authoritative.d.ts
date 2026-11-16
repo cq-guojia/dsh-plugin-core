@@ -123,7 +123,12 @@ export interface TaskBackend {
     list(project: string, cursor?: string): Promise<ServerTaskPage>;
     follow(projects: readonly string[], cursorByProject: Readonly<Record<string, string>>, onEvent: (project: string, event: ServerTaskEvent) => void, onError: (project: string, error: unknown) => void): () => void;
     poll?(keys: readonly string[]): Promise<readonly ServerTaskRecord[]>;
-    /** 拉取未确认的终态通知（通道 B）。 */
+    /**
+     * 拉取未确认的终态通知（通道 B）。
+     * cursor 是「该后端整条通知流」的 keyset 游标（对该后端所有 project 共享、全局单调递增），
+     * projects 只用于结果过滤、不切分游标空间；ackNotices 的 cursor 与之同一空间。
+     * 因此同一后端服务多 project 时共用一个游标即可，不同后端各有独立游标。
+     */
     listNotices(projects: readonly string[], sinceCursor?: string): Promise<ServerNoticePage>;
     /** 按连续成功前缀推进确认游标，服务端幂等。 */
     ackNotices(projects: readonly string[], cursor: string): Promise<void>;
