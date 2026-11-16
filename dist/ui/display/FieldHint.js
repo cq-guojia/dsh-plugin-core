@@ -13,10 +13,10 @@ import { getTooltipRenderer } from '../infra/tooltip.js';
 import { createElement as h } from 'react';
 import { ensureComponentStyles } from '../infra/css.js';
 import { FontIcon } from './font-icon.js';
-import { HINT_CSS } from './hint-css.generated.js';
+import { FIELD_HINT_CSS } from './field-hint-css.generated.js';
 /** 问号提示图标：hover / focus 浮出说明气泡（官方 Tooltip 渲染）。 */
 export function FieldHint(props) {
-    ensureComponentStyles('hint', HINT_CSS);
+    ensureComponentStyles('field-hint', FIELD_HINT_CSS);
     const { text, side, align, maxWidth, className, style } = props;
     // 官方往子元素挂 ref / 事件 ⇒ 锚点必须是真实 DOM 元素（兄弟仓踩过两次的坑），这里恒为原生 span。
     const anchor = h('span', {

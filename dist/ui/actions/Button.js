@@ -47,6 +47,10 @@ function colorVars(variant, color, background) {
     if (color !== undefined && color !== '') {
         if (SOLID_VARIANTS.includes(variant)) {
             vars['--btn-bg'] = color;
+            // 自定义底色与主题无关 ⇒ 字色也必须固定：--dshpc-fg-inverse 在暗色下是近黑，
+            // 压在用户给的橙 / 蓝实心上会看不清。--dshpc-on-signal 是两主题都白的常量。
+            vars['--btn-fg'] = 'var(--dshpc-on-signal)';
+            vars['--btn-fg-hover'] = 'var(--dshpc-on-signal)';
             // 亮色主题下 --dshpc-fg 是黑 ⇒ 压深；暗色下是白 ⇒ 提亮。两边都能明确看出变化。
             vars['--btn-bg-hover'] = `color-mix(in srgb, ${color} 82%, var(--dshpc-fg))`;
             vars['--btn-bg-active'] = `color-mix(in srgb, ${color} 70%, var(--dshpc-fg))`;
@@ -62,6 +66,10 @@ function colorVars(variant, color, background) {
     // 底色最后写：实心档的 `color` 也在管底色，显式给了 background 就以它为准。
     if (background !== undefined && background !== '') {
         vars['--btn-bg'] = background;
+        if (SOLID_VARIANTS.includes(variant)) {
+            vars['--btn-fg'] = 'var(--dshpc-on-signal)';
+            vars['--btn-fg-hover'] = 'var(--dshpc-on-signal)';
+        }
         vars['--btn-bg-hover'] = `color-mix(in srgb, ${background} 88%, var(--dshpc-fg))`;
         vars['--btn-bg-active'] = `color-mix(in srgb, ${background} 76%, var(--dshpc-fg))`;
     }

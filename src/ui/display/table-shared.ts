@@ -1,7 +1,7 @@
 import { createElement as h, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
 import { ensureComponentStyles } from '../infra/css.js'
-import { TABLE_BASE_CSS } from './table-css.generated.js'
+import { TABLE_CSS } from './table-css.generated.js'
 import type { TablePaginationConfig } from '../navigation/Pagination.js'
 import { Loader } from '../feedback/Loader.js'
 import { SectionHead, type SectionHeadAccent } from './SectionHead.js'
@@ -144,7 +144,7 @@ export function tableShell(
   props: TableSharedProps,
   options: TableShellOptions = {},
 ): ReturnType<typeof h> {
-  ensureComponentStyles('table-core', TABLE_BASE_CSS)
+  ensureComponentStyles('table-core', TABLE_CSS)
   const tt = props.translate ?? t
   const headRows = headerRows(props.columns)
   const leaves = leafColumns(props.columns)

@@ -5,7 +5,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { ListRow } from '../dist/ui/index.js'
 import { LIST_ROW_CSS } from '../dist/ui/display/list-row-css.js'
-import { TOKENS_CSS_TEMPLATE } from '../dist/design/tokens-css.js'
+import { TOKENS_CSS } from '../dist/design/tokens-css.js'
 
 const render = (props = {}, children = '条目') =>
   renderToStaticMarkup(createElement(ListRow, props, children))
@@ -81,19 +81,19 @@ test('ListRow 两槽对称居中：主内容槽不再让 inline-flex 内容按�
 })
 
 test('ListRow hover token：明暗各一档，且不再吃夸张的 active 灰', () => {
-  const darkAt = TOKENS_CSS_TEMPLATE.indexOf('body[data-ds-dark-theme]{')
-  const light = TOKENS_CSS_TEMPLATE.slice(0, darkAt)
-  const dark = TOKENS_CSS_TEMPLATE.slice(darkAt)
+  const darkAt = TOKENS_CSS.indexOf('body[data-ds-dark-theme]{')
+  const light = TOKENS_CSS.slice(0, darkAt)
+  const dark = TOKENS_CSS.slice(darkAt)
   assert.match(light, /--dshpc-listrow-hover-bg:rgba\(15,15,15,\.09\)/)
   assert.match(dark, /--dshpc-listrow-hover-bg:rgba\(255,255,255,\.10\)/)
   assert.ok(!LIST_ROW_CSS.includes('var(--dshpc-active)'), '不许再用 active 那档（亮 18% / 暗 24%）')
 })
 
 test('ListRow 选中 token：slate 极浅蓝灰，明暗各一档且暗色更浓', () => {
-  const darkAt = TOKENS_CSS_TEMPLATE.indexOf('body[data-ds-dark-theme]{')
+  const darkAt = TOKENS_CSS.indexOf('body[data-ds-dark-theme]{')
   assert.ok(darkAt > 0, '暗色段必须存在')
-  const light = TOKENS_CSS_TEMPLATE.slice(0, darkAt)
-  const dark = TOKENS_CSS_TEMPLATE.slice(darkAt)
+  const light = TOKENS_CSS.slice(0, darkAt)
+  const dark = TOKENS_CSS.slice(darkAt)
   assert.match(light, /--dshpc-listrow-selected-bg:color-mix\(in srgb,var\(--dshpc-slate\) 14%,transparent\)/)
   assert.match(dark, /--dshpc-listrow-selected-bg:color-mix\(in srgb,var\(--dshpc-slate\) 26%,transparent\)/)
 })

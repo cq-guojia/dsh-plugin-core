@@ -21,7 +21,9 @@ export interface ButtonProps {
      * 自定义底色（任意 CSS 色值）。与 `color` 正交：`color` 管字/图标/描边，它只管底。
      * hover / active 由底色与 `--dshpc-fg` 混出，明暗两主题自动跟随。
      * 实心档也给 `color` 时会覆盖它 —— 实心档的 `color` 本来就在管底色。
-     * 注意实心档的字色是反白（`--dshpc-fg-inverse`），浅色底配它读不清；浅底请改用 `outline` / `ghost` + `color`。
+     * 自定义底色与主题无关，所以实心档字色固定用 `--dshpc-on-signal`（两主题都白），
+     * 不再跟 `--dshpc-fg-inverse` 走（暗色下它会变近黑，压在橙 / 蓝实心上读不清）；
+     * 浅色底请改用 `outline` / `ghost` + `color`。
      */
     background?: string;
     /** 加载中：文案前显示同色小圈，并自动禁用点击。与「点击自动 loading」是或关系，任一为真就转圈。 */

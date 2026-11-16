@@ -42,6 +42,9 @@ import {
   connectFs,
 } from '../../../../dist/adv/explorer/index.js'
 import {
+  setDefaultTaskProject,
+} from '../../../../dist/runtime/index.js'
+import {
   connectFileServices,
 } from '../host-files.js'
 import {
@@ -475,6 +478,9 @@ export function apply(ctx: {
   // 提示：接收端（纯逻辑）+ 界面各挂一次 —— 页面加载即就绪，不靠「先弹过一条」。
   connectToasts()
   mountToasts()
+
+  // 和真实插件一样：任务 / 通知的一级分组在入口设一次，之后只写二级分组。
+  setDefaultTaskProject('dsh-plugin-core-demo')
 
   // 跳整页：宿主 layout 服务（拿不到就降级为不跳转，绝不让插件起不来）。
   // ⚠️ 必须保留 `layout` 对象再调它的方法：`selectPanel` 是 class 方法，抽出来单存会丢 this，

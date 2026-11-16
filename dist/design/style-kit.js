@@ -1,4 +1,4 @@
-import { TOKENS_CSS_TEMPLATE } from './tokens-css.js';
+import { TOKENS_CSS } from './tokens-css.js';
 /** 明暗判据（宿主启动脚本 `toggleAttribute` 写入 body，是用户在客户端里的选择）。 */
 export const DARK_THEME_SELECTOR = 'body[data-ds-dark-theme]';
 /** 全生态统一的 CSS 变量前缀。 */
@@ -15,7 +15,7 @@ export function createStyleKit(options) {
     const { id } = options;
     if (id === '')
         throw new Error('dsh-plugin-core/design: id 不能为空');
-    const tokensCss = TOKENS_CSS_TEMPLATE;
+    const tokensCss = TOKENS_CSS;
     const domains = new Map();
     let tag = null;
     let dirty = true;

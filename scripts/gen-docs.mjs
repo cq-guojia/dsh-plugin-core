@@ -20,6 +20,7 @@ const MAP = [
   { doc: 'docs/guides/index.doc.ts', md: 'docs/guides/index.md', name: 'index' },
   { doc: 'docs/api/explorer.doc.ts', md: 'docs/api/explorer.md', name: 'explorer' },
   { doc: 'docs/api/design.doc.ts', md: 'docs/api/design.md', name: 'design' },
+  { doc: 'docs/api/runtime.doc.ts', md: 'docs/api/runtime.md', name: 'runtime' },
   { doc: 'docs/api/session.doc.ts', md: 'docs/api/session.md', name: 'session' },
   { doc: 'docs/api/utils.doc.ts', md: 'docs/api/utils.md', name: 'utils' },
   { doc: 'docs/guides/integration.doc.ts', md: 'docs/guides/integration.md', name: 'integration' },

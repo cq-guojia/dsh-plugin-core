@@ -8,7 +8,7 @@
  */
 import { pushToast, } from './toast-queue.js';
 import { ensureNotifyBridge, isNotifyBridgeConnected } from './notify-bridge.js';
-import { getDefaultTaskProject, notifyMessage } from '../infra/task-notifications.js';
+import { getDefaultTaskProject, notifyMessage } from '../../runtime/notify.js';
 const DEFAULT_MS = 2600;
 /**
  * 接上广播接收端（纯逻辑，零 DOM）：此后别的页面广播的提示进入本页队列。

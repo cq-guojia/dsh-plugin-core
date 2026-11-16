@@ -2,9 +2,9 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { TaskBar, notifyTask, setDefaultTaskProject, taskNotifications } from '../dist/ui/index.js'
-import { TASK_BAR_CSS } from '../dist/ui/display/task-bar-css.js'
-import { TOKENS_CSS_TEMPLATE } from '../dist/design/tokens-css.js'
+import { TaskBar, notifyTask, setDefaultTaskProject, taskNotifications } from '../dist/adv/tasks/index.js'
+import { TASK_BAR_CSS } from '../dist/adv/tasks/task-bar-css.js'
+import { TOKENS_CSS } from '../dist/design/tokens-css.js'
 import { formatDurationHms } from '../dist/utils/index.js'
 
 // 展示栏默认按「全局默认项目」取数，跟真实插件一样在入口设一次。
@@ -63,10 +63,10 @@ test('行 hover 只换极淡蓝底，不给点击语义', () => {
 })
 
 test('行 hover token：明暗各一档，且都比表格选中（14% / 26%）更淡', () => {
-  const darkAt = TOKENS_CSS_TEMPLATE.indexOf('body[data-ds-dark-theme]{')
+  const darkAt = TOKENS_CSS.indexOf('body[data-ds-dark-theme]{')
   assert.ok(darkAt > 0, '暗色段必须存在')
-  const light = TOKENS_CSS_TEMPLATE.slice(0, darkAt)
-  const dark = TOKENS_CSS_TEMPLATE.slice(darkAt)
+  const light = TOKENS_CSS.slice(0, darkAt)
+  const dark = TOKENS_CSS.slice(darkAt)
   assert.match(light, /--dshpc-taskbar-row-hover:color-mix\(in srgb,var\(--dshpc-slate\) 8%,transparent\)/)
   assert.match(dark, /--dshpc-taskbar-row-hover:color-mix\(in srgb,var\(--dshpc-slate\) 16%,transparent\)/)
 })
@@ -88,6 +88,18 @@ test('定宽或给了上限 ⇒ 文字叠跑马灯；只有下限 / 没约束不
   assert.ok(!render({ minWidth: 140 }).includes('dshpc-mq'), '只有下限不会截断，不必测宽')
   const css = TASK_BAR_CSS.replace(/\/\*[\s\S]*?\*\//g, '')
   assert.match(css, /\.dshpc-taskbar__label\{flex:0 1 auto;min-width:0;white-space:nowrap;\}/, '文字槽要能收缩')
+})
+
+// 2026-11-16 用户截图：三角被计数挤出定宽边框，且定宽时没有贴到最右。
+test('定宽 / 上限时三角贴右，计数并入同一段跑马灯', () => {
+  const css = TASK_BAR_CSS.replace(/\/\*[\s\S]*?\*\//g, '')
+  assert.match(css, /\.dshpc-taskbar__caret\{flex:none;color:var\(--dshpc-fg-3\);margin-left:auto;\}/)
+  assert.match(css, /\.dshpc-taskbar__trigger\{[^}]*overflow:hidden;/)
+  // 服务端渲染走 getServerSnapshot（空快照），这里验的是结构：受约束时只有一段文字槽 + 三角。
+  const html = render({ maxWidth: 110 })
+  assert.ok(html.includes('dshpc-taskbar__caret'), '三角不能丢')
+  assert.ok(!html.includes('dshpc-taskbar__count"'), '计数不能作为独立 flex:none 元素再占宽')
+  assert.match(html, /dshpc-mq-in/, '文字仍由跑马灯承载，文本拼接在组件里完成')
 })
 
 test('只图标形态恒为正方形：宽度三轴一律忽略', () => {

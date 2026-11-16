@@ -1,12 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {
-  connectToasts,
-  notify,
-  setDefaultTaskProject,
-  taskNotifications,
-} from '../dist/ui/index.js'
-import { emitTaskNotificationEvent } from '../dist/ui/infra/task-notifications.js'
+import { connectToasts, notify } from '../dist/ui/index.js'
+import { defaultNotifyScope, setDefaultTaskProject } from '../dist/runtime/notify.js'
 import { disconnectNotifyBridge, isNotifyBridgeConnected } from '../dist/ui/feedback/notify-bridge.js'
 import { TOAST_QUEUE_KEY, subscribeToasts } from '../dist/ui/feedback/toast-queue.js'
 
@@ -16,7 +11,8 @@ test('广播：本地事件已发出后通知中心抛错，只渲染一条（ca
   const prevDocument = globalThis.document
   const prevWarn = console.warn
   const warns = []
-  const originalBroadcast = taskNotifications.broadcast
+  const scope = defaultNotifyScope()
+  const originalNotify = scope.notifyMessage
   disconnectNotifyBridge()
   delete globalThis[TOAST_QUEUE_KEY]
   console.warn = (msg) => warns.push(String(msg))
@@ -28,20 +24,9 @@ test('广播：本地事件已发出后通知中心抛错，只渲染一条（ca
     const off = subscribeToasts((payload) => seen.push(payload.message))
     connectToasts()
 
-    taskNotifications.broadcast = () => {
-      // 模拟通知中心「先发本地 message 事件，再在跨页投递时抛错」：桥已经渲染过一条。
-      emitTaskNotificationEvent({
-        type: 'message',
-        message: {
-          id: 'probe:msg:1',
-          project: 'probe',
-          group: 'default',
-          title: '广播',
-          level: 'info',
-          at: Date.now(),
-        },
-        remote: false,
-      })
+    scope.notifyMessage = function (title, options) {
+      // 先真的发一次（本地订阅者、也就是桥，已经渲染过一条），再模拟跨页投递失败。
+      originalNotify.call(this, title, options)
       throw new Error('演示：本地事件发出后跨页投递失败')
     }
 
@@ -50,7 +35,7 @@ test('广播：本地事件已发出后通知中心抛错，只渲染一条（ca
     assert.ok(warns.some((w) => w.includes('广播未完全送达')), '失败要看得见')
     off()
   } finally {
-    taskNotifications.broadcast = originalBroadcast
+    scope.notifyMessage = originalNotify
     setDefaultTaskProject(undefined)
     disconnectNotifyBridge()
     delete globalThis[TOAST_QUEUE_KEY]

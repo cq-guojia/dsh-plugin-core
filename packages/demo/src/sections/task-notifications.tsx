@@ -1,11 +1,7 @@
 import { createElement as h, useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { Button, ListRow, notify } from '../../../../dist/ui/index.js'
 import {
-  Button,
-  ListRow,
-  notify,
-  notifyMessage,
   notifyTask,
-  setDefaultTaskProject,
   taskNotifications,
   selectTaskNotifications,
   subscribeTaskNotificationEvents,
@@ -15,20 +11,19 @@ import {
   type TaskNotificationEvent,
   type TaskNotificationHandle,
   type TaskNotificationRecord,
-} from '../../../../dist/ui/index.js'
+} from '../../../../dist/adv/tasks/index.js'
 import { Icon } from '../../../../dist/ui/display/Icon.js'
 import { DocContent, Example, Note } from '../doc.js'
 import { t } from '../i18n.js'
 
 /**
- * 通知任务中心的数据面演示。
+ * 后台任务中心的数据面演示。
  *
  * 这一页只演示阶段 0 / 1 的 API：状态池、订阅、事件总线、过滤三态、结束句柄与还原判据。
  * 不是事件查看控件 —— 没有计数控件、下拉、还原弹窗，也不往 src/ui/ 加任何东西。
  * 面板里的每一条都来自真实 register / 真实事件与真实时钟；无模拟数据、无定时器、无占位行。
  * 列表行一律用基础库的 ListRow（一行一条、右侧操作槽挡冒泡），不手搓行容器。
  */
-const DEMO_PROJECT = 'dsh-plugin-core-demo'
 const SUB_REMINDER = 'reminder'
 const SUB_LEDGER = 'ledger'
 
@@ -83,9 +78,6 @@ function randomActions(ping: (text: string) => void): TaskNotificationAction[] {
     }
   })
 }
-
-// 和真实插件一样：项目在入口处设置一次，之后只写二级分组
-setDefaultTaskProject(DEMO_PROJECT)
 
 const CODE_SUBSCRIBE = `import { useSyncExternalStore } from 'react'
 import { notifyTask, taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/ui'
@@ -164,12 +156,6 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
     handles.current.set(handle.id, handle)
   }
 
-  /** 纯广播：列表不会多一行再少一行，只在事件区看到。 */
-  function broadcast(): void {
-    serial.current += 1
-    notifyMessage(`notice #${serial.current}`, { group: SUB_REMINDER, icon: 'common.base:gou', level: 'success' })
-  }
-
   /** 每条任务按自己的 id 找句柄，互不覆盖；跨页条目没有本页句柄，不给按钮。 */
   function withHandle(task: TaskNotificationRecord, fn: (handle: TaskNotificationHandle) => void): void {
     const handle = handles.current.get(task.id)
@@ -227,14 +213,13 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
   }
 
   function renderEvent(event: TaskNotificationEvent, index: number): ReturnType<typeof h> {
+    // 通知消息已独立到 runtime（`subscribeNotifications`），这里只列任务事件。
     const label =
-      'message' in event
-        ? `${event.message.level}: ${event.message.title}`
-        : 'task' in event
-          ? event.task.title
-          : 'taskId' in event
-            ? event.taskId
-            : event.origin
+      'task' in event
+        ? event.task.title
+        : 'taskId' in event
+          ? event.taskId
+          : event.origin
     return h(
       ListRow,
       { key: `${index}-${event.type}-${label}` },
@@ -263,7 +248,6 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
           { style: row },
           h(Button, { size: 'sm', variant: 'primary', onClick: () => register(SUB_REMINDER, 'workspace-scan') }, t('tnRegisterReminder')),
           h(Button, { size: 'sm', onClick: () => register(SUB_LEDGER, 'session-index') }, t('tnRegisterLedger')),
-          h(Button, { size: 'sm', variant: 'outline', onClick: broadcast }, t('tnBroadcast')),
         ),
         h(
           'div',
@@ -327,5 +311,7 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
       ),
     ),
     h(DocContent, { id: 'task-notifications' }),
+    h(DocContent, { id: 'bt-use-tasks' }),
+    h(DocContent, { id: 'bt-task-bar' }),
   )
 }

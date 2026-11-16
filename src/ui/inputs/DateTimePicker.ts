@@ -48,7 +48,7 @@ import {
   type TimeParts,
 } from './datetime-logic.js'
 import { ensureComponentStyles } from '../infra/css.js'
-import { DATETIME_CSS } from './datetime-css.generated.js'
+import { DATE_TIME_PICKER_CSS } from './date-time-picker-css.generated.js'
 import { FIELD_CSS } from './field-css.generated.js'
 import { PANEL_CSS } from '../infra/panel-css.js'
 
@@ -173,7 +173,7 @@ const ICON_DOWN = h(Chevron, { size: 12 })
  *    毫秒恒三位输出，数据库只收到秒时优雅退化为「当天最后一秒」。
  */
 export function DateTimePicker(props: DateTimePickerProps): ReturnType<typeof h> {
-  ensureComponentStyles('datetime', DATETIME_CSS)
+  ensureComponentStyles('date-time-picker', DATE_TIME_PICKER_CSS)
   ensureComponentStyles('panel', PANEL_CSS)
   ensureComponentStyles('field', FIELD_CSS)
   const tt = props.translate ?? t

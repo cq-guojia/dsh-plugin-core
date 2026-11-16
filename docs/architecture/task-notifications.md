@@ -1,13 +1,13 @@
-# 通知任务中心
+# 后台任务中心
 
 弹窗收起到后台后的统一数据面。本文只写**契约口径与不变量**；类型签名与参数以
-`src/ui/infra/task-notifications.ts` 的 TypeScript 声明为准，不在本文复制第二份。
+`src/adv/tasks/pool.ts` 的 TypeScript 声明为准，不在本文复制第二份。
 
 ## 定位与边界
 
-`ui` 的 `infra` 层模块：整包 `dsh-plugin-core/ui` 有它的纯 re-export 转发表，另开单块入口
-`dsh-plugin-core/ui/task-notifications`（见 `docs/architecture/structure.md` §六）。零 React、零 DOM 依赖，
-import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单测与 SSR 可直接加载。
+`adv` 的应用模块 `dsh-plugin-core/adv/tasks`（池 + `useTasks` + `TaskBar`，见
+`docs/architecture/structure.md` §六）；通知广播与默认分组在 `dsh-plugin-core/runtime`，任务侧只转发。
+零 React、零 DOM 依赖，import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单测与 SSR 可直接加载。
 
 适用范围：
 
@@ -99,6 +99,8 @@ import 期不访问 `window` / `document` / `BroadcastChannel`，因此 Node 单
   默认提示走 `notify()`，项目没挂 toast 宿主就还是静默，那种项目必须自己接 `onActionFailure`。
 - **回收是独立开关**：`timeoutMs` 缺省 **0 = 不回收**，与 `hidden` 无关（2026-11-15 反转：hidden 缺省 5 分钟会让还在跑的作业先被判失败）。
   代价是「不回收的行会留到页面重载」，所以作业型登记方必须在 `finally` 里 `done` / `fail`，否则同一个键下次 `ensure` 会被当成还在跑。
+- **到点自己结算（2026-11-16）**：带 `timeoutMs` 的本页条目由一条定时器守着最早到期的窗口 —— 到点按 `failed('timed out')` 结算并移出快照，**不依赖别人再写一条记录**（此前只有下次写入前才惰性结算，没人碰的任务会变成清不掉的僵尸）。每次登记 / `update` / `background` / 结束都按最后一次活动重排，所以持续活动会续期；`dispose` 摘表、重连再排。后台标签页的定时器会被浏览器节流，写入前的惰性结算保留作兜底。远端条目仍只由所属页结算，本页不替别人写状态。
+  定时器只结算池里的记录，**不取消调用方还在跑的 work**，也不做心跳 / 不跟存活检测混用（那套仍只在收到分片 / 页面可见时探测）。
 
 先例：VS Code `registerCommand(id, 匿名回调)` 与 `showInformationMessage(msg, ...items)`（方法留在扩展进程，UI 只回选中的字符串）；
 Chrome 扩展通知的点击回调只有 `(notificationId, buttonIndex)`；Comlink `expose` 用闭包持有真实对象、消息只带 `path`。
@@ -240,6 +242,7 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 
 ## 更新日志
 
+- 2026-11-16：`timeoutMs` 改为定时器到点自动结算（此前只在下次写入前惰性回收，僵尸任务清不掉）；对外展示名由「通知任务中心」改为「后台任务中心」；`TaskBar` 定宽 / 上限时计数并入同一段跑马灯、三角贴右不溢出；自定义色实心按钮字色固定用主题无关白
 - 2026-11-15：新增业务键幂等登记 —— `key`（字符串 / 元组）、`record.key`、`taskKey()`、`notifyTask.ensure()` / `pool.ensure()`（返回 `{ handle, created }`）、跨页 `TaskNotificationConflictError`；同页同键就地更新并复用同一句柄，键随记录离池释放；`notifyTask.run` 撞键 reject 且不跑 `work`
 - 2026-11-15：后台作业三处收口 —— `Button` 补回 `background` 底色轴（与 `color` 正交）、`hidden` 与回收解耦（`timeoutMs` 缺省 0，删 `TASK_NOTIFICATIONS_HIDDEN_TTL_MS`）、`TaskBar` 动作失败不再静默（`onActionFailure` + 自带提示 `taskbarActionFailed`）
 - 2026-11-15：收拾几处既有缺陷——存活锁被拒不再漏成 unhandled（复位并在 `refresh` / bfcache 恢复时重试，`offline` 池不申请）、记录可选字段与写入侧入参同套校验（`timeoutMs` 有限非负、`reason` 转字符串）、`update({ hidden: false })` 能取消隐藏、广播序号只自增一次、跨页陈旧判据只放行「同 seq 重发」

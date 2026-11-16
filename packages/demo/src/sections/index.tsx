@@ -4,6 +4,7 @@ import type { DemoMessageKey } from '../i18n.js'
 import { t } from '../i18n.js'
 import { QuickstartPage, HelpIndexPage } from './start.js'
 import { FoundationPage } from './foundation.js'
+import { RuntimePage } from './runtime.js'
 import { IconsPage } from './icons.js'
 import {
   ButtonPage,
@@ -37,6 +38,7 @@ export type SectionId =
   | 'quickstart'
   | 'reference'
   | 'foundation'
+  | 'runtime'
   | 'icons'
   | 'task-notifications'
   | 'actions'
@@ -80,10 +82,10 @@ export const ALL_SECTIONS: SectionDef[] = [
   { id: 'quickstart', group: 'start', titleKey: 'secQuickstart', render: () => h(QuickstartPage, null) },
   { id: 'reference', group: 'start', titleKey: 'secReference', render: () => h(ReferencePage, null) },
 
-  // ② 基础设施
+  // ② 基础设施：设计层（design）+ 运行时底座（runtime）
   { id: 'foundation', group: 'infra', titleKey: 'secFoundation', render: () => h(FoundationPage, null) },
+  { id: 'runtime', group: 'infra', titleKey: 'secRuntime', render: () => h(RuntimePage, null) },
   { id: 'icons', group: 'infra', titleKey: 'secIcons', render: () => h(IconsPage, null) },
-  { id: 'task-notifications', group: 'infra', titleKey: 'secTaskNotifications', render: () => h(TaskNotificationsPage, null) },
 
   // ③ 控件：一页一类，页内按控件族顺序排列
   { id: 'actions', group: 'components', titleKey: 'secActions', render: () => h(ButtonPage, null) },
@@ -98,7 +100,8 @@ export const ALL_SECTIONS: SectionDef[] = [
   { id: 'layout', group: 'components', titleKey: 'secLayout', render: stack(LayoutPage, ToolbarPage) },
   { id: 'navigation', group: 'components', titleKey: 'secNavigation', render: () => h(PaginationPage, null) },
 
-  // ④ 应用模块
+  // ④ 应用模块：adv 的一整块功能（任务中心 + 工作区浏览 + 会话预览）
+  { id: 'task-notifications', group: 'blocks', titleKey: 'secTaskNotifications', render: () => h(TaskNotificationsPage, null) },
   { id: 'explorer', group: 'blocks', titleKey: 'secExplorer', render: () => h(ExplorerPage, null) },
   { id: 'session', group: 'blocks', titleKey: 'secSession', render: () => h(SessionPage, null) },
 

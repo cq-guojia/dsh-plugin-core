@@ -44,7 +44,7 @@ test('质检新增的参数都已导出（Picker 尺寸档 / 非受控 / 清除�
 // 2026-10-26：卡片折叠箭头写的是 '▾' 字形，用户点名太丑、且与下拉框那颗（自绘 SVG chevron）
 // 不是一个东西 ⇒ 全站箭头收敛到 src/ui/infra/chevron.ts。字形在各系统字体下粗细 / 角度 / 基线都不同，
 // 靠人眼审不出「又冒出一颗」，必须由测试盯。
-test('ui 层不许再用字形箭头，一律走 Chevron', async () => {
+test('ui / adv 层不许再用字形箭头，一律走 Chevron', async () => {
   const glyphs = /[▾▸▼▲↑↓→←]/
   const hits = []
   const walk = async (rel) => {
@@ -63,7 +63,10 @@ test('ui 层不许再用字形箭头，一律走 Chevron', async () => {
     }
   }
   await walk('../src/ui')
-  assert.deepEqual(hits, [], `ui 层出现字形箭头（改用 Chevron）：\n${hits.join('\n')}`)
+  // adv/tasks 是从 ui 搬出来的（TaskBar），口径跟着走；adv/session 的 mirror 是官方 UI 的镜像，
+  // 那里的字形箭头属于被镜像的原样，不在本闸范围。
+  await walk('../src/adv/tasks')
+  assert.deepEqual(hits, [], `ui / adv/tasks 层出现字形箭头（改用 Chevron）：\n${hits.join('\n')}`)
 })
 
 // 2026-11-06：细滚动条与「离边 1px」一起收进 .dshpc-scroll-thin（src/design/tokens.css

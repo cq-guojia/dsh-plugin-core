@@ -33,6 +33,17 @@ test('实心档同时给 color 与 background：底色以 background 为准', ()
   assert.doesNotMatch(html, /--btn-fg:red/)
 })
 
+// 2026-11-16 用户截图：暗色下带自定义色的实心按钮字变黑，压在橙底上读不清。
+test('自定义色的实心按钮字色固定白，不跟主题反色走', () => {
+  const html = render({ variant: 'primary', color: '#ea580c' })
+  assert.match(html, /--btn-bg:#ea580c/)
+  assert.match(html, /--btn-fg:var\(--dshpc-on-signal\)/)
+  assert.match(html, /--btn-fg-hover:var\(--dshpc-on-signal\)/)
+  assert.match(render({ variant: 'primary', background: '#eef' }), /--btn-fg:var\(--dshpc-on-signal\)/)
+  // 描边 / 文字档仍按字色轴走，不能被这条新规则误伤。
+  assert.match(render({ variant: 'outline', color: 'red' }), /--btn-fg:red/)
+})
+
 test('两条轴都不给：不产生 inline 颜色变量', () => {
   assert.doesNotMatch(render({ variant: 'outline' }), /--btn-(bg|fg|border):/)
 })

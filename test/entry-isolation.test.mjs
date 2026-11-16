@@ -43,7 +43,7 @@ const PROBES = [
   ['./ui/panel-dock', 'ui/layout/PanelDock'],
   ['./ui/dialogs', 'ui/feedback/modal-host'],
   ['./ui/notify', 'ui/feedback/notify'],
-  ['./ui/task-notifications', 'ui/infra/task-notifications'],
+  ['./adv/tasks', 'adv/tasks/index'],
   ['./ui/code-editor', 'ui/inputs/CodeEditor'],
 ]
 

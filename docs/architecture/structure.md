@@ -24,8 +24,11 @@
 
 拿一个新控件，从上往下走，走到哪停就放哪：
 
-1. **import React 或 DOM 吗？** 不 import → 它不是控件：落 `src/utils/`（纯方法）或 `src/design/`（值 / 注入机制）。
-2. **必须拿到业务对象（工作区 / 会话 / 文件 / 模型）才能工作吗？** → 落 `src/adv/`，不进 `ui`。
+1. **import React 或 DOM 吗？** 不 import → 它不是控件，再分三档：纯计算（同样输入给同样输出）落
+   `src/utils/`；持状态 / 建连接 / 有副作用但不画界面落 `src/runtime/`；只有值与注入机制落 `src/design/`。
+2. **是一整块功能吗（组件 + 能力一起交付、离开具体界面就不完整）？** → 落 `src/adv/`，不进 `ui`。
+   常见特征是必须拿到业务对象（工作区 / 会话 / 文件 / 模型），但**不是必要条件**：任务中心不认
+   任何业务对象，它自己持有项目 / 分组 / 状态机，同样落 `adv` —— 判据是「一整块」，不是「绑业务」。
 3. **按「用户拿它做什么」选类**：
 
 | 类 | 判据 | 成员（2026-11-11） |
@@ -36,7 +39,9 @@
 | **反馈** `feedback` | 表达「正在进行 / 刚完成 / 出错了」 | Modal、SideSheet、AlertModal、ConfirmModal、alertModal、confirmModal、Toast、host-toast、Loader、LoaderBar、Loading |
 | **布局** `layout` | 只决定内部元素怎么摆、怎么拼 | SplitGroup、PanelDock、QuickToolbar、resizer |
 | **导航** `navigation` | 在多个视图 / 页之间移动 | Pagination |
-| **基础设施** `infra` | **不是控件**：宿主桥、注入器、纯逻辑、跨类共用底座 | official、css、locale、tooltip、host-data、modal-host、loading-host、toast-host、overlay、panel、thenable、ticker、chevron（皮肤各归控件自己的 `*-css.generated.ts`） |
+| **基础设施** `infra` | **不是控件**：宿主桥、注入器、纯逻辑、跨类共用底座 | official、css、locale、tooltip、host-data、overlay、panel、side-panel、thenable、ticker、chevron、use-store（皮肤各归控件自己的 `*-css.generated.ts`） |
+
+> 三个宿主单例 `modal-host` / `loading-host` / `toast-host` 实际落在 `feedback/`，与它们服务的控件同目录 —— 别再往 `infra` 里搬。
 
 三条边界裁决（按顺序用）：
 
@@ -55,7 +60,11 @@ src/
 │   ├── tokens                 颜色 / 字号 / 间距 / 圆角 / 层级（别名官方 --dsw-alias-*）
 │   └── style-kit              运行时注入 <style>，createStyleKit({ id })
 │
-├── ui/                     ② 控件（依赖 design）
+├── runtime/                ② 运行时底座 —— 零 React / 零界面，持状态 / 建连接 / 有副作用
+│   ├── notify                 跨页通知：按主题发一条 / 收一条
+│   └── store                  状态容器：getState / setState / subscribe
+│
+├── ui/                     ③ 控件（依赖 design + runtime）
 │   ├── index.ts               整包入口（纯 re-export 转发表，不复制实现）
 │   ├── official.ts            L1 官方 adapter —— 全仓唯一 import 官方 primitives 的地方
 │   ├── actions/               Button（+ button.css / generated）
@@ -77,35 +86,49 @@ src/
 │   └── infra/                 css · locale · tooltip · host-data
 │                              overlay / panel（跨类共用浮层底座 + 皮肤）· thenable · ticker · chevron
 │                              code-mirror-surface（只读 / 可编辑共用的渲染底座）
-│                              task-notifications（通知中心：任务池 + 事件总线 + 跨页广播，零 UI）
+│                              use-store（状态容器接到 React）
 │
-├── utils/                  ③ 纯方法 —— 零 React / 零 DOM（谁都能用，它不依赖谁）
+├── utils/                  ④ 纯方法 —— 零 React / 零 DOM（谁都能用，它不依赖谁）
 │   ├── date                   日期 / 相对时间 / 时间区间
 │   ├── i18n                   内置中英字典
 │   ├── path                   joinPath / parentOf / crumbsOf / extOf / mimeOf
 │   └── number / string / http 暂缓（不对外承诺，但代码在）
 │
-├── adv/                    ④ 应用模块 —— ui + utils 拼出来的成品
+├── adv/                    ⑤ 应用模块 —— 组件 + API 打包成成品
 │   ├── explorer/              文件浏览：FileBrowser · openFilePreview · pickWorkspaceFile · 预览体家族
-│   └── session/               会话记录：SessionPreview
+│   ├── session/               会话记录：SessionPreview
+│   └── tasks/                 后台任务：pool · useTasks · TaskBar
 │
-└── host/                      宿主接口类型（无运行时）
+├── types/                  ⑥ 类型垫片 —— 只有 .d.ts，无运行时
+│
+└── host/                   ⑦ 宿主侧 —— Node 路由与处理器（有运行时）
 ```
 
-**一个控件的四份东西放同一个目录**：`X.ts` + `X-logic.ts`（若有）+ `X.css`（真源）+ `X-css.generated.ts`（生成物）。
+> 落地状态：`runtime/` 与 `adv/tasks/` 已于 2026-11-16 落盘 —— 通知广播与默认分组在
+> `src/runtime/notify.ts`、状态容器在 `src/runtime/store.ts`，任务池 / `useTasks` / `TaskBar` 在
+> `src/adv/tasks/`，原来的 `src/ui/infra/task-notifications.ts` 已拆掉。
+
+**一个控件的四份东西放同一个目录**：`X.ts` + `X-logic.ts`（若有）+ `x.css`（真源）+ `x-css.generated.ts`（生成物）。
+
+**样式文件名 = 组件文件名转 kebab-case**，不许缩写：`TaskBar.ts` → `task-bar.css` /
+`task-bar-css.generated.ts`；`DateTimePicker.ts` → `date-time-picker.css`。这条有自检盯着
+（`test/css-naming.test.mjs`），新增样式跑 `pnpm test` 就会撞上。
+
 CSS 真源位置改动要同步 `scripts/gen-css.mjs` 的 `MAP`（显式清单，刻意保留摩擦）。
 
 ## 四、依赖方向（单向，不许反向）
 
 ```
-design ──▶ ui ──▶ adv/explorer · adv/session
+design  ──▶ ui ──▶ adv/explorer · adv/session · adv/tasks
+runtime ──▶ ui ──▶ adv/*
 utils（谁都不依赖，谁都可以用）
 ```
 
-- `utils` 不得 import `ui` / `design` / React / DOM / 宿主 API。
-- `design` 不得依赖 `ui`（否则「只想要 token 的插件」被迫拖进 React）。
+- `utils` 不得 import `ui` / `design` / `runtime` / React / DOM / 宿主 API。
+- `runtime` 不得 import `ui` / `design` / `adv` / React —— 只许浏览器 API 与 Node 内置。
+- `design` 不得依赖 `ui`（否则「只想用 token 的插件」被迫拖进 React）。
 - `ui` 不得依赖 `adv/*`（反向成环）。
-- `adv/*` 只从 `ui` / `utils` 的公开导出消费，不直接 import 官方平台模块（要包先过 `ui/official.ts`）。
+- `adv/*` 只从 `ui` / `utils` / `runtime` 的公开导出消费，不直接 import 官方平台模块（要包先过 `ui/official.ts`）。
 
 ## 五、立包判据
 
@@ -118,7 +141,7 @@ utils（谁都不依赖，谁都可以用）
 
 | 子路径 | 用途 | 为什么单独开 |
 |---|---|---|
-| `dsh-plugin-core/ui` | 整包：全部控件 + 通知任务中心 | 纯 re-export 转发表（零实现、不复制）；想全引就用它，接受产物变大 |
+| `dsh-plugin-core/ui` | 整包：全部控件 | 纯 re-export 转发表（零实现、不复制）；想全引就用它，接受产物变大 |
 | `dsh-plugin-core/ui/<控件>` | 单块：如 `/ui/button` `/ui/input` `/ui/picker` `/ui/table` | 一条 `exports` 指向一个独立 `dist/ui/**.js`；打包器从哪个文件进就只带那个文件及其 import 闭包 |
 | `dsh-plugin-core/ui/official` | L1 官方 adapter | `adv/*` 要直接取官方件，属结构性第二入口 |
 | `dsh-plugin-core/ui/code-viewer` | 合集：CodeViewer（只读）+ CodeEditor（可编辑） | 直接引 `@uiw/react-codemirror`，重依赖必须可选；两个控件共用 `infra/code-mirror-surface` |
@@ -126,6 +149,8 @@ utils（谁都不依赖，谁都可以用）
 | `dsh-plugin-core/ui/host-toast` | 宿主原生 Toast | 入口静态 import 官方件会让 Node 单测崩（旧坑） |
 | `dsh-plugin-core/adv/explorer` | 文件浏览 | 应用模块独立子路径 |
 | `dsh-plugin-core/adv/session` | 会话预览 | 同上 |
+| `dsh-plugin-core/adv/tasks` | 后台任务：pool + useTasks + TaskBar | 同上 |
+| `dsh-plugin-core/runtime` | 运行时底座：跨页消息 + 状态容器 | 无界面的能力，不想拖进控件时可单独引 |
 
 **真源唯一**：`src/ui/index.ts` 与整包产物 `dist/ui/index.js` 只做转发，每个控件的实现只在自己那个 `.js` 里（如 `inputs/Field.js` 是 Input / NumberInput / PrefixedInput 的全站唯一实现）；每份 CSS 字符串常量也只有一个 `*-css.generated.js`，多个入口 import 同一个文件，打包器按路径去重。不存在复制出去的第二份。
 
@@ -137,13 +162,13 @@ utils（谁都不依赖，谁都可以用）
 
 **样式链路不变**：`src/**/*.css` → `scripts/gen-css.mjs` 编译成 `*.generated.ts` 字符串常量 → tsc → 运行时注入。控件直引自己那份生成物，不再经 `infra/controls-css.ts` 这类聚合 barrel（已删除）。
 
-## 七、demo 展示分区（两级，19 页）
+## 七、demo 展示分区（两级，20 页）
 
 侧栏与右侧共用 `packages/demo/src/sections/index.tsx` 的 `ALL_SECTIONS`（单一事实源）。
 
 ```
 ① 入门        start     帮助索引 / 快速开始 / 参考
-② 基础设施  infra      设计基础（token · 明暗） / 图标（官方 primitives + 字体库） / 通知任务中心
+② 基础设施  infra      设计基础（token · 明暗） / 运行时底座（跨页通知 · 状态容器 · 事件总线） / 图标（官方 primitives + 字体库）
 ③ 控件        components
    ├─ 动作    actions       Button
    ├─ 录入    inputs        Input · NumberInput · PrefixedInput · Textarea · Checkbox
@@ -155,7 +180,7 @@ utils（谁都不依赖，谁都可以用）
    │                        Toast · Loader · LoaderBar · Loading
    ├─ 布局    layout        SplitGroup · PanelDock · QuickToolbar
    └─ 导航    navigation    Pagination
-④ 应用模块    blocks      文件浏览 / 会话预览
+④ 应用模块    blocks      后台任务中心 / 工作区浏览 / 会话预览
 ⑤ 工具方法    utils       日期时间 / 文本 / 数字 / HTTP / 多语言
 ```
 
@@ -167,7 +192,7 @@ utils（谁都不依赖，谁都可以用）
 |---|---|---|
 | ① 入门 | （无，讲述型） | `docs/guides/index.md` + `integration.md` |
 | ② 基础设施 | `src/design/` | `docs/api/design.md` |
-| ② 基础设施 · 通知任务中心 | `src/ui/infra/task-notifications.ts` | `docs/api/task-notifications.md` |
+| ② 基础设施 · 运行时 | `src/runtime/` | `docs/api/runtime.md` |
 | ③ 控件 · 动作 | `src/ui/actions/` | `docs/api/ui.md` |
 | ③ 控件 · 录入 | `src/ui/inputs/` | 同上 |
 | ③ 控件 · 展示 | `src/ui/display/` | 同上（图标另见 `docs/api/icons.md`） |
@@ -175,7 +200,7 @@ utils（谁都不依赖，谁都可以用）
 | ③ 控件 · 布局 | `src/ui/layout/` | 同上 |
 | ③ 控件 · 导航 | `src/ui/navigation/` | 同上 |
 | （无导航项） | `src/ui/infra/` | 只在「入门 · 接入」讲一句 |
-| ④ 应用模块 | `src/adv/explorer/`、`src/adv/session/` | `docs/api/explorer.md`、`session.md` |
+| ④ 应用模块 | `src/adv/explorer/`、`src/adv/session/`、`src/adv/tasks/` | `docs/api/explorer.md`、`session.md`、`task-notifications.md` |
 | ⑤ 工具方法 | `src/utils/` | `docs/api/methods.md` |
 
 ## 九、未落地项
@@ -192,3 +217,7 @@ utils（谁都不依赖，谁都可以用）
 - 2026-11-13：对外入口改为「整包 + 按控件单块」两类；删除 CSS 聚合 barrel，控件直引各自生成物；写明真源唯一与新增登记闸门
 - 2026-11-13 16:22:31：文档库结构迁移：旧路径改指新槽位
 - 2026-11-13 17:30:00：`display` 收 `Icon`（字体图标，注册表 `ICON_FONTS`），demo 增「图标」页（官方 primitives 与字体库同页实时枚举）
+- 2026-11-16 11:51:58：分层树新增 runtime 与 adv/tasks、补 types 与 host 的真实描述；判定三步加 runtime 档；修正 infra 成员（三个 host 单例实为 feedback）；补样式文件名命名规则
+- 2026-11-16 12:00:37：评审后修正：runtime 子项 message 改名 notify；adv 判据改为「一整块功能」，业务对象不再是必要条件
+- 2026-11-16：分层落盘（`src/runtime/`、`src/adv/tasks/` 已存在），§八 运行时文档指向 `docs/api/runtime.md`
+- 2026-11-16：demo 分区与分层对齐（20 页）—— 「通知任务中心」从基础设施移到④应用模块，基础设施补「运行时底座」页；改前 §七 的 171 与 183 行把任务中心同时列在两个组，自相矛盾

@@ -73,6 +73,12 @@ const doc: DocTopic = {
               desc: { zh: '状态池、订阅、事件通知、跨页同步与结束句柄；只讲数据面，不含弹窗与查看控件', en: 'Pool, subscription, events, cross-page sync and settlement handles — the data plane only, no dialog or viewer control' },
             },
             {
+              name: '在同源多个页面之间广播一条提示 / 自己拿一个状态容器',
+              type: 'runtime.md',
+              def: '—',
+              desc: { zh: '运行时底座：跨页通知的收发与默认分组、状态容器与事件总线；不含任何界面', en: 'Runtime foundations: sending and receiving cross-page notifications, the default group, the state container and the event bus — no UI at all' },
+            },
+            {
               name: '查方法的统一口径（失败不抛错、兜底不编造）',
               type: 'methods.md',
               def: '—',

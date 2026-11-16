@@ -12,7 +12,7 @@
  */
 import { createElement as h, useEffect, useState, type CSSProperties, type ReactElement } from 'react'
 import { ensureComponentStyles } from '../infra/css.js'
-import { FLIP_CSS } from './flip-css.js'
+import { FLIP_TEXT_CSS } from './flip-text-css.js'
 import { MarqueeText } from './MarqueeText.js'
 
 /** 与 flip.css 的 --dshpc-flip-dur（260ms）对齐，留一点余量给慢帧。 */
@@ -53,7 +53,7 @@ export function nextFlipSlot(slot: FlipSlot, text: string): FlipSlot {
 }
 
 export function FlipText(props: FlipTextProps): ReactElement | null {
-  ensureComponentStyles('flip', FLIP_CSS)
+  ensureComponentStyles('flip-text', FLIP_TEXT_CSS)
   const [slot, setSlot] = useState<FlipSlot>({ curr: props.text, prev: null, seq: 0 })
   // 换字在 render 期调整（React 官方推荐的「props 变了就调 state」写法）：
   // 同一次渲染就带上新值，不会先按旧帧画一屏再动画。

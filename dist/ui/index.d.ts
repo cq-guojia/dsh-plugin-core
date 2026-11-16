@@ -1,6 +1,5 @@
 export { CONTROLS_DOMAIN, ensureControls, getStyleKit, setStyleKit } from './infra/css.js';
 export { useLocale } from './infra/locale.js';
-export { TASK_NOTIFICATIONS_CHANNEL, TASK_NOTIFICATIONS_EVENTS_KEY, TASK_NOTIFICATIONS_KEY, TASK_NOTIFICATIONS_LOCK_PREFIX, TASK_NOTIFICATIONS_PROJECT_KEY, TASK_NOTIFICATIONS_PROTOCOL, getDefaultTaskProject, notifyMessage, notifyTask, setDefaultTaskProject, taskKey, taskNotificationEvents, taskNotifications, TaskNotificationConflictError, claimTaskNotificationEvents, claimTaskNotifications, createTaskNotificationEventBus, createTaskNotificationPool, emitTaskNotificationEvent, selectTaskNotifications, subscribeTaskNotificationEvents, type NotifyMessageOptions, type NotifyTask, type NotifyTaskOptions, type TaskKey, type TaskNotificationAction, type TaskNotificationActionInfo, type TaskNotificationClaim, type TaskNotificationDetail, type TaskNotificationEvent, type TaskNotificationLevel, type TaskNotificationMessage, type TaskNotificationMessageInput, type TaskNotificationEventListener, type TaskNotificationEventBus, type TaskNotificationGroupFilter, type TaskNotificationHandle, type TaskNotificationInput, type TaskNotificationLockManager, type TaskNotificationPatch, type TaskNotificationPool, type TaskNotificationPoolOptions, type TaskNotificationRecord, type TaskNotificationSelectOptions, type TaskNotificationSettlement, type TaskNotificationSnapshot, type TaskNotificationStatus, } from './infra/task-notifications.js';
 export { filterGroups, flattenOptions, groupOf, labelsOf, PICKER_DEFAULT_MIN_WIDTH, resolveMenuSizing, resolveTriggerSizing, retainSelectedValue, sliceGroups, toFlatOptions, toGroups, toggleValue, type PickerGroup, type PickerOption, type PickerSizing, } from './inputs/picker-logic.js';
 export { Picker, type PickerProps, type PickerSize } from './inputs/Picker.js';
 export { DateTimePicker, type DateTimeOutput, type DateTimePickerProps, type DateTimeSize, } from './inputs/DateTimePicker.js';
@@ -17,7 +16,6 @@ export { CARD_ACCENTS, Card, StripCard, type CardAccent, type CardBarOptions, ty
 export { Surface, surfaceClass, type SurfaceBorder, type SurfacePadding, type SurfaceProps, type SurfaceRadius, type SurfaceTone, } from './display/Surface.js';
 export { Chip, type ChipProps, type ChipSize, type ChipTone } from './display/Chip.js';
 export { ListRow, type ListRowProps } from './display/ListRow.js';
-export { TaskBar, type TaskBarProps, type TaskBarForm, type TaskActionFailure } from './display/TaskBar.js';
 export { Table, type TableProps } from './display/Table.js';
 export { Pagination, type PaginationProps, type TablePaginationConfig, } from './navigation/Pagination.js';
 export { clampPage, pageCountOf, pageItems, pageRange, type PageItem, type PageTotalRenderer, type PaginationAlign, } from './navigation/pagination-logic.js';

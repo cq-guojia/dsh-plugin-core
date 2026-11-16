@@ -20,11 +20,11 @@ import { LOADING_CSS } from '../dist/ui/feedback/loading-css.generated.js'
 import { LOADER_CSS } from '../dist/ui/feedback/loader-css.generated.js'
 import { LOADER_BAR_CSS } from '../dist/ui/feedback/loader-bar-css.generated.js'
 import { QUICK_TOOLBAR_CSS } from '../dist/ui/layout/quick-toolbar-css.generated.js'
-import { HINT_CSS } from '../dist/ui/display/hint-css.generated.js'
-import { DATETIME_CSS } from '../dist/ui/inputs/datetime-css.generated.js'
+import { FIELD_HINT_CSS } from '../dist/ui/display/field-hint-css.generated.js'
+import { DATE_TIME_PICKER_CSS } from '../dist/ui/inputs/date-time-picker-css.generated.js'
 import { SPLIT_GROUP_CSS } from '../dist/ui/layout/split-group-css.generated.js'
 import { INPUT_GROUP_CSS } from '../dist/ui/inputs/input-group-css.generated.js'
-import { TABLE_BASE_CSS } from '../dist/ui/display/table-css.generated.js'
+import { TABLE_CSS } from '../dist/ui/display/table-css.generated.js'
 import { TABLE_PLAIN_CSS } from '../dist/ui/display/table-plain-css.generated.js'
 import { PAGINATION_CSS } from '../dist/ui/navigation/pagination-css.generated.js'
 import { SECTION_HEAD_CSS } from '../dist/ui/display/section-head-css.generated.js'
@@ -38,22 +38,22 @@ import { CARD_CSS } from '../dist/ui/display/card-css.js'
 import { SURFACE_CSS } from '../dist/ui/display/surface-css.js'
 import { CHIP_CSS } from '../dist/ui/display/chip-css.js'
 import { LIST_ROW_CSS } from '../dist/ui/display/list-row-css.js'
-import { TASK_BAR_CSS } from '../dist/ui/display/task-bar-css.js'
+import { TASK_BAR_CSS } from '../dist/adv/tasks/task-bar-css.js'
 import { PANEL_DOCK_CSS } from '../dist/ui/layout/panel-dock-css.js'
-import { MARQUEE_CSS } from '../dist/ui/display/marquee-css.js'
-import { FLIP_CSS } from '../dist/ui/display/flip-css.js'
+import { MARQUEE_TEXT_CSS } from '../dist/ui/display/marquee-text-css.js'
+import { FLIP_TEXT_CSS } from '../dist/ui/display/flip-text-css.js'
 import { CODE_VIEWER_CSS } from '../dist/ui/display/code-viewer-css.js'
 import { EXPLORER_CSS } from '../dist/adv/explorer/explorer-css.js'
 import { SESSION_CSS } from '../dist/adv/session/session-css.js'
 import { ICON_CSS } from '../dist/ui/display/icon-css.js'
 import { transform } from 'lightningcss'
-import { TOKENS_CSS_TEMPLATE } from '../dist/design/tokens-css.js'
+import { TOKENS_CSS } from '../dist/design/tokens-css.js'
 
 /** 参与注入的全部 CSS 常量（新增 CSS 常量时同步加进来）。 */
 const controls = {
   SEGMENTED_CSS, BUTTON_CSS, FIELD_CSS, LOADING_CSS, LOADER_CSS, LOADER_BAR_CSS,
-  QUICK_TOOLBAR_CSS, HINT_CSS, DATETIME_CSS, SPLIT_GROUP_CSS, INPUT_GROUP_CSS,
-  TABLE_BASE_CSS, TABLE_PLAIN_CSS, PAGINATION_CSS, SECTION_HEAD_CSS,
+  QUICK_TOOLBAR_CSS, FIELD_HINT_CSS, DATE_TIME_PICKER_CSS, SPLIT_GROUP_CSS, INPUT_GROUP_CSS,
+  TABLE_CSS, TABLE_PLAIN_CSS, PAGINATION_CSS, SECTION_HEAD_CSS,
 }
 const CONSTANTS = {
   ...Object.fromEntries(
@@ -71,8 +71,8 @@ const CONSTANTS = {
   LIST_ROW_CSS,
   TASK_BAR_CSS,
   PANEL_DOCK_CSS,
-  MARQUEE_CSS,
-  FLIP_CSS,
+  MARQUEE_TEXT_CSS,
+  FLIP_TEXT_CSS,
   CODE_VIEWER_CSS,
   EXPLORER_CSS,
   SESSION_CSS,
@@ -149,7 +149,7 @@ test('chip 只有标签一套皮肤，图标按钮走 Button 的纯图标形态'
 // 注入文本 = tokens + 各控件各自那份 CSS。
 // 2026-10-30 起不再有 `CONTROLS_CSS` 这个全量聚合常量：控件改为自注入之后，
 // 谁被用到才谁进包，注入文本随之为「被注册的那几份」，故这里直接由各常量拼出全集来测。
-const INJECTED = `${TOKENS_CSS_TEMPLATE}\n${Object.values(CONSTANTS).join('\n')}`
+const INJECTED = `${TOKENS_CSS}\n${Object.values(CONSTANTS).join('\n')}`
 
 test('注入文本必须通过真实 CSS 解析器（lightningcss）', () => {
   assert.doesNotThrow(
@@ -192,7 +192,7 @@ test('Segmented 三档总高必须等于承诺的 24 / 28 / 32', () => {
     assert.ok(decls !== undefined, `找不到 .dshpc-seg__item 的 ${tier} 档声明`)
     const sub = Number(/height:calc\(var\(--dshpc-control-h-\w+\) - (\d+)px\)/.exec(decls)?.[1])
     assert.ok(Number.isFinite(sub), `${tier} 档 item 高度不是 calc(控制高 − N px)，闸失效`)
-    const h = Number(new RegExp(`--dshpc-control-h-${tier}:(\\d+)px`).exec(TOKENS_CSS_TEMPLATE)?.[1])
+    const h = Number(new RegExp(`--dshpc-control-h-${tier}:(\\d+)px`).exec(TOKENS_CSS)?.[1])
     assert.ok(Number.isFinite(h), `token 层没有 --dshpc-control-h-${tier}`)
     assert.equal(h - sub + pad * 2, expected, `Segmented ${tier} 档总高 = ${h - sub + pad * 2}px，承诺 ${expected}px`)
   }
@@ -207,7 +207,7 @@ test('Segmented 不许加回视觉等价的外观档（variant 已于 2026-10-26
 // （它跟宿主 label-primary-foreground，暗色下是近黑）。彩色实面的字只能是常量白 / 常量深色。
 test('彩色实面上的字不许用主题反色（暗色下是近黑）', () => {
   // 注释里允许提这个名字（讲清事故原因），所以比的是剥掉注释后的规则文本。
-  for (const [name, css] of [['SEGMENTED_CSS', controls.SEGMENTED_CSS], ['DATETIME_CSS', controls.DATETIME_CSS]]) {
+  for (const [name, css] of [['SEGMENTED_CSS', controls.SEGMENTED_CSS], ['DATE_TIME_PICKER_CSS', controls.DATE_TIME_PICKER_CSS]]) {
     const rules = css.replace(/\/\*[\s\S]*?\*\//g, '')
     assert.ok(!rules.includes('--dshpc-fg-inverse'), `${name} 在彩色实面上用了 --dshpc-fg-inverse`)
   }
@@ -312,9 +312,9 @@ test('反证：事故文本（.dshpc-seg 前多一个反引号）必须被拒绝
 
 test('tokens 模板必须以 } 收尾，不带任何尾巴字符', () => {
   assert.equal(
-    TOKENS_CSS_TEMPLATE.trimEnd().at(-1),
+    TOKENS_CSS.trimEnd().at(-1),
     '}',
-    `tokens 模板结尾是 ${JSON.stringify(TOKENS_CSS_TEMPLATE.slice(-24))}，应为规则右花括号`,
+    `tokens 模板结尾是 ${JSON.stringify(TOKENS_CSS.slice(-24))}，应为规则右花括号`,
   )
 })
 
@@ -476,7 +476,7 @@ test('用到 dshpc 类名的源文件必须自注入 CSS（漏一个 = 该控件
 // 三者都不是 ⇒ 它吃的是「别人的 CSS 文件」里的定义，而那份文件很可能压根没被注入
 // ⇒ 变量无值、样式静默失效，且不报任何错 —— 这是按需化之后最难查的一类问题。
 test('CSS 常量引用的每个 var() 都必须有确定来源（不得依赖别的 CSS 文件）', () => {
-  const tokens = TOKENS_CSS_TEMPLATE.replace(/\/\*[\s\S]*?\*\//g, '')
+  const tokens = TOKENS_CSS.replace(/\/\*[\s\S]*?\*\//g, '')
   const tokenDefs = new Set([...tokens.matchAll(/--([\w-]+)\s*:/g)].map((m) => m[1]))
 
   // 由组件 JS 在运行时写到元素 style 上的变量 —— CSS 里查不到定义是正常的。

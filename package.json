@@ -46,6 +46,14 @@
       "types": "./dist/adv/session/index.d.ts",
       "default": "./dist/adv/session/index.js"
     },
+    "./adv/tasks": {
+      "types": "./dist/adv/tasks/index.d.ts",
+      "default": "./dist/adv/tasks/index.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "default": "./dist/runtime/index.js"
+    },
     "./ui": {
       "types": "./dist/ui/index.d.ts",
       "default": "./dist/ui/index.js"
@@ -133,10 +141,6 @@
     "./ui/list-row": {
       "types": "./dist/ui/display/ListRow.d.ts",
       "default": "./dist/ui/display/ListRow.js"
-    },
-    "./ui/task-bar": {
-      "types": "./dist/ui/display/TaskBar.d.ts",
-      "default": "./dist/ui/display/TaskBar.js"
     },
     "./ui/table": {
       "types": "./dist/ui/display/Table.d.ts",
@@ -229,10 +233,6 @@
     "./ui/host-data": {
       "types": "./dist/ui/infra/host-data.d.ts",
       "default": "./dist/ui/infra/host-data.js"
-    },
-    "./ui/task-notifications": {
-      "types": "./dist/ui/infra/task-notifications.d.ts",
-      "default": "./dist/ui/infra/task-notifications.js"
     },
     "./ui/overlay": {
       "types": "./dist/ui/infra/overlay.d.ts",

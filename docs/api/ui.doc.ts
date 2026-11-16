@@ -56,34 +56,6 @@ h(Surface, { border: 'faint', padding: 'lg' }, h(Card, null, '框里再放卡'))
 // 虚线占位框也走它，不要自己写 1px dashed：
 h(Surface, { tone: 'sunken', border: 'dashed', padding: 'lg' }, '还没做的东西')`
 
-const taskBarExample = `import { TaskBar, setDefaultTaskProject } from 'dsh-plugin-core/ui'
-
-// app 入口：项目设一次，展示栏与 notifyTask 共用同一个默认项目
-setDefaultTaskProject('dsh-task-reminder')
-
-// 长条形态：图标 + 文字 + 运行数；点开列出后台正在跑的任务
-h(TaskBar, { groups: ['scan'] })
-
-// 只图标形态：正方形（宽高相等），有任务在跑时右上角一颗绿点
-h(TaskBar, { form: 'icon' })
-
-// 尺寸三档：sm(24) / md(28，默认) / lg(32)
-h(TaskBar, { form: 'icon', size: 'sm' })
-
-// 宽度三轴（与 Button 同口径）：定宽优先；放不下折叠成省略号，hover 以跑马灯展开
-h(TaskBar, { width: 220 })
-h(TaskBar, { maxWidth: 140 })
-h(TaskBar, { minWidth: 160 })
-
-// 任务挂按钮：文案 + 可选颜色（不传就是默认灰底），一行几颗就画几颗
-const handle = notifyTask('扫描工作区', {
-  group: 'scan',
-  actions: [
-    { label: '查看', run: () => openScan() },
-    { label: '取消', color: '#dc2626', run: () => handle.fail('cancelled') },
-  ],
-})`
-
 const listRowExample = `import { ListRow, Button, Chip } from 'dsh-plugin-core/ui'
 
 // 一行一条：常态带底，点整行打开 / 选中，右侧小操作不连带触发整行
@@ -815,39 +787,6 @@ h(CodeViewer, { text: draft, path: 'notes.md', t })`,
         },
       ],
       code: [{ id: 'ui-listrow-example', lang: 'tsx', src: listRowExample }],
-    },
-    {
-      id: 'task-bar',
-      heading: { zh: 'TaskBar：通知任务中心展示栏', en: 'TaskBar: task notification bar' },
-      prose: [
-        {
-          zh: '封装好的展示栏：未展开是一颗按钮，展开了列出后台正在跑的任务。数据全部来自池本身（项目用 `setDefaultTaskProject()` 设一次），不需要自己 `useSyncExternalStore`。触发器与下拉框（Picker）同款皮：同高度档、字号同 `Button` 的 md 档（13px，sm 档 12px）、1px 加重描边、md 圆角、右侧一颗 6px 三角。两种形态：`pill`（图标 + 文字 + 运行数，默认）与 `icon`（只有图标，宽高相等即正方形，有任务时右上角一颗绿点）。`size` 三档：sm(24) / md(28，默认) / lg(32)。',
-          en: 'A ready-made bar: a button when collapsed, a list of running background tasks when open. All data comes from the pool itself (set the project once with `setDefaultTaskProject()`); no `useSyncExternalStore` on your side. The trigger wears the dropdown (Picker) skin: same height steps, the `Button` md font size (13px, 12px on sm), 1px heavy border, md radius, a 6px caret on the right. Two forms: `pill` (icon, label and running count — the default) and `icon` (icon only, square, with a green dot while tasks run). `size` has three steps: sm (24), md (28, default) and lg (32).',
-        },
-        {
-          zh: '下拉里只画面板一层框，行与行之间是一条虚线，行本身不带底色 / 描边。行内是图标 + 标题 + `已执行 00:00:01`（每秒跳动，走核心唯一心跳 `useNowMs`，不另起定时器）。记录带 `actions` 时右侧按顺序画出**全部**按钮，点第 i 颗调 `runAction(id, i)`（方法在创建那条任务的那一页，这里只拿得到文案与颜色）；行内按钮**固定最小号**（sm），不随触发器尺寸变；不传色是中性灰底（`secondary`），`actions[i].color` 传了就用该色实心底 + 反色文字（`primary` 档，两主题都读得清）；`actions[i].icon` 传图标（`库名:图标名`），没传（或解析不出）就补 `defaultIcon`（默认 CPU），保证每颗按钮都有图标位、文字起点对齐；只有 icon 没有 label 时画成**正方形**图标钮。`icon` 是消费端标识、不保证是字体图标名，解析不出就回落 `defaultIcon`（默认 `common.base:cpu`）。有任务在跑时图标字形呼吸（CSS 动画，无定时器）。`width` / `minWidth` / `maxWidth` 与 `Button` 同口径约束触发器宽度：定宽优先、另两者失效；定宽或给了上限时文字放不下折叠成省略号、hover 以跑马灯展开全名（复用全站唯一 `MarqueeText`），图标 / 计数 / 三角不让位。行只做 hover 反馈（极淡蓝底），不可点、没有选中态。',
-          en: 'The panel draws a single frame: a dashed rule between rows, no per-row background or border. Each row shows icon, title and `Running 00:00:01` (ticks every second off the shared ticker `useNowMs`, no timer of its own). When the record carries `actions`, **all** buttons are drawn in order and the i-th one calls `runAction(id, i)` (the method lives in the creating page, only labels and colors cross). In-row buttons are always the smallest size (sm) and never follow the trigger; no color means the neutral filled `secondary`, an action `color` becomes the background with inverse text (`primary` tier), readable in both themes; `actions[i].icon` draws an icon (`lib:name`); without one (or when it cannot be resolved) `defaultIcon` (CPU) fills in, so every button keeps an icon slot and labels line up; an action with an icon but no label renders as a **square** icon button. `icon` is a consumer-side identifier, not necessarily a font icon name; anything unresolvable falls back to `defaultIcon` (default `common.base:cpu`). While tasks run the glyph breathes (CSS animation, no timers). `width`/`minWidth`/`maxWidth` size the trigger exactly like `Button`: a fixed width wins and voids the other two; with a fixed width or an upper bound the label collapses to an ellipsis and marquees on hover (the single shared `MarqueeText`), while icon, count and caret never give way. Rows only give hover feedback (a very faint blue tint): not clickable, no selected state.',
-        },
-      ],
-      api: [
-        {
-          id: 'ui-task-bar',
-          rows: [
-            { name: 'form', type: "'icon' | 'pill'", def: "'pill'", desc: { zh: '形态：只图标 / 图标 + 文字长条', en: 'Form: icon only, or icon plus a text pill' } },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", def: "'md'", desc: { zh: '尺寸档（24 / 28 / 32）；只图标形态宽高相等，永远是正方形', en: 'Size step (24 / 28 / 32); the icon-only form is a square' } },
-            { name: 'groups', type: "readonly string[] | '*'", def: '默认项目全部二级', desc: { zh: '过滤，与 `selectTaskNotifications` 同口径', en: 'Filter, same contract as `selectTaskNotifications`' } },
-            { name: 'project / includeHidden', type: 'string | null / boolean', def: '— / false', desc: { zh: '换项目看 / 连 hidden 一起列', en: 'Look at another project / include hidden rows' } },
-            { name: 'onActionFailure', type: '(failure: TaskActionFailure) => void', def: '—', desc: { zh: '行内按钮点了没生效时调它（条目已失效 / 方法在别页且等不到 ack / 下标越界）。不传就由本栏弹一次核心自带提示 `taskbarActionFailed` —— 不再静默', en: 'Called when an inline button did not take effect (row gone, method on another page and no ack, index out of range). Without it the bar raises the built-in `taskbarActionFailed` notice instead of staying silent' } },
-            { name: 'placement', type: "'down' | 'up'", def: "'down'", desc: { zh: '面板首选展开方向，空间不够自动翻', en: 'Preferred panel direction; flips when space runs out' } },
-            { name: 'defaultIcon', type: 'string', def: "'common.base:cpu'", desc: { zh: '任务没带图标时的默认图标（`库名:图标名`）', en: 'Icon used when a task carries none (`lib:name`)' } },
-            { name: 'width', type: 'number | string', def: '—', desc: { zh: '固定宽（px 或任意 CSS 宽度）；与 `minWidth` / `maxWidth` 互斥，一旦设定后两者失效。只图标形态恒为正方形，忽略这三个参数', en: 'Fixed width (px or any CSS width); mutually exclusive with `minWidth`/`maxWidth`. The icon-only form is always square and ignores all three' } },
-            { name: 'minWidth', type: 'number | string', def: '—', desc: { zh: '最小宽：`width` 未设时生效', en: 'Minimum width: applies when `width` is unset' } },
-            { name: 'maxWidth', type: 'number | string', def: '—', desc: { zh: '最大宽：`width` 未设时生效；文字放不下折叠成省略号，hover 以跑马灯展开全名', en: 'Maximum width: applies when `width` is unset; overflowing text collapses to an ellipsis and marquees on hover' } },
-            { name: 'className / style', type: '—', def: '—', desc: { zh: '追加类 / 样式，只允许补布局', en: 'Append class / style, layout patches only' } },
-          ],
-        },
-      ],
-      code: [{ id: 'ui-taskbar-example', lang: 'tsx', src: taskBarExample }],
     },
     {
       id: 'chip',

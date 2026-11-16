@@ -1,7 +1,7 @@
 import { createElement as h } from 'react';
 import { t } from '../../utils/i18n.js';
 import { ensureComponentStyles } from '../infra/css.js';
-import { TABLE_BASE_CSS } from './table-css.generated.js';
+import { TABLE_CSS } from './table-css.generated.js';
 import { Loader } from '../feedback/Loader.js';
 import { SectionHead } from './SectionHead.js';
 import { headerRows, isTableCellSpec, leafColumns, } from './table-logic.js';
@@ -37,7 +37,7 @@ function dividerAttr(leafIndex, wanted) {
  * modifier class 传进来。这样消费方引哪个就只打包哪个 —— 绝不用 `variant` 汇总多份皮肤。
  */
 export function tableShell(skinClass, props, options = {}) {
-    ensureComponentStyles('table-core', TABLE_BASE_CSS);
+    ensureComponentStyles('table-core', TABLE_CSS);
     const tt = props.translate ?? t;
     const headRows = headerRows(props.columns);
     const leaves = leafColumns(props.columns);

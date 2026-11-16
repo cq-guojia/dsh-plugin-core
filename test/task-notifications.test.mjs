@@ -21,7 +21,8 @@ import {
   selectTaskNotifications,
   setDefaultTaskProject,
   subscribeTaskNotificationEvents,
-} from '../dist/ui/index.js'
+} from '../dist/adv/tasks/pool.js'
+import { createNotifyScope, subscribeNotifications } from '../dist/runtime/notify.js'
 
 /** 每条用例的默认项目：绝大多数用例只关心二级分组，项目用同一个就够。 */
 const TEST_PROJECT = 'test-project'
@@ -508,7 +509,7 @@ test('subscribeTaskNotificationEvents 走全局总线且可退订', () => {
 })
 
 test('DSH CJS 闭包：zustand 被打进产物且状态池真能跑（不是只看字符串）', async () => {
-  const entry = fileURLToPath(new URL('../dist/ui/infra/task-notifications.js', import.meta.url))
+  const entry = fileURLToPath(new URL('../dist/adv/tasks/pool.js', import.meta.url))
   const out = await build({
     entryPoints: [entry],
     bundle: true,
@@ -851,12 +852,10 @@ test('没有 locks（老浏览器 / Node 无 Web Locks）：收到分片也不�
 
 // ── 纯广播：只出 message 事件，池和快照一律不动 ───────────────────────────────
 
-test('notifyMessage：只发 message 事件，不进池、不动 revision（列表不会闪）', () => {
+test('notifyMessage：只发通知事件，不进池、不动 revision（列表不会闪）', () => {
   const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
   const seen = []
-  const off = subscribeTaskNotificationEvents((event) => {
-    if (event.type === 'message') seen.push(event)
-  })
+  const off = subscribeNotifications((message, remote) => seen.push({ message, remote }))
   const before = pool.getSnapshot()
   try {
     const message = notifyMessage('saved', { group: 'notice', icon: 'check', level: 'success' })
@@ -878,35 +877,28 @@ test('notifyMessage：只发 message 事件，不进池、不动 revision（列�
 
 test('notifyMessage：跨页到达对端（remote: true），对端池仍为空', async () => {
   const channelName = testChannel()
-  const bus = createTaskNotificationEventBus()
   const received = []
-  bus.subscribe((event) => {
-    if (event.type === 'message') received.push(event)
-  })
+  // 通知有自己的逻辑端：两个 scope 用同一条通道名即等价于两个页面。
+  const receiver = createNotifyScope({ channelName, origin: 'page-listener' })
+  const senderScope = createNotifyScope({ channelName, origin: 'page-sender' })
+  receiver.subscribe((message, remote) => received.push({ message, remote }))
   const pool = createTaskNotificationPool({
     channelName,
-    events: bus,
     lifecycle: false,
     origin: 'page-listener',
     locks: null,
   })
   pool.connect()
-  const sender = new BroadcastChannel(channelName)
-  sender.unref?.()
-  const message = {
-    id: 'page-sender:msg:1',
-    project: TEST_PROJECT,
-    group: 'notice',
-    title: 'from another page',
-    level: 'info',
-    at: Date.now(),
+  try {
+    senderScope.notifyMessage('from another page', { project: TEST_PROJECT, group: 'notice' })
+    await waitFor(() => received.some((entry) => entry.message.title === 'from another page'), 'remote message')
+    assert.equal(received[0].remote, true)
+    assert.equal(pool.getSnapshot().tasks.length, 0)
+  } finally {
+    receiver.dispose()
+    senderScope.dispose()
+    pool.dispose()
   }
-  sender.postMessage({ kind: 'message', origin: 'page-sender', seq: 1, message })
-  await waitFor(() => received.some((event) => event.message.title === 'from another page'), 'remote message')
-  assert.equal(received[0].remote, true)
-  assert.equal(pool.getSnapshot().tasks.length, 0)
-  sender.close()
-  pool.dispose()
 })
 
 test('图标：icon / iconSvg 落到任务与广播消息上；update 也能改', () => {
@@ -975,13 +967,15 @@ function localTask(pool, handle) {
   return pool.getSnapshot().tasks.find((task) => task.id === handle.id)
 }
 
-test('静默任务超时：到点结算为 failed 并移出，handle.settled 兑现', async () => {
+// 2026-11-16 用户：只在下次写入时结算会让没人碰的任务变成「僵尸任务」。
+// 定时器到点必须自己结算；下面不写任何一条其它记录来验证这一点。
+test('静默任务超时：到点自动结算为 failed 并移出，handle.settled 兑现', async () => {
   const pool = createTaskNotificationPool({ offline: true, lifecycle: false, locks: null })
   const handle = pool.register({ group: 'g', title: 'ttl probe', hidden: true, timeoutMs: 20 })
-  const settlement = handle.settled
-  await new Promise((resolve) => setTimeout(resolve, 40))
-  pool.register({ group: 'g', title: 'trigger write' })
-  const result = await settlement
+  const result = await Promise.race([
+    handle.settled,
+    new Promise((_, reject) => { setTimeout(() => reject(new Error('超时后没有任何自动结算')), 500) }),
+  ])
   assert.equal(result.outcome, 'failed')
   assert.equal(result.reason, 'timed out')
   assert.equal(localTask(pool, handle), undefined)
@@ -995,8 +989,12 @@ test('回收窗口按最后一次活动起算：持续 update 的任务不会被
     handle.update({ detail: `step ${step}` })
   }
   assert.equal(localTask(pool, handle)?.title, 'renew probe', '累计 60ms 已超窗口，但一直在活动')
-  await new Promise((resolve) => setTimeout(resolve, 50))
-  pool.register({ group: 'g', title: 'trigger again' })
+  // 停止活动后不再写任何记录：定时器自己按最后一次 update 重排的窗口收掉它。
+  const result = await Promise.race([
+    handle.settled,
+    new Promise((_, reject) => { setTimeout(() => reject(new Error('续期后被误收或未自动回收')), 500) }),
+  ])
+  assert.equal(result.outcome, 'failed')
   assert.equal(localTask(pool, handle), undefined, '停止活动后到点被收')
 })
 

@@ -593,7 +593,7 @@ export type UtilMessageKey =
   | 'sessionImageClosePreview'
   /** 官方样式未命中时的可见提示。 */
   | 'sessionProbeStyle'
-  // ── 通知任务中心：通用展示栏 ──
+  // ── 后台任务中心：通用展示栏 ──
   | 'taskbarLabel'
   | 'taskbarCount'
   | 'taskbarEmpty'

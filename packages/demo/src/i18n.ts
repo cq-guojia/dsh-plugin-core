@@ -14,8 +14,28 @@ export type DemoMessageKey =
   | 'secHelpIndex'
   | 'secQuickstart'
   | 'secFoundation'
+  | 'secRuntime'
   | 'secTaskNotifications'
   | 'secIcons'
+  | 'rtNotifyTitle'
+  | 'rtNotifyHint'
+  | 'rtSendInfo'
+  | 'rtSendSuccess'
+  | 'rtSendWarning'
+  | 'rtSendTitle'
+  | 'rtProjectLabel'
+  | 'rtEmptyLog'
+  | 'rtStoreTitle'
+  | 'rtStoreHint'
+  | 'rtStoreValue'
+  | 'rtInc'
+  | 'rtDec'
+  | 'rtReset'
+  | 'rtBusTitle'
+  | 'rtBusHint'
+  | 'rtEmit'
+  | 'rtBusCount'
+  | 'rtBusEmpty'
   | 'icNote'
   | 'icSearch'
   | 'icOfficial'
@@ -46,7 +66,6 @@ export type DemoMessageKey =
   | 'tnFilterOne'
   | 'tnFilterTwo'
   | 'tnFilterAllProjects'
-  | 'tnBroadcast'
   | 'tnOpsNote'
   | 'tnFinishAll'
   | 'tnSnapshotTitle'
@@ -291,8 +310,28 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secHelpIndex: '帮助索引',
     secQuickstart: '快速开始',
     secFoundation: '设计基础',
-    secTaskNotifications: '通知任务中心',
+    secRuntime: '运行时底座',
+    secTaskNotifications: '后台任务中心',
     secIcons: '图标',
+    rtNotifyTitle: '跨页通知：发一条 / 收一条',
+    rtNotifyHint: '按钮真的经 BroadcastChannel 发出去：本页订阅者先收到（remote=false），同源其它标签页收到 remote=true。不订阅就没人显示 —— 广播没有默认行为。',
+    rtSendInfo: '发 info',
+    rtSendSuccess: '发 success',
+    rtSendWarning: '发 warning',
+    rtSendTitle: '演示通知',
+    rtProjectLabel: '默认项目',
+    rtEmptyLog: '还没有收到通知 —— 点上面任意一颗按钮（开着第二个标签页时，那边也会收到 remote=true 的同一份）',
+    rtStoreTitle: '状态容器：getState / setState / subscribe',
+    rtStoreHint: '这个计数器就是 createStore 的一个实例：值只存 store 里，组件靠 useSyncExternalStore 三参读快照，不自己另存一份 state。',
+    rtStoreValue: 'count',
+    rtInc: '+1',
+    rtDec: '-1',
+    rtReset: '归零',
+    rtBusTitle: '事件总线：一次性事实，不留存',
+    rtBusHint: '发出去的事件没有历史、不能重放：本页订阅者收到几条就是几条，刷新即清零。要「能重新读」的状态请用快照（状态容器）。',
+    rtEmit: '发一个事件',
+    rtBusCount: '收到',
+    rtBusEmpty: '还没有事件',
     icNote: '官方 primitives 与各套字体图标同页。两边都不写死清单：官方从宿主命名空间实时枚举，字体从在线 CSS 实时解析，宿主升级或平台加图标后刷新即见。点任意格子只复制它的名字，完整写法在页面最后。',
     icSearch: '按名字过滤…',
     icOfficial: 'DSH 官方 primitives',
@@ -323,7 +362,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnFilterOne: '只看 reminder',
     tnFilterTwo: '看两个组',
     tnFilterAllProjects: '全站（含跨项目）',
-    tnBroadcast: '广播一条（不进列表）',
     tnOpsNote: '注册与过滤在这里；每条任务自己的收起 / 结束 / 还原按钮在下方列表的对应行里',
     tnFinishAll: '结束本页全部',
     tnSnapshotTitle: '状态快照',
@@ -593,8 +631,28 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     secHelpIndex: 'Help index',
     secQuickstart: 'Quick start',
     secFoundation: 'Foundations',
+    secRuntime: 'Runtime foundations',
     secTaskNotifications: 'Task Notification Hub',
     secIcons: 'Icons',
+    rtNotifyTitle: 'Cross-page notifications: send one / receive one',
+    rtNotifyHint: 'The button really sends through BroadcastChannel: local subscribers hear it first (remote=false), same-origin tabs get remote=true. With no subscriber nothing is shown — a broadcast has no default behaviour.',
+    rtSendInfo: 'Send info',
+    rtSendSuccess: 'Send success',
+    rtSendWarning: 'Send warning',
+    rtSendTitle: 'demo notice',
+    rtProjectLabel: 'default project',
+    rtEmptyLog: 'No notifications yet — press any button above (with a second tab open, that tab receives the same one with remote=true)',
+    rtStoreTitle: 'State container: getState / setState / subscribe',
+    rtStoreHint: 'This counter is one createStore instance: the value lives only in the store, and the component reads the snapshot through the three-argument useSyncExternalStore instead of keeping its own state.',
+    rtStoreValue: 'count',
+    rtInc: '+1',
+    rtDec: '-1',
+    rtReset: 'Reset',
+    rtBusTitle: 'Event bus: one-off facts, no history',
+    rtBusHint: 'Emitted events are not stored and cannot be replayed: subscribers get exactly what arrives, and a refresh clears them. For state that can be read again, use a snapshot (the state container).',
+    rtEmit: 'Emit an event',
+    rtBusCount: 'received',
+    rtBusEmpty: 'No events yet',
     icNote: 'Official primitives and every font icon set on one page. Neither list is hard-coded: official icons are enumerated from the host namespace at runtime, font icons are parsed from the online CSS at runtime, so a host upgrade or a new upload in the icon platform shows up on refresh. Clicking a cell copies just its name; the full usage sits at the bottom of the page.',
     icSearch: 'Filter by name…',
     icOfficial: 'DSH official primitives',
@@ -625,7 +683,6 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnFilterOne: 'Reminder only',
     tnFilterTwo: 'Both groups',
     tnFilterAllProjects: 'All projects',
-    tnBroadcast: 'Broadcast one (not listed)',
     tnOpsNote: 'Register and filter here; each row has its own collapse / finish / restore actions',
     tnFinishAll: 'Finish all local tasks',
     tnSnapshotTitle: 'State snapshot',

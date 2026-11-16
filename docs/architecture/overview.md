@@ -6,38 +6,163 @@
 
 一个 npm 包、五个子路径导出；插件按需引，tree-shaking 掉没用到的部分。
 
-```
-dsh-plugin-core/
-├── design/         token + createStyleKit 注入器工厂 + 主题判据    （零 React）
-├── ui/             控件，按 7 类分目录：actions / inputs / display / feedback /
-│                   layout / navigation / infra     （依赖 design）
-├── utils/          纯方法：日期 / 字符串 / 字节 / 时间区间 / HTTP / 路径    （零 React / DOM）
-├── adv/explorer/   文件浏览成品（目录树 + 面包屑 + 预览）           （依赖 ui + utils）
-└── adv/session/    会话记录预览成品                                 （依赖 ui + utils）
+```text
+src/                                                # 源码根，按依赖方向自上而下分层
+├── types/                                          # 类型垫片：只有 .d.ts，无运行时
+├── design/                                         # 设计值：token、主题判据、样式注入工厂
+├── utils/                                          # 纯计算：零 React、零 DOM，Node 也能跑
+├── runtime/                                        # 运行时底座：零 React、有状态或有副作用
+│   ├── notify.ts                                   # 跨页通知：按主题发一条 / 收一条，不替消费方决定
+│   ├── store.ts                                    # 状态容器：createStore，只暴露三个方法
+│   └── index.ts                                    # 运行时入口：纯转发
+├── ui/                                             # 控件：只放有界面的东西
+│   ├── official.ts                                 # 官方 adapter：全仓唯一 import primitives 的点
+│   ├── actions/                                    # 动作类：Button
+│   ├── inputs/                                     # 录入类：Input、Picker、CodeEditor 等
+│   ├── display/                                    # 展示类：Card、Table、Icon、MarqueeText 等
+│   ├── feedback/                                   # 反馈类：Modal、Toast、notify-bridge
+│   ├── layout/                                     # 布局类：SplitGroup、PanelDock
+│   ├── navigation/                                 # 导航类：Pagination
+│   └── infra/                                      # ui 内部跨类共用底座：css、locale、浮层、use-store
+├── adv/                                            # 应用模块：组件 + API 打包成成品
+│   ├── explorer/                                   # 文件浏览：FileBrowser + 预览 API
+│   ├── session/                                    # 会话预览：SessionPreview
+│   └── tasks/                                      # 后台任务：pool + useTasks + TaskBar
+└── host/                                           # 服务端：Node 侧路由与处理器
 ```
 
-> 目录是实际落盘形态（2026-11-05 拆分）。分类判定顺序、每个类的成员、demo 分区见
-> `docs/architecture/structure.md`。选工作区/选文件在 `ui`，路径方法归 `utils`。
+> 分层自 2026-11-16 起新增 `runtime`（浏览器底座）与 `adv/tasks`（任务成品）。落地状态：
+> 两层均已落盘 —— 通知与状态容器在 `src/runtime/`，任务池 / `useTasks` / `TaskBar` 在 `src/adv/tasks/`。
+> 分类判定顺序、每个类的成员、demo 分区见 `docs/architecture/structure.md`。
 
 ## 依赖方向（单向，不许反向）
 
-```
-design ──▶ ui ──▶ adv/explorer · adv/session
-utils（谁都不依赖，谁都可以用）
+```text
+design  ──▶ ui ──▶ adv/explorer · adv/session · adv/tasks
+runtime ──▶ ui ──▶ adv/*
+utils   ──▶ 谁都能用，它不依赖谁
+types   ──▶ 纯声明，谁都能用
 ```
 
 不变量：
 
-- `utils` 不得 import `ui` / `design` / React / DOM / 任何宿主 API —— 它将来要能被整体剥出去复用。
+- `utils` 不得 import `ui` / `design` / `runtime` / React / DOM / 任何宿主 API —— 它将来要能被整体剥出去复用。
+- `runtime` 不得 import `ui` / `design` / `adv` / React —— 只许浏览器 API 与 Node 内置。它是底座，不认识上层。
 - `design` 不得依赖 `ui`（否则「只想用 token 的插件」被迫拖进 React）。
 - `ui` 不得依赖 `adv.*`（反向依赖会造成环）。
+- `host` 不得 import React / DOM（Node 侧入口）。
+
+## 三个「无界面」层怎么分
+
+`ui` 这个名字只承诺「有界面」。没有界面的东西不许往里塞，按下面三条分：
+
+| 层 | 判据 | 能跑在哪 | 例子 |
+|---|---|---|---|
+| `utils` | 纯计算：同样的输入给同样的输出，不持有状态 | Node / 浏览器都行 | 日期、路径、字符串 |
+| `runtime` | 持有状态、建立连接或产生副作用，但不画界面 | 主要在浏览器 | 状态容器、跨页消息收发 |
+| `ui/infra` | 带 React 或只服务于控件、被 2 个以上类共用 | 只在浏览器 | 样式注入、locale、浮层底座 |
+
+一条线划清：**画不出界面，但持有状态或产生副作用 → `runtime`；
+画不出界面、且只在控件之间共用（离开 React 就没意义）→ `ui/infra`。**
+
+> 历史例外：`utils/i18n.ts` 有当前语言这一份模块级状态，按新判据本应归 `runtime`。
+> 它是既有代码，暂不动；新建的东西按上表走。
+
+`ui/infra` 越薄越好：只有 1 个控件用 → 放那个控件旁边，不进 `infra`。
+
+## 状态容器是最基础的能力
+
+`runtime/store.ts` 提供最小状态容器，只三个方法，不多也不少：
+
+```ts
+interface RuntimeStore<T> {
+  getState(): T
+  setState(next: T): void
+  subscribe(listener: () => void): () => void
+}
+```
+
+它不认识任务、通知、项目、会话 —— 只存一个值，并在值变了时通知订阅者。
+
+**上层只认 runtime，不认具体实现。** 内部当前是 `zustand/vanilla`；将来换掉只改这一个文件，
+`adv/*` 的 import 一行不动。这与 `ui/official.ts` 收口官方包是同一条原则，但目的不同：
+
+| 收口点 | 为什么收口 |
+|---|---|
+| `ui/official.ts` | **必须**：官方包是宿主平台模块，别处 import 会让整个入口在 Node 里崩 |
+| `runtime/store.ts` | **选择**：隔离第三方实现，换库不伤上层 |
+
+React 绑定不进 `runtime`（它零 React）：`ui/infra/use-store.ts` 用 `useSyncExternalStore`
+把容器接到组件。这与 `zustand/vanilla` + `zustand` 的分法一致。
+
+**`use-store.ts` 收三个入参，不是两个**：`subscribe` / `getSnapshot` / `getServerSnapshot`。
+服务端渲染时 React 必须拿到一个稳定快照，少第三个参数会直接抛错（`TaskBar` 用
+`renderToStaticMarkup` 测，立刻踩到）。`getServerSnapshot` 由调用方给（池里那个冻结的空快照），
+不由容器提供。
+
+**副作用不进容器**：池的 `subscribe` 会顺手 `connect()`（开通道、抢存活锁、发 hello、重连补发）。
+那是任务的跨页 bring-up，属于池；`RuntimeStore` 保持纯容器，不加任何生命周期钩子。
+
+不许把 selector / 中间件 / devtools 塞进 `RuntimeStore` —— 一暴露，上层就依赖具体实现，收口就白做了。
+
+### 哪些第三方要收口
+
+判据：**上层代码里会不会出现这个库的类型或函数名 —— 会，就收口；不会，就不管。**
+
+| 依赖 | 上层会碰到它的形态吗 | 收口到 |
+|---|---|---|
+| `zustand` | 会，拿着 `subscribe` / `getState` 用 | `runtime/store.ts` |
+| `@floating-ui/react` | 不会，只在组件内部算位置 | 不收口 |
+| `sonner` | 不会，只在 Toast 内部渲染 | 不收口 |
+| `@uiw/react-codemirror` | 不会，只在 CodeEditor 内部 | 不收口 |
+
+## 跨页消息分两层
+
+`runtime/notify.ts` 只做两件事：把一条数据送到别的页面、按主题收回来。
+
+| 层 | 内容 | 在哪 |
+|---|---|---|
+| 底层 | 按主题发一条 / 收一条 | `runtime/notify.ts` |
+| 消费 | 收到之后做什么 —— 弹 toast、改红点、记日志、什么都不做 | 消费方自己写 |
+
+底层只送信，**不许有默认行为**。主题由调用方给（任务一个、通知一个），两边不串味。
+
+`ui/feedback/notify-bridge.ts` 是消费方之一（它选择把通知变成 toast），不是通知本身；
+不想要 toast 的插件根本不引它。
+
+**两个 `notify` 怎么区分**：`runtime/notify.ts` 是**跨页通知**（发一条 / 收一条，导出
+`notifyMessage` / `subscribeNotifications`）；`ui/feedback/notify.ts` 是**本页提示**的发送 API
+（卡片 / toast，导出 `notify` / `showToast`）。目录不同、函数名不同，不混。
+
+**默认分组跟着通知走**：`setDefaultTaskProject()` / `getDefaultTaskProject()` 现在住在
+任务模块里，但 `ui/feedback/notify.ts` 广播时也要读它。任务一旦搬到 `adv/tasks`，
+`ui → adv` 就违反依赖方向。所以这份「默认分组」归 `runtime/notify.ts` —— 它是发送通知的
+默认标签，不是任务的数据。函数名保留不改（改名是破坏性变更）。
+
+**事件总线只有一个主**：`TASK_NOTIFICATIONS_EVENTS_KEY` 是跨 bundle 的 `Symbol.for` 单例。
+若 `adv/tasks` 与 `runtime/notify` 各建一个，先到者占坑、后者静默拿到「形状合法」的错对象，
+多插件同页时任务事件与通知从此分流且不报错。所以总线由 `runtime/notify.ts` 唯一持有，
+任务只往里 emit。
+
+## 任务为什么在 `adv` 不在 `runtime`
+
+任务池不认识工作区 / 会话 / 文件 / 模型任何一个业务对象 —— 它自己持有「项目 / 分组 / 业务键 /
+状态机」。它进 `adv` 不是因为「绑定业务对象」，而是因为**它是一整块功能：组件 + 能力一起交付**，
+符合 `adv` 的判据。原判据写成「必须拿到业务对象」过窄，2026-11-16 已按此修正。
+
+它借两样东西：`runtime/store` 记当前有哪些任务，`runtime/notify` 把「某个任务完成了」广播出去。
+`runtime` 不知道有「任务」这回事。
+
+任务列表要跨页显示时用的「发一整份 + 序号 + 新页面进来了补一份」，是任务池自己的同步策略，
+留在 `adv/tasks` 里，**不进 notify** —— 仓库里有三套独立序号（分片 / 消息 / 调用），
+分片去重还要读池自己的 `shards`，塞进传输层只会让通知反过来依赖任务。
 
 ## 立包判据
 
 **有实质内容、会持续长大的功能模块才配独立成子包；只是一个控件就进 `ui`。**
 
-统一到「控件」粒度就够了，不要提整个页面。已按此判据砍掉的：`host`（取消）、
-`llm` 独立包（ModelPicker 进 ui）、设置页骨架（不抽，等第二个消费者）。
+统一到「控件」粒度就够了，不要提整个页面。已按此判据砍掉的：`host` 独立子包（取消，只留
+`src/host/` 这一层 Node 代码）、`llm` 独立包（ModelPicker 进 ui）、设置页骨架（不抽，等第二个消费者）。
 
 ## 样式注入（本包最特殊的机制）
 
@@ -126,3 +251,8 @@ dist/**                产物形态不变，仍由 createStyleKit 拼成一份�
 
 - 2026-11-08 23:34:49：按文档库规范建立版本元数据与统一目录索引
 - 2026-11-13 16:22:31：文档库结构迁移：旧路径改指新槽位
+- 2026-11-16 11:18:01：分层树新增 runtime 与 adv/tasks，补三个无界面层的判据、通知的两层、任务归 adv 的理由
+- 2026-11-16 11:22:50：新增状态容器一节：runtime/store 三方法、收口判据、React 绑定留 ui；runtime 定义改为有状态或有副作用
+- 2026-11-16 11:44:06：取消 channel 一层：notify 兼做跨页消息，按主题区分；任务只借 store 与 notify，整份同步留给任务自己
+- 2026-11-16 11:52:01：跨页消息改叫 runtime/message（notify 已被提示层占用）；默认分组随 message 归 runtime，避免 ui 依赖 adv
+- 2026-11-16 12:00:33：评审后修正：跨页层改回 runtime/notify（message 接不住 notifyMessage）；store 补 getServerSnapshot 与副作用边界；事件总线唯一主；adv 判据改为「一整块功能」而非「绑业务对象」
