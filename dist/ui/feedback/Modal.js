@@ -1,10 +1,16 @@
-import { createElement as h } from 'react';
+import { createContext, createElement as h, useContext } from 'react';
 import { t } from '../../utils/i18n.js';
 import { ensureComponentStyles } from '../infra/css.js';
 import { FEEDBACK_CSS } from './feedback-css.js';
-import { OverlayHead, OverlayLockCatcher, OverlayLockedProvider, OverlayMask, useEscapeClose, useLockGuards } from '../infra/overlay.js';
+import { OverlayHead, OverlayLockExempt, OverlayLockedProvider, OverlayMask, useEscapeClose, useLockGuards } from '../infra/overlay.js';
 import { PanelSurface } from '../infra/panel.js';
 import { FlipText } from '../display/FlipText.js';
+/** 收起出口的 Context：让例外控件深处也能拿到 `onBackground`，不必逐层透传。 */
+const BackgroundContext = createContext(undefined);
+/** 在 `lockExceptions` 子树里取收起出口；无 `onBackground` 时返回 undefined（调用方可据此不渲染收起钮）。 */
+export function useModalBackground() {
+    return useContext(BackgroundContext);
+}
 /**
  * 模态弹窗（自绘 overlay，**不用 react-dom 的 portal**，避免多一个必需依赖）。
  *
@@ -13,14 +19,16 @@ import { FlipText } from '../display/FlipText.js';
 export function Modal(props) {
     ensureComponentStyles('feedback', FEEDBACK_CSS);
     const tt = props.translate ?? t;
-    // busy / locked 都是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
-    // locked 比 busy 多管一层：面板整块不可交互（inert）。
+    // busy / locked / backgrounded 都是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
+    // locked 比 busy 多管一层：面板整块不可交互（pointer-events）。
     const busy = props.busy === true;
     const locked = props.locked === true;
-    const denyClose = busy || locked;
+    const backgrounded = props.backgrounded === true;
+    const denyClose = busy || locked || backgrounded;
     const closeOnMask = !denyClose && props.closeOnMask !== false;
+    // 收起后整窗隐藏，Tab/Esc 监听一起撤掉 —— 否则看不见的弹窗还吞键、还能被 Esc 关掉。
     useEscapeClose(!denyClose && props.escClose !== false, denyClose ? undefined : props.onClose);
-    useLockGuards(locked);
+    useLockGuards(locked && !backgrounded);
     // 空串等同于没给：底栏那块地方复用给下一轮时，传 "" 就把上一句清干净、不留占位。
     const notice = props.notice === '' ? undefined : props.notice;
     // 默认宽高（兄弟项目真值：小框 360px（task-list.tsx:457）/ 大弹窗 min(1120px,100vw-32px) × calc(100%-80px)（archive-session-css.ts:42））。
@@ -45,9 +53,12 @@ export function Modal(props) {
         kind: 'center',
         closeOnMask,
         onClose: denyClose ? undefined : props.onClose,
-        // inert 子树不参与命中测试，鼠标落到遮罩上 —— 禁止手势得挂在遮罩这层才看得见。
-        attrs: locked ? { 'data-dshpc-locked': '' } : undefined,
-    }, h(OverlayLockedProvider, { value: locked }, 
+        // 面板锁定与整窗收起都标在遮罩上：前者控禁止手势，后者整窗隐藏但保树。
+        attrs: {
+            ...(locked ? { 'data-dshpc-locked': '' } : {}),
+            ...(backgrounded ? { 'data-dshpc-backgrounded': '' } : {}),
+        },
+    }, h(BackgroundContext.Provider, { value: props.onBackground }, h(OverlayLockedProvider, { value: locked }, 
     // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
     // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
     h(PanelSurface, {
@@ -79,7 +90,8 @@ export function Modal(props) {
     h('div', { className: 'dshpc-modal__body dshpc-scroll-thin' }, props.children ?? null), props.footer === undefined && notice === undefined
         ? null
         : h('div', { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` }, notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice', sweep: true }), props.footer), 
-    // 透明点击层兜住消费方自绘的元素；核心控件此时已各自是真 disabled。
-    locked ? h(OverlayLockCatcher) : null)));
+    // 锁定期间的例外控件：整窗指针锁死时，唯独这一块仍可点、可 Tab。
+    // 放在 catcher 原来的位置（面板最后一个子节点），不依赖 DOM 顺序或 z-index。
+    props.lockExceptions === undefined ? null : h(OverlayLockExempt, null, props.lockExceptions)))));
 }
 //# sourceMappingURL=Modal.js.map

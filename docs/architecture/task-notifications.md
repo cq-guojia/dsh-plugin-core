@@ -229,7 +229,7 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 |---|---|---|
 | 0 | 契约定稿、依赖落位、ESM / CJS 两侧可解析验证 | 完成 |
 | 1 | 状态池、订阅、事件总线、跨页分片、baseline、单例、结束句柄 | 完成 |
-| 2 | 可收起弹窗：例外控件、收起事件、隐藏保树、显隐与 Tab / Esc 联动 | 未开始 |
+| 2 | 可收起弹窗：例外控件、收起事件、隐藏保树、显隐与 Tab / Esc 联动 | 完成 |
 | 3 | 事件查看控件：计数、下拉、还原弹窗、分组过滤、demo 页 | 未开始 |
 | 4 | 真机验收与对外门面文档 | 未开始 |
 | 5 | 统一替换既有零散机制 | 暂缓，等 1–4 稳定后按指令一次性做 |
@@ -242,6 +242,7 @@ core 被打进每个插件各自的 bundle，模块级状态天然是每个副�
 
 ## 更新日志
 
+- 2026-11-17：阶段 2 可收起弹窗落地 —— `Modal` 新增 `lockExceptions` / `onBackground` / `backgrounded` 与 `useModalBackground()`；locked 改用 pointer-events 根因解（删透明点击层），例外子树仍可点可 Tab；收起用 `visibility:hidden` 保树保滚动位置；核心只发事件、不 import `adv.*`，登记与还原由调用方接 `backgrounded` / `restored` 事件。阶段 2 由单独任务（ledger `17-0259-db3c`）承接完成，阶段 3 / 4 仍未开始。
 - 2026-11-16：`timeoutMs` 改为定时器到点自动结算（此前只在下次写入前惰性回收，僵尸任务清不掉）；对外展示名由「通知任务中心」改为「后台任务中心」；`TaskBar` 定宽 / 上限时计数并入同一段跑马灯、三角贴右不溢出；自定义色实心按钮字色固定用主题无关白
 - 2026-11-15：新增业务键幂等登记 —— `key`（字符串 / 元组）、`record.key`、`taskKey()`、`notifyTask.ensure()` / `pool.ensure()`（返回 `{ handle, created }`）、跨页 `TaskNotificationConflictError`；同页同键就地更新并复用同一句柄，键随记录离池释放；`notifyTask.run` 撞键 reject 且不跑 `work`
 - 2026-11-15：后台作业三处收口 —— `Button` 补回 `background` 底色轴（与 `color` 正交）、`hidden` 与回收解耦（`timeoutMs` 缺省 0，删 `TASK_NOTIFICATIONS_HIDDEN_TTL_MS`）、`TaskBar` 动作失败不再静默（`onActionFailure` + 自带提示 `taskbarActionFailed`）

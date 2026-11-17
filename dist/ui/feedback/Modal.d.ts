@@ -46,6 +46,18 @@ export interface ModalProps {
      * 受控项，不落内部 state：关掉重开自然回到未锁。
      */
     locked?: boolean;
+    /**
+     * 锁定期间的例外控件（1~N 个任意 ReactNode，位置不限）：整窗锁死时**只有这一块**仍可点、可 Tab，
+     * 核心控件在其中也不自我禁用；其余按钮、三条关闭路径照旧封死。不传则 locked 仍是一刀切。
+     */
+    lockExceptions?: ReactNode;
+    /** 收起出口：例外控件调用它请求收起。核心只发事件、不结算、不隐藏 —— 隐藏由 `backgrounded` 受控。 */
+    onBackground?: () => void;
+    /**
+     * 受控收起态（默认 false）。true = 整窗从界面隐藏但**不卸载**（输入 / 进度 / 滚动原样保留），
+     * 同时撤掉 Tab / Esc 监听，避免看不见的弹窗吞键或被 Esc 关掉。还原 = 置回 false。
+     */
+    backgrounded?: boolean;
     /** 尺寸档：sm=小确认框家族 / md·lg=大弹窗家族；也可用 width/height 精确覆盖。 */
     size?: ModalSize;
     /** 面板宽度（默认随 size：sm 360px / md 720px / lg 1120px，均带视口兜底）。 */
@@ -71,6 +83,8 @@ export interface ModalProps {
     children?: ReactNode;
     translate?: Translate;
 }
+/** 在 `lockExceptions` 子树里取收起出口；无 `onBackground` 时返回 undefined（调用方可据此不渲染收起钮）。 */
+export declare function useModalBackground(): (() => void) | undefined;
 /**
  * 模态弹窗（自绘 overlay，**不用 react-dom 的 portal**，避免多一个必需依赖）。
  *

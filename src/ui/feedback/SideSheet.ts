@@ -16,7 +16,7 @@ import { ensureComponentStyles } from '../infra/css.js'
 import { FontIcon } from '../display/font-icon.js'
 import { SIDE_PANEL_CSS } from '../infra/side-panel-css.js'
 import { SIDE_SHEET_CSS } from './side-sheet-css.js'
-import { OverlayLockCatcher, OverlayLockedProvider, OverlayMask, useEscapeClose, useLockGuards } from '../infra/overlay.js'
+import { OverlayLockedProvider, OverlayMask, useEscapeClose, useLockGuards } from '../infra/overlay.js'
 import { startResizeLayoutWidth } from '../layout/resizer.js'
 import { FlipText } from '../display/FlipText.js'
 
@@ -212,10 +212,8 @@ export function SideSheet(props: SideSheetProps): ReactNode {
               { className: 'dshpc-sheet__foot' },
               notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-sheet__notice', sweep: true }),
               props.footer,
-            ),
-        // 与 Modal 同一套：透明点击层兜住自绘元素，变灰归各控件自己的 :disabled。
-        locked ? h(OverlayLockCatcher) : null,
-      ),
+              ),
+              ),
     ),
   )
 }

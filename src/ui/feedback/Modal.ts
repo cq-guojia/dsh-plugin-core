@@ -1,8 +1,8 @@
-import { createElement as h, type ReactNode } from 'react'
+import { createContext, createElement as h, useContext, type ReactNode } from 'react'
 import { t, type Translate } from '../../utils/i18n.js'
 import { ensureComponentStyles } from '../infra/css.js'
 import { FEEDBACK_CSS } from './feedback-css.js'
-import { OverlayHead, OverlayLockCatcher, OverlayLockedProvider, OverlayMask, useEscapeClose, useLockGuards } from '../infra/overlay.js'
+import { OverlayHead, OverlayLockExempt, OverlayLockedProvider, OverlayMask, useEscapeClose, useLockGuards } from '../infra/overlay.js'
 import { PanelSurface } from '../infra/panel.js'
 import { FlipText } from '../display/FlipText.js'
 
@@ -53,6 +53,18 @@ export interface ModalProps {
    * 受控项，不落内部 state：关掉重开自然回到未锁。
    */
   locked?: boolean
+  /**
+   * 锁定期间的例外控件（1~N 个任意 ReactNode，位置不限）：整窗锁死时**只有这一块**仍可点、可 Tab，
+   * 核心控件在其中也不自我禁用；其余按钮、三条关闭路径照旧封死。不传则 locked 仍是一刀切。
+   */
+  lockExceptions?: ReactNode
+  /** 收起出口：例外控件调用它请求收起。核心只发事件、不结算、不隐藏 —— 隐藏由 `backgrounded` 受控。 */
+  onBackground?: () => void
+  /**
+   * 受控收起态（默认 false）。true = 整窗从界面隐藏但**不卸载**（输入 / 进度 / 滚动原样保留），
+   * 同时撤掉 Tab / Esc 监听，避免看不见的弹窗吞键或被 Esc 关掉。还原 = 置回 false。
+   */
+  backgrounded?: boolean
   /** 尺寸档：sm=小确认框家族 / md·lg=大弹窗家族；也可用 width/height 精确覆盖。 */
   size?: ModalSize
   /** 面板宽度（默认随 size：sm 360px / md 720px / lg 1120px，均带视口兜底）。 */
@@ -79,6 +91,14 @@ export interface ModalProps {
   translate?: Translate
 }
 
+/** 收起出口的 Context：让例外控件深处也能拿到 `onBackground`，不必逐层透传。 */
+const BackgroundContext = createContext<(() => void) | undefined>(undefined)
+
+/** 在 `lockExceptions` 子树里取收起出口；无 `onBackground` 时返回 undefined（调用方可据此不渲染收起钮）。 */
+export function useModalBackground(): (() => void) | undefined {
+  return useContext(BackgroundContext)
+}
+
 /**
  * 模态弹窗（自绘 overlay，**不用 react-dom 的 portal**，避免多一个必需依赖）。
  *
@@ -87,14 +107,16 @@ export interface ModalProps {
 export function Modal(props: ModalProps): ReturnType<typeof h> {
   ensureComponentStyles('feedback', FEEDBACK_CSS)
   const tt = props.translate ?? t
-  // busy / locked 都是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
-  // locked 比 busy 多管一层：面板整块不可交互（inert）。
+  // busy / locked / backgrounded 都是否决项：三条关闭路径一起封死（✕ 见下面 showClose）。
+  // locked 比 busy 多管一层：面板整块不可交互（pointer-events）。
   const busy = props.busy === true
   const locked = props.locked === true
-  const denyClose = busy || locked
+  const backgrounded = props.backgrounded === true
+  const denyClose = busy || locked || backgrounded
   const closeOnMask = !denyClose && props.closeOnMask !== false
+  // 收起后整窗隐藏，Tab/Esc 监听一起撤掉 —— 否则看不见的弹窗还吞键、还能被 Esc 关掉。
   useEscapeClose(!denyClose && props.escClose !== false, denyClose ? undefined : props.onClose)
-  useLockGuards(locked)
+  useLockGuards(locked && !backgrounded)
   // 空串等同于没给：底栏那块地方复用给下一轮时，传 "" 就把上一句清干净、不留占位。
   const notice = props.notice === '' ? undefined : props.notice
 
@@ -124,53 +146,61 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
       kind: 'center',
       closeOnMask,
       onClose: denyClose ? undefined : props.onClose,
-      // inert 子树不参与命中测试，鼠标落到遮罩上 —— 禁止手势得挂在遮罩这层才看得见。
-      attrs: locked ? { 'data-dshpc-locked': '' } : undefined,
+      // 面板锁定与整窗收起都标在遮罩上：前者控禁止手势，后者整窗隐藏但保树。
+      attrs: {
+        ...(locked ? { 'data-dshpc-locked': '' } : {}),
+        ...(backgrounded ? { 'data-dshpc-backgrounded': '' } : {}),
+      },
     },
     h(
-      OverlayLockedProvider,
-      { value: locked },
-      // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
-      // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
+      BackgroundContext.Provider,
+      { value: props.onBackground },
       h(
-        PanelSurface,
-        {
-          tier: 'modal',
-          className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}${locked ? ' dshpc-modal--locked dshpc-locked' : ''}${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
-          style: {
-            width: props.width ?? s.width,
-            maxWidth: props.maxWidth ?? s.maxWidth,
-            maxHeight: props.maxHeight ?? s.maxHeight,
-            height: props.height ?? s.height,
+        OverlayLockedProvider,
+        { value: locked },
+        // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
+        // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
+        h(
+          PanelSurface,
+          {
+            tier: 'modal',
+            className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}${locked ? ' dshpc-modal--locked dshpc-locked' : ''}${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
+            style: {
+              width: props.width ?? s.width,
+              maxWidth: props.maxWidth ?? s.maxWidth,
+              maxHeight: props.maxHeight ?? s.maxHeight,
+              height: props.height ?? s.height,
+            },
+            stopPropagation: true,
           },
-          stopPropagation: true,
-        },
-        // 头部与遮罩都是浮层公共件（overlay.ts），SideSheet 用的是同一套。
-        showHeader
-          ? h(OverlayHead, {
-              icon: props.icon,
-              title: props.title,
-              subtitle: props.subtitle,
-              extra: props.headerExtra,
-              header: props.header,
-              actions: props.headerActions,
-              closeLabel: tt('modalClose'),
-              onClose: showClose ? props.onClose : undefined,
-            })
-          : null,
-        // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
-        // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
-        h('div', { className: 'dshpc-modal__body dshpc-scroll-thin' }, props.children ?? null),
-        props.footer === undefined && notice === undefined
-          ? null
-          : h(
-              'div',
-              { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` },
-              notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice', sweep: true }),
-              props.footer,
-            ),
-        // 透明点击层兜住消费方自绘的元素；核心控件此时已各自是真 disabled。
-        locked ? h(OverlayLockCatcher) : null,
+          // 头部与遮罩都是浮层公共件（overlay.ts），SideSheet 用的是同一套。
+          showHeader
+            ? h(OverlayHead, {
+                icon: props.icon,
+                title: props.title,
+                subtitle: props.subtitle,
+                extra: props.headerExtra,
+                header: props.header,
+                actions: props.headerActions,
+                closeLabel: tt('modalClose'),
+                onClose: showClose ? props.onClose : undefined,
+              })
+            : null,
+          // body 是**唯一滚动容器**：内距归它、滚动条归它、滚动条贴面板右缘；
+          // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
+          h('div', { className: 'dshpc-modal__body dshpc-scroll-thin' }, props.children ?? null),
+          props.footer === undefined && notice === undefined
+            ? null
+            : h(
+                'div',
+                { className: `dshpc-modal__foot${props.footerDivider === false ? ' dshpc-modal__foot--bare' : ''}` },
+                notice === undefined ? null : h(FlipText, { text: notice, className: 'dshpc-modal__notice', sweep: true }),
+                props.footer,
+              ),
+          // 锁定期间的例外控件：整窗指针锁死时，唯独这一块仍可点、可 Tab。
+          // 放在 catcher 原来的位置（面板最后一个子节点），不依赖 DOM 顺序或 z-index。
+          props.lockExceptions === undefined ? null : h(OverlayLockExempt, null, props.lockExceptions),
+        ),
       ),
     ),
   )

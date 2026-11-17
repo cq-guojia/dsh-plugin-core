@@ -7,7 +7,7 @@ export { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecisi
 export { ModelPicker, type ModelPickerProps, type ModelPickerVariant } from './inputs/ModelPicker.js';
 export { WorkspacePicker, type WorkspaceKey, type WorkspacePickerProps } from './inputs/WorkspacePicker.js';
 export { connectHost, getWorkspaceFiles, modelCatalog, refreshModelCatalog, revalidateModelCatalog, workspaceList, type ConnectHostOptions, type HostClientContext, type HostWorkspaceItem, type HostWorkspaceSource, type ModelCatalogState, type ModelRoute, } from './infra/host-data.js';
-export { Modal, type ModalProps, type ModalSize } from './feedback/Modal.js';
+export { Modal, useModalBackground, type ModalProps, type ModalSize } from './feedback/Modal.js';
 export { SideSheet, type SideSheetProps, type SideSheetSide } from './feedback/SideSheet.js';
 export { AlertModal, type AlertModalProps, type AlertSeverity, } from './feedback/AlertModal.js';
 export { ConfirmModal, type ConfirmModalProps, type ConfirmTone, } from './feedback/ConfirmModal.js';

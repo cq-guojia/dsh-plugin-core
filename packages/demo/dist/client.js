@@ -4308,7 +4308,7 @@ function MarqueeText(props) {
 var import_react11 = require("react");
 
 // dist/ui/infra/overlay-css.generated.js
-var OVERLAY_CSS = "/* \u6D6E\u5C42\u516C\u5171\u9AA8\u67B6\uFF1A\u906E\u7F69 + \u5934\u90E8\u3002Modal\uFF08\u5C45\u4E2D\uFF09/ SideSheet\uFF08\u4FA7\u8FB9\uFF09/ \u9009\u6587\u4EF6\u5F39\u7A97\uFF08\u951A\u5B9A\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\uFF0C\n   \u5404\u5BB6\u5404\u81EA registerStyle \u540C\u4E00\u4EFD\uFF08\u5E42\u7B49\uFF09\uFF0C\u8C01\u4E5F\u4E0D\u8BB8\u518D\u6284\u4E00\u4EFD\u906E\u7F69\u3002\n   \u5173\u95ED\u94AE\u7684\u76AE\u80A4\u5728 panel.css\uFF08.dshpc-panel__close\uFF0C\u65E7\u7C7B\u540D\u4F5C\u522B\u540D\uFF09\uFF0C\u4E0D\u5728\u8FD9\u91CC\u518D\u5199\u4E00\u4EFD\u3002 */\n\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n/* \u53F3\u8FB9\u754C\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08PanelDock \u53D1\u5E03\u7684 --dshpc-page-inset-right\uFF0C\u7528\u6237 2026-10-22\uFF09\uFF1A\n   \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF1B\u6D6E\u5C42\u5728\u8FD9\u5757**\u5269\u4E0B**\u7684\u533A\u57DF\u91CC\u6392\u7248\uFF0C\u5C31\u50CF\u6574\u9875\u88AB\u63A8\u51FA\u53BB\u4E00\u6837\u3002 */\n.dshpc-overlay{\n  position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;\n  background:var(--dshpc-mask);\n}\n/* \u9501\u5B9A\u6001\uFF1A\u7981\u7528\u624B\u52BF\u6302\u5728\u906E\u7F69\u4E0A\uFF08\u9762\u677F\u5916\u90A3\u4E00\u5708\u4E5F\u8981\u4E00\u81F4\uFF09\u3002 */\n.dshpc-overlay[data-dshpc-locked]{cursor:not-allowed}\n/* \u9501\u5B9A\u65F6\u7684\u900F\u660E\u70B9\u51FB\u5C42\uFF1A\u5403\u6307\u9488\u3001\u4E0D\u6539\u4EFB\u4F55\u5916\u89C2\uFF08\u53D8\u7070\u7531\u5404\u63A7\u4EF6\u81EA\u5DF1\u7684 :disabled \u8D1F\u8D23\uFF09\u3002\n   \u5168\u900F\u660E\u662F\u523B\u610F\u7684 \u2014\u2014 \u76D6\u4E00\u5C42\u7070\u4F1A\u8BA9\u4EBA\u4EE5\u4E3A\u754C\u9762\u574F\u4E86\u3002 */\n.dshpc-lock-catcher{position:absolute;inset:0;z-index:1;cursor:not-allowed}\n/* \u9501\u5B9A\u6001\uFF1A\u6D88\u8D39\u65B9\u81EA\u7ED8\u7684\u539F\u751F\u8868\u5355\u5143\u7D20\u4E5F\u300C\u770B\u8D77\u6765\u7981\u7528\u300D\u3002\n   \u6574\u6761\u9009\u62E9\u5668\u5305\u5728 :where() \u91CC = \u7279\u5F02\u6027 0 \u2014\u2014 \u6D88\u8D39\u65B9\u4EFB\u610F\u4E00\u6761\u81EA\u5DF1\u7684\u89C4\u5219\u90FD\u80FD\u76D6\u56DE\u6765\uFF0C\u6211\u4EEC\u53EA\u5F53\u9ED8\u8BA4\u503C\u3002\n   \u53EA\u5199 opacity / cursor \u4E24\u4E2A\u5C5E\u6027\uFF1B\u4E0D\u60F3\u88AB\u7070\u5C31\u5728\u81EA\u5DF1\u5143\u7D20\u4E0A\u5199 --dshpc-lock-dim: 1\u3002\n   \u89E3\u9501 = \u89C4\u5219\u4E0D\u518D\u5339\u914D\uFF0C\u4E0D\u5B58\u5728\u300C\u8FD8\u539F\u300D\uFF0C\u4E5F\u5C31\u4E0D\u4F1A\u51B2\u6389\u522B\u4EBA\u5199\u7684\u6837\u5F0F\u3002 */\n:where(.dshpc-locked button:not(:disabled),.dshpc-locked input:not(:disabled),.dshpc-locked select:not(:disabled),.dshpc-locked textarea:not(:disabled)){\n  opacity:var(--dshpc-lock-dim);cursor:not-allowed;\n}\n/* \u5C45\u4E2D\u6863\uFF08Modal\uFF09\uFF1Az \u8D70 modal \u6863\u3002 */\n.dshpc-overlay--center{\n  display:flex;align-items:center;justify-content:center;\n  z-index:var(--dshpc-z-modal);\n}\n/* \u4FA7\u8FB9\u6863\uFF08SideSheet\uFF09\uFF1A\u9762\u677F absolute \u8D34\u8FB9\uFF0C\u4E0D\u9700\u8981 flex \u5C45\u4E2D\uFF1Bz \u8D70 drawer \u6863\uFF08\u4F4E\u4E8E modal\uFF09\u3002 */\n.dshpc-overlay--side{z-index:var(--dshpc-z-drawer)}\n/* \u951A\u5B9A\u6863\uFF08\u9009\u6587\u4EF6\u5F39\u7A97\uFF09\uFF1A\u906E\u7F69\u7167\u65E7\u538B\u6697 + \u70B9\u5916\u90E8\u5173\u95ED\uFF0C\u9762\u677F\u81EA\u5DF1 fixed \u8D34\u951A\u70B9\uFF0C\u8FD9\u91CC\u4E0D\u505A\u5E03\u5C40\u3002 */\n.dshpc-overlay--plain{z-index:var(--dshpc-z-panel)}\n\n/* \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002\n   \u4E0A\u4E0B\u5185\u8DDD\u5FC5\u987B\u76F8\u7B49\uFF0818/12 \u4F1A\u8BA9\u6807\u9898\u79BB\u9762\u677F\u9876\u8FDC\u3001\u79BB\u5206\u9694\u7EBF\u8FD1\uFF0C\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-overlay-head{\n  display:flex;align-items:center;gap:8px;padding:18px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n/* \u8C03\u7528\u65B9\u6574\u5757\u81EA\u5B9A\u4E49\u7684\u6807\u9898\u533A\uFF1A\u5360\u6EE1\u5DE6\u4FA7\u53EF\u7528\u5BBD\u5EA6\u3001\u53EF\u6362\u884C\uFF08\u4E0D\u662F\u6807\u9898\u6587\u5B57\uFF0C\u522B\u5957\u6807\u9898\u5B57\u53F7\uFF09\u3002 */\n.dshpc-overlay-head__heading--custom{flex:1 1 auto;flex-wrap:wrap}\n/* \u56FE\u6807\u5C3A\u5BF8\u53EA\u8BA4\u6838\u5FC3 1em \u57FA\u7EBF\uFF08button.css:112\uFF09\uFF1A\u8FD9\u91CC\u4E0D\u5199\u6B7B 16px \u653E\u5927\uFF0C\u8C03\u7528\u65B9\u4F20\u7684 size \u4E5F\u4E00\u5E76\u63A5\u7BA1\u3002 */\n.dshpc-overlay-head__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:var(--dshpc-font-lg);line-height:1}\n.dshpc-overlay-head__lead svg{display:block;width:1em;height:1em;flex:none;}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-overlay-head__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-overlay-head__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-overlay-head__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n.dshpc-overlay-head__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-overlay-head__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-overlay-head__actions{flex:none;display:flex;align-items:center;gap:8px}\n";
+var OVERLAY_CSS = "/* \u6D6E\u5C42\u516C\u5171\u9AA8\u67B6\uFF1A\u906E\u7F69 + \u5934\u90E8\u3002Modal\uFF08\u5C45\u4E2D\uFF09/ SideSheet\uFF08\u4FA7\u8FB9\uFF09/ \u9009\u6587\u4EF6\u5F39\u7A97\uFF08\u951A\u5B9A\uFF09\u5171\u7528\u8FD9\u4E00\u4EFD\uFF0C\n   \u5404\u5BB6\u5404\u81EA registerStyle \u540C\u4E00\u4EFD\uFF08\u5E42\u7B49\uFF09\uFF0C\u8C01\u4E5F\u4E0D\u8BB8\u518D\u6284\u4E00\u4EFD\u906E\u7F69\u3002\n   \u5173\u95ED\u94AE\u7684\u76AE\u80A4\u5728 panel.css\uFF08.dshpc-panel__close\uFF0C\u65E7\u7C7B\u540D\u4F5C\u522B\u540D\uFF09\uFF0C\u4E0D\u5728\u8FD9\u91CC\u518D\u5199\u4E00\u4EFD\u3002 */\n\n/* \u906E\u7F69 = \u5BBF\u4E3B\u906E\u7F69\u53D8\u91CF --dsw-alias-bg-mask-1\uFF08\u4E0E\u5B98\u65B9 Modal / \u5144\u5F1F\u9879\u76EE --tdt-mask \u540C\u4E00\u6761\u771F\u503C\uFF0C\u7528\u6237 2026-10-20\uFF09\u3002 */\n/* \u53F3\u8FB9\u754C\u8BA9\u4F4D\u9875\u9762\u7EA7\u5206\u680F\uFF08PanelDock \u53D1\u5E03\u7684 --dshpc-page-inset-right\uFF0C\u7528\u6237 2026-10-22\uFF09\uFF1A\n   \u5206\u680F\u4E0D\u88AB\u538B\u6697\u3001\u7167\u5E38\u53EF\u70B9\uFF1B\u6D6E\u5C42\u5728\u8FD9\u5757**\u5269\u4E0B**\u7684\u533A\u57DF\u91CC\u6392\u7248\uFF0C\u5C31\u50CF\u6574\u9875\u88AB\u63A8\u51FA\u53BB\u4E00\u6837\u3002 */\n.dshpc-overlay{\n  position:fixed;inset:0 var(--dshpc-page-inset-right,0px) 0 0;\n  background:var(--dshpc-mask);\n}\n/* \u9501\u5B9A\u6001\uFF1A\u7981\u7528\u624B\u52BF\u6302\u5728\u906E\u7F69\u4E0A\uFF08\u9762\u677F\u5916\u90A3\u4E00\u5708\u4E5F\u8981\u4E00\u81F4\uFF09\u3002 */\n.dshpc-overlay[data-dshpc-locked]{cursor:not-allowed}\n/* \u6536\u8D77\u6001\uFF08backgrounded\uFF09\uFF1A\u6574\u7A97\u9690\u85CF\u4F46 DOM \u4E0D\u5378\u8F7D \u2014\u2014 \u8F93\u5165 / \u8FDB\u5EA6 / \u6EDA\u52A8\u539F\u6837\u4FDD\u7559\u3002\n   visibility \u800C\u975E display:none\uFF1A\u540E\u8005\u4F1A\u8BA9\u5B50\u5143\u7D20\u8131\u79BB\u5E03\u5C40\u3001\u6062\u590D\u65F6\u4E22\u6EDA\u52A8\u4F4D\u7F6E\u3002 */\n.dshpc-overlay[data-dshpc-backgrounded]{visibility:hidden}\n/* \u9501\u5B9A\u6001\u7684\u6307\u9488\u547D\u4E2D\u5C42\uFF08\u6839\u56E0\u89E3\uFF0C\u4E0D\u9760\u70B9\u51FB\u5C42 / z-index\uFF09\uFF1A\u6574\u5757\u9762\u677F\u4E0D\u5403\u6307\u9488\uFF0C\u547D\u4E2D\u843D\u5230\u906E\u7F69 \u2014\u2014 \u906E\u7F69\u5728\n   locked \u65F6 closeOnMask=false\uFF0C\u70B9\u5B83\u65E2\u4E0D\u5173\u7A97\u4E5F\u4E0D\u7A7F\u900F\u9875\u9762\u3002\u4F8B\u5916\u5B50\u6811\u91CD\u65B0\u5403\u6307\u9488\uFF0C\u6545\u4ECD\u53EF\u70B9\u3002 */\n.dshpc-locked{pointer-events:none}\n.dshpc-lock-exempt,.dshpc-lock-exempt *{pointer-events:auto}\n/* \u9501\u5B9A\u6001\uFF1A\u6D88\u8D39\u65B9\u81EA\u7ED8\u7684\u539F\u751F\u8868\u5355\u5143\u7D20\u4E5F\u300C\u770B\u8D77\u6765\u7981\u7528\u300D\u3002\n   \u6574\u6761\u9009\u62E9\u5668\u5305\u5728 :where() \u91CC = \u7279\u5F02\u6027 0 \u2014\u2014 \u6D88\u8D39\u65B9\u4EFB\u610F\u4E00\u6761\u81EA\u5DF1\u7684\u89C4\u5219\u90FD\u80FD\u76D6\u56DE\u6765\uFF0C\u6211\u4EEC\u53EA\u5F53\u9ED8\u8BA4\u503C\u3002\n   \u53EA\u5199 opacity / cursor \u4E24\u4E2A\u5C5E\u6027\uFF1B\u4E0D\u60F3\u88AB\u7070\u5C31\u5728\u81EA\u5DF1\u5143\u7D20\u4E0A\u5199 --dshpc-lock-dim: 1\u3002\n   \u4F8B\u5916\u57DF\uFF08.dshpc-lock-exempt\uFF09\u6574\u68F5\u5B50\u6811\u4E0D\u53C2\u4E0E\u53D8\u7070\uFF0C\u5426\u5219\u4F8B\u5916\u6309\u94AE\u770B\u7740\u50CF\u7981\u7528\u3002 */\n:where(.dshpc-locked button:not(:disabled):not(.dshpc-lock-exempt, .dshpc-lock-exempt *),.dshpc-locked input:not(:disabled):not(.dshpc-lock-exempt, .dshpc-lock-exempt *),.dshpc-locked select:not(:disabled):not(.dshpc-lock-exempt, .dshpc-lock-exempt *),.dshpc-locked textarea:not(:disabled):not(.dshpc-lock-exempt, .dshpc-lock-exempt *)){\n  opacity:var(--dshpc-lock-dim);cursor:not-allowed;\n}\n/* \u5C45\u4E2D\u6863\uFF08Modal\uFF09\uFF1Az \u8D70 modal \u6863\u3002 */\n.dshpc-overlay--center{\n  display:flex;align-items:center;justify-content:center;\n  z-index:var(--dshpc-z-modal);\n}\n/* \u4FA7\u8FB9\u6863\uFF08SideSheet\uFF09\uFF1A\u9762\u677F absolute \u8D34\u8FB9\uFF0C\u4E0D\u9700\u8981 flex \u5C45\u4E2D\uFF1Bz \u8D70 drawer \u6863\uFF08\u4F4E\u4E8E modal\uFF09\u3002 */\n.dshpc-overlay--side{z-index:var(--dshpc-z-drawer)}\n/* \u951A\u5B9A\u6863\uFF08\u9009\u6587\u4EF6\u5F39\u7A97\uFF09\uFF1A\u906E\u7F69\u7167\u65E7\u538B\u6697 + \u70B9\u5916\u90E8\u5173\u95ED\uFF0C\u9762\u677F\u81EA\u5DF1 fixed \u8D34\u951A\u70B9\uFF0C\u8FD9\u91CC\u4E0D\u505A\u5E03\u5C40\u3002 */\n.dshpc-overlay--plain{z-index:var(--dshpc-z-panel)}\n\n/* \u5934\u90E8\u56DB\u69FD\uFF1A\u5DE6\u56FE\u6807 / \u6807\u9898\u7EC4 / \u5F39\u6027\u95F4\u9694 / \u53F3\u4FA7\u52A8\u4F5C\u533A + \u5173\u95ED\u94AE\u3002\n   \u4E0A\u4E0B\u5185\u8DDD\u5FC5\u987B\u76F8\u7B49\uFF0818/12 \u4F1A\u8BA9\u6807\u9898\u79BB\u9762\u677F\u9876\u8FDC\u3001\u79BB\u5206\u9694\u7EBF\u8FD1\uFF0C\u7528\u6237 2026-11-02\uFF09\u3002 */\n.dshpc-overlay-head{\n  display:flex;align-items:center;gap:8px;padding:18px;\n  border-bottom:1px solid var(--dshpc-border);flex-wrap:wrap;\n}\n.dshpc-overlay-head__heading{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}\n/* \u8C03\u7528\u65B9\u6574\u5757\u81EA\u5B9A\u4E49\u7684\u6807\u9898\u533A\uFF1A\u5360\u6EE1\u5DE6\u4FA7\u53EF\u7528\u5BBD\u5EA6\u3001\u53EF\u6362\u884C\uFF08\u4E0D\u662F\u6807\u9898\u6587\u5B57\uFF0C\u522B\u5957\u6807\u9898\u5B57\u53F7\uFF09\u3002 */\n.dshpc-overlay-head__heading--custom{flex:1 1 auto;flex-wrap:wrap}\n/* \u56FE\u6807\u5C3A\u5BF8\u53EA\u8BA4\u6838\u5FC3 1em \u57FA\u7EBF\uFF08button.css:112\uFF09\uFF1A\u8FD9\u91CC\u4E0D\u5199\u6B7B 16px \u653E\u5927\uFF0C\u8C03\u7528\u65B9\u4F20\u7684 size \u4E5F\u4E00\u5E76\u63A5\u7BA1\u3002 */\n.dshpc-overlay-head__lead{flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:var(--dshpc-font-lg);line-height:1}\n.dshpc-overlay-head__lead svg{display:block;width:1em;height:1em;flex:none;}\n/* \u6807\u9898\u7EC4\uFF1A\u7B2C\u4E00\u884C = \u6807\u9898 + \u53F3\u4FA7\u5C0F\u5757\uFF08\u5FBD\u6807\u7D27\u8DDF\u6807\u9898\uFF09\uFF0C\u7B2C\u4E8C\u884C = \u526F\u6807\u9898\u3002 */\n.dshpc-overlay-head__titlegroup{display:flex;flex-direction:column;gap:2px;min-width:0;flex:0 1 auto}\n.dshpc-overlay-head__titlerow{display:flex;align-items:center;gap:8px;min-width:0}\n.dshpc-overlay-head__title{font-size:var(--dshpc-font-lg);font-weight:600;line-height:1.4;min-width:0}\n/* \u6807\u9898\u4E0B\u526F\u6807\u9898\u884C\uFF08\u5144\u5F1F\u9879\u76EE .dsh-tdt-sv-sid\uFF1A\u7B49\u5BBD\u5B57\u4F53\u3001caption \u8272\u3001\u53EF\u6362\u884C\uFF09\u3002 */\n.dshpc-overlay-head__sid{font-family:var(--ds-font-family-code,monospace);font-size:var(--dshpc-font-xs);color:var(--dshpc-fg-3);word-break:break-all}\n.dshpc-overlay-head__extra{flex:none;display:inline-flex;align-items:center}\n.dshpc-overlay-head__spacer{flex:1 1 auto;min-width:8px}\n.dshpc-overlay-head__actions{flex:none;display:flex;align-items:center;gap:8px}\n";
 
 // dist/ui/infra/panel-css.generated.js
 var PANEL_CSS = "/* \u6D6E\u5C42\u9762\u677F\u76AE\u80A4\uFF082026-11-03 \u7528\u6237\u5B9A\uFF1A\u76AE\u80A4\u7EDF\u4E00\uFF0C\u53EA\u6539\u6837\u5F0F\u4E0D\u52A8\u4EA4\u4E92\uFF09\u3002\n *\n * \u8FD9\u4EFD\u6587\u4EF6\u662F**\u6240\u6709\u300C\u6D6E\u8D77\u6765\u7684\u6846\u300D\u7684\u76AE\u80A4\u771F\u6E90**\u3002\u5B9A\u4F4D\uFF08fixed / absolute\u3001\u8D34\u8C01\u3001\u600E\u4E48\u7FFB\u8F6C\u3001\u591A\u5927\u7684\n * \u5C42\u5E8F\uFF09\u7559\u5728\u5404\u81EA\u63A7\u4EF6\u91CC\uFF0C\u8FD9\u91CC\u53EA\u7BA1\u8868\u9762\u56DB\u4EF6\uFF1A\u5E95\u8272 / \u63CF\u8FB9\u5BBD / \u5706\u89D2 / \u9634\u5F71\u3002\n * \u26A0\uFE0F \u7EC4\u4EF6 CSS \u91CC\u4E0D\u8BB8\u518D\u5199\u8FD9\u56DB\u4E2A\u5B57\u9762\u503C \u2014\u2014 \u60F3\u6539\u5916\u89C2\u5C31\u6539\u8FD9\u91CC\uFF0C\u522B\u5728\u6D88\u8D39\u65B9\u53E6\u8D77\u4E00\u5957\u3002\n *\n * \u4E09\u6863\uFF08\u5DEE\u5F02\u53EA\u5728\u8FD9\u4E09\u6BB5\u5B9A\u4E49\uFF0C\u522B\u5904\u5206\u53C9\uFF09\uFF1A\n *   --modal    \u5C45\u4E2D\u6A21\u6001\uFF08Modal / ConfirmModal / AlertModal \u5BB6\u65CF\uFF09\n *   --popover  \u8D34\u951A\u70B9\u7684\u6D6E\u5C42\u9762\u677F\uFF08pickWorkspaceFile \u9009\u6587\u4EF6\u5F39\u7A97\u3001DateTimePicker \u5F39\u5C42\uFF09\n *   --menu     \u4E0B\u62C9\u83DC\u5355\uFF08\u6587\u4EF6\u6D4F\u89C8\u5668 \u25BE \u9009\u5C42\u3001Picker \u4E0B\u62C9\uFF09\n *\n * \u4E0D\u5E76\u5165\u4E09\u6863\u7684\uFF1APanelDock \u4E0E SideSheet \u662F**\u8D34\u8FB9\u5BB6\u65CF**\uFF08side-panel.css \u7684\n * .dshpc-side-surface\uFF0Csurface-base\u3001\u65E0\u5916\u63CF\u8FB9\uFF09\u2014\u2014 2026-11-02 \u62CD\u677F\u300C\u4E24\u8005\u76AE\u80A4\u4E00\u6A21\u4E00\u6837\u300D\uFF0C\n * \u4E00\u4E2A\u662F\u5E03\u5C40\u6210\u5458\u3001\u4E00\u4E2A\u662F\u8D34\u8FB9\u62BD\u5C49\uFF0C\u90FD\u4E0D\u662F\u6D6E\u5C42\u3002\n */\n.dshpc-panel{\n  background:var(--dshpc-panel-bg);color:var(--dshpc-fg);\n  border:var(--dshpc-panel-bw) solid var(--dshpc-border);\n  border-radius:var(--dshpc-panel-radius);box-shadow:var(--dshpc-panel-shadow);\n}\n.dshpc-panel--modal{\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:3px;\n  --dshpc-panel-radius:var(--dshpc-radius-xl);\n  --dshpc-panel-shadow:var(--dshpc-shadow-2);\n  overflow:hidden;\n}\n.dshpc-panel--popover{\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:1px;\n  --dshpc-panel-radius:var(--dshpc-radius-lg);\n  --dshpc-panel-shadow:var(--dshpc-shadow-2);\n  overflow:hidden;\n  /* \u4E0E menu \u540C\u53E3\u5F84\u7684\u52A0\u91CD\u63CF\u8FB9\uFF1B\u65E5\u671F\u5F39\u5C42\u4E0E\u9009\u6587\u4EF6\u5F39\u7A97\u5171\u7528\u8FD9\u4E00\u6863\uFF082026-11-06\uFF09\u3002 */\n  border-color:var(--dshpc-border-heavy);\n}\n.dshpc-panel--menu{\n  /* \u83DC\u5355\u5E95\u4E0E\u6A21\u6001\u540C\u4E00\u5C42\uFF08\u7528\u6237 2026-11-03\uFF1A\u522B\u7528\u9875\u9762\u5E95\u8272\uFF0C\u6697\u8272\u4E0B\u770B\u7740\u5168\u9ED1\uFF09\u3002 */\n  --dshpc-panel-bg:var(--dshpc-surface-1);\n  --dshpc-panel-bw:1px;\n  /* \u5706\u89D2\u4E0E popover \u6863\u7EDF\u4E00\u6210 lg\uFF082026-11-06 \u7528\u6237\uFF1A\u4E0B\u62C9\u6846\u4E5F\u6539\u6210 16\uFF09\u3002 */\n  --dshpc-panel-radius:var(--dshpc-radius-lg);\n  --dshpc-panel-shadow:var(--dshpc-shadow-1);\n  /* \u4E0B\u62C9\u83DC\u5355\u540C\u6837\u52A0\u91CD\u63CF\u8FB9\uFF1Bmodal \u7684 3px \u8FB9\u6846\u4E0D\u52A8\u3002 */\n  border-color:var(--dshpc-border-heavy);\n}\n\n/* \u6D6E\u5C42\u552F\u4E00\u7684\u5173\u95ED\u94AE\uFF0820\xD720 \u65B9\u89D2\u56FE\u6807\u4F4D\uFF09\u3002\n   \u65E7\u7C7B\u540D .dshpc-overlay-head__close \u4FDD\u7559\u4E3A\u522B\u540D\uFF1A\u6D88\u8D39\u65B9\u5199\u5728\u65E7\u7C7B\u540D\u4E0A\u7684\u8986\u76D6\u4ECD\u751F\u6548\u3002 */\n.dshpc-panel__close,.dshpc-overlay-head__close{\n  display:inline-flex;align-items:center;justify-content:center;flex:none;\n  width:20px;height:20px;padding:0;border:none;border-radius:var(--dshpc-radius-sm);\n  background:transparent;color:var(--dshpc-fg-3);font-family:inherit;font-size:13px;line-height:1;cursor:pointer;\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease),color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-panel__close:hover,.dshpc-overlay-head__close:hover{background:var(--dshpc-hover);color:var(--dshpc-fg)}\n.dshpc-panel__close:focus-visible,.dshpc-overlay-head__close:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px}\n\n/* .dshpc-scroll-thin\uFF08\u7EC6\u6EDA\u52A8\u6761\uFF09\u7684\u552F\u4E00\u5B9A\u4E49\u5DF2\u79FB\u5230 design/tokens.css \u7684 tokens \u57DF\uFF1A\n   \u90A3\u91CC\u5168\u5C40\u5FC5\u5728\u3001\u6302\u7C7B\u5373\u751F\u6548\u3002\u8FD9\u91CC\u4E0D\u518D\u5199\u7B2C\u4E8C\u4EFD\u3002 */\n";
@@ -4338,31 +4338,31 @@ function PanelClose(props) {
 
 // dist/ui/infra/overlay.js
 var LockedContext = (0, import_react11.createContext)(false);
+var LockExemptContext = (0, import_react11.createContext)(false);
 function useOverlayLocked() {
-  return (0, import_react11.useContext)(LockedContext);
+  return (0, import_react11.useContext)(LockedContext) && !(0, import_react11.useContext)(LockExemptContext);
 }
 var OverlayLockedProvider = LockedContext.Provider;
+function OverlayLockExempt(props) {
+  return (0, import_react11.createElement)(LockExemptContext.Provider, { value: true }, (0, import_react11.createElement)("div", { className: `dshpc-lock-exempt${props.className !== void 0 && props.className !== "" ? ` ${props.className}` : ""}` }, props.children ?? null));
+}
+function isLockExempt(target) {
+  return target instanceof Element && target.closest(".dshpc-lock-exempt") !== null;
+}
 function useLockGuards(enabled) {
   (0, import_react11.useEffect)(() => {
     if (!enabled || typeof document === "undefined")
       return;
     const active = document.activeElement;
-    if (active instanceof Element && active.closest(".dshpc-locked") !== null)
+    if (active instanceof Element && active.closest(".dshpc-locked") !== null && !isLockExempt(active))
       active.blur();
     const onKey = (event) => {
-      if (event.key === "Tab")
+      if (event.key === "Tab" && !isLockExempt(event.target))
         event.preventDefault();
     };
     document.addEventListener("keydown", onKey, true);
     return () => document.removeEventListener("keydown", onKey, true);
   }, [enabled]);
-}
-function OverlayLockCatcher() {
-  return (0, import_react11.createElement)("div", {
-    className: "dshpc-lock-catcher",
-    // 点它不能再冒到遮罩：否则等于点了外部，会顺带把弹窗关掉。
-    onClick: (event) => event.stopPropagation()
-  });
 }
 function useEscapeClose(enabled, onClose) {
   (0, import_react11.useEffect)(() => {
@@ -6193,7 +6193,7 @@ function WorkspacePicker(props) {
 var import_react22 = require("react");
 
 // dist/ui/feedback/feedback-css.generated.js
-var FEEDBACK_CSS = "/* \u906E\u7F69\u4E0E\u5934\u90E8\u5728 overlay.css\uFF0C\u8868\u9762\uFF08\u5E95\u8272/\u63CF\u8FB9/\u5706\u89D2/\u9634\u5F71\uFF09\u5728 panel.css \u7684 --modal \u6863\uFF0C\n   \u8FD9\u91CC\u53EA\u5269**\u5BB6\u65CF\u5E03\u5C40\u4E0E\u5C3A\u5BF8**\u3002\u4E09\u8005\u5404\u7BA1\u4E00\u6BB5\uFF0C\u522B\u518D\u628A\u76AE\u80A4\u6284\u56DE\u6765\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002\n   \u7EC6\u6EDA\u52A8\u6761\u4E0E 1px \u8BA9\u4F4D\u7531 .dshpc-scroll-thin \u7EDF\u4E00\u7ED9\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px}\n\n/* \u5E95\u680F\u4E0E\u5934\u90E8\u540C\u4E00\u53E3\u5F84\uFF082026-11-02 \u7528\u6237\uFF09\uFF1A\u4E0A\u4E0B\u5185\u8DDD\u76F8\u7B49\u3001\u5185\u5BB9\u5782\u76F4\u5C45\u4E2D\u3001\u9ED8\u8BA4\u5E26\u4E00\u6761\u5206\u9694\u7EBF\u3002\n   \u7EBF\u53EF\u7531\u6D88\u8D39\u65B9\u5173\u6389\uFF08Modal \u7684 footerDivider=false\uFF09\u2014\u2014 \u786E\u8BA4\u6846\u5BB6\u65CF\u672C\u6765\u5C31\u6CA1\u6709\u7EBF\uFF08\u4E0E\u5934\u90E8\u4E00\u81F4\uFF09\u3002 */\n.dshpc-modal .dshpc-modal__foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px;border-top:1px solid var(--dshpc-border)}\n.dshpc-modal .dshpc-modal__foot--bare{border-top:none}\n/* \u5E95\u680F\u5DE6\u4FA7\u7684\u8FC7\u7A0B\u63D0\u793A\uFF1A\u5403\u6389\u6309\u94AE\u4E4B\u5916\u7684\u5269\u4F59\u5BBD\uFF0C\u8D85\u957F\u4EA4\u7ED9 FlipText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-modal .dshpc-modal__notice{flex:1 1 auto;min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3)}\n/* \u81EA\u7ED8 toast \u7684\u6837\u5F0F\u5728 2026-11-03 \u5220\u9664\uFF1AToast \u65E9\u5DF2\u6539\u8D70\u5BBF\u4E3B toast()\uFF08Toast.ts \u7684 showNative\uFF09\uFF0C\n   .dshpc-toast* \u8FD9\u51E0\u4E2A\u7C7B\u6CA1\u6709\u4EFB\u4F55\u6D88\u8D39\u8005\uFF0C\u7559\u7740\u53EA\u662F\u6B7B\u6837\u5F0F\uFF08\u8FD8\u5E26\u7740\u88F8 z-index \u4E0E\u88F8\u9634\u5F71\uFF09\u3002 */\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u8272\u503C\u5728 tokens.css \u7684 --dshpc-sev-*\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:var(--dshpc-on-signal);flex:none}\n.dshpc-alert-sev--info{background:var(--dshpc-sev-info)}\n.dshpc-alert-sev--success{background:var(--dshpc-sev-success)}\n.dshpc-alert-sev--warning{background:var(--dshpc-sev-warning)}\n.dshpc-alert-sev--error{background:var(--dshpc-sev-error)}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0;border-top:none}\n/* \u9501\u5B9A\u6001\uFF08locked\uFF09\uFF1A\u53EA\u7ED9\u900F\u660E\u70B9\u51FB\u5C42\u505A\u5B9A\u4F4D\u951A\u70B9\uFF0C**\u4E0D\u538B\u4EFB\u4F55\u906E\u7F69** \u2014\u2014 \u76D6\u7070\u4F1A\u8BA9\u4EBA\u4EE5\u4E3A\u754C\u9762\u574F\u4E86\uFF1B\n   \u53D8\u7070\u662F\u5404\u63A7\u4EF6\u81EA\u5DF1 :disabled \u7684\u4E8B\uFF08Button / Input / Picker \u2026 \u672C\u6765\u5C31\u6709\u90A3\u5957\u6837\u5F0F\uFF09\u3002 */\n.dshpc-modal--locked{position:relative}\n";
+var FEEDBACK_CSS = "/* \u906E\u7F69\u4E0E\u5934\u90E8\u5728 overlay.css\uFF0C\u8868\u9762\uFF08\u5E95\u8272/\u63CF\u8FB9/\u5706\u89D2/\u9634\u5F71\uFF09\u5728 panel.css \u7684 --modal \u6863\uFF0C\n   \u8FD9\u91CC\u53EA\u5269**\u5BB6\u65CF\u5E03\u5C40\u4E0E\u5C3A\u5BF8**\u3002\u4E09\u8005\u5404\u7BA1\u4E00\u6BB5\uFF0C\u522B\u518D\u628A\u76AE\u80A4\u6284\u56DE\u6765\u3002 */\n.dshpc-modal{\n  display:flex;flex-direction:column;box-sizing:border-box;\n}\n/* body = \u552F\u4E00\u6EDA\u52A8\u5BB9\u5668\uFF1A\u5185\u8DDD\u4E0E\u6EDA\u52A8\u90FD\u5F52\u5B83\uFF08\u6EDA\u52A8\u6761\u8D34\u9762\u677F\u53F3\u7F18\uFF0C\u4E0D\u88AB\u5185\u8DDD\u6324\u8FDB\u6765\uFF09\uFF1B\n   \u5185\u5BB9\u6309\u6D41\u6392\uFF0C\u4E0D\u8BBE height:100%\u3001\u4E0D\u81EA\u5DF1\u5F00\u6EDA\u52A8\u6761\u3002\n   \u7EC6\u6EDA\u52A8\u6761\u4E0E 1px \u8BA9\u4F4D\u7531 .dshpc-scroll-thin \u7EDF\u4E00\u7ED9\uFF08\u53E3\u5F84\u89C1 style.md \xA7\u6EDA\u52A8\u6761\u8BA9\u4F4D\uFF09\u3002 */\n.dshpc-modal__body{flex:1 1 auto;min-height:0;overflow:auto;padding:17px 18px}\n\n/* \u5E95\u680F\u4E0E\u5934\u90E8\u540C\u4E00\u53E3\u5F84\uFF082026-11-02 \u7528\u6237\uFF09\uFF1A\u4E0A\u4E0B\u5185\u8DDD\u76F8\u7B49\u3001\u5185\u5BB9\u5782\u76F4\u5C45\u4E2D\u3001\u9ED8\u8BA4\u5E26\u4E00\u6761\u5206\u9694\u7EBF\u3002\n   \u7EBF\u53EF\u7531\u6D88\u8D39\u65B9\u5173\u6389\uFF08Modal \u7684 footerDivider=false\uFF09\u2014\u2014 \u786E\u8BA4\u6846\u5BB6\u65CF\u672C\u6765\u5C31\u6CA1\u6709\u7EBF\uFF08\u4E0E\u5934\u90E8\u4E00\u81F4\uFF09\u3002 */\n.dshpc-modal .dshpc-modal__foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:18px;border-top:1px solid var(--dshpc-border)}\n.dshpc-modal .dshpc-modal__foot--bare{border-top:none}\n/* \u5E95\u680F\u5DE6\u4FA7\u7684\u8FC7\u7A0B\u63D0\u793A\uFF1A\u5403\u6389\u6309\u94AE\u4E4B\u5916\u7684\u5269\u4F59\u5BBD\uFF0C\u8D85\u957F\u4EA4\u7ED9 FlipText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-modal .dshpc-modal__notice{flex:1 1 auto;min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3)}\n/* \u81EA\u7ED8 toast \u7684\u6837\u5F0F\u5728 2026-11-03 \u5220\u9664\uFF1AToast \u65E9\u5DF2\u6539\u8D70\u5BBF\u4E3B toast()\uFF08Toast.ts \u7684 showNative\uFF09\uFF0C\n   .dshpc-toast* \u8FD9\u51E0\u4E2A\u7C7B\u6CA1\u6709\u4EFB\u4F55\u6D88\u8D39\u8005\uFF0C\u7559\u7740\u53EA\u662F\u6B7B\u6837\u5F0F\uFF08\u8FD8\u5E26\u7740\u88F8 z-index \u4E0E\u88F8\u9634\u5F71\uFF09\u3002 */\n.dshpc-error__retry{\n  margin-top:8px;color:var(--dshpc-link);cursor:pointer;background:none;border:none;padding:0;\n}\n/* \u539F\u751F\u5F39\u7A97\u6F14\u793A\uFF1A\u7ECF\u5BBF\u4E3B Modal \u7684 contentClassName \u6CE8\u5165\uFF0C\u8BC1\u660E\u5BBF\u4E3B\u5185\u5BB9\u533A\u5C3A\u5BF8\u53EF\u7ECF\u7C7B\u540D\u81EA\u5B9A\u4E49\u3002 */\n.dshpc-native-demo-content{max-width:520px}\n/* \u5934\u90E8\u4FE1\u53F7\u56FE\u6807\uFF08AlertModal \u6309 severity \u6CE8\u5165\uFF09\uFF1A\u81EA\u542B\u914D\u8272\uFF0C\u8272\u503C\u5728 tokens.css \u7684 --dshpc-sev-*\u3002 */\n.dshpc-alert-sev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;color:var(--dshpc-on-signal);flex:none}\n.dshpc-alert-sev--info{background:var(--dshpc-sev-info)}\n.dshpc-alert-sev--success{background:var(--dshpc-sev-success)}\n.dshpc-alert-sev--warning{background:var(--dshpc-sev-warning)}\n.dshpc-alert-sev--error{background:var(--dshpc-sev-error)}\n/* \u5C0F\u786E\u8BA4\u6846\u5BB6\u65CF\uFF08sm\uFF09\uFF1A\u4E25\u683C\u6284\u5144\u5F1F\u9879\u76EE renderConfirm \u7684 dialogStyle\uFF08task-list.tsx:456\uFF09\u2014\u2014\n   360px \u5BBD / 18px \u5185\u8DDD / \u5934\u90E8\u65E0\u5206\u9694\u7EBF / \u8BF4\u660E\u6587\u5B57 fg-2 / \u5E95\u90E8\u6309\u94AE\u53F3\u5BF9\u9F50\u3002 */\n.dshpc-modal--sm{padding:18px}\n.dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}\n.dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}\n.dshpc-modal--sm .dshpc-modal__foot{padding:0;border-top:none}\n/* \u9501\u5B9A\u6001\u7684\u6307\u9488\u547D\u4E2D\u5C42\u4E0E\u53D8\u7070\u90FD\u5728 overlay.css\uFF08-locked \u7C7B\uFF09\uFF0CModal \u8FD9\u91CC\u4E0D\u518D\u9700\u8981\u5B9A\u4F4D\u951A\u70B9\u3002 */\n";
 
 // dist/ui/display/FlipText.js
 var import_react21 = require("react");
@@ -6236,15 +6236,17 @@ function FlipText(props) {
 }
 
 // dist/ui/feedback/Modal.js
+var BackgroundContext = (0, import_react22.createContext)(void 0);
 function Modal(props) {
   ensureComponentStyles("feedback", FEEDBACK_CSS);
   const tt = props.translate ?? t;
   const busy = props.busy === true;
   const locked = props.locked === true;
-  const denyClose = busy || locked;
+  const backgrounded = props.backgrounded === true;
+  const denyClose = busy || locked || backgrounded;
   const closeOnMask = !denyClose && props.closeOnMask !== false;
   useEscapeClose(!denyClose && props.escClose !== false, denyClose ? void 0 : props.onClose);
-  useLockGuards(locked);
+  useLockGuards(locked && !backgrounded);
   const notice = props.notice === "" ? void 0 : props.notice;
   const sizeStyle2 = {
     sm: { width: "360px", maxWidth: "calc(100% - 48px)" },
@@ -6258,9 +6260,12 @@ function Modal(props) {
     kind: "center",
     closeOnMask,
     onClose: denyClose ? void 0 : props.onClose,
-    // inert 子树不参与命中测试，鼠标落到遮罩上 —— 禁止手势得挂在遮罩这层才看得见。
-    attrs: locked ? { "data-dshpc-locked": "" } : void 0
-  }, (0, import_react22.createElement)(
+    // 面板锁定与整窗收起都标在遮罩上：前者控禁止手势，后者整窗隐藏但保树。
+    attrs: {
+      ...locked ? { "data-dshpc-locked": "" } : {},
+      ...backgrounded ? { "data-dshpc-backgrounded": "" } : {}
+    }
+  }, (0, import_react22.createElement)(BackgroundContext.Provider, { value: props.onBackground }, (0, import_react22.createElement)(
     OverlayLockedProvider,
     { value: locked },
     // 表面（底色/描边/圆角/阴影）来自 panel.css 的 modal 档；`.dshpc-modal` 只剩家族布局，
@@ -6293,10 +6298,11 @@ function Modal(props) {
       // 内容只管按流排，不许自己定高、不许自己再开滚动条（用户 2026-10-22 定的口径）。
       (0, import_react22.createElement)("div", { className: "dshpc-modal__body dshpc-scroll-thin" }, props.children ?? null),
       props.footer === void 0 && notice === void 0 ? null : (0, import_react22.createElement)("div", { className: `dshpc-modal__foot${props.footerDivider === false ? " dshpc-modal__foot--bare" : ""}` }, notice === void 0 ? null : (0, import_react22.createElement)(FlipText, { text: notice, className: "dshpc-modal__notice", sweep: true }), props.footer),
-      // 透明点击层兜住消费方自绘的元素；核心控件此时已各自是真 disabled。
-      locked ? (0, import_react22.createElement)(OverlayLockCatcher) : null
+      // 锁定期间的例外控件：整窗指针锁死时，唯独这一块仍可点、可 Tab。
+      // 放在 catcher 原来的位置（面板最后一个子节点），不依赖 DOM 顺序或 z-index。
+      props.lockExceptions === void 0 ? null : (0, import_react22.createElement)(OverlayLockExempt, null, props.lockExceptions)
     )
-  ));
+  )));
 }
 
 // dist/ui/feedback/SideSheet.js
@@ -6423,39 +6429,29 @@ function SideSheet(props) {
     closeOnMask,
     onClose: denyClose ? void 0 : props.onClose,
     attrs: locked ? { "data-dshpc-locked": "" } : void 0
-  }, (0, import_react23.createElement)(OverlayLockedProvider, { value: locked }, (0, import_react23.createElement)(
-    "section",
-    {
-      ref: (element) => {
-        panelRef.current = element;
-      },
-      className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}${leaving ? " dshpc-sheet--leaving" : ""}${locked ? " dshpc-locked" : ""}`,
-      style: { width: `${width}px` },
-      // 收起动画结束才卸载；入场动画结束（leaving=false）在这里不算数。
-      onAnimationEnd: () => {
-        if (leaving)
-          setUnmounted(true);
-      },
-      "aria-label": typeof props.title === "string" ? props.title : void 0,
-      // 面板上的点击不能再冒到遮罩（否则点正文就把自己关了）。
-      onClick: (e) => e.stopPropagation()
+  }, (0, import_react23.createElement)(OverlayLockedProvider, { value: locked }, (0, import_react23.createElement)("section", {
+    ref: (element) => {
+      panelRef.current = element;
     },
-    props.resizable === false ? null : (0, import_react23.createElement)("div", {
-      className: "dshpc-dock__resizer",
-      role: "separator",
-      "aria-orientation": "vertical",
-      "aria-label": tt("dockResize"),
-      onPointerDown: (event) => {
-        beginResize(event);
-      }
-    }),
-    renderHeader(),
-    closeButton(!hasHeader),
-    (0, import_react23.createElement)("div", { className: "dshpc-dock__body dshpc-sheet__body dshpc-scroll-thin" }, props.children ?? null),
-    props.footer === void 0 && notice === void 0 ? null : (0, import_react23.createElement)("div", { className: "dshpc-sheet__foot" }, notice === void 0 ? null : (0, import_react23.createElement)(FlipText, { text: notice, className: "dshpc-sheet__notice", sweep: true }), props.footer),
-    // 与 Modal 同一套：透明点击层兜住自绘元素，变灰归各控件自己的 :disabled。
-    locked ? (0, import_react23.createElement)(OverlayLockCatcher) : null
-  )));
+    className: `dshpc-side-surface dshpc-sheet dshpc-sheet--${side}${leaving ? " dshpc-sheet--leaving" : ""}${locked ? " dshpc-locked" : ""}`,
+    style: { width: `${width}px` },
+    // 收起动画结束才卸载；入场动画结束（leaving=false）在这里不算数。
+    onAnimationEnd: () => {
+      if (leaving)
+        setUnmounted(true);
+    },
+    "aria-label": typeof props.title === "string" ? props.title : void 0,
+    // 面板上的点击不能再冒到遮罩（否则点正文就把自己关了）。
+    onClick: (e) => e.stopPropagation()
+  }, props.resizable === false ? null : (0, import_react23.createElement)("div", {
+    className: "dshpc-dock__resizer",
+    role: "separator",
+    "aria-orientation": "vertical",
+    "aria-label": tt("dockResize"),
+    onPointerDown: (event) => {
+      beginResize(event);
+    }
+  }), renderHeader(), closeButton(!hasHeader), (0, import_react23.createElement)("div", { className: "dshpc-dock__body dshpc-sheet__body dshpc-scroll-thin" }, props.children ?? null), props.footer === void 0 && notice === void 0 ? null : (0, import_react23.createElement)("div", { className: "dshpc-sheet__foot" }, notice === void 0 ? null : (0, import_react23.createElement)(FlipText, { text: notice, className: "dshpc-sheet__notice", sweep: true }), props.footer))));
 }
 
 // dist/ui/feedback/AlertModal.js
@@ -68341,8 +68337,16 @@ var docData = {
         "en": "The callback\u2019s return value decides whether it closes: **only `false`** (returned directly, or resolved to `false`) means it did not succeed \u2014 the dialog stays for a retry; `true` / `undefined` / anything else closes as usual; a rejection also keeps it open (the error is logged). The callback owns its failure message, so call sites need no `try/catch`."
       },
       {
-        "zh": "**\u8981\u300C\u6574\u6846\u8C01\u90FD\u522B\u52A8\u300D\u5C31\u4F20 `locked`**\uFF0C\u522B\u62FF\u6309\u94AE loading \u9876\u66FF \u2014\u2014 \u4E24\u8005\u662F\u4E24\u4EF6\u4E8B\uFF1Aloading \u53EA\u7BA1\u90A3\u4E00\u9897\u6309\u94AE\u8F6C\u5708\uFF0C`locked` \u7BA1\u6574\u5757\u9762\u677F\u3002\u505A\u6CD5\u662F**\u63A7\u4EF6\u5404\u81EA\u6309\u81EA\u5DF1\u7684\u7981\u7528\u6001\u6E32\u67D3**\uFF08Button / Input / Textarea / Checkbox / Segmented / Picker / \u65E5\u671F\u9009\u62E9 / \u5206\u9875 \u90FD\u4F1A\u81EA\u5DF1\u53D8\u7070\u5E76\u771F\u7684\u7981\u7528\uFF0CTab \u81EA\u7136\u8DF3\u8FC7\uFF09\uFF0C\u518D\u76D6\u4E00\u5C42**\u5168\u900F\u660E**\u70B9\u51FB\u5C42\u515C\u4F4F\u81EA\u7ED8\u5143\u7D20\u4E0E\u9F20\u6807 \u2014\u2014 \u6240\u4EE5\u754C\u9762\u4E0D\u4F1A\u6574\u4F53\u8499\u7070\uFF08\u8499\u7070\u4F1A\u8BA9\u4EBA\u4EE5\u4E3A\u574F\u4E86\uFF09\uFF0C\u53EA\u6709\u63A7\u4EF6\u81EA\u5DF1\u53D8\u7070 + \u7981\u6B62\u624B\u52BF\u3002\u5B83**\u53EA\u505A\u300C\u6216\u300D\u3001\u4ECE\u4E0D\u5199\u56DE**\u4EFB\u4F55 `disabled`\uFF1A\u672C\u6765\u7981\u7528\u7684\u89E3\u9501\u540E\u7167\u6837\u7981\u7528\uFF0C\u9501\u5B9A\u671F\u95F4\u4F60\u628A\u67D0\u4E2A\u63A7\u4EF6\u6539\u6210\u80FD\u7528 / \u7981\u7528\uFF0C\u89E3\u9501\u540E\u4E5F\u7167\u4F60\u7684\u3002\u58F0\u660E\u5F0F\u4F20 `locked={saving}` \u5373\u53EF\uFF1B\u53D7\u63A7\u9879\uFF0C\u4E0D\u4F20 = \u672A\u9501\uFF0C\u5173\u6389\u91CD\u5F00\u81EA\u7136\u590D\u4F4D\u3002\u547D\u4EE4\u5F0F\u90A3\u4E24\u4E2A\u51FD\u6570\u7684\u56DE\u8C03\u4F1A\u6536\u5230 `ctl`\uFF08`{ setLocked(bool) }`\uFF09\uFF1A`onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`\uFF1B\u6846\u5173\u6389\u4E4B\u540E\u518D\u8C03\u662F\u7A7A\u64CD\u4F5C\u3002",
-        "en": '**When the whole dialog must be untouchable, pass `locked`** \u2014 do not fake it with button loading: loading only spins that one button, while `locked` covers the whole panel. It works by letting **each control render its own disabled state** (Button / Input / Textarea / Checkbox / Segmented / Picker / date picker / pagination all dim themselves and are genuinely disabled, so Tab skips them), plus a **fully transparent** click layer that catches self-drawn elements and the pointer \u2014 so the surface is never dimmed as a whole (a veil reads as "the app broke"); only the controls dim and the cursor turns not-allowed. It **only ORs and never writes back** any `disabled`: already-disabled controls stay disabled after unlocking, and anything you flip mid-lock stays as you left it. Declaratively pass `locked={saving}`; it is controlled and stateless \u2014 omitted means unlocked, reopening starts clean. The imperative dialogs hand their callbacks a `ctl` (`{ setLocked(bool) }`): `onConfirm: async (ctl) => { ctl.setLocked(true); await save(); ctl.setLocked(false) }`. Calling it after the dialog closed is a no-op.'
+        "zh": "**\u8981\u300C\u6574\u6846\u8C01\u90FD\u522B\u52A8\u300D\u5C31\u4F20 `locked`**\uFF0C\u522B\u62FF\u6309\u94AE loading \u9876\u66FF \u2014\u2014 \u4E24\u8005\u662F\u4E24\u4EF6\u4E8B\uFF1Aloading \u53EA\u7BA1\u90A3\u4E00\u9897\u6309\u94AE\u8F6C\u5708\uFF0C`locked` \u7BA1\u6574\u5757\u9762\u677F\u3002\u505A\u6CD5\u662F**\u63A7\u4EF6\u5404\u81EA\u6309\u81EA\u5DF1\u7684\u7981\u7528\u6001\u6E32\u67D3**\uFF08Button / Input / Textarea / Checkbox / Segmented / Picker / \u65E5\u671F\u9009\u62E9 / \u5206\u9875 \u90FD\u4F1A\u81EA\u5DF1\u53D8\u7070\u5E76\u771F\u7684\u7981\u7528\uFF0CTab \u81EA\u7136\u8DF3\u8FC7\uFF09\uFF0C\u9762\u677F\u6574\u5757\u5173\u6389**\u6307\u9488\u547D\u4E2D**\uFF08`pointer-events:none`\uFF09\uFF0C\u9F20\u6807\u843D\u5230\u906E\u7F69\u4E0A \u2014\u2014 \u906E\u7F69\u5728\u9501\u5B9A\u65F6\u4E0D\u662F\u5173\u95ED\u8DEF\u5F84\uFF0C\u6240\u4EE5\u70B9\u5B83\u65E2\u4E0D\u5173\u7A97\u4E5F\u4E0D\u7A7F\u900F\u9875\u9762\uFF1B\u4E0D\u538B\u4EFB\u4F55\u7070\u8272\u906E\u7F69\uFF08\u8499\u7070\u4F1A\u8BA9\u4EBA\u4EE5\u4E3A\u574F\u4E86\uFF09\u3002Tab \u6574\u4E2A\u5403\u6389\u3001\u9501\u5B9A\u77AC\u95F4\u628A\u9762\u677F\u91CC\u7684\u6D3B\u52A8\u7126\u70B9 blur \u6389\u3002\u5B83**\u53EA\u505A\u300C\u6216\u300D\u3001\u4ECE\u4E0D\u5199\u56DE**\u4EFB\u4F55 `disabled`\uFF1B\u53D7\u63A7\u9879\uFF0C\u4E0D\u4F20 = \u672A\u9501\uFF0C\u5173\u6389\u91CD\u5F00\u81EA\u7136\u590D\u4F4D\u3002\u547D\u4EE4\u5F0F\u90A3\u4E24\u4E2A\u51FD\u6570\u7684\u56DE\u8C03\u4F1A\u6536\u5230 `ctl`\uFF08`{ setLocked(bool) }`\uFF09\uFF1B\u6846\u5173\u6389\u4E4B\u540E\u518D\u8C03\u662F\u7A7A\u64CD\u4F5C\u3002",
+        "en": '**When the whole dialog must be untouchable, pass `locked`** \u2014 do not fake it with button loading: loading only spins that one button, while `locked` covers the whole panel. **Each control renders its own disabled state** (Button / Input / Textarea / Checkbox / Segmented / Picker / date picker / pagination all dim themselves and are genuinely disabled, so Tab skips them), and the panel as a whole drops pointer hit-testing (`pointer-events:none`) so the mask catches the pointer \u2014 the mask is not a close path while locked, so clicking it neither closes nor falls through to the page; no dim veil (a veil reads as "the app broke"). Tab is swallowed and whatever was focused inside is blurred on lock. It **only ORs and never writes back** any `disabled`; controlled and stateless \u2014 omitted means unlocked. The imperative dialogs hand their callbacks a `ctl` (`{ setLocked(bool) }`); calling it after close is a no-op.'
+      },
+      {
+        "zh": "**\u9501\u5B9A\u671F\u7559\u4E00\u4E2A\u4F8B\u5916\u63A7\u4EF6**\uFF08\u957F\u4EFB\u52A1\u63D0\u4EA4\u540E\u60F3\u5148\u6536\u8D77\u3001\u6D3B\u7EE7\u7EED\u8DD1\uFF09\uFF1A\u628A\u4EFB\u610F ReactNode\uFF08\u6309\u94AE / \u8F93\u5165\u6846 / \u81EA\u7ED8\u90FD\u884C\uFF0C1~N \u4E2A\uFF09\u653E\u8FDB `lockExceptions`\uFF0C\u53EA\u6709\u8FD9\u4E00\u5757\u4ECD\u53EF\u70B9\u3001\u53EF Tab\uFF0C\u6838\u5FC3\u63A7\u4EF6\u5728\u91CC\u9762\u4E5F\u4E0D\u81EA\u6211\u7981\u7528\uFF1B\u5176\u4F59\u6309\u94AE\u7167\u7070\u3001\u2715 / Esc / \u70B9\u906E\u7F69\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4ECD\u5C01\u6B7B\u3002`useModalBackground()` \u5728\u4F8B\u5916\u5B50\u6811\u91CC\u62FF\u5230\u6536\u8D77\u51FA\u53E3 \u2014\u2014 \u4F60\u7684\u6536\u8D77\u94AE `onClick={useModalBackground()}` \u5373\u53EF\uFF1B\u6838\u5FC3\u53EA\u53D1\u8FD9\u4E2A\u4E8B\u4EF6\uFF0C**\u4E0D\u7ED3\u7B97\u3001\u4E0D\u9690\u85CF**\uFF1A\u4F60\u5728\u8FD9\u4E2A\u56DE\u8C03\u91CC\u767B\u8BB0\u540E\u53F0\u4EFB\u52A1\uFF08\u5982 `handle.background()`\uFF09\u5E76\u628A `backgrounded` \u7F6E true\u3002",
+        "en": "**Keep one exception control interactive while locked** (collapse a long-running submit while the work continues): put any ReactNode (button / input / custom, 1~N) into `lockExceptions` \u2014 only that block stays clickable and Tab-reachable, and core controls inside do not self-disable; everything else stays dimmed and \u2715 / Esc / mask still cannot close. `useModalBackground()` yields the collapse outlet from inside the exception subtree \u2014 wire your collapse button as `onClick={useModalBackground()}`. The core only emits this event; it **neither settles nor hides**: in that callback you register the background job (e.g. `handle.background()`) and set `backgrounded` to true."
+      },
+      {
+        "zh": "**\u6536\u8D77 / \u547C\u56DE**\u9760\u53D7\u63A7 `backgrounded`\uFF1Atrue \u65F6\u6574\u7A97\u7528 `visibility:hidden` \u9690\u85CF\uFF08**DOM \u4E0D\u5378\u8F7D**\uFF0C\u8F93\u5165\u5185\u5BB9 / \u8FDB\u5EA6 / \u6EDA\u52A8\u4F4D\u7F6E\u539F\u6837\u4FDD\u7559\uFF09\uFF0C\u540C\u65F6\u64A4\u6389 Tab / Esc \u76D1\u542C\uFF08\u770B\u4E0D\u89C1\u7684\u5F39\u7A97\u4E0D\u541E\u952E\u3001\u4E0D\u88AB Esc \u5173\u6389\uFF09\uFF1B\u4ECE\u540E\u53F0\u5217\u8868\u8FD8\u539F\u5C31\u662F\u628A `backgrounded` \u7F6E\u56DE false \u2014\u2014 \u540C\u4E00\u68F5\u6811\u539F\u4F4D\u56DE\u6765\uFF0C\u4E0D\u91CD\u753B\u3001\u4E0D\u91CD\u7F6E\u3002\u6838\u5FC3**\u4E0D\u78B0\u540E\u53F0\u6C60**\uFF1A\u767B\u8BB0 / \u8FD8\u539F / \u8DE8\u9875\u540C\u6B65\u90FD\u662F\u8C03\u7528\u65B9\u7528\u73B0\u6210\u7684 `task-notifications` \u4E8B\u4EF6\u63A5\uFF08\u6536\u8D77\u8D70 `backgrounded` \u4E8B\u4EF6\u3001\u547C\u56DE\u8D70 `restored` \u4E8B\u4EF6\uFF09\uFF0C`ui` \u4E0D\u4F9D\u8D56 `adv.*`\u3002\u5237\u65B0 / \u5207\u9875\u540E\u539F\u6811\u4E0D\u5728\u4E86\uFF0C\u5C31\u660E\u8BF4\u505A\u4E0D\u5230\uFF0C\u522B\u753B\u4E2A\u7A7A\u58F3\u5192\u5145\u8FD8\u539F\u3002",
+        "en": "**Collapse / restore** is the controlled `backgrounded` prop: true hides the whole window with `visibility:hidden` (**DOM stays mounted** \u2014 input, progress and scroll position are preserved) and detaches the Tab / Esc listeners (an invisible dialog neither swallows keys nor closes on Esc); restoring from a background list is just setting `backgrounded` back to false \u2014 the same tree returns in place, no repaint, no reset. The core **does not touch the task pool**: registration / restore / cross-page sync are wired by the caller through the existing `task-notifications` events (collapse via the `backgrounded` event, restore via `restored`), `ui` never imports `adv.*`. After a refresh / page change the original tree is gone \u2014 say so plainly instead of drawing an empty shell that pretends to restore."
       }
     ],
     "api": [
@@ -68584,8 +68588,35 @@ var docData = {
             "type": "boolean",
             "def": "false",
             "desc": {
-              "zh": "**\u9501\u6B7B\u5168\u90E8\u4EA4\u4E92**\uFF08\u4E0E loading \u89E3\u8026\uFF09\uFF1A\u9762\u677F\u91CC\u7684\u6838\u5FC3\u63A7\u4EF6\u5404\u81EA\u6309**\u81EA\u5DF1\u7684\u7981\u7528\u6001**\u6E32\u67D3\uFF08\u7070\u6389\u3001\u70B9\u4E0D\u52A8\u3001Tab \u8DF3\u8FC7\uFF09\uFF0C\u518D\u76D6\u4E00\u5C42**\u5168\u900F\u660E**\u70B9\u51FB\u5C42\u515C\u4F4F\u81EA\u7ED8\u5143\u7D20\u4E0E\u9F20\u6807\uFF08\u7981\u6B62\u624B\u52BF\uFF09\u2014\u2014 **\u4E0D\u538B\u4EFB\u4F55\u7070\u8272\u906E\u7F69**\uFF1B\u540C\u65F6 Tab \u952E\u6574\u4E2A\u5403\u6389\u3001\u9501\u5B9A\u77AC\u95F4\u628A\u9762\u677F\u91CC\u7684\u6D3B\u52A8\u7126\u70B9 blur \u6389\uFF08\u81EA\u7ED8\u7684 input \u4E5F\u6253\u4E0D\u4E86\u5B57\uFF09\uFF1B\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u540C\u65F6\u5931\u6548\u3002\u81EA\u7ED8\u7684\u539F\u751F\u8868\u5355\u5143\u7D20\u4F1A\u987A\u5E26**\u8FD1\u4F3C\u53D8\u7070**\uFF08\u4E00\u6761\u7279\u5F02\u6027\u4E3A 0 \u7684\u89C4\u5219\uFF0C\u53EA\u5199 opacity / cursor\uFF0C\u88AB\u4F60\u81EA\u5DF1\u4EFB\u4F55\u4E00\u6761\u89C4\u5219\u6216 `--dshpc-lock-dim: 1` \u8986\u76D6\u6389\uFF09\u3002\u53EA\u505A\u300C\u6216\u300D\u3001\u4E0D\u5199\u56DE\u8C03\u7528\u65B9\u7684 `disabled`\uFF1A\u672C\u6765\u7981\u7528\u7684\u89E3\u9501\u540E\u7167\u6837\u7981\u7528\uFF0C\u9501\u5B9A\u671F\u95F4\u6539\u7684\u4E5F\u4E0D\u88AB\u8986\u76D6\u3002\u53D7\u63A7\u9879\u3001\u4E0D\u843D\u5185\u90E8 state\uFF08\u5173\u6389\u91CD\u5F00\u81EA\u7136\u56DE\u5230\u672A\u9501\uFF09",
-              "en": "**Locks every interaction** (decoupled from loading): core controls inside render in **their own disabled state** (dimmed, unclickable, skipped by Tab), plus a **fully transparent** click layer that catches self-drawn elements and the pointer (not-allowed cursor) \u2014 **no dim veil at all**; Tab is swallowed outright and whatever was focused inside is blurred on lock (so a self-drawn input cannot be typed into); all three close paths stop working. Self-drawn native form elements get an **approximate dim** too (one zero-specificity rule writing only opacity / cursor, beaten by any rule of yours or by `--dshpc-lock-dim: 1`). It only ORs and never writes back a caller\u2019s `disabled`: already-disabled controls stay disabled after unlocking, and mid-lock changes are not overwritten. Controlled and stateless (reopening starts unlocked)"
+              "zh": "**\u9501\u6B7B\u5168\u90E8\u4EA4\u4E92**\uFF08\u4E0E loading \u89E3\u8026\uFF09\uFF1A\u9762\u677F\u91CC\u7684\u6838\u5FC3\u63A7\u4EF6\u5404\u81EA\u6309**\u81EA\u5DF1\u7684\u7981\u7528\u6001**\u6E32\u67D3\uFF08\u7070\u6389\u3001\u70B9\u4E0D\u52A8\u3001Tab \u8DF3\u8FC7\uFF09\uFF0C\u9762\u677F\u6574\u5757\u5173\u6389\u6307\u9488\u547D\u4E2D\uFF08pointer-events:none\uFF09\uFF0C\u9F20\u6807\u843D\u5230\u906E\u7F69\u4E0A \u2014\u2014 \u9501\u5B9A\u65F6\u906E\u7F69\u4E0D\u662F\u5173\u95ED\u8DEF\u5F84\uFF0C\u70B9\u5B83\u4E0D\u5173\u7A97\u4E5F\u4E0D\u7A7F\u900F\uFF1B**\u4E0D\u538B\u4EFB\u4F55\u7070\u8272\u906E\u7F69**\u3002Tab \u6574\u4E2A\u5403\u6389\u3001\u9501\u5B9A\u77AC\u95F4\u628A\u9762\u677F\u91CC\u7684\u6D3B\u52A8\u7126\u70B9 blur \u6389\uFF1B\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u540C\u65F6\u5931\u6548\u3002\u81EA\u7ED8\u539F\u751F\u8868\u5355\u5143\u7D20\u987A\u5E26**\u8FD1\u4F3C\u53D8\u7070**\uFF08\u7279\u5F02\u6027 0\uFF0C\u53EA\u5199 opacity / cursor\uFF0C\u53EF\u88AB\u4F60\u7684\u89C4\u5219\u6216 `--dshpc-lock-dim: 1` \u8986\u76D6\uFF09\u3002\u53EA\u505A\u300C\u6216\u300D\u3001\u4E0D\u5199\u56DE\u8C03\u7528\u65B9\u7684 `disabled`\u3002\u53D7\u63A7\u9879\uFF08\u5173\u6389\u91CD\u5F00\u81EA\u7136\u56DE\u5230\u672A\u9501\uFF09",
+              "en": "**Locks every interaction** (decoupled from loading): core controls render in **their own disabled state** (dimmed, unclickable, skipped by Tab), and the panel drops pointer hit-testing so the mask catches the pointer \u2014 the mask is not a close path while locked, so clicking it neither closes nor falls through; **no dim veil**. Tab is swallowed and focus inside is blurred on lock; all three close paths stop working. Self-drawn native form elements get an **approximate dim** (zero specificity, opacity / cursor only, overridable by your rule or `--dshpc-lock-dim: 1`). Only ORs, never writes back `disabled`. Controlled and stateless"
+            }
+          },
+          {
+            "name": "lockExceptions",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u9501\u5B9A\u671F\u95F4\u7684\u4F8B\u5916\u63A7\u4EF6\uFF081~N \u4E2A\u4EFB\u610F\u8282\u70B9\uFF09\uFF1A\u53EA\u6709\u8FD9\u4E00\u5757\u4ECD\u53EF\u70B9\u3001\u53EF Tab\uFF0C\u6838\u5FC3\u63A7\u4EF6\u5728\u5176\u4E2D\u4E0D\u81EA\u6211\u7981\u7528\uFF1B\u5176\u4F59\u6309\u94AE\u7167\u7070\u3001\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4ECD\u5C01\u6B7B\u3002\u4E0D\u4F20\u5219 locked \u4E00\u5200\u5207",
+              "en": "Interactive exceptions while locked (1~N arbitrary nodes): only this block stays clickable / Tab-reachable and core controls inside do not self-disable; everything else stays dimmed, all three close paths still blocked. Omit for all-or-nothing locking"
+            }
+          },
+          {
+            "name": "onBackground",
+            "type": "() => void",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u6536\u8D77\u51FA\u53E3\uFF0C\u4F8B\u5916\u5B50\u6811\u5185\u4E5F\u53EF\u7ECF `useModalBackground()` \u53D6\u5230\u3002\u6838\u5FC3\u53EA\u53D1\u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\u3001\u4E0D\u9690\u85CF\uFF1B\u5728\u56DE\u8C03\u91CC\u767B\u8BB0\u540E\u53F0\u4EFB\u52A1\u5E76\u7F6E `backgrounded`",
+              "en": "Collapse outlet, also reachable from the exception subtree via `useModalBackground()`. The core only emits \u2014 it never settles or hides; register the background job and set `backgrounded` in the callback"
+            }
+          },
+          {
+            "name": "backgrounded",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u53D7\u63A7\u6536\u8D77\u6001\u3002true = \u6574\u7A97 visibility:hidden \u9690\u85CF\u4F46 DOM \u4E0D\u5378\u8F7D\uFF08\u8F93\u5165 / \u8FDB\u5EA6 / \u6EDA\u52A8\u539F\u6837\u4FDD\u7559\uFF09\uFF0C\u5E76\u64A4\u6389 Tab / Esc \u76D1\u542C\uFF1B\u8FD8\u539F = \u7F6E\u56DE false\u3002\u53D7\u63A7\u9879\u3001\u4E0D\u843D\u5185\u90E8 state",
+              "en": "Controlled collapse flag. true hides the window with visibility:hidden without unmounting (input / progress / scroll preserved) and detaches Tab / Esc listeners; restore = back to false. Controlled, stateless"
             }
           },
           {
@@ -68991,8 +69022,8 @@ var docData = {
             "type": "boolean",
             "def": "false",
             "desc": {
-              "zh": "\u9501\u6B7B\u5168\u90E8\u4EA4\u4E92\uFF08\u542B\u4E49\u540C `Modal.locked`\uFF09\uFF1A\u6838\u5FC3\u63A7\u4EF6\u5404\u81EA\u6309\u81EA\u5DF1\u7684\u7981\u7528\u6001\u6E32\u67D3 + \u5168\u900F\u660E\u70B9\u51FB\u5C42 + \u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u5931\u6548\uFF1B\u4E0D\u538B\u7070\u8272\u906E\u7F69\u3001\u4E0D\u5199\u56DE\u4EFB\u4F55 `disabled`",
-              "en": "Lock every interaction (same as `Modal.locked`): core controls render in their own disabled state, a fully transparent click layer catches the rest, all three close paths stop working; no dim veil and no writing back to any `disabled`"
+              "zh": "\u9501\u6B7B\u5168\u90E8\u4EA4\u4E92\uFF08\u542B\u4E49\u540C `Modal.locked`\uFF09\uFF1A\u6838\u5FC3\u63A7\u4EF6\u5404\u81EA\u6309\u81EA\u5DF1\u7684\u7981\u7528\u6001\u6E32\u67D3 + \u9762\u677F\u5173\u6307\u9488\u547D\u4E2D + \u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u5931\u6548\uFF1B\u4E0D\u538B\u7070\u8272\u906E\u7F69\u3001\u4E0D\u5199\u56DE\u4EFB\u4F55 `disabled`",
+              "en": "Lock every interaction (same as `Modal.locked`): core controls render in their own disabled state, the panel drops pointer hit-testing, all three close paths stop working; no dim veil and no writing back to any `disabled`"
             }
           },
           {
@@ -69837,8 +69868,8 @@ h(SideSheet, {
             "type": "() => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6807\u8BB0\u6536\u8D77\u5E76\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97",
-              "en": "Marks the task backgrounded and emits a backgrounded event without settling"
+              "zh": "\u6807\u8BB0\u6536\u8D77\u5E76\u53D1 backgrounded \u4E8B\u4EF6\uFF0C\u4E0D\u7ED3\u7B97\uFF1BUI \u4FA7\u7531 Modal \u7684 onBackground \u63A5\u5165",
+              "en": "Marks the task backgrounded and emits a backgrounded event without settling; wired from the UI via Modal.onBackground"
             }
           },
           {
@@ -77143,9 +77174,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.40.0"}`],
-            [t3("buildDemo"), `v${"0.40.0"}`],
-            [t3("buildStamp"), "261117-093358-850"]
+            [t3("buildCore"), `v${"0.41.0"}`],
+            [t3("buildDemo"), `v${"0.41.0"}`],
+            [t3("buildStamp"), "261117-111657-793"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77464,9 +77495,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.40.0"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.40.0"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-093358-850")
+          (0, import_react112.createElement)("span", null, `core v${"0.41.0"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.41.0"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-111657-793")
         )
       )
     ),

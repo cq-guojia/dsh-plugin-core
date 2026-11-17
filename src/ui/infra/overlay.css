@@ -11,14 +11,18 @@
 }
 /* 锁定态：禁用手势挂在遮罩上（面板外那一圈也要一致）。 */
 .dshpc-overlay[data-dshpc-locked]{cursor:not-allowed}
-/* 锁定时的透明点击层：吃指针、不改任何外观（变灰由各控件自己的 :disabled 负责）。
-   全透明是刻意的 —— 盖一层灰会让人以为界面坏了。 */
-.dshpc-lock-catcher{position:absolute;inset:0;z-index:1;cursor:not-allowed}
+/* 收起态（backgrounded）：整窗隐藏但 DOM 不卸载 —— 输入 / 进度 / 滚动原样保留。
+   visibility 而非 display:none：后者会让子元素脱离布局、恢复时丢滚动位置。 */
+.dshpc-overlay[data-dshpc-backgrounded]{visibility:hidden}
+/* 锁定态的指针命中层（根因解，不靠点击层 / z-index）：整块面板不吃指针，命中落到遮罩 —— 遮罩在
+   locked 时 closeOnMask=false，点它既不关窗也不穿透页面。例外子树重新吃指针，故仍可点。 */
+.dshpc-locked{pointer-events:none}
+.dshpc-lock-exempt,.dshpc-lock-exempt *{pointer-events:auto}
 /* 锁定态：消费方自绘的原生表单元素也「看起来禁用」。
    整条选择器包在 :where() 里 = 特异性 0 —— 消费方任意一条自己的规则都能盖回来，我们只当默认值。
    只写 opacity / cursor 两个属性；不想被灰就在自己元素上写 --dshpc-lock-dim: 1。
-   解锁 = 规则不再匹配，不存在「还原」，也就不会冲掉别人写的样式。 */
-:where(.dshpc-locked button:not(:disabled),.dshpc-locked input:not(:disabled),.dshpc-locked select:not(:disabled),.dshpc-locked textarea:not(:disabled)){
+   例外域（.dshpc-lock-exempt）整棵子树不参与变灰，否则例外按钮看着像禁用。 */
+:where(.dshpc-locked button:not(:disabled):not(.dshpc-lock-exempt, .dshpc-lock-exempt *),.dshpc-locked input:not(:disabled):not(.dshpc-lock-exempt, .dshpc-lock-exempt *),.dshpc-locked select:not(:disabled):not(.dshpc-lock-exempt, .dshpc-lock-exempt *),.dshpc-locked textarea:not(:disabled):not(.dshpc-lock-exempt, .dshpc-lock-exempt *)){
   opacity:var(--dshpc-lock-dim);cursor:not-allowed;
 }
 /* 居中档（Modal）：z 走 modal 档。 */

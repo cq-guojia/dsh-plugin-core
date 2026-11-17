@@ -33,6 +33,4 @@
 .dshpc-modal--sm .dshpc-overlay-head{padding:0 0 8px;border-bottom:none}
 .dshpc-modal--sm .dshpc-modal__body{padding:0 0 14px;overflow:visible;font-size:var(--dshpc-font-sm);color:var(--dshpc-fg-2);line-height:var(--dshpc-line-sm)}
 .dshpc-modal--sm .dshpc-modal__foot{padding:0;border-top:none}
-/* 锁定态（locked）：只给透明点击层做定位锚点，**不压任何遮罩** —— 盖灰会让人以为界面坏了；
-   变灰是各控件自己 :disabled 的事（Button / Input / Picker … 本来就有那套样式）。 */
-.dshpc-modal--locked{position:relative}
+/* 锁定态的指针命中层与变灰都在 overlay.css（-locked 类），Modal 这里不再需要定位锚点。 */

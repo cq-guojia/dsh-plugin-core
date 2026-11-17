@@ -74,7 +74,7 @@ export {
   type ModelCatalogState,
   type ModelRoute,
 } from './infra/host-data.js'
-export { Modal, type ModalProps, type ModalSize } from './feedback/Modal.js'
+export { Modal, useModalBackground, type ModalProps, type ModalSize } from './feedback/Modal.js'
 export { SideSheet, type SideSheetProps, type SideSheetSide } from './feedback/SideSheet.js'
 export {
   AlertModal,

@@ -15,43 +15,50 @@ import { PanelClose } from './panel.js';
  * 不在面板 DOM 里），锁定时它们还浮在屏幕上能点；那几个组件自己订阅这里、锁上就收起。
  */
 const LockedContext = createContext(false);
-/** 外层浮层是否锁死（不在浮层里 = false）。 */
+/**
+ * 例外域标记（由 `OverlayLockExempt` 挂）：锁定期间的焦点 / 变灰 / 核心控件自禁都对它开口。
+ * 用 Context 而非仅靠 DOM 类，是因为 portal 到 body 的菜单不在面板子树里。
+ */
+const LockExemptContext = createContext(false);
+/** 外层浮层是否锁死（不在浮层里 = false）。例外域内恒为 false。 */
 export function useOverlayLocked() {
-    return useContext(LockedContext);
+    return useContext(LockedContext) && !useContext(LockExemptContext);
+}
+/** 当前节点是否落在例外域里（焦点守卫用，含 portal 出来的菜单）。 */
+export function useOverlayLockExempt() {
+    return useContext(LockExemptContext);
 }
 export const OverlayLockedProvider = LockedContext.Provider;
+/** 把子树标成锁定期的例外：仍可点、仍可 Tab、核心控件不自我禁用。 */
+export function OverlayLockExempt(props) {
+    return h(LockExemptContext.Provider, { value: true }, h('div', { className: `dshpc-lock-exempt${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}` }, props.children ?? null));
+}
+/** 例外判定：DOM 类名（面板内）或 Context 标记（portal 内）任一命中即为例外。 */
+function isLockExempt(target) {
+    return target instanceof Element && target.closest('.dshpc-lock-exempt') !== null;
+}
 /**
  * 锁定期间的两道保险（消费方自绘的控件不是我们的，管不到它们的 `disabled`）：
  *  ① Tab 整个吃掉 —— 否则能 Tab 进他们的 input 打字；
  *  ② 把面板里没被禁用的活动元素 `blur` 掉 —— 否则锁定前已经停在里面的光标还能继续打字。
- * 只认 `.dshpc-locked` 子树里的元素，不碰面板外面的焦点。
+ * 例外域（`.dshpc-lock-exempt`）两者都放行。只认 `.dshpc-locked` 子树里的元素，不碰面板外面的焦点。
  */
 export function useLockGuards(enabled) {
     useEffect(() => {
         if (!enabled || typeof document === 'undefined')
             return;
         const active = document.activeElement;
-        if (active instanceof Element && active.closest('.dshpc-locked') !== null)
+        if (active instanceof Element &&
+            active.closest('.dshpc-locked') !== null &&
+            !isLockExempt(active))
             active.blur();
         const onKey = (event) => {
-            if (event.key === 'Tab')
+            if (event.key === 'Tab' && !isLockExempt(event.target))
                 event.preventDefault();
         };
         document.addEventListener('keydown', onKey, true);
         return () => document.removeEventListener('keydown', onKey, true);
     }, [enabled]);
-}
-/**
- * 锁定时的**透明点击层**：盖住整块面板、不遮任何像素，只吃掉指针事件
- * （消费方自绘的元素也跟着点不动）。变灰由各控件自己的 `:disabled` 负责，这里不管外观。
- * 不做焦点接管：核心控件此刻已是真 disabled，Tab 自己就跳过它们。
- */
-export function OverlayLockCatcher() {
-    return h('div', {
-        className: 'dshpc-lock-catcher',
-        // 点它不能再冒到遮罩：否则等于点了外部，会顺带把弹窗关掉。
-        onClick: (event) => event.stopPropagation(),
-    });
 }
 /**
  * Esc 关闭。不传 `onClose` 或 `enabled=false` 时完全不挂监听

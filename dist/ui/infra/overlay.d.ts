@@ -5,22 +5,23 @@
  * 差异只在「面板怎么排」（居中 vs 贴边），那部分留在各自的控件里。
  */
 import { type ReactNode } from 'react';
-/** 外层浮层是否锁死（不在浮层里 = false）。 */
+/** 外层浮层是否锁死（不在浮层里 = false）。例外域内恒为 false。 */
 export declare function useOverlayLocked(): boolean;
+/** 当前节点是否落在例外域里（焦点守卫用，含 portal 出来的菜单）。 */
+export declare function useOverlayLockExempt(): boolean;
 export declare const OverlayLockedProvider: import("react").Provider<boolean>;
+/** 把子树标成锁定期的例外：仍可点、仍可 Tab、核心控件不自我禁用。 */
+export declare function OverlayLockExempt(props: {
+    children?: ReactNode;
+    className?: string;
+}): ReactNode;
 /**
  * 锁定期间的两道保险（消费方自绘的控件不是我们的，管不到它们的 `disabled`）：
  *  ① Tab 整个吃掉 —— 否则能 Tab 进他们的 input 打字；
  *  ② 把面板里没被禁用的活动元素 `blur` 掉 —— 否则锁定前已经停在里面的光标还能继续打字。
- * 只认 `.dshpc-locked` 子树里的元素，不碰面板外面的焦点。
+ * 例外域（`.dshpc-lock-exempt`）两者都放行。只认 `.dshpc-locked` 子树里的元素，不碰面板外面的焦点。
  */
 export declare function useLockGuards(enabled: boolean): void;
-/**
- * 锁定时的**透明点击层**：盖住整块面板、不遮任何像素，只吃掉指针事件
- * （消费方自绘的元素也跟着点不动）。变灰由各控件自己的 `:disabled` 负责，这里不管外观。
- * 不做焦点接管：核心控件此刻已是真 disabled，Tab 自己就跳过它们。
- */
-export declare function OverlayLockCatcher(): ReactNode;
 /**
  * Esc 关闭。不传 `onClose` 或 `enabled=false` 时完全不挂监听
  * （无回调还挂监听，等于让 Esc 被白白吃掉）。

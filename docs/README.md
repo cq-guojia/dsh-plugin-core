@@ -46,3 +46,4 @@ docs/                                               # 项目文档库入口与�
 - 2026-11-16：新增 `api/runtime.md`（运行时底座：跨页通知 / 状态容器 / 事件总线）；`api/task-notifications.md` 收 `TaskBar` 与 `useTasks`（原先在 `api/ui.md`）
 - 2026-11-16：任务模块对外展示名改为「后台任务中心」（底层仍用跨页通知）；`timeoutMs` 改为定时器到点自动回收
 - 2026-11-16 17:38:04：新增 architecture/background-task-center.md 与 guides/background-task-center.md
+- 2026-11-17：`api/ui.md` 补 Modal 例外控件 / 收起 / 保树隐藏契约与 `useModalBackground()`；`architecture/task-notifications.md` 阶段 2 标完成

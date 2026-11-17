@@ -51,21 +51,51 @@ test('Modal：遮罩居中档 + 面板 modal 档 + 关闭钮走公共件', () =>
   assert.match(html, /class="dshpc-panel__close dshpc-overlay-head__close"/)
 })
 
-test('Modal locked：核心控件真禁用 + 透明点击层，关闭钮不渲染', () => {
+test('Modal locked：核心控件真禁用 + 指针命中层标记，关闭钮不渲染', () => {
   const html = renderToStaticMarkup(
     h(Modal, { title: 't', onClose: () => {}, locked: true }, h(Button, { onClick: () => {} }, '确定')),
   )
   assert.match(html, /<button[^>]*disabled=""/, '锁定态里核心控件没被禁用（Tab 还能进去）')
-  assert.match(html, /dshpc-lock-catcher/, '缺透明点击层（消费方自绘的元素就点得动）')
   assert.match(html, /dshpc-modal--locked/, '锁定类没挂上')
-  // 自绘元素变灰的 CSS 挂在这个类上；漏了就只剩核心控件变灰
-  assert.match(html, /dshpc-locked/, '缺 dshpc-locked（自绘控件不会变灰）')
+  // 自绘元素变灰 / 指针锁死都挂在这个类上；漏了就只剩核心控件变灰
+  assert.match(html, /dshpc-locked/, '缺 dshpc-locked（自绘控件不会变灰、指针没锁死）')
   assert.match(html, /data-dshpc-locked=""/, '遮罩没带锁定标记（禁止手势不生效）')
   assert.doesNotMatch(html, /dshpc-panel__close/, '锁定态还渲了 ✕')
   // 不传就完全回到老样子 —— 「不传参数 = 初始未锁」
   const plain = renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {} }, h(Button, null, '确定')))
-  assert.doesNotMatch(plain, /disabled|dshpc-lock-catcher|dshpc-modal--locked|data-dshpc-locked/)
+  assert.doesNotMatch(plain, /disabled|dshpc-lock-exempt|dshpc-modal--locked|data-dshpc-locked/)
   assert.match(plain, /dshpc-panel__close/)
+})
+
+test('Modal locked + lockExceptions：例外块单独放行，核心按钮照旧禁用，三条关闭路径仍封死', () => {
+  const html = renderToStaticMarkup(
+    h(Modal, {
+      title: 't', onClose: () => {}, locked: true,
+      lockExceptions: h(Button, { onClick: () => {} }, '收起'),
+    }, h(Button, { onClick: () => {} }, '确定')),
+  )
+  assert.match(html, /dshpc-lock-exempt/, '例外槽没渲染')
+  assert.equal((html.match(/disabled=""/g) ?? []).length, 1, '例外按钮不该被禁用，普通按钮该禁用')
+  assert.doesNotMatch(html, /dshpc-panel__close/, '例外不该让 ✕ 复活')
+  assert.match(html, /data-dshpc-locked=""/, '例外不该放开遮罩的锁定手势')
+
+  // 不锁定时例外块是纯装饰槽，照样渲染 —— 调用方无需写两种 JSX
+  const open = renderToStaticMarkup(
+    h(Modal, { title: 't', onClose: () => {}, lockExceptions: h('span', null, 'x') }, 'body'),
+  )
+  assert.match(open, /dshpc-lock-exempt/)
+})
+
+test('Modal backgrounded：整窗标隐藏但子树仍在，关闭路径全封', () => {
+  const html = renderToStaticMarkup(
+    h(Modal, { title: 't', onClose: () => {}, backgrounded: true }, h('input', { value: '草稿' })),
+  )
+  assert.match(html, /data-dshpc-backgrounded=""/, '遮罩没带收起标记（CSS 无法隐藏整窗）')
+  assert.match(html, /value="草稿"/, '收起不该卸载子树（输入内容会丢）')
+  assert.doesNotMatch(html, /dshpc-panel__close/, '收起态还渲了 ✕')
+
+  const plain = renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {} }, 'x'))
+  assert.doesNotMatch(plain, /data-dshpc-backgrounded/, '不传收起态却带了隐藏标记')
 })
 
 test('Modal locked 只做「或」：本来禁用的解锁后照样禁用，控件没被写脏', () => {

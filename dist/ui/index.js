@@ -11,7 +11,7 @@ export { buildMonthCells, ceilToPrecision, clampUnit, dayCaption, floorToPrecisi
 export { ModelPicker } from './inputs/ModelPicker.js';
 export { WorkspacePicker } from './inputs/WorkspacePicker.js';
 export { connectHost, getWorkspaceFiles, modelCatalog, refreshModelCatalog, revalidateModelCatalog, workspaceList, } from './infra/host-data.js';
-export { Modal } from './feedback/Modal.js';
+export { Modal, useModalBackground } from './feedback/Modal.js';
 export { SideSheet } from './feedback/SideSheet.js';
 export { AlertModal, } from './feedback/AlertModal.js';
 export { ConfirmModal, } from './feedback/ConfirmModal.js';

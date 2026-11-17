@@ -355,6 +355,22 @@ test('遮罩让位分栏：写的与读的是同一个 CSS 变量', async () => 
 
 // 遮罩只允许有一份（overlay.css）：Modal 与 SideSheet 共用。谁再抄一层 fixed 遮罩，
 // 遮罩就会有两套让位 / 两套 z 档，改动时必走散。由测试钉住。
+// 锁定态的指针命中层（2026-11-17）：根因解是 pointer-events 而非透明点击层 —— 后者要靠 z-index
+// 压层级、例外控件还得提层开洞，一改就漏。三条契约钉死：无点击层 / 面板不吃指针 / 例外放行。
+test('锁定指针层：无透明点击层，面板 pointer-events:none，例外子树放行', () => {
+  assert.ok(!OVERLAY_CSS.includes('dshpc-lock-catcher'), '透明点击层又回来了（应改用 pointer-events）')
+  assert.match(OVERLAY_CSS, /\.dshpc-locked\{pointer-events:none\}/, '锁定面板没关指针命中')
+  assert.match(OVERLAY_CSS, /\.dshpc-lock-exempt,\.dshpc-lock-exempt \*\{pointer-events:auto\}/, '例外子树没放行指针')
+  // 变灰规则必须排除例外子树，否则例外按钮看着像禁用
+  assert.ok(
+    /:where\(\.dshpc-locked [^}]*button[^}]*:not\(\.dshpc-lock-exempt, \.dshpc-lock-exempt \*\)/.test(OVERLAY_CSS),
+    '变灰规则没排除例外子树',
+  )
+  // 收起态靠 visibility 隐藏（保滚动位置），不是 display:none
+  assert.match(OVERLAY_CSS, /\[data-dshpc-backgrounded\]\{visibility:hidden\}/, '收起态没用 visibility 隐藏整窗')
+  assert.ok(!/\[data-dshpc-backgrounded\]\{display:none\}/.test(OVERLAY_CSS), '收起态用了 display:none（恢复时会丢滚动位置）')
+})
+
 test('遮罩只有一份：SideSheet 不许自己再写一层', () => {
   assert.ok(!SIDE_SHEET_CSS.includes('.dshpc-overlay'), 'SideSheet 的 CSS 里重复定义了遮罩')
   assert.ok(!SIDE_SHEET_CSS.includes('position:fixed'), 'SideSheet 的 CSS 里出现了 fixed 层（遮罩应来自 overlay.css）')
