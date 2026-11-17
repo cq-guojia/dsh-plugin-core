@@ -136,6 +136,20 @@ test('命令式 host + 空 lockExceptions：等价于不传，不触发回落', 
   }
 })
 
+test('命令式 host + 等价默认值：closeOnMask:true / notice:"" 不触发回落', () => {
+  const warns = []
+  const orig = console.warn
+  console.warn = (...a) => warns.push(a.join(' '))
+  try {
+    void confirmModal({ message: 'm', skin: 'host', closeOnMask: true, notice: '' })
+    void alertModal({ message: 'm', skin: 'host', closeOnMask: true, notice: '' })
+    assert.ok(!warns.some((w) => w.includes('closeOnMask')), 'closeOnMask:true 被误判为不支持字段')
+    assert.ok(!warns.some((w) => w.includes('notice')), 'notice:"" 被误判为不支持字段')
+  } finally {
+    console.warn = orig
+  }
+})
+
 test('命令式 host 皮肤：白名单外的字段一律告警并回落 core，不静默降级', () => {
   const warns = []
   const orig = console.warn

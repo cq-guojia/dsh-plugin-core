@@ -6580,7 +6580,11 @@ function hostIgnoredFields(opts, allowed) {
       continue;
     if (Array.isArray(value) && value.length === 0)
       continue;
+    if (value === "")
+      continue;
     if (key === "lockExceptions" && value === false)
+      continue;
+    if (key === "closeOnMask" && value === true)
       continue;
     if (!allowed.includes(key))
       ignored.push(key);
@@ -6594,7 +6598,8 @@ function confirmModal(opts) {
       ignored.push("tone");
     if (ignored.length > 0) {
       console.warn(`[dsh-plugin-core] confirmModal skin:"host" \u4E0D\u652F\u6301 ${ignored.join(" / ")}\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4\uFF1B\u8981\u4FDD\u4F4F host \u76AE\u80A4\u8BF7\u53BB\u6389\u8FD9\u4E9B\u5B57\u6BB5\uFF0C\u6216\u76F4\u63A5\u7701\u6389 skin:"host" \u7528 core`);
-    } else if (hostHandlers !== null) {
+    }
+    if (ignored.length === 0 && hostHandlers !== null) {
       return hostHandlers.confirm({
         title: opts.title == null ? void 0 : String(opts.title),
         description: opts.message == null ? void 0 : String(opts.message),
@@ -6602,7 +6607,8 @@ function confirmModal(opts) {
         cancelText: opts.cancelText,
         danger: opts.tone === "danger"
       });
-    } else {
+    }
+    if (hostHandlers === null) {
       console.warn('[dsh-plugin-core] confirmModal skin:"host" \u9700\u5148\u5F15\u5165\u5B98\u65B9\u9002\u914D\u5C42 official.js\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4');
     }
   }
@@ -6653,13 +6659,15 @@ function alertModal(opts) {
     const ignored = hostIgnoredFields(opts, HOST_ALERT_FIELDS);
     if (ignored.length > 0) {
       console.warn(`[dsh-plugin-core] alertModal skin:"host" \u4E0D\u652F\u6301 ${ignored.join(" / ")}\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4\uFF1B\u8981\u4FDD\u4F4F host \u76AE\u80A4\u8BF7\u53BB\u6389\u8FD9\u4E9B\u5B57\u6BB5\uFF0C\u6216\u76F4\u63A5\u7701\u6389 skin:"host" \u7528 core`);
-    } else if (hostHandlers !== null) {
+    }
+    if (ignored.length === 0 && hostHandlers !== null) {
       return hostHandlers.alert({
         title: opts.title == null ? void 0 : String(opts.title),
         description: opts.message == null ? void 0 : String(opts.message),
         confirmText: opts.confirmText
       });
-    } else {
+    }
+    if (hostHandlers === null) {
       console.warn('[dsh-plugin-core] alertModal skin:"host" \u9700\u5148\u5F15\u5165\u5B98\u65B9\u9002\u914D\u5C42 official.js\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4');
     }
   }
@@ -77262,9 +77270,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.42.3"}`],
-            [t3("buildDemo"), `v${"0.42.3"}`],
-            [t3("buildStamp"), "261117-153314-616"]
+            [t3("buildCore"), `v${"0.42.4"}`],
+            [t3("buildDemo"), `v${"0.42.4"}`],
+            [t3("buildStamp"), "261117-155649-671"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77583,9 +77591,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.42.3"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.42.3"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-153314-616")
+          (0, import_react112.createElement)("span", null, `core v${"0.42.4"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.42.4"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-155649-671")
         )
       )
     ),

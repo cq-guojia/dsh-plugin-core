@@ -87,10 +87,13 @@ function hostIgnoredFields(opts: object, allowed: readonly string[]): string[] {
   const ignored: string[] = []
   for (const [key, value] of Object.entries(opts)) {
     if (value === undefined) continue
-    // 空数组（如 lockExceptions: []）没有任何语义，等价于不传，不该被判成「不支持字段」。
+    // 空数组 / 空字符串没有任何语义，等价于不传，不该被判成「不支持字段」。
     if (Array.isArray(value) && value.length === 0) continue
+    if (value === '') continue
     // alert 的 lockExceptions 是布尔：false = 不要求例外，同样等价于不传。
     if (key === 'lockExceptions' && value === false) continue
+    // closeOnMask 默认就是 true（宿主本来点遮罩就关）：true 等同于不传，只有 false 才是宿主没有的能力。
+    if (key === 'closeOnMask' && value === true) continue
     if (!allowed.includes(key)) ignored.push(key)
   }
   return ignored
@@ -133,7 +136,8 @@ export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
     if (opts.tone !== undefined && opts.tone !== 'danger' && opts.tone !== 'primary') ignored.push('tone')
     if (ignored.length > 0) {
       console.warn(`[dsh-plugin-core] confirmModal skin:"host" 不支持 ${ignored.join(' / ')}，已回落到 core 皮肤；要保住 host 皮肤请去掉这些字段，或直接省掉 skin:"host" 用 core`)
-    } else if (hostHandlers !== null) {
+    }
+    if (ignored.length === 0 && hostHandlers !== null) {
       return hostHandlers.confirm({
         title: opts.title == null ? undefined : String(opts.title),
         description: opts.message == null ? undefined : String(opts.message),
@@ -141,7 +145,8 @@ export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
         cancelText: opts.cancelText,
         danger: opts.tone === 'danger',
       })
-    } else {
+    }
+    if (hostHandlers === null) {
       console.warn('[dsh-plugin-core] confirmModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤')
     }
   }
@@ -198,13 +203,15 @@ export function alertModal(opts: AlertOptions): Promise<void> {
     const ignored = hostIgnoredFields(opts, HOST_ALERT_FIELDS)
     if (ignored.length > 0) {
       console.warn(`[dsh-plugin-core] alertModal skin:"host" 不支持 ${ignored.join(' / ')}，已回落到 core 皮肤；要保住 host 皮肤请去掉这些字段，或直接省掉 skin:"host" 用 core`)
-    } else if (hostHandlers !== null) {
+    }
+    if (ignored.length === 0 && hostHandlers !== null) {
       return hostHandlers.alert({
         title: opts.title == null ? undefined : String(opts.title),
         description: opts.message == null ? undefined : String(opts.message),
         confirmText: opts.confirmText,
       })
-    } else {
+    }
+    if (hostHandlers === null) {
       console.warn('[dsh-plugin-core] alertModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤')
     }
   }
