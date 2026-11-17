@@ -16,6 +16,7 @@ const { PanelClose, PanelSurface } = await import('../dist/ui/infra/panel.js')
 const { Modal } = await import('../dist/ui/feedback/Modal.js')
 const { ConfirmModal } = await import('../dist/ui/feedback/ConfirmModal.js')
 const { AlertModal } = await import('../dist/ui/feedback/AlertModal.js')
+const { confirmModal, alertModal } = await import('../dist/ui/feedback/modal-host.js')
 const { Button } = await import('../dist/ui/actions/Button.js')
 const { FlipText, nextFlipSlot } = await import('../dist/ui/display/FlipText.js')
 const { LandingBody } = await import('../dist/adv/explorer/landing.js')
@@ -120,6 +121,26 @@ test('AlertModal locked：确认钮默认封；lockExceptions=true 时放开', (
   const exempt = renderToStaticMarkup(h(AlertModal, { message: 'm', locked: true, lockExceptions: true, onConfirm: () => {} }))
   assert.match(exempt, /dshpc-lock-exempt/, '确认钮没进例外域')
   assert.doesNotMatch(exempt, /disabled=""/, '例外确认钮不该被禁用')
+})
+
+test('命令式 host + lockExceptions：告警并回落 core，不静默吞掉', () => {
+  const warns = []
+  const orig = console.warn
+  console.warn = (...a) => warns.push(a.join(' '))
+  try {
+    void confirmModal({ message: 'm', skin: 'host', lockExceptions: ['cancel'] })
+    void alertModal({ message: 'm', skin: 'host', lockExceptions: true })
+    assert.ok(
+      warns.some((w) => w.includes('confirmModal') && w.includes('lockExceptions')),
+      'confirmModal 静默吞掉了 lockExceptions',
+    )
+    assert.ok(
+      warns.some((w) => w.includes('alertModal') && w.includes('lockExceptions')),
+      'alertModal 静默吞掉了 lockExceptions',
+    )
+  } finally {
+    console.warn = orig
+  }
 })
 
 test('Modal locked 只做「或」：本来禁用的解锁后照样禁用，控件没被写脏', () => {

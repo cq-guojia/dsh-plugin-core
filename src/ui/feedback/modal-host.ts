@@ -108,8 +108,9 @@ export type AlertOptions = Omit<AlertModalProps, 'onConfirm' | 'confirmLoading' 
  * 回调返回 Promise 时进入 loading（按钮转圈 + 遮罩 / Esc 锁死），settle 后才真正关闭。
  */
 export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
+  const lockExceptions = opts.lockExceptions
   if (opts.skin === 'host') {
-    if (hostHandlers !== null) {
+    if (hostHandlers !== null && (lockExceptions === undefined || lockExceptions.length === 0)) {
       return hostHandlers.confirm({
         title: opts.title == null ? undefined : String(opts.title),
         description: opts.message == null ? undefined : String(opts.message),
@@ -118,7 +119,12 @@ export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
         danger: opts.tone === 'danger',
       })
     }
-    console.warn('[dsh-plugin-core] confirmModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤')
+    // host 原生弹窗没有「锁定期例外」这层能力：明确告警并回落 core，绝不静默吞掉。
+    if (lockExceptions !== undefined && lockExceptions.length > 0) {
+      console.warn('[dsh-plugin-core] confirmModal skin:"host" 不支持 lockExceptions，已回落到 core 皮肤')
+    } else {
+      console.warn('[dsh-plugin-core] confirmModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤')
+    }
   }
   const { skin: _skin, onConfirm, onCancel, ...core } = opts
   void _skin
@@ -169,15 +175,21 @@ export function confirmModal(opts: ConfirmOptions): Promise<boolean> {
  * 回调返回 `false`（同步或 resolve 成 `false`）⇒ 本次当作没成，框不关。
  */
 export function alertModal(opts: AlertOptions): Promise<void> {
+  const wantsExceptions = opts.lockExceptions === true
   if (opts.skin === 'host') {
-    if (hostHandlers !== null) {
+    if (hostHandlers !== null && !wantsExceptions) {
       return hostHandlers.alert({
         title: opts.title == null ? undefined : String(opts.title),
         description: opts.message == null ? undefined : String(opts.message),
         confirmText: opts.confirmText,
       })
     }
-    console.warn('[dsh-plugin-core] alertModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤')
+    // host 原生弹窗没有「锁定期例外」这层能力：明确告警并回落 core，绝不静默吞掉。
+    if (wantsExceptions) {
+      console.warn('[dsh-plugin-core] alertModal skin:"host" 不支持 lockExceptions，已回落到 core 皮肤')
+    } else {
+      console.warn('[dsh-plugin-core] alertModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤')
+    }
   }
   const { skin: _skin, onConfirm, ...core } = opts
   void _skin
