@@ -6576,7 +6576,13 @@ var HOST_ALERT_FIELDS = ["title", "message", "confirmText", "skin"];
 function hostIgnoredFields(opts, allowed) {
   const ignored = [];
   for (const [key, value] of Object.entries(opts)) {
-    if (value !== void 0 && !allowed.includes(key))
+    if (value === void 0)
+      continue;
+    if (Array.isArray(value) && value.length === 0)
+      continue;
+    if (key === "lockExceptions" && value === false)
+      continue;
+    if (!allowed.includes(key))
       ignored.push(key);
   }
   return ignored;
@@ -77256,9 +77262,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.42.2"}`],
-            [t3("buildDemo"), `v${"0.42.2"}`],
-            [t3("buildStamp"), "261117-151801-586"]
+            [t3("buildCore"), `v${"0.42.3"}`],
+            [t3("buildDemo"), `v${"0.42.3"}`],
+            [t3("buildStamp"), "261117-153314-616"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77577,9 +77583,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.42.2"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.42.2"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-151801-586")
+          (0, import_react112.createElement)("span", null, `core v${"0.42.3"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.42.3"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-153314-616")
         )
       )
     ),

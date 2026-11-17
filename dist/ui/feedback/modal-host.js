@@ -54,7 +54,15 @@ const HOST_ALERT_FIELDS = ['title', 'message', 'confirmText', 'skin'];
 function hostIgnoredFields(opts, allowed) {
     const ignored = [];
     for (const [key, value] of Object.entries(opts)) {
-        if (value !== undefined && !allowed.includes(key))
+        if (value === undefined)
+            continue;
+        // 空数组（如 lockExceptions: []）没有任何语义，等价于不传，不该被判成「不支持字段」。
+        if (Array.isArray(value) && value.length === 0)
+            continue;
+        // alert 的 lockExceptions 是布尔：false = 不要求例外，同样等价于不传。
+        if (key === 'lockExceptions' && value === false)
+            continue;
+        if (!allowed.includes(key))
             ignored.push(key);
     }
     return ignored;
