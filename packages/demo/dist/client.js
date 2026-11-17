@@ -6468,6 +6468,14 @@ function AlertModal(props) {
   const severity = props.severity ?? "info";
   const [running, setRunning] = (0, import_react24.useState)(false);
   const busy = running || props.confirmLoading === true;
+  const confirmButton = (0, import_react24.createElement)(Button, {
+    variant: "primary",
+    width: props.confirmWidth,
+    loadingText: props.loadingText,
+    loading: props.confirmLoading === true,
+    onBusyChange: setRunning,
+    onClick: () => props.onConfirm?.()
+  }, props.confirmText ?? tt("dialogOk"));
   return (0, import_react24.createElement)(Modal, {
     icon: (0, import_react24.createElement)("span", { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, (0, import_react24.createElement)(FontIcon, { name: SEVERITY_GLYPH[severity] })),
     title: props.title,
@@ -6479,14 +6487,7 @@ function AlertModal(props) {
     locked: props.locked,
     onClose: props.onConfirm,
     notice: props.notice,
-    footer: (0, import_react24.createElement)(Button, {
-      variant: "primary",
-      width: props.confirmWidth,
-      loadingText: props.loadingText,
-      loading: props.confirmLoading === true,
-      onBusyChange: setRunning,
-      onClick: () => props.onConfirm?.()
-    }, props.confirmText ?? tt("dialogOk"))
+    footer: props.lockExceptions === true ? (0, import_react24.createElement)(OverlayLockExempt, null, confirmButton) : confirmButton
   }, props.message ?? null);
 }
 
@@ -6499,6 +6500,23 @@ function ConfirmModal(props) {
   const [confirmBusy, setConfirmBusy] = (0, import_react25.useState)(false);
   const [cancelBusy, setCancelBusy] = (0, import_react25.useState)(false);
   const busy = confirmBusy || cancelBusy || props.confirmLoading === true || props.cancelLoading === true;
+  const exempt = props.lockExceptions ?? [];
+  const cancelButton = (0, import_react25.createElement)(Button, {
+    variant: "outline",
+    width: props.cancelWidth,
+    loadingText: props.loadingText,
+    loading: props.cancelLoading === true,
+    onBusyChange: setCancelBusy,
+    onClick: () => props.onCancel?.()
+  }, props.cancelText ?? tt("cancel"));
+  const confirmButton = (0, import_react25.createElement)(Button, {
+    variant: confirmVariant,
+    width: props.confirmWidth,
+    loadingText: props.loadingText,
+    loading: props.confirmLoading === true,
+    onBusyChange: setConfirmBusy,
+    onClick: () => props.onConfirm?.()
+  }, props.confirmText ?? tt("confirm"));
   return (0, import_react25.createElement)(Modal, {
     title: props.title,
     size: props.size ?? "sm",
@@ -6509,21 +6527,7 @@ function ConfirmModal(props) {
     locked: props.locked,
     onClose: props.onCancel,
     notice: props.notice,
-    footer: (0, import_react25.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, (0, import_react25.createElement)(Button, {
-      variant: "outline",
-      width: props.cancelWidth,
-      loadingText: props.loadingText,
-      loading: props.cancelLoading === true,
-      onBusyChange: setCancelBusy,
-      onClick: () => props.onCancel?.()
-    }, props.cancelText ?? tt("cancel")), (0, import_react25.createElement)(Button, {
-      variant: confirmVariant,
-      width: props.confirmWidth,
-      loadingText: props.loadingText,
-      loading: props.confirmLoading === true,
-      onBusyChange: setConfirmBusy,
-      onClick: () => props.onConfirm?.()
-    }, props.confirmText ?? tt("confirm")))
+    footer: (0, import_react25.createElement)("div", { style: { display: "flex", gap: "8px", justifyContent: "flex-end" } }, exempt.includes("cancel") ? (0, import_react25.createElement)(OverlayLockExempt, null, cancelButton) : cancelButton, exempt.includes("confirm") ? (0, import_react25.createElement)(OverlayLockExempt, null, confirmButton) : confirmButton)
   }, props.message ?? null);
 }
 
@@ -68341,12 +68345,16 @@ var docData = {
         "en": '**When the whole dialog must be untouchable, pass `locked`** \u2014 do not fake it with button loading: loading only spins that one button, while `locked` covers the whole panel. **Each control renders its own disabled state** (Button / Input / Textarea / Checkbox / Segmented / Picker / date picker / pagination all dim themselves and are genuinely disabled, so Tab skips them), and the panel as a whole drops pointer hit-testing (`pointer-events:none`) so the mask catches the pointer \u2014 the mask is not a close path while locked, so clicking it neither closes nor falls through to the page; no dim veil (a veil reads as "the app broke"). Tab is swallowed and whatever was focused inside is blurred on lock. It **only ORs and never writes back** any `disabled`; controlled and stateless \u2014 omitted means unlocked. The imperative dialogs hand their callbacks a `ctl` (`{ setLocked(bool) }`); calling it after close is a no-op.'
       },
       {
-        "zh": "**\u9501\u5B9A\u671F\u7559\u4E00\u4E2A\u4F8B\u5916\u63A7\u4EF6**\uFF08\u957F\u4EFB\u52A1\u63D0\u4EA4\u540E\u60F3\u5148\u6536\u8D77\u3001\u6D3B\u7EE7\u7EED\u8DD1\uFF09\uFF1A\u628A\u4EFB\u610F ReactNode\uFF08\u6309\u94AE / \u8F93\u5165\u6846 / \u81EA\u7ED8\u90FD\u884C\uFF0C1~N \u4E2A\uFF09\u653E\u8FDB `lockExceptions`\uFF0C\u53EA\u6709\u8FD9\u4E00\u5757\u4ECD\u53EF\u70B9\u3001\u53EF Tab\uFF0C\u6838\u5FC3\u63A7\u4EF6\u5728\u91CC\u9762\u4E5F\u4E0D\u81EA\u6211\u7981\u7528\uFF1B\u5176\u4F59\u6309\u94AE\u7167\u7070\u3001\u2715 / Esc / \u70B9\u906E\u7F69\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4ECD\u5C01\u6B7B\u3002`useModalBackground()` \u5728\u4F8B\u5916\u5B50\u6811\u91CC\u62FF\u5230\u6536\u8D77\u51FA\u53E3 \u2014\u2014 \u4F60\u7684\u6536\u8D77\u94AE `onClick={useModalBackground()}` \u5373\u53EF\uFF1B\u6838\u5FC3\u53EA\u53D1\u8FD9\u4E2A\u4E8B\u4EF6\uFF0C**\u4E0D\u7ED3\u7B97\u3001\u4E0D\u9690\u85CF**\uFF1A\u4F60\u5728\u8FD9\u4E2A\u56DE\u8C03\u91CC\u767B\u8BB0\u540E\u53F0\u4EFB\u52A1\uFF08\u5982 `handle.background()`\uFF09\u5E76\u628A `backgrounded` \u7F6E true\u3002",
-        "en": "**Keep one exception control interactive while locked** (collapse a long-running submit while the work continues): put any ReactNode (button / input / custom, 1~N) into `lockExceptions` \u2014 only that block stays clickable and Tab-reachable, and core controls inside do not self-disable; everything else stays dimmed and \u2715 / Esc / mask still cannot close. `useModalBackground()` yields the collapse outlet from inside the exception subtree \u2014 wire your collapse button as `onClick={useModalBackground()}`. The core only emits this event; it **neither settles nor hides**: in that callback you register the background job (e.g. `handle.background()`) and set `backgrounded` to true."
+        "zh": "**\u9501\u5B9A\u671F\u7559\u4E00\u4E2A\u4F8B\u5916\u63A7\u4EF6**\uFF08\u957F\u4EFB\u52A1\u63D0\u4EA4\u540E\u60F3\u5148\u6536\u8D77\u3001\u6D3B\u7EE7\u7EED\u8DD1\uFF09\uFF1A\u628A\u4EFB\u610F ReactNode\uFF08\u6309\u94AE / \u8F93\u5165\u6846 / \u81EA\u7ED8\u90FD\u884C\uFF0C1~N \u4E2A\uFF09\u653E\u8FDB `lockExceptions`\uFF0C\u53EA\u6709\u8FD9\u4E00\u5757\u4ECD\u53EF\u70B9\u3001\u53EF Tab\uFF0C\u6838\u5FC3\u63A7\u4EF6\u5728\u91CC\u9762\u4E5F\u4E0D\u81EA\u6211\u7981\u7528\uFF1B\u5176\u4F59\u6309\u94AE\u7167\u7070\u3001\u2715 / Esc / \u70B9\u906E\u7F69\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4ECD\u5C01\u6B7B\u3002**\u8BE5 prop \u56FA\u5B9A\u6E32\u67D3\u5728\u9762\u677F\u672B\u5C3E**\uFF08footer \u4E4B\u540E\uFF09\uFF1B\u8981\u653E\u5230\u5934\u90E8 / footer / \u6B63\u6587\u7B49\u5176\u4ED6\u4F4D\u7F6E\uFF0C\u7528\u540C\u5305\u5BFC\u51FA\u7684 `ModalLockExempt` \u5C31\u5730\u5305\u88F9\uFF1A`<ModalLockExempt><Button \u2026 /></ModalLockExempt>`\uFF0C\u540C\u4E00\u5957\u673A\u5236\u3002`useModalBackground()` \u5728\u4F8B\u5916\u5B50\u6811\u91CC\u62FF\u5230\u6536\u8D77\u51FA\u53E3 \u2014\u2014 \u4F60\u7684\u6536\u8D77\u94AE `onClick={useModalBackground()}` \u5373\u53EF\uFF1B\u6838\u5FC3\u53EA\u53D1\u8FD9\u4E2A\u4E8B\u4EF6\uFF0C**\u4E0D\u7ED3\u7B97\u3001\u4E0D\u9690\u85CF**\uFF1A\u4F60\u5728\u8FD9\u4E2A\u56DE\u8C03\u91CC\u767B\u8BB0\u540E\u53F0\u4EFB\u52A1\uFF08\u5982 `handle.background()`\uFF09\u5E76\u628A `backgrounded` \u7F6E true\u3002",
+        "en": "**Keep one exception control interactive while locked** (collapse a long-running submit while the work continues): put any ReactNode (button / input / custom, 1~N) into `lockExceptions` \u2014 only that block stays clickable and Tab-reachable, and core controls inside do not self-disable; everything else stays dimmed and \u2715 / Esc / mask still cannot close. **This prop always renders at the end of the panel** (after the footer); to place it in the header / footer / body, wrap it in place with the exported `ModalLockExempt`: `<ModalLockExempt><Button \u2026 /></ModalLockExempt>` \u2014 same mechanism. `useModalBackground()` yields the collapse outlet from inside the exception subtree \u2014 wire your collapse button as `onClick={useModalBackground()}`. The core only emits this event; it **neither settles nor hides**: in that callback you register the background job (e.g. `handle.background()`) and set `backgrounded` to true."
       },
       {
         "zh": "**\u6536\u8D77 / \u547C\u56DE**\u9760\u53D7\u63A7 `backgrounded`\uFF1Atrue \u65F6\u6574\u7A97\u7528 `visibility:hidden` \u9690\u85CF\uFF08**DOM \u4E0D\u5378\u8F7D**\uFF0C\u8F93\u5165\u5185\u5BB9 / \u8FDB\u5EA6 / \u6EDA\u52A8\u4F4D\u7F6E\u539F\u6837\u4FDD\u7559\uFF09\uFF0C\u540C\u65F6\u64A4\u6389 Tab / Esc \u76D1\u542C\uFF08\u770B\u4E0D\u89C1\u7684\u5F39\u7A97\u4E0D\u541E\u952E\u3001\u4E0D\u88AB Esc \u5173\u6389\uFF09\uFF1B\u4ECE\u540E\u53F0\u5217\u8868\u8FD8\u539F\u5C31\u662F\u628A `backgrounded` \u7F6E\u56DE false \u2014\u2014 \u540C\u4E00\u68F5\u6811\u539F\u4F4D\u56DE\u6765\uFF0C\u4E0D\u91CD\u753B\u3001\u4E0D\u91CD\u7F6E\u3002\u6838\u5FC3**\u4E0D\u78B0\u540E\u53F0\u6C60**\uFF1A\u767B\u8BB0 / \u8FD8\u539F / \u8DE8\u9875\u540C\u6B65\u90FD\u662F\u8C03\u7528\u65B9\u7528\u73B0\u6210\u7684 `task-notifications` \u4E8B\u4EF6\u63A5\uFF08\u6536\u8D77\u8D70 `backgrounded` \u4E8B\u4EF6\u3001\u547C\u56DE\u8D70 `restored` \u4E8B\u4EF6\uFF09\uFF0C`ui` \u4E0D\u4F9D\u8D56 `adv.*`\u3002\u5237\u65B0 / \u5207\u9875\u540E\u539F\u6811\u4E0D\u5728\u4E86\uFF0C\u5C31\u660E\u8BF4\u505A\u4E0D\u5230\uFF0C\u522B\u753B\u4E2A\u7A7A\u58F3\u5192\u5145\u8FD8\u539F\u3002",
         "en": "**Collapse / restore** is the controlled `backgrounded` prop: true hides the whole window with `visibility:hidden` (**DOM stays mounted** \u2014 input, progress and scroll position are preserved) and detaches the Tab / Esc listeners (an invisible dialog neither swallows keys nor closes on Esc); restoring from a background list is just setting `backgrounded` back to false \u2014 the same tree returns in place, no repaint, no reset. The core **does not touch the task pool**: registration / restore / cross-page sync are wired by the caller through the existing `task-notifications` events (collapse via the `backgrounded` event, restore via `restored`), `ui` never imports `adv.*`. After a refresh / page change the original tree is gone \u2014 say so plainly instead of drawing an empty shell that pretends to restore."
+      },
+      {
+        "zh": "**\u8FB9\u754C\uFF1A\u6709 `locked` \u4E0D\u7B49\u4E8E\u4E00\u5B9A\u80FD\u7559\u4F8B\u5916\u3002** \u4E0D\u4F20\u4F8B\u5916 = \u5168\u5C01\uFF0C\u8FD9\u662F\u8BBE\u8BA1\u3002\u4F8B\u5916\u53EA\u8C41\u514D\u300C\u53EF\u4EA4\u4E92\u300D\uFF0C**\u4E0D\u8C41\u514D\u4E09\u6761\u5173\u95ED\u8DEF\u5F84**\uFF08\u2715 / Esc / \u906E\u7F69\u4ECD\u5C01\u6B7B\uFF09\uFF0C\u4E5F\u4E0D\u66FF\u4F60\u7ED3\u7B97 Promise\u3002`ConfirmModal` / `AlertModal` \u662F\u6309\u94AE\u5C01\u95ED\u7684\u5C01\u88C5\uFF0C\u5B83\u4EEC\u7684 `lockExceptions` \u53EA\u63A5\u53D7**\u5185\u7F6E\u6309\u94AE\u540D**\uFF08`ConfirmModal` \u6536 `cancel` / `confirm`\uFF0C`AlertModal` \u6536\u5E03\u5C14\uFF09\uFF0C\u4E0D\u7167\u642C `Modal` \u7684\u4EFB\u610F ReactNode \u69FD\uFF1B\u5C06\u6765\u5F00\u653E\u81EA\u5B9A\u4E49\u6309\u94AE\u65F6\u518D\u7528 `ModalLockExempt`\u3002`skin:'host'` \u76AE\u80A4\u7531\u5BBF\u4E3B\u539F\u751F\u5F39\u7A97\u6E32\u67D3\uFF0C**\u4E0D\u652F\u6301\u4F8B\u5916**\uFF08\u4E5F\u62FF\u4E0D\u5230 `useModalBackground`\uFF09\uFF0C\u9700\u8981\u4F8B\u5916\u5C31\u7528 core \u76AE\u80A4\u3002",
+        "en": "**Boundary: having `locked` does not mean an exception is always available.** Omitted exceptions = everything locked, by design. An exception only exempts *interaction* \u2014 it **never opens the three close paths** (\u2715 / Esc / mask stay blocked) and never settles a Promise for you. `ConfirmModal` / `AlertModal` are button-sealed wrappers: their `lockExceptions` accepts only **built-in button names** (`ConfirmModal` takes `cancel` / `confirm`, `AlertModal` takes a boolean) rather than `Modal`'s arbitrary ReactNode slot; when custom buttons are opened up later, use `ModalLockExempt`. The `skin:'host'` skin is rendered by the host native dialog and **does not support exceptions** (nor `useModalBackground`); use the core skin when you need them."
       }
     ],
     "api": [
@@ -68597,8 +68605,17 @@ var docData = {
             "type": "ReactNode",
             "def": "\u2014",
             "desc": {
-              "zh": "\u9501\u5B9A\u671F\u95F4\u7684\u4F8B\u5916\u63A7\u4EF6\uFF081~N \u4E2A\u4EFB\u610F\u8282\u70B9\uFF09\uFF1A\u53EA\u6709\u8FD9\u4E00\u5757\u4ECD\u53EF\u70B9\u3001\u53EF Tab\uFF0C\u6838\u5FC3\u63A7\u4EF6\u5728\u5176\u4E2D\u4E0D\u81EA\u6211\u7981\u7528\uFF1B\u5176\u4F59\u6309\u94AE\u7167\u7070\u3001\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4ECD\u5C01\u6B7B\u3002\u4E0D\u4F20\u5219 locked \u4E00\u5200\u5207",
-              "en": "Interactive exceptions while locked (1~N arbitrary nodes): only this block stays clickable / Tab-reachable and core controls inside do not self-disable; everything else stays dimmed, all three close paths still blocked. Omit for all-or-nothing locking"
+              "zh": "\u9501\u5B9A\u671F\u95F4\u7684\u4F8B\u5916\u63A7\u4EF6\uFF081~N \u4E2A\u4EFB\u610F\u8282\u70B9\uFF09\uFF0C**\u56FA\u5B9A\u6E32\u67D3\u5728\u9762\u677F\u672B\u5C3E**\uFF1A\u53EA\u6709\u8FD9\u4E00\u5757\u4ECD\u53EF\u70B9\u3001\u53EF Tab\uFF0C\u6838\u5FC3\u63A7\u4EF6\u5728\u5176\u4E2D\u4E0D\u81EA\u6211\u7981\u7528\uFF1B\u5176\u4F59\u6309\u94AE\u7167\u7070\u3001\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4ECD\u5C01\u6B7B\u3002\u8981\u653E\u5176\u4ED6\u4F4D\u7F6E\u7528 `ModalLockExempt` \u5C31\u5730\u5305\u88F9\u3002\u4E0D\u4F20\u5219 locked \u4E00\u5200\u5207",
+              "en": "Interactive exceptions while locked (1~N arbitrary nodes), **always rendered at the end of the panel**: only this block stays clickable / Tab-reachable and core controls inside do not self-disable; everything else stays dimmed, all three close paths still blocked. Wrap in place with `ModalLockExempt` to place it elsewhere. Omit for all-or-nothing locking"
+            }
+          },
+          {
+            "name": "ModalLockExempt",
+            "type": "ReactNode",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\uFF08\u540C\u5305\u5BFC\u51FA\uFF09\u5728\u9762\u677F\u4EFB\u610F\u4F4D\u7F6E\u58F0\u660E\u4E00\u4E2A\u4F8B\u5916\u57DF\uFF1A`<ModalLockExempt><Button \u2026 /></ModalLockExempt>`\u3002\u4E0E `lockExceptions` \u540C\u4E00\u5957\u673A\u5236\uFF0C\u9002\u5408\u653E\u8FDB `headerActions` / `footer` / \u6B63\u6587\u3002\u53EA\u8C41\u514D\u4EA4\u4E92\uFF0C\u4E0D\u653E\u5F00\u4E09\u6761\u5173\u95ED\u8DEF\u5F84",
+              "en": "(same package export) Declares an exemption region anywhere in the panel: `<ModalLockExempt><Button \u2026 /></ModalLockExempt>`. Same mechanism as `lockExceptions`; use it inside `headerActions` / `footer` / body. Only exempts interaction, never the three close paths"
             }
           },
           {
@@ -68769,6 +68786,24 @@ var docData = {
             }
           },
           {
+            "name": "locked",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u9501\u6B7B\u5168\u90E8\u4EA4\u4E92\uFF08\u542B\u4E49\u540C `Modal.locked`\uFF09\uFF1A\u6574\u6846\u70B9\u4E0D\u52A8\u3001Tab \u8FDB\u4E0D\u53BB\u3001\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u540C\u65F6\u5931\u6548\u3002\u4E0D\u4F20\u4F8B\u5916\u5219\u8FDE\u5185\u7F6E\u94AE\u4E00\u8D77\u5C01",
+              "en": "Lock every interaction (same as `Modal.locked`): the whole dialog is unclickable, Tab cannot enter, all three close paths stop working. Without exceptions the built-in buttons are locked too"
+            }
+          },
+          {
+            "name": "lockExceptions",
+            "type": "readonly ('cancel' | 'confirm')[]",
+            "def": "\u2014",
+            "desc": {
+              "zh": "`locked` \u671F\u95F4\u4ECD\u53EF\u70B9\u7684**\u5185\u7F6E\u6309\u94AE**\uFF1A\u5178\u578B `[cancel]`\uFF08\u957F\u4EFB\u52A1\u91CC\u5141\u8BB8\u53D6\u6D88\uFF09\u3002\u53EA\u6536\u5185\u7F6E\u94AE\u540D\u3001\u4E0D\u900F\u4F20\u81EA\u5B9A\u4E49\u63A7\u4EF6\uFF1B\u4E0D\u4F20 = \u5168\u5C01\u3002\u53EA\u8C41\u514D\u4EA4\u4E92\uFF0C\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4ECD\u5C01\u6B7B",
+              "en": "Built-in buttons that stay clickable while `locked`: typically `[cancel]` (let the user cancel a long task). Only built-in button names, no custom controls; omitted = all locked. Only exempts interaction, never the three close paths"
+            }
+          },
+          {
             "name": "size",
             "type": "ModalSize",
             "def": "'sm'",
@@ -68870,6 +68905,24 @@ var docData = {
             "desc": {
               "zh": "\u70B9\u906E\u7F69\u5173\u95ED",
               "en": "Close on mask click"
+            }
+          },
+          {
+            "name": "locked",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "\u9501\u6B7B\u5168\u90E8\u4EA4\u4E92\uFF08\u542B\u4E49\u540C `Modal.locked`\uFF09\uFF1A\u6574\u6846\u70B9\u4E0D\u52A8\u3001Tab \u8FDB\u4E0D\u53BB\u3001\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u540C\u65F6\u5931\u6548\u3002\u4E0D\u4F20\u4F8B\u5916\u5219\u786E\u8BA4\u94AE\u4E5F\u5C01",
+              "en": "Lock every interaction (same as `Modal.locked`): the whole dialog is unclickable, Tab cannot enter, all three close paths stop working. Without an exception the confirm button is locked too"
+            }
+          },
+          {
+            "name": "lockExceptions",
+            "type": "boolean",
+            "def": "false",
+            "desc": {
+              "zh": "`locked` \u671F\u95F4\u786E\u8BA4\u94AE\u662F\u5426\u4ECD\u53EF\u70B9\uFF08\u5355\u6309\u94AE\u5F39\u7A97\uFF09\u3002\u4E0D\u4F20 = \u5168\u5C01\uFF1B\u53EA\u8C41\u514D\u4EA4\u4E92\uFF0C\u4E09\u6761\u5173\u95ED\u8DEF\u5F84\u4ECD\u5C01\u6B7B",
+              "en": "Whether the confirm button stays clickable while `locked` (single-button dialog). Omitted = all locked; only exempts interaction, never the three close paths"
             }
           },
           {
@@ -77176,7 +77229,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.41.0"}`],
             [t3("buildDemo"), `v${"0.41.0"}`],
-            [t3("buildStamp"), "261117-111657-793"]
+            [t3("buildStamp"), "261117-123523-541"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77497,7 +77550,7 @@ function DemoPage() {
           },
           (0, import_react112.createElement)("span", null, `core v${"0.41.0"}`),
           (0, import_react112.createElement)("span", null, `demo v${"0.41.0"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-111657-793")
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-123523-541")
         )
       )
     ),

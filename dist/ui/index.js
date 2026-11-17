@@ -12,6 +12,7 @@ export { ModelPicker } from './inputs/ModelPicker.js';
 export { WorkspacePicker } from './inputs/WorkspacePicker.js';
 export { connectHost, getWorkspaceFiles, modelCatalog, refreshModelCatalog, revalidateModelCatalog, workspaceList, } from './infra/host-data.js';
 export { Modal, useModalBackground } from './feedback/Modal.js';
+export { OverlayLockExempt as ModalLockExempt } from './infra/overlay.js';
 export { SideSheet } from './feedback/SideSheet.js';
 export { AlertModal, } from './feedback/AlertModal.js';
 export { ConfirmModal, } from './feedback/ConfirmModal.js';

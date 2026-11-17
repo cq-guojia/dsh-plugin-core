@@ -1,6 +1,7 @@
 import { createElement as h, useState, type ReactNode } from 'react'
 import { Modal, type ModalSize } from './Modal.js'
 import { Button } from '../actions/Button.js'
+import { OverlayLockExempt } from '../infra/overlay.js'
 import { t, type Translate } from '../../utils/i18n.js'
 
 /** 确认钮语义档（决定确认钮外观）。 */
@@ -29,6 +30,12 @@ export interface ConfirmModalProps {
   closeOnMask?: boolean
   /** 锁死全部交互（含义见 `Modal.locked`）：整框点不动、Tab 进不去、三条关闭路径同时失效。 */
   locked?: boolean
+  /**
+   * `locked` 期间仍可点的**内置按钮**（只收内置钮名，不透传自定义控件）：典型 `['cancel']` ——
+   * 长任务里允许用户取消。不传 = 全封。只豁免交互，三条关闭路径仍封死。
+   * 将来若开放自定义按钮，用 `Modal` 的 `lockExceptions` / `ModalLockExempt` 那套。
+   */
+  lockExceptions?: readonly ('cancel' | 'confirm')[]
   /** 外部驱动确认钮 loading（如别处正在刷新）。与按钮自己的异步状态取或。 */
   confirmLoading?: boolean
   /** 外部驱动取消钮 loading：同上。 */
@@ -58,6 +65,24 @@ export function ConfirmModal(props: ConfirmModalProps): ReturnType<typeof h> {
   const [cancelBusy, setCancelBusy] = useState(false)
   // 任一钮在跑（自己点的或外部传的）⇒ 整框不可关。
   const busy = confirmBusy || cancelBusy || props.confirmLoading === true || props.cancelLoading === true
+  // locked 期间仍可点的内置钮：包进例外域，复用 Modal 那套 pointer-events / Tab 放行。
+  const exempt = props.lockExceptions ?? []
+  const cancelButton = h(Button, {
+    variant: 'outline',
+    width: props.cancelWidth,
+    loadingText: props.loadingText,
+    loading: props.cancelLoading === true,
+    onBusyChange: setCancelBusy,
+    onClick: () => props.onCancel?.(),
+  }, props.cancelText ?? tt('cancel'))
+  const confirmButton = h(Button, {
+    variant: confirmVariant,
+    width: props.confirmWidth,
+    loadingText: props.loadingText,
+    loading: props.confirmLoading === true,
+    onBusyChange: setConfirmBusy,
+    onClick: () => props.onConfirm?.(),
+  }, props.confirmText ?? tt('confirm'))
   return h(
     Modal,
     {
@@ -73,22 +98,8 @@ export function ConfirmModal(props: ConfirmModalProps): ReturnType<typeof h> {
       footer: h(
         'div',
         { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } },
-        h(Button, {
-          variant: 'outline',
-          width: props.cancelWidth,
-          loadingText: props.loadingText,
-          loading: props.cancelLoading === true,
-          onBusyChange: setCancelBusy,
-          onClick: () => props.onCancel?.(),
-        }, props.cancelText ?? tt('cancel')),
-        h(Button, {
-          variant: confirmVariant,
-          width: props.confirmWidth,
-          loadingText: props.loadingText,
-          loading: props.confirmLoading === true,
-          onBusyChange: setConfirmBusy,
-          onClick: () => props.onConfirm?.(),
-        }, props.confirmText ?? tt('confirm')),
+        exempt.includes('cancel') ? h(OverlayLockExempt, null, cancelButton) : cancelButton,
+        exempt.includes('confirm') ? h(OverlayLockExempt, null, confirmButton) : confirmButton,
       ),
     },
     props.message ?? null,

@@ -75,6 +75,7 @@ export {
   type ModelRoute,
 } from './infra/host-data.js'
 export { Modal, useModalBackground, type ModalProps, type ModalSize } from './feedback/Modal.js'
+export { OverlayLockExempt as ModalLockExempt } from './infra/overlay.js'
 export { SideSheet, type SideSheetProps, type SideSheetSide } from './feedback/SideSheet.js'
 export {
   AlertModal,

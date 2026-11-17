@@ -1,6 +1,7 @@
 import { createElement as h, useState, type ReactNode } from 'react'
 import { Modal, type ModalSize } from './Modal.js'
 import { Button } from '../actions/Button.js'
+import { OverlayLockExempt } from '../infra/overlay.js'
 import { t, type Translate } from '../../utils/i18n.js'
 import { ensureComponentStyles } from '../infra/css.js'
 import { FontIcon } from '../display/font-icon.js'
@@ -37,6 +38,11 @@ export interface AlertModalProps {
   closeOnMask?: boolean
   /** 锁死全部交互（含义见 `Modal.locked`）：整框点不动、Tab 进不去、三条关闭路径同时失效。 */
   locked?: boolean
+  /**
+   * `locked` 期间确认钮是否仍可点（单按钮弹窗）。不传 = 全封；只豁免交互，三条关闭路径仍封死。
+   * 将来若开放自定义按钮，用 `Modal` 的 `lockExceptions` / `ModalLockExempt` 那套。
+   */
+  lockExceptions?: boolean
   /** 外部驱动确认钮 loading（如别处正在刷新）。与按钮自己的异步状态取或。 */
   confirmLoading?: boolean
   /** 底栏左侧的一行过程提示（换字即翻牌，超长省略 + hover 跑马灯）。不传 = 不占位。 */
@@ -59,6 +65,14 @@ export function AlertModal(props: AlertModalProps): ReturnType<typeof h> {
   const [running, setRunning] = useState(false)
   // 在跑（自己点的或外部传的）⇒ 遮罩 / Esc 一律不关。
   const busy = running || props.confirmLoading === true
+  const confirmButton = h(Button, {
+    variant: 'primary',
+    width: props.confirmWidth,
+    loadingText: props.loadingText,
+    loading: props.confirmLoading === true,
+    onBusyChange: setRunning,
+    onClick: () => props.onConfirm?.(),
+  }, props.confirmText ?? tt('dialogOk'))
   return h(
     Modal,
     {
@@ -73,14 +87,7 @@ export function AlertModal(props: AlertModalProps): ReturnType<typeof h> {
       locked: props.locked,
       onClose: props.onConfirm,
       notice: props.notice,
-      footer: h(Button, {
-        variant: 'primary',
-        width: props.confirmWidth,
-        loadingText: props.loadingText,
-        loading: props.confirmLoading === true,
-        onBusyChange: setRunning,
-        onClick: () => props.onConfirm?.(),
-      }, props.confirmText ?? tt('dialogOk')),
+      footer: props.lockExceptions === true ? h(OverlayLockExempt, null, confirmButton) : confirmButton,
     },
     props.message ?? null,
   )

@@ -14,6 +14,8 @@ register(new URL('./primitives-hooks.mjs', import.meta.url))
 
 const { PanelClose, PanelSurface } = await import('../dist/ui/infra/panel.js')
 const { Modal } = await import('../dist/ui/feedback/Modal.js')
+const { ConfirmModal } = await import('../dist/ui/feedback/ConfirmModal.js')
+const { AlertModal } = await import('../dist/ui/feedback/AlertModal.js')
 const { Button } = await import('../dist/ui/actions/Button.js')
 const { FlipText, nextFlipSlot } = await import('../dist/ui/display/FlipText.js')
 const { LandingBody } = await import('../dist/adv/explorer/landing.js')
@@ -96,6 +98,28 @@ test('Modal backgrounded：整窗标隐藏但子树仍在，关闭路径全封',
 
   const plain = renderToStaticMarkup(h(Modal, { title: 't', onClose: () => {} }, 'x'))
   assert.doesNotMatch(plain, /data-dshpc-backgrounded/, '不传收起态却带了隐藏标记')
+})
+
+test('ConfirmModal locked：内置钮默认全封；lockExceptions 只放开指定钮', () => {
+  const allLocked = renderToStaticMarkup(h(ConfirmModal, {
+    message: 'm', locked: true, onConfirm: () => {}, onCancel: () => {},
+  }))
+  assert.equal((allLocked.match(/disabled=""/g) ?? []).length, 2, 'locked 无例外应两钮都禁用')
+
+  const cancelExempt = renderToStaticMarkup(h(ConfirmModal, {
+    message: 'm', locked: true, lockExceptions: ['cancel'], onConfirm: () => {}, onCancel: () => {},
+  }))
+  assert.match(cancelExempt, /dshpc-lock-exempt/, '取消钮没进例外域')
+  assert.equal((cancelExempt.match(/disabled=""/g) ?? []).length, 1, '只该确认钮禁用')
+})
+
+test('AlertModal locked：确认钮默认封；lockExceptions=true 时放开', () => {
+  const locked = renderToStaticMarkup(h(AlertModal, { message: 'm', locked: true, onConfirm: () => {} }))
+  assert.match(locked, /<button[^>]*disabled=""/, 'locked 无例外应禁用确认钮')
+
+  const exempt = renderToStaticMarkup(h(AlertModal, { message: 'm', locked: true, lockExceptions: true, onConfirm: () => {} }))
+  assert.match(exempt, /dshpc-lock-exempt/, '确认钮没进例外域')
+  assert.doesNotMatch(exempt, /disabled=""/, '例外确认钮不该被禁用')
 })
 
 test('Modal locked 只做「或」：本来禁用的解锁后照样禁用，控件没被写脏', () => {

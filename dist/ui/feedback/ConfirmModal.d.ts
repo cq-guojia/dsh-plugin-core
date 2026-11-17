@@ -26,6 +26,12 @@ export interface ConfirmModalProps {
     closeOnMask?: boolean;
     /** 锁死全部交互（含义见 `Modal.locked`）：整框点不动、Tab 进不去、三条关闭路径同时失效。 */
     locked?: boolean;
+    /**
+     * `locked` 期间仍可点的**内置按钮**（只收内置钮名，不透传自定义控件）：典型 `['cancel']` ——
+     * 长任务里允许用户取消。不传 = 全封。只豁免交互，三条关闭路径仍封死。
+     * 将来若开放自定义按钮，用 `Modal` 的 `lockExceptions` / `ModalLockExempt` 那套。
+     */
+    lockExceptions?: readonly ('cancel' | 'confirm')[];
     /** 外部驱动确认钮 loading（如别处正在刷新）。与按钮自己的异步状态取或。 */
     confirmLoading?: boolean;
     /** 外部驱动取消钮 loading：同上。 */

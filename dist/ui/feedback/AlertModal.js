@@ -1,6 +1,7 @@
 import { createElement as h, useState } from 'react';
 import { Modal } from './Modal.js';
 import { Button } from '../actions/Button.js';
+import { OverlayLockExempt } from '../infra/overlay.js';
 import { t } from '../../utils/i18n.js';
 import { ensureComponentStyles } from '../infra/css.js';
 import { FontIcon } from '../display/font-icon.js';
@@ -23,6 +24,14 @@ export function AlertModal(props) {
     const [running, setRunning] = useState(false);
     // 在跑（自己点的或外部传的）⇒ 遮罩 / Esc 一律不关。
     const busy = running || props.confirmLoading === true;
+    const confirmButton = h(Button, {
+        variant: 'primary',
+        width: props.confirmWidth,
+        loadingText: props.loadingText,
+        loading: props.confirmLoading === true,
+        onBusyChange: setRunning,
+        onClick: () => props.onConfirm?.(),
+    }, props.confirmText ?? tt('dialogOk'));
     return h(Modal, {
         icon: h('span', { className: `dshpc-alert-sev dshpc-alert-sev--${severity}` }, h(FontIcon, { name: SEVERITY_GLYPH[severity] })),
         title: props.title,
@@ -34,14 +43,7 @@ export function AlertModal(props) {
         locked: props.locked,
         onClose: props.onConfirm,
         notice: props.notice,
-        footer: h(Button, {
-            variant: 'primary',
-            width: props.confirmWidth,
-            loadingText: props.loadingText,
-            loading: props.confirmLoading === true,
-            onBusyChange: setRunning,
-            onClick: () => props.onConfirm?.(),
-        }, props.confirmText ?? tt('dialogOk')),
+        footer: props.lockExceptions === true ? h(OverlayLockExempt, null, confirmButton) : confirmButton,
     }, props.message ?? null);
 }
 //# sourceMappingURL=AlertModal.js.map
