@@ -94,6 +94,8 @@ function hostIgnoredFields(opts: object, allowed: readonly string[]): string[] {
     if (key === 'lockExceptions' && value === false) continue
     // closeOnMask 默认就是 true（宿主本来点遮罩就关）：true 等同于不传，只有 false 才是宿主没有的能力。
     if (key === 'closeOnMask' && value === true) continue
+    // loadingText 默认就是 true（loading 时保留文案）：true 等同于不传，只有 false 才是宿主没有的能力。
+    if (key === 'loadingText' && value === true) continue
     if (!allowed.includes(key)) ignored.push(key)
   }
   return ignored

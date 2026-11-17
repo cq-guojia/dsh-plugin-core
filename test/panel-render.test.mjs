@@ -141,10 +141,11 @@ test('命令式 host + 等价默认值：closeOnMask:true / notice:"" 不触发�
   const orig = console.warn
   console.warn = (...a) => warns.push(a.join(' '))
   try {
-    void confirmModal({ message: 'm', skin: 'host', closeOnMask: true, notice: '' })
-    void alertModal({ message: 'm', skin: 'host', closeOnMask: true, notice: '' })
+    void confirmModal({ message: 'm', skin: 'host', closeOnMask: true, notice: '', loadingText: true })
+    void alertModal({ message: 'm', skin: 'host', closeOnMask: true, notice: '', loadingText: true })
     assert.ok(!warns.some((w) => w.includes('closeOnMask')), 'closeOnMask:true 被误判为不支持字段')
     assert.ok(!warns.some((w) => w.includes('notice')), 'notice:"" 被误判为不支持字段')
+    assert.ok(!warns.some((w) => w.includes('loadingText')), 'loadingText:true 被误判为不支持字段')
   } finally {
     console.warn = orig
   }

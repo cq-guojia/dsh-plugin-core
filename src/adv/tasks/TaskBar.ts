@@ -307,7 +307,9 @@ export function TaskBar(props: TaskBarProps): ReactNode {
           null,
           h(
             'div',
-            { ref: refs.setFloating, style: floatingStyles },
+            // 浮动层自身必须带 z-index：floatingStyles 的 transform 会给它建 stacking context，
+            // 把 z-index 写在 PanelSurface 上会被困在内部，盖不住同页 z-index≥1 的元素。
+            { ref: refs.setFloating, style: floatingStyles, className: 'dshpc-taskbar__float' },
             h(
               PanelSurface,
               { tier: 'menu', role: 'menu', className: 'dshpc-taskbar__panel' },
