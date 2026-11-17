@@ -47,3 +47,4 @@ docs/                                               # 项目文档库入口与�
 - 2026-11-16：任务模块对外展示名改为「后台任务中心」（底层仍用跨页通知）；`timeoutMs` 改为定时器到点自动回收
 - 2026-11-16 17:38:04：新增 architecture/background-task-center.md 与 guides/background-task-center.md
 - 2026-11-17：`api/ui.md` 补 Modal 例外控件 / 收起 / 保树隐藏契约与 `useModalBackground()`；`architecture/task-notifications.md` 阶段 2 标完成
+- 2026-11-17（v0.42.0）：`api/ui.md` 补 `ModalLockExempt` 与 Confirm/Alert 内置按钮例外、写明「有 locked 不等于有例外」边界；确认弹窗 `lockExceptions` 只收内置钮名
