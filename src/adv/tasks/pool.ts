@@ -22,6 +22,7 @@
  * opened lazily on the first connect(); Node and SSR can import this module.
  */
 import { createStore } from '../../runtime/store.js'
+import { createBoundedCache } from './bounded-cache.js'
 import {
   createAuthoritativeEngine,
   type AuthoritativeEngine,
@@ -885,50 +886,20 @@ export function createTaskNotificationPool(options: TaskNotificationPoolOptions 
   }
 
   /**
-   * 有界 LRU：长生命周期页面里通知 id 去重与终态交接不能无限增长（成熟缓存库的通行做法：
-   * 到达容量上限淘汰最久未用项）。get/has 都刷新最近使用，淘汰按插入序头项。
-   * 本地缓存只是快路径：跨页/重开去重由服务端 cursor 兜底，缓存淘汰后的交接以
-   * ensureServer 调 create 返回的权威记录为真源（见 ensureServer）。
+   * 长生命周期页面里通知 id 去重与终态交接不能无限增长（成熟缓存库的通行做法：
+   * 到达容量上限淘汰最久未用项）。本地缓存只是快路径：跨页/重开去重由服务端 cursor
+   * 兜底，缓存淘汰后的交接以 ensureServer 调 create 返回的权威记录为真源（见 ensureServer）。
    */
   const NOTICE_CACHE_LIMIT = 512
-  function boundedLru<V>(limit: number) {
-    const entries = new Map<string, V>()
-    const refresh = (key: string, value: V): void => {
-      entries.delete(key)
-      entries.set(key, value)
-    }
-    return {
-      has(key: string): boolean {
-        if (!entries.has(key)) return false
-        refresh(key, entries.get(key) as V)
-        return true
-      },
-      get(key: string): V | undefined {
-        if (!entries.has(key)) return undefined
-        const value = entries.get(key) as V
-        refresh(key, value)
-        return value
-      },
-      set(key: string, value: V): void {
-        refresh(key, value)
-        if (entries.size > limit) {
-          const oldest = entries.keys().next()
-          if (!oldest.done) entries.delete(oldest.value)
-        }
-      },
-      delete(key: string): void { entries.delete(key) },
-      clear(): void { entries.clear() },
-    }
-  }
 
   /** 服务端权威任务的句柄等待者：终态通知到达时兑现，不依赖创建页存活。 */
   const serverSettlers = new Map<string, (value: TaskNotificationSettlement) => void>()
   /** 同 key 复用同一句柄；重开页面后新旧调用拿到的是同一个 settled Promise。 */
   const serverHandles = new Map<string, AuthoritativeHandle>()
   /** 通道 B 已投递的通知 id：跨页/重开由服务端 cursor 去重，这里挡同页 follow 重入。有界。 */
-  const deliveredNotices = boundedLru<true>(NOTICE_CACHE_LIMIT)
+  const deliveredNotices = createBoundedCache<true>(NOTICE_CACHE_LIMIT)
   /** 终态结果缓存：通知早于 ensureServer 注册 waiter 时，用它兑现后建的句柄。有界。 */
-  const settledResults = boundedLru<TaskNotificationSettlement>(NOTICE_CACHE_LIMIT)
+  const settledResults = createBoundedCache<TaskNotificationSettlement>(NOTICE_CACHE_LIMIT)
 
   /** 只有明确的 done/failed 才是终态；tombstone 但仍是 running 的异常记录不兑现，避免误判 outcome。 */
   function settlementOf(row: ServerTaskRecord): TaskNotificationSettlement | undefined {

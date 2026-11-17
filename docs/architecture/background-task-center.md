@@ -85,7 +85,7 @@ src/
 3. 核心只做投影与调和：按单调 version 合并基线/分页/增量，终态墓碑挡住迟到快照；按钮只存描述，执行走服务端命令。
 4. **两条通道分离**：通道 A（`list / follow`）只水合在跑任务，终态墓碑只更新本地终态门，**不 emit `settled`、不 ack**；通道 B（`listNotices / ackNotices`）专职投递未确认的终态通知，`notificationId / cursor` 由服务端生成，事件发出后按连续成功前缀 ack（at-least-once，不追求 exactly-once）。这样页面重开时基线回放不会重复通知，未确认通知仍能送达。
 5. **通道 B 按后端归属分组**：每个后端只查询自己注册的 project，用各自的游标推进与 ack，不拿首个后端代查全部——不同后端可能是不同服务 / 不同鉴权域，代查会静默丢通知。
-6. **前端缓存有界**：通知去重 id 与终态交接结果用有界 LRU（上限 512），长生命周期页面不无限增长；跨页 / 重开去重靠服务端 cursor。句柄兑现以登记时服务端原子 create 返回的权威记录为真源，本地缓存只是「通知早于 waiter」的快路径：淘汰后仍能兑现、不留 pending，同 key 重建不会被上一轮终态错误兑现。
+6. **前端缓存有界**：通知去重 id、终态交接结果、按钮命令幂等缓存共用同一套有界缓存（容量上限 512）。前两者按 LRU 淘汰；幂等缓存额外带 60 秒写入 TTL，过期条目在下次访问时删除、点击换新键，窗口内重复点击复用同一条目并回放成功结果。长生命周期页面不随开页时长或点击次数无限增长；跨页 / 重开去重靠服务端 cursor。句柄兑现以登记时服务端原子 create 返回的权威记录为真源，本地缓存只是「通知早于 waiter」的快路径：淘汰后仍能兑现、不留 pending，同 key 重建不会被上一轮终态错误兑现。
 7. 按钮点击向 `taskNotificationEvents` 发 `action` 事件（task 快照 + actionId + index + ok + reason + result），消费方据此恢复界面，不必另开通知通道。
 8. 权威句柄只有 `id / isSettled / settled`，没有 update/touch/background/done/fail/track——终态由服务端判定，编译期即阻止误用。
 9. 该模式下的记录写入专用分片 `__server__`，不参与跨页 bye；页面关闭只断连接，不删服务端任务。
@@ -100,7 +100,7 @@ src/
 | pull 心跳；租约可续；续租不代表能无限跑 | SQS visibility timeout：从消息投递起算，用 `ChangeMessageVisibility` 周期性延长；但延长不能突破首次接收起 12 小时的硬上限 | [SQS visibility timeout](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html) |
 | 租约到点被判 stalled，作业可能被再处理；处理器必须幂等 | BullMQ：锁到期未续即 stalled 并回到 waiting 重处理；官方明确任务按 at-least-once 设计，jobId 去重不能替代业务幂等 | [BullMQ stalled jobs](https://docs.bullmq.io/guide/workers/stalled-jobs) |
 | `maxDurationMs` 不可续；终态按 TTL 清理 | Kubernetes Job：`activeDeadlineSeconds` 到点终止并判 `DeadlineExceeded`、优先于 `backoffLimit`；`ttlSecondsAfterFinished` 清理已完成 Job，不设就不自动清 | [Kubernetes Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/job/) |
-| 前端去重 / 交接缓存有界淘汰（上限 512），淘汰后靠真源兜底 | Java `LinkedHashMap` access-order + `removeEldestEntry` 固定 `MAX_ENTRIES`（"maintaining a steady state of 100 entries"）；Guava / Caffeine `maximumSize` + `expireAfterAccess`（缓存自动淘汰以约束内存，区别于一直保留到显式删除的 `ConcurrentMap`） | [LinkedHashMap](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedHashMap.html) · [Caffeine](https://github.com/ben-manes/caffeine/wiki) |
+| 前端去重 / 交接 / 命令幂等缓存有界：容量 LRU（上限 512）+ 幂等键 60 秒写入 TTL | Java `LinkedHashMap` access-order + `removeEldestEntry` 固定 `MAX_ENTRIES`（"maintaining a steady state of 100 entries"）；Guava / Caffeine `maximumSize` + `expireAfterWrite`（缓存自动淘汰以约束内存，键按写入窗口过期、访问不续命，区别于一直保留到显式删除的 `ConcurrentMap`） | [LinkedHashMap](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/LinkedHashMap.html) · [Caffeine](https://github.com/ben-manes/caffeine/wiki) |
 | 通道 B 按后端归属分组，各后端只查自己的 project、各用自己的游标与 ack | 多租户 SSE：通道从已认证身份推导、按租户前缀隔离、"process each tenant's messages in its own queue"；多租户 webhook：tenant 是隔离单元，订阅 / 凭据 / 游标互不共享 | [Isolating tenants on SSE endpoints](http://www.server-sent-events.com/sse-protocol-fundamentals-architecture/security-headers-for-event-streams/isolating-tenants-on-shared-sse-endpoints) · [Svix multi-tenant webhooks](https://www.svix.com/resources/guides/multi-tenant-webhook-service) |
 
 > 结论：at-least-once 是这些系统的共同前提，所以「业务处理器幂等」是接入方的硬义务，不是可选优化；key 只减少重复提交，不替代幂等。
@@ -138,3 +138,4 @@ src/
 - 2026-11-16 18:01:41：C 方案落地：架构文档从目标设计改为已实现契约，心跳定时器口径与代码一致
 - 2026-11-16 20:33:57：审计修正：dispose 丢弃在途探测结果，避免卸载后结算与重排定时器；StatusRow/StatusSource 补进公开导出
 - 2026-11-16：新增服务端权威模式（§3.7），修复页面生命周期决定服务端任务命运的四条断点；能力缺失不再静默降级
+- 2026-11-17：命令幂等缓存纳入统一有界缓存，容量 LRU（512）+ 60 秒写入 TTL 双定界；与通知去重 / 终态交接共用实现

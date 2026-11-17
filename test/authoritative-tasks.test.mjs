@@ -585,3 +585,92 @@ test('实现问题①：通知数超过有界缓存上限后，create 的权威�
   assert.equal(claim.handle.isSettled, true)
   pool.dispose()
 })
+
+test('命令幂等缓存有界：超上限淘汰最久未用，再点换新键', async () => {
+  setDefaultTaskProject(PROJECT)
+  const action = { id: 'retry', label: '重试', enabled: true, token: 't', expiresAt: Date.now() + 60_000, version: 1 }
+  const rows = ['t1', 't2', 't3'].map((key) => row({ key, actions: [action] }))
+  const calls = { invokes: [] }
+  const backend = {
+    async list() { return { rows: [...rows], snapshotVersion: 1 } },
+    follow() { return () => {} },
+    async listNotices() { return { notices: [] } },
+    async ackNotices() {},
+    async invoke(request) { calls.invokes.push(request); return { ok: true } },
+    async ack() {},
+  }
+  const engine = createAuthoritativeEngine({
+    clientId: 'bounded-invokes', onChange() {}, onNotice() {}, invokeCacheLimit: 2,
+  })
+  engine.attach(PROJECT, backend)
+  engine.start()
+  await waitFor(() => engine.all().length === 3, 'hydrate three tasks')
+
+  const first = await engine.runAction(PROJECT, 't1', 'retry')
+  await engine.runAction(PROJECT, 't2', 'retry')
+  await engine.runAction(PROJECT, 't3', 'retry')
+  assert.equal(calls.invokes.length, 3)
+
+  // 容量内的最近项仍命中：不新增请求，结果原样回放。
+  const replay = await engine.runAction(PROJECT, 't3', 'retry')
+  assert.equal(calls.invokes.length, 3)
+  assert.deepEqual(await engine.runAction(PROJECT, 't3', 'retry'), replay)
+  assert.equal(calls.invokes.length, 3)
+
+  // t1 最久未用、已被容量淘汰：再点必须重新发命令并拿新幂等键。
+  const again = await engine.runAction(PROJECT, 't1', 'retry')
+  assert.equal(calls.invokes.length, 4)
+  assert.notEqual(calls.invokes[3].idempotencyKey, calls.invokes[0].idempotencyKey)
+  assert.notEqual(again.idempotencyKey, first.idempotencyKey)
+  engine.dispose()
+})
+
+test('命令幂等缓存按写入过期：窗口内回放结果，超过窗口换新键重发', async () => {
+  setDefaultTaskProject(PROJECT)
+  const action = { id: 'retry', label: '重试', enabled: true, token: 't', expiresAt: Date.now() + 60_000, version: 1 }
+
+  // 窗口内：大 TTL，不依赖两次调用实耗；断言命中且结果原样回放。
+  const hitCalls = { invokes: [] }
+  const hitEngine = createAuthoritativeEngine({
+    clientId: 'ttl-hit', onChange() {}, onNotice() {},
+    invokeCacheLimit: 10, invokeCacheTtlMs: 5_000,
+  })
+  hitEngine.attach(PROJECT, {
+    async list() { return { rows: [row({ key: 'ttl-hit', actions: [action] })], snapshotVersion: 1 } },
+    follow() { return () => {} },
+    async listNotices() { return { notices: [] } },
+    async ackNotices() {},
+    async invoke(request) { hitCalls.invokes.push(request); return { ok: true } },
+    async ack() {},
+  })
+  hitEngine.start()
+  await waitFor(() => hitEngine.all().length === 1, 'hydrate hit engine')
+  const first = await hitEngine.runAction(PROJECT, 'ttl-hit', 'retry')
+  const replay = await hitEngine.runAction(PROJECT, 'ttl-hit', 'retry')
+  assert.equal(hitCalls.invokes.length, 1)
+  assert.deepEqual(replay, first)
+  hitEngine.dispose()
+
+  // 窗口外：短 TTL，过期后必须换新键重发。
+  const expireCalls = { invokes: [] }
+  const expireEngine = createAuthoritativeEngine({
+    clientId: 'ttl-expire', onChange() {}, onNotice() {},
+    invokeCacheLimit: 10, invokeCacheTtlMs: 100,
+  })
+  expireEngine.attach(PROJECT, {
+    async list() { return { rows: [row({ key: 'ttl-expire', actions: [action] })], snapshotVersion: 1 } },
+    follow() { return () => {} },
+    async listNotices() { return { notices: [] } },
+    async ackNotices() {},
+    async invoke(request) { expireCalls.invokes.push(request); return { ok: true } },
+    async ack() {},
+  })
+  expireEngine.start()
+  await waitFor(() => expireEngine.all().length === 1, 'hydrate expire engine')
+  await expireEngine.runAction(PROJECT, 'ttl-expire', 'retry')
+  await new Promise((resolve) => setTimeout(resolve, 150))
+  await expireEngine.runAction(PROJECT, 'ttl-expire', 'retry')
+  assert.equal(expireCalls.invokes.length, 2)
+  assert.notEqual(expireCalls.invokes[1].idempotencyKey, expireCalls.invokes[0].idempotencyKey)
+  expireEngine.dispose()
+})

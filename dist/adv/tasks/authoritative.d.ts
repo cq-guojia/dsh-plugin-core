@@ -1,14 +1,3 @@
-/**
- * 服务端权威任务的客户端调和器。
- *
- * 两条通道各司其职，绝不混用：
- *   A. 在跑投影——list/follow 只水合 running；tombstone 只更新本地终态门，不 emit、不 ack。
- *   B. 终态通知——listNotices/ackNotices 拉未确认通知，emit 后按连续成功前缀 ack。
- * 这样基线回放（含 tombstone）永远不会造成「任务结束」的重复通知。
- *
- * 真值、判死、时钟、命令执行全在消费方服务端；本模块只做投影、调和、通知投递。
- * 零 React / 零 DOM；transport 注入，Node 自检可用内存 fake。
- */
 import type { TaskNotificationDetail } from './pool.js';
 /** 服务端权威任务的状态。 */
 export type ServerTaskState = 'running' | 'done' | 'failed';
@@ -144,6 +133,10 @@ export interface AuthoritativeEngineOptions {
     readonly rebaseMinMs?: number;
     /** 命令超时，默认 5000ms。 */
     readonly actionTimeoutMs?: number;
+    /** 命令幂等缓存的容量上限，默认 512；超过淘汰最久未用项。 */
+    readonly invokeCacheLimit?: number;
+    /** 命令幂等缓存的保留窗口（毫秒），默认 60000；过期即删，下次点击换新键。 */
+    readonly invokeCacheTtlMs?: number;
 }
 export declare function createAuthoritativeEngine(options: AuthoritativeEngineOptions): {
     attach(project: string, backend: TaskBackend): void;
@@ -153,7 +146,7 @@ export declare function createAuthoritativeEngine(options: AuthoritativeEngineOp
     find(project: string, key: string): ServerTaskRecord | undefined;
     all(): readonly ServerTaskRecord[];
     runAction(project: string, key: string, actionId: string): Promise<InvokeResult>;
-    /** 暴露幂等键供上层在 action 事件里回传，迟到结果由它抑制二次 emit。 */
+    /** 暴露幂等键供上层在 action 事件里回传，迟到结果由它抑制二次 emit；只保留窗口内有效，过期或淘汰后返回 undefined。 */
     idempotencyKeyFor(project: string, key: string, actionId: string, version: number): string | undefined;
     acknowledge(request: AckRequest): Promise<void>;
     create(input: ServerCreateInput): Promise<ServerCreateResult | undefined>;

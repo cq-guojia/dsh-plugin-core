@@ -9,6 +9,7 @@
  * 真值、判死、时钟、命令执行全在消费方服务端；本模块只做投影、调和、通知投递。
  * 零 React / 零 DOM；transport 注入，Node 自检可用内存 fake。
  */
+import { createBoundedCache } from './bounded-cache.js'
 import type { TaskNotificationDetail } from './pool.js'
 
 /** 服务端权威任务的状态。 */
@@ -157,6 +158,10 @@ export interface AuthoritativeEngineOptions {
   readonly rebaseMinMs?: number
   /** 命令超时，默认 5000ms。 */
   readonly actionTimeoutMs?: number
+  /** 命令幂等缓存的容量上限，默认 512；超过淘汰最久未用项。 */
+  readonly invokeCacheLimit?: number
+  /** 命令幂等缓存的保留窗口（毫秒），默认 60000；过期即删，下次点击换新键。 */
+  readonly invokeCacheTtlMs?: number
 }
 
 type ProjectState = {
@@ -242,8 +247,14 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
     return grouped
   }
 
-  const invokes = new Map<string, { idempotencyKey: string; result?: InvokeResult; at: number }>()
-  const INVOKE_CACHE_MS = 60_000
+  /**
+   * 命令幂等缓存：容量 LRU + 写入 TTL 双定界。保留窗口从写入（或写入结果）算起，
+   * 过期由缓存删除、下次点击换新键 —— 不是「超时只覆盖、旧条目永远留着」。
+   */
+  const invokes = createBoundedCache<{ idempotencyKey: string; result?: InvokeResult }>(
+    options.invokeCacheLimit ?? 512,
+    options.invokeCacheTtlMs ?? 60_000,
+  )
   function invokeCacheKey(project: string, key: string, actionId: string, version: number): string {
     return `${project}:${key}:${actionId}:${version}`
   }
@@ -482,9 +493,10 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
           return { ok: false, reason: 'action expired' }
         }
         const cacheKey = invokeCacheKey(project, key, actionId, record.version)
+        // 过期条目已由缓存 get 删除，拿到 undefined 即换新键。
         let entry = invokes.get(cacheKey)
-        if (entry === undefined || Date.now() - entry.at > INVOKE_CACHE_MS) {
-          entry = { idempotencyKey: newIdempotencyKey(clientId), at: Date.now() }
+        if (entry === undefined) {
+          entry = { idempotencyKey: newIdempotencyKey(clientId) }
           invokes.set(cacheKey, entry)
         }
         if (entry.result !== undefined) return entry.result
@@ -501,8 +513,13 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
           }), timed])
           const result: InvokeResult = { ...raw, idempotencyKey: entry.idempotencyKey }
           if (result.ok) {
-            entry.result = result
-            entry.at = Date.now()
+            // 写回带结果的条目，保留窗口从成功时刻重新起算（与旧实现 entry.at = now 一致）。
+            // 只在没有换新键时写回：命令耗时超过 TTL 时缓存里可能已是被下一次点击换掉的条目，
+            // 迟到的旧结果不得用旧键盖回去、也不得挤掉新条目。
+            const current = invokes.get(cacheKey)
+            if (current === undefined || current.idempotencyKey === entry.idempotencyKey) {
+              invokes.set(cacheKey, { ...entry, result })
+            }
           }
           return result
         } finally {
@@ -512,7 +529,7 @@ export function createAuthoritativeEngine(options: AuthoritativeEngineOptions) {
         return { ok: false, reason: error instanceof Error ? error.message : String(error) }
       }
     },
-    /** 暴露幂等键供上层在 action 事件里回传，迟到结果由它抑制二次 emit。 */
+    /** 暴露幂等键供上层在 action 事件里回传，迟到结果由它抑制二次 emit；只保留窗口内有效，过期或淘汰后返回 undefined。 */
     idempotencyKeyFor(project: string, key: string, actionId: string, version: number): string | undefined {
       return invokes.get(invokeCacheKey(project, key, actionId, version))?.idempotencyKey
     },

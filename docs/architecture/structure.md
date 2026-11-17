@@ -97,7 +97,7 @@ src/
 ├── adv/                    ⑤ 应用模块 —— 组件 + API 打包成成品
 │   ├── explorer/              文件浏览：FileBrowser · openFilePreview · pickWorkspaceFile · 预览体家族
 │   ├── session/               会话记录：SessionPreview
-│   └── tasks/                 后台任务：pool · useTasks · TaskBar
+│   └── tasks/                 后台任务：pool · authoritative · bounded-cache · useTasks · TaskBar
 │
 ├── types/                  ⑥ 类型垫片 —— 只有 .d.ts，无运行时
 │
@@ -149,7 +149,7 @@ utils（谁都不依赖，谁都可以用）
 | `dsh-plugin-core/ui/host-toast` | 宿主原生 Toast | 入口静态 import 官方件会让 Node 单测崩（旧坑） |
 | `dsh-plugin-core/adv/explorer` | 文件浏览 | 应用模块独立子路径 |
 | `dsh-plugin-core/adv/session` | 会话预览 | 同上 |
-| `dsh-plugin-core/adv/tasks` | 后台任务：pool + useTasks + TaskBar | 同上 |
+| `dsh-plugin-core/adv/tasks` | 后台任务：pool + authoritative + useTasks + TaskBar | 同上 |
 | `dsh-plugin-core/runtime` | 运行时底座：跨页消息 + 状态容器 | 无界面的能力，不想拖进控件时可单独引 |
 
 **真源唯一**：`src/ui/index.ts` 与整包产物 `dist/ui/index.js` 只做转发，每个控件的实现只在自己那个 `.js` 里（如 `inputs/Field.js` 是 Input / NumberInput / PrefixedInput 的全站唯一实现）；每份 CSS 字符串常量也只有一个 `*-css.generated.js`，多个入口 import 同一个文件，打包器按路径去重。不存在复制出去的第二份。

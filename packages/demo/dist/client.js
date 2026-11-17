@@ -70035,6 +70035,10 @@ h(SideSheet, {
         "en": 'Notification de-duplication ids and terminal handoff results on the client use a bounded LRU cache (limit 512) and never grow without bound on a long-lived page. Cross-page / reopen de-duplication relies on the server cursor. Settling an authoritative handle uses the authoritative record returned by the server atomic create at registration as the source of truth; the local cache is only a fast path for "notice before waiter" \u2014 eviction still settles without leaving a pending handle, and reusing a key can never settle a fresh handle with the previous instance terminal.'
       },
       {
+        "zh": "\u6309\u94AE\u547D\u4EE4\u7684\u5E42\u7B49\u7F13\u5B58\u540C\u6837\u6709\u754C\uFF1A\u6309\uFF08\u9879\u76EE\u3001\u4EFB\u52A1\u3001\u6309\u94AE\u3001\u7248\u672C\uFF09\u4E3A\u952E\uFF0C\u5BB9\u91CF\u4E0A\u9650 512\u3001\u5199\u5165\u540E\u8D85\u8FC7 60 \u79D2\u5373\u8FC7\u671F\uFF08\u5230\u70B9\u90A3\u4E00\u79D2\u4ECD\u6709\u6548\uFF09\uFF0C\u4E24\u8F74\u90FD\u7531\u540C\u4E00\u5957\u901A\u7528\u6709\u754C\u7F13\u5B58\u6267\u884C\u2014\u2014\u5BB9\u91CF\u6EE1\u6DD8\u6C70\u6700\u4E45\u672A\u7528\u9879\uFF0C\u8FC7\u671F\u6761\u76EE\u5728\u4E0B\u6B21\u8BBF\u95EE\u65F6\u5220\u9664\u5E76\u6362\u65B0\u5E42\u7B49\u952E\u3002\u7A97\u53E3\u5185\u91CD\u590D\u70B9\u51FB\u590D\u7528\u540C\u4E00\u6761\u76EE\uFF08\u6210\u529F\u540E\u8FDE\u7ED3\u679C\u4E00\u8D77\u56DE\u653E\uFF0C\u4E0D\u518D\u53D1\u8BF7\u6C42\uFF09\uFF0C\u7A97\u53E3\u5916\u91CD\u65B0\u53D1\u547D\u4EE4\uFF1B\u957F\u751F\u547D\u5468\u671F\u9875\u9762\u4E0D\u4F1A\u56E0\u4E3A\u70B9\u8FC7\u7684\u6309\u94AE\u8D8A\u79EF\u8D8A\u591A\u800C\u65E0\u754C\u589E\u957F\u3002",
+        "en": "Button command idempotency is bounded the same way: keyed by (project, task, action, version), capped at 512 entries and expiring once more than 60 seconds have passed since the write (the boundary second still counts), both enforced by the shared bounded cache \u2014 the oldest unused entry is evicted at capacity, and an expired entry is deleted on next access so a fresh idempotency key is minted. Clicks inside the window reuse the entry (and replay the cached result after success, sending no request); outside it a new command is sent. A long-lived page therefore cannot grow without bound as more buttons are clicked."
+      },
+      {
         "zh": "\u771F\u6E90\u5728\u670D\u52A1\u7AEF\uFF1A\u539F\u5B50 `create` \u51B3\u5B9A `created`\uFF0C`startedAt / deadlineAt / version` \u7531\u670D\u52A1\u7AEF\u751F\u6210\uFF0C\u8D85\u65F6\u4E0E\u79DF\u7EA6\u7531\u670D\u52A1\u7AEF watchdog \u5224\u5B9A\uFF0C\u7EC8\u6001\u6309 TTL \u6E05\u7406\u3002\u6838\u5FC3\u53EA\u6309\u5355\u8C03 version \u5408\u5E76\u57FA\u7EBF\u3001\u5206\u9875\u4E0E\u589E\u91CF\uFF1B\u6309\u94AE\u662F `{id, token, expiresAt}` \u63CF\u8FF0\uFF0C`runAction` \u6309 actionId \u8D70\u670D\u52A1\u7AEF\u547D\u4EE4\uFF0C\u4E0D\u4F9D\u8D56\u9875\u9762\u95ED\u5305\u3002\u70B9\u51FB\u6309\u94AE\u4F1A\u5411 `taskNotificationEvents` \u53D1 `action` \u4E8B\u4EF6\uFF08\u542B\u4EFB\u52A1\u5FEB\u7167\u3001actionId\u3001ok\u3001reason\u3001result\uFF09\uFF0C\u6D88\u8D39\u65B9\u636E\u6B64\u628A\u754C\u9762\u5E26\u56DE\u6765\u3002\u6743\u5A01\u53E5\u67C4\u53EA\u6709 `id / isSettled / settled`\uFF0C\u6CA1\u6709 update/touch/background/done/fail/track\u2014\u2014\u7EC8\u6001\u7531\u670D\u52A1\u7AEF\u5224\u5B9A\uFF0C\u7F16\u8BD1\u671F\u5373\u963B\u6B62\u8BEF\u7528\u3002",
         "en": "The server owns the truth: atomic `create` decides `created`; `startedAt / deadlineAt / version` come from the server; a server watchdog decides timeouts and lease expiry; terminal records are cleared by TTL. Actions are `{id, token, expiresAt}` descriptors and `runAction` dispatches by actionId to the server, never through page closures. Every click emits an `action` event to `taskNotificationEvents` (with task snapshot, actionId, ok, reason, result) so consumers can restore their UI. An authoritative handle exposes only `id / isSettled / settled`; update/touch/background/done/fail/track do not exist \u2014 the server decides terminal state, and the type system prevents misuse."
       }
@@ -74812,6 +74816,67 @@ function PaginationPage() {
 // packages/demo/src/sections/task-notifications.tsx
 var import_react108 = require("react");
 
+// dist/adv/tasks/bounded-cache.js
+function createBoundedCache(limit, ttlMs = Number.POSITIVE_INFINITY, now = Date.now) {
+  if (!Number.isInteger(limit) || limit < 1) {
+    throw new Error("bounded cache limit must be a positive integer");
+  }
+  if (!(ttlMs > 0)) {
+    throw new Error("bounded cache ttl must be positive");
+  }
+  const entries2 = /* @__PURE__ */ new Map();
+  const expired = (entry) => now() - entry.writtenAt > ttlMs;
+  const dropIfExpired = (key, entry) => {
+    if (!expired(entry))
+      return false;
+    entries2.delete(key);
+    return true;
+  };
+  const refreshOrder = (key, entry) => {
+    entries2.delete(key);
+    entries2.set(key, entry);
+  };
+  return {
+    has(key) {
+      const entry = entries2.get(key);
+      if (entry === void 0)
+        return false;
+      if (dropIfExpired(key, entry))
+        return false;
+      refreshOrder(key, entry);
+      return true;
+    },
+    get(key) {
+      const entry = entries2.get(key);
+      if (entry === void 0)
+        return void 0;
+      if (dropIfExpired(key, entry))
+        return void 0;
+      refreshOrder(key, entry);
+      return entry.value;
+    },
+    set(key, value) {
+      entries2.delete(key);
+      entries2.set(key, { value, writtenAt: now() });
+      while (entries2.size > limit) {
+        const oldest = entries2.keys().next();
+        if (oldest.done)
+          break;
+        entries2.delete(oldest.value);
+      }
+    },
+    delete(key) {
+      entries2.delete(key);
+    },
+    clear() {
+      entries2.clear();
+    },
+    get size() {
+      return entries2.size;
+    }
+  };
+}
+
 // dist/adv/tasks/authoritative.js
 var idempotencySeq = 0;
 function newIdempotencyKey(clientId) {
@@ -74881,8 +74946,7 @@ function createAuthoritativeEngine(options) {
     }
     return grouped;
   }
-  const invokes = /* @__PURE__ */ new Map();
-  const INVOKE_CACHE_MS = 6e4;
+  const invokes = createBoundedCache(options.invokeCacheLimit ?? 512, options.invokeCacheTtlMs ?? 6e4);
   function invokeCacheKey(project, key, actionId, version) {
     return `${project}:${key}:${actionId}:${version}`;
   }
@@ -75115,8 +75179,8 @@ function createAuthoritativeEngine(options) {
         }
         const cacheKey = invokeCacheKey(project, key, actionId, record.version);
         let entry = invokes.get(cacheKey);
-        if (entry === void 0 || Date.now() - entry.at > INVOKE_CACHE_MS) {
-          entry = { idempotencyKey: newIdempotencyKey(clientId), at: Date.now() };
+        if (entry === void 0) {
+          entry = { idempotencyKey: newIdempotencyKey(clientId) };
           invokes.set(cacheKey, entry);
         }
         if (entry.result !== void 0)
@@ -75136,8 +75200,10 @@ function createAuthoritativeEngine(options) {
           }), timed]);
           const result = { ...raw, idempotencyKey: entry.idempotencyKey };
           if (result.ok) {
-            entry.result = result;
-            entry.at = Date.now();
+            const current3 = invokes.get(cacheKey);
+            if (current3 === void 0 || current3.idempotencyKey === entry.idempotencyKey) {
+              invokes.set(cacheKey, { ...entry, result });
+            }
           }
           return result;
         } finally {
@@ -75148,7 +75214,7 @@ function createAuthoritativeEngine(options) {
         return { ok: false, reason: error instanceof Error ? error.message : String(error) };
       }
     },
-    /** 暴露幂等键供上层在 action 事件里回传，迟到结果由它抑制二次 emit。 */
+    /** 暴露幂等键供上层在 action 事件里回传，迟到结果由它抑制二次 emit；只保留窗口内有效，过期或淘汰后返回 undefined。 */
     idempotencyKeyFor(project, key, actionId, version) {
       return invokes.get(invokeCacheKey(project, key, actionId, version))?.idempotencyKey;
     },
@@ -75529,46 +75595,10 @@ function createTaskNotificationPool(options = {}) {
     store.setState({ tasks: collect(), revision }, true);
   }
   const NOTICE_CACHE_LIMIT = 512;
-  function boundedLru(limit) {
-    const entries2 = /* @__PURE__ */ new Map();
-    const refresh2 = (key, value) => {
-      entries2.delete(key);
-      entries2.set(key, value);
-    };
-    return {
-      has(key) {
-        if (!entries2.has(key))
-          return false;
-        refresh2(key, entries2.get(key));
-        return true;
-      },
-      get(key) {
-        if (!entries2.has(key))
-          return void 0;
-        const value = entries2.get(key);
-        refresh2(key, value);
-        return value;
-      },
-      set(key, value) {
-        refresh2(key, value);
-        if (entries2.size > limit) {
-          const oldest = entries2.keys().next();
-          if (!oldest.done)
-            entries2.delete(oldest.value);
-        }
-      },
-      delete(key) {
-        entries2.delete(key);
-      },
-      clear() {
-        entries2.clear();
-      }
-    };
-  }
   const serverSettlers = /* @__PURE__ */ new Map();
   const serverHandles = /* @__PURE__ */ new Map();
-  const deliveredNotices = boundedLru(NOTICE_CACHE_LIMIT);
-  const settledResults = boundedLru(NOTICE_CACHE_LIMIT);
+  const deliveredNotices = createBoundedCache(NOTICE_CACHE_LIMIT);
+  const settledResults = createBoundedCache(NOTICE_CACHE_LIMIT);
   function settlementOf(row3) {
     if (row3.state !== "done" && row3.state !== "failed")
       return void 0;
@@ -77113,9 +77143,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.39.0"}`],
-            [t3("buildDemo"), `v${"0.39.0"}`],
-            [t3("buildStamp"), "261117-010232-936"]
+            [t3("buildCore"), `v${"0.40.0"}`],
+            [t3("buildDemo"), `v${"0.40.0"}`],
+            [t3("buildStamp"), "261117-093358-850"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77434,9 +77464,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.39.0"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.39.0"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-010232-936")
+          (0, import_react112.createElement)("span", null, `core v${"0.40.0"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.40.0"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-093358-850")
         )
       )
     ),
