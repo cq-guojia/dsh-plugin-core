@@ -2,7 +2,7 @@
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
     "20261116-1304-50e4-修复服务端任务生命周期脱离页面": {"category": "缺陷修复", "created": "2026-11-16 13:04:55", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-16 13:04:55", "status": "doing", "tags": ["任务中心", "服务端", "跨页恢复", "时间约束", "动作恢复"], "title": "修复服务端任务生命周期脱离页面", "updated": "2026-11-17 01:34:49", "worklog": "worklog/202611/16-1304-50e4-修复服务端任务生命周期脱离页面.md"},
-    "20261117-0259-db3c-可收起弹窗与例外控件": {"category": "建设", "created": "2026-11-17 02:59:05", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-17 02:59:05", "status": "doing", "tags": ["弹窗", "例外控件", "后台任务", "方案评估"], "title": "可收起弹窗与例外控件", "updated": "2026-11-17 07:18:36", "worklog": "worklog/202611/17-0259-db3c-可收起弹窗与例外控件.md"}
+    "20261117-0259-db3c-可收起弹窗与例外控件": {"category": "建设", "created": "2026-11-17 02:59:05", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-17 02:59:05", "status": "doing", "tags": ["弹窗", "例外控件", "后台任务", "方案评估"], "title": "可收起弹窗与例外控件", "updated": "2026-11-17 07:30:16", "worklog": "worklog/202611/17-0259-db3c-可收起弹窗与例外控件.md"}
   },
   "version": "20261022000000"
 }
