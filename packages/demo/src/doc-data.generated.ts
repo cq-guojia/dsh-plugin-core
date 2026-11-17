@@ -3760,7 +3760,7 @@ export const docData = {
         "en": "The mask’s right edge reads `--dshpc-page-inset-right` (summed across docks) and yields to the right column, centering the dialog in the **remaining** area. The dialog needs no mask props; never measure the column yourself (mounting is async, it always reads 0)."
       },
       {
-        "zh": "命令式 `confirmModal(opts)` / `alertModal(opts)` 返回 Promise：前者 resolve `true`（确定）或 `false`（取消 / 遮罩 / Esc），后者关闭即 resolve。回调返回 Promise 时对应按钮自己转圈、整框锁死，settle 后才关。要「锁定期间留取消钮」传 `lockExceptions`（`confirmModal` 收 `['cancel']`、`alertModal` 收 `true`）；该能力只在 core 皮肤生效，`skin:\"host\"` 传了会告警并回落 core，不静默吞掉。",
+        "zh": "命令式 `confirmModal(opts)` / `alertModal(opts)` 返回 Promise：前者 resolve `true`（确定）或 `false`（取消 / 遮罩 / Esc），后者关闭即 resolve。回调返回 Promise 时对应按钮自己转圈、整框锁死，settle 后才关。要「锁定期间留取消钮」传 `lockExceptions`（`confirmModal` 收 `['cancel']`、`alertModal` 收 `true`）；该能力只在 core 皮肤生效，`skin:\"host\"` 传了会告警并回落 core，不静默吞掉。host 皮肤本身只转交 `title` / `message` / `confirmText` / `cancelText` / `danger`，其余字段（回调、`notice`、`size`、宽度、`loadingText`、`closeOnMask`、`tone: warning` 等）传了同样告警并回落 core。",
         "en": "The imperative `confirmModal(opts)` / `alertModal(opts)` return a Promise: the former resolves `true` (confirmed) or `false` (cancel / mask / Esc), the latter resolves on close. When a callback returns a Promise, its button spins and the dialog locks until it settles. To keep the cancel button clickable while locked, pass `lockExceptions` (`confirmModal` takes `['cancel']`, `alertModal` takes `true`); it only works on the core skin — `skin:\"host\"` warns and falls back to core instead of swallowing it silently."
       },
       {
@@ -4398,8 +4398,8 @@ export const docData = {
             "type": "'core' | 'host'",
             "def": "'core'",
             "desc": {
-              "zh": "host 走宿主原生 Modal（需先引入适配层 `official.js`，未注册则回落 core 并告警）；**host 不支持 `lockExceptions`**，传了会告警并回落 core",
-              "en": "host uses the host’s native Modal (requires the `official.js` adapter; falls back to core with a warning when unregistered); **host does not support `lockExceptions`** — passing it warns and falls back to core"
+              "zh": "host 走宿主原生 Modal（需先引入适配层 `official.js`，未注册则回落 core 并告警）。host 只认 `title` / `message` / `confirmText` / `cancelText` / `tone: danger`；传了其他任何字段（`onConfirm` / `onCancel`、`notice`、`size`、宽度、`loadingText`、`closeOnMask`、`tone: warning`、`lockExceptions`…）都会**告警并回落 core**，不会静默降级",
+              "en": "host uses the host’s native Modal (requires the `official.js` adapter; falls back to core with a warning when unregistered). host accepts only `title` / `message` / `confirmText` / `cancelText` / `tone: danger`; passing anything else (`onConfirm` / `onCancel`, `notice`, `size`, widths, `loadingText`, `closeOnMask`, `tone: warning`, `lockExceptions`…) **warns and falls back to core** instead of silently degrading"
             }
           },
           {

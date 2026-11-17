@@ -46,14 +46,33 @@ let hostHandlers = null;
 export function registerHostDialog(handlers) {
     hostHandlers = handlers;
 }
+// host 原生弹窗只转交固定字段（见 HostConfirmArgs / HostAlertArgs）。其余字段能传进来，
+// 但宿主根本不认 —— 静默吞掉会让「同一段代码换 skin 就悄悄变行为 / 外观」。所以按白名单校验：
+// 一旦有白名单外的字段被显式传了，就告警并回落 core，绝不静默降级。
+const HOST_CONFIRM_FIELDS = ['title', 'message', 'confirmText', 'cancelText', 'tone', 'skin'];
+const HOST_ALERT_FIELDS = ['title', 'message', 'confirmText', 'skin'];
+function hostIgnoredFields(opts, allowed) {
+    const ignored = [];
+    for (const [key, value] of Object.entries(opts)) {
+        if (value !== undefined && !allowed.includes(key))
+            ignored.push(key);
+    }
+    return ignored;
+}
 /**
  * 命令式确认框：Promise 形式，`true`=确定 / `false`=取消（或点遮罩 / Esc）。`skin:"host"` 走宿主原生 Modal。
  * 回调返回 Promise 时进入 loading（按钮转圈 + 遮罩 / Esc 锁死），settle 后才真正关闭。
  */
 export function confirmModal(opts) {
-    const lockExceptions = opts.lockExceptions;
     if (opts.skin === 'host') {
-        if (hostHandlers !== null && (lockExceptions === undefined || lockExceptions.length === 0)) {
+        const ignored = hostIgnoredFields(opts, HOST_CONFIRM_FIELDS);
+        // host 只有 danger / 普通两档；warning 会静悄悄退化成普通，同样算「传了但不支持」。
+        if (opts.tone !== undefined && opts.tone !== 'danger' && opts.tone !== 'primary')
+            ignored.push('tone');
+        if (ignored.length > 0) {
+            console.warn(`[dsh-plugin-core] confirmModal skin:"host" 不支持 ${ignored.join(' / ')}，已回落到 core 皮肤；要保住 host 皮肤请去掉这些字段，或直接省掉 skin:"host" 用 core`);
+        }
+        else if (hostHandlers !== null) {
             return hostHandlers.confirm({
                 title: opts.title == null ? undefined : String(opts.title),
                 description: opts.message == null ? undefined : String(opts.message),
@@ -61,10 +80,6 @@ export function confirmModal(opts) {
                 cancelText: opts.cancelText,
                 danger: opts.tone === 'danger',
             });
-        }
-        // host 原生弹窗没有「锁定期例外」这层能力：明确告警并回落 core，绝不静默吞掉。
-        if (lockExceptions !== undefined && lockExceptions.length > 0) {
-            console.warn('[dsh-plugin-core] confirmModal skin:"host" 不支持 lockExceptions，已回落到 core 皮肤');
         }
         else {
             console.warn('[dsh-plugin-core] confirmModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤');
@@ -121,18 +136,17 @@ export function confirmModal(opts) {
  * 回调返回 `false`（同步或 resolve 成 `false`）⇒ 本次当作没成，框不关。
  */
 export function alertModal(opts) {
-    const wantsExceptions = opts.lockExceptions === true;
     if (opts.skin === 'host') {
-        if (hostHandlers !== null && !wantsExceptions) {
+        const ignored = hostIgnoredFields(opts, HOST_ALERT_FIELDS);
+        if (ignored.length > 0) {
+            console.warn(`[dsh-plugin-core] alertModal skin:"host" 不支持 ${ignored.join(' / ')}，已回落到 core 皮肤；要保住 host 皮肤请去掉这些字段，或直接省掉 skin:"host" 用 core`);
+        }
+        else if (hostHandlers !== null) {
             return hostHandlers.alert({
                 title: opts.title == null ? undefined : String(opts.title),
                 description: opts.message == null ? undefined : String(opts.message),
                 confirmText: opts.confirmText,
             });
-        }
-        // host 原生弹窗没有「锁定期例外」这层能力：明确告警并回落 core，绝不静默吞掉。
-        if (wantsExceptions) {
-            console.warn('[dsh-plugin-core] alertModal skin:"host" 不支持 lockExceptions，已回落到 core 皮肤');
         }
         else {
             console.warn('[dsh-plugin-core] alertModal skin:"host" 需先引入官方适配层 official.js，已回落到 core 皮肤');

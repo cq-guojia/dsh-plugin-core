@@ -6571,10 +6571,24 @@ var hostHandlers = null;
 function registerHostDialog(handlers2) {
   hostHandlers = handlers2;
 }
+var HOST_CONFIRM_FIELDS = ["title", "message", "confirmText", "cancelText", "tone", "skin"];
+var HOST_ALERT_FIELDS = ["title", "message", "confirmText", "skin"];
+function hostIgnoredFields(opts, allowed) {
+  const ignored = [];
+  for (const [key, value] of Object.entries(opts)) {
+    if (value !== void 0 && !allowed.includes(key))
+      ignored.push(key);
+  }
+  return ignored;
+}
 function confirmModal(opts) {
-  const lockExceptions = opts.lockExceptions;
   if (opts.skin === "host") {
-    if (hostHandlers !== null && (lockExceptions === void 0 || lockExceptions.length === 0)) {
+    const ignored = hostIgnoredFields(opts, HOST_CONFIRM_FIELDS);
+    if (opts.tone !== void 0 && opts.tone !== "danger" && opts.tone !== "primary")
+      ignored.push("tone");
+    if (ignored.length > 0) {
+      console.warn(`[dsh-plugin-core] confirmModal skin:"host" \u4E0D\u652F\u6301 ${ignored.join(" / ")}\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4\uFF1B\u8981\u4FDD\u4F4F host \u76AE\u80A4\u8BF7\u53BB\u6389\u8FD9\u4E9B\u5B57\u6BB5\uFF0C\u6216\u76F4\u63A5\u7701\u6389 skin:"host" \u7528 core`);
+    } else if (hostHandlers !== null) {
       return hostHandlers.confirm({
         title: opts.title == null ? void 0 : String(opts.title),
         description: opts.message == null ? void 0 : String(opts.message),
@@ -6582,9 +6596,6 @@ function confirmModal(opts) {
         cancelText: opts.cancelText,
         danger: opts.tone === "danger"
       });
-    }
-    if (lockExceptions !== void 0 && lockExceptions.length > 0) {
-      console.warn('[dsh-plugin-core] confirmModal skin:"host" \u4E0D\u652F\u6301 lockExceptions\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4');
     } else {
       console.warn('[dsh-plugin-core] confirmModal skin:"host" \u9700\u5148\u5F15\u5165\u5B98\u65B9\u9002\u914D\u5C42 official.js\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4');
     }
@@ -6632,17 +6643,16 @@ function confirmModal(opts) {
   });
 }
 function alertModal(opts) {
-  const wantsExceptions = opts.lockExceptions === true;
   if (opts.skin === "host") {
-    if (hostHandlers !== null && !wantsExceptions) {
+    const ignored = hostIgnoredFields(opts, HOST_ALERT_FIELDS);
+    if (ignored.length > 0) {
+      console.warn(`[dsh-plugin-core] alertModal skin:"host" \u4E0D\u652F\u6301 ${ignored.join(" / ")}\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4\uFF1B\u8981\u4FDD\u4F4F host \u76AE\u80A4\u8BF7\u53BB\u6389\u8FD9\u4E9B\u5B57\u6BB5\uFF0C\u6216\u76F4\u63A5\u7701\u6389 skin:"host" \u7528 core`);
+    } else if (hostHandlers !== null) {
       return hostHandlers.alert({
         title: opts.title == null ? void 0 : String(opts.title),
         description: opts.message == null ? void 0 : String(opts.message),
         confirmText: opts.confirmText
       });
-    }
-    if (wantsExceptions) {
-      console.warn('[dsh-plugin-core] alertModal skin:"host" \u4E0D\u652F\u6301 lockExceptions\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4');
     } else {
       console.warn('[dsh-plugin-core] alertModal skin:"host" \u9700\u5148\u5F15\u5165\u5B98\u65B9\u9002\u914D\u5C42 official.js\uFF0C\u5DF2\u56DE\u843D\u5230 core \u76AE\u80A4');
     }
@@ -68343,7 +68353,7 @@ var docData = {
         "en": "The mask\u2019s right edge reads `--dshpc-page-inset-right` (summed across docks) and yields to the right column, centering the dialog in the **remaining** area. The dialog needs no mask props; never measure the column yourself (mounting is async, it always reads 0)."
       },
       {
-        "zh": "\u547D\u4EE4\u5F0F `confirmModal(opts)` / `alertModal(opts)` \u8FD4\u56DE Promise\uFF1A\u524D\u8005 resolve `true`\uFF08\u786E\u5B9A\uFF09\u6216 `false`\uFF08\u53D6\u6D88 / \u906E\u7F69 / Esc\uFF09\uFF0C\u540E\u8005\u5173\u95ED\u5373 resolve\u3002\u56DE\u8C03\u8FD4\u56DE Promise \u65F6\u5BF9\u5E94\u6309\u94AE\u81EA\u5DF1\u8F6C\u5708\u3001\u6574\u6846\u9501\u6B7B\uFF0Csettle \u540E\u624D\u5173\u3002\u8981\u300C\u9501\u5B9A\u671F\u95F4\u7559\u53D6\u6D88\u94AE\u300D\u4F20 `lockExceptions`\uFF08`confirmModal` \u6536 `['cancel']`\u3001`alertModal` \u6536 `true`\uFF09\uFF1B\u8BE5\u80FD\u529B\u53EA\u5728 core \u76AE\u80A4\u751F\u6548\uFF0C`skin:\"host\"` \u4F20\u4E86\u4F1A\u544A\u8B66\u5E76\u56DE\u843D core\uFF0C\u4E0D\u9759\u9ED8\u541E\u6389\u3002",
+        "zh": "\u547D\u4EE4\u5F0F `confirmModal(opts)` / `alertModal(opts)` \u8FD4\u56DE Promise\uFF1A\u524D\u8005 resolve `true`\uFF08\u786E\u5B9A\uFF09\u6216 `false`\uFF08\u53D6\u6D88 / \u906E\u7F69 / Esc\uFF09\uFF0C\u540E\u8005\u5173\u95ED\u5373 resolve\u3002\u56DE\u8C03\u8FD4\u56DE Promise \u65F6\u5BF9\u5E94\u6309\u94AE\u81EA\u5DF1\u8F6C\u5708\u3001\u6574\u6846\u9501\u6B7B\uFF0Csettle \u540E\u624D\u5173\u3002\u8981\u300C\u9501\u5B9A\u671F\u95F4\u7559\u53D6\u6D88\u94AE\u300D\u4F20 `lockExceptions`\uFF08`confirmModal` \u6536 `['cancel']`\u3001`alertModal` \u6536 `true`\uFF09\uFF1B\u8BE5\u80FD\u529B\u53EA\u5728 core \u76AE\u80A4\u751F\u6548\uFF0C`skin:\"host\"` \u4F20\u4E86\u4F1A\u544A\u8B66\u5E76\u56DE\u843D core\uFF0C\u4E0D\u9759\u9ED8\u541E\u6389\u3002host \u76AE\u80A4\u672C\u8EAB\u53EA\u8F6C\u4EA4 `title` / `message` / `confirmText` / `cancelText` / `danger`\uFF0C\u5176\u4F59\u5B57\u6BB5\uFF08\u56DE\u8C03\u3001`notice`\u3001`size`\u3001\u5BBD\u5EA6\u3001`loadingText`\u3001`closeOnMask`\u3001`tone: warning` \u7B49\uFF09\u4F20\u4E86\u540C\u6837\u544A\u8B66\u5E76\u56DE\u843D core\u3002",
         "en": "The imperative `confirmModal(opts)` / `alertModal(opts)` return a Promise: the former resolves `true` (confirmed) or `false` (cancel / mask / Esc), the latter resolves on close. When a callback returns a Promise, its button spins and the dialog locks until it settles. To keep the cancel button clickable while locked, pass `lockExceptions` (`confirmModal` takes `['cancel']`, `alertModal` takes `true`); it only works on the core skin \u2014 `skin:\"host\"` warns and falls back to core instead of swallowing it silently."
       },
       {
@@ -68981,8 +68991,8 @@ var docData = {
             "type": "'core' | 'host'",
             "def": "'core'",
             "desc": {
-              "zh": "host \u8D70\u5BBF\u4E3B\u539F\u751F Modal\uFF08\u9700\u5148\u5F15\u5165\u9002\u914D\u5C42 `official.js`\uFF0C\u672A\u6CE8\u518C\u5219\u56DE\u843D core \u5E76\u544A\u8B66\uFF09\uFF1B**host \u4E0D\u652F\u6301 `lockExceptions`**\uFF0C\u4F20\u4E86\u4F1A\u544A\u8B66\u5E76\u56DE\u843D core",
-              "en": "host uses the host\u2019s native Modal (requires the `official.js` adapter; falls back to core with a warning when unregistered); **host does not support `lockExceptions`** \u2014 passing it warns and falls back to core"
+              "zh": "host \u8D70\u5BBF\u4E3B\u539F\u751F Modal\uFF08\u9700\u5148\u5F15\u5165\u9002\u914D\u5C42 `official.js`\uFF0C\u672A\u6CE8\u518C\u5219\u56DE\u843D core \u5E76\u544A\u8B66\uFF09\u3002host \u53EA\u8BA4 `title` / `message` / `confirmText` / `cancelText` / `tone: danger`\uFF1B\u4F20\u4E86\u5176\u4ED6\u4EFB\u4F55\u5B57\u6BB5\uFF08`onConfirm` / `onCancel`\u3001`notice`\u3001`size`\u3001\u5BBD\u5EA6\u3001`loadingText`\u3001`closeOnMask`\u3001`tone: warning`\u3001`lockExceptions`\u2026\uFF09\u90FD\u4F1A**\u544A\u8B66\u5E76\u56DE\u843D core**\uFF0C\u4E0D\u4F1A\u9759\u9ED8\u964D\u7EA7",
+              "en": "host uses the host\u2019s native Modal (requires the `official.js` adapter; falls back to core with a warning when unregistered). host accepts only `title` / `message` / `confirmText` / `cancelText` / `tone: danger`; passing anything else (`onConfirm` / `onCancel`, `notice`, `size`, widths, `loadingText`, `closeOnMask`, `tone: warning`, `lockExceptions`\u2026) **warns and falls back to core** instead of silently degrading"
             }
           },
           {
@@ -77246,9 +77256,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.42.1"}`],
-            [t3("buildDemo"), `v${"0.42.1"}`],
-            [t3("buildStamp"), "261117-144503-658"]
+            [t3("buildCore"), `v${"0.42.2"}`],
+            [t3("buildDemo"), `v${"0.42.2"}`],
+            [t3("buildStamp"), "261117-151801-586"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77567,9 +77577,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.42.1"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.42.1"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-144503-658")
+          (0, import_react112.createElement)("span", null, `core v${"0.42.2"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.42.2"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261117-151801-586")
         )
       )
     ),

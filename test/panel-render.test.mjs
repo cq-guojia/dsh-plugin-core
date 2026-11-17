@@ -123,21 +123,27 @@ test('AlertModal locked：确认钮默认封；lockExceptions=true 时放开', (
   assert.doesNotMatch(exempt, /disabled=""/, '例外确认钮不该被禁用')
 })
 
-test('命令式 host + lockExceptions：告警并回落 core，不静默吞掉', () => {
+test('命令式 host 皮肤：白名单外的字段一律告警并回落 core，不静默降级', () => {
   const warns = []
   const orig = console.warn
   console.warn = (...a) => warns.push(a.join(' '))
   try {
-    void confirmModal({ message: 'm', skin: 'host', lockExceptions: ['cancel'] })
-    void alertModal({ message: 'm', skin: 'host', lockExceptions: true })
-    assert.ok(
-      warns.some((w) => w.includes('confirmModal') && w.includes('lockExceptions')),
-      'confirmModal 静默吞掉了 lockExceptions',
-    )
-    assert.ok(
-      warns.some((w) => w.includes('alertModal') && w.includes('lockExceptions')),
-      'alertModal 静默吞掉了 lockExceptions',
-    )
+    void confirmModal({
+      message: 'm', skin: 'host', lockExceptions: ['cancel'],
+      onConfirm: () => {}, notice: 'n', size: 'md', confirmWidth: 120, tone: 'warning',
+    })
+    void alertModal({
+      message: 'm', skin: 'host', lockExceptions: true,
+      onConfirm: () => {}, notice: 'n', size: 'md', severity: 'warning', closeOnMask: false,
+    })
+    const confirmWarn = warns.find((w) => w.includes('confirmModal')) ?? ''
+    for (const key of ['lockExceptions', 'onConfirm', 'notice', 'size', 'confirmWidth', 'tone']) {
+      assert.ok(confirmWarn.includes(key), `confirmModal 静默吞掉了 ${key}`)
+    }
+    const alertWarn = warns.find((w) => w.includes('alertModal')) ?? ''
+    for (const key of ['lockExceptions', 'onConfirm', 'notice', 'size', 'severity', 'closeOnMask']) {
+      assert.ok(alertWarn.includes(key), `alertModal 静默吞掉了 ${key}`)
+    }
   } finally {
     console.warn = orig
   }
