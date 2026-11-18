@@ -1,5 +1,6 @@
 {
   "tasks": {
+    "20261118-0652-c716-后台任务通知与执行重构": {"category": "重构", "created": "2026-11-18 06:52:21", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": null, "owner_name": null, "started": null, "status": "open", "tags": ["后台任务", "通知", "长连接", "执行器"], "title": "后台任务通知与执行重构", "updated": "2026-11-18 06:52:21", "worklog": "worklog/202611/18-0652-c716-后台任务通知与执行重构.md"}
   },
   "version": "20261022000000"
 }
