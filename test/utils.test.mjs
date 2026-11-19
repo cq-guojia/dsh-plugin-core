@@ -45,7 +45,9 @@ test('formatClock / formatDurationHms', () => {
   assert.equal(formatDurationHms(-1), '-')
   assert.equal(formatDurationHms(30_000), '00:30')
   assert.equal(formatDurationHms(330_000), '05:30')
-  assert.equal(formatDurationHms(3_600_000 + 900_000), '1:15:00')
+  assert.equal(formatDurationHms(3_600_000 + 900_000), '01:15:00')
+  assert.equal(formatDurationHms(3_723_000), '01:02:03', '到小时才显示两位小时')
+  assert.equal(formatDurationHms(3_600_000 + 900_000, { padHours: true }), '01:15:00')
 })
 
 test('sameCalendarDay / formatRange / overlaps', () => {

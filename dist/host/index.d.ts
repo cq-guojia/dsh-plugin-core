@@ -1,4 +1,5 @@
-export { serveTaskCenter, type TaskCenterRouteOptions, type TaskCenterStore } from './task-center.js';
+export { serveTaskStream, type TaskStreamOptions, type TaskStreamSource, } from './task-stream.js';
+export { serveTaskSubmit, type TaskSubmitOptions } from './task-submit.js';
 /**
  * 宿主侧数据面：把「供应商 → 模型」目录挂成一条只读 HTTP 路由，供 client 侧自取。
  *
@@ -37,6 +38,9 @@ export interface HostHttpRequest {
     socket?: {
         remoteAddress?: string;
     };
+    /** 原始 IncomingMessage 的流读能力（提交端点读 body 时用；GET 路由不碰）。 */
+    on?: (event: string, cb: (chunk: Uint8Array) => void) => void;
+    once?: (event: string, cb: () => void) => void;
 }
 /** 宿主 `webServer` 服务的最小面（WebRoute 形状）。 */
 export interface HostWebServerLike {

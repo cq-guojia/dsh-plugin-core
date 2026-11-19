@@ -26,3 +26,12 @@ export {
   type NotifyScopeOptions,
 } from './notify.js'
 export { createStore, type RuntimeStore } from './store.js'
+export {
+  createExecutorRegistry,
+  executors,
+  type ExecutorContext,
+  type ExecutorHandler,
+  type ExecutorProgress,
+  type ExecutorRegistry,
+  type ExecutorResult,
+} from './executor.js'

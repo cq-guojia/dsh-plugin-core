@@ -593,11 +593,10 @@ export type UtilMessageKey =
   | 'sessionImageClosePreview'
   /** 官方样式未命中时的可见提示。 */
   | 'sessionProbeStyle'
-  // ── 后台任务中心：通用展示栏 ──
   | 'taskbarLabel'
   | 'taskbarCount'
   | 'taskbarEmpty'
-  | 'taskbarElapsed'
+  | 'taskbarDone'
   | 'taskbarActionFailed'
 
 /** 文案函数：`vars` 用于填 `{n}` 这类占位。 */
@@ -1187,7 +1186,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     taskbarLabel: '后台任务',
     taskbarCount: '{n} 个运行中',
     taskbarEmpty: '暂无后台任务',
-    taskbarElapsed: '已执行 {time}',
+    taskbarDone: '已完成',
     taskbarActionFailed: '这条任务的操作已失效，可能是发起它的页面已刷新或关闭',
   },
   en: {
@@ -1770,7 +1769,7 @@ const DICT: Record<Locale, Record<UtilMessageKey, string>> = {
     taskbarLabel: 'Background tasks',
     taskbarCount: '{n} running',
     taskbarEmpty: 'No background tasks',
-    taskbarElapsed: 'Running {time}',
+    taskbarDone: 'Done',
     taskbarActionFailed: 'That action is no longer available — the page that started the task was refreshed or closed',
   },
 }

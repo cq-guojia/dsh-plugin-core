@@ -84,12 +84,12 @@ export const docData = {
             }
           },
           {
-            "name": "让长耗时任务登记、订阅并跨页可见",
+            "name": "把长耗时任务交给后端执行并在核心列表看进度",
             "type": "task-notifications.md",
             "def": "—",
             "desc": {
-              "zh": "状态池、订阅、事件通知、跨页同步与结束句柄；只讲数据面，不含弹窗与查看控件",
-              "en": "Pool, subscription, events, cross-page sync and settlement handles — the data plane only, no dialog or viewer control"
+              "zh": "开放执行器、startTask、三处接线、Toast / notify / 按钮三通道与服务端 SSE 投影",
+              "en": "Open executors, startTask, three wiring points, toast / notify / buttons, and server SSE projection"
             }
           },
           {
@@ -538,8 +538,8 @@ export const docData = {
         "en": "Zero React and no UI: it holds state, opens connections and has side effects, but draws nothing. Two capabilities live here — **cross-page notifications** (send one / receive one) and a **state container** (`getState` / `setState` / `subscribe`), plus the per-bundle singletons and transport helpers they each need."
       },
       {
-        "zh": "为什么单独一层：发跨页消息的既有 `ui` 侧（`ui/feedback/notify.ts` 的广播），也有 `adv/tasks` 侧（任务池的纯广播）。放在任何一边都会让另一边形同反向依赖。这一层**不认识任务**，也不替任何消费方决定收到之后干什么 —— 弹 toast 是 `ui/feedback/notify-bridge.ts` 的选择。",
-        "en": "Why a separate layer: both the `ui` side (`ui/feedback/notify.ts` broadcast) and the `adv/tasks` side (the pool's pure broadcast) send cross-page messages. Putting it in either one makes the other a reverse dependency. This layer **knows nothing about tasks** and never decides what a receiver should do — raising a toast is `ui/feedback/notify-bridge.ts`'s choice."
+        "zh": "为什么单独一层：发跨页消息的既有 `ui` 侧（`ui/feedback/notify.ts` 的广播），也有 `adv/tasks` 侧的任务通知广播（终态 notify 经这里的 `notifyMessage` 发出）。放在任何一边都会让另一边形同反向依赖。这一层**不认识任务**，也不替任何消费方决定收到之后干什么 —— 弹 toast 是 `ui/feedback/notify-bridge.ts` 的选择。开放执行器注册表也在这里（`executors`），只做 kind→handler 的登记与查找。",
+        "en": "Why a separate layer: both the `ui` side (`ui/feedback/notify.ts` broadcast) and task notification broadcasts from `adv/tasks` (terminal notifies go out through `notifyMessage` here) need cross-page messaging. Putting it in either one makes the other a reverse dependency. This layer **knows nothing about tasks** and never decides what a receiver should do — raising a toast is `ui/feedback/notify-bridge.ts`'s choice. The open executor registry (`executors`) also lives here, doing nothing but kind→handler registration and lookup."
       },
       {
         "zh": "单例口径：core 会被内联进每个插件 bundle，所以默认分组、事件总线、默认逻辑端都用 `Symbol.for` 收口，避免两个副本各建一份（先到者占坑、后者静默拿到错对象，只在多插件同页时复现）。**通道本身不单例**：`BroadcastChannel` 收不到自己 post 的消息，收口会让同页的第二个逻辑端永远收不到。",
@@ -736,8 +736,8 @@ export const docData = {
         "en": "The **only** place in the repo that touches `zustand`: callers only see `RuntimeStore`, so swapping the implementation (version bump or hand-rolled) is a one-file change in `src/runtime/store.ts`. The interface is deliberately four methods — no selectors, middleware or devtools, because exposing them would leak zustand's shape and make the isolation pointless."
       },
       {
-        "zh": "零 React：React 侧由消费方自己接 `useSyncExternalStore` 三参（现成例子是 `adv/tasks/useTasks.ts`），和 `zustand/vanilla` 与 `zustand` 的分法一致。`subscribe` 只报「变了」，不带新旧值；需要派生数据在调用方算并自带缓存。",
-        "en": "Zero React: the React side wires its own three-argument `useSyncExternalStore` (the working example is `adv/tasks/useTasks.ts`), mirroring the `zustand/vanilla` vs `zustand` split. `subscribe` only says \"it changed\" and carries no old or new value; derived data is computed and cached by the caller."
+        "zh": "零 React：React 侧由消费方自己接 `useSyncExternalStore` 三参（现成例子是 `adv/tasks/task-list.ts` 的核心列表控件），和 `zustand/vanilla` 与 `zustand` 的分法一致。`subscribe` 只报「变了」，不带新旧值；需要派生数据在调用方算并自带缓存。",
+        "en": "Zero React: the React side wires its own three-argument `useSyncExternalStore` (the working example is the task bar in `adv/tasks/TaskBar.ts`), mirroring the `zustand/vanilla` vs `zustand` split. `subscribe` only says \"it changed\" and carries no old or new value; derived data is computed and cached by the caller."
       }
     ],
     "api": [
@@ -1215,8 +1215,8 @@ export const docData = {
             "type": "(ms: number) => string",
             "def": "—",
             "desc": {
-              "zh": "有小时 ⇒ H:MM:SS，否则 MM:SS；负数/NaN ⇒ -",
-              "en": "Has hours ⇒ H:MM:SS, else MM:SS; negative/NaN ⇒ -"
+              "zh": "不足 1 小时 ⇒ MM:SS；到小时 ⇒ HH:MM:SS（小时两位）；负数/NaN ⇒ -",
+              "en": "Under 1h ⇒ MM:SS; with hours ⇒ HH:MM:SS (2-digit hours); negative/NaN ⇒ -"
             }
           },
           {
@@ -4991,794 +4991,348 @@ export const docData = {
       {
         "id": "ui-quicktoolbar-example",
         "lang": "tsx",
-        "src": "import { QuickToolbar } from 'dsh-plugin-core/ui'\n\n// 默认：贴屏幕右下角（纵向恒贴屏幕底边、横向贴右缘，各留 16px）\nh(QuickToolbar, {\n  onAction: (id) => console.log('点了', id),\n  items: [\n    { id: 'search', icon: <SearchIcon />, label: '搜索' },\n    { id: 'settings', icon: <SettingsIcon />, label: '设置' },\n  ],\n  // backToTop 默认开：滚过 320px 才出现；不想要就传 false\n})\n\n// 跟随某个控件：横向贴它的右缘外侧；右侧放不下自动退回屏幕右缘\nh(QuickToolbar, {\n  anchorId: 'my-content',\n  items: [...],\n  backToTop: { order: 2 },        // 回顶部排到第 3 位；默认 0 在最上\n})\n\n// 自定义项：显隐 / 排序 / 配色\nh(QuickToolbar, {\n  items: [\n    { id: 'search', icon: <SearchIcon />, label: '搜索', when: 'scroll', threshold: 480 },\n    { id: 'wide', icon: <WideIcon />, label: '宽屏', visible: wide },\n    { id: 'brand', icon: <BrandIcon />, label: '品牌', color: '#7c3aed', fgColor: '#fff' },\n  ],\n  scrollContainer: myScrollElement,\n})"
+        "src": "import { QuickToolbar } from 'dsh-plugin-core/ui'\n\n// 默认：贴屏幕右下角（纵向恒贴屏幕底边、横向贴右缘，各留 16px）\nh(QuickToolbar, {\n  onAction: (id) => console.log('点了', id),\n  items: [\n    { id: 'search', icon: <SearchIcon />, label: '搜索' },\n    { id: 'settings', icon: <SettingsIcon />, label: '设置' },\n  ],\n  // backToTop 默认开：滚过 320px 才出现；不想要就传 false\n})\n\n// 跟随某个控件：横向贴它的右缘外侧；右侧放不下自动退回屏幕右缘\nh(QuickToolbar, {\n  anchorId: 'search-panel',\n  items: [...],\n  backToTop: { order: 2 },        // 回顶部排到第 3 位；默认 0 在最上\n})\n\n// 自定义项：显隐 / 排序 / 配色\nh(QuickToolbar, {\n  items: [\n    { id: 'search', icon: <SearchIcon />, label: '搜索', when: 'scroll', threshold: 480 },\n    { id: 'wide', icon: <WideIcon />, label: '宽屏', visible: wide },\n    { id: 'brand', icon: <BrandIcon />, label: '品牌', color: '#7c3aed', fgColor: '#fff' },\n  ],\n  scrollContainer: myScrollElement,\n})"
       }
     ]
   },
   "task-notifications": {
     "id": "task-notifications",
     "heading": {
-      "zh": "长耗时任务：登记、订阅、跨页、按钮",
-      "en": "Long tasks: register, subscribe, cross-page, actions"
+      "zh": "后端执行 + 通知 + 核心控件",
+      "en": "Backend execution + notification + core controls"
     },
     "prose": [
       {
-        "zh": "这里叫**后台任务中心**：它借 runtime 的跨页通知能力搬运状态，本身是「登记 → 订阅 → 结束」的任务池，和「发一条句子就完」的通知是两回事（纯广播看 `notifyMessage`）。默认这条路径不落盘、不发请求：本页与同源标签页各持一份内存投影，刷新即失。要服务端执行、刷新后照常看护的，走下面的**服务端任务**（`notifyTask.background` + 状态源）。跨页只传纯数据（结构化克隆可得），不带函数、组件或 Promise。",
-        "en": "This is the **background task hub**: it borrows the runtime cross-page notification channel to move state around, but it is a \"register → subscribe → settle\" pool, not a \"send one sentence and forget\" notification (plain broadcasts are `notifyMessage`). The default path writes nothing and makes no requests: each page and same-origin tab holds an in-memory projection that is gone on reload. For work that runs on a server and stays watched after a reload, use **server-backed tasks** below (`notifyTask.background` + a status source). Only plain structured-cloneable data crosses pages: no functions, components or promises."
+        "zh": "这里叫**后台任务中心**：执行在后端（开放执行器），状态真源在服务端，前端只登记、投影、转发按钮。没有前端 pull 心跳、没有状态源、没有双时钟租约、没有 tombstone 判死——终态由执行器结果或服务端投影直接驱动一次。消费方只写两处接线：`mountTaskUI` 注册 handlers / 订阅终态、`startTask` 发起；展示用核心原生的 `TaskBar`（icon/pill 形态、sm/md/lg 尺寸、宽度与跑马灯），不用自己画列表。",
+        "en": "This is the **background task hub**: work runs on the backend through open executors, the server owns task state, and the front end only registers, projects and forwards button presses. There is no client pull heartbeat, no status source, no dual-clock lease and no tombstone gate — a terminal state is driven once by the executor result or a server projection. Consumers write two wiring points: `mountTaskUI` registers handlers / terminal callback, `startTask` starts work; display uses the original `TaskBar` (icon/pill forms, sm/md/lg sizes, width and marquee) — no hand-drawn list."
       },
       {
-        "zh": "两条通道：**状态池**（`getSnapshot` / `subscribe`，可直接喂 `useSyncExternalStore`）与**事件总线**（`subscribeTaskNotificationEvents`，一次性事实，不留存）。要进列表、能被结束的用 `notifyTask`；只播一句、不进列表的用 `notifyMessage`。",
-        "en": "Two channels: the **pool** (`getSnapshot` / `subscribe`, feeds `useSyncExternalStore`) and the **event bus** (`subscribeTaskNotificationEvents`, one-off facts, no history). Use `notifyTask` for rows that appear in the list and can be ended; `notifyMessage` for a one-off announcement that stays out of it."
+        "zh": "所有配置都是**纯数据跟着记录走**：标题、Toast、通知、按钮文案与显示时机在发起时声明，任何页面看到同一条任务都按同一份配置渲染，不需要发起页在场。跨页只传结构化克隆安全的值，不带函数、组件或 Promise。",
+        "en": "All configuration is **plain data carried by the record**: title, toast, notification, button labels and visibility are declared at start time, so every page renders the same task from the same configuration without the originating page being present. Only structured-cloneable values cross pages — no functions, components or promises."
+      }
+    ],
+    "code": [
+      {
+        "id": "bt-start-example",
+        "lang": "ts",
+        "src": "import { startTask } from 'dsh-plugin-core/adv/tasks'\n\n// await 等的是登记成功，不是任务跑完。标题 / 通知 / 按钮全是纯数据，跟着记录走。\nawait startTask({\n  project: 'dsh-task-reminder',\n  group: 'scan',\n  title: '扫描工作区',\n  key: 'scan:workspace-1',          // 同 (project, key) 同时最多一条，重复发起就地更新\n  kind: 'reminder:scan',            // 开放执行器名，核心不枚举、不校验\n  args: { path: '/ws' },            // 纯数据，过不了进程边界，不带函数\n\n  toast: {                          // 终态弹卡；整态不写 = 该态不弹\n    success: { title: '扫描完成', button: { id: 'view', text: '看日志' }, scope: 'all' },\n    failure: { title: '扫描失败', scope: 'origin' },\n  },\n  notify: {                         // 终态通知，与 toast 是两件事\n    success: { message: '扫描完成', detail: { count: 12 }, scope: 'all', broadcast: 'plugin' },\n  },\n  rowButtons: [                     // 列表行按钮；文案与 when 由核心控件画\n    { id: 'view', text: '查看', when: 'running' },\n    { id: 'view', text: '看日志', when: 'done' },\n  ],\n})"
       },
       {
-        "zh": "按钮：要给后台条目加「拉回来」这类操作，就传 `actions: [{ label?, icon?, color?, run }]`（`label` 与 `icon` 至少给一个）。方法留在创建页内存里，记录只带文案 / 图标标识 / 颜色，所以别的标签页也画得出按钮，点击会发回创建页执行。一条记录可带多颗按钮，展示方按顺序全画出来；只给 `icon` 的那颗是正方形图标钮。",
-        "en": "Actions: to give a backgrounded row something to do, pass `actions: [{ label?, icon?, color?, run }]` (at least one of `label` and `icon`). The method stays in the creating page's memory and only labels, icon ids and colors cross pages, so other tabs can render the buttons and a click is executed back on the creating page. A record may carry several buttons; the renderer draws them all in order, and an icon-without-label one becomes a square icon button."
+        "id": "bt-mount-ui-example",
+        "lang": "ts",
+        "src": "import { mountTaskUI } from 'dsh-plugin-core/ui/task-ui'\n\n// 本页接线一次：列表与 Toast 共用这一份 handlers，终态只刷消费方自己的数据。\nmountTaskUI({\n  project: 'dsh-task-reminder',     // null / 省略 = 收所有项目\n  groups: ['scan'],\n  handlers: {\n    view: (task) => openLogPanel(task.detail?.logPath),\n    retry: (task) => void startScan(task.detail?.path),\n  },\n  onSettled: (task, outcome) => refreshBoard(),  // 核心列表自己刷，这里只刷自己的数据\n})"
       },
       {
-        "zh": "业务键：`key` 让登记变成幂等 —— 同一个键在池里最多一条。同页重复登记就地更新那条并返回同一个句柄，别的页面占着同一个键则抛 `TaskNotificationConflictError`（作业在它那一页，给了也点不动）。键只能用稳定值：`['close', workspaceId, taskId]` 对，带时间 / 随机数 / 进度文案进去就等于每次都新开一条。想知道「这条是不是我刚起的」用 `notifyTask.ensure()` 的 `created`。",
-        "en": "Business key: `key` makes registration idempotent — at most one row per key. Re-registering on the same page updates that row in place and returns the same handle; a key held by another page throws `TaskNotificationConflictError` (the work lives there, so a handle would be a dead button). Keys must be stable values: `['close', workspaceId, taskId]` works, while timestamps, randomness or progress text mean a brand-new row every time. Use `created` from `notifyTask.ensure()` to tell whether you started it."
+        "id": "bt-taskbar-example",
+        "lang": "ts",
+        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks'\n\n// 展示栏沿用核心原 UI：icon / pill 两形态、sm/md/lg 尺寸、width/min/max 宽度，\n// 文字过长自动省略 + hover 跑马灯。数据来自共享任务池，无需本插件画行。\n// pill 长条\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// 只有图标（正方形，有任务在跑时带绿点）\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// 定宽 220；上限 110（放不下省略号、hover 跑马灯）\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })"
+      }
+    ]
+  },
+  "bt-executor": {
+    "id": "bt-executor",
+    "heading": {
+      "zh": "开放执行器：kind 任意，谁执行谁注册",
+      "en": "Open executors: any kind, the executor registers itself"
+    },
+    "prose": [
+      {
+        "zh": "执行器注册表是**开放基础能力，不认识「任务」语义**：`kind` 是任意字符串，核心不枚举、不校验名字、不为某一种执行方式写死分支。宿主 agent（会话）有官方 API 可直接接；shell / 插件 host 脚本由插件在自己的 host 侧注册 handler（内部怎么执行由它决定），核心只负责登记、调度、进度与终态回传。同标签页所有插件副本共用一个注册表，A 注册的执行器 B 也能调到。",
+        "en": "The executor registry is an **open primitive that knows nothing about \"tasks\"**: `kind` is any string, the core neither enumerates nor validates names and hard-codes no branch for a particular execution style. Host agents (sessions) have an official API and can be wired directly; shell / plugin host scripts register their own handler on the host side (how it runs is their decision), while the core only registers, dispatches and relays progress and terminal state. All plugin copies in one tab share one registry, so an executor registered by A is callable by B."
       },
       {
-        "zh": "其余约定：`detail` 收任意 JSON 值（函数与类实例当场抛错）；`icon` / `iconSvg` 只是字符串，渲染与注入安全由消费端负责；两级分组用 `project`（`setDefaultTaskProject()` 设一次）+ `group`（缺省 `default`）。",
-        "en": "The rest: `detail` takes any JSON value (functions and class instances throw immediately); `icon` / `iconSvg` are plain strings and rendering plus injection safety are the consumer's job; two-level grouping uses `project` (set once via `setDefaultTaskProject()`) plus `group` (default `default`)."
+        "zh": "执行体拿到 `args`（纯数据）与 `ctx`：`ctx.report(progress)` 上报「最后一段话 + 可选数值进度」。返回 `{ outcome: 'done' | 'failed', reason? }` 即终态；抛错按 failed 结算。进度写进记录的显式字段 `progress`（message / updatedAt / current / total / percent），不塞进 `detail`。核心当前不提供取消信号，执行体不要等 `ctx.signal`。",
+        "en": "A handler receives `args` (plain data) and `ctx`: `ctx.report(progress)` reports the last message plus optional numeric progress. Returning `{ outcome: 'done' | 'failed', reason? }` settles the task; a thrown error settles as failed. Progress lands in the explicit `progress` field (message / updatedAt / current / total / percent), never inside `detail`. There is no cancellation signal in the core today — handlers must not wait on `ctx.signal`."
+      }
+    ],
+    "code": [
+      {
+        "id": "bt-executor-example",
+        "lang": "ts",
+        "src": "import { executors } from 'dsh-plugin-core/adv/tasks'\n\n// 谁要执行谁注册：kind 是任意字符串，宿主 agent、插件 host 脚本、shell 都是一种 handler。\nconst off = executors.register('reminder:scan', async (args, ctx) => {\n  ctx.report({ message: '枚举文件', current: 1, total: 2 })\n  await scan(args.path as string)\n  ctx.report({ message: '建立索引', current: 2, total: 2 })\n  return { outcome: 'done' }\n})\n// off() 注销；同名重复注册会抛错（先注销旧的）。\n\n// 宿主侧接服务端推送（状态真源在服务端）：\nimport { serveTaskStream } from 'dsh-plugin-core/host'\nserveTaskStream(ctx, {\n  basePath: '/api/task-center',\n  authorize: (req) => currentViewer(req),   // 必填：宿主不提供全局鉴权\n  source: {\n    snapshot: (viewer) => listTasks(viewer),          // 全量基线，只恢复列表、不弹卡\n    subscribe: (emit, viewer) => watchTasks(emit, viewer), // 状态增量，只更新列表、不弹卡\n    subscribeNotices: (emit, viewer) => watchNotices(emit, viewer), // 一次性通知，才弹卡；订阅时回放 outbox 补断线期间的\n  },\n})"
+      }
+    ]
+  },
+  "bt-notify-channels": {
+    "id": "bt-notify-channels",
+    "heading": {
+      "zh": "通知三通道：Toast、notify、列表按钮",
+      "en": "Three notification channels: toast, notify, list buttons"
+    },
+    "prose": [
+      {
+        "zh": "三条通道各司其职、互不混用：**Toast** 是终态弹卡，`toast.success` / `toast.failure` 两态完全对称，每态可配 `scope`（`all` 每个页面都弹、`origin` 只发起页弹）与一个按钮（`{ id, text }`）；**notify** 是终态消息，`message` + `detail` 纯数据，`scope` 同上，另有 `broadcast`（`plugin` 同项目 / `global` 同宿主所有插件 / 不写不广播），收到后怎么处理由接收方自己决定；**列表按钮**是 `rowButtons: [{ id, text, when }]`，`when` ∈ `running` / `done` / `failed` / `always`（缺省 always），同一 id 可按状态重复声明，跟着记录走。",
+        "en": "Three channels with separate jobs: **toast** is the terminal card — `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`{ id, text }`). **Notify** is a terminal message — `message` plus plain `detail`, the same `scope`, and a separate `broadcast` (`plugin` same project, `global` every plugin in the host, omitted means no broadcast); what a receiver does with it is its own decision. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record."
+      },
+      {
+        "zh": "按钮 id 查的是本页 `handlers`（列表与 Toast 共用同一份）。**本页没注册的按钮不画**，不出现死按钮。点击先 `selectPanel(panelId)` 切回发起面板，再执行 handler——这样「查看」这类动作才能把 UI 落在正确的面板上；`panelId` 由核心在 `startTask` 时自动记录，消费方不传。终态只分发一次：本地执行与服务端投影不会重复弹卡。",
+        "en": "A button id resolves against this page's `handlers` (shared by the list and toast). **A button without a registered handler is not drawn**, so there are no dead buttons. A click first calls `selectPanel(panelId)` to return to the originating panel, then runs the handler — so a \"view\" action lands its UI on the right panel. `panelId` is recorded automatically by the core in `startTask`; consumers never pass it. Terminal states are delivered once: local execution and server projection never double-toast."
       }
     ],
     "api": [
       {
-        "id": "bt-pool-api",
+        "id": "bt-toast-api",
         "rows": [
           {
-            "name": "taskNotifications",
-            "type": "TaskNotificationPool",
-            "def": "全局单例",
-            "desc": {
-              "zh": "同页所有副本共享的池；惰性创建，首次使用才占用全局键",
-              "en": "Pool shared by all copies on the page; lazy, claims the global key on first use"
-            }
-          },
-          {
-            "name": "setDefaultTaskProject(project)",
-            "type": "(project: string | undefined) => void",
-            "def": "—",
-            "required": "app 入口调一次",
-            "desc": {
-              "zh": "设一级分组（项目）；挂在全局符号上，同页所有副本共享；传 undefined 清空（测试用）",
-              "en": "Sets the first-level project on a global symbol so every copy on the page shares it; pass undefined to clear it (tests)"
-            }
-          },
-          {
-            "name": "getDefaultTaskProject()",
-            "type": "() => string | undefined",
+            "name": "toast.success / failure",
+            "type": "TaskToastState | undefined",
             "def": "undefined",
             "desc": {
-              "zh": "读当前默认项目",
-              "en": "Reads the current default project"
+              "zh": "每态独立；整态不写 = 该态不弹卡",
+              "en": "Per state; omitting the whole state means no card for it"
             }
           },
           {
-            "name": "notifyTask(title, options?)",
-            "type": "(title: string, options?: NotifyTaskOptions) => TaskNotificationHandle",
+            "name": "toast.<态>.title",
+            "type": "string",
+            "def": "—",
+            "required": "该态要弹卡时必填",
+            "desc": {
+              "zh": "卡片主行",
+              "en": "Card headline"
+            }
+          },
+          {
+            "name": "toast.<态>.button",
+            "type": "{ id: string; text: string } | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "该态一个按钮，id 对应 handlers；跨页时只在发起页显示",
+              "en": "One button for that state; id resolves to handlers, shown only on the originating page when cross-page"
+            }
+          },
+          {
+            "name": "toast.<态>.scope",
+            "type": "'all' | 'origin'",
+            "def": "'origin'",
+            "desc": {
+              "zh": "所有页面 / 只有发起页",
+              "en": "Every page / originating page only"
+            }
+          },
+          {
+            "name": "notify.<态>.message",
+            "type": "string",
             "def": "—",
             "desc": {
-              "zh": "日常入口：项目取全局默认、二级分组取 options.group（缺省 default）；需要对象参数或池级能力时用 register",
-              "en": "Everyday entry: project from the global default, group from options.group (default \"default\"); reach for register when you need an options object or pool-level control"
+              "zh": "通知正文",
+              "en": "Notification text"
             }
           },
           {
-            "name": "notifyTask.ensure(title, options?)",
-            "type": "(title: string, options?: NotifyTaskOptions) => { handle: TaskNotificationHandle; created: boolean }",
+            "name": "notify.<态>.detail",
+            "type": "NotifyDetail | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "附带的纯 JSON，接收方自己取",
+              "en": "Attached plain JSON, read by the receiver"
+            }
+          },
+          {
+            "name": "notify.<态>.scope",
+            "type": "'all' | 'origin'",
+            "def": "'origin'",
+            "desc": {
+              "zh": "所有页面 / 只有发起页；两态可不同",
+              "en": "Every page / originating page only; per state"
+            }
+          },
+          {
+            "name": "notify.<态>.broadcast",
+            "type": "'plugin' | 'global' | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "同项目 / 同宿主所有插件 / 不广播；不带按钮",
+              "en": "Same project / every plugin in the host / no broadcast; carries no buttons"
+            }
+          },
+          {
+            "name": "rowButtons[]",
+            "type": "readonly TaskRowButton[]",
+            "def": "undefined",
+            "desc": {
+              "zh": "列表行按钮声明，文案与 when 跟着记录走",
+              "en": "List-row button declarations; labels and when travel with the record"
+            }
+          },
+          {
+            "name": "rowButtons[].when",
+            "type": "'running' | 'done' | 'failed' | 'always' | undefined",
+            "def": "'always'",
+            "desc": {
+              "zh": "显示时机；同一 id 可按状态重复声明",
+              "en": "Visibility; the same id may be declared repeatedly per state"
+            }
+          },
+          {
+            "name": "subscribeTaskNotifications(options)",
+            "type": "(options) => () => void",
             "def": "—",
             "desc": {
-              "zh": "幂等登记：带 key 时本页已有同键条目就地复用并返回同一个句柄；`created === false` 说明已经在跑，别再起第二份活",
-              "en": "Idempotent registration: with a key, a matching row on this page is reused and the same handle comes back. `created === false` means it is already running, so do not start a second job"
+              "zh": "收任务广播：scope=plugin 只收同项目，global 收所有；收到纯数据自己处理",
+              "en": "Receive task broadcasts: scope=plugin filters to same project, global receives all; plain data, consumer decides"
             }
           },
           {
-            "name": "notifyTask.run(title, work, options?)",
-            "type": "<T>(title: string, work: Promise<T> | (() => Promise<T>), options?: NotifyTaskOptions) => Promise<T>",
+            "name": "mountTaskUI(options)",
+            "type": "(options: MountTaskUIOptions) => () => void",
             "def": "—",
             "desc": {
-              "zh": "包住一段异步：成功 done、失败 fail，结果与异常原样透传；带 key 撞上已在跑的同键则 reject（不调用 work）",
-              "en": "Wraps an async task: done on success, fail on rejection, passing the result and error through. A key already running rejects without calling work"
+              "zh": "注册 handlers + 订阅终态；返回注销函数",
+              "en": "Registers handlers and subscribes to terminal states; returns an unsubscribe function"
             }
           },
           {
-            "name": "notifyMessage(title, options?)",
-            "type": "(title: string, options?: NotifyMessageOptions) => TaskNotificationMessage",
+            "name": "TaskBar",
+            "type": "React component",
             "def": "—",
             "desc": {
-              "zh": "纯广播：只发 message 事件，不进池、不动快照，因此列表不会闪",
-              "en": "Pure broadcast: emits a message event only, writes no pool state and leaves the snapshot alone, so the list cannot flash"
+              "zh": "核心原生展示栏：pill/icon 形态、sm/md/lg 尺寸、固定宽 / 最小宽 / 最大宽，超长 hover 跑马灯；数据来自共享池",
+              "en": "Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool"
             }
           },
           {
-            "name": "getSnapshot()",
-            "type": "() => TaskNotificationSnapshot",
+            "name": "pressTaskButton(buttonId, taskId)",
+            "type": "(buttonId: string, taskId: string) => boolean",
             "def": "—",
             "desc": {
-              "zh": "当前全量快照，引用稳定；可直接作 useSyncExternalStore 的第二参",
-              "en": "Current full snapshot with a stable reference; use as the second useSyncExternalStore argument"
-            }
-          },
-          {
-            "name": "getServerSnapshot()",
-            "type": "() => TaskNotificationSnapshot",
-            "def": "冻结空快照",
-            "desc": {
-              "zh": "SSR / 非宿主环境用，永远是同一个对象",
-              "en": "For SSR and non-host environments; always the same object"
-            }
-          },
-          {
-            "name": "subscribe(listener)",
-            "type": "(listener: () => void) => () => void",
-            "def": "—",
-            "desc": {
-              "zh": "状态真变了才通知；返回退订函数",
-              "en": "Notifies only on real state changes; returns an unsubscribe function"
-            }
-          },
-          {
-            "name": "connect()",
-            "type": "() => void",
-            "def": "—",
-            "desc": {
-              "zh": "幂等；开跨页通道并请求一次全量 baseline",
-              "en": "Idempotent; opens the cross-page channel and requests one full baseline"
-            }
-          },
-          {
-            "name": "refresh()",
-            "type": "() => void",
-            "def": "—",
-            "desc": {
-              "zh": "重新向同源标签页要一次全量状态；休眠恢复时自动触发，平时不用手动调",
-              "en": "Re-requests a full snapshot from same-origin tabs; runs automatically after sleep, no manual call needed"
-            }
-          },
-          {
-            "name": "select(groups?, options?)",
-            "type": "(groups?: TaskNotificationGroupFilter, options?: TaskNotificationSelectOptions) => readonly TaskNotificationRecord[]",
-            "def": "不传 = 本项目全部二级",
-            "desc": {
-              "zh": "池内自带缓存的过滤；与 selectTaskNotifications 同一套三档语义",
-              "en": "Cached pool-level filtering; same three-tier contract as selectTaskNotifications"
-            }
-          },
-          {
-            "name": "register(input)",
-            "type": "(input: TaskNotificationInput) => TaskNotificationHandle",
-            "def": "—",
-            "desc": {
-              "zh": "登记一条真实任务并返回句柄；带 key 时同页重复登记就地复用（只要句柄、不要 created 就用它）",
-              "en": "Registers a real task and returns its handle; with a key, a repeat on the same page reuses the row (use it when you need the handle but not created)"
-            }
-          },
-          {
-            "name": "ensure(input)",
-            "type": "(input: TaskNotificationInput) => TaskNotificationClaim",
-            "def": "—",
-            "desc": {
-              "zh": "同上，另交回 `created`：false = 本页已有同键任务，别起第二份活",
-              "en": "Same as register, plus `created`: false means this page already has that key, so do not start a second job"
-            }
-          },
-          {
-            "name": "settleLocal(reason?)",
-            "type": "(reason?: string) => number",
-            "def": "—",
-            "desc": {
-              "zh": "结束本页仍持有的全部任务并返回条数，不需要句柄；跨页条目不动",
-              "en": "Ends every task this page still owns and returns the count without needing a handle; rows from other pages are untouched"
-            }
-          },
-          {
-            "name": "runAction(taskId, index)",
-            "type": "(taskId: string, index: number) => Promise<boolean>",
-            "def": "—",
-            "desc": {
-              "zh": "执行第 index 个按钮：本页立即执行，跨页发回创建页并等 ack（2s 超时）。查不到方法、越界、抛错一律 false",
-              "en": "Runs the index-th action: locally at once, or back on the owning page with an ack (2s timeout). Missing method, out-of-range index and throwing actions all resolve false"
-            }
-          },
-          {
-            "name": "canRestore(task)",
-            "type": "(task: TaskNotificationRecord) => boolean",
-            "def": "—",
-            "desc": {
-              "zh": "旧 restored 通道的判据，只对本页条目为真；它不决定按钮能不能点（那看 record.actions）",
-              "en": "Judgement for the legacy restored channel, true only for rows of this page; it does not decide buttons (record.actions does)"
-            }
-          },
-          {
-            "name": "requestRestore(taskId)",
-            "type": "(taskId: string) => boolean",
-            "def": "—",
-            "desc": {
-              "zh": "只发本地 restored 事件，跨页返回 false；新代码用 actions + runAction",
-              "en": "Emits a local restored event only and returns false for cross-page rows; new code uses actions + runAction"
-            }
-          },
-          {
-            "name": "dispose()",
-            "type": "() => void",
-            "def": "—",
-            "desc": {
-              "zh": "关通道与摘监听、停掉心跳定时器，在途探测的结果也一律丢弃（卸载后不改状态）；保留池状态，下次 connect 会复活并重发分片；按钮方法随之清空，存活条目的按钮从此刻起不可执行",
-              "en": "Closes the channel, detaches listeners and stops the heartbeat timer; an in-flight probe result is also discarded so nothing changes state after unload. Pool state is kept and the next connect revives it and rebroadcasts a shard. Action methods are dropped, so surviving rows stay unclickable from then on"
+              "zh": "先切回发起面板再执行 handler；找不到返回 false",
+              "en": "Switches back to the originating panel before running the handler; false when not found"
             }
           }
         ]
+      }
+    ]
+  },
+  "bt-sse": {
+    "id": "bt-sse",
+    "heading": {
+      "zh": "服务端投影：SSE 是唯一状态通道",
+      "en": "Server projection: SSE is the only state channel"
+    },
+    "prose": [
+      {
+        "zh": "服务端是状态真源：任务执行、进度推进、终态判定都在服务端。`serveTaskStream` 注册一条 SSE 路由，三条流物理隔离：`event: task-snapshot`（全量基线）与 `event: task`（进度/终态状态）只投影列表、**永不弹卡**；`event: task-notice`（带唯一 id 的一次性完成通知）才触发 toast/notify。`authorize` 强制必填，归属过滤在服务端按 viewer 做。客户端 `connectTaskCenter({ streamUrl })` 订阅、断线退避重连；通知按 id 存 localStorage 持久去重（有界），所以刷新 / 重连重推历史都不会再弹卡，而断线期间结算的通知靠服务端 source 的 outbox 回放补发。关键不变量：状态可反复重放，通知是一次性事件——弹卡绝不挂在状态投影上（参照 ledger 的通道 A/B 模式）。",
+        "en": "The server owns the truth: execution, progress and settlement all happen there. `serveTaskStream` registers one SSE route with three physically separated streams: `event: task-snapshot` (full baseline) and `event: task` (progress/terminal state) only project the list and **never announce**; `event: task-notice` (a one-shot completion event with a unique id) is the only toast/notify trigger. `authorize` is mandatory and viewer-based ownership filtering happens server-side. Clients subscribe with `connectTaskCenter({ streamUrl })` and reconnect with backoff; notices are de-duplicated by id in localStorage (bounded), so refresh / reconnect replays of history never re-announce, while notices settled during a disconnect are replayed from the server source outbox. Core invariant: state is replayable, notices are one-shot — announcing is never wired to state projection (mirrors ledger's channel A/B pattern)."
       },
       {
-        "id": "bt-handle-api",
+        "zh": "`connectTaskLayout(ctx)` 是从宿主 client ctx 接 layout 的便捷入口：通过 `ctx.inject(['layout'])` 拿 layout 服务，发起时从 `panelInfo.getSnapshot().activePanelId` 自动记面板（宿主 0.2.2-rc.3 核实，不在 ILayout 顶层），点按钮时用 `selectPanel(panelId)` 切回。不传 `streamUrl` 时是纯本地内存模式，适合单测与预览站。",
+        "en": "`connectTaskLayout(ctx)` is the convenience wiring from a host client ctx: it obtains the layout service through `ctx.inject(['layout'])`, records `panelInfo.getSnapshot().activePanelId` automatically at start (verified against host 0.2.2-rc.3 — it is not a top-level ILayout field), and calls `selectPanel(panelId)` on button presses. Without `streamUrl` it runs as a local in-memory mode for tests and the preview site."
+      }
+    ],
+    "api": [
+      {
+        "id": "bt-sse-api",
         "rows": [
           {
-            "name": "input.project",
-            "type": "string",
-            "def": "全局默认项目",
-            "required": "二者必有一个",
-            "desc": {
-              "zh": "一级分组；不传则取 setDefaultTaskProject 的值，两者都没有就抛错",
-              "en": "First-level project; falls back to setDefaultTaskProject, and throws when neither exists"
-            }
-          },
-          {
-            "name": "input.group",
-            "type": "string",
-            "def": "'default'",
-            "desc": {
-              "zh": "二级分组：项目内的分类；不能是空字符串",
-              "en": "Second-level bucket inside the project; must not be empty"
-            }
-          },
-          {
-            "name": "input.key",
-            "type": "string | readonly (string | number)[]",
+            "name": "serveTaskStream(ctx, options)",
+            "type": "(ctx, options: TaskStreamOptions) => () => void",
             "def": "—",
             "desc": {
-              "zh": "业务键：唯一性范围是 (project, key)；字符串原样用，元组按元素归一化成稳定串。只收扁平原值，空串 / 空数组 / 对象 / NaN 当场抛错",
-              "en": "Business key, unique per (project, key). Strings are used verbatim; tuples are normalized element-wise into a stable string. Flat primitives only — empty strings, empty arrays, objects and NaN throw immediately"
+              "zh": "宿主侧 SSE 端点；authorize 必填，source 给基线 + 订阅",
+              "en": "Host-side SSE endpoint; authorize is mandatory, source supplies baseline + subscribe"
             }
           },
           {
-            "name": "input.title",
-            "type": "string",
-            "def": "—",
-            "required": "必填",
-            "desc": {
-              "zh": "条目标题",
-              "en": "Row title"
-            }
-          },
-          {
-            "name": "input.hidden",
-            "type": "boolean",
-            "def": "false",
-            "desc": {
-              "zh": "不进默认列表，**只表达这一件事**（回收见 `timeoutMs`）。可在 `update` 里切换（传 false 能取消）",
-              "en": "Kept out of the default list — that is all it means (see `timeoutMs` for reclamation). Switchable through `update` (false un-hides)"
-            }
-          },
-          {
-            "name": "input.timeoutMs",
-            "type": "number",
-            "def": "0",
-            "desc": {
-              "zh": "回收窗口，从最后一次活动起算；必须是有限数且 ≥ 0，**缺省 0 = 不回收**（与 hidden 无关）。给了窗口就有定时器到点自动结算为 `failed('timed out')` 并移出列表，不用等下一次写入；每次 update / background 都续期。会自己跑完的短任务想兜底就显式给一个值；作业型任务别给，否则作业还在跑就先被判失败",
-              "en": "Reclamation window counted from the last activity; must be finite and ≥ 0, and defaults to 0 = never (independent of hidden). With a window, a timer settles the row as `failed('timed out')` and removes it without waiting for another write; every update / background renews it. Short self-terminating tasks may pass a value as a backstop; long jobs must not, or the row is failed while the work still runs"
-            }
-          },
-          {
-            "name": "input.detail",
-            "type": "TaskNotificationDetail",
+            "name": "connectTaskCenter(host)",
+            "type": "(host: TaskCenterHost) => () => void",
             "def": "—",
             "desc": {
-              "zh": "任意 JSON 值（对象 / 数组 / 数字 / 布尔 / null）；入池前克隆私有副本，函数与类实例当场抛错",
-              "en": "Any JSON value (object / array / number / boolean / null); cloned into a private copy on the way in, while functions and class instances throw immediately"
+              "zh": "一次接线；带 streamUrl 时自动订阅并重连，重复调用覆盖上一次",
+              "en": "One-shot wiring; with streamUrl it subscribes and reconnects; repeated calls replace the previous one"
             }
           },
           {
-            "name": "input.actions",
-            "type": "readonly TaskNotificationAction[]",
+            "name": "connectTaskLayout(ctx)",
+            "type": "(ctx: LayoutClientContext) => void",
             "def": "—",
             "desc": {
-              "zh": "按钮：`{ label?, icon?, color?, run }` 数组，`label` 与 `icon` 至少给一个；run 是匿名函数、不进池不过线，只在创建页执行；`color` 是任意 CSS 色值，不传由展示方用默认档；两者都空、run 不是函数或 color 传了空串时注册当场抛错",
-              "en": "Actions: an array of `{ label?, icon?, color?, run }` with at least one of label and icon; run is an anonymous function that never enters the pool or the wire and runs only on the creating page. `color` is any CSS color, omitted means the renderer default. Both label and icon empty, a non-function run or a blank color throws at registration"
+              "zh": "从宿主 client ctx 接 layout：自动记 panelId、点按钮切回面板",
+              "en": "Wires layout from a host client ctx: records panelId and switches back on button presses"
             }
           },
           {
-            "name": "record.actions",
-            "type": "readonly { label?: string; icon?: string; color?: string }[] | undefined",
+            "name": "projectTasks(records)",
+            "type": "(records: readonly TaskRecord[]) => void",
+            "def": "—",
+            "desc": {
+              "zh": "手动投影入口；终态只分发一次",
+              "en": "Manual projection entry; terminal states are delivered once"
+            }
+          },
+          {
+            "name": "taskCenterStore",
+            "type": "TaskStore",
+            "def": "全局单例",
+            "desc": {
+              "zh": "同标签页共享的任务状态；getSnapshot / subscribe / select / getHandler",
+              "en": "Shared task state per tab; getSnapshot / subscribe / select / getHandler"
+            }
+          }
+        ]
+      }
+    ],
+    "code": [
+      {
+        "id": "bt-connect-example",
+        "lang": "ts",
+        "src": "import { connectTaskLayout } from 'dsh-plugin-core/adv/tasks'\n\n// client apply 里接一次：核心自动记当前 panelId，点按钮先切回发起面板再执行 handler。\nconnectTaskLayout(ctx)\n\n// 或者自己接 host：带 streamUrl 时自动订阅 SSE 并投影。\nimport { connectTaskCenter } from 'dsh-plugin-core/adv/tasks'\nconst off = connectTaskCenter({\n  streamUrl: '/api/task-center/stream',\n  headers: () => ({ authorization: token() }),\n  activePanelId: () => currentPanel(),\n  selectPanel: (id) => switchPanel(id),\n})"
+      }
+    ]
+  },
+  "bt-record": {
+    "id": "bt-record",
+    "heading": {
+      "zh": "TaskRecord：一条任务记录",
+      "en": "TaskRecord: what one task record holds"
+    },
+    "prose": [
+      {
+        "zh": "记录全是服务端下发或调用方给的纯数据，跨页克隆安全、无函数。身份字段：`id`、`key`（同项目幂等）、`project` / `group`（两级分组）、`startedAt`；归属字段：`panelId`（核心自动记）、`origin`；执行字段：`kind` / `args` / `detail` / `icon`；展示字段：`progress` / `toast` / `notify` / `rowButtons`；终态字段：`state` / `reason` / `settledAt`。",
+        "en": "A record is all plain data from the server or the caller — structured-clone safe, no functions. Identity: `id`, `key` (idempotent per project), `project` / `group` (two-level grouping), `startedAt`; ownership: `panelId` (recorded by the core) and `origin`; execution: `kind` / `args` / `detail` / `icon`; presentation: `progress` / `toast` / `notify` / `rowButtons`; terminal: `state` / `reason` / `settledAt`."
+      }
+    ],
+    "api": [
+      {
+        "id": "bt-record-api",
+        "rows": [
+          {
+            "name": "record.state",
+            "type": "'running' | 'done' | 'failed'",
+            "def": "—",
+            "desc": {
+              "zh": "服务端投影下来的事实；终态到达后不再被迟到的 running 复活",
+              "en": "Fact projected from the server; a late running update cannot revive a settled state"
+            }
+          },
+          {
+            "name": "record.progress",
+            "type": "TaskProgress | undefined",
             "def": "undefined",
             "desc": {
-              "zh": "跨页可见的只有文案 / 图标标识 / 颜色，下标即动作 id；没有按钮的记录不带这个字段",
-              "en": "Only labels, icon ids and colors cross pages, and the index is the action id; rows without actions carry no such field"
+              "zh": "最后一段话 + 更新时间 + 可选数值，显式字段，不进 detail",
+              "en": "Last message + update time + optional numbers, an explicit field never stored in detail"
             }
           },
           {
-            "name": "record.key",
+            "name": "record.panelId",
             "type": "string | undefined",
             "def": "undefined",
             "desc": {
-              "zh": "归一化后的业务键；读侧拿它判断「这个任务是不是已经在处理中」，比对自己的键要用 `taskKey()` 算一次，别手拼",
-              "en": "The normalized business key; the read side uses it to tell whether the work is already running. Compare with your own key through `taskKey()` instead of hand-joining strings"
+              "zh": "发起面板；点按钮先切回它，再由 core 自动填",
+              "en": "Originating panel; buttons switch back to it first; filled automatically by the core"
             }
           },
           {
-            "name": "taskKey(key)",
-            "type": "(key: TaskKey) => string",
+            "name": "startTask(input)",
+            "type": "(input: StartTaskInput) => Promise<TaskRecord>",
             "def": "—",
             "desc": {
-              "zh": "把业务键归一化成池里存的那串（元组 → `#` + JSON，字符串原样）；读写两侧用同一份才不会对不上",
-              "en": "Normalizes a business key into the stored form (tuples become # + JSON, strings stay verbatim); both sides must use it or they will disagree"
-            }
-          },
-          {
-            "name": "TaskNotificationConflictError",
-            "type": "class extends Error",
-            "def": "—",
-            "desc": {
-              "zh": "同键已在别的页面登记时抛出；带 `code`（值为 TASK_NOTIFICATION_CONFLICT）、`key` 与 `ownerOrigin`。判冲突用 `code`（core 被打进每个插件副本，跨副本 `instanceof` 不可靠）",
-              "en": "Thrown when another page holds the key; carries `code` (TASK_NOTIFICATION_CONFLICT), `key` and `ownerOrigin`. Judge by `code`, since core is inlined into each plugin bundle and `instanceof` is unreliable across copies"
-            }
-          },
-          {
-            "name": "input.projectLabel / groupLabel",
-            "type": "string",
-            "def": "—",
-            "desc": {
-              "zh": "项目 / 分组的显示名覆盖",
-              "en": "Project / group display-name overrides"
-            }
-          },
-          {
-            "name": "handle.update(patch)",
-            "type": "(patch: TaskNotificationPatch) => void",
-            "def": "—",
-            "desc": {
-              "zh": "只改纯数据字段，随时可调用；按钮改不了 —— 换一组要带同一个 key 重新登记",
-              "en": "Updates plain data fields, callable any time. Buttons cannot change through it — re-register with the same key to swap them"
-            }
-          },
-          {
-            "name": "handle.background()",
-            "type": "() => void",
-            "def": "—",
-            "desc": {
-              "zh": "标记收起并发 backgrounded 事件，不结算；UI 侧由 Modal 的 onBackground 接入",
-              "en": "Marks the task backgrounded and emits a backgrounded event without settling; wired from the UI via Modal.onBackground"
-            }
-          },
-          {
-            "name": "handle.done(detail?) / fail(reason?)",
-            "type": "(detail?: TaskNotificationDetail) => void",
-            "def": "—",
-            "desc": {
-              "zh": "幂等；成功后条目立刻移出池并发 settled 事件",
-              "en": "Idempotent; removes the row immediately and emits a settled event"
-            }
-          },
-          {
-            "name": "handle.track(promise)",
-            "type": "<T>(promise: Promise<T>) => Promise<T>",
-            "def": "—",
-            "desc": {
-              "zh": "句柄已在手时的兜底收尾；返回原 Promise。包一段异步的日常写法是 notifyTask.run",
-              "en": "Fallback settlement when the handle is already in hand; returns the original promise. The everyday way to wrap async work is notifyTask.run"
-            }
-          },
-          {
-            "name": "handle.settled",
-            "type": "Promise<TaskNotificationSettlement>",
-            "def": "—",
-            "desc": {
-              "zh": "只在真正结束时兑现；收起不兑现",
-              "en": "Resolves only on a real ending, never on collapse"
-            }
-          },
-          {
-            "name": "subscribeTaskNotificationEvents(listener)",
-            "type": "(listener: TaskNotificationEventListener) => () => void",
-            "def": "—",
-            "desc": {
-              "zh": "监听 registered / updated / backgrounded / settled / message / restored / peer-left",
-              "en": "Listens for registered / updated / backgrounded / settled / message / restored / peer-left"
-            }
-          },
-          {
-            "name": "createTaskNotificationPool(options?)",
-            "type": "(options?: TaskNotificationPoolOptions) => TaskNotificationPool",
-            "def": "—",
-            "desc": {
-              "zh": "独立池；测试可注入 origin / channelName / offline / lifecycle / locks（locks: null 关掉失联清理）",
-              "en": "Standalone pool; tests can inject origin / channelName / offline / lifecycle / locks (locks: null disables dead-page cleanup)"
-            }
-          },
-          {
-            "name": "TASK_NOTIFICATIONS_LOCK_PREFIX",
-            "type": "string",
-            "def": "—",
-            "desc": {
-              "zh": "存活锁名前缀，后接本页 origin；协议升级时随键一起换命名空间",
-              "en": "Liveness lock-name prefix, followed by the page origin; the protocol bump carries it to a new namespace"
+              "zh": "等登记成功，不等跑完；key 同项目幂等",
+              "en": "Resolves on registration, not completion; key is idempotent per project"
             }
           }
         ]
-      }
-    ],
-    "code": [
-      {
-        "id": "bt-keyed-example",
-        "lang": "ts",
-        "src": "import { notifyTask, taskKey, taskNotifications } from 'dsh-plugin-core/adv/tasks'\n\n// 键 = 「让这两条算同一件事」的那几个值。稳定、可枚举，不放时间 / 随机数 / 进度文案。\nconst key = ['close', workspaceId, taskId]\n\n// ① 只是要它在那儿：反复登记也只有一条，内容按最后一次刷新，句柄还是同一个\nconst handle = notifyTask('正在结案', { key, timeoutMs: 30 * 60_000 })\nhandle.done('已结案')\n\n// ② 还要知道「是不是我刚起的」：created === false 说明本页已经在跑，别再起第二份活\nconst task = notifyTask.ensure('正在结案', { key })\nif (task.created) void closeTask(workspaceId, taskId).finally(() => task.handle.done())\n\n// ③ 读侧判断「这个任务是不是已经在处理中」：记录带着归一化后的键\nconst running = taskNotifications.select('*').some((t) => t.key === taskKey(key))"
-      },
-      {
-        "id": "bt-actions-example",
-        "lang": "ts",
-        "src": "import { notifyTask, taskNotifications } from 'dsh-plugin-core/adv/tasks'\n\n// ① 弹窗这边：按钮名 + 点它干什么。run 写匿名函数就行，不用起名\n//    color 可选：不传用展示方的默认档（灰底），传了就是该按钮的底色\n//    icon 可选：只给 icon 不给 label，展示方会画成正方形图标钮\nconst handle = notifyTask('收到确认', {\n  actions: [\n    { label: '重新打开', run: () => reopenDialog() },\n    { label: '知道了', color: '#16a34a', icon: 'common.base:gou', run: () => handle.done() },\n    { icon: 'common.base:shuaxin', run: () => reload() },\n  ],\n})\nhandle.background()\n\n// ② 通知中心这边：文案是 task.actions[i].label，点击按下标调\n//    方法本身留在创建它的页面里，不会随记录传过来\nconst ok = await taskNotifications.runAction(handle.id, 0)\nif (!ok) showToast('该任务已无法还原')   // showToast 由调用方提供"
-      },
-      {
-        "id": "bt-lifecycle-example",
-        "lang": "ts",
-        "src": "import { notifyTask, setDefaultTaskProject } from 'dsh-plugin-core/adv/tasks'\n\nsetDefaultTaskProject('dsh-task-reminder')   // app 入口设一次\n\n// ① 自己管结束\nconst handle = notifyTask('扫描工作区文件', { group: 'scan', detail: { done: 12, total: 40 } })\nhandle.update({ detail: { done: 20, total: 40 } })\nhandle.background()          // 收起到后台：只发 backgrounded 事件，不结算\nhandle.done('扫描完成')\n\n// ② 包住一段异步：成功 done、失败 fail，结果与异常原样透传\nawait notifyTask.run('扫描工作区文件', () => runWork(), { group: 'scan' })"
-      },
-      {
-        "id": "bt-subscribe-example",
-        "lang": "ts",
-        "src": "import { useSyncExternalStore } from 'react'\nimport { taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/adv/tasks'\n\n// 快照可直接喂 useSyncExternalStore；三个参数都给，SSR / 非宿主环境不炸\nconst snapshot = useSyncExternalStore(\n  taskNotifications.subscribe,\n  taskNotifications.getSnapshot,\n  taskNotifications.getServerSnapshot,\n)\n\n// 三档：不传 = 本项目全部二级；数组 = 这几个二级；'*' = 全站\nconst mine = selectTaskNotifications(snapshot, ['scan'])\nconst everything = selectTaskNotifications(snapshot, '*')\n\n// 幂等：开同源标签页通道并要一次全量 baseline\ntaskNotifications.connect()"
-      }
-    ]
-  },
-  "bt-server-task": {
-    "id": "bt-server-task",
-    "heading": {
-      "zh": "服务端任务：状态源、双时钟与幂等",
-      "en": "Server-backed tasks: status source, two clocks and idempotency"
-    },
-    "prose": [
-      {
-        "zh": "服务端执行的长任务用 `notifyTask.background(title, options)` 登记，它等价于 `ensure` 加 `serverBacked: true`，必须有稳定的 `key`。作业**一开始就登记**，不等用户「收起」——收起只是关前端展示。每个项目注册**一个**批量状态源 `setStatusSource(project, (keys) => StatusRow[])`，核心按 `min(轮询周期, 租约/2)` 一次问该项目全部在跑的 key，不是逐任务轮询。拿到 `running` 续租，`done` / `failed` 立即结算；状态源抛错或漏 key 都只算本轮没确认，不误杀、也不续租。",
-        "en": "Register long server-side jobs with `notifyTask.background(title, options)` — the same as `ensure` plus `serverBacked: true`, and a stable `key` is required. Register the job **when it starts**, not when the user collapses the UI; collapsing only hides the front end. Register **one** batch status source per project via `setStatusSource(project, (keys) => StatusRow[])`. The core asks all running keys of that project in one call every `min(poll interval, lease/2)` — never per-task. `running` renews the lease, `done`/`failed` settles at once; a thrown or incomplete reply counts as \"not confirmed this round\" — no false kill, no renewal."
-      },
-      {
-        "zh": "双时钟：`leaseMs`（缺省 5 分钟）是**可续**短租约，从最后一次确认起算，发现「不再证明活着」的作业；`maxDurationMs`（缺省 0 = 不限）从 `startedAt` 起算，**续租不重置**，到点无条件结算为 `failed(max duration exceeded)`，拦住无限续命的僵尸。只有持有执行权的本页会探测与结算；别的标签页只是投影。卸载调 `dispose()` 会一并停掉探测与租约定时器。at-least-once 是前提：服务端处理器必须幂等，`key` 只防重复提交、不替代幂等。",
-        "en": "Two clocks: `leaseMs` (default 5 min) is the **renewable** short lease counted from the last confirmation, catching work that stops proving it is alive; `maxDurationMs` (default 0 = unlimited) counts from `startedAt` and is **not reset by renewal**, settling as `failed(max duration exceeded)` on arrival to stop immortal zombies. Only the owning page probes and settles; other tabs are projections. `dispose()` stops both the probe and lease timers. Delivery is at-least-once: server handlers must be idempotent, and `key` only prevents duplicate submission — it does not replace idempotency."
-      }
-    ],
-    "api": [
-      {
-        "id": "bt-server-task-api",
-        "rows": [
-          {
-            "name": "notifyTask.background(title, options?)",
-            "type": "(title: string, options?: NotifyTaskOptions) => TaskNotificationClaim",
-            "def": "—",
-            "desc": {
-              "zh": "登记服务端任务（= ensure + serverBacked）；必须有 key。`created === false` 时不要起第二份服务端作业",
-              "en": "Registers a server-backed task (= ensure + serverBacked); a key is required. When `created === false`, do not start a second server job"
-            }
-          },
-          {
-            "name": "taskNotifications.setStatusSource(project, source)",
-            "type": "(project: string, source: StatusSource) => void",
-            "def": "—",
-            "desc": {
-              "zh": "按项目注册一个批量状态源，后者覆盖前者；source 签名 (keys) => StatusRow[] | Promise<StatusRow[]>",
-              "en": "Registers one batch status source per project, later ones replace earlier; source is (keys) => StatusRow[] | Promise<StatusRow[]>"
-            }
-          },
-          {
-            "name": "StatusRow",
-            "type": "{ key: string; state: \"running\" | \"done\" | \"failed\"; reason?: string }",
-            "def": "—",
-            "desc": {
-              "zh": "状态源回报的一行：key 是归一化后的业务键，state 决定续租或结算，reason 是失败原因",
-              "en": "One row from a status source: key is the normalized business key, state decides renewal or settlement, reason is the failure text"
-            }
-          },
-          {
-            "name": "input.serverBacked",
-            "type": "boolean",
-            "def": "false",
-            "desc": {
-              "zh": "标为服务端任务：必须有 key，由状态源看护而非 timeoutMs 回收",
-              "en": "Marks a server-backed task: requires a key, watched by a status source instead of timeoutMs"
-            }
-          },
-          {
-            "name": "input.leaseMs",
-            "type": "number",
-            "def": "300000",
-            "desc": {
-              "zh": "可续短租约（毫秒），从最后一次确认起算；必须 > 0。轮询周期取 min(60s, leaseMs/2)",
-              "en": "Renewable short lease in ms from the last confirmation; must be > 0. Poll interval is min(60s, leaseMs/2)"
-            }
-          },
-          {
-            "name": "input.maxDurationMs",
-            "type": "number",
-            "def": "0",
-            "desc": {
-              "zh": "总执行上限（毫秒），从 startedAt 算、续租不重置；0 = 不设上限。到点结算为 failed(max duration exceeded)",
-              "en": "Total execution cap in ms from startedAt, never reset by renewal; 0 = no cap. On arrival settles as failed(max duration exceeded)"
-            }
-          },
-          {
-            "name": "handle.touch()",
-            "type": "() => void",
-            "def": "—",
-            "desc": {
-              "zh": "可选加速：把租约从现在起算；只对服务端任务有效，不调用也不影响 pull 看护",
-              "en": "Optional acceleration: renews the lease from now; only for server-backed tasks, and skipping it does not affect pull watching"
-            }
-          }
-        ]
-      }
-    ],
-    "code": [
-      {
-        "id": "bt-server-example",
-        "lang": "ts",
-        "src": "import {\n  taskNotifications,\n  notifyTask,\n  type StatusRow,\n} from 'dsh-plugin-core/adv/tasks'\n\n// ① 每个项目注册一个批量状态源：核心周期性调用，一次问该项目全部在跑的 key。\n//    响应询问是必须实现的；抛错 / 漏 key 都只算本轮没确认，租约会兜底。\ntaskNotifications.setStatusSource('dsh-task-dispatch-table', async (keys) => {\n  const rows = await api.queryJobsByKeys(keys)   // api 由消费方提供\n  return rows.map((row) => ({\n    key: row.key,\n    state: row.state,                            // 'running' | 'done' | 'failed'\n    ...(row.reason ? { reason: row.reason } : {}),\n  })) satisfies StatusRow[]\n})\n\n// ② 作业一开始就登记，不等用户「收起」。created === false 就别起第二份作业。\nconst claim = notifyTask.background('正在结案', {\n  key: ['close', workspaceId, taskId],\n  group: 'close',\n  detail: { workspaceId, taskId },               // 展示用；后端任务号存服务端\n  leaseMs: 5 * 60_000,                           // 可续短租约，缺省 5 分钟\n  maxDurationMs: 30 * 60_000,                    // 总上限，从 startedAt 算、续租不重置\n})\nif (!claim.created) return\nawait api.submitCloseJob({ workspaceId, taskId })\n\n// ③ 可选加速：主动续租 / 改展示数据。不写也能靠 pull 正常看护。\nclaim.handle.touch()\nclaim.handle.update({ detail: { phase: '正在写回' } })\n// 结束时由状态源回报 done / failed，核心据此结算（不要在状态源里替核心结算）。"
-      }
-    ]
-  },
-  "bt-authoritative": {
-    "id": "bt-authoritative",
-    "heading": {
-      "zh": "服务端权威任务：恢复、判死与命令",
-      "en": "Authoritative server tasks: recovery, watchdog and commands"
-    },
-    "prose": [
-      {
-        "zh": "旧的状态源模式只是「按已知 key 问服务端」：页面全关后拿不到 key，刷新会把时钟从零算起，按钮 handler 也随页面销毁。要完整恢复，改用 `taskNotifications.setTaskBackend(project, backend)` + `notifyTask.server(title, options)`。后端必须提供 `list / follow / listNotices / ackNotices / invoke / ack` 六个能力，缺一即注册失败——不做静默降级。",
-        "en": "The status-source mode only asks the server about keys it already knows: after every page closes there are no keys, a reload restarts the clock, and action handlers die with the page. For full recovery use `taskNotifications.setTaskBackend(project, backend)` plus `notifyTask.server(title, options)`. A backend must provide `list / follow / listNotices / ackNotices / invoke / ack`; registering otherwise throws — there is no silent fallback."
-      },
-      {
-        "zh": "两条通道各司其职：通道 A（`list / follow`）只水合在跑任务，终态墓碑只更新本地终态门，绝不发 `settled`、绝不 ack；通道 B（`listNotices / ackNotices`）专门投递未确认的终态通知，事件发出后才按连续成功前缀 ack。因此页面重开后基线回放不会造成重复通知，未确认的通知仍会通过通道 B 送达。通道 B 按后端归属分组：每个后端只查自己注册的 project、用自己的游标推进与 ack，绝不拿首个后端代查全部项目——不同后端可能是不同服务或不同鉴权域。",
-        "en": "Two channels with separate jobs: channel A (`list / follow`) only hydrates running tasks; a terminal tombstone only updates the local terminal gate and never emits `settled` nor acks. Channel B (`listNotices / ackNotices`) delivers unacknowledged terminal notices; the cursor advances only after the event is emitted. A page reopen therefore never duplicates a notice from baseline replay, and unacknowledged notices still arrive through channel B. Channel B is grouped by backend ownership: each backend queries only the projects registered to it and advances/acks with its own cursor — it never queries all projects through whichever backend was registered first, since backends may be different services or auth domains."
-      },
-      {
-        "zh": "前端的通知去重 id 与终态交接结果用有界 LRU 缓存（上限 512），不会随长时间开页无限增长；跨页 / 重开去重靠服务端 cursor。句柄兑现以登记时服务端原子 create 返回的权威记录为真源，本地缓存只是「通知早于 waiter」的快路径——淘汰后仍能兑现、不留 pending，且同 key 重建不会被上一轮终态错误兑现。",
-        "en": "Notification de-duplication ids and terminal handoff results on the client use a bounded LRU cache (limit 512) and never grow without bound on a long-lived page. Cross-page / reopen de-duplication relies on the server cursor. Settling an authoritative handle uses the authoritative record returned by the server atomic create at registration as the source of truth; the local cache is only a fast path for \"notice before waiter\" — eviction still settles without leaving a pending handle, and reusing a key can never settle a fresh handle with the previous instance terminal."
-      },
-      {
-        "zh": "按钮命令的幂等缓存同样有界：按（项目、任务、按钮、版本）为键，容量上限 512、写入后超过 60 秒即过期（到点那一秒仍有效），两轴都由同一套通用有界缓存执行——容量满淘汰最久未用项，过期条目在下次访问时删除并换新幂等键。窗口内重复点击复用同一条目（成功后连结果一起回放，不再发请求），窗口外重新发命令；长生命周期页面不会因为点过的按钮越积越多而无界增长。",
-        "en": "Button command idempotency is bounded the same way: keyed by (project, task, action, version), capped at 512 entries and expiring once more than 60 seconds have passed since the write (the boundary second still counts), both enforced by the shared bounded cache — the oldest unused entry is evicted at capacity, and an expired entry is deleted on next access so a fresh idempotency key is minted. Clicks inside the window reuse the entry (and replay the cached result after success, sending no request); outside it a new command is sent. A long-lived page therefore cannot grow without bound as more buttons are clicked."
-      },
-      {
-        "zh": "真源在服务端：原子 `create` 决定 `created`，`startedAt / deadlineAt / version` 由服务端生成，超时与租约由服务端 watchdog 判定，终态按 TTL 清理。核心只按单调 version 合并基线、分页与增量；按钮是 `{id, token, expiresAt}` 描述，`runAction` 按 actionId 走服务端命令，不依赖页面闭包。点击按钮会向 `taskNotificationEvents` 发 `action` 事件（含任务快照、actionId、ok、reason、result），消费方据此把界面带回来。权威句柄只有 `id / isSettled / settled`，没有 update/touch/background/done/fail/track——终态由服务端判定，编译期即阻止误用。",
-        "en": "The server owns the truth: atomic `create` decides `created`; `startedAt / deadlineAt / version` come from the server; a server watchdog decides timeouts and lease expiry; terminal records are cleared by TTL. Actions are `{id, token, expiresAt}` descriptors and `runAction` dispatches by actionId to the server, never through page closures. Every click emits an `action` event to `taskNotificationEvents` (with task snapshot, actionId, ok, reason, result) so consumers can restore their UI. An authoritative handle exposes only `id / isSettled / settled`; update/touch/background/done/fail/track do not exist — the server decides terminal state, and the type system prevents misuse."
-      }
-    ],
-    "api": [
-      {
-        "id": "bt-authoritative-api",
-        "rows": [
-          {
-            "name": "taskNotifications.setTaskBackend(project, backend)",
-            "type": "(project: string, backend: TaskBackend) => void",
-            "def": "—",
-            "desc": {
-              "zh": "切换到服务端权威模式；必须提供 list/follow/listNotices/ackNotices/invoke/ack，否则抛错",
-              "en": "Switches to authoritative mode; list/follow/listNotices/ackNotices/invoke/ack are mandatory or registration throws"
-            }
-          },
-          {
-            "name": "notifyTask.server(title, options?)",
-            "type": "(title: string, options?: NotifyTaskOptions) => Promise<AuthoritativeClaim>",
-            "def": "—",
-            "desc": {
-              "zh": "服务端原子 create 登记；句柄只有 id/isSettled/settled，没有可被页面写的方法",
-              "en": "Registers through server-side atomic create; the handle exposes only id/isSettled/settled with no page-writable methods"
-            }
-          },
-          {
-            "name": "createHttpTaskBackend(options)",
-            "type": "(options: HttpTaskBackendOptions) => TaskBackend",
-            "def": "—",
-            "desc": {
-              "zh": "HTTP transport；从 dsh-plugin-core/adv/tasks/http-backend 导入，长连接断开由引擎退避重连",
-              "en": "HTTP transport from dsh-plugin-core/adv/tasks/http-backend; the engine reconnects a dropped stream with backoff"
-            }
-          },
-          {
-            "name": "serveTaskCenter(ctx, options)",
-            "type": "(ctx: HostContextLike, options: TaskCenterRouteOptions) => () => void",
-            "def": "—",
-            "desc": {
-              "zh": "宿主侧路由装配（dsh-plugin-core/host/task-center）；authorize 必填，宿主不提供全局鉴权",
-              "en": "Host-side route wiring (dsh-plugin-core/host/task-center); authorize is mandatory because the host provides no global auth"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "bt-use-tasks": {
-    "id": "bt-use-tasks",
-    "heading": {
-      "zh": "useTasks：React 读取入口",
-      "en": "useTasks: the React read hook"
-    },
-    "prose": [
-      {
-        "zh": "把池的快照接到组件上并按分组过滤，等价于自己写 `useSyncExternalStore` 三参 + `selectTaskNotifications`。只读、不享任何状态：想自己画页面用它，不想自己画就用 `TaskBar`。`connect()` 由池在首次订阅时自己完成，返回值里的 `connect` 只是把同一件事交给你，方便在挂载时显式要一次 baseline。",
-        "en": "Wires the pool snapshot into a component and filters by group — the same as writing the three-argument `useSyncExternalStore` plus `selectTaskNotifications` yourself. Read-only and state-free: use it to draw your own page, or use `TaskBar` if you would rather not. The pool connects on first subscribe; the returned `connect` just hands the same call to you so mount can explicitly ask for a baseline."
-      }
-    ],
-    "api": [
-      {
-        "id": "bt-use-tasks-api",
-        "rows": [
-          {
-            "name": "options.groups",
-            "type": "readonly string[] | '*'",
-            "def": "默认项目全部二级",
-            "desc": {
-              "zh": "二级分组过滤，与 `selectTaskNotifications` 同口径",
-              "en": "Second-level filter, same contract as `selectTaskNotifications`"
-            }
-          },
-          {
-            "name": "options.project",
-            "type": "string | null",
-            "def": "全局默认项目",
-            "desc": {
-              "zh": "换项目看；`null` = 不按项目过滤",
-              "en": "Look at another project; `null` means no project filter"
-            }
-          },
-          {
-            "name": "options.includeHidden",
-            "type": "boolean",
-            "def": "false",
-            "desc": {
-              "zh": "`hidden` 的任务默认不进列表，传 true 连它们一起列",
-              "en": "`hidden` rows stay out of the list by default; pass true to include them"
-            }
-          },
-          {
-            "name": "返回",
-            "type": "{ tasks: readonly TaskNotificationRecord[]; connect(): void }",
-            "def": "—",
-            "desc": {
-              "zh": "`tasks` 按 `startedAt` 排序、同一快照内引用稳定；`connect` 幂等",
-              "en": "`tasks` are sorted by `startedAt` with a stable reference inside one snapshot; `connect` is idempotent"
-            }
-          }
-        ]
-      }
-    ]
-  },
-  "bt-task-bar": {
-    "id": "bt-task-bar",
-    "heading": {
-      "zh": "TaskBar：后台任务中心展示栏",
-      "en": "TaskBar: background task bar"
-    },
-    "prose": [
-      {
-        "zh": "封装好的展示栏：未展开是一颗按钮，展开了列出后台正在跑的任务。数据全部来自池本身（项目用 `setDefaultTaskProject()` 设一次），不需要自己 `useSyncExternalStore`。触发器与下拉框（Picker）同款皮：同高度档、字号同 `Button` 的 md 档（13px，sm 档 12px）、1px 加重描边、md 圆角、右侧一颗 6px 三角。两种形态：`pill`（图标 + 文字 + 运行数，默认）与 `icon`（只有图标，宽高相等即正方形，有任务时右上角一颗绿点）。`size` 三档：sm(24) / md(28，默认) / lg(32)。",
-        "en": "A ready-made bar: a button when collapsed, a list of running background tasks when open. All data comes from the pool itself (set the project once with `setDefaultTaskProject()`); no `useSyncExternalStore` on your side. The trigger wears the dropdown (Picker) skin: same height steps, the `Button` md font size (13px, 12px on sm), 1px heavy border, md radius, a 6px caret on the right. Two forms: `pill` (icon, label and running count — the default) and `icon` (icon only, square, with a green dot while tasks run). `size` has three steps: sm (24), md (28, default) and lg (32)."
-      },
-      {
-        "zh": "下拉里只画面板一层框，行与行之间是一条虚线，行本身不带底色 / 描边。行内是图标 + 标题 + `已执行 00:00:01`（每秒跳动，走核心唯一心跳 `useNowMs`，不另起定时器）。记录带 `actions` 时右侧按顺序画出**全部**按钮，点第 i 颗调 `runAction(id, i)`（方法在创建那条任务的那一页，这里只拿得到文案与颜色）；行内按钮**固定最小号**（sm），不随触发器尺寸变；不传色是中性灰底（`secondary`），`actions[i].color` 传了就用该色实心底 + 反色文字（`primary` 档，两主题都读得清）；`actions[i].icon` 传图标（`库名:图标名`），没传（或解析不出）就补 `defaultIcon`（默认 CPU），保证每颗按钮都有图标位、文字起点对齐；只有 icon 没有 label 时画成**正方形**图标钮。`icon` 是消费端标识、不保证是字体图标名，解析不出就回落 `defaultIcon`（默认 `common.base:cpu`）。有任务在跑时图标字形呼吸（CSS 动画，无定时器）。`width` / `minWidth` / `maxWidth` 与 `Button` 同口径约束触发器宽度：定宽优先、另两者失效；定宽或给了上限时文字放不下折叠成省略号、hover 以跑马灯展开全名（复用全站唯一 `MarqueeText`），图标 / 计数 / 三角不让位。行只做 hover 反馈（极淡蓝底），不可点、没有选中态。",
-        "en": "The panel draws a single frame: a dashed rule between rows, no per-row background or border. Each row shows icon, title and `Running 00:00:01` (ticks every second off the shared ticker `useNowMs`, no timer of its own). When the record carries `actions`, **all** buttons are drawn in order and the i-th one calls `runAction(id, i)` (the method lives in the creating page, only labels and colors cross). In-row buttons are always the smallest size (sm) and never follow the trigger; no color means the neutral filled `secondary`, an action `color` becomes the background with inverse text (`primary` tier), readable in both themes; `actions[i].icon` draws an icon (`lib:name`); without one (or when it cannot be resolved) `defaultIcon` (CPU) fills in, so every button keeps an icon slot and labels line up; an action with an icon but no label renders as a **square** icon button. `icon` is a consumer-side identifier, not necessarily a font icon name; anything unresolvable falls back to `defaultIcon` (default `common.base:cpu`). While tasks run the glyph breathes (CSS animation, no timers). `width`/`minWidth`/`maxWidth` size the trigger exactly like `Button`: a fixed width wins and voids the other two; with a fixed width or an upper bound the label collapses to an ellipsis and marquees on hover (the single shared `MarqueeText`), while icon, count and caret never give way. Rows only give hover feedback (a very faint blue tint): not clickable, no selected state."
-      }
-    ],
-    "api": [
-      {
-        "id": "bt-task-bar-api",
-        "rows": [
-          {
-            "name": "form",
-            "type": "'icon' | 'pill'",
-            "def": "'pill'",
-            "desc": {
-              "zh": "形态：只图标 / 图标 + 文字长条",
-              "en": "Form: icon only, or icon plus a text pill"
-            }
-          },
-          {
-            "name": "size",
-            "type": "'sm' | 'md' | 'lg'",
-            "def": "'md'",
-            "desc": {
-              "zh": "尺寸档（24 / 28 / 32）；只图标形态宽高相等，永远是正方形",
-              "en": "Size step (24 / 28 / 32); the icon-only form is a square"
-            }
-          },
-          {
-            "name": "groups",
-            "type": "readonly string[] | '*'",
-            "def": "默认项目全部二级",
-            "desc": {
-              "zh": "过滤，与 `selectTaskNotifications` 同口径",
-              "en": "Filter, same contract as `selectTaskNotifications`"
-            }
-          },
-          {
-            "name": "project / includeHidden",
-            "type": "string | null / boolean",
-            "def": "— / false",
-            "desc": {
-              "zh": "换项目看 / 连 hidden 一起列",
-              "en": "Look at another project / include hidden rows"
-            }
-          },
-          {
-            "name": "onActionFailure",
-            "type": "(failure: TaskActionFailure) => void",
-            "def": "—",
-            "desc": {
-              "zh": "行内按钮点了没生效时调它（条目已失效 / 方法在别页且等不到 ack / 下标越界）。不传就由本栏弹一次核心自带提示 `taskbarActionFailed` —— 不再静默",
-              "en": "Called when an inline button did not take effect (row gone, method on another page and no ack, index out of range). Without it the bar raises the built-in `taskbarActionFailed` notice instead of staying silent"
-            }
-          },
-          {
-            "name": "placement",
-            "type": "'down' | 'up'",
-            "def": "'down'",
-            "desc": {
-              "zh": "面板首选展开方向，空间不够自动翻",
-              "en": "Preferred panel direction; flips when space runs out"
-            }
-          },
-          {
-            "name": "defaultIcon",
-            "type": "string",
-            "def": "'common.base:cpu'",
-            "desc": {
-              "zh": "任务没带图标时的默认图标（`库名:图标名`）",
-              "en": "Icon used when a task carries none (`lib:name`)"
-            }
-          },
-          {
-            "name": "width",
-            "type": "number | string",
-            "def": "—",
-            "desc": {
-              "zh": "固定宽（px 或任意 CSS 宽度）；与 `minWidth` / `maxWidth` 互斥，一旦设定后两者失效。只图标形态恒为正方形，忽略这三个参数",
-              "en": "Fixed width (px or any CSS width); mutually exclusive with `minWidth`/`maxWidth`. The icon-only form is always square and ignores all three"
-            }
-          },
-          {
-            "name": "minWidth",
-            "type": "number | string",
-            "def": "—",
-            "desc": {
-              "zh": "最小宽：`width` 未设时生效",
-              "en": "Minimum width: applies when `width` is unset"
-            }
-          },
-          {
-            "name": "maxWidth",
-            "type": "number | string",
-            "def": "—",
-            "desc": {
-              "zh": "最大宽：`width` 未设时生效；文字放不下折叠成省略号，hover 以跑马灯展开全名",
-              "en": "Maximum width: applies when `width` is unset; overflowing text collapses to an ellipsis and marquees on hover"
-            }
-          },
-          {
-            "name": "className / style",
-            "type": "—",
-            "def": "—",
-            "desc": {
-              "zh": "追加类 / 样式，只允许补布局",
-              "en": "Append class / style, layout patches only"
-            }
-          }
-        ]
-      }
-    ],
-    "code": [
-      {
-        "id": "bt-taskbar-example",
-        "lang": "tsx",
-        "src": "import { TaskBar, setDefaultTaskProject } from 'dsh-plugin-core/adv/tasks'\n\n// app 入口：项目设一次，展示栏与 notifyTask 共用同一个默认项目\nsetDefaultTaskProject('dsh-task-reminder')\n\n// 长条形态：图标 + 文字 + 运行数；点开列出后台正在跑的任务\nh(TaskBar, { groups: ['scan'] })\n\n// 只图标形态：正方形（宽高相等），有任务在跑时右上角一颗绿点\nh(TaskBar, { form: 'icon' })\n\n// 尺寸三档：sm(24) / md(28，默认) / lg(32)\nh(TaskBar, { form: 'icon', size: 'sm' })\n\n// 宽度三轴（与 Button 同口径）：定宽优先；放不下折叠成省略号，hover 以跑马灯展开\nh(TaskBar, { width: 220 })\nh(TaskBar, { maxWidth: 140 })\nh(TaskBar, { minWidth: 160 })\n\n// 任务挂按钮：文案 + 可选颜色（不传就是默认灰底），一行几颗就画几颗\nconst handle = notifyTask('扫描工作区', {\n  group: 'scan',\n  actions: [\n    { label: '查看', run: () => openScan() },\n    { label: '取消', color: '#dc2626', run: () => handle.fail('cancelled') },\n  ],\n})"
       }
     ]
   },
@@ -5822,8 +5376,8 @@ export const docData = {
         "en": "**Three cases**: (1) semantic icons next to text (a check in a button, the clear cross in an input) omit `size` and inherit the text size chosen by `sm|md|lg` (`sm` 12px text → 12px icon, `md`/`lg` 13px text → 13px icon); (2) decorative micro-arrows (picker caret, collapse, breadcrumbs) take an explicit small px value because they are deliberately smaller than text; (3) standalone icons and the showcase page use the explicit `ICON_SIZES` tiers. `dense` is the only magnification step, expressed as a `1.25em` ratio rather than a new tier."
       },
       {
-        "zh": "传字符串的场合（例如 `taskNotifications` 的 `icon` 字段，核心只存不解释）直接用同一条协议：`'common.base:jian'`、`'common.logo:github'`、`'IconWrapLinesOutlineRegular'`，渲染端原样喂给 `<Icon name={…} />` 即可，不需要自己再拆冒号。",
-        "en": "Where only a string travels (for example the `icon` field of `taskNotifications`, which the core stores but never interprets), the same convention applies: `'common.base:jian'`, `'common.logo:github'`, `'IconWrapLinesOutlineRegular'`. The renderer feeds it straight into `<Icon name={…} />`; nothing has to split on the colon itself."
+        "zh": "传字符串的场合（例如 `startTask` 的 `icon` 字段，核心只存不解释）直接用同一条协议：`'common.base:jian'`、`'common.logo:github'`、`'IconWrapLinesOutlineRegular'`，渲染端原样喂给 `<Icon name={…} />` 即可，不需要自己再拆冒号。",
+        "en": "Where only a string travels (for example the `icon` field of `startTask`, which the core stores but never interprets), the same convention applies: `'common.base:jian'`, `'common.logo:github'`, `'IconWrapLinesOutlineRegular'`. The renderer feeds it straight into `<Icon name={…} />`; nothing has to split on the colon itself."
       },
       {
         "zh": "**`Icon` 与 `FontIcon` 的分工**：`Icon` 两类来源都管，代价是它静态引官方 primitives；纯控件入口不许带这份重依赖（`test/entry-isolation.test.mjs`），所以库内部的控件画字体图标一律走 `FontIcon` —— 它只渲染字体字形，props 与 `Icon` 相同（库名不得省略）。插件界面按普通场景用 `Icon` 即可；只有在写「不该拖进官方包」的入口时才需要 `FontIcon`。",

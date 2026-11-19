@@ -27,12 +27,14 @@ src/                                                # 源码根，按依赖方�
 ├── adv/                                            # 应用模块：组件 + API 打包成成品
 │   ├── explorer/                                   # 文件浏览：FileBrowser + 预览 API
 │   ├── session/                                    # 会话预览：SessionPreview
-│   └── tasks/                                      # 后台任务：pool + useTasks + TaskBar
+│   ├── tasks/                                      # 后台任务：model / store / coordinator / api / TaskBar / stream
+│   └── (执行器在 src/runtime/executor.ts，SSE 端点在 src/host/task-stream.ts)
 └── host/                                           # 服务端：Node 侧路由与处理器
 ```
 
-> 分层自 2026-11-16 起新增 `runtime`（浏览器底座）与 `adv/tasks`（任务成品）。落地状态：
-> 两层均已落盘 —— 通知与状态容器在 `src/runtime/`，任务池 / `useTasks` / `TaskBar` 在 `src/adv/tasks/`。
+> 分层自 2026-11-16 起新增 `runtime`（浏览器底座）与 `adv/tasks`（任务成品），2026-11-18 重构：
+> 通知与开放执行器在 `src/runtime/`，任务纯数据 / 共享状态 / 编排 / 接线 / 核心列表 / SSE 客户端在
+> `src/adv/tasks/`，SSE 服务端端点在 `src/host/task-stream.ts`；旧的任务池 / 状态源 / `TaskBar` / `useTasks` 已删。
 > 分类判定顺序、每个类的成员、demo 分区见 `docs/architecture/structure.md`。
 
 ## 依赖方向（单向，不许反向）
@@ -96,7 +98,7 @@ React 绑定不进 `runtime`（它零 React）：`ui/infra/use-store.ts` 用 `us
 把容器接到组件。这与 `zustand/vanilla` + `zustand` 的分法一致。
 
 **`use-store.ts` 收三个入参，不是两个**：`subscribe` / `getSnapshot` / `getServerSnapshot`。
-服务端渲染时 React 必须拿到一个稳定快照，少第三个参数会直接抛错（`TaskBar` 用
+服务端渲染时 React 必须拿到一个稳定快照，少第三个参数会直接抛错（任务栏 `TaskBar` 用
 `renderToStaticMarkup` 测，立刻踩到）。`getServerSnapshot` 由调用方给（池里那个冻结的空快照），
 不由容器提供。
 

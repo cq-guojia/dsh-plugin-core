@@ -33,5 +33,5 @@ interface DshpcNodeBuffer extends Uint8Array {
   includes(value: number): boolean
 }
 
-declare const Buffer: { alloc(size: number): DshpcNodeBuffer }
+declare const Buffer: { alloc(size: number): DshpcNodeBuffer; concat(list: readonly Uint8Array[]): DshpcNodeBuffer }
 declare const process: { platform: string }

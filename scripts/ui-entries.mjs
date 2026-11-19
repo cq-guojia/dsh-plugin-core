@@ -46,6 +46,7 @@ export const UI_ENTRIES = [
   ['./ui/locale', 'ui/infra/locale'],
   ['./ui/tooltip', 'ui/infra/tooltip'],
   ['./ui/host-data', 'ui/infra/host-data'],
+  ['./ui/task-ui', 'ui/infra/task-ui'],
   ['./ui/overlay', 'ui/infra/overlay'],
   ['./ui/panel', 'ui/infra/panel'],
   ['./ui/split-group', 'ui/layout/SplitGroup'],

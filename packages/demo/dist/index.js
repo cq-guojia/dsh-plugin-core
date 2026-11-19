@@ -26,10 +26,10 @@ function filterKeys(object, filter) {
 function mapValues(object, transform) {
   return Object.fromEntries(Object.entries(object).map(([key, value]) => [key, transform(value, key)]));
 }
-function pick(source, keys, forced) {
-  if (!keys) return { ...source };
+function pick(source2, keys, forced) {
+  if (!keys) return { ...source2 };
   const result = {};
-  for (const key of keys) if (forced || source[key] !== void 0) result[key] = source[key];
+  for (const key of keys) if (forced || source2[key] !== void 0) result[key] = source2[key];
   return result;
 }
 function snapshot(value, ancestors = /* @__PURE__ */ new Set()) {
@@ -67,26 +67,26 @@ function isArrayBufferLike(value) {
 function isArrayBufferSource(value) {
   return isArrayBufferLike(value) || ArrayBuffer.isView(value);
 }
-function clone(source, refs = /* @__PURE__ */ new Map()) {
-  if (!source || typeof source !== "object") return source;
-  if (is("Date", source)) return new Date(source.valueOf());
-  if (is("RegExp", source)) return new RegExp(source.source, source.flags);
-  if (isArrayBufferLike(source)) return source.slice(0);
-  if (ArrayBuffer.isView(source)) return source.buffer.slice(source.byteOffset, source.byteOffset + source.byteLength);
-  const cached = refs.get(source);
+function clone(source2, refs = /* @__PURE__ */ new Map()) {
+  if (!source2 || typeof source2 !== "object") return source2;
+  if (is("Date", source2)) return new Date(source2.valueOf());
+  if (is("RegExp", source2)) return new RegExp(source2.source, source2.flags);
+  if (isArrayBufferLike(source2)) return source2.slice(0);
+  if (ArrayBuffer.isView(source2)) return source2.buffer.slice(source2.byteOffset, source2.byteOffset + source2.byteLength);
+  const cached = refs.get(source2);
   if (cached) return cached;
-  if (Array.isArray(source)) {
+  if (Array.isArray(source2)) {
     const result2 = [];
-    refs.set(source, result2);
-    source.forEach((value, index) => {
+    refs.set(source2, result2);
+    source2.forEach((value, index) => {
       result2[index] = Reflect.apply(clone, null, [value, refs]);
     });
     return result2;
   }
-  const result = Object.create(Object.getPrototypeOf(source));
-  refs.set(source, result);
-  for (const key of Reflect.ownKeys(source)) {
-    const descriptor = { ...Reflect.getOwnPropertyDescriptor(source, key) };
+  const result = Object.create(Object.getPrototypeOf(source2));
+  refs.set(source2, result);
+  for (const key of Reflect.ownKeys(source2)) {
+    const descriptor = { ...Reflect.getOwnPropertyDescriptor(source2, key) };
     if ("value" in descriptor) descriptor.value = Reflect.apply(clone, null, [descriptor.value, refs]);
     Reflect.defineProperty(result, key, descriptor);
   }
@@ -132,34 +132,34 @@ var init_lib = __esm({
     (function(Binary2) {
       Binary2.is = isArrayBufferLike;
       Binary2.isSource = isArrayBufferSource;
-      function fromSource(source) {
-        if (ArrayBuffer.isView(source)) return source.buffer.slice(source.byteOffset, source.byteOffset + source.byteLength);
-        else return source;
+      function fromSource(source2) {
+        if (ArrayBuffer.isView(source2)) return source2.buffer.slice(source2.byteOffset, source2.byteOffset + source2.byteLength);
+        else return source2;
       }
       Binary2.fromSource = fromSource;
-      function toBase64(source) {
-        source = fromSource(source);
-        if (typeof Buffer !== "undefined") return Buffer.from(source).toString("base64");
+      function toBase64(source2) {
+        source2 = fromSource(source2);
+        if (typeof Buffer !== "undefined") return Buffer.from(source2).toString("base64");
         let binary = "";
-        const bytes = new Uint8Array(source);
+        const bytes = new Uint8Array(source2);
         for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
         return btoa(binary);
       }
       Binary2.toBase64 = toBase64;
-      function fromBase64(source) {
-        if (typeof Buffer !== "undefined") return fromSource(Buffer.from(source, "base64"));
-        return Uint8Array.from(atob(source), (c) => c.charCodeAt(0));
+      function fromBase64(source2) {
+        if (typeof Buffer !== "undefined") return fromSource(Buffer.from(source2, "base64"));
+        return Uint8Array.from(atob(source2), (c) => c.charCodeAt(0));
       }
       Binary2.fromBase64 = fromBase64;
-      function toHex(source) {
-        source = fromSource(source);
-        if (typeof Buffer !== "undefined") return Buffer.from(source).toString("hex");
-        return Array.from(new Uint8Array(source), (byte) => byte.toString(16).padStart(2, "0")).join("");
+      function toHex(source2) {
+        source2 = fromSource(source2);
+        if (typeof Buffer !== "undefined") return Buffer.from(source2).toString("hex");
+        return Array.from(new Uint8Array(source2), (byte) => byte.toString(16).padStart(2, "0")).join("");
       }
       Binary2.toHex = toHex;
-      function fromHex(source) {
-        if (typeof Buffer !== "undefined") return fromSource(Buffer.from(source, "hex"));
-        const hex = source.length % 2 === 0 ? source : source.slice(0, source.length - 1);
+      function fromHex(source2) {
+        if (typeof Buffer !== "undefined") return fromSource(Buffer.from(source2, "hex"));
+        const hex = source2.length % 2 === 0 ? source2 : source2.slice(0, source2.length - 1);
         const buffer = [];
         for (let i = 0; i < hex.length; i += 2) buffer.push(parseInt(`${hex[i]}${hex[i + 1]}`, 16));
         return Uint8Array.from(buffer).buffer;
@@ -206,8 +206,8 @@ var init_lib = __esm({
         "m(?:in(?:ute)?(?:s)?)?",
         "s(?:ec(?:ond)?(?:s)?)?"
       ].map((unit) => `(${numeric}${unit})?`).join("")}$`);
-      function parseTime(source) {
-        const capture = timeRegExp.exec(source);
+      function parseTime(source2) {
+        const capture = timeRegExp.exec(source2);
         if (!capture) return 0;
         return (parseFloat(capture[1]) * Time2.week || 0) + (parseFloat(capture[2]) * Time2.day || 0) + (parseFloat(capture[3]) * Time2.hour || 0) + (parseFloat(capture[4]) * Time2.minute || 0) + (parseFloat(capture[5]) * Time2.second || 0);
       }
@@ -229,8 +229,8 @@ var init_lib = __esm({
         return ms + "ms";
       }
       Time2.format = format;
-      function toDigits(source, length = 2) {
-        return source.toString().padStart(length, "0");
+      function toDigits(source2, length = 2) {
+        return source2.toString().padStart(length, "0");
       }
       Time2.toDigits = toDigits;
       function template(template2, time = /* @__PURE__ */ new Date()) {
@@ -635,15 +635,15 @@ var init_lib2 = __esm({
         return [schema.meta.default];
       }
     };
-    Schema.from = function from(source) {
-      if (isNullable(source)) return Schema.any();
+    Schema.from = function from(source2) {
+      if (isNullable(source2)) return Schema.any();
       else if ([
         "string",
         "number",
         "boolean"
-      ].includes(typeof source)) return Schema.const(source).required();
-      else if (source[kSchema]) return source;
-      else if (typeof source === "function") switch (source) {
+      ].includes(typeof source2)) return Schema.const(source2).required();
+      else if (source2[kSchema]) return source2;
+      else if (typeof source2 === "function") switch (source2) {
         case String:
           return Schema.string().required();
         case Number:
@@ -653,9 +653,9 @@ var init_lib2 = __esm({
         case Function:
           return Schema.function().required();
         default:
-          return Schema.is(source).required();
+          return Schema.is(source2).required();
       }
-      else throw new TypeError(`cannot infer schema from ${source}`);
+      else throw new TypeError(`cannot infer schema from ${source2}`);
     };
     Schema.lazy = function lazy(builder) {
       const toJSON2 = () => {
@@ -892,6 +892,156 @@ var init_lib2 = __esm({
   }
 });
 
+// dist/host/task-stream.js
+function json(res, status, body) {
+  res.writeHead(status, { "content-type": "application/json; charset=utf-8" });
+  res.end(JSON.stringify(body));
+}
+var KEEP_ALIVE = ": keep-alive\n\n";
+function serveTaskStream(ctx, options) {
+  if (typeof options.authorize !== "function") {
+    throw new Error("serveTaskStream requires authorize: host provides no server-wide auth");
+  }
+  const base = options.basePath.replace(/\/$/, "");
+  const keepAliveMs = options.keepAliveMs ?? 25e3;
+  const connections = /* @__PURE__ */ new Set();
+  ctx.inject(["webServer"], (services) => {
+    const web = services.webServer;
+    if (web === void 0)
+      return;
+    web.register({
+      kind: "exact",
+      path: `${base}/stream`,
+      handler: (req, rawRes) => {
+        const res = rawRes;
+        Promise.resolve().then(() => options.authorize(req)).then((viewer) => {
+          if (viewer === null || viewer === "") {
+            json(res, 401, { error: "unauthorized" });
+            return;
+          }
+          const buffered = [];
+          let streaming = false;
+          const push2 = (event, payload) => {
+            const frame = `event: ${event}
+data: ${JSON.stringify(payload)}
+
+`;
+            if (streaming)
+              res.write(frame);
+            else
+              buffered.push(frame);
+          };
+          const sendTask = (task) => {
+            push2("task", task);
+          };
+          const sendNotice = (notice) => {
+            push2("task-notice", notice);
+          };
+          const offTask = options.source.subscribe(sendTask, viewer);
+          const offNotice = options.source.subscribeNotices?.(sendNotice, viewer);
+          const timer = setInterval(() => {
+            res.write(KEEP_ALIVE);
+          }, keepAliveMs);
+          timer.unref?.();
+          const conn = {
+            cleanup() {
+              clearInterval(timer);
+              offTask();
+              offNotice?.();
+              connections.delete(conn);
+            }
+          };
+          connections.add(conn);
+          res.on?.("close", () => {
+            conn.cleanup();
+          });
+          void Promise.resolve(options.source.snapshot(viewer)).then((baseline) => {
+            res.writeHead(200, {
+              "content-type": "text/event-stream; charset=utf-8",
+              "cache-control": "no-cache, no-transform",
+              connection: "keep-alive",
+              "x-accel-buffering": "no"
+            });
+            for (const task of baseline)
+              res.write(`event: task-snapshot
+data: ${JSON.stringify(task)}
+
+`);
+            streaming = true;
+            for (const frame of buffered)
+              res.write(frame);
+            buffered.length = 0;
+          }).catch((error) => {
+            console.error("dsh-plugin-core: task stream baseline failed", error);
+            conn.cleanup();
+            res.end();
+          });
+        }).catch(() => {
+          json(res, 401, { error: "unauthorized" });
+        });
+      }
+    });
+  });
+  return () => {
+    for (const conn of [...connections])
+      conn.cleanup();
+    connections.clear();
+  };
+}
+
+// dist/host/task-submit.js
+var JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
+function readBody(req) {
+  return new Promise((resolve2, reject) => {
+    if (req.on === void 0 || req.once === void 0) {
+      reject(new Error("request body stream unavailable"));
+      return;
+    }
+    const chunks = [];
+    req.on("data", (chunk) => {
+      chunks.push(chunk);
+    });
+    req.once("end", () => {
+      resolve2(Buffer.concat(chunks).toString("utf8"));
+    });
+    req.once("error", reject);
+  });
+}
+function serveTaskSubmit(ctx, options) {
+  let off;
+  ctx.inject(["webServer"], (services) => {
+    const webServer = services.webServer;
+    if (webServer === void 0)
+      return;
+    webServer.register({
+      kind: "exact",
+      path: options.path,
+      handler: async (req, res) => {
+        if (!await options.authorize(req)) {
+          res.writeHead(403, JSON_HEADERS);
+          res.end(JSON.stringify({ error: "forbidden" }));
+          return;
+        }
+        try {
+          const raw = await readBody(req);
+          const payload = JSON.parse(raw);
+          const id = await options.onSubmit(payload);
+          res.writeHead(200, JSON_HEADERS);
+          res.end(JSON.stringify({ ok: true, id }));
+        } catch (error) {
+          res.writeHead(400, JSON_HEADERS);
+          res.end(JSON.stringify({ ok: false, error: String(error) }));
+        }
+      }
+    });
+    off = () => {
+    };
+  });
+  return () => {
+    off?.();
+  };
+}
+
 // dist/host/fs-route.js
 import { access, open, readdir, stat } from "node:fs/promises";
 import { isAbsolute, join, normalize, sep } from "node:path";
@@ -1107,7 +1257,7 @@ async function buildModelRoutes(llm) {
   routes.sort((left, right) => left.displayName.localeCompare(right.displayName));
   return routes;
 }
-var JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
+var JSON_HEADERS2 = { "content-type": "application/json; charset=utf-8" };
 function resolveLlm(ctx, options) {
   const fromHook = options.getLlm?.();
   if (fromHook !== void 0)
@@ -1128,22 +1278,22 @@ function serveModelCatalog(ctx, options) {
       path: options.path,
       handler: async (req, res) => {
         if (options.authorize !== void 0 && !await options.authorize(req)) {
-          res.writeHead(403, JSON_HEADERS);
+          res.writeHead(403, JSON_HEADERS2);
           res.end(JSON.stringify({ error: "forbidden" }));
           return;
         }
         const llm = resolveLlm(ctx, options);
         if (llm === void 0) {
-          res.writeHead(503, JSON_HEADERS);
+          res.writeHead(503, JSON_HEADERS2);
           res.end(JSON.stringify({ routes: [], error: "llm-unavailable" }));
           return;
         }
         try {
           const routes = await buildModelRoutes(llm);
-          res.writeHead(200, JSON_HEADERS);
+          res.writeHead(200, JSON_HEADERS2);
           res.end(JSON.stringify({ routes }));
         } catch (error) {
-          res.writeHead(500, JSON_HEADERS);
+          res.writeHead(500, JSON_HEADERS2);
           res.end(JSON.stringify({ routes: [], error: String(error) }));
         }
       }
@@ -1154,6 +1304,104 @@ function serveModelCatalog(ctx, options) {
 // packages/demo/src/paths.ts
 var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
 var FS_PATH = "/api/dsh-plugin-core-demo/fs";
+var TASK_PATH = "/api/dsh-plugin-core-demo/tasks";
+
+// packages/demo/src/host-tasks.ts
+var VIEWER = "demo-viewer";
+var tasks = /* @__PURE__ */ new Map();
+var listeners = /* @__PURE__ */ new Set();
+var notices = [];
+var noticeListeners = /* @__PURE__ */ new Set();
+var NOTICE_LIMIT = 200;
+function emit(task) {
+  tasks.set(task.id, task);
+  for (const listener of listeners) listener(task);
+}
+function emitNotice(task) {
+  const notice = { id: `${task.id}@${String(task.settledAt ?? Date.now())}`, task };
+  notices.push(notice);
+  if (notices.length > NOTICE_LIMIT) notices.splice(0, notices.length - NOTICE_LIMIT);
+  for (const listener of noticeListeners) listener(notice);
+}
+function execute(id, seconds, steps, fail2, label, base) {
+  const total = steps > 0 ? steps : 10;
+  const tick = seconds * 1e3 / total;
+  let i = 0;
+  const step = () => {
+    if (tasks.get(id) === void 0) return;
+    i += 1;
+    if (steps > 0) {
+      emit({ ...base, progress: {
+        message: `${label} \xB7 \u6267\u884C\u5230 ${i}/${total}\uFF08${Math.round(i * 100 / total)}%\uFF09`,
+        current: i,
+        total,
+        updatedAt: Date.now()
+      } });
+    }
+    if (i < total) {
+      setTimeout(step, tick);
+      return;
+    }
+    const terminal = {
+      ...base,
+      state: fail2 ? "failed" : "done",
+      reason: fail2 ? "\u6F14\u793A\u5931\u8D25" : void 0,
+      settledAt: Date.now()
+    };
+    emit(terminal);
+    emitNotice(terminal);
+  };
+  setTimeout(step, tick);
+}
+var source = {
+  snapshot: () => [...tasks.values()],
+  subscribe: (listener) => {
+    listeners.add(listener);
+    return () => {
+      listeners.delete(listener);
+    };
+  },
+  subscribeNotices: (listener) => {
+    for (const notice of notices) listener(notice);
+    noticeListeners.add(listener);
+    return () => {
+      noticeListeners.delete(listener);
+    };
+  }
+};
+function serveDemoTasks(ctx) {
+  serveTaskSubmit(ctx, {
+    path: `${TASK_PATH}/submit`,
+    authorize: () => true,
+    onSubmit: (payload) => {
+      const id = `task:${Date.now().toString(36)}:${Math.random().toString(36).slice(2, 7)}`;
+      const args = typeof payload.args === "object" && payload.args !== null ? payload.args : {};
+      const seconds = Number(args.seconds) || 10;
+      const steps = Number(args.steps) || 0;
+      const fail2 = args.fail === true;
+      const base = {
+        id,
+        project: String(payload.project ?? "dsh-plugin-core-demo"),
+        group: String(payload.group ?? "demo-jobs"),
+        title: String(payload.title ?? "\u540E\u53F0\u4EFB\u52A1"),
+        state: "running",
+        startedAt: Date.now(),
+        ...typeof payload.toast === "object" && payload.toast !== null ? { toast: payload.toast } : {},
+        ...typeof payload.notify === "object" && payload.notify !== null ? { notify: payload.notify } : {},
+        ...typeof payload.rowButtons === "object" && payload.rowButtons !== null ? { rowButtons: payload.rowButtons } : {}
+      };
+      emit(base);
+      execute(id, seconds, steps, fail2, String(args.label ?? ""), base);
+      return id;
+    }
+  });
+  serveTaskStream(ctx, {
+    basePath: TASK_PATH,
+    authorize: () => VIEWER,
+    source,
+    keepAliveMs: 25e3
+  });
+}
 
 // packages/demo/src/index.ts
 var name = "dsh-plugin-core-demo";
@@ -1173,6 +1421,7 @@ var Config = z === void 0 ? void 0 : z.object({
 function apply(ctx) {
   serveModelCatalog(ctx, { path: MODELS_PATH });
   serveFsRoute(ctx, { path: FS_PATH });
+  serveDemoTasks(ctx);
 }
 export {
   Config,

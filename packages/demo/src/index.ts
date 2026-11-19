@@ -17,6 +17,7 @@
  */
 import { serveFsRoute, serveModelCatalog, type HostContextLike } from '../../../dist/host/index.js'
 import { FS_PATH, MODELS_PATH } from './paths.js'
+import { serveDemoTasks } from './host-tasks.js'
 
 export const name = 'dsh-plugin-core-demo'
 
@@ -60,4 +61,6 @@ export function apply(ctx: HostContextLike): void {
   serveModelCatalog(ctx, { path: MODELS_PATH })
   // 只读文件路由：官方 workspaceFiles.list 出不了工作区，单根文件树要自己开一条（见 docs）。
   serveFsRoute(ctx, { path: FS_PATH })
+  // 后台任务：服务端任务源 + 提交端点 + SSE 推送；刷新页面任务继续跑。
+  serveDemoTasks(ctx)
 }

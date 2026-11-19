@@ -1,6 +1,6 @@
 import { type CSSProperties, type ReactNode } from 'react';
 import { type ButtonSize } from '../../ui/actions/Button.js';
-import { type TaskNotificationGroupFilter, type TaskNotificationRecord } from './pool.js';
+import type { TaskNotificationRecord } from './model.js';
 /** 展示形态：只图标 / 图标 + 文字长条。 */
 export type TaskBarForm = 'icon' | 'pill';
 /**
@@ -23,7 +23,7 @@ export interface TaskBarProps {
      */
     size?: ButtonSize;
     /** 与 `selectTaskNotifications` 同口径：不传 = 默认项目全部二级；数组 = 这几个二级；`'*'` = 全站。 */
-    groups?: TaskNotificationGroupFilter;
+    groups?: readonly string[] | '*';
     /** 换项目看；`null` = 不限项目。默认取全局默认项目。 */
     project?: string | null;
     /** 连 `hidden` 任务一起列（默认不列）。 */
@@ -46,21 +46,34 @@ export interface TaskBarProps {
     minWidth?: number | string;
     /** 最大宽：`width` 未设时生效；文字放不下折叠成省略号，hover 跑马灯展开（同 `Button`）。 */
     maxWidth?: number | string;
+    /**
+     * 终态行在列表里停留多久再退场（毫秒），默认 60000 —— 给 `when: done/failed` 的行按钮留点击窗口。
+     * 到点先播退场动画再移除；传 0 则终态即时退场。
+     */
+    settleRetainMs?: number;
     /** 追加 class（只补布局）。 */
     className?: string;
     style?: CSSProperties;
 }
+/** 一条终态行在时刻 now 的展示阶段（纯派生，组件重挂也从 settledAt 重算，不会「恢复」）。 */
+export type RowSettlePhase = 'rest' | 'leaving' | 'gone';
+/**
+ * 终态行阶段：从 settledAt 与 now 的差值算，不存组件 state。
+ * - 运行中 / 没带 settledAt ⇒ 不归本函数管（调用方单独处理）。
+ * - rest = 停留期；leaving = 退场动画期（retainMs 前 EXIT_ANIM_MS）；gone = 已消失。
+ */
+export declare function rowSettlePhase(settledAt: number, now: number, retainMs: number): RowSettlePhase;
 /**
  * 后台任务中心的通用展示栏：未展开时是一颗按钮，展开后列出后台正在跑的任务。
  *
- * 数据面全部来自池本身（`taskNotifications` + `selectTaskNotifications`），不接 props 里的任务数组；
+ * 数据面来自共享任务池（`taskCenterStore`），不接 props 里的任务数组；
  * 触发器是 `Button`（长条）/ 纯图标（自动正方形）两档，下拉容器复用 `PanelSurface`（menu 档）。
  * 有任务在跑时图标字形呼吸（大小循环），表示后台确实在动；只做 CSS 动画，不跑定时器。
  *
  * 面板里**只画一条外框**：行与行之间是一条虚线，不给每行再套底色 / 描边 / 圆角
  * （2026-11-15 用户：点开不要圆环套圆环）。
  *
- * 行右侧的按钮来自记录里的 `actions`：点它调 `runAction`，方法本体在创建这条任务的那一页，
+ * 行右侧的按钮来自记录里的 `rowButtons`：点它走 `pressTaskButton`，方法本体在创建这条任务的那一页，
  * 这里只拿得到文案与下标。
  *
  * ```tsx

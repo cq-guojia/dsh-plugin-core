@@ -82,6 +82,13 @@ export type DemoMessageKey =
   | 'tnActionShow'
   | 'tnActionClick'
   | 'tnActionRefresh'
+  | 'tnRunPlainSuccess'
+  | 'tnRunPlainFail'
+  | 'tnRunStepped30'
+  | 'tnRunStepped60'
+  | 'tnRunSteppedFail'
+  | 'tnRunHint'
+  | 'tnProgressLabel'
   | 'secReference'
   | 'secActions'
   | 'secInputs'
@@ -378,6 +385,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnActionShow: '显示',
     tnActionClick: '点击',
     tnActionRefresh: '刷新',
+    tnRunPlainSuccess: '后台执行 · 成功（10 秒，无披露）',
+    tnRunPlainFail: '后台执行 · 失败（10 秒，无披露）',
+    tnRunStepped30: '渐进披露 · 30 秒成功（每 2 秒一段）',
+    tnRunStepped60: '渐进披露 · 1 分钟成功（每 2 秒一段）',
+    tnRunSteppedFail: '渐进披露 · 失败（每 2 秒一段）',
+    tnRunHint: '点按钮发起真实后台任务：无披露的只等终态；渐进披露的每 2 秒上报一段文字，在展示栏第二行以「时间 - 文字」显示，带扫光动效，超长省略、悬停跑马灯。展开上方展示栏看行内进度；成功/失败各配了 toast 与通知。',
+    tnProgressLabel: '进度',
     secReference: '参考与约定',
     secActions: '动作',
     secInputs: '录入',
@@ -699,6 +713,13 @@ export const DICT: Record<Locale, Record<DemoMessageKey, string>> = {
     tnActionShow: 'Show',
     tnActionClick: 'Click',
     tnActionRefresh: 'Refresh',
+    tnRunPlainSuccess: 'Backend job · success (10s, no progress)',
+    tnRunPlainFail: 'Backend job · failure (10s, no progress)',
+    tnRunStepped30: 'Stepwise · 30s success (a step every 2s)',
+    tnRunStepped60: 'Stepwise · 1min success (a step every 2s)',
+    tnRunSteppedFail: 'Stepwise · failure (a step every 2s)',
+    tnRunHint: 'Each button starts a real backend task: plain ones only settle at the end; stepped ones report a text step every 2 seconds, shown as "time - text" on the second line of the bar with a sweep animation, ellipsis and hover marquee. Expand the bar above to see row progress; success and failure each carry a toast and a notification.',
+    tnProgressLabel: 'Progress',
     secReference: 'Reference',
     secActions: 'Actions',
     secInputs: 'Inputs',

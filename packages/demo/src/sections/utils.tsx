@@ -17,7 +17,7 @@ const CODE_DATE = `// 日期时间格式化（全部走当前 locale）
 formatDateTime('2026-10-18T09:30:05.000Z', { seconds: true })  // 2026-10-18 09:30:05
 formatYmd('2026-10-18T09:30:05.000Z')                          // 2026-10-18
 formatClock('2026-10-18T09:30:05.000Z')                        // 09:30:05
-formatDurationHms(3_725_000)                                   // 1:02:05
+formatDurationHms(3_725_000)                                   // 01:02:05
 formatRange('2026-10-18T09:00', '2026-10-18T10:30')            // 09:00 – 10:30
 relativePast('2026-10-18T11:57', now)                          // 3 分钟前
 relativeFuture('2026-10-18T12:03', now)                        // 3 分钟后`

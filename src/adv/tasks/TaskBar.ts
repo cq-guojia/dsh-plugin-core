@@ -5,6 +5,7 @@ import {
 import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react'
 import { Button, type ButtonSize } from '../../ui/actions/Button.js'
 import { FontIcon, resolveIconName } from '../../ui/display/font-icon.js'
+import { FlipText } from '../../ui/display/FlipText.js'
 import { MarqueeText } from '../../ui/display/MarqueeText.js'
 import { Chevron } from '../../ui/infra/chevron.js'
 import { PanelSurface } from '../../ui/infra/panel.js'
@@ -14,14 +15,10 @@ import { useNowMs } from '../../ui/infra/ticker.js'
 import { notify } from '../../ui/feedback/notify.js'
 import { t } from '../../utils/i18n.js'
 import { formatDurationHms } from '../../utils/date.js'
-import {
-  selectTaskNotifications,
-  taskNotifications,
-  type TaskNotificationActionInfo,
-  type TaskNotificationGroupFilter,
-  type TaskNotificationRecord,
-} from './pool.js'
+import { pressTaskButton, taskCenterStore } from './api.js'
+import type { TaskButton, TaskNotificationRecord } from './model.js'
 import { TASK_BAR_CSS } from './task-bar-css.js'
+import { isSettled } from './store.js'
 
 /** 展示形态：只图标 / 图标 + 文字长条。 */
 export type TaskBarForm = 'icon' | 'pill'
@@ -47,7 +44,7 @@ export interface TaskBarProps {
    */
   size?: ButtonSize
   /** 与 `selectTaskNotifications` 同口径：不传 = 默认项目全部二级；数组 = 这几个二级；`'*'` = 全站。 */
-  groups?: TaskNotificationGroupFilter
+  groups?: readonly string[] | '*'
   /** 换项目看；`null` = 不限项目。默认取全局默认项目。 */
   project?: string | null
   /** 连 `hidden` 任务一起列（默认不列）。 */
@@ -70,6 +67,11 @@ export interface TaskBarProps {
   minWidth?: number | string
   /** 最大宽：`width` 未设时生效；文字放不下折叠成省略号，hover 跑马灯展开（同 `Button`）。 */
   maxWidth?: number | string
+  /**
+   * 终态行在列表里停留多久再退场（毫秒），默认 60000 —— 给 `when: done/failed` 的行按钮留点击窗口。
+   * 到点先播退场动画再移除；传 0 则终态即时退场。
+   */
+  settleRetainMs?: number
   /** 追加 class（只补布局）。 */
   className?: string
   style?: CSSProperties
@@ -91,37 +93,176 @@ function iconNameOf(task: TaskNotificationRecord, fallback: string): string {
  * 动作按钮的图标：与任务图标同一口径 —— 传了且解析得出就用它，否则回落本栏默认的 CPU。
  * 每颗按钮都有图标位，文字起点才对得齐（2026-11-15 用户：没传 icon 时文字往左跑了）。
  */
-function actionIconOf(action: TaskNotificationActionInfo, fallback: string): string {
+function actionIconOf(action: TaskButton, fallback: string): string {
   const name = action.icon
   return name === undefined || resolveIconName(name) === undefined ? fallback : name
 }
 
 /**
- * 第二行小字：已运行多久（`已执行 00:00:01`，秒级跳动）。
+ * 第二行小字。运行中 = `MM:SS - 披露文字`（满小时 `HH:MM:SS - …`），秒级跳动；
+ * 终态（`until` 有值）= 时间位置换成「已完成」小标签，后面仍可跟最后一段披露文字。
+ *
+ * - 时间只有数字与冒号，不写「已执行」；不足一小时 `MM:SS`，到一小时 `HH:MM:SS`。
+ * - 有 `progress.message` 就跟一个 ` - ` 再显示它；没有就只显示时间 / 标签。
+ * - 披露文字用 `FlipText(sweep)`：换字翻牌 + 常驻扫光，超长三点省略、hover 跑马灯都由它内层的
+ *   `MarqueeText` 负责（与弹窗 notice 同一套，见 Modal / dsh-task-ledger）。
  *
  * 只有这一小块订阅全站唯一心跳（`useNowMs` ⇒ `infra/ticker`），列表其余部分不跟着每秒重渲染
  * —— 别把 `useNowMs()` 提到 `TaskBar` 顶层，那会让整个展开面板每秒重渲一次。
+ * 终态不再订阅心跳（`until` 已冻结）。
  */
-function Elapsed(props: { since: number }): ReactNode {
-  const nowMs = useNowMs()
+function Elapsed(props: { since: number; until?: number; progress?: string }): ReactNode {
+  const settled = props.until !== undefined
+  const tick = useNowMs() // hook 必须无条件调；终态下取 until，tick 变化不会用到
+  const nowMs = props.until ?? tick
+  const leading = settled
+    ? h('span', { className: 'dshpc-taskbar__done-tag' }, t('taskbarDone'))
+    : formatDurationHms(Math.max(0, nowMs - props.since))
+  const message = props.progress
   return h(
     'span',
     { className: 'dshpc-taskbar__row-meta' },
-    t('taskbarElapsed', { time: formatDurationHms(Math.max(0, nowMs - props.since), { padHours: true }) }),
+    leading,
+    message === undefined || message === ''
+      ? null
+      : h(
+          'span',
+          { className: 'dshpc-taskbar__row-detail' },
+          h('span', { className: 'dshpc-taskbar__row-sep' }, '-'),
+          h(FlipText, { text: message, sweep: true }),
+        ),
   )
+}
+
+/** 终态行默认停留时长：给 `when: done/failed` 的行按钮留点击窗口，到点才退场。 */
+const DEFAULT_SETTLE_RETAIN_MS = 60_000
+/** 退场动画时长，与 task-bar.css 的 dshpc-taskbar-row-out 对齐。 */
+const EXIT_ANIM_MS = 200
+
+/** 一条终态行在时刻 now 的展示阶段（纯派生，组件重挂也从 settledAt 重算，不会「恢复」）。 */
+export type RowSettlePhase = 'rest' | 'leaving' | 'gone'
+
+/**
+ * 终态行阶段：从 settledAt 与 now 的差值算，不存组件 state。
+ * - 运行中 / 没带 settledAt ⇒ 不归本函数管（调用方单独处理）。
+ * - rest = 停留期；leaving = 退场动画期（retainMs 前 EXIT_ANIM_MS）；gone = 已消失。
+ */
+export function rowSettlePhase(
+  settledAt: number,
+  now: number,
+  retainMs: number,
+): RowSettlePhase {
+  const age = now - settledAt
+  if (age < retainMs - EXIT_ANIM_MS) return 'rest'
+  if (age < retainMs) return 'leaving'
+  return 'gone'
+}
+
+function settledAtOf(task: TaskNotificationRecord): number | undefined {
+  return isSettled(task.state) ? task.settledAt : undefined
+}
+
+/**
+ * 终态行的「停留 + 退场」调度。
+ *
+ * 每条终态**各自一个定时器链**：rest→leaving→gone，到点只推进自己那一格。
+ * 这样不同 settledAt 的任务在各自时刻退场，不会被一个共享时钟「一次跳变」批量带走
+ * （用户 2026-11-19：5 个不同时间完成的任务同时消失 = 共享 now 被定时器节流后跳变所致；
+ *  而且跳过 leaving 阶段 ⇒ 看不到退场动画）。
+ *
+ * 阶段存在 state Map，但**初值按 settledAt + Date.now() 现算**：组件重挂时已过期的直接
+ * 判 gone、不再显示，不会「消失后又恢复」；未到期的从正确阶段接着走。
+ * 依赖用 `settledSig`（id@settledAt 串）而非 all 数组引用：store 里进度更新不会让
+ * effect 重跑、重置定时器（此前依赖新数组 = 「一直蹦」）。
+ */
+function useSettledRows(
+  all: readonly TaskNotificationRecord[],
+  retainMs: number,
+): { rows: readonly TaskNotificationRecord[]; leavingIds: ReadonlySet<string> } {
+  const [phases, setPhases] = useState<Map<string, RowSettlePhase>>(() => {
+    const now = Date.now()
+    const m = new Map<string, RowSettlePhase>()
+    for (const task of all) {
+      const at = settledAtOf(task)
+      if (at !== undefined) m.set(task.id, rowSettlePhase(at, now, retainMs))
+    }
+    return m
+  })
+  const settledSig = all
+    .filter((t) => settledAtOf(t) !== undefined)
+    .map((t) => `${t.id}@${String(t.settledAt)}`)
+    .sort()
+    .join('|')
+
+  // SIG 变化（新终态 / 重结算 / 清理）：补齐或重置阶段，已过期的从当前时间判为 gone。
+  useEffect(() => {
+    setPhases((prev) => {
+      const now = Date.now()
+      const next = new Map<string, RowSettlePhase>()
+      let changed = prev.size === 0
+      for (const task of all) {
+        const at = settledAtOf(task)
+        if (at === undefined) continue
+        const phase = rowSettlePhase(at, now, retainMs)
+        next.set(task.id, phase)
+        if (prev.get(task.id) !== phase) changed = true
+      }
+      return changed ? next : prev
+    })
+  }, [settledSig, retainMs])
+
+  // 每条终态按自己当前阶段挂下一个定时器：rest→leaving（到 retain-EXIT），leaving→gone（到 retain）。
+  useEffect(() => {
+    const cleanups: Array<() => void> = []
+    const now = Date.now()
+    for (const task of all) {
+      const at = settledAtOf(task)
+      if (at === undefined) continue
+      const phase = phases.get(task.id) ?? rowSettlePhase(at, now, retainMs)
+      if (phase === 'gone') continue
+      const boundary = at + retainMs - (phase === 'rest' ? EXIT_ANIM_MS : 0)
+      const delay = Math.max(0, boundary - Date.now())
+      if (phase === 'rest' && delay === 0) {
+        setPhases((p) => { const n = new Map(p); n.set(task.id, 'leaving'); return n })
+        continue
+      }
+      const timer = window.setTimeout(() => {
+        setPhases((p) => {
+          const n = new Map(p)
+          const cur = n.get(task.id)
+          if (cur === undefined) return p
+          n.set(task.id, cur === 'rest' ? 'leaving' : 'gone')
+          return n
+        })
+      }, delay)
+      cleanups.push(() => window.clearTimeout(timer))
+    }
+    return () => { for (const off of cleanups) off() }
+  }, [settledSig, phases, retainMs])
+
+  const leavingIds = new Set<string>()
+  const rows = all.filter((task) => {
+    if (settledAtOf(task) === undefined) return true
+    const phase = phases.get(task.id) ?? 'gone'
+    if (phase === 'leaving') leavingIds.add(task.id)
+    return phase !== 'gone'
+  })
+  // 最新在最上：store 按 startedAt 升序，这里倒序（同刻按 id 稳定兜底）。
+  rows.sort((a, b) => b.startedAt - a.startedAt || (a.id < b.id ? 1 : a.id > b.id ? -1 : 0))
+  return { rows, leavingIds }
 }
 
 /**
  * 后台任务中心的通用展示栏：未展开时是一颗按钮，展开后列出后台正在跑的任务。
  *
- * 数据面全部来自池本身（`taskNotifications` + `selectTaskNotifications`），不接 props 里的任务数组；
+ * 数据面来自共享任务池（`taskCenterStore`），不接 props 里的任务数组；
  * 触发器是 `Button`（长条）/ 纯图标（自动正方形）两档，下拉容器复用 `PanelSurface`（menu 档）。
  * 有任务在跑时图标字形呼吸（大小循环），表示后台确实在动；只做 CSS 动画，不跑定时器。
  *
  * 面板里**只画一条外框**：行与行之间是一条虚线，不给每行再套底色 / 描边 / 圆角
  * （2026-11-15 用户：点开不要圆环套圆环）。
  *
- * 行右侧的按钮来自记录里的 `actions`：点它调 `runAction`，方法本体在创建这条任务的那一页，
+ * 行右侧的按钮来自记录里的 `rowButtons`：点它走 `pressTaskButton`，方法本体在创建这条任务的那一页，
  * 这里只拿得到文案与下标。
  *
  * ```tsx
@@ -134,8 +275,9 @@ export function TaskBar(props: TaskBarProps): ReactNode {
   // 切语言要重渲，否则计数与空态文字停在旧语种。
   useLocale()
   const {
-    form = 'pill', size = 'md', groups, project, includeHidden, onActionFailure, placement = 'down',
+    form = 'pill', size = 'md', groups, project, onActionFailure, placement = 'down',
     defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className, style,
+    settleRetainMs = DEFAULT_SETTLE_RETAIN_MS,
   } = props
 
   // 行内动作按钮一律最小号：面板里的动作是次要操作，不跟着触发器尺寸变（2026-11-15 用户）。
@@ -155,18 +297,19 @@ export function TaskBar(props: TaskBarProps): ReactNode {
   const truncatable = form === 'pill' && (width !== undefined || maxWidth !== undefined)
 
   const [open, setOpen] = useState(false)
-  const snapshot = useSyncExternalStore(
-    taskNotifications.subscribe,
-    taskNotifications.getSnapshot,
-    taskNotifications.getServerSnapshot,
+  useSyncExternalStore(
+    taskCenterStore.subscribe,
+    taskCenterStore.getSnapshot,
+    taskCenterStore.getSnapshot,
   )
-  useEffect(() => { taskNotifications.connect() }, [])
-
-  const tasks = selectTaskNotifications(snapshot, groups, {
-    ...(project === undefined ? {} : { project }),
-    ...(includeHidden === undefined ? {} : { includeHidden }),
-  })
-  const running = tasks.length
+  // 新体系没有 hidden / 跨站开关：project=null 收全部，groups='*' 也收全部。
+  const scopeProject = project === undefined ? null : project
+  const scopeGroups = groups === '*' ? undefined : groups
+  // 展示栏列运行中任务 + 停留期 / 退场期的终态（停留给 when=done/failed 按钮点击窗口）。
+  const selected = taskCenterStore.select(scopeProject, scopeGroups)
+  const { rows: tasks, leavingIds } = useSettledRows(selected, settleRetainMs)
+  // 触发器计数与呼吸只看真正运行中的任务，终态停留不算「在跑」。
+  const running = tasks.filter((task) => !isSettled(task.state)).length
   const busy = running > 0
 
   const { refs, floatingStyles } = useFloating({
@@ -243,16 +386,20 @@ export function TaskBar(props: TaskBarProps): ReactNode {
   )
 
   function renderRow(task: TaskNotificationRecord): ReactNode {
-    const actions = task.actions ?? []
+    // 原 UI 画记录自带的动作；新内核里动作叫 rowButtons，按 when 过滤当前状态。
+    const actions = (task.rowButtons ?? []).filter((b) => b.when === undefined || b.when === 'always' || b.when === task.state)
     return h(
       'div',
-      { key: task.id, className: 'dshpc-taskbar__item' },
+      {
+        key: task.id,
+        className: `dshpc-taskbar__item${leavingIds.has(task.id) ? ' dshpc-taskbar__item--leaving' : ''}`,
+      },
       h('span', { className: 'dshpc-taskbar__row-icon' }, h(FontIcon, { name: iconNameOf(task, defaultIcon) })),
       h(
         'div',
         { className: 'dshpc-taskbar__row-main' },
         h('span', { className: 'dshpc-taskbar__row-title', title: task.title }, task.title),
-        h(Elapsed, { since: task.startedAt }),
+        h(Elapsed, { since: task.startedAt, until: task.settledAt, progress: task.progress?.message }),
       ),
       actions.length === 0
         ? null
@@ -266,7 +413,7 @@ export function TaskBar(props: TaskBarProps): ReactNode {
             // 传了色 = 该色实心底（primary 的反色文字，深底浅字，两主题都读得清）。
             // 没有文案的那颗 Button 自己变正方形，label 顶上无障碍名 —— 分支与带文字的完全一致。
             actions.map((action, index) => {
-              const label = action.label === undefined || action.label === '' ? undefined : action.label
+              const label = action.text === undefined || action.text === '' ? undefined : action.text
               const glyph = actionIconOf(action, defaultIcon)
               return h(
                 Button,
@@ -278,12 +425,11 @@ export function TaskBar(props: TaskBarProps): ReactNode {
                   icon: h(FontIcon, { name: glyph }),
                   ...(label === undefined ? { label: glyph } : {}),
                   onClick: () => {
-                    void taskNotifications.runAction(task.id, index).then((ok) => {
-                      if (ok) return
-                      // 没生效一律要吭声：有回调交回调，否则核心给一次提示。
-                      if (onActionFailure !== undefined) onActionFailure({ task, index, ...(label === undefined ? {} : { label }) })
-                      else notify(t('taskbarActionFailed'))
-                    })
+                    const ok = pressTaskButton(action.id, task.id)
+                    if (ok) return
+                    // 没生效一律要吭声：有回调交回调，否则核心给一次提示。
+                    if (onActionFailure !== undefined) onActionFailure({ task, index, ...(label === undefined ? {} : { label }) })
+                    else notify(t('taskbarActionFailed'))
                   },
                 },
                 label,
@@ -313,7 +459,9 @@ export function TaskBar(props: TaskBarProps): ReactNode {
             h(
               PanelSurface,
               { tier: 'menu', role: 'menu', className: 'dshpc-taskbar__panel' },
-              busy
+              // 空态只看「有没有可显示的行」，不看 busy（=有无运行中任务）：
+              // 终态行在停留期也是有效行，最后一个运行任务结算时不能被一起撤掉。
+              tasks.length > 0
                 ? h('div', { className: 'dshpc-taskbar__list dshpc-scroll-thin' }, tasks.map(renderRow))
                 : h('div', { className: 'dshpc-taskbar__empty' }, t('taskbarEmpty')),
             ),

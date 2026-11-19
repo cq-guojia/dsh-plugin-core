@@ -1137,7 +1137,7 @@ h(QuickToolbar, {
 
 // 跟随某个控件：横向贴它的右缘外侧；右侧放不下自动退回屏幕右缘
 h(QuickToolbar, {
-  anchorId: 'my-content',
+  anchorId: 'search-panel',
   items: [...],
   backToTop: { order: 2 },        // 回顶部排到第 3 位；默认 0 在最上
 })

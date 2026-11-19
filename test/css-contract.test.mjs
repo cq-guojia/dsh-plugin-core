@@ -38,7 +38,6 @@ import { CARD_CSS } from '../dist/ui/display/card-css.js'
 import { SURFACE_CSS } from '../dist/ui/display/surface-css.js'
 import { CHIP_CSS } from '../dist/ui/display/chip-css.js'
 import { LIST_ROW_CSS } from '../dist/ui/display/list-row-css.js'
-import { TASK_BAR_CSS } from '../dist/adv/tasks/task-bar-css.js'
 import { PANEL_DOCK_CSS } from '../dist/ui/layout/panel-dock-css.js'
 import { MARQUEE_TEXT_CSS } from '../dist/ui/display/marquee-text-css.js'
 import { FLIP_TEXT_CSS } from '../dist/ui/display/flip-text-css.js'
@@ -69,7 +68,6 @@ const CONSTANTS = {
   CARD_CSS,
   CHIP_CSS,
   LIST_ROW_CSS,
-  TASK_BAR_CSS,
   PANEL_DOCK_CSS,
   MARQUEE_TEXT_CSS,
   FLIP_TEXT_CSS,

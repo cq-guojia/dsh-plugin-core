@@ -1,91 +1,107 @@
-# 接入后台任务中心（服务端任务）
+# 接入后台任务中心
 
-## 适用场景
+一个插件要把长任务交给后端执行、要终态弹卡 / 通知、要在核心列表里看到进度并带「查看 / 重跑」按钮时，
+按这篇接入。消费方只写三处代码，列表画面、进度展示、终态分发都归核心控件。
 
-一个插件要把长任务交给服务端执行、且要求刷新页面或关掉标签页后任务继续跑、回到页面还能看到真实进度时，按这篇接入。做完得到：一个按稳定 key 幂等登记的任务中心条目，由核心主动批量问服务端状态来续租与结算。纯页面内的短任务用 `notifyTask.run` 即可，不需要这篇。
-
-> 本文的接口均已落地，签名以 `docs/api/task-notifications.md` 为准；设计依据见 `docs/architecture/background-task-center.md`。
+> 签名与参数以 `docs/api/task-notifications.md` 为准；契约与不变量见 `docs/architecture/task-notifications.md`。
 
 ## 前置条件
 
-- 服务端能按业务 key 查出作业状态（`running` / 成功 / 失败），且作业 id 存在服务端而非前端闭包里。
-- 服务端作业处理器已做幂等（at-least-once 前提下可能被重复投递，这是接入方的硬义务）。
-- app 入口已调用一次 `setDefaultTaskProject()` 设一级分组。
+- 执行体能注册成核心的开放执行器：`kind` 任意字符串，handler 收 `(args, ctx)` 并返回
+  `{ outcome: 'done' | 'failed', reason? }`。宿主 agent 走官方 API；shell / host 脚本在插件自己的 host 侧注册。
+- 服务端能按 viewer 给出任务基线并订阅增量，供 `serveTaskStream` 推送。没有服务端推送时也可用纯本地模式
+  （`connectTaskCenter` 不传 `streamUrl`），适合调试与单测。
 
 ## 步骤
 
-1. **定稳定 key。** 用不会变、可枚举的值（如 `['close', workspaceId, taskId]`），不放时间戳、随机数、进度文案。key 会进界面与日志，不放敏感信息。
-
-2. **按项目注册一个批量状态源。** 核心会周期性调用它，一次传入该项目全部在跑的 key，返回对应的状态行。这是**必须实现**的响应方法——心跳靠它。
+1. **本页接线一次**（`client/task-ui.ts`）：注册按钮 id → 本页函数，订阅终态刷自己的数据。
+   列表与 Toast 共用这一份 handlers；没注册的按钮核心不画。
 
    ```ts
-   import { taskNotifications, type StatusRow } from 'dsh-plugin-core/adv/tasks'
+   import { mountTaskUI } from 'dsh-plugin-core/ui/task-ui'
 
-   taskNotifications.setStatusSource('dsh-task-dispatch-table', async (keys) => {
-     // 一次请求查所有 key，不要为每个 key 发一次请求。
-     const rows = await api.queryJobsByKeys(keys)   // api 由消费方提供
-     return rows.map((row) => ({
-       key: row.key,
-       state: row.state,                          // 'running' | 'done' | 'failed'
-       ...(row.reason ? { reason: row.reason } : {}),
-     })) satisfies StatusRow[]
-   })
+   export function mountLedgerTaskUi(): void {
+     mountTaskUI({
+       project: 'dsh-task-reminder',       // null / 省略 = 收所有项目
+       groups: ['close'],
+       handlers: {
+         'open-log': (task) => openLog(task.detail?.logPath),
+         retry: (task) => void startClose(task.detail?.taskId),
+       },
+       onSettled: () => refreshBoard(),    // 只刷自己的台账数据，核心列表自己刷
+     })
+   }
    ```
 
-3. **起作业时登记任务。** 后端任务号放在服务端、按 key 存在那里；`detail` 只放给人看的提示，不作真源。用 `created` 判断是否真的起作业——`false` 说明同 key 已在跑，别起第二份。
+2. **每次发起**（`client/close-task.ts`）：标题、通知、按钮声明全是纯数据跟着记录走。
 
    ```ts
-   import { notifyTask } from 'dsh-plugin-core/adv/tasks'
+   import { startTask } from 'dsh-plugin-core/adv/tasks'
 
-   const claim = notifyTask.background('正在结案', {
-     key: ['close', workspaceId, taskId],
+   await startTask({
+     project: 'dsh-task-reminder',
      group: 'close',
-     detail: { workspaceId, taskId },   // 展示用；后端任务号由服务端按 key 存
+     title: '结案',
+     key: `close:${taskId}`,              // 同项目幂等，重复发起就地更新
+     kind: 'reminder:close-task',         // 执行器名，核心不枚举
+     args: { taskId },                    // 纯数据，不带函数
+     toast: { success: { title: '已结案', button: { id: 'open-log', text: '看日志' }, scope: 'all' } },
+     notify: { success: { message: '结案完成', broadcast: 'plugin' } },
+     rowButtons: [{ id: 'open-log', text: '看日志', when: 'done' }],
    })
-   if (!claim.created) return           // 同 key 已在跑，服务端作业也已在执行
-
-   await api.submitCloseJob({ workspaceId, taskId })   // 作业真正在服务端启动
    ```
 
-4. **（可选）主动加速。** 消费方主动上报可以更快反映进度，但**不写也能正常工作**——pull 心跳是主路径。别把它当唯一心跳源。
+3. **挂核心列表**（`client/index.ts`）：本插件不画行、不写 filter、不拼进度文案。
 
    ```ts
-   claim.handle.update({ detail: { phase: '正在写回' } })   // 可选；只改展示数据
-   // 有 touch() 能力时可调用它立即续租；省略不影响结算正确性。
+   import { TaskBar } from 'dsh-plugin-core/adv/tasks'
+   import { connectTaskLayout } from 'dsh-plugin-core/adv/tasks'
+
+   connectTaskLayout(ctx)                  // 自动记 panelId，点按钮先切回发起面板
+   // 展示用核心原生 TaskBar（形态 / 尺寸 / 宽度 / 跑马灯都沿用核心）
+   h(TaskBar, { groups: ['close'] })
+   h(TaskBar, { form: 'icon', size: 'lg', groups: ['close'] })
+   h(TaskBar, { maxWidth: 110, groups: ['close'] })
    ```
 
-5. **交给核心结算。** 状态源返回 `done` 核心即完成、返回 `failed` 核心即失败；查询抛错时本轮不续租也不判死，让租约自然到期。消费方不要在状态源里直接替核心结算。
+4. **服务端推送**（host 侧）：基线 + 增量由服务端提供，`authorize` 必填。
 
-6. **卸载时清理。** 组件或插件卸载调用 `dispose()`，心跳定时器（批量探测 + 双时钟检查）一并停掉，不留悬挂定时器。
+   ```ts
+   import { serveTaskStream } from 'dsh-plugin-core/host'
+
+   serveTaskStream(ctx, {
+     basePath: '/api/task-center',
+     authorize: (req) => currentViewer(req),
+     source: {
+       snapshot: (viewer) => listTasks(viewer),
+       subscribe: (emit, viewer) => watchTasks(emit, viewer),
+     },
+   })
+   ```
 
 ## 验证
 
-- 起一个服务端任务，刷新页面：条目用同一 key 重建，进度来自服务端真实状态，不是占位值。
-- 开两个同源标签页看同一 key：两页都能显示；只有持有执行权的那页能结算。
-- 让状态源连续几次返回 `running`：任务保持活跃不被误判失败；停掉响应后，租约到点任务转失败。
-- 让任务跑过 `maxDurationMs`：即便一直在续租也被判超时结算，不会无限占位。
-- 同 key 再起一次：`created === false`，服务端只执行一次作业。
+- 起一个任务：列表出现真实行，进度文案来自执行器 `ctx.report()`，不是占位值。
+- 终态只弹一次卡、只跑一次 `onSettled`；同 key 再发起就地更新，不堆两条。
+- 去别的面板再点「查看」：先切回发起面板，再执行本页 handler。
+- 断开 SSE：客户端退避重连，重连后服务端重推基线，列表恢复且不重复弹卡。
+- 没注册 handler 的按钮 id 不出现在列表里。
 
 ## 常见失败
 
 | 现象 | 原因 | 处理 |
 |---|---|---|
-| 刷新后任务丢失或进度不对 | 把后端任务号存在前端闭包里，刷新即失 | 后端任务号存服务端、按 key 查；`detail` 只做展示 |
-| 任务被误判失败 | 状态源查询偶发抛错就被当成任务死亡 | 查询失败时本轮不续租也不判死，让租约自然到期 |
-| 同一作业执行两次 | key 带了时间戳 / 随机数，或未看 `created` 就起作业 | 用稳定 key；`created === false` 时不起第二份作业 |
-| 请求数随任务数暴涨 | 在任务上逐个写 probe，而非按项目注册一个批量状态源 | 改为一个状态源一次查一批 key |
-| 任务跑不完也不结束 | 只靠可续租约，没有总上限 | 设 `maxDurationMs`，从 `startedAt` 算、续租不重置 |
-| 卸载后状态还在被改 | 没调 `dispose()`，定时器悬挂 | 卸载路径调用 `dispose()` |
-| 广播按钮进了任务中心演示 | 把通知中心的广播示例混进任务中心 | 广播属 `runtime` 通知，任务中心演示只演示任务本身 |
+| 按钮点了没反应 | id 没在 handlers 注册 | 在 `mountTaskUI` 注册 handlers（TaskBar 共用同一份） |
+| 终态弹两次 | 本地执行与服务端投影都当成终态分发 | 用 `coordinator.project` 统一投影，不另写分发路径 |
+| 进度不显示 | 进度塞进了 `detail` | 用 `ctx.report({ message })` 上报到显式 `progress` 字段 |
+| 切面板后 UI 落错页 | 自行调 handler，没走 `press` | 点击统一走核心列表 / `pressTaskButton` |
+| 刷新后按钮消失 | 未重新接线 | 每次插件挂载都调 `mountTaskUI` 重新注册 handlers |
 
 ## 相关
 
-- 设计契约：`docs/architecture/background-task-center.md`
-- 数据面契约：`docs/architecture/task-notifications.md`
 - 对外 API：`docs/api/task-notifications.md`
+- 设计契约：`docs/architecture/task-notifications.md`
 
 ## 更新日志
 
-- 2026-11-16 17:38:04：新增服务端任务接入契约：状态源、稳定 key、后端任务号存放与常见失败
-- 2026-11-16 18:01:41：接入接口已落地，StatusRow 失败字段对齐为 reason，dispose 定时器口径与代码一致
-- 2026-11-16 20:33:57：审计修正：dispose 一并丢弃在途探测结果
+- 2026-11-18：按新体系重写接入步骤（开放执行器 + 三处接线 + 服务端 SSE）；删状态源 / 双时钟 / 租约 / 幂等缓存口径。

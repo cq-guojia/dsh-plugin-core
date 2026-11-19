@@ -67,10 +67,10 @@ const doc: DocTopic = {
               desc: { zh: '会话数据链与弹窗 props；归档会话同样可读', en: 'The session data chain and dialog props; archived sessions read fine too' },
             },
             {
-              name: '让长耗时任务登记、订阅并跨页可见',
+              name: '把长耗时任务交给后端执行并在核心列表看进度',
               type: 'task-notifications.md',
               def: '—',
-              desc: { zh: '状态池、订阅、事件通知、跨页同步与结束句柄；只讲数据面，不含弹窗与查看控件', en: 'Pool, subscription, events, cross-page sync and settlement handles — the data plane only, no dialog or viewer control' },
+              desc: { zh: '开放执行器、startTask、三处接线、Toast / notify / 按钮三通道与服务端 SSE 投影', en: 'Open executors, startTask, three wiring points, toast / notify / buttons, and server SSE projection' },
             },
             {
               name: '在同源多个页面之间广播一条提示 / 自己拿一个状态容器',

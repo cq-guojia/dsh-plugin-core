@@ -54,10 +54,11 @@ export function formatClock(iso, opts) {
     return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
 }
 /**
- * 时长：有小时 ⇒ `H:MM:SS`；不足 1 小时 ⇒ `MM:SS`。负数 / NaN ⇒ `-`。
+ * 时长：不足 1 小时 ⇒ `MM:SS`（不显示小时）；到 1 小时 ⇒ `HH:MM:SS`（小时固定两位）。
+ * 负数 / NaN ⇒ `-`。
  *
- * `padHours` 打开后小时位固定两位（`00:00:01`），给「一直在跳」的计时要宽恒定、
- * 不因进位左右抖动用（如 TaskBar 的已运行时）。
+ * `padHours` 打开后无论多久都补上小时位（`00:00:01`），给「一直在跳、要宽度恒定」的
+ * 计时用；默认关闭——不足一小时时那种场合不该出现一个恒为 `00` 的小时段。
  */
 export function formatDurationHms(ms, opts) {
     if (!Number.isFinite(ms) || ms < 0)
@@ -66,9 +67,9 @@ export function formatDurationHms(ms, opts) {
     const h = Math.floor(totalSec / 3600);
     const m = Math.floor((totalSec % 3600) / 60);
     const s = totalSec % 60;
-    if (opts?.padHours === true)
+    if (opts?.padHours === true || h > 0)
         return `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
-    return h > 0 ? `${h}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+    return `${pad2(m)}:${pad2(s)}`;
 }
 /** 两个时刻是否同一天（本机时区）。 */
 export function sameCalendarDay(a, b) {

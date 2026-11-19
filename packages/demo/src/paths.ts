@@ -8,3 +8,6 @@ export const MODELS_PATH = '/api/dsh-plugin-core-demo/models'
  * FS_PATH：宿主 `serveFsRoute` 注册它、client `connectFs` fetch 它（**同一常量，两边不许各写一份**）。
  */
 export const FS_PATH = '/api/dsh-plugin-core-demo/fs'
+
+/** TASK_PATH：宿主 serveTaskStream/serveTaskSubmit 注册它、client connectTaskCenter 连它。 */
+export const TASK_PATH = '/api/dsh-plugin-core-demo/tasks'

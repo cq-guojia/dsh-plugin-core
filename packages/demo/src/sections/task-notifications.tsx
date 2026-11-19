@@ -1,317 +1,159 @@
 import { createElement as h, useEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { Button, ListRow, notify } from '../../../../dist/ui/index.js'
+import { Button } from '../../../../dist/ui/index.js'
 import {
-  notifyTask,
-  taskNotifications,
-  selectTaskNotifications,
-  subscribeTaskNotificationEvents,
+  mountTaskUI,
+  startTask,
+  taskCenterStore,
   TaskBar,
-  type TaskNotificationAction,
-  type TaskNotificationDetail,
-  type TaskNotificationEvent,
-  type TaskNotificationHandle,
-  type TaskNotificationRecord,
+  type TaskRecord,
 } from '../../../../dist/adv/tasks/index.js'
-import { Icon } from '../../../../dist/ui/display/Icon.js'
 import { DocContent, Example, Note } from '../doc.js'
 import { t } from '../i18n.js'
 
 /**
- * 后台任务中心的数据面演示。
- *
- * 这一页只演示阶段 0 / 1 的 API：状态池、订阅、事件总线、过滤三态、结束句柄与还原判据。
- * 不是事件查看控件 —— 没有计数控件、下拉、还原弹窗，也不往 src/ui/ 加任何东西。
- * 面板里的每一条都来自真实 register / 真实事件与真实时钟；无模拟数据、无定时器、无占位行。
- * 列表行一律用基础库的 ListRow（一行一条、右侧操作槽挡冒泡），不手搓行容器。
+ * 后台任务中心演示：展示栏沿用核心原生 TaskBar（形态 / 尺寸 / 宽度 / 跑马灯都原样），
+ * 只把内核换成开放执行器 + 共享池 + SSE 投影。按钮发起服务端真实任务：
+ * 无披露的等 10 秒才结算；渐进披露的每 2 秒 report 一段文字，在行内第二行显示。
  */
-const SUB_REMINDER = 'reminder'
-const SUB_LEDGER = 'ledger'
+const PROJECT = 'dsh-plugin-core-demo'
+const GROUP = 'demo-jobs'
 
-/**
- * 演示用的按钮组：文案与图标**成对**给，别随机拼出「✕ 查看」这种错配。
- * 同一个任务里按组取、取过的组不再用，所以一行不会出现两颗同名按钮。
- */
-const ACTION_PRESETS = [
-  { labelKey: 'tnActionView', icon: 'common.base:chazhao' },
-  { labelKey: 'tnActionClick', icon: 'common.base:gou' },
-  { labelKey: 'tnActionCancel', icon: 'common.base:guanbi' },
-  { labelKey: 'tnActionShow', icon: 'common.base:info' },
-  { labelKey: 'tnActionRefresh', icon: 'common.base:shuaxin' },
-] as const
-/** 纯图标按钮（正方形）的候选。 */
-const ICON_ONLY_ICONS = ['common.base:shezhi', 'common.base:fuzhi', 'common.base:shoucang', 'common.base:cpu'] as const
-const ACTION_COLORS = ['#dc2626', '#0ea5e9', '#16a34a', '#7c3aed', '#ea580c', '#0891b2'] as const
-/** 任务自身的图标也随机，别每次都是同一颗。 */
-const TASK_ICONS = ['common.base:chazhao', 'common.base:shuju', 'common.base:shezhi', 'common.base:fenxi'] as const
+const CODE_SUBSCRIBE = `import {
+  executors, startTask, mountTaskUI, TaskBar,
+} from 'dsh-plugin-core/adv/tasks'
 
-function pickOne<T>(list: readonly T[]): T {
-  return list[Math.floor(Math.random() * list.length)]
-}
+// ① 开放执行器：kind 任意字符串，核心不枚举、不为某类写死分支
+executors.register('demo:job', async (args, ctx) => {
+  for (let i = 1; i <= args.steps; i++) {
+    await sleep(500)
+    ctx.report({ message: \`执行到 \${i}/\${args.steps}\`, current: i, total: args.steps })
+  }
+  if (args.fail) return { outcome: 'failed', reason: '演示失败' }
+  return { outcome: 'done' }
+})
 
-/**
- * 每次注册随机造 0 / 1 / 2 颗按钮：数量随机（含「一颗都没有」）、文案随机、
- * 颜色一半带一半不带、约三成只有图标没有文案（展示成正方形图标钮）。
- * 点任一按钮都在创建页执行并弹 toast，能看出点的是哪一颗。
- */
-function randomActions(ping: (text: string) => void): TaskNotificationAction[] {
-  const count = Math.floor(Math.random() * 3)
-  // 取过就从候选里删掉：同行不会出现两颗同样文字 / 同样图标的按钮。
-  const presets = [...ACTION_PRESETS]
-  const iconOnly = [...ICON_ONLY_ICONS]
-  return Array.from({ length: count }, () => {
-    const color = Math.random() < 0.5 ? undefined : pickOne(ACTION_COLORS)
-    // 三成做成纯图标按钮（正方形）
-    if (iconOnly.length > 0 && Math.random() < 0.3) {
-      const icon = iconOnly.splice(Math.floor(Math.random() * iconOnly.length), 1)[0]
-      // 纯图标按钮没有文案，toast 里就报「哪颗字形被点了」
-      return { icon, ...(color === undefined ? {} : { color }), run: () => { ping(icon.split(':')[1] ?? icon) } }
-    }
-    const preset = presets.splice(Math.floor(Math.random() * presets.length), 1)[0]
-    const label = t(preset.labelKey)
-    // 三成的文字按钮故意不传 icon：展示方补默认的 CPU 图标，文字起点照样对齐。
-    const withIcon = Math.random() >= 0.3
-    return {
-      label,
-      ...(withIcon ? { icon: preset.icon } : {}),
-      ...(color === undefined ? {} : { color }),
-      run: () => { ping(label) },
-    }
-  })
-}
+// ② 本页接线一次：列表与 Toast 共用 handlers，终态只刷自己的数据
+mountTaskUI({
+  project: 'dsh-plugin-core-demo',
+  groups: ['demo-jobs'],
+  handlers: { 'open-log': (task) => openLog(task.detail) },
+  onSettled: () => refreshBoard(),
+})
 
-const CODE_SUBSCRIBE = `import { useSyncExternalStore } from 'react'
-import { notifyTask, taskNotifications, selectTaskNotifications } from 'dsh-plugin-core/ui'
+// ③ 发起：10 秒、渐进披露；配置全是纯数据，跟着记录走
+await startTask({
+  project: 'dsh-plugin-core-demo', group: 'demo-jobs', title: '结案',
+  kind: 'demo:job', args: { seconds: 10, steps: 20 },
+  toast: { success: { title: '完成', button: { id: 'open-log', text: '看日志' }, scope: 'all' } },
+  rowButtons: [
+        { id: 'open-log', text: '看日志', when: 'done' },
+        { id: 'open-log', text: '看日志', when: 'failed' },
+      ],
+})
 
-const snapshot = useSyncExternalStore(
-  taskNotifications.subscribe,
-  taskNotifications.getSnapshot,
-  taskNotifications.getServerSnapshot,
-)
+// ④ 展示栏：核心原 UI，两形态 / 三尺寸 / 固定宽 / 最大宽（跑马灯）
+h(TaskBar, { groups: ['demo-jobs'] })
+h(TaskBar, { form: 'icon', size: 'lg', groups: ['demo-jobs'] })
+h(TaskBar, { maxWidth: 110, groups: ['demo-jobs'] })`
 
-// 三档：不传 = 本项目全部二级；数组 = 本项目这几个二级；'*' = 全站所有项目
-const mine = selectTaskNotifications(snapshot)
-const scanOnly = selectTaskNotifications(snapshot, ['scan'])
-const everything = selectTaskNotifications(snapshot, '*')
-
-// ① settle it yourself: you hold the handle
-const handle = notifyTask('workspace-scan', { group: 'scan' })
-handle.background()   // collapse is an event, not a settlement
-handle.done()         // the caller owns the ending
-
-// ② or wrap the work and let the library close it
-await notifyTask.run('workspace-scan', () => scanWorkspace(), { group: 'scan' })`
-
-/** detail 现在是任意 JSON 值：字符串原样，其余转成 JSON 文本给人看。 */
-function detailText(detail: TaskNotificationDetail): string {
-  return typeof detail === 'string' ? detail : JSON.stringify(detail)
-}
-
-/** 图标名由消费端映射：核心只传标识，不管怎么画。 */
 const mono: Record<string, string | number> = { fontFamily: 'var(--dshpc-font-mono)', fontSize: '12px' }
 const row: Record<string, string | number> = { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }
 const panel: Record<string, string | number> = { display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }
-const main: Record<string, string | number> = { display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0, wordBreak: 'break-all' }
+const barRow: Record<string, string | number> = { display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }
+
+interface JobArgs {
+  readonly seconds: number
+  readonly steps: number
+  readonly fail: boolean
+}
 
 export function TaskNotificationsPage(): ReturnType<typeof h> {
   const snapshot = useSyncExternalStore(
-    taskNotifications.subscribe,
-    taskNotifications.getSnapshot,
-    taskNotifications.getServerSnapshot,
+    taskCenterStore.subscribe,
+    taskCenterStore.getSnapshot,
+    taskCenterStore.getSnapshot,
   )
-  const [events, setEvents] = useState<readonly TaskNotificationEvent[]>([])
-  const [filter, setFilter] = useState<'all' | 'one' | 'two' | 'allProjects'>('all')
-  const handles = useRef(new Map<string, TaskNotificationHandle>())
+  const [events, setEvents] = useState<readonly string[]>([])
   const serial = useRef(0)
+  const handlers = useRef({ 'open-log': (task: TaskRecord) => {
+    window.alert(`查看日志：${task.title}`)
+    setEvents((prev) => [`按钮 看日志: ${task.title}`, ...prev].slice(0, 8))
+  } })
 
   useEffect(() => {
-    taskNotifications.connect()
-    return subscribeTaskNotificationEvents((event) => {
-      setEvents((prev) => [event, ...prev].slice(0, 8))
+    const offUi = mountTaskUI({
+      project: PROJECT,
+      handlers: handlers.current,
+      onSettled: (task, outcome) => {
+        setEvents((prev) => [`终态 ${outcome}: ${task.title}${task.reason ? ` · ${task.reason}` : ''}`, ...prev].slice(0, 8))
+      },
     })
+    return () => { offUi() }
   }, [])
 
-  const groups =
-    filter === 'all'
-      ? undefined
-      : filter === 'allProjects'
-        ? ('*' as const)
-        : filter === 'one'
-          ? [SUB_REMINDER]
-          : [SUB_REMINDER, SUB_LEDGER]
-  const visible = selectTaskNotifications(snapshot, groups)
-  const localPending = [...handles.current.values()].filter((handle) => !handle.isSettled).length
-
-  function register(group: string, label: string): void {
+  function run(label: string, args: JobArgs): void {
     serial.current += 1
     const index = serial.current
-    // 一半任务带自己的图标、一半不带：不带的那行会回落本栏默认的 CPU 图标。
-    const icon = Math.random() < 0.5 ? undefined : pickOne(TASK_ICONS)
-    const ping = (actionLabel: string): void => { notify(`${label} #${index} · ${actionLabel}`) }
-    // 每次点注册都重新随机 0 / 1 / 2 颗按钮：各种文案、各种颜色、也可能只有图标。
-    const handle = notifyTask(`${label} #${index}`, {
-      group,
-      ...(icon === undefined ? {} : { icon }),
-      actions: randomActions(ping),
-    })
-    handles.current.set(handle.id, handle)
-  }
-
-  /** 每条任务按自己的 id 找句柄，互不覆盖；跨页条目没有本页句柄，不给按钮。 */
-  function withHandle(task: TaskNotificationRecord, fn: (handle: TaskNotificationHandle) => void): void {
-    const handle = handles.current.get(task.id)
-    if (handle !== undefined && !handle.isSettled) fn(handle)
-  }
-
-  function finishAll(): void {
-    // 不遍历句柄：组件重挂载后句柄会丢，本页条目仍要能一键收干净。
-    taskNotifications.settleLocal('finished in demo')
-    handles.current.clear()
-  }
-
-  function renderTask(task: TaskNotificationRecord): ReturnType<typeof h> {
-    const local = taskNotifications.canRestore(task)
-    const handle = handles.current.get(task.id)
-    const owned = handle !== undefined && !handle.isSettled
-    return h(
-      ListRow,
-      {
-        key: task.id,
-        actions: owned
-          ? h(
-              'div',
-              { style: { ...row, justifyContent: 'flex-end' } },
-              h(Button, { size: 'sm', onClick: () => withHandle(task, (x) => x.update({ detail: `updated ${new Date().toLocaleTimeString()}` })) }, t('tnUpdate')),
-              h(Button, { size: 'sm', onClick: () => withHandle(task, (x) => x.background()) }, t('tnBackground')),
-              h(Button, { size: 'sm', variant: 'primary', onClick: () => withHandle(task, (x) => x.done()) }, t('tnDone')),
-              h(Button, { size: 'sm', variant: 'danger', onClick: () => withHandle(task, (x) => x.fail('cancelled in demo')) }, t('tnFail')),
-              h(Button, { size: 'sm', onClick: () => taskNotifications.requestRestore(task.id) }, t('tnRestore')),
-            )
-          : undefined,
+    void startTask({
+      project: PROJECT,
+      group: GROUP,
+      title: `${label} #${index}`,
+      key: `${label}:${index}`,
+      kind: 'demo:job',
+      args: { ...args, label, index },
+      detail: { label, index },
+      toast: {
+        success: { title: `${label} #${index} 成功`, button: { id: 'open-log', text: '看日志' }, scope: 'all' },
+        failure: { title: `${label} #${index} 失败`, button: { id: 'open-log', text: '看日志' }, scope: 'origin' },
       },
-      h(
-        'div',
-        { style: main },
-        h(
-          'div',
-          { style: { fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' } },
-          task.icon === undefined ? null : h(Icon, { name: task.icon }),
-          h('span', null, task.title),
-        ),
-        h(
-          'div',
-          { style: { ...mono, color: 'var(--dshpc-fg-3)' } },
-          `project=${task.project} · group=${task.group} · status=${task.status} · backgrounded=${task.backgrounded} · origin=${task.origin}`,
-        ),
-        h(
-          'div',
-          { style: { ...mono, color: local ? 'var(--dshpc-fg-2)' : 'var(--dshpc-fg-4)' } },
-          local ? t('tnBadgeLocal') : t('tnBadgeRemote'),
-        ),
-        task.detail === undefined ? null : h('div', { style: mono }, detailText(task.detail)),
-      ),
-    )
-  }
-
-  function renderEvent(event: TaskNotificationEvent, index: number): ReturnType<typeof h> {
-    // 通知消息已独立到 runtime（`subscribeNotifications`），这里只列任务事件。
-    const label =
-      'task' in event
-        ? event.task.title
-        : 'taskId' in event
-          ? event.taskId
-          : event.origin
-    return h(
-      ListRow,
-      { key: `${index}-${event.type}-${label}` },
-      h(
-        'div',
-        { style: row },
-        h('span', { style: { ...mono, color: 'var(--dshpc-business)' } }, event.type),
-        h('span', { style: { ...mono, color: 'var(--dshpc-fg-3)' } }, ` · remote=${event.remote} · ${label}`),
-      ),
-    )
+      rowButtons: [
+        { id: 'open-log', text: '看日志', when: 'done' },
+        { id: 'open-log', text: '看日志', when: 'failed' },
+      ],
+    })
   }
 
   return h(
     'div',
     null,
     h(Note, { text: t('tnNote') }),
-    h('div', { style: { ...mono, margin: '10px 0 16px', color: 'var(--dshpc-fg-3)' } }, t('tnCrossPage')),
-    h(
-      Example,
-      { title: t('tnOpsTitle'), hint: t('tnOpsHint'), code: CODE_SUBSCRIBE },
-      h(
-        'div',
-        { style: panel },
-        h(
-          'div',
-          { style: row },
-          h(Button, { size: 'sm', variant: 'primary', onClick: () => register(SUB_REMINDER, 'workspace-scan') }, t('tnRegisterReminder')),
-          h(Button, { size: 'sm', onClick: () => register(SUB_LEDGER, 'session-index') }, t('tnRegisterLedger')),
+    h(Example, { title: t('tnBarTitle'), hint: t('tnBarHint') },
+      // 只演示中号这一组：纯 icon → icon+文字 → 定宽 220 → 最大宽 110（放不下省略号、hover 跑马灯）。
+      // 其他尺寸由消费方自己按 TaskBar 的 size / form / width / maxWidth 配。
+      h('div', { style: barRow },
+        h(TaskBar, { form: 'icon', groups: [GROUP] }),
+        h(TaskBar, { groups: [GROUP] }),
+        h(TaskBar, { width: 220, groups: [GROUP] }),
+        h(TaskBar, { maxWidth: 110, groups: [GROUP] }),
+      ),
+    ),
+    h(Example, { title: t('tnOpsTitle'), hint: t('tnRunHint'), code: CODE_SUBSCRIBE },
+      h('div', { style: panel },
+        h('div', { style: row },
+          h(Button, { size: 'sm', variant: 'primary', onClick: () => run('无披露成功', { seconds: 10, steps: 0, fail: false }) }, t('tnRunPlainSuccess')),
+          h(Button, { size: 'sm', onClick: () => run('无披露失败', { seconds: 10, steps: 0, fail: true }) }, t('tnRunPlainFail')),
         ),
-        h(
-          'div',
-          { style: row },
-          h(Button, { size: 'sm', variant: filter === 'all' ? 'primary' : 'outline', onClick: () => setFilter('all') }, t('tnFilterAll')),
-          h(Button, { size: 'sm', variant: filter === 'one' ? 'primary' : 'outline', onClick: () => setFilter('one') }, t('tnFilterOne')),
-          h(Button, { size: 'sm', variant: filter === 'two' ? 'primary' : 'outline', onClick: () => setFilter('two') }, t('tnFilterTwo')),
-          h(Button, { size: 'sm', variant: filter === 'allProjects' ? 'primary' : 'outline', onClick: () => setFilter('allProjects') }, t('tnFilterAllProjects')),
-        ),
-        h(
-          'div',
-          { style: row },
-          h(Button, { size: 'sm', onClick: () => taskNotifications.refresh() }, t('tnRefresh')),
-          h(Button, { size: 'sm', variant: 'danger', disabled: localPending === 0, onClick: finishAll }, t('tnFinishAll')),
-          h('span', { style: { ...mono, color: 'var(--dshpc-fg-4)' } }, t('tnRefreshHint')),
-        ),
-        h(
-          'div',
-          { style: { ...mono, color: 'var(--dshpc-fg-4)' } },
-          `${t('tnOpsNote')} · localPending=${localPending}`,
+        h('div', { style: row },
+          h(Button, { size: 'sm', variant: 'primary', onClick: () => run('渐进披露成功·30秒', { seconds: 30, steps: 15, fail: false }) }, t('tnRunStepped30')),
+          h(Button, { size: 'sm', onClick: () => run('渐进披露成功·1分钟', { seconds: 60, steps: 30, fail: false }) }, t('tnRunStepped60')),
+          h(Button, { size: 'sm', onClick: () => run('渐进披露失败', { seconds: 10, steps: 5, fail: true }) }, t('tnRunSteppedFail')),
         ),
       ),
     ),
-    h(
-      Example,
-      { title: t('tnBarTitle'), hint: t('tnBarHint') },
-      h(
-        'div',
-        { style: row },
-        // 同一份池、同一个过滤：两种形态 × 中号 / 大号（最小号在这排不合适）
-        h(TaskBar, { groups }),
-        h(TaskBar, { size: 'lg', groups }),
-        h(TaskBar, { form: 'icon', groups }),
-        h(TaskBar, { form: 'icon', size: 'lg', groups }),
-        // 宽度三轴（与 Button 同口径）：定宽按给的来；给了上限放不下就三个点，移上去跑马灯
-        h(TaskBar, { width: 220, groups }),
-        h(TaskBar, { maxWidth: 110, groups }),
-      ),
-    ),
-    h(
-      Example,
-      { title: t('tnSnapshotTitle'), hint: t('tnSnapshotHint') },
-      h(
-        'div',
-        { style: panel },
-        h('div', { style: mono }, `${t('tnCountLabel')}: ${visible.length} / ${snapshot.tasks.length} · revision=${snapshot.revision}`),
-        visible.length === 0
+    h(Example, { title: t('tnSnapshotTitle'), hint: t('tnSnapshotHint') },
+      h('div', { style: panel },
+        h('div', { style: mono }, `${t('tnCountLabel')}: ${snapshot.tasks.length} · revision=${snapshot.revision}`),
+        snapshot.tasks.length === 0
           ? h(Note, { text: t('tnEmptyTasks') })
-          : visible.map(renderTask),
+          : snapshot.tasks.map((task) => h('div', { key: task.id, style: mono },
+            `${task.title} · ${task.state}${task.progress ? ` · ${task.progress.message}` : ''}`)),
       ),
     ),
-    h(
-      Example,
-      { title: t('tnEventsTitle'), hint: t('tnEventsHint') },
-      h(
-        'div',
-        { style: panel },
-        events.length === 0
-          ? h(Note, { text: t('tnEmptyEvents') })
-          : events.map(renderEvent),
+    h(Example, { title: t('tnEventsTitle'), hint: t('tnEventsHint') },
+      h('div', { style: panel },
+        events.length === 0 ? h(Note, { text: t('tnEmptyEvents') }) : events.map((e, i) => h('div', { key: `${i}-${e}`, style: mono }, e)),
       ),
     ),
     h(DocContent, { id: 'task-notifications' }),
-    h(DocContent, { id: 'bt-use-tasks' }),
-    h(DocContent, { id: 'bt-task-bar' }),
   )
 }

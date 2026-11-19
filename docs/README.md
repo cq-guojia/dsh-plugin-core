@@ -7,15 +7,14 @@
 ```text
 docs/                                               # 项目文档库入口与唯一索引
 ├── architecture/                                   # 系统组成、代码分层与不可破的约束
-│   ├── background-task-center.md                   # 服务端真源、pull 心跳、双时钟、幂等与 TTL 的设计契约
 │   ├── overview.md                                 # 五子包分层、依赖方向、样式注入机制与不变量
 │   ├── structure.md                                # 控件归类、代码分层树与 demo 展示分区
-│   └── task-notifications.md                       # 后台任务中心的状态、订阅、事件与跨页分片契约
+│   └── task-notifications.md                       # 后端执行 + 开放执行器 + 服务端 SSE 投影的契约与不变量
 ├── features/                                       # 功能范围与尚未归属的结论
 │   ├── overview.md                                 # 功能总索引槽位说明：职责已交帮助索引
 │   └── scope.md                                    # 需求范围、不做的部分与发布口径
 ├── guides/                                         # 做一件事的入口与步骤
-│   ├── background-task-center.md                   # 消费方接入服务端任务：状态源、key 存放、批量探测与幂等
+│   ├── background-task-center.md                   # 开放执行器 + 三处接线 + 服务端 SSE 的接入步骤
 │   ├── index.md                                    # 帮助索引：按你要做的事挑一份文档
 │   ├── integration.md                              # 从零接入一个插件的步骤
 │   └── style.md                                    # 样式使用侧：token、换肤、前缀规则
@@ -26,7 +25,7 @@ docs/                                               # 项目文档库入口与�
 │   ├── methods.md                                  # utils 方法统一口径与返回值约定
 │   ├── runtime.md                                  # runtime 子包：跨页通知、状态容器与事件总线
 │   ├── session.md                                  # 会话只读预览的接入方式与 API
-│   ├── task-notifications.md                       # 后台任务中心的状态池、事件与跨页同步
+│   ├── task-notifications.md                       # startTask / mountTaskUI / TaskBar / 执行器 / SSE 的 API 参考
 │   ├── ui.md                                       # 控件清单与全部 props 参考
 │   └── utils.md                                    # utils 子包方法参考
 ├── development/                                    # 改本仓时才用的开发规范与文档库约定
@@ -48,3 +47,4 @@ docs/                                               # 项目文档库入口与�
 - 2026-11-16 17:38:04：新增 architecture/background-task-center.md 与 guides/background-task-center.md
 - 2026-11-17：`api/ui.md` 补 Modal 例外控件 / 收起 / 保树隐藏契约与 `useModalBackground()`；`architecture/task-notifications.md` 阶段 2 标完成
 - 2026-11-17（v0.42.0）：`api/ui.md` 补 `ModalLockExempt` 与 Confirm/Alert 内置按钮例外、写明「有 locked 不等于有例外」边界；确认弹窗 `lockExceptions` 只收内置钮名
+- 2026-11-18：后台任务中心整套重构为后端执行 + 开放执行器 + 服务端 SSE 投影 + 核心列表控件；删旧任务池 / 状态源 / 双时钟租约 / `TaskBar` / `useTasks`，文档与索引同步收敛

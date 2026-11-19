@@ -45,6 +45,9 @@ import {
   setDefaultTaskProject,
 } from '../../../../dist/runtime/index.js'
 import {
+  connectTaskCenter,
+} from '../../../../dist/adv/tasks/index.js'
+import {
   connectFileServices,
 } from '../host-files.js'
 import {
@@ -57,6 +60,7 @@ import {
 import {
   pageRow,
 } from '../layout-mount.js'
+import { TASK_PATH } from '../paths.js'
 import {
   ALL_SECTIONS,
   SECTION_GROUPS,
@@ -478,6 +482,9 @@ export function apply(ctx: {
   // 提示：接收端（纯逻辑）+ 界面各挂一次 —— 页面加载即就绪，不靠「先弹过一条」。
   connectToasts()
   mountToasts()
+
+  // 任务终态的 toast / notify 宿主：接上后 startTask 的终态配置才会真正弹卡。
+  connectTaskCenter({ streamUrl: `${TASK_PATH}/stream`, submitUrl: `${TASK_PATH}/submit` })
 
   // 和真实插件一样：任务 / 通知的一级分组在入口设一次，之后只写二级分组。
   setDefaultTaskProject('dsh-plugin-core-demo')

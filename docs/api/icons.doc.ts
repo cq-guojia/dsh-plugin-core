@@ -71,8 +71,8 @@ const doc: DocTopic = {
           en: '**Three cases**: (1) semantic icons next to text (a check in a button, the clear cross in an input) omit `size` and inherit the text size chosen by `sm|md|lg` (`sm` 12px text → 12px icon, `md`/`lg` 13px text → 13px icon); (2) decorative micro-arrows (picker caret, collapse, breadcrumbs) take an explicit small px value because they are deliberately smaller than text; (3) standalone icons and the showcase page use the explicit `ICON_SIZES` tiers. `dense` is the only magnification step, expressed as a `1.25em` ratio rather than a new tier.',
         },
         {
-          zh: '传字符串的场合（例如 `taskNotifications` 的 `icon` 字段，核心只存不解释）直接用同一条协议：`\'common.base:jian\'`、`\'common.logo:github\'`、`\'IconWrapLinesOutlineRegular\'`，渲染端原样喂给 `<Icon name={…} />` 即可，不需要自己再拆冒号。',
-          en: 'Where only a string travels (for example the `icon` field of `taskNotifications`, which the core stores but never interprets), the same convention applies: `\'common.base:jian\'`, `\'common.logo:github\'`, `\'IconWrapLinesOutlineRegular\'`. The renderer feeds it straight into `<Icon name={…} />`; nothing has to split on the colon itself.',
+          zh: '传字符串的场合（例如 `startTask` 的 `icon` 字段，核心只存不解释）直接用同一条协议：`\'common.base:jian\'`、`\'common.logo:github\'`、`\'IconWrapLinesOutlineRegular\'`，渲染端原样喂给 `<Icon name={…} />` 即可，不需要自己再拆冒号。',
+          en: 'Where only a string travels (for example the `icon` field of `startTask`, which the core stores but never interprets), the same convention applies: `\'common.base:jian\'`, `\'common.logo:github\'`, `\'IconWrapLinesOutlineRegular\'`. The renderer feeds it straight into `<Icon name={…} />`; nothing has to split on the colon itself.',
         },
         {
           zh: '**`Icon` 与 `FontIcon` 的分工**：`Icon` 两类来源都管，代价是它静态引官方 primitives；纯控件入口不许带这份重依赖（`test/entry-isolation.test.mjs`），所以库内部的控件画字体图标一律走 `FontIcon` —— 它只渲染字体字形，props 与 `Icon` 相同（库名不得省略）。插件界面按普通场景用 `Icon` 即可；只有在写「不该拖进官方包」的入口时才需要 `FontIcon`。',

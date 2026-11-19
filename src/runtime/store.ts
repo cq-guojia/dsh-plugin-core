@@ -9,7 +9,7 @@
  * 接口故意只有四个方法，不给 selector / 中间件 / devtools：一暴露，上层就依赖 zustand
  * 的具体形态，收口就白做了。需要派生数据在调用方算（并有自己的缓存策略）。
  *
- * 零 React：React 侧由消费方自己接（现成的例子是 `adv/tasks/useTasks.ts` 里的
+ * 零 React：React 侧由消费方自己接（现成的例子是 `adv/tasks/TaskBar.ts` 里的
  * `useSyncExternalStore` 三参），和 `zustand/vanilla` + `zustand` 的分法一致。
  */
 import { createStore as createZustandStore } from 'zustand/vanilla'

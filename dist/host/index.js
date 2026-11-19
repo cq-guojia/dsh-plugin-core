@@ -1,4 +1,5 @@
-export { serveTaskCenter } from './task-center.js';
+export { serveTaskStream, } from './task-stream.js';
+export { serveTaskSubmit } from './task-submit.js';
 /**
  * 现查一遍「供应商 → 模型」目录（单个 provider 列不出来就跳过它，不影响其它家）。
  * 导出是为了单测与「不用 HTTP 也要这份数据」的宿主场景。

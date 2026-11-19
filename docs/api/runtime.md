@@ -14,9 +14,9 @@
 
 > EN: Zero React and no UI: it holds state, opens connections and has side effects, but draws nothing. Two capabilities live here — **cross-page notifications** (send one / receive one) and a **state container** (`getState` / `setState` / `subscribe`), plus the per-bundle singletons and transport helpers they each need.
 
-为什么单独一层：发跨页消息的既有 `ui` 侧（`ui/feedback/notify.ts` 的广播），也有 `adv/tasks` 侧（任务池的纯广播）。放在任何一边都会让另一边形同反向依赖。这一层**不认识任务**，也不替任何消费方决定收到之后干什么 —— 弹 toast 是 `ui/feedback/notify-bridge.ts` 的选择。
+为什么单独一层：发跨页消息的既有 `ui` 侧（`ui/feedback/notify.ts` 的广播），也有 `adv/tasks` 侧的任务通知广播（终态 notify 经这里的 `notifyMessage` 发出）。放在任何一边都会让另一边形同反向依赖。这一层**不认识任务**，也不替任何消费方决定收到之后干什么 —— 弹 toast 是 `ui/feedback/notify-bridge.ts` 的选择。开放执行器注册表也在这里（`executors`），只做 kind→handler 的登记与查找。
 
-> EN: Why a separate layer: both the `ui` side (`ui/feedback/notify.ts` broadcast) and the `adv/tasks` side (the pool's pure broadcast) send cross-page messages. Putting it in either one makes the other a reverse dependency. This layer **knows nothing about tasks** and never decides what a receiver should do — raising a toast is `ui/feedback/notify-bridge.ts`'s choice.
+> EN: Why a separate layer: both the `ui` side (`ui/feedback/notify.ts` broadcast) and task notification broadcasts from `adv/tasks` (terminal notifies go out through `notifyMessage` here) need cross-page messaging. Putting it in either one makes the other a reverse dependency. This layer **knows nothing about tasks** and never decides what a receiver should do — raising a toast is `ui/feedback/notify-bridge.ts`'s choice. The open executor registry (`executors`) also lives here, doing nothing but kind→handler registration and lookup.
 
 单例口径：core 会被内联进每个插件 bundle，所以默认分组、事件总线、默认逻辑端都用 `Symbol.for` 收口，避免两个副本各建一份（先到者占坑、后者静默拿到错对象，只在多插件同页时复现）。**通道本身不单例**：`BroadcastChannel` 收不到自己 post 的消息，收口会让同页的第二个逻辑端永远收不到。
 
@@ -107,9 +107,9 @@ pageB.dispose()
 
 > EN: The **only** place in the repo that touches `zustand`: callers only see `RuntimeStore`, so swapping the implementation (version bump or hand-rolled) is a one-file change in `src/runtime/store.ts`. The interface is deliberately four methods — no selectors, middleware or devtools, because exposing them would leak zustand's shape and make the isolation pointless.
 
-零 React：React 侧由消费方自己接 `useSyncExternalStore` 三参（现成例子是 `adv/tasks/useTasks.ts`），和 `zustand/vanilla` 与 `zustand` 的分法一致。`subscribe` 只报「变了」，不带新旧值；需要派生数据在调用方算并自带缓存。
+零 React：React 侧由消费方自己接 `useSyncExternalStore` 三参（现成例子是 `adv/tasks/task-list.ts` 的核心列表控件），和 `zustand/vanilla` 与 `zustand` 的分法一致。`subscribe` 只报「变了」，不带新旧值；需要派生数据在调用方算并自带缓存。
 
-> EN: Zero React: the React side wires its own three-argument `useSyncExternalStore` (the working example is `adv/tasks/useTasks.ts`), mirroring the `zustand/vanilla` vs `zustand` split. `subscribe` only says "it changed" and carries no old or new value; derived data is computed and cached by the caller.
+> EN: Zero React: the React side wires its own three-argument `useSyncExternalStore` (the working example is the task bar in `adv/tasks/TaskBar.ts`), mirroring the `zustand/vanilla` vs `zustand` split. `subscribe` only says "it changed" and carries no old or new value; derived data is computed and cached by the caller.
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|

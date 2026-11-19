@@ -65,11 +65,38 @@
 /* 行 hover（2026-11-15 用户：跟表格选中那种蓝差不多、或更浅的极淡蓝）。
    只是「鼠标在这儿」的反馈 —— 行不给 cursor / 焦点环，也没有点击行为；选中态不做。 */
 .dshpc-taskbar__item:hover{background:var(--dshpc-taskbar-row-hover);}
-@media (prefers-reduced-motion:reduce){.dshpc-taskbar__item{transition:none}}
+/* 终态停留到点后退场：淡出 + 轻微收缩收起，200ms 与 JS 的 EXIT_ANIM_MS 对齐。
+   行本身不设固定高度，用 max-height + padding 收拢到 0 做出「这一条没了」的收起感。 */
+.dshpc-taskbar__item--leaving{
+  animation:dshpc-taskbar-row-out .2s var(--dshpc-ease) forwards;
+  overflow:hidden;pointer-events:none;
+}
+@keyframes dshpc-taskbar-row-out{
+  from{opacity:1;max-height:80px;padding-top:var(--dshpc-space-2);padding-bottom:var(--dshpc-space-2)}
+  to{opacity:0;max-height:0;padding-top:0;padding-bottom:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .dshpc-taskbar__item{transition:none}
+  .dshpc-taskbar__item--leaving{animation-duration:.01ms}
+}
 
 /* 行内：图标 + 两行文字 + 右侧动作。图标不带底板，只留字形。 */
 .dshpc-taskbar__row-icon{flex:none;display:inline-flex;align-items:center;color:var(--dshpc-fg-2);}
 .dshpc-taskbar__row-main{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1 1 auto;}
-.dshpc-taskbar__row-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.dshpc-taskbar__row-meta{font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);}
+.dshpc-taskbar__row-title{font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* 第二行：时间 + 分隔符 + 披露文字。整行可收缩，披露文字超长由内层 MarqueeText 省略 / hover 跑马灯。 */
+.dshpc-taskbar__row-meta{display:flex;align-items:center;min-width:0;font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;}
+.dshpc-taskbar__row-detail{display:inline-flex;align-items:center;gap:.35em;min-width:0;flex:1 1 auto;}
+/* 分隔横线前后留出可见空隙（flex 会吃掉裸空格字符，故用 gap + 独立 span）。 */
+.dshpc-taskbar__row-sep{flex:none;color:var(--dshpc-fg-4);}
+/* 终态时间位换成的小标签：极淡成功底色 + 细描边，比裸文字更像「已完成」的状态标记。 */
+.dshpc-taskbar__done-tag{
+  flex:none;display:inline-flex;align-items:center;
+  padding:0 5px;border-radius:var(--dshpc-radius-sm);
+  color:var(--dshpc-success);background:var(--dshpc-success-soft);
+  border:1px solid var(--dshpc-border);
+  font-size:var(--dshpc-font-xs);line-height:1.5;white-space:nowrap;
+}
+/* FlipText 里的扫光只裁在字形上，外层容器不能裁切；给个最小宽让它能收缩到省略。 */
+.dshpc-taskbar__row-detail .dshpc-flip{flex:1 1 auto;min-width:0;}
 .dshpc-taskbar__row-actions{flex:none;display:inline-flex;align-items:center;gap:var(--dshpc-space-1);}

@@ -1,7 +1,9 @@
-// tasks —— 后台任务中心（一整块功能：池 + React 读取入口 + 任务条）。
-// 通知广播的实做在 `runtime/notify`，这里只转发；对外入口见 package.json 的 `./adv/tasks`。
-export { createAuthoritativeEngine, } from './authoritative.js';
+// tasks —— 后台任务中心：开放执行器 + 任务编排 + 服务端 SSE 投影 + 核心列表控件。
+// 纯数据契约在 model，共享状态在 store，编排在 coordinator，对外接线在 api。
+export { connectTaskCenter, connectTaskLayout, defaultTaskHost, mountTaskUI, pressTaskButton, projectTasks, startTask, subscribeTaskNotifications, taskCenterStore, } from './api.js';
+export { createCoordinator, } from './coordinator.js';
 export { TaskBar } from './TaskBar.js';
-export { useTasks } from './useTasks.js';
-export { TASK_NOTIFICATIONS_CHANNEL, TASK_NOTIFICATIONS_EVENTS_KEY, TASK_NOTIFICATIONS_KEY, TASK_NOTIFICATIONS_LOCK_PREFIX, TASK_NOTIFICATIONS_PROJECT_KEY, TASK_NOTIFICATIONS_PROTOCOL, TaskNotificationConflictError, claimTaskNotificationEvents, claimTaskNotifications, createTaskNotificationEventBus, createTaskNotificationPool, emitTaskNotificationEvent, getDefaultTaskProject, notifyMessage, notifyTask, selectTaskNotifications, setDefaultTaskProject, subscribeTaskNotificationEvents, taskKey, taskNotificationEvents, taskNotifications, } from './pool.js';
+export { createExecutorRegistry, executors } from '../../runtime/executor.js';
+export { buttonsForState, notifyForState, toastForState } from './model.js';
+export { connectTaskStream, parseTaskFrames } from './stream.js';
 //# sourceMappingURL=index.js.map

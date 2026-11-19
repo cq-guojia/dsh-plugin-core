@@ -97,21 +97,22 @@ src/
 ├── adv/                    ⑤ 应用模块 —— 组件 + API 打包成成品
 │   ├── explorer/              文件浏览：FileBrowser · openFilePreview · pickWorkspaceFile · 预览体家族
 │   ├── session/               会话记录：SessionPreview
-│   └── tasks/                 后台任务：pool · authoritative · bounded-cache · useTasks · TaskBar
+│   └── tasks/                 后台任务：model · store · coordinator · api · TaskBar · stream · executor
 │
 ├── types/                  ⑥ 类型垫片 —— 只有 .d.ts，无运行时
 │
 └── host/                   ⑦ 宿主侧 —— Node 路由与处理器（有运行时）
 ```
 
-> 落地状态：`runtime/` 与 `adv/tasks/` 已于 2026-11-16 落盘 —— 通知广播与默认分组在
-> `src/runtime/notify.ts`、状态容器在 `src/runtime/store.ts`，任务池 / `useTasks` / `TaskBar` 在
-> `src/adv/tasks/`，原来的 `src/ui/infra/task-notifications.ts` 已拆掉。
+> 落地状态：`runtime/` 与 `adv/tasks/` 已于 2026-11-18 重构落盘 —— 开放执行器在
+> `src/runtime/executor.ts`，纯数据契约在 `model.ts`、共享状态在 `store.ts`、编排在 `coordinator.ts`、
+> 对外接线在 `api.ts`、展示栏 `TaskBar.ts`（含 task-bar.css）、SSE 在 `stream.ts` 与 `src/host/task-stream.ts`。
+> 旧的任务池 / 状态源 / 双时钟租约 / `TaskBar` / `useTasks` 已整套删除。
 
 **一个控件的四份东西放同一个目录**：`X.ts` + `X-logic.ts`（若有）+ `x.css`（真源）+ `x-css.generated.ts`（生成物）。
 
-**样式文件名 = 组件文件名转 kebab-case**，不许缩写：`TaskBar.ts` → `task-bar.css` /
-`task-bar-css.generated.ts`；`DateTimePicker.ts` → `date-time-picker.css`。这条有自检盯着
+**样式文件名 = 组件文件名转 kebab-case**，不许缩写：`DateTimePicker.ts` → `date-time-picker.css` /
+`date-time-picker-css.generated.ts`；`PanelDock.ts` → `panel-dock.css`。这条有自检盯着
 （`test/css-naming.test.mjs`），新增样式跑 `pnpm test` 就会撞上。
 
 CSS 真源位置改动要同步 `scripts/gen-css.mjs` 的 `MAP`（显式清单，刻意保留摩擦）。
@@ -149,8 +150,9 @@ utils（谁都不依赖，谁都可以用）
 | `dsh-plugin-core/ui/host-toast` | 宿主原生 Toast | 入口静态 import 官方件会让 Node 单测崩（旧坑） |
 | `dsh-plugin-core/adv/explorer` | 文件浏览 | 应用模块独立子路径 |
 | `dsh-plugin-core/adv/session` | 会话预览 | 同上 |
-| `dsh-plugin-core/adv/tasks` | 后台任务：pool + authoritative + useTasks + TaskBar | 同上 |
-| `dsh-plugin-core/runtime` | 运行时底座：跨页消息 + 状态容器 | 无界面的能力，不想拖进控件时可单独引 |
+| `dsh-plugin-core/adv/tasks` | 后台任务：startTask + mountTaskUI + TaskBar + 开放执行器 + SSE | 同上 |
+| `dsh-plugin-core/ui/task-ui` | `mountTaskUI`：本页接线一次（handlers + 终态） | 消费方按文档固定路径 import，与控件入口同形态 |
+| `dsh-plugin-core/runtime` | 运行时底座：跨页消息 + 状态容器 + 开放执行器 | 无界面的能力，不想拖进控件时可单独引 |
 
 **真源唯一**：`src/ui/index.ts` 与整包产物 `dist/ui/index.js` 只做转发，每个控件的实现只在自己那个 `.js` 里（如 `inputs/Field.js` 是 Input / NumberInput / PrefixedInput 的全站唯一实现）；每份 CSS 字符串常量也只有一个 `*-css.generated.js`，多个入口 import 同一个文件，打包器按路径去重。不存在复制出去的第二份。
 
