@@ -44,6 +44,7 @@ const PROBES = [
   ['./ui/dialogs', 'ui/feedback/modal-host'],
   ['./ui/notify', 'ui/feedback/notify'],
   ['./adv/tasks', 'adv/tasks/index'],
+  ['./adv/tasks/ui', 'adv/tasks/ui'],
   ['./ui/code-editor', 'ui/inputs/CodeEditor'],
 ]
 
@@ -71,4 +72,12 @@ test('引 Input 不带下拉框，引下拉框不带 Input 控件实现', async 
   assert.ok(!input.inputs.includes('dist/ui/inputs/Picker.js'), 'Input 产物里出现了 Picker.js')
   const picker = await probe('ui/inputs/Picker')
   assert.ok(!picker.inputs.includes('dist/ui/inputs/Field.js'), 'Picker 产物里出现了 Field.js')
+})
+
+test('adv/tasks 是纯逻辑入口，TaskBar 只从 adv/tasks/ui 出', async () => {
+  const logic = await probe('adv/tasks/index')
+  const ui = await probe('adv/tasks/ui')
+  assert.ok(!logic.inputs.includes('dist/adv/tasks/TaskBar.js'), '逻辑入口带进了 TaskBar.js')
+  assert.deepEqual(logic.imports.filter((p) => /react|floating-ui/.test(p)), [], '逻辑入口带进了 React / floating-ui')
+  assert.ok(ui.inputs.includes('dist/adv/tasks/TaskBar.js'), 'UI 入口没带进 TaskBar.js')
 })

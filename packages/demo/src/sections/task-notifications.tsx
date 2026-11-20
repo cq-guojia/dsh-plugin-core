@@ -4,9 +4,9 @@ import {
   mountTaskUI,
   startTask,
   taskCenterStore,
-  TaskBar,
   type TaskRecord,
 } from '../../../../dist/adv/tasks/index.js'
+import { TaskBar } from '../../../../dist/adv/tasks/ui.js'
 import { DocContent, Example, Note } from '../doc.js'
 import { t } from '../i18n.js'
 
@@ -19,8 +19,9 @@ const PROJECT = 'dsh-plugin-core-demo'
 const GROUP = 'demo-jobs'
 
 const CODE_SUBSCRIBE = `import {
-  executors, startTask, mountTaskUI, TaskBar,
+  executors, startTask, mountTaskUI,
 } from 'dsh-plugin-core/adv/tasks'
+import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'
 
 // ① 开放执行器：kind 任意字符串，核心不枚举、不为某类写死分支
 executors.register('demo:job', async (args, ctx) => {

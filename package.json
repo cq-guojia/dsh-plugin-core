@@ -50,6 +50,10 @@
       "types": "./dist/adv/tasks/index.d.ts",
       "default": "./dist/adv/tasks/index.js"
     },
+    "./adv/tasks/ui": {
+      "types": "./dist/adv/tasks/ui.d.ts",
+      "default": "./dist/adv/tasks/ui.js"
+    },
     "./ui/task-ui": {
       "types": "./dist/ui/infra/task-ui.d.ts",
       "default": "./dist/ui/infra/task-ui.js"

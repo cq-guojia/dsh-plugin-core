@@ -60,8 +60,9 @@ mountTaskUI({
 ```
 
 ```ts id="bt-taskbar-example"
-import { TaskBar } from 'dsh-plugin-core/adv/tasks'
+import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'
 
+// TaskBar 是高级控件的展示面，单独从 adv/tasks/ui 引；adv/tasks 只出逻辑，Node 引它不带 React。
 // 展示栏沿用核心原 UI：icon / pill 两形态、sm/md/lg 尺寸、width/min/max 宽度，
 // 文字过长自动省略 + hover 跑马灯。数据来自共享任务池，无需本插件画行。
 // pill 长条

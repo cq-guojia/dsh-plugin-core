@@ -23,7 +23,7 @@ export {
   type CoordinatorOptions,
   type TaskCoordinator as CoordinatorInstance,
 } from './coordinator.js'
-export { TaskBar, type TaskActionFailure, type TaskBarForm, type TaskBarProps } from './TaskBar.js'
+export type { TaskActionFailure, TaskBarForm, TaskBarProps } from './TaskBar.js'
 export { createExecutorRegistry, executors } from '../../runtime/executor.js'
 export type {
   ExecutorContext,
