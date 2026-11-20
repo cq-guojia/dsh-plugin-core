@@ -914,50 +914,75 @@ function serveTaskStream(ctx, options) {
       path: `${base}/stream`,
       handler: (req, rawRes) => {
         const res = rawRes;
-        Promise.resolve().then(() => options.authorize(req)).then((viewer) => {
-          if (viewer === null || viewer === "") {
-            json(res, 401, { error: "unauthorized" });
+        void (async () => {
+          let viewer;
+          try {
+            const got = await options.authorize(req);
+            if (got === null || got === "") {
+              console.error("dsh-plugin-core: task stream unauthorized");
+            } else {
+              viewer = got;
+            }
+          } catch (error) {
+            console.error("dsh-plugin-core: task stream authorize failed", error);
+          }
+          if (viewer === void 0) {
+            try {
+              json(res, 401, { error: "unauthorized" });
+            } catch (writeError) {
+              console.error("dsh-plugin-core: task stream auth response failed", writeError);
+            }
             return;
           }
-          const buffered = [];
           let streaming = false;
-          const push2 = (event, payload) => {
-            const frame = `event: ${event}
+          let conn;
+          try {
+            const buffered = [];
+            const push2 = (event, payload) => {
+              const frame = `event: ${event}
 data: ${JSON.stringify(payload)}
 
 `;
-            if (streaming)
-              res.write(frame);
-            else
-              buffered.push(frame);
-          };
-          const sendTask = (task) => {
-            push2("task", task);
-          };
-          const sendNotice = (notice) => {
-            push2("task-notice", notice);
-          };
-          const offTask = options.source.subscribe(sendTask, viewer);
-          const offNotice = options.source.subscribeNotices?.(sendNotice, viewer);
-          let timer;
-          let closed = false;
-          const conn = {
-            cleanup() {
-              if (closed)
-                return;
-              closed = true;
-              if (timer !== void 0)
-                clearInterval(timer);
-              offTask();
-              offNotice?.();
-              connections.delete(conn);
-            }
-          };
-          connections.add(conn);
-          res.on?.("close", () => {
-            conn.cleanup();
-          });
-          void Promise.resolve(options.source.snapshot(viewer)).then((baseline) => {
+              if (streaming)
+                res.write(frame);
+              else
+                buffered.push(frame);
+            };
+            const sendTask = (task) => {
+              push2("task", task);
+            };
+            const sendNotice = (notice) => {
+              push2("task-notice", notice);
+            };
+            const offTask = options.source.subscribe(sendTask, viewer);
+            const offNotice = options.source.subscribeNotices?.(sendNotice, viewer);
+            let timer;
+            let closed = false;
+            const thisConn = {
+              cleanup() {
+                if (closed)
+                  return;
+                closed = true;
+                connections.delete(thisConn);
+                if (timer !== void 0)
+                  clearInterval(timer);
+                for (const detach of [offTask, offNotice]) {
+                  if (detach === void 0)
+                    continue;
+                  try {
+                    detach();
+                  } catch (error) {
+                    console.error("dsh-plugin-core: task stream detach failed", error);
+                  }
+                }
+              }
+            };
+            conn = thisConn;
+            connections.add(thisConn);
+            res.on?.("close", () => {
+              thisConn.cleanup();
+            });
+            const baseline = await Promise.resolve().then(() => options.source.snapshot(viewer));
             if (closed)
               return;
             res.writeHead(200, {
@@ -966,6 +991,7 @@ data: ${JSON.stringify(payload)}
               connection: "keep-alive",
               "x-accel-buffering": "no"
             });
+            streaming = true;
             timer = setInterval(() => {
               if (!closed)
                 res.write(KEEP_ALIVE);
@@ -976,25 +1002,43 @@ data: ${JSON.stringify(payload)}
 data: ${JSON.stringify(task)}
 
 `);
-            streaming = true;
             for (const frame of buffered)
               res.write(frame);
             buffered.length = 0;
-          }).catch((error) => {
-            console.error("dsh-plugin-core: task stream baseline failed", error);
-            conn.cleanup();
-            res.end();
-          });
-        }).catch(() => {
-          json(res, 401, { error: "unauthorized" });
+          } catch (error) {
+            console.error("dsh-plugin-core: task stream failed", error);
+            try {
+              conn?.cleanup();
+            } catch (cleanupError) {
+              console.error("dsh-plugin-core: task stream cleanup failed", cleanupError);
+            }
+            try {
+              if (!streaming)
+                json(res, 503, { error: "service-unavailable" });
+              else
+                res.end();
+            } catch (finishError) {
+              console.error("dsh-plugin-core: task stream finish failed", finishError);
+            }
+          }
+        })().catch((error) => {
+          console.error("dsh-plugin-core: task stream unhandled error", error);
         });
       }
     });
   });
   return () => {
-    for (const conn of [...connections])
-      conn.cleanup();
-    connections.clear();
+    try {
+      for (const conn of [...connections]) {
+        try {
+          conn.cleanup();
+        } catch (error) {
+          console.error("dsh-plugin-core: task stream connection cleanup failed", error);
+        }
+      }
+    } finally {
+      connections.clear();
+    }
   };
 }
 
@@ -1037,16 +1081,34 @@ function serveTaskSubmit(ctx, options) {
           res.end(JSON.stringify({ error: "forbidden" }));
           return;
         }
+        const badRequest = () => {
+          res.writeHead(400, JSON_HEADERS);
+          res.end(JSON.stringify({ ok: false, error: "bad-request", code: "invalid-payload" }));
+        };
+        let payload;
         try {
           const raw = await readBody(req);
-          const payload = JSON.parse(raw);
-          const id = await options.onSubmit(payload);
-          res.writeHead(200, JSON_HEADERS);
-          res.end(JSON.stringify({ ok: true, id }));
-        } catch (error) {
-          res.writeHead(400, JSON_HEADERS);
-          res.end(JSON.stringify({ ok: false, error: String(error) }));
+          const parsed = JSON.parse(raw);
+          if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+            badRequest();
+            return;
+          }
+          payload = parsed;
+        } catch {
+          badRequest();
+          return;
         }
+        let id;
+        try {
+          id = await options.onSubmit(payload);
+        } catch (error) {
+          console.error("dsh-plugin-core: task submit onSubmit failed", error);
+          res.writeHead(500, JSON_HEADERS);
+          res.end(JSON.stringify({ ok: false, error: "internal-error", code: "submit-failed" }));
+          return;
+        }
+        res.writeHead(200, JSON_HEADERS);
+        res.end(JSON.stringify({ ok: true, id }));
       }
     });
     off = () => {

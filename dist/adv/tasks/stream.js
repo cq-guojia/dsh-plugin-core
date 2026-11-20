@@ -1,4 +1,12 @@
 /**
+ * 是否值得重试：5xx / 429 / 网络失败(0) 是暂时故障，退避重试；
+ * 其余 4xx（401/403/404…）是永久错误，同一 headers 重连无意义，立即放弃。
+ * 401 由 onGiveUp 上报，让应用刷新 token 后显式重连（headers 是函数，天然支持换凭证）。
+ */
+function isRetryableStatus(status) {
+    return status === 0 || status === 429 || (status >= 500 && status < 600);
+}
+/**
  * 解析一段 SSE buffer，返回剩余未完整帧。三类 event 分流：
  * `task-snapshot` → onTask(_, true)；`task` → onTask(_, false)；`task-notice` → onNotice。
  * 坏帧（畸形 JSON）与消费方回调异常都只影响该帧：丢掉继续，绝不拆掉整条流——
@@ -63,19 +71,40 @@ export function connectTaskStream(options) {
     let closed = false;
     // 连接级关闭信号：与每轮的 fetch controller 分开，专门用来打断退避等待。
     const shutdown = new AbortController();
+    const giveUp = (status) => {
+        if (closed)
+            return;
+        closed = true;
+        // 回调是消费方代码，抛错不得逃逸成未处理 rejection。
+        try {
+            options.onGiveUp?.({ status, permanent: !isRetryableStatus(status) });
+        }
+        catch (error) {
+            console.error('dsh-plugin-core: task stream onGiveUp failed', error);
+        }
+    };
     void (async () => {
         let retry = 0;
         while (!closed) {
             controller = new AbortController();
+            // status 只在「HTTP 层响应非 ok」时是真实状态码（供 4xx 停流 / 5xx 退避分类）。
+            // 0 = 网络失败，或「已连上后读流中断」——两者都按暂态退避处理。
+            // 关键：拿到 200 后不能把 status 留成 200，否则断线会被误判成永久错误、永不重连。
+            let status = 0;
+            let gotFrame = false; // 本轮是否真正传过数据帧——区分「真连接断开」与「连上就 EOF 的假连接」。
             try {
                 const response = await doFetch(options.streamUrl, {
                     method: 'GET',
                     headers: options.headers?.(),
                     signal: controller.signal,
                 });
-                if (!response.ok || response.body === null)
-                    throw new Error(`task stream failed: ${response.status}`);
-                retry = 0;
+                // body 缺失（204 / 某些 fetch 实现）按暂态处理，不当永久错误。
+                if (!response.ok) {
+                    status = response.status;
+                    throw new Error(`task stream failed: ${status}`);
+                }
+                if (response.body === null)
+                    throw new Error('task stream: empty body');
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let buffer = '';
@@ -83,19 +112,37 @@ export function connectTaskStream(options) {
                     const { done, value } = await reader.read();
                     if (done) {
                         // flush decoder 尾部残留，避免最后半帧被吞。
-                        if (buffer.length > 0)
+                        if (buffer.length > 0) {
+                            gotFrame = true;
                             parseTaskFrames(buffer + decoder.decode(), options.onTask, options.onNotice);
+                        }
                         break;
                     }
+                    if (value !== undefined && value.byteLength > 0)
+                        gotFrame = true;
                     buffer = parseTaskFrames(buffer + decoder.decode(value, { stream: true }), options.onTask, options.onNotice);
                 }
+                // 只有真正传过数据的连接才算「成功连上」：断线是新的一次故障，退避归零。
+                // 若 200 后立即 EOF（网关剥掉 SSE / 服务端 accept 后立刻关），gotFrame=false，
+                // 不归零——否则每轮都从 delays[0] 重来，永不进入 giveUp，形成无限空刷。
+                if (gotFrame)
+                    retry = 0;
             }
             catch {
-                // 主动关闭不重试。
+                // 主动关闭不重试；其余按上面的 status 分类。
             }
             if (closed)
                 return;
-            const delay = delays[Math.min(retry, delays.length - 1)] ?? 4000;
+            // 不可重试（4xx，含 401/403）立即停；可重试的走有上限退避，次数用尽也停。
+            if (!isRetryableStatus(status)) {
+                giveUp(status);
+                return;
+            }
+            const delay = delays[retry];
+            if (delay === undefined) {
+                giveUp(status);
+                return;
+            }
             retry += 1;
             await sleep(delay, shutdown.signal);
         }

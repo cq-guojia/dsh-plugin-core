@@ -4,7 +4,7 @@ import { createCoordinator } from '../dist/adv/tasks/coordinator.js'
 import { createTaskStore } from '../dist/adv/tasks/store.js'
 import { createExecutorRegistry } from '../dist/runtime/index.js'
 import { parseTaskFrames } from '../dist/adv/tasks/stream.js'
-import { isTaskRecord } from '../dist/adv/tasks/api.js'
+import { isTaskRecord, projectTasks, taskCenterStore } from '../dist/adv/tasks/api.js'
 import { serveTaskStream } from '../dist/host/index.js'
 import { rowSettlePhase } from '../dist/adv/tasks/TaskBar.js'
 
@@ -19,6 +19,48 @@ function setup() {
   }
   return { c: createCoordinator({ store, registry, host }), store, registry, toasts, notices }
 }
+
+test('契约：终态帧必带有限数 settledAt，running 帧不得带', () => {
+  const base = { id: 'a', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1 }
+  assert.equal(isTaskRecord({ ...base, settledAt: 2 }), true, '终态带合法结算时刻通过')
+  assert.equal(isTaskRecord(base), false, '终态缺 settledAt 必须拒收（否则 UI 永不退场 + 假计时）')
+  assert.equal(isTaskRecord({ ...base, settledAt: Number.NaN }), false, '非有限数拒收')
+  assert.equal(isTaskRecord({ ...{ ...base, state: 'running' }, settledAt: 2 }), false, 'running 不得带结算时刻')
+  assert.equal(isTaskRecord({ ...base, state: 'running' }), true, 'running 无结算时刻通过')
+})
+
+test('加固：终态投影后迟到的 running 不复活（guard 依赖状态而非时间戳）', () => {
+  const s = createTaskStore()
+  s.upsert({ id: 'a', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1 })
+  const changed = s.merge([{ id: 'a', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: 9 }])
+  assert.equal(changed.length, 1)
+  assert.equal(s.get('a').state, 'done')
+  const revived = s.merge([{ id: 'a', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 100 }])
+  assert.equal(revived.length, 0, '终态后的 running 帧被静默丢弃')
+  assert.equal(s.get('a').state, 'done', '状态保持终态')
+  assert.equal(s.get('a').settledAt, 9, '结算时刻未被 running 帧擦除')
+})
+
+test('契约：projectTasks 手动投影入口也拒收缺 settledAt 的终态帧（与 SSE 同一道闸）', () => {
+  const bad = { id: 'pt-bad', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1 }
+  const good = { id: 'pt-good', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: 9 }
+  projectTasks([bad, good])
+  assert.equal(taskCenterStore.get('pt-bad'), undefined, '缺时刻的终态帧被拒收，不进 store')
+  assert.equal(taskCenterStore.get('pt-good')?.state, 'done', '合法终态帧照常投影')
+  taskCenterStore.clearAll()
+})
+
+test('加固：终态缺 settledAt 的历史脏数据也不会被迟到 running 复活（判据是状态不是时钟）', () => {
+  const s = createTaskStore()
+  // 直接 upsert 一条终态但无 settledAt 的脏数据（绕过 isTaskRecord，模拟旧版本留下的数据）。
+  // 旧 guard 以「有无 settledAt」为判据会放行迟到 running；新 guard 以状态为判据必须挡住。
+  s.upsert({ id: 'dirty', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1 })
+  assert.equal(s.get('dirty').state, 'done')
+  assert.equal(s.get('dirty').settledAt, undefined)
+  const revived = s.merge([{ id: 'dirty', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 100 }])
+  assert.equal(revived.length, 0, '即便旧记录无结算时刻，终态也不被 running 复活')
+  assert.equal(s.get('dirty').state, 'done', '状态保持终态')
+})
 
 test('加固：同 (project,key) 连续三次 upsert 仍只有一条', () => {
   const s = createTaskStore()
@@ -205,10 +247,11 @@ test('加固：执行器旧 dispose 不误删同名重注册（unregister 后）
 test('加固：serveTaskStream authorize 同步抛也返回 401，不挂连接', async () => {
   let handler
   const ctx = { inject: (_d, cb) => cb({ webServer: { register: (r) => { handler = r.handler } } }) }
-  const res = {
-    writeHead: () => {}, end: () => { ended = true }, write: () => true, on: () => {},
-  }
   let ended = false
+  let status = 200
+  const res = {
+    writeHead: (s) => { status = s }, end: () => { ended = true }, write: () => true, on: () => {},
+  }
   serveTaskStream(ctx, {
     basePath: '/x',
     authorize: () => { throw new Error('sync fail') },
@@ -217,6 +260,7 @@ test('加固：serveTaskStream authorize 同步抛也返回 401，不挂连接',
   await handler({}, res)
   await new Promise((r) => setTimeout(r, 0))
   assert.equal(ended, true)
+  assert.equal(status, 401, '鉴权失败明确回 401')
 })
 
 test('加固：serveTaskStream 基线期间增量不丢（先订阅后基线回放）', async () => {

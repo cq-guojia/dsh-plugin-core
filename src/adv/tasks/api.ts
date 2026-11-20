@@ -113,19 +113,28 @@ const stableHost: TaskCenterHost = {}
 const coordinator: TaskCoordinator = createCoordinator({ host: stableHost })
 let streamConn: TaskStreamConnection | undefined
 
-/** 最小形状校验：畸形 SSE 帧不能进 store 污染列表（startedAt 参与排序，缺了会乱）。 */
+/**
+ * 任务帧形状校验（服务端帧与 projectTasks 入口共用的一道闸）：畸形帧不能进 store 污染列表。
+ *
+ * settledAt 按状态分支校验——终态(done/failed)必须有有限数结算时刻，否则拒收：
+ * 展示层靠它算终态行的停留/退场（TaskBar settledAtOf），缺了就永不退场 + 假计时；
+ * store 的单调防复活也靠它判断「已终态」。running 帧不得带 settledAt（状态与时钟分离）。
+ * 校验放在唯一入口，store 只负责合并，不再任何地方本地造时间冒充服务端真源。
+ */
 export function isTaskRecord(value: unknown): value is TaskRecord {
   if (value === null || typeof value !== 'object') return false
   const v = value as Record<string, unknown>
+  const settledAtOk = typeof v.settledAt === 'number' && Number.isFinite(v.settledAt)
   return (
     typeof v.id === 'string' &&
     typeof v.project === 'string' &&
     typeof v.group === 'string' &&
     typeof v.title === 'string' &&
     (v.state === 'running' || v.state === 'done' || v.state === 'failed') &&
-    typeof v.startedAt === 'number' &&
-    // settledAt 只在存在时校验类型：running 帧多数没这个字段，不能改成必填整条丢弃。
-    (v.settledAt === undefined || (typeof v.settledAt === 'number' && Number.isFinite(v.settledAt)))
+    typeof v.startedAt === 'number' && Number.isFinite(v.startedAt) &&
+    (v.state === 'running'
+      ? v.settledAt === undefined
+      : settledAtOk)
   )
 }
 
@@ -312,9 +321,13 @@ export function pressTaskButton(buttonId: string, taskId: string): boolean {
   return coordinator.press(buttonId, taskId)
 }
 
-/** 服务端 SSE 投影入口（手动推送时用；自动接流由 connectTaskCenter 负责）。 */
+/**
+ * 服务端投影入口（手动推送时用；自动接流由 connectTaskCenter 负责）。
+ * 与 SSE 的 ingestTask 共用 isTaskRecord 这道闸——终态缺 settledAt 的帧在此拒收，
+ * 否则会绕过校验进 store，导致终态行不消失、显示假计时（settledAt 契约的破口）。
+ */
 export function projectTasks(records: readonly TaskRecord[]): void {
-  coordinator.project(records)
+  coordinator.project(records.filter(isTaskRecord))
 }
 
 /** 列表控件读取用的 store 快照。 */

@@ -25,7 +25,14 @@ export interface TaskCenterHost extends CoordinatorHost {
 export interface LayoutClientContext {
     inject?: (deps: string[], cb: (sub: unknown) => void) => void;
 }
-/** 最小形状校验：畸形 SSE 帧不能进 store 污染列表（startedAt 参与排序，缺了会乱）。 */
+/**
+ * 任务帧形状校验（服务端帧与 projectTasks 入口共用的一道闸）：畸形帧不能进 store 污染列表。
+ *
+ * settledAt 按状态分支校验——终态(done/failed)必须有有限数结算时刻，否则拒收：
+ * 展示层靠它算终态行的停留/退场（TaskBar settledAtOf），缺了就永不退场 + 假计时；
+ * store 的单调防复活也靠它判断「已终态」。running 帧不得带 settledAt（状态与时钟分离）。
+ * 校验放在唯一入口，store 只负责合并，不再任何地方本地造时间冒充服务端真源。
+ */
 export declare function isTaskRecord(value: unknown): value is TaskRecord;
 /**
  * 按钮点了没生效时的统一提示：任务条目已失效 / 注册 handler 的插件已卸载（找不到方法）。
@@ -55,7 +62,11 @@ export declare function startTask(input: StartTaskInput): Promise<TaskRecord>;
 export declare function mountTaskUI(options: MountTaskUIOptions): () => void;
 /** 点列表 / Toast 按钮：先切回发起面板，再执行本页 handler。 */
 export declare function pressTaskButton(buttonId: string, taskId: string): boolean;
-/** 服务端 SSE 投影入口（手动推送时用；自动接流由 connectTaskCenter 负责）。 */
+/**
+ * 服务端投影入口（手动推送时用；自动接流由 connectTaskCenter 负责）。
+ * 与 SSE 的 ingestTask 共用 isTaskRecord 这道闸——终态缺 settledAt 的帧在此拒收，
+ * 否则会绕过校验进 store，导致终态行不消失、显示假计时（settledAt 契约的破口）。
+ */
 export declare function projectTasks(records: readonly TaskRecord[]): void;
 /** 列表控件读取用的 store 快照。 */
 export declare const taskCenterStore: import("./store.js").TaskStore;

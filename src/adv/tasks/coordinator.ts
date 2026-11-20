@@ -90,13 +90,18 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
   const host = options.host ?? {}
   const registry = options.registry ?? executors
 
-  /** 终态对外分发：toast + notify + onSettled，各一次；单项失败不影响其它项。 */
+  /**
+   * 终态对外分发：toast + notify + onSettled，各一次；单项失败不影响其它项。
+   *
+   * 不在这里补 settledAt：本地执行是真的执行者、时间由 run() 注入（本地是那份终态的真源）；
+   * 服务端 notice 的时间由服务端给、经 isTaskRecord 校验必带。若在此无条件 Date.now()，
+   * 本地假时会盖住服务端真源、且重放签名漂移。store.carryIdentity 只做 first-wins 合并。
+   */
   function announce(task: TaskRecord, state: 'done' | 'failed', reason?: string): void {
     const final: TaskRecord = {
       ...task,
       state,
       ...(reason === undefined ? {} : { reason }),
-      settledAt: task.settledAt ?? Date.now(),
     }
     // 单页内去重：同一 notice 被 outbox 重复推、或本地执行与服务端投影撞车时只弹一次。
     // 跨刷新的一次性由客户端持久 notice id 保证（见 api.ts）。
@@ -131,12 +136,16 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
     store.emitSettled({ outcome: state, task: stored })
   }
 
-  /** 本地执行一条任务。 */
+  /** 本地执行一条任务。本地执行器是终态的真源，结算时刻在这里生成一次。 */
   function run(task: TaskRecord): void {
     if (task.kind === undefined) return
     const handler = registry.get(task.kind)
+    // 本地终态的唯一补时点：run 真的跑了执行器，本地时钟就是这份终态的真源。
+    const settle = (final: TaskRecord, outcome: 'done' | 'failed', reason?: string): void => {
+      announce({ ...final, settledAt: final.settledAt ?? Date.now() }, outcome, reason)
+    }
     if (handler === undefined) {
-      announce(task, 'failed', `executor not registered: ${task.kind}`)
+      settle(task, 'failed', `executor not registered: ${task.kind}`)
       return
     }
     const ctx: ExecutorContext = {
@@ -149,8 +158,8 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
     Promise.resolve()
       // args 输入侧放宽成 object（消费方的 interface 可直接传）；到执行器边界收敛回索引签名。
       .then(() => handler((task.args ?? {}) as Readonly<Record<string, unknown>>, ctx))
-      .then((result) => announce(store.get(task.id) ?? task, result.outcome, result.reason))
-      .catch((error: unknown) => announce(store.get(task.id) ?? task, 'failed', String(error)))
+      .then((result) => settle(store.get(task.id) ?? task, result.outcome, result.reason))
+      .catch((error: unknown) => settle(store.get(task.id) ?? task, 'failed', String(error)))
   }
 
   return {
@@ -189,12 +198,9 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
       if (task.state !== 'done' && task.state !== 'failed') return
       const outcome: 'done' | 'failed' = task.state // 上面已收窄
       // 先把终态投影进列表（可能早于 notice 到达的 task 帧已投影过，这里幂等）。
-      // 归一 id 与身份兜底统一由 announce 内的 upsert 负责并以返回值对外分发——
-      // 不依赖 merge 返回的 changed 列表：先投影后通知时 merge 无变化会返回空数组。
-      store.merge([{
-        ...task,
-        ...(task.settledAt === undefined ? { settledAt: Date.now() } : {}),
-      }])
+      // 不补 settledAt：服务端是这份终态的真源，时间由它给、经 isTaskRecord 校验必带；
+      // 归一 id 与身份兜底由 announce 内的 upsert 负责，且不依赖 merge 的 changed 返回值。
+      store.merge([task])
       announce(task, outcome, task.reason)
     },
     press(buttonId, taskId) {

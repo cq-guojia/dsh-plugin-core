@@ -4,7 +4,8 @@ import { connectTaskCenter, defaultTaskHost } from '../dist/adv/tasks/api.js'
 import { subscribeToasts } from '../dist/ui/feedback/toast-queue.js'
 
 function record(over = {}) {
-  return { id: 'a', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, ...over }
+  // 终态夹具带合法 settledAt：projectTasks 按新契约（终态必带结算时刻）校验，缺了会被拒收。
+  return { id: 'a', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: 2, ...over }
 }
 
 test('默认宿主：toast.scope=origin 只在发起标签页弹卡（页面级 origin，非面板）', () => {

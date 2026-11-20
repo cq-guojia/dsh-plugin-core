@@ -86,6 +86,65 @@ test('connectTaskStream：fetch 流解析后回调 onTask，close 中断', async
   conn.close()
 })
 
+test('connectTaskStream：连上后断线会重连（不把 200 当永久错误），retry 归零', async () => {
+  let call = 0
+  const fakeFetch = async () => {
+    call += 1
+    return {
+      ok: true,
+      status: 200,
+      body: {
+        getReader() {
+          let sent = false
+          return {
+            async read() {
+              if (call === 1) {
+                // 第一次连接：推一帧后立刻 EOF（服务端正常关流 / 断线）。
+                if (sent) return { done: true }
+                sent = true
+                const encoder = new TextEncoder()
+                return { done: false, value: encoder.encode(`event: task\ndata: ${JSON.stringify(rec('a'))}\n\n`) }
+              }
+              // 第二次连接：挂住，证明确实重连了。
+              return new Promise(() => {})
+            },
+          }
+        },
+      },
+    }
+  }
+  const gave = []
+  const conn = connectTaskStream({
+    streamUrl: '/x', fetchImpl: fakeFetch, retryDelaysMs: [5],
+    onGiveUp: (r) => gave.push(r),
+  })
+  await new Promise((r) => setTimeout(r, 60))
+  assert.equal(call, 2, 'EOF 后必须重连（旧回归：status=200 被判永久错误、直接 giveUp）')
+  assert.equal(gave.length, 0, '断线不算永久错误')
+  conn.close()
+})
+
+test('connectTaskStream：每轮 200 后立即 EOF（假连接）不无限空刷，退避用尽即放弃', async () => {
+  let call = 0
+  // 每轮都返回 200 + 立即 EOF、从不推帧——模拟网关剥掉 SSE / accept 后立刻关流。
+  const fakeFetch = async () => {
+    call += 1
+    return {
+      ok: true, status: 200,
+      body: { getReader: () => ({ async read() { return { done: true } } }) },
+    }
+  }
+  const gave = []
+  const conn = connectTaskStream({
+    streamUrl: '/x', fetchImpl: fakeFetch, retryDelaysMs: [1, 1],
+    onGiveUp: (r) => gave.push(r),
+  })
+  await new Promise((r) => setTimeout(r, 80))
+  assert.equal(call, 3, '首连 + 2 次退避重试后用尽（不是无限空刷）')
+  assert.equal(gave.length, 1, '退避用尽上报 giveUp')
+  conn.close()
+})
+
 test('connectTaskStream：退避等待中 close 立即打断，不等满 delay', async () => {
   // fetch 立刻失败 ⇒ 进入退避 sleep（这里给很长 60s，若 close 不打断测试会挂住）。
   const fakeFetch = async () => { throw new Error('offline') }
@@ -115,6 +174,101 @@ test('serveTaskStream：webServer 未就位时不抛，不连累同 apply 其它
     source: { snapshot: () => [], subscribe: () => () => {} },
   }))
   assert.equal(injected, true)
+})
+
+test('serveTaskStream：snapshot 同步抛错回 503，不误报 401（鉴权已过）', async () => {
+  let handler
+  const ctx = { inject: (_d, cb) => cb({ webServer: { register: (r) => { handler = r.handler } } }) }
+  const source = {
+    snapshot: () => { throw new Error('db down') }, // 同步抛，正是旧实现误判 401 的触发点
+    subscribe: () => () => {},
+  }
+  const status = []
+  const res = {
+    writeHead: (s) => { status.push(s) },
+    write: () => true,
+    end: () => {},
+    on: () => {},
+  }
+  serveTaskStream(ctx, { basePath: '/api/snap', authorize: () => 'v', source })
+  await handler({ url: '/api/snap/stream' }, res)
+  await new Promise((r) => setTimeout(r, 10)) // handler 内部是异步 IIFE，不返回 promise
+  assert.deepEqual(status, [503], '快照故障是服务不可用，不是未认证')
+})
+
+test('serveTaskStream：头已发后基线写失败只 end，不再 writeHead 503（防 ERR_HTTP_HEADERS_SENT）', async () => {
+  let handler
+  const ctx = { inject: (_d, cb) => cb({ webServer: { register: (r) => { handler = r.handler } } }) }
+  const source = {
+    snapshot: () => [{ id: 'a', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1 }],
+    subscribe: () => () => {},
+  }
+  const heads = []
+  let ended = false
+  const res = {
+    writeHead: (s) => { heads.push(s) },
+    write: () => { throw new Error('client gone') }, // 基线帧写入就失败
+    end: () => { ended = true },
+    on: () => {},
+  }
+  serveTaskStream(ctx, { basePath: '/api/writefail', authorize: () => 'v', source })
+  await handler({ url: '/api/writefail/stream' }, res)
+  await new Promise((r) => setTimeout(r, 10))
+  assert.deepEqual(heads, [200], '只 writeHead 一次，失败后不再写 503')
+  assert.equal(ended, true, '失败后仍 end 收尾')
+})
+
+test('serveTaskStream：subscribe 的 offTask 抛错不泄漏其它订阅与连接集合', async () => {
+  let handler
+  const ctx = { inject: (_d, cb) => cb({ webServer: { register: (r) => { handler = r.handler } } }) }
+  let noticeDetached = false
+  const source = {
+    snapshot: () => [],
+    subscribe: () => () => { throw new Error('detach boom') },
+    subscribeNotices: () => () => { noticeDetached = true },
+  }
+  let onClose
+  const res = {
+    writeHead: () => {}, write: () => true, end: () => {},
+    on: (_evt, cb) => { onClose = cb },
+  }
+  serveTaskStream(ctx, { basePath: '/api/clean', authorize: () => 'v', source })
+  await handler({ url: '/api/clean/stream' }, res)
+  await new Promise((r) => setTimeout(r, 10)) // 等异步 handler 建好订阅与 close 回调
+  assert.equal(typeof onClose, 'function', 'close 回调已注册')
+  onClose?.() // 触发清理：offTask 抛错不能挡住 offNotice
+  assert.equal(noticeDetached, true, 'offTask 抛错后 offNotice 仍被 detach')
+  onClose?.() // 二次调用幂等，不重复 detach
+  assert.equal(noticeDetached, true)
+})
+
+test('connectTaskStream：4xx 立即放弃不重试，退避档用尽也放弃并上报', async () => {
+  let calls = 0
+  const fakeFetch = async () => { calls += 1; return { ok: false, status: 401, body: null } }
+  const gave = []
+  const conn = connectTaskStream({
+    streamUrl: '/x', fetchImpl: fakeFetch, retryDelaysMs: [1, 1],
+    onGiveUp: (r) => gave.push(r),
+  })
+  await new Promise((r) => setTimeout(r, 40))
+  assert.equal(calls, 1, '401 永久错误只请求一次，不重试')
+  assert.equal(gave.length, 1)
+  assert.equal(gave[0].status, 401)
+  assert.equal(gave[0].permanent, true)
+  conn.close()
+
+  let tries = 0
+  const fakeFetch503 = async () => { tries += 1; return { ok: false, status: 503, body: null } }
+  const gave503 = []
+  const conn2 = connectTaskStream({
+    streamUrl: '/x', fetchImpl: fakeFetch503, retryDelaysMs: [1, 1],
+    onGiveUp: (r) => gave503.push(r),
+  })
+  await new Promise((r) => setTimeout(r, 80))
+  assert.equal(tries, 3, '503 重试 2 次（共 3 次请求）后用尽退避档停下')
+  assert.equal(gave503.length, 1)
+  assert.equal(gave503[0].permanent, false)
+  conn2.close()
 })
 
 test('serveTaskStream：快照慢于 keepAliveMs 时保活不抢在 writeHead 前隐式发头', async () => {

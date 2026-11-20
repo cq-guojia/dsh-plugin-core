@@ -16,8 +16,16 @@ export interface TaskStreamOptions {
     readonly onNotice?: (notice: unknown) => void;
     readonly headers?: () => Record<string, string>;
     readonly fetchImpl?: typeof fetch;
-    /** 重连退避档（毫秒），默认 1s/2s/4s；用完停在最大档。 */
+    /**
+     * 重连退避档（毫秒），默认 1s/2s/4s。用完即放弃——不再无限重连：
+     * 服务端持续故障或鉴权失效时无限退避只会空刷请求、且不给人任何信号。
+     */
     readonly retryDelaysMs?: readonly number[];
+    /** 放弃连接时回调（退避次数用尽 / 不可重试错误）。401 用它触发 token 刷新后显式重连。 */
+    readonly onGiveUp?: (reason: {
+        status: number;
+        permanent: boolean;
+    }) => void;
 }
 export interface TaskStreamConnection {
     /** 主动断开（页面卸载时调）。 */

@@ -3,18 +3,28 @@ function sameRecord(a, b) {
     return JSON.stringify(a) === JSON.stringify(b);
 }
 /**
- * 就地更新时保留权威身份字段：服务端漏发 origin / panelId 时不冲掉本地发起身份，
- * 双方都带 settledAt 时保留先到的那份（同一次结算不各算时间戳）。
- * running 乐观行不带 settledAt，因此不会继承旧终态的时间戳。
+ * 就地更新时保留权威身份字段 + 维护结算时钟不变量。
+ *
+ * origin / panelId：服务端漏发时保留本地发起身份（first-wins）。
+ * settledAt 严格按状态派生，不靠「谁带了字段」：
+ *   - running：显式清空结算时刻——重新发起/迟到 running 不得继承旧终态时间戳，
+ *     否则 TaskBar 的停留/退场时钟会被复活的运行行污染。
+ *   - 终态：只认服务端权威时间；两个合法时间并存时保留先到的那份（同一次结算不各算时间戳），
+ *     绝不用本地 Date.now() 补——本地造时会盖住后到的真源时间且让重放签名漂移。
+ * 入口 isTaskRecord 已保证终态必带有限数 settledAt，这里只做合并，不再补时。
  */
 function carryIdentity(next, old) {
-    if (old === undefined)
-        return next;
-    const origin = next.origin ?? old.origin;
-    const panelId = next.panelId ?? old.panelId;
-    const settledAt = next.settledAt !== undefined && old.settledAt !== undefined ? old.settledAt : next.settledAt;
+    const origin = next.origin ?? old?.origin;
+    const panelId = next.panelId ?? old?.panelId;
+    const settledAt = isSettled(next.state)
+        ? (old !== undefined && isSettled(old.state) && old.settledAt !== undefined ? old.settledAt : next.settledAt)
+        : undefined;
+    const base = { ...next };
+    // running 必须不带 settledAt：显式删除，不能因 spread 旧键而残留。
+    if (!isSettled(next.state))
+        delete base.settledAt;
     return {
-        ...next,
+        ...base,
         ...(origin === undefined ? {} : { origin }),
         ...(panelId === undefined ? {} : { panelId }),
         ...(settledAt === undefined ? {} : { settledAt }),
@@ -74,9 +84,11 @@ function createStore() {
                 const targetId = priorId ?? record.id;
                 const old = tasks.get(targetId);
                 // 单调：本地已终态时，迟到的 running 投影直接丢弃，防乱序把终态复活。
-                if (old !== undefined && old.settledAt !== undefined && record.state === 'running')
+                // 判据用「状态是否为终态」而非「有无 settledAt」——后者是时钟，可能因重放/擦除而不在，
+                // 拿它当状态标志会让 guard 在时间戳缺失时静默失效。
+                if (old !== undefined && isSettled(old.state) && !isSettled(record.state))
                     continue;
-                // 归一 id + 权威身份兜底：settledAt 先到优先、origin/panelId 服务端漏发时保留本地发起身份。
+                // 归一 id + 权威身份/时钟合并，规则集中在 carryIdentity。
                 const next = carryIdentity({ ...record, id: targetId }, old);
                 if (composite !== undefined)
                     byKey.set(composite, next.id);
