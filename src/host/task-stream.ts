@@ -102,6 +102,8 @@ export function serveTaskStream(ctx: HostContextLike, options: TaskStreamOptions
             let closed = false
             const conn = {
               cleanup(): void {
+                // close 事件与 serve disposer 两条路径都会调；unsubscribe 未必幂等，早退一次清干净。
+                if (closed) return
                 closed = true
                 if (timer !== undefined) clearInterval(timer)
                 offTask()

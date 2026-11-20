@@ -2,6 +2,24 @@ const STORE_KEY = Symbol.for('dsh-plugin-core/tasks/store/v1');
 function sameRecord(a, b) {
     return JSON.stringify(a) === JSON.stringify(b);
 }
+/**
+ * 就地更新时保留权威身份字段：服务端漏发 origin / panelId 时不冲掉本地发起身份，
+ * 双方都带 settledAt 时保留先到的那份（同一次结算不各算时间戳）。
+ * running 乐观行不带 settledAt，因此不会继承旧终态的时间戳。
+ */
+function carryIdentity(next, old) {
+    if (old === undefined)
+        return next;
+    const origin = next.origin ?? old.origin;
+    const panelId = next.panelId ?? old.panelId;
+    const settledAt = next.settledAt !== undefined && old.settledAt !== undefined ? old.settledAt : next.settledAt;
+    return {
+        ...next,
+        ...(origin === undefined ? {} : { origin }),
+        ...(panelId === undefined ? {} : { panelId }),
+        ...(settledAt === undefined ? {} : { settledAt }),
+    };
+}
 function createStore() {
     const tasks = new Map();
     const byKey = new Map();
@@ -38,7 +56,7 @@ function createStore() {
             }
             const targetId = existingId ?? task.id;
             const existed = tasks.has(targetId);
-            const stored = { ...task, id: targetId };
+            const stored = carryIdentity({ ...task, id: targetId }, tasks.get(targetId));
             tasks.set(targetId, stored);
             // byKey 永远指向存活 id；否则第三次同键 upsert 会按不存在的旧 id 判成新建，堆出重复行。
             if (composite !== undefined)
@@ -58,18 +76,8 @@ function createStore() {
                 // 单调：本地已终态时，迟到的 running 投影直接丢弃，防乱序把终态复活。
                 if (old !== undefined && old.settledAt !== undefined && record.state === 'running')
                     continue;
-                // 双方都终态时保留先到的 settledAt：本地执行与服务端投影是同一次结算，不能各算一份时间戳。
-                const settledAt = old?.settledAt !== undefined && record.settledAt !== undefined
-                    ? old.settledAt
-                    : record.settledAt;
-                // 消费方服务端未在 submit 回传 origin 时保留本地发起身份，避免 scope:'origin' 判定退化。
-                const origin = record.origin ?? old?.origin;
-                const next = {
-                    ...record,
-                    id: targetId,
-                    ...(settledAt === undefined ? {} : { settledAt }),
-                    ...(origin === undefined ? {} : { origin }),
-                };
+                // 归一 id + 权威身份兜底：settledAt 先到优先、origin/panelId 服务端漏发时保留本地发起身份。
+                const next = carryIdentity({ ...record, id: targetId }, old);
                 if (composite !== undefined)
                     byKey.set(composite, next.id);
                 tasks.set(next.id, next);

@@ -194,7 +194,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 |---|---|
 | 宿主 | DSH web client。插件 client 产物是 `window.__ModuleLoader__.load({ id, factory })` 的 CJS 闭包，所以样式只能运行时注入。 |
 | Node.js | `>= 22.5`（只影响构建与安装阶段）。 |
-| React / React DOM | `>= 18`，可选 peer。只有 `design` 与 `utils` 可以完全不用 React。 |
+| React / React DOM | `>= 18`，可选 peer。不用 React 的入口：`design`、`utils`、`runtime`、`adv/tasks`（纯逻辑）、`ui/task-ui`、`host`。 |
 | 主题 | 跟随宿主 `body[data-ds-dark-theme]`，绝不使用 `prefers-color-scheme`。宿主没给 token 时回落到内置值。 |
 | 命名 | 变量 `--dshpc-*`、类名 `dshpc-*`，全生态固定；不碰宿主的 `--dsw-*` / `--dsh-*`。 |
 | 官方 primitives | 只从 `dsh-plugin-core/ui/official` 走，且只在宿主内可解析。主入口零 `@deepseek-ai/*`，因此在 Node / 单测里 import `ui` 不会失败。 |

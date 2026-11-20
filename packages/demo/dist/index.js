@@ -943,6 +943,8 @@ data: ${JSON.stringify(payload)}
           let closed = false;
           const conn = {
             cleanup() {
+              if (closed)
+                return;
               closed = true;
               if (timer !== void 0)
                 clearInterval(timer);

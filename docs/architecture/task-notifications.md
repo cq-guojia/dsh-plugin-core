@@ -28,12 +28,12 @@
 
 1. **终态只分发一次**：`store` 用 `announced` 去重；本地执行与服务端投影同时到达也不重复弹卡 / 回调。
 2. **终态不被迟到消息复活**：`store.merge` 见到本地已 `settledAt` 的记录时丢弃其 `running` 投影。
-3. **按钮先切面板再执行**：`press(buttonId, taskId)` 先 `host.selectPanel(task.panelId)`，再查本页 handler。
-   `panelId` 由 `startTask` 从 `layout.panelInfo.getSnapshot().activePanelId` 自动记（宿主 0.2.2-rc.3 核实），消费方不传；本地与服务端模式都记，服务端模式随提交 payload 发出、由服务端回填到记录。
-4. **按钮：归属归 origin，可见性不隐藏**：两个维度分开——`scope:'all'` 每页弹卡但按钮只在发起页画，`scope:'origin'` 只发起页弹卡；在归属页内按钮一律照画、不隐藏不置灰，不按 `getHandler` 过滤。点击先 `selectPanel(panelId)` 再 `press`；返回 false（条目失效 / 注册 handler 的插件已卸载）时给一次统一 i18n 提示（`notifyTaskActionFailed()` → `taskbarActionFailed`），不静默。`TaskBar` 可传 `onActionFailure` 自己接管该提示。
+3. **按钮查找 handler 后切面板执行**：`press(buttonId, taskId)` 先 `store.get(taskId)` 取记录、`getHandler(buttonId, task.project)` 查本页 handler，找不到直接返回 false（不切面板，避免无意义跳走）；找到才 `host.selectPanel(task.panelId)` 再执行 handler。
+   `panelId` 由 `startTask` 从 `layout.panelInfo.getSnapshot().activePanelId` 自动记（宿主 0.2.2-rc.3 核实），消费方不传；本地与服务端模式都记，服务端模式随提交 payload 发出、由服务端回填到记录，服务端没回填时 `store.merge` / `deliverNotice` 保留本地那份。
+4. **按钮所有页都画、不隐藏不置灰**：`scope:'all'` 每页弹卡且每页都有按钮，`scope:'origin'` 只发起页弹卡（其它页无卡自然无按钮）；不按 `getHandler` 过滤。点击走 `press`（查到 handler 才切面板执行）；返回 false（条目失效 / 注册 handler 的插件已卸载）时给一次统一 i18n 提示（`notifyTaskActionFailed()` → `taskbarActionFailed`），不静默。`TaskBar` 可传 `onActionFailure` 自己接管该提示。
 5. **执行器开放、不写死、不兜底**：`kind` 是任意字符串；没有注册的执行体就结算为 failed，不自绘替代、不猜实现、不降级。
 6. **配置跟着记录走**：toast / notify / rowButtons 是记录上的纯数据，任何页面按同一份配置渲染；
-   `scope: 'all'` 每页弹卡、`'origin'` 只发起页弹卡；Toast 按钮跨页时只在发起页画，列表行按钮任何页都画（与不变量 4 的归属/可见性两维度一致）。
+   `scope: 'all'` 每页弹卡、`'origin'` 只发起页弹卡；按钮（Toast 与列表行）一律照画不隐藏，点了跳回发起面板执行。
 7. **服务端是唯一状态通道**：不接 `follow()`（仅宿主领域状态）与 `remote.$on`（仅审批瀑布）；重连靠服务端基线，
    客户端不维护 cursor / 版本门。
 8. **多副本收口**：executor 注册表与 task store 都挂 `globalThis[Symbol.for(...)]`，同页所有插件副本共用一份。

@@ -15,8 +15,9 @@
 ## 步骤
 
 1. **本页接线一次**（`client/task-ui.ts`）：注册按钮 id → 本页函数，订阅终态刷自己的数据。
-   列表与 Toast 共用这一份 handlers。归属页内按钮一律照画、不隐藏不置灰；找不到 handler 时（条目失效或注册它的插件已卸载）点了会给一次统一提示。
-   注意归属：`toast.*.scope:'all'` 每个标签页都弹卡，但**按钮只在发起页画**；`'origin'` 只发起页弹卡。列表行按钮则任何页都画。
+   列表与 Toast 共用这一份 handlers。**所有按钮在所有页都画**、不隐藏不置灰；点了跳回发起面板执行 handler，
+   找不到 handler 时（条目失效或注册它的插件已卸载）给一次统一提示。
+   `toast.*.scope:'all'` 每个标签页都弹卡、每页都有按钮；`'origin'` 只发起页弹卡（其它页无卡自然无按钮）。
 
    ```ts
    import { mountTaskUI } from 'dsh-plugin-core/ui/task-ui'
@@ -80,6 +81,12 @@
      },
    })
    ```
+
+   **服务端 `onSubmit` 必须把 client 随提交发来的 `origin` 与 `panelId` 回填到任务记录**
+   （两者是 core 自动记、不在 `StartTaskInput` 契约里的页面级/面板级身份）。`origin` 决定
+   `scope:'origin'` 的通知只在发起标签页弹，`panelId` 决定点按钮时切回哪个面板。前端在
+   `store.merge` / `deliverNotice` 里对服务端漏发的这两个字段做了本地兜底，但那是防线不是常态；
+   服务端正常必须回填，否则跨页归属与切面板会退化。
 
 ## 验证
 

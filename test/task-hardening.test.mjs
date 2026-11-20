@@ -32,13 +32,54 @@ test('加固：同 (project,key) 连续三次 upsert 仍只有一条', () => {
   assert.equal(s.getSnapshot().tasks[0].title, '3')
 })
 
-test('加固：服务端投影缺 origin 时保留本地发起页身份', () => {
+test('加固：服务端投影缺 origin / panelId 时保留本地发起身份', () => {
   const s = createTaskStore()
-  const local = { id: 'a', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1, origin: 'tab-a' }
+  const local = {
+    id: 'a', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1,
+    origin: 'tab-a', panelId: 'panel-a',
+  }
   s.upsert(local)
-  // 消费方服务端未在 submit 回传 origin（防御性模拟）⇒ 不能把本地身份冲掉。
+  // 消费方服务端未在 submit 回传这两个身份字段（防御性模拟）⇒ 不能把本地身份冲掉。
   s.merge([{ id: 'a', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: 9 }])
   assert.equal(s.get('a').origin, 'tab-a', 'origin 不丢，scope=origin 判定不退化')
+  assert.equal(s.get('a').panelId, 'panel-a', 'panelId 不丢，点按钮仍切回发起面板')
+})
+
+test('加固：同 key 不同服务端 id 的终态通知，panelId/origin 不被全量 upsert 抹掉', () => {
+  const { c, store, toasts } = setup()
+  // 乐观行（submit 阶段记下 panelId / origin，id=local）。
+  store.upsert({ id: 'local', key: 'k', project: 'p', group: 'g', title: 't',
+    state: 'running', startedAt: 1, panelId: 'panel-a', origin: 'tab-a' })
+  // 服务端终态通知换了新的服务端 id，且没回填 panelId / origin。
+  const terminal = { id: 'srv-99', key: 'k', project: 'p', group: 'g', title: 't',
+    state: 'done', startedAt: 1, settledAt: 10, toast: { success: { title: '完成' } } }
+  c.deliverNotice({ id: 'n1', task: terminal })
+  const row = store.get('local')
+  assert.ok(row, '存活行仍是本地 id（按 key 归一）')
+  assert.equal(row.panelId, 'panel-a', '同 key 不同 id 的通知不抹掉 panelId')
+  assert.equal(row.origin, 'tab-a', 'origin 同样保留')
+  assert.equal(toasts.length, 1)
+  assert.equal(toasts[0].task.panelId, 'panel-a', 'toast 载荷里也带 panelId（点按钮能跳回面板）')
+})
+
+test('加固：终态先投影再通知（merge 无变化），身份字段仍不被抹掉', () => {
+  const { c, store, toasts } = setup()
+  store.upsert({ id: 'local', key: 'k', project: 'p', group: 'g', title: 't',
+    state: 'running', startedAt: 1, panelId: 'panel-a', origin: 'tab-a' })
+  const terminal = { id: 'srv-99', key: 'k', project: 'p', group: 'g', title: 't',
+    state: 'done', startedAt: 1, settledAt: 10, toast: { success: { title: '完成' } } }
+  // 正常 SSE 顺序：state 帧先把终态投影进来（按 key 归一、保住本地身份，merge 有变化）。
+  c.project([terminal])
+  // notice 帧随后到达，settledAt=20 与已投影的 10 不同：
+  // 同 key 再 merge 一次身份字段无变化，但 settledAt 有变化 ⇒ merge 返回变更行；
+  // 即便如此，对外载荷必须取 upsert 归一后的行（身份字段来自本地发起记录，settledAt 先到优先）。
+  c.deliverNotice({ id: 'n1', task: { ...terminal, settledAt: 20 } })
+  assert.equal(store.get('local').panelId, 'panel-a', '先投影后通知也不丢 panelId')
+  assert.equal(store.get('local').origin, 'tab-a', 'origin 同样不丢')
+  assert.equal(store.get('local').settledAt, 10, 'settledAt 先到优先，不被通知的 20 改写')
+  assert.equal(toasts.length, 1)
+  assert.equal(toasts[0].task.panelId, 'panel-a', 'toast 载荷带保住的 panelId')
+  assert.equal(toasts[0].task.settledAt, 10, 'toast 载荷的 settledAt 也取先到的 10')
 })
 
 test('加固：终态去重按 (project,key) 结算，重放不重复，重新发起后重置', () => {

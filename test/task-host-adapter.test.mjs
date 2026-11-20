@@ -78,7 +78,7 @@ test('默认宿主：toast 按钮照画不隐藏，没 handler 点了给 i18n �
   }
 })
 
-test('默认宿主：toast scope:all 每页弹卡但按钮只在发起页画（origin 归属）', () => {
+test('默认宿主：所有页都画 Toast 按钮，scope 只管卡片弹不弹', () => {
   const got = []
   const off = subscribeToasts((p) => got.push(p))
   try {
@@ -88,15 +88,58 @@ test('默认宿主：toast scope:all 每页弹卡但按钮只在发起页画（o
     host.deliverToast({ ...common, task: record({ origin: 'tab-origin' }) })
     assert.equal(got.length, 1)
     assert.equal(got[0].actions.length, 1, '发起页画按钮')
-    // 别的标签页：卡片照弹，按钮不画
+    // 别的标签页：卡片照弹、按钮也照画（用户拍板：所有页显示按钮，点击跳回发起页）
     host.deliverToast({ ...common, task: record({ origin: 'tab-other' }) })
     assert.equal(got.length, 2, 'scope:all 跨页卡片照弹')
-    assert.equal(got[1].actions, undefined, '非发起页不画按钮（origin 归属）')
-    // origin 缺失 fail-open：按发起页处理，按钮照画（宁可多画不漏）
+    assert.equal(got[1].actions.length, 1, '非发起页也画按钮')
+    // scope:origin 非发起页：连卡都不弹，自然没按钮
+    host.deliverToast({ ...common, scope: 'origin', task: record({ origin: 'tab-other' }) })
+    assert.equal(got.length, 2, 'scope:origin 非发起页不弹卡')
+    // origin 缺失 fail-open：照弹照画
     host.deliverToast({ ...common, task: record() })
-    assert.equal(got[2].actions.length, 1, '缺 origin fail-open 画按钮')
+    assert.equal(got[2].actions.length, 1, '缺 origin fail-open 照画按钮')
   } finally {
     off()
+  }
+})
+
+test('defaultTaskHost：注入的 originId 就是 scope:origin 归属判定来源', () => {
+  const got = []
+  const off = subscribeToasts((p) => got.push(p))
+  try {
+    const host = defaultTaskHost(() => 'custom-tab')
+    host.deliverToast({ title: 'x', scope: 'origin', task: record({ origin: 'custom-tab' }) })
+    assert.equal(got.length, 1, '同源时 scope:origin 卡片照弹')
+    host.deliverToast({ title: 'y', scope: 'origin', task: record({ origin: 'other-tab' }) })
+    assert.equal(got.length, 1, '异页时 scope:origin 不弹')
+  } finally {
+    off()
+  }
+})
+
+test('connectTaskCenter：重复接线注入不同 originId，默认 toast 归属跟随最新来源（不残留首次闭包）', async () => {
+  const { connectTaskCenter, startTask, taskCenterStore } = await import('../dist/adv/tasks/index.js')
+  const { executors } = await import('../dist/runtime/index.js')
+  const got = []
+  const off = subscribeToasts((p) => got.push(p))
+  const unregister = executors.register('origin-follow-test', () => ({ outcome: 'done' }))
+  taskCenterStore.clearAll()
+  let offA = () => {}, offB = () => {}
+  try {
+    // 首次接线注入 tab-a 并装上默认 toast 层；其闭包应动态读取 stableHost.originId，
+    // 而不是把 tab-a 固定下来。
+    offA = connectTaskCenter({ originId: () => 'tab-a' })
+    // 二次接线换成 tab-b，默认 toast 层不会重建，但归属判定必须跟随最新 originId。
+    offB = connectTaskCenter({ originId: () => 'tab-b' })
+    const task = await startTask({
+      title: 'origin 跟随', project: 'p', kind: 'origin-follow-test',
+      toast: { success: { title: '完成', scope: 'origin' } },
+    })
+    assert.equal(task.origin, 'tab-b', 'startTask 记的是最新注入的 originId')
+    await new Promise((r) => setTimeout(r, 10))
+    assert.equal(got.length, 1, '默认 toast 判归属也用最新 originId ⇒ 发起页弹卡')
+  } finally {
+    off(); unregister(); offA(); offB(); taskCenterStore.clearAll()
   }
 })
 

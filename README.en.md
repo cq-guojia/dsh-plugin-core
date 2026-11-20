@@ -79,7 +79,7 @@ Three things worth knowing on day one:
 | Import | What you get | React required |
 |---|---|---|
 | `dsh-plugin-core/design` | Token variables (light + dark), `createStyleKit` injector factory, dark-mode predicate | no |
-| `dsh-plugin-core/ui` | Whole package: every control + notification task center (a re-export list; larger bundle) | yes |
+| `dsh-plugin-core/ui` | Whole package: every control (a re-export list; larger bundle) | yes |
 | `dsh-plugin-core/ui/<control>` | One block: e.g. `/ui/button`, `/ui/input`, `/ui/picker`, `/ui/table` — only that block and its dependency closure | yes |
 | `dsh-plugin-core/ui/official` | Direct re-exports of the host's official primitives, for the rare case you need one | yes |
 | `dsh-plugin-core/ui/code-viewer` | Read-only `CodeViewer` + editable `CodeEditor`, sharing one CodeMirror surface (file preview uses the viewer) | yes |
@@ -88,7 +88,11 @@ Three things worth knowing on day one:
 | `dsh-plugin-core/adv/explorer` | File browser, file picker, docked file preview | yes |
 | `dsh-plugin-core/adv/explorer/preview` | Preview bodies: image, PDF, Markdown, HTML, Office, text/code | yes |
 | `dsh-plugin-core/adv/session` | Read-only session preview dialog + changed-file diff | yes |
-| `dsh-plugin-core/host` | Host-side routes: read-only FS route, model catalog | no |
+| `dsh-plugin-core/adv/tasks` | Background tasks, logic only: `startTask` / `mountTaskUI` / open executors / SSE (importable in Node, no React) | no |
+| `dsh-plugin-core/adv/tasks/ui` | `TaskBar`: the background-task bar (React display surface split out of `adv/tasks`) | yes |
+| `dsh-plugin-core/ui/task-ui` | `mountTaskUI`: one-time per-page wiring (handlers + settlement) | no |
+| `dsh-plugin-core/runtime` | Runtime base: cross-page notifications, state container, event bus, open executors | no |
+| `dsh-plugin-core/host` | Host-side routes: read-only FS route, model catalog, task SSE / submit | no |
 
 Dependency direction is one-way: `design` ← `ui` ← `explorer` / `session`, while `utils` depends on nothing.
 
@@ -147,6 +151,16 @@ Everything is built from tokens, takes its data through props, and follows the h
 - `QuickToolbar` — a toolbar that follows scrolling with back-to-top and visibility rules.
 - `SplitGroup`, `startResizeLayoutWidth`, `Pagination`.
 
+### adv/tasks — background task center
+
+The base for long-running backend work: execution lives on the server through open executors (`kind` is any string), the server owns task state and projects it over SSE, and the front end only registers, projects and forwards button presses. No client heartbeat, no status source, no dual-clock lease — a terminal state is driven once by the executor result or a server projection.
+
+- Logic comes from `dsh-plugin-core/adv/tasks` (importable in Node, no React): `startTask` (title / toast / notify / buttons, all plain data), `mountTaskUI` (register handlers + subscribe to settlement on this page), `connectTaskCenter` / `connectTaskLayout` (server SSE wiring / automatic originating-panel recording), and the open-executor registry.
+- The bar `TaskBar` comes from `dsh-plugin-core/adv/tasks/ui` (React): icon/pill forms, sm/md/lg sizes, fixed / max width, marquee on overflow; it reads the shared pool — your plugin does not draw rows.
+- Three isolated streams: snapshot / status only project the list and never toast; only the one-shot `task-notice` with a unique id toasts, de-duplicated per tab (refresh / reconnect replays do not re-toast). Every button is drawn on every page; a click that finds no handler gives one i18n notice.
+
+Full contract and wiring steps: [background task center](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/task-notifications.md) and [integration guide](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/guides/background-task-center.md).
+
 ### utils — pure helpers
 
 Zero React, zero DOM, zero dependency on `design`.
@@ -178,7 +192,7 @@ Zero React, zero DOM, zero dependency on `design`.
 |---|---|
 | Host | DSH web client. Plugin client bundles are `window.__ModuleLoader__.load({ id, factory })` CJS closures; styles therefore arrive as runtime-injected strings. |
 | Node.js | `>= 22.5` (build and install time only). |
-| React / React DOM | `>= 18`, optional peers. Only `design` and `utils` work without React. |
+| React / React DOM | `>= 18`, optional peers. React-free entries: `design`, `utils`, `runtime`, `adv/tasks` (logic), `ui/task-ui`, `host`. |
 | Theme | Follows the host: `body[data-ds-dark-theme]`. Never `prefers-color-scheme`. Tokens fall back to built-in values when the host does not provide them. |
 | Naming | Variables `--dshpc-*`, class names `dshpc-*` — fixed, shared by the whole ecosystem. Nothing touches the host's own `--dsw-*` / `--dsh-*`. |
 | Official primitives | Reachable only through `dsh-plugin-core/ui/official`, and only inside the host. The main entries stay free of `@deepseek-ai/*`, so importing `ui` in Node or in a test does not explode. |

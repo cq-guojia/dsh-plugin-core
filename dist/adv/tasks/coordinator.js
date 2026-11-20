@@ -39,30 +39,33 @@ export function createCoordinator(options = {}) {
         // 跨刷新的一次性由客户端持久 notice id 保证（见 api.ts）。
         if (!store.claimSettled(final))
             return;
-        store.upsert(final);
-        const toast = toastForState(final.toast, state);
+        // 以 upsert 返回的「归一 id + 身份兜底」记录为对外载荷：store 在 (project,key) 命中时
+        // 会把 id 归一到存活行、并保住本地发起记录的 origin/panelId/settledAt。
+        // 不能直接用入参 task——同 key 不同服务端 id 时它没有本地身份，整块写会抹掉已投影的字段。
+        const stored = store.upsert(final).task;
+        const toast = toastForState(stored.toast, state);
         if (toast !== undefined) {
             safeCall('toast', () => host.deliverToast?.({
                 title: toast.title,
                 ...(toast.button === undefined ? {} : { buttonId: toast.button.id, buttonText: toast.button.text }),
                 scope: toast.scope ?? 'origin',
-                task: final,
+                task: stored,
             }));
         }
-        const notice = notifyForState(final.notify, state);
+        const notice = notifyForState(stored.notify, state);
         if (notice !== undefined) {
             safeCall('notify', () => host.deliverNotify?.({
-                project: final.project,
-                group: final.group,
+                project: stored.project,
+                group: stored.group,
                 message: notice.message,
                 ...(notice.detail === undefined ? {} : { detail: notice.detail }),
                 level: state === 'done' ? 'success' : 'error',
                 scope: notice.scope ?? 'origin',
                 ...(notice.broadcast === undefined ? {} : { broadcast: notice.broadcast }),
-                task: final,
+                task: stored,
             }));
         }
-        store.emitSettled({ outcome: state, task: final });
+        store.emitSettled({ outcome: state, task: stored });
     }
     /** 本地执行一条任务。 */
     function run(task) {
@@ -123,15 +126,14 @@ export function createCoordinator(options = {}) {
             if (task.state !== 'done' && task.state !== 'failed')
                 return;
             const outcome = task.state; // 上面已收窄
-            // 服务端推送的终态先投影进列表（同 id 覆盖乐观记录）；弹卡由 claimSettled 单页内去重。
-            // origin 是页面级身份：服务端没回填时沿用本地发起记录的那份，否则 scope:'origin' 会 fail-open 乱弹。
-            const origin = task.origin ?? store.get(task.id)?.origin;
-            const final = {
-                ...task,
-                ...(origin === undefined ? {} : { origin }),
-                ...(task.settledAt === undefined ? { settledAt: Date.now() } : {}),
-            };
-            announce(final, outcome, final.reason);
+            // 先把终态投影进列表（可能早于 notice 到达的 task 帧已投影过，这里幂等）。
+            // 归一 id 与身份兜底统一由 announce 内的 upsert 负责并以返回值对外分发——
+            // 不依赖 merge 返回的 changed 列表：先投影后通知时 merge 无变化会返回空数组。
+            store.merge([{
+                    ...task,
+                    ...(task.settledAt === undefined ? { settledAt: Date.now() } : {}),
+                }]);
+            announce(task, outcome, task.reason);
         },
         press(buttonId, taskId) {
             const task = store.get(taskId);

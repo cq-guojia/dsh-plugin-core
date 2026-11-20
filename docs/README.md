@@ -49,4 +49,5 @@ docs/                                               # 项目文档库入口与�
 - 2026-11-17（v0.42.0）：`api/ui.md` 补 `ModalLockExempt` 与 Confirm/Alert 内置按钮例外、写明「有 locked 不等于有例外」边界；确认弹窗 `lockExceptions` 只收内置钮名
 - 2026-11-18：后台任务中心整套重构为后端执行 + 开放执行器 + 服务端 SSE 投影 + 核心列表控件；删旧任务池 / 状态源 / 双时钟租约 / 旧 `TaskBar` 实现 / `useTasks`，文档与索引同步收敛
 - 2026-11-20：修消费方审查意见——`TaskBar` 展示面出口拆到 `adv/tasks/ui`（`adv/tasks` 保持纯逻辑）；任务按钮（Toast 与列表）一律照画、点了找不到 handler 走统一 i18n 提示；三流隔离与按标签页去重口径入档，相关手写文档同步更新
-- 2026-11-20（消费方二次对照）：服务端 `startTask` 把 `panelId` 随提交发出供服务端回填（乐观行也带上，补上"核心自动记 panelId"承诺）；SSE 保活 timer 移到 `writeHead` 之后（防慢快照触发 `ERR_HTTP_HEADERS_SENT`）；Toast `scope:'all'` 每页弹卡但按钮只在发起页画，与"归属页内照画不隐藏"两个维度分列；`TaskStore.clear()` 改名 `clearAll()` 并写清清了什么
+- 2026-11-20（消费方二次对照）：服务端 `startTask` 把 `panelId` 随提交发出供服务端回填（乐观行也带上，补上"核心自动记 panelId"承诺）；SSE 保活 timer 移到 `writeHead` 之后（防慢快照触发 `ERR_HTTP_HEADERS_SENT`）；`TaskStore.clear()` 改名 `clearAll()` 并写清清了什么
+- 2026-11-20（消费方三次对照）：按用户拍板回正按钮口径——所有按钮在所有页都画、点了跳回发起面板执行（回退 v0.43.4 里「Toast 按钮只在发起页画」的口径）；`store.merge` / `deliverNotice` 对服务端漏发的 `panelId` 做本地兜底；`defaultTaskHost` 按注入的 `originId` 判归属，消除 startTask 与 toast 判定双来源；SSE `cleanup()` 幂等。文档同步：架构不变量 3 的 press 顺序改正、不变量 4/6 按钮口径回正、`projectTasks` 改成"只投影不分发终态"、`TaskButton` 补 icon/color、README.en.md 补齐后台任务中心与出口表、中英适配范围列全 React-free 入口、接入指南补"服务端必须回填 origin/panelId"

@@ -175,11 +175,10 @@ export function defaultTaskHost(originId?: () => string | undefined): Coordinato
     deliverToast(payload) {
       if (payload.scope === 'origin' && !isOrigin(payload.task)) return
       const opts: NotifyOptions = { variant: payload.task.state === 'failed' ? 'error' : 'success' }
-      // 两个独立维度，别混：
-      // ① origin 归属 —— scope:'all' 每页弹卡，但按钮只在发起页画（11-18 定稿 worklog:76/190）；
-      //    isOrigin 缺 origin 时 fail-open 按「是发起页」，宁可多画不漏。
-      // ② handler 缺失 —— 在发起页照画不隐藏、不置灰，点了给一次统一提示，与 TaskBar 行按钮同口径。
-      if (payload.buttonId !== undefined && isOrigin(payload.task)) {
+      // 所有按钮在所有页都画、不隐藏不置灰：点了先 pressTaskButton → selectPanel(panelId) 跳回发起面板
+      // 再执行 handler（用户 11-20 反复拍板，覆盖 11-18 定稿里「Toast 按钮只在发起页」的旧口径）。
+      // 缺 handler（条目失效 / 发起插件卸载）时给一次统一提示，与 TaskBar 行按钮同口径。
+      if (payload.buttonId !== undefined) {
         opts.actions = [{
           text: payload.buttonText ?? payload.buttonId,
           onClick: () => {
@@ -211,17 +210,21 @@ export function connectTaskCenter(host: TaskCenterHost): () => void {
     if (value !== undefined) patch[key] = value
   }
   Object.assign(stableHost, patch)
-  // toast / notify 两个默认层各自独立补齐：只配了其中一个，另一个仍要有默认，不能永久静默。
+  // 页面级身份：优先用消费方注入的 originId，缺省才取通知总线的标签页 origin。
+  // startTask 记 origin、toast/notify 判归属必须同一个来源，否则注入自定义 originId 时判定错位。
   const pageOrigin = (): string => defaultNotifyScope().origin
-  const defaults = defaultTaskHost(pageOrigin)
+  if (stableHost.originId === undefined) stableHost.originId = pageOrigin
+  // toast / notify 两个默认层各自独立补齐：只配了其中一个，另一个仍要有默认，不能永久静默。
+  // 传动态读取函数而非闭包捕获当前值：重复接线注入不同 originId 时，默认层始终跟随
+  // stableHost.originId 的最新来源，避免 startTask 记的 origin 与 toast 判归属的 origin 双来源。
+  const liveOrigin = (): string | undefined => stableHost.originId?.()
+  const defaults = defaultTaskHost(liveOrigin)
   if (stableHost.deliverToast === undefined && defaults.deliverToast !== undefined) {
     stableHost.deliverToast = defaults.deliverToast
   }
   if (stableHost.deliverNotify === undefined && defaults.deliverNotify !== undefined) {
     stableHost.deliverNotify = defaults.deliverNotify
   }
-  // 页面级身份默认取通知总线的标签页 origin：startTask 本地/服务端两种模式都靠它记 TaskRecord.origin。
-  if (stableHost.originId === undefined) stableHost.originId = pageOrigin
   // 新接线先关掉上一条流（防双 SSE 双投影），但返回值只关「自己这条」：
   // A 接线、B 接线、A 卸载时不能把 B 的流关掉。
   streamConn?.close()

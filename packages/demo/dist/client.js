@@ -57323,6 +57323,19 @@ var STORE_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/tasks/store/v1");
 function sameRecord(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
+function carryIdentity(next, old) {
+  if (old === void 0)
+    return next;
+  const origin = next.origin ?? old.origin;
+  const panelId = next.panelId ?? old.panelId;
+  const settledAt = next.settledAt !== void 0 && old.settledAt !== void 0 ? old.settledAt : next.settledAt;
+  return {
+    ...next,
+    ...origin === void 0 ? {} : { origin },
+    ...panelId === void 0 ? {} : { panelId },
+    ...settledAt === void 0 ? {} : { settledAt }
+  };
+}
 function createStore3() {
   const tasks2 = /* @__PURE__ */ new Map();
   const byKey = /* @__PURE__ */ new Map();
@@ -57361,7 +57374,7 @@ function createStore3() {
       }
       const targetId = existingId ?? task.id;
       const existed = tasks2.has(targetId);
-      const stored = { ...task, id: targetId };
+      const stored = carryIdentity({ ...task, id: targetId }, tasks2.get(targetId));
       tasks2.set(targetId, stored);
       if (composite !== void 0)
         byKey.set(composite, targetId);
@@ -57379,14 +57392,7 @@ function createStore3() {
         const old = tasks2.get(targetId);
         if (old !== void 0 && old.settledAt !== void 0 && record.state === "running")
           continue;
-        const settledAt = old?.settledAt !== void 0 && record.settledAt !== void 0 ? old.settledAt : record.settledAt;
-        const origin = record.origin ?? old?.origin;
-        const next = {
-          ...record,
-          id: targetId,
-          ...settledAt === void 0 ? {} : { settledAt },
-          ...origin === void 0 ? {} : { origin }
-        };
+        const next = carryIdentity({ ...record, id: targetId }, old);
         if (composite !== void 0)
           byKey.set(composite, next.id);
         tasks2.set(next.id, next);
@@ -57493,30 +57499,30 @@ function createCoordinator(options = {}) {
     };
     if (!store.claimSettled(final))
       return;
-    store.upsert(final);
-    const toast2 = toastForState(final.toast, state);
+    const stored = store.upsert(final).task;
+    const toast2 = toastForState(stored.toast, state);
     if (toast2 !== void 0) {
       safeCall("toast", () => host.deliverToast?.({
         title: toast2.title,
         ...toast2.button === void 0 ? {} : { buttonId: toast2.button.id, buttonText: toast2.button.text },
         scope: toast2.scope ?? "origin",
-        task: final
+        task: stored
       }));
     }
-    const notice = notifyForState(final.notify, state);
+    const notice = notifyForState(stored.notify, state);
     if (notice !== void 0) {
       safeCall("notify", () => host.deliverNotify?.({
-        project: final.project,
-        group: final.group,
+        project: stored.project,
+        group: stored.group,
         message: notice.message,
         ...notice.detail === void 0 ? {} : { detail: notice.detail },
         level: state === "done" ? "success" : "error",
         scope: notice.scope ?? "origin",
         ...notice.broadcast === void 0 ? {} : { broadcast: notice.broadcast },
-        task: final
+        task: stored
       }));
     }
-    store.emitSettled({ outcome: state, task: final });
+    store.emitSettled({ outcome: state, task: stored });
   }
   function run(task) {
     if (task.kind === void 0)
@@ -57570,13 +57576,11 @@ function createCoordinator(options = {}) {
       if (task.state !== "done" && task.state !== "failed")
         return;
       const outcome = task.state;
-      const origin = task.origin ?? store.get(task.id)?.origin;
-      const final = {
+      store.merge([{
         ...task,
-        ...origin === void 0 ? {} : { origin },
         ...task.settledAt === void 0 ? { settledAt: Date.now() } : {}
-      };
-      announce(final, outcome, final.reason);
+      }]);
+      announce(task, outcome, task.reason);
     },
     press(buttonId, taskId) {
       const task = store.get(taskId);
@@ -57786,7 +57790,7 @@ function defaultTaskHost(originId) {
       if (payload.scope === "origin" && !isOrigin(payload.task))
         return;
       const opts = { variant: payload.task.state === "failed" ? "error" : "success" };
-      if (payload.buttonId !== void 0 && isOrigin(payload.task)) {
+      if (payload.buttonId !== void 0) {
         opts.actions = [{
           text: payload.buttonText ?? payload.buttonId,
           onClick: () => {
@@ -57817,15 +57821,16 @@ function connectTaskCenter(host) {
   }
   Object.assign(stableHost, patch);
   const pageOrigin = () => defaultNotifyScope().origin;
-  const defaults4 = defaultTaskHost(pageOrigin);
+  if (stableHost.originId === void 0)
+    stableHost.originId = pageOrigin;
+  const liveOrigin = () => stableHost.originId?.();
+  const defaults4 = defaultTaskHost(liveOrigin);
   if (stableHost.deliverToast === void 0 && defaults4.deliverToast !== void 0) {
     stableHost.deliverToast = defaults4.deliverToast;
   }
   if (stableHost.deliverNotify === void 0 && defaults4.deliverNotify !== void 0) {
     stableHost.deliverNotify = defaults4.deliverNotify;
   }
-  if (stableHost.originId === void 0)
-    stableHost.originId = pageOrigin;
   streamConn?.close();
   streamConn = void 0;
   let ownConn;
@@ -70335,12 +70340,12 @@ h(SideSheet, {
     },
     "prose": [
       {
-        "zh": "\u4E09\u6761\u901A\u9053\u5404\u53F8\u5176\u804C\u3001\u4E92\u4E0D\u6DF7\u7528\uFF1A**Toast** \u662F\u7EC8\u6001\u5F39\u5361\uFF0C`toast.success` / `toast.failure` \u4E24\u6001\u5B8C\u5168\u5BF9\u79F0\uFF0C\u6BCF\u6001\u53EF\u914D `scope`\uFF08`all` \u6BCF\u4E2A\u9875\u9762\u90FD\u5F39\u3001`origin` \u53EA\u53D1\u8D77\u9875\u5F39\uFF09\u4E0E\u4E00\u4E2A\u6309\u94AE\uFF08`{ id, text }`\uFF09\uFF1B**notify** \u662F\u7EC8\u6001\u6D88\u606F\uFF0C`message` + `detail` \u7EAF\u6570\u636E\uFF0C`scope` \u540C\u4E0A\uFF0C\u6838\u5FC3\u53EA\u628A\u901A\u77E5\u53D1\u51FA\u53BB\u3001\u4E0D\u505A\u4EFB\u4F55 UI\uFF08\u5F39\u5361/alert \u7531\u63A5\u6536\u65B9\u81EA\u5DF1\u51B3\u5B9A\uFF09\uFF1B`broadcast` \u5B57\u6BB5\u4FDD\u7559\u517C\u5BB9\u4F46\u6838\u5FC3\u4E0D\u518D\u636E\u6B64\u51B3\u5B9A\u53D1\u4E0D\u53D1\uFF0C\u8303\u56F4\u7531\u8BA2\u9605\u65B9\u7684 scope/project \u51B3\u5B9A\uFF1B**\u5217\u8868\u6309\u94AE**\u662F `rowButtons: [{ id, text, when }]`\uFF0C`when` \u2208 `running` / `done` / `failed` / `always`\uFF08\u7F3A\u7701 always\uFF09\uFF0C\u540C\u4E00 id \u53EF\u6309\u72B6\u6001\u91CD\u590D\u58F0\u660E\uFF0C\u8DDF\u7740\u8BB0\u5F55\u8D70\u3002",
-        "en": "Three channels with separate jobs: **toast** is the terminal card \u2014 `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`{ id, text }`). **Notify** is a terminal message \u2014 `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send \u2014 scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record."
+        "zh": "\u4E09\u6761\u901A\u9053\u5404\u53F8\u5176\u804C\u3001\u4E92\u4E0D\u6DF7\u7528\uFF1A**Toast** \u662F\u7EC8\u6001\u5F39\u5361\uFF0C`toast.success` / `toast.failure` \u4E24\u6001\u5B8C\u5168\u5BF9\u79F0\uFF0C\u6BCF\u6001\u53EF\u914D `scope`\uFF08`all` \u6BCF\u4E2A\u9875\u9762\u90FD\u5F39\u3001`origin` \u53EA\u53D1\u8D77\u9875\u5F39\uFF09\u4E0E\u4E00\u4E2A\u6309\u94AE\uFF08`TaskButton`\uFF1A`{ id, text, icon?, color? }`\uFF09\uFF1B**notify** \u662F\u7EC8\u6001\u6D88\u606F\uFF0C`message` + `detail` \u7EAF\u6570\u636E\uFF0C`scope` \u540C\u4E0A\uFF0C\u6838\u5FC3\u53EA\u628A\u901A\u77E5\u53D1\u51FA\u53BB\u3001\u4E0D\u505A\u4EFB\u4F55 UI\uFF08\u5F39\u5361/alert \u7531\u63A5\u6536\u65B9\u81EA\u5DF1\u51B3\u5B9A\uFF09\uFF1B`broadcast` \u5B57\u6BB5\u4FDD\u7559\u517C\u5BB9\u4F46\u6838\u5FC3\u4E0D\u518D\u636E\u6B64\u51B3\u5B9A\u53D1\u4E0D\u53D1\uFF0C\u8303\u56F4\u7531\u8BA2\u9605\u65B9\u7684 scope/project \u51B3\u5B9A\uFF1B**\u5217\u8868\u6309\u94AE**\u662F `rowButtons: [{ id, text, when }]`\uFF0C`when` \u2208 `running` / `done` / `failed` / `always`\uFF08\u7F3A\u7701 always\uFF09\uFF0C\u540C\u4E00 id \u53EF\u6309\u72B6\u6001\u91CD\u590D\u58F0\u660E\uFF0C\u8DDF\u7740\u8BB0\u5F55\u8D70\u3002",
+        "en": "Three channels with separate jobs: **toast** is the terminal card \u2014 `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`TaskButton`: `{ id, text, icon?, color? }`). **Notify** is a terminal message \u2014 `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send \u2014 scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record."
       },
       {
-        "zh": '\u6309\u94AE id \u67E5\u7684\u662F\u672C\u9875 `handlers`\uFF08\u5217\u8868\u4E0E Toast \u5171\u7528\u540C\u4E00\u4EFD\uFF09\u3002\u4E24\u4E2A\u7EF4\u5EA6\u522B\u6DF7\uFF1A**origin \u5F52\u5C5E**\u2014\u2014`scope:"all"` \u6BCF\u9875\u5F39\u5361\u4F46\u6309\u94AE\u53EA\u5728\u53D1\u8D77\u9875\u753B\uFF0C`scope:"origin"` \u53EA\u53D1\u8D77\u9875\u5F39\u5361\uFF1B**\u53EF\u89C1\u6027**\u2014\u2014\u5728\u5F52\u5C5E\u9875\u5185\u6309\u94AE\u4E00\u5F8B\u7167\u753B\u4E0D\u9690\u85CF\u3001\u4E0D\u7F6E\u7070\uFF0C\u4E0D\u56E0\u672C\u9875\u627E\u4E0D\u5230 handler \u800C\u9690\u85CF\u3002\u70B9\u51FB\u5148 `selectPanel(panelId)` \u5207\u56DE\u53D1\u8D77\u9762\u677F\uFF0C\u518D\u6267\u884C handler\u2014\u2014\u8FD9\u6837\u300C\u67E5\u770B\u300D\u8FD9\u7C7B\u52A8\u4F5C\u624D\u80FD\u628A UI \u843D\u5728\u6B63\u786E\u7684\u9762\u677F\u4E0A\uFF1B`panelId` \u7531\u6838\u5FC3\u5728 `startTask` \u65F6\u81EA\u52A8\u8BB0\u5F55\uFF08\u672C\u5730\u4E0E\u670D\u52A1\u7AEF\u6A21\u5F0F\u90FD\u8BB0\uFF0C\u968F\u63D0\u4EA4\u7ED9\u670D\u52A1\u7AEF\u56DE\u586B\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u4F20\u3002\u82E5 handler \u627E\u4E0D\u5230\uFF08\u6761\u76EE\u5DF2\u5931\u6548\u6216\u6CE8\u518C\u5B83\u7684\u63D2\u4EF6\u5DF2\u5378\u8F7D\uFF09\uFF0CToast \u6309\u94AE\u4E0E\u5217\u8868\u6309\u94AE\u90FD\u7ED9\u4E00\u6B21\u63D0\u793A\uFF08\u8D70\u6838\u5FC3 i18n\uFF09\uFF1B\u5217\u8868\u6309\u94AE\u8FD8\u53EF\u4F20 `onActionFailure` \u81EA\u5DF1\u63A5\u7BA1\u3002\u7EC8\u6001\u53EA\u5206\u53D1\u4E00\u6B21\uFF1A\u672C\u5730\u6267\u884C\u4E0E\u670D\u52A1\u7AEF\u6295\u5F71\u4E0D\u4F1A\u91CD\u590D\u5F39\u5361\u3002',
-        "en": "A button id resolves against this page's `handlers` (shared by the list and toast). Two separate dimensions: **origin ownership** \u2014 `scope:'all'` toasts every page but draws the button only on the originating page, `scope:'origin'` toasts only there; **visibility** \u2014 on the owning page the button is always drawn, never hidden or greyed out, and never hidden just because this page lacks a handler. A click first calls `selectPanel(panelId)` to return to the originating panel, then runs the handler \u2014 so a \"view\" action lands its UI on the right panel. `panelId` is recorded automatically by the core in `startTask` (both local and server modes, submitted for server backfill); consumers never pass it. If the handler is missing (stale entry or the registering plugin was unloaded), both the toast button and the list button give one notice (through the core i18n); list buttons may also pass `onActionFailure` to handle it themselves. Terminal states are delivered once: local execution and server projection never double-toast."
+        "zh": '\u6309\u94AE id \u67E5\u7684\u662F\u672C\u9875 `handlers`\uFF08\u5217\u8868\u4E0E Toast \u5171\u7528\u540C\u4E00\u4EFD\uFF09\u3002**\u6240\u6709\u6309\u94AE\u5728\u6240\u6709\u9875\u90FD\u753B**\uFF0C\u4E0D\u9690\u85CF\u3001\u4E0D\u7F6E\u7070\uFF0C\u4E5F\u4E0D\u6309 origin \u6216 getHandler \u8FC7\u6EE4\u2014\u2014\u70B9\u51FB\u8D70 `pressTaskButton` \u2192 `selectPanel(panelId)` \u8DF3\u56DE\u53D1\u8D77\u9762\u677F\u518D\u6267\u884C handler\uFF0C\u300C\u67E5\u770B\u300D\u8FD9\u7C7B\u52A8\u4F5C\u7684 UI \u843D\u5728\u53D1\u8D77\u9762\u677F\u4E0A\u3002\u8FD9\u91CC\u7684\u300C\u6240\u6709\u9875\u300D\u53D7 scope \u7EA6\u675F\uFF1A`scope:"all"` \u6BCF\u9875\u5F39\u5361\u4E14\u6BCF\u9875\u90FD\u6709\u6309\u94AE\uFF0C`scope:"origin"` \u53EA\u5728\u53D1\u8D77\u9875\u5F39\u5361\uFF08\u5176\u5B83\u9875\u8FDE\u5361\u90FD\u6CA1\u6709\uFF0C\u81EA\u7136\u6CA1\u6709\u6309\u94AE\uFF09\u3002`panelId` \u7531\u6838\u5FC3\u5728 `startTask` \u65F6\u81EA\u52A8\u8BB0\u5F55\uFF08\u672C\u5730\u4E0E\u670D\u52A1\u7AEF\u6A21\u5F0F\u90FD\u8BB0\uFF0C\u968F\u63D0\u4EA4\u7ED9\u670D\u52A1\u7AEF\u56DE\u586B\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u4F20\u3002\u82E5 handler \u627E\u4E0D\u5230\uFF08\u6761\u76EE\u5DF2\u5931\u6548\u6216\u6CE8\u518C\u5B83\u7684\u63D2\u4EF6\u5DF2\u5378\u8F7D\uFF09\uFF0CToast \u6309\u94AE\u4E0E\u5217\u8868\u6309\u94AE\u90FD\u7ED9\u4E00\u6B21\u63D0\u793A\uFF08\u8D70\u6838\u5FC3 i18n\uFF09\uFF1B\u5217\u8868\u6309\u94AE\u8FD8\u53EF\u4F20 `onActionFailure` \u81EA\u5DF1\u63A5\u7BA1\u3002\u7EC8\u6001\u53EA\u5206\u53D1\u4E00\u6B21\uFF1A\u672C\u5730\u6267\u884C\u4E0E\u670D\u52A1\u7AEF\u6295\u5F71\u4E0D\u4F1A\u91CD\u590D\u5F39\u5361\u3002',
+        "en": "A button id resolves against this page's `handlers` (shared by the list and toast). **Every button is drawn on every page** \u2014 never hidden, never greyed out, never filtered by origin or getHandler \u2014 and a click goes through `pressTaskButton` \u2192 `selectPanel(panelId)` to jump back to the originating panel before running the handler, so a \"view\" action lands its UI there. \"Every page\" is still bounded by scope: `scope:'all'` toasts and buttons on every page, `scope:'origin'` toasts only on the originating page (no card elsewhere, hence no button). `panelId` is recorded automatically by the core in `startTask` (both local and server modes, submitted for server backfill); consumers never pass it. If the handler is missing (stale entry or the registering plugin was unloaded), both the toast button and the list button give one notice (through the core i18n); list buttons may also pass `onActionFailure` to handle it themselves. Terminal states are delivered once: local execution and server projection never double-toast."
       }
     ],
     "api": [
@@ -70368,11 +70373,11 @@ h(SideSheet, {
           },
           {
             "name": "toast.<\u6001>.button",
-            "type": "{ id: string; text: string } | undefined",
+            "type": "TaskButton | undefined",
             "def": "undefined",
             "desc": {
-              "zh": "\u8BE5\u6001\u4E00\u4E2A\u6309\u94AE\uFF0Cid \u5BF9\u5E94 handlers\uFF1B\u8DE8\u9875\u65F6\u53EA\u5728\u53D1\u8D77\u9875\u663E\u793A",
-              "en": "One button for that state; id resolves to handlers, shown only on the originating page when cross-page"
+              "zh": "\u8BE5\u6001\u4E00\u4E2A\u6309\u94AE\uFF1A{ id, text, icon?, color? }\uFF0Cid \u5BF9\u5E94 handlers\uFF1B\u753B\u5728\u6BCF\u9875\uFF08scope:all\uFF09\u6216\u53D1\u8D77\u9875\uFF08scope:origin\uFF09",
+              "en": "One button for that state: { id, text, icon?, color? }; id resolves to handlers; drawn on every page (scope:all) or the originating page (scope:origin)"
             }
           },
           {
@@ -70530,8 +70535,8 @@ h(SideSheet, {
             "type": "(records: readonly TaskRecord[]) => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u624B\u52A8\u6295\u5F71\u5165\u53E3\uFF1B\u7EC8\u6001\u53EA\u5206\u53D1\u4E00\u6B21",
-              "en": "Manual projection entry; terminal states are delivered once"
+              "zh": "\u624B\u52A8\u6295\u5F71\u5165\u53E3\uFF1A\u53EA\u628A\u8BB0\u5F55\u6295\u5F71\u8FDB\u5217\u8868\uFF0C\u4E0D\u5F39\u5361\u3001\u4E0D\u5206\u53D1\u7EC8\u6001\uFF08\u5F39\u5361\u53EA\u8D70 task-notice\uFF09",
+              "en": "Manual projection entry: projects records into the list only \u2014 no cards, no terminal delivery (cards come only from task-notice)"
             }
           },
           {
@@ -75716,9 +75721,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.43.4"}`],
-            [t3("buildDemo"), `v${"0.43.4"}`],
-            [t3("buildStamp"), "261120-221441-317"]
+            [t3("buildCore"), `v${"0.43.5"}`],
+            [t3("buildDemo"), `v${"0.43.5"}`],
+            [t3("buildStamp"), "261120-233038-931"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76033,9 +76038,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.43.4"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.43.4"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261120-221441-317")
+          (0, import_react112.createElement)("span", null, `core v${"0.43.5"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.43.5"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261120-233038-931")
         )
       )
     ),
