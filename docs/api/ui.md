@@ -578,9 +578,9 @@ h(ListRow, { bordered: true, hoverable: false }, '只读的一行')
 
 > EN: Widths follow Button / Chip: `width` wins; `minWidth` / `maxWidth` apply only when it is unset; none of the three means "follow the parent" (a flex child stretches naturally — that is how the dialog footer uses it). To put it on the left of a dialog footer, use the `notice` prop on `Modal` / `ConfirmModal` / `AlertModal` / `SideSheet` rather than wrapping it yourself.
 
-`sweep` = 常驻扫光：一道斜光每 1.5s 从文字上扫过，扫到的字提亮，甚至文案一直不变也看得出「还在干活」。**默认关**；`Modal` / `SideSheet` 的 `notice` 默认打开（确认框与过程提示的场景）。光只落在字形上（`background-clip:text`），不会在底栏的空白区显出一条白光；`prefers-reduced-motion` 下与翻牌一起关掉。
+`sweep` = 常驻扫光：一道斜光每 1.8s 从文字上扫过，扫到的字提亮，甚至文案一直不变也看得出「还在干活」。**默认关**；`Modal` / `SideSheet` 的 `notice` 默认打开（确认框与过程提示的场景）。光只落在字形上（`background-clip:text`），不会在底栏的空白区显出一条白光，且亮色主题用白光、暗色主题用青光以保证浅字上也有反差；`prefers-reduced-motion` 下与翻牌一起关掉。
 
-> EN: `sweep` is a persistent sheen: a slanted highlight crosses the text every 1.5s, brightening the characters it passes, so an unchanged line still reads as "still working". **Off by default**; the `notice` prop on `Modal` / `SideSheet` turns it on (confirm dialogs and progress hints). The light is clipped to the glyphs (`background-clip:text`), so it never shows as a white bar across the empty part of a footer, and it is turned off together with the flip under `prefers-reduced-motion`.
+> EN: `sweep` is a persistent sheen: a slanted highlight crosses the text every 1.8s, brightening the characters it passes, so an unchanged line still reads as "still working". **Off by default**; the `notice` prop on `Modal` / `SideSheet` turns it on (confirm dialogs and progress hints). The light is clipped to the glyphs (`background-clip:text`), so it never shows as a white bar across the empty part of a footer; it uses white in light theme and cyan in dark theme to stay visible on light glyphs, and is turned off together with the flip under `prefers-reduced-motion`.
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
@@ -588,7 +588,7 @@ h(ListRow, { bordered: true, hoverable: false }, '只读的一行')
 | `width` | `number \| string` | — | 固定宽（px 或任意 CSS 宽度）；与 minWidth / maxWidth 互斥，一旦设定后两者自动失效 | Fixed width (px or any CSS width); mutually exclusive with minWidth/maxWidth — once set, the other two are ignored |
 | `minWidth` | `number \| string` | — | 最小宽：width 未设时生效 | Minimum width: applies only when width is unset |
 | `maxWidth` | `number \| string` | — | 最大宽：width 未设时生效，文字超出折叠成省略号，hover 以跑马灯展开 | Maximum width: applies only when width is unset; overflowing text collapses to an ellipsis and marquees on hover |
-| `sweep` | `boolean` | false | 常驻扫光：每 1.5s 一道斜光扫过文字，文案不变也能看出在动。`Modal` / `SideSheet` 的 `notice` 默认传 true | Persistent sheen: a slanted highlight crosses the text every 1.5s so a static line still reads as active. The `notice` prop on `Modal` / `SideSheet` passes true by default |
+| `sweep` | `boolean` | false | 常驻扫光：每 1.8s 一道斜光扫过文字，文案不变也能看出在动。`Modal` / `SideSheet` 的 `notice` 默认传 true | Persistent sheen: a slanted highlight crosses the text every 1.8s so a static line still reads as active. The `notice` prop on `Modal` / `SideSheet` passes true by default |
 | `className` | `string` | — | 追加 class（只补字体 / 颜色这类皮肤，布局归组件自己） | Extra class (font / colour skin only; layout belongs to the component) |
 
 ```tsx id="ui-flip-text-example"
