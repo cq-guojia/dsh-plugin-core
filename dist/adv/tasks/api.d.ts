@@ -36,7 +36,9 @@ export interface LayoutClientContext {
  *
  * settledAt 按状态分支校验——终态(done/failed)必须有有限数结算时刻，否则拒收：
  * 展示层靠它算终态行的停留/退场（TaskBar settledAtOf），缺了就永不退场 + 假计时；
- * store 的单调防复活也靠它判断「已终态」。running 帧不得带 settledAt（状态与时钟分离）。
+ * store 的单调防复活用「状态是否终态」（isSettled(state)）判据，不是有无 settledAt——
+ * settledAt 是时钟，可能因重放/擦除而不在，拿它当状态标志会让 guard 静默失效。
+ * running 帧不得带 settledAt（状态与时钟分离）。
  * 校验放在唯一入口，store 只负责合并，不再任何地方本地造时间冒充服务端真源。
  */
 export declare function isTaskRecord(value: unknown): value is TaskRecord;
