@@ -88,13 +88,22 @@
    `store.merge` / `deliverNotice` 里对服务端漏发的这两个字段做了本地兜底，但那是防线不是常态；
    服务端正常必须回填，否则跨页归属与切面板会退化。
 
+  **`key` 与 `project` 都要回显**：`startTask` 先落一条带 `key`/`project`/`group` 的乐观 running 行
+  再发 POST（缺省由核心补齐并随 payload 发出），服务端必须在所有 SSE 帧（`running`/进度/终态）与
+  通知里回显同一个 `key` 和提交体里的 `project`。真源靠同 `(project,key)` 归一覆盖乐观行；任一字段
+  失配会出现「乐观行 + 真源行」两条，且快速任务的终态可能被晚到的乐观行覆回 `running`。提交失败时
+  核心会回滚乐观行，不留幽灵行。
+
   **终态（`done` / `failed`）帧必带 `settledAt`**（有限数结算时刻），`running` 帧不得携带。
   入口 `isTaskRecord` 按状态校验并拒收缺时刻的终态帧；客户端不会用本地时间补服务端时钟。
   服务端是状态真源，SSE 推终态时请务必带上，否则该帧被拒收、任务停在 `running` 并有告警。
 
   **SSE 错误按阶段区分**：鉴权失败（`authorize` 抛错或返回空）401、服务侧故障（订阅/快照/推流失败）503。
-  客户端对暂时故障（5xx/429/网络/已连上后断线）按退避档重试、用尽即通过 `onGiveUp` 上报；
-  对其余 4xx 立即停流（401 供应用刷新凭证后显式重连），不会无限重连。
+  退避档只约束「无数据进展的连接」（连上就 EOF / 首帧前 reject / fetch 失败），用尽即通过
+  `connectTaskCenter({ onGiveUp })` 上报（`onGiveUp` 是 `TaskCenterHost` 字段，默认接线即可拿到）；
+  一旦某轮读到过字节（含保活），无论 EOF 还是异常断开都算有进展、退避归零继续重连。永久错误
+  （其余 4xx）立即停流上报：401 的 `reason.permanent=true`，应用刷新凭证后再调一次
+  `connectTaskCenter` 显式重连（`headers` 是函数会取新 token）。
 
 ## 验证
 

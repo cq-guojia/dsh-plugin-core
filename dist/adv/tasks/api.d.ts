@@ -1,6 +1,7 @@
 import { type NotifyDetail } from '../../runtime/notify.js';
 import { type CoordinatorHost, type TaskCoordinator } from './coordinator.js';
 import type { StartTaskInput, TaskRecord } from './model.js';
+import { type TaskStreamGiveUpReason } from './stream.js';
 /** 挂载选项：列表与 UI 接线共用同一组过滤条件与 handlers。 */
 export interface MountTasksOptions {
     /** 字符串=只收该项目；null / 省略=跨项目收全部。 */
@@ -20,6 +21,11 @@ export interface TaskCenterHost extends CoordinatorHost {
     submitUrl?: string;
     /** SSE / 提交请求头（鉴权 token 等）。 */
     headers?: () => Record<string, string>;
+    /**
+     * SSE 放弃回调（退避用尽 / 不可重试错误，如 401）。默认接线在此收到信号后可以刷新凭证、
+     * 再调一次 connectTaskCenter 显式重连（headers 是函数，天然取新 token）。不传则静默。
+     */
+    onGiveUp?: (reason: TaskStreamGiveUpReason) => void;
 }
 /** 宿主 client ctx 的最小形状：注入 layout 服务拿面板 id 与切面板。 */
 export interface LayoutClientContext {

@@ -1458,6 +1458,9 @@ function serveDemoTasks(ctx) {
       const fail2 = args.fail === true;
       const base = {
         id,
+        // 回显 client 随提交发来的 key：真源所有帧靠同 (project,key) 归一覆盖本地乐观行，
+        // 不回显会与乐观行各占一行。缺省时按 id 兜一个，保证帧间 key 一致。
+        key: typeof payload.key === "string" && payload.key !== "" ? payload.key : id,
         project: String(payload.project ?? "dsh-plugin-core-demo"),
         group: String(payload.group ?? "demo-jobs"),
         title: String(payload.title ?? "\u540E\u53F0\u4EFB\u52A1"),

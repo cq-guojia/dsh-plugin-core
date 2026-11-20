@@ -144,6 +144,28 @@ test('connectTaskCenter：重复接线注入不同 originId，默认 toast 归�
   }
 })
 
+test('connectTaskCenter：onGiveUp 透传到 SSE 流，401 上报且 permanent', async () => {
+  const { connectTaskCenter, taskCenterStore } = await import('../dist/adv/tasks/index.js')
+  const originalFetch = globalThis.fetch
+  const gave = []
+  let off = () => {}
+  try {
+    globalThis.fetch = async () => ({ ok: false, status: 401, body: null })
+    off = connectTaskCenter({
+      streamUrl: '/stream',
+      onGiveUp: (r) => gave.push(r),
+    })
+    await new Promise((r) => setTimeout(r, 60))
+    assert.equal(gave.length, 1, '默认接线收到 401 放弃信号（旧实现 onGiveUp 未透传，恒为 0）')
+    assert.equal(gave[0].status, 401)
+    assert.equal(gave[0].permanent, true, '401 标记为不可重试')
+  } finally {
+    globalThis.fetch = originalFetch
+    off()
+    taskCenterStore.clearAll()
+  }
+})
+
 test('startTask 服务端模式：panelId 与 origin 随 payload 提交、乐观行带上', async () => {
   const { connectTaskCenter, startTask, taskCenterStore } = await import('../dist/adv/tasks/index.js')
   const originalFetch = globalThis.fetch
@@ -158,8 +180,89 @@ test('startTask 服务端模式：panelId 与 origin 随 payload 提交、乐观
     const t = await startTask({ title: '服务端任务', project: 'p', kind: 'demo' })
     assert.equal(sent.panelId, 'panel-x', 'panelId 随提交发出供服务端回填')
     assert.equal(sent.origin, 'tab-z', 'origin 随提交发出')
+    assert.equal(typeof sent.key, 'string', '核心生成 key 随 payload 提交')
     assert.equal(t.panelId, 'panel-x', '乐观行带上 panelId，SSE 到达前也能切回面板')
     assert.equal(t.origin, 'tab-z', '乐观行带上 origin')
+    assert.equal(t.key, sent.key, '乐观行 key 与提交 key 一致')
+  } finally {
+    globalThis.fetch = originalFetch
+    off()
+    taskCenterStore.clearAll()
+  }
+})
+
+test('startTask 服务端模式：SSE 终态先于响应到达时，乐观行不把终态覆回 running', async () => {
+  const { connectTaskCenter, startTask, projectTasks, taskCenterStore } = await import('../dist/adv/tasks/index.js')
+  const originalFetch = globalThis.fetch
+  let off = () => {}
+  try {
+    off = connectTaskCenter({ submitUrl: '/submit' })
+    globalThis.fetch = async (_url, init) => {
+      const payload = JSON.parse(init.body)
+      // 服务端在 HTTP 响应前就完成：模拟 SSE 终态先于响应到达（按 key 归一）。
+      projectTasks([{
+        id: 'srv-done', key: payload.key, project: 'p', group: 'g', title: '服务端任务',
+        state: 'done', startedAt: 1, settledAt: 99,
+      }])
+      return { ok: true, json: async () => ({ id: 'srv-done' }) }
+    }
+    const optimistic = await startTask({ title: '服务端任务', project: 'p', group: 'g', key: 'k-race', kind: 'demo' })
+    const rows = taskCenterStore.select('p')
+    assert.equal(rows.length, 1, '乐观行与真源终态归一成一行，不堆两条')
+    assert.equal(rows[0].id, optimistic.id, '真源按 key 归一后存活 id 仍是 startTask 返回的乐观 id')
+    assert.equal(rows[0].key, 'k-race', 'key 归一后保留')
+    assert.equal(rows[0].state, 'done', '终态不被晚到的乐观行覆回 running')
+    assert.equal(rows[0].settledAt, 99, '权威结算时刻保留')
+  } finally {
+    globalThis.fetch = originalFetch
+    off()
+    taskCenterStore.clearAll()
+  }
+})
+
+test('startTask 服务端模式：提交失败回滚乐观行，不留幽灵 running', async () => {
+  const { connectTaskCenter, startTask, taskCenterStore } = await import('../dist/adv/tasks/index.js')
+  const originalFetch = globalThis.fetch
+  let off = () => {}
+  try {
+    off = connectTaskCenter({ submitUrl: '/submit' })
+    globalThis.fetch = async () => { throw new Error('network down') }
+    await assert.rejects(() => startTask({ title: '失败任务', project: 'p', group: 'g', key: 'k-fail', kind: 'demo' }), /network down/)
+    assert.equal(taskCenterStore.select('p').length, 0, '提交失败后乐观行被回滚，列表无残留')
+  } finally {
+    globalThis.fetch = originalFetch
+    off()
+    taskCenterStore.clearAll()
+  }
+})
+
+test('startTask 服务端模式：省略 project/group 时提交体带核心补齐的缺省值，归一不留幽灵行', async () => {
+  const { connectTaskCenter, startTask, projectTasks, taskCenterStore } = await import('../dist/adv/tasks/index.js')
+  const originalFetch = globalThis.fetch
+  let sent
+  let off = () => {}
+  try {
+    off = connectTaskCenter({ submitUrl: '/submit' })
+    globalThis.fetch = async (_url, init) => {
+      sent = JSON.parse(init.body)
+      // 服务端按自身缺省回显（同 demo 口径）：提交体没带 project 时会与乐观行失配。
+      projectTasks([{
+        id: 'srv-done', key: sent.key,
+        project: sent.project ?? 'dsh-plugin-core-demo',
+        group: sent.group ?? 'demo-jobs',
+        title: '缺省字段任务', state: 'done', startedAt: 1, settledAt: 99,
+      }])
+      return { ok: true, json: async () => ({ id: 'srv-done' }) }
+    }
+    const optimistic = await startTask({ title: '缺省字段任务', key: 'k-default', kind: 'demo' })
+    assert.equal(sent.project, 'default', '提交体带上核心补齐的 project 缺省值')
+    assert.equal(sent.group, 'default', '提交体带上核心补齐的 group 缺省值')
+    assert.equal(optimistic.project, sent.project, '乐观行 project 与提交体一致')
+    assert.equal(optimistic.group, sent.group, '乐观行 group 与提交体一致')
+    const rows = taskCenterStore.select('default')
+    assert.equal(rows.length, 1, '同 (project,key) 归一成一行，不留幽灵 running')
+    assert.equal(rows[0].state, 'done', '终态归一覆盖乐观行')
+    assert.equal(rows[0].id, optimistic.id, '存活 id 仍是乐观 id')
   } finally {
     globalThis.fetch = originalFetch
     off()

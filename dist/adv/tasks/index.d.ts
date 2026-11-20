@@ -6,5 +6,5 @@ export type { ExecutorContext, ExecutorHandler, ExecutorProgress, ExecutorResult
 export type { StartTaskInput, TaskBroadcast, TaskButton, TaskNotifyConfig, TaskNotifyState, TaskProgress, TaskRecord, TaskRowButton, TaskScope, TaskSettlement, TaskState, TaskToastConfig, TaskToastState, TaskWhen, TaskNotificationRecord, } from './model.js';
 export { buttonsForState, notifyForState, toastForState } from './model.js';
 export { connectTaskStream, parseTaskFrames } from './stream.js';
-export type { TaskStreamConnection, TaskStreamOptions } from './stream.js';
+export type { TaskStreamConnection, TaskStreamGiveUpReason, TaskStreamOptions } from './stream.js';
 //# sourceMappingURL=index.d.ts.map

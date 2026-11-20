@@ -27,7 +27,7 @@
 ## 不变量（不可破）
 
 1. **终态只分发一次**：`store` 用 `announced` 去重；本地执行与服务端投影同时到达也不重复弹卡 / 回调。
-2. **终态不被迟到消息复活**：`store.merge` 见到本地已 `settledAt` 的记录时丢弃其 `running` 投影。
+2. **终态不被迟到消息复活**：`store.merge` 见到本地已终态（`done`/`failed`）的记录时丢弃其 `running` 投影（判据是状态，不是 `settledAt` 是否存在——时钟可能因重放/擦除而不在，拿它当状态标志会让 guard 静默失效）。
 3. **按钮查找 handler 后切面板执行**：`press(buttonId, taskId)` 先 `store.get(taskId)` 取记录、`getHandler(buttonId, task.project)` 查本页 handler，找不到直接返回 false（不切面板，避免无意义跳走）；找到才 `host.selectPanel(task.panelId)` 再执行 handler。
    `panelId` 由 `startTask` 从 `layout.panelInfo.getSnapshot().activePanelId` 自动记（宿主 0.2.2-rc.3 核实），消费方不传；本地与服务端模式都记，服务端模式随提交 payload 发出、由服务端回填到记录，服务端没回填时 `store.merge` / `deliverNotice` 保留本地那份。
 4. **按钮所有页都画、不隐藏不置灰**：`scope:'all'` 每页弹卡且每页都有按钮，`scope:'origin'` 只发起页弹卡（其它页无卡自然无按钮）；不按 `getHandler` 过滤。点击走 `press`（查到 handler 才切面板执行）；返回 false（条目失效 / 注册 handler 的插件已卸载）时给一次统一 i18n 提示（`notifyTaskActionFailed()` → `taskbarActionFailed`），不静默。`TaskBar` 可传 `onActionFailure` 自己接管该提示。

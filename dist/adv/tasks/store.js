@@ -103,6 +103,17 @@ function createStore() {
         get(id) {
             return tasks.get(id);
         },
+        removeRunning(id) {
+            const current = tasks.get(id);
+            if (current === undefined || isSettled(current.state))
+                return false;
+            tasks.delete(id);
+            const composite = keyOf(current);
+            if (composite !== undefined && byKey.get(composite) === id)
+                byKey.delete(composite);
+            publish();
+            return true;
+        },
         select(project, groups) {
             const rows = snapshot.tasks;
             if (project === null)

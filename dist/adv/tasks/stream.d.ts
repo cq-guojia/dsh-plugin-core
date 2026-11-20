@@ -7,6 +7,11 @@
  *   - `task-notice`（一次性完成通知）→ onNotice：只有它弹卡，客户端按 notice.id 持久去重。
  * 状态可安全重放；通知的一次性由服务端 id + 客户端持久去重保证，不靠 event 名猜新旧。
  */
+/** 放弃连接的原因：status=0 网络故障；permanent=true 为不可重试（如 401，需刷新凭证后显式重连）。 */
+export interface TaskStreamGiveUpReason {
+    readonly status: number;
+    readonly permanent: boolean;
+}
 export interface TaskStreamOptions {
     /** 路由根，如 `/api/task-center`（服务端 serveTaskStream 的 basePath + /stream）。 */
     readonly streamUrl: string;
@@ -22,10 +27,7 @@ export interface TaskStreamOptions {
      */
     readonly retryDelaysMs?: readonly number[];
     /** 放弃连接时回调（退避次数用尽 / 不可重试错误）。401 用它触发 token 刷新后显式重连。 */
-    readonly onGiveUp?: (reason: {
-        status: number;
-        permanent: boolean;
-    }) => void;
+    readonly onGiveUp?: (reason: TaskStreamGiveUpReason) => void;
 }
 export interface TaskStreamConnection {
     /** 主动断开（页面卸载时调）。 */

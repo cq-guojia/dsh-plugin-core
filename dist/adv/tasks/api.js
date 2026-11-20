@@ -217,6 +217,7 @@ export function connectTaskCenter(host) {
         ownConn = connectTaskStream({
             streamUrl: stableHost.streamUrl,
             headers: stableHost.headers,
+            onGiveUp: stableHost.onGiveUp,
             onTask: (task) => { ingestTask(task); },
             onNotice: ingestNotice,
         });
@@ -257,25 +258,41 @@ export async function startTask(input) {
         ...(origin === undefined ? {} : { origin }),
         ...(panelId === undefined ? {} : { panelId }),
     };
-    const res = await fetch(stableHost.submitUrl, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json', ...stableHost.headers?.() },
-        body: JSON.stringify(Object.keys(extra).length === 0 ? input : { ...input, ...extra }),
-    });
-    if (!res.ok)
-        throw new Error(`task submit failed: ${res.status}`);
-    const ack = (await res.json());
+    // 归一键是 (project,key)：乐观行与提交体必须用同一份补过缺省的 project/key，服务端回显后
+    // 真源帧才能归一覆盖乐观行。缺省在此算一次、两处复用，避免各自补缺省失配留下幽灵 running 行。
+    const project = input.project ?? 'default';
+    const group = input.group ?? 'default';
+    const key = input.key ?? `submit:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`;
+    const optimisticId = `submit:${key}`;
     const optimistic = {
-        id: ack.id ?? `submit:${Date.now()}`,
-        project: input.project ?? 'default',
-        group: input.group ?? 'default',
+        id: optimisticId,
+        key,
+        project,
+        group,
         title: input.title,
         state: 'running',
         startedAt: Date.now(),
         ...extra,
     };
-    // 本地先落一条，SSE 到达后按同 id 覆盖；避免提交到推送之间的空窗看不到任务。
+    // 先落乐观行、再发请求：关闭「服务端已完成且 SSE 终态先到、随后乐观行把它覆回 running」的
+    // 时序窗口。真源终态靠同 key 归一覆盖这条 running；本地这份不再在 await 之后二次写入。
     taskStore.upsert(optimistic);
+    let res;
+    try {
+        res = await fetch(stableHost.submitUrl, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json', ...stableHost.headers?.() },
+            body: JSON.stringify({ ...input, project, group, key, ...extra }),
+        });
+    }
+    catch (error) {
+        taskStore.removeRunning(optimisticId); // 提交失败回滚：不留幽灵 running 行
+        throw error;
+    }
+    if (!res.ok) {
+        taskStore.removeRunning(optimisticId);
+        throw new Error(`task submit failed: ${res.status}`);
+    }
     return optimistic;
 }
 /** 本页接线一次：注册 handlers + 订阅终态。返回注销函数。 */

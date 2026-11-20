@@ -122,14 +122,18 @@ export function connectTaskStream(options) {
                         gotFrame = true;
                     buffer = parseTaskFrames(buffer + decoder.decode(value, { stream: true }), options.onTask, options.onNotice);
                 }
-                // 只有真正传过数据的连接才算「成功连上」：断线是新的一次故障，退避归零。
-                // 若 200 后立即 EOF（网关剥掉 SSE / 服务端 accept 后立刻关），gotFrame=false，
-                // 不归零——否则每轮都从 delays[0] 重来，永不进入 giveUp，形成无限空刷。
-                if (gotFrame)
-                    retry = 0;
             }
             catch {
                 // 主动关闭不重试；其余按上面的 status 分类。
+            }
+            finally {
+                // 只有真正传过数据的连接才算「成功连上」：无论以 EOF 正常收尾还是 read() reject
+                // 收尾，只要本轮读到过字节（含保活）就算有进展，断线是新的一次故障、退避归零。
+                // 放在 finally 而非 try 末尾，才能覆盖 reject 出口；否则「收到帧后异常断线」会
+                // 累积 retry、几次后就 giveUp。若 200 后立即 EOF（gotFrame=false）则不归零，
+                // 否则每轮从 delays[0] 重来、永不 giveUp，形成无限空刷。
+                if (gotFrame)
+                    retry = 0;
             }
             if (closed)
                 return;

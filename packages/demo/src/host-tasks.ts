@@ -81,6 +81,9 @@ export function serveDemoTasks(ctx: HostContextLike): void {
       const fail = args.fail === true
       const base: TaskRecord = {
         id,
+        // 回显 client 随提交发来的 key：真源所有帧靠同 (project,key) 归一覆盖本地乐观行，
+        // 不回显会与乐观行各占一行。缺省时按 id 兜一个，保证帧间 key 一致。
+        key: typeof payload.key === 'string' && payload.key !== '' ? payload.key : id,
         project: String(payload.project ?? 'dsh-plugin-core-demo'),
         group: String(payload.group ?? 'demo-jobs'),
         title: String(payload.title ?? '后台任务'),

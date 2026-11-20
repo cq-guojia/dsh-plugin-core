@@ -124,6 +124,41 @@ test('connectTaskStream：连上后断线会重连（不把 200 当永久错误�
   conn.close()
 })
 
+test('connectTaskStream：收到帧后 read() reject 断开不累积 retry、不 giveUp', async () => {
+  let call = 0
+  const encoder = new TextEncoder()
+  // 每轮推一帧后以 reject 断开（网络切换/代理超时）——都是有数据进展的真连接。
+  const fakeFetch = async () => {
+    call += 1
+    return {
+      ok: true, status: 200,
+      body: {
+        getReader() {
+          let sent = false
+          return {
+            async read() {
+              if (sent) throw new Error('connection reset')
+              sent = true
+              return { done: false, value: encoder.encode('event: task\ndata: {"id":"x"}\n\n') }
+            },
+          }
+        },
+      },
+    }
+  }
+  const gave = []
+  const conn = connectTaskStream({
+    streamUrl: '/x', fetchImpl: fakeFetch, retryDelaysMs: [5, 5, 5],
+    onGiveUp: (r) => gave.push(r),
+  })
+  await new Promise((r) => setTimeout(r, 90))
+  // 修复前：retry 在 catch 路径不归零，第 4 轮（delays 用尽）就 giveUp；
+  // 修复后：finally 里按 gotFrame 归零，每轮都从 delays[0] 重来但始终有进展，不 giveUp。
+  assert.ok(call > 4, '有数据进展的断线持续重连，不受退避用尽限制')
+  assert.equal(gave.length, 0, '不误报 giveUp')
+  conn.close()
+})
+
 test('connectTaskStream：每轮 200 后立即 EOF（假连接）不无限空刷，退避用尽即放弃', async () => {
   let call = 0
   // 每轮都返回 200 + 立即 EOF、从不推帧——模拟网关剥掉 SSE / accept 后立刻关流。

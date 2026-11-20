@@ -57407,6 +57407,17 @@ function createStore3() {
     get(id3) {
       return tasks2.get(id3);
     },
+    removeRunning(id3) {
+      const current3 = tasks2.get(id3);
+      if (current3 === void 0 || isSettled(current3.state))
+        return false;
+      tasks2.delete(id3);
+      const composite = keyOf(current3);
+      if (composite !== void 0 && byKey.get(composite) === id3)
+        byKey.delete(composite);
+      publish();
+      return true;
+    },
     select(project, groups) {
       const rows = snapshot.tasks;
       if (project === null)
@@ -57702,9 +57713,10 @@ function connectTaskStream(options) {
             gotFrame = true;
           buffer = parseTaskFrames(buffer + decoder.decode(value, { stream: true }), options.onTask, options.onNotice);
         }
+      } catch {
+      } finally {
         if (gotFrame)
           retry = 0;
-      } catch {
       }
       if (closed)
         return;
@@ -57870,6 +57882,7 @@ function connectTaskCenter(host) {
     ownConn = connectTaskStream({
       streamUrl: stableHost.streamUrl,
       headers: stableHost.headers,
+      onGiveUp: stableHost.onGiveUp,
       onTask: (task) => {
         ingestTask(task);
       },
@@ -57904,24 +57917,36 @@ async function startTask(input) {
     ...origin === void 0 ? {} : { origin },
     ...panelId === void 0 ? {} : { panelId }
   };
-  const res = await fetch(stableHost.submitUrl, {
-    method: "POST",
-    headers: { "content-type": "application/json", ...stableHost.headers?.() },
-    body: JSON.stringify(Object.keys(extra).length === 0 ? input : { ...input, ...extra })
-  });
-  if (!res.ok)
-    throw new Error(`task submit failed: ${res.status}`);
-  const ack = await res.json();
+  const project = input.project ?? "default";
+  const group = input.group ?? "default";
+  const key = input.key ?? `submit:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`;
+  const optimisticId = `submit:${key}`;
   const optimistic = {
-    id: ack.id ?? `submit:${Date.now()}`,
-    project: input.project ?? "default",
-    group: input.group ?? "default",
+    id: optimisticId,
+    key,
+    project,
+    group,
     title: input.title,
     state: "running",
     startedAt: Date.now(),
     ...extra
   };
   taskStore.upsert(optimistic);
+  let res;
+  try {
+    res = await fetch(stableHost.submitUrl, {
+      method: "POST",
+      headers: { "content-type": "application/json", ...stableHost.headers?.() },
+      body: JSON.stringify({ ...input, project, group, key, ...extra })
+    });
+  } catch (error) {
+    taskStore.removeRunning(optimisticId);
+    throw error;
+  }
+  if (!res.ok) {
+    taskStore.removeRunning(optimisticId);
+    throw new Error(`task submit failed: ${res.status}`);
+  }
   return optimistic;
 }
 function mountTaskUI(options) {
@@ -70523,8 +70548,8 @@ h(SideSheet, {
     },
     "prose": [
       {
-        "zh": '\u670D\u52A1\u7AEF\u662F\u72B6\u6001\u771F\u6E90\uFF1A\u4EFB\u52A1\u6267\u884C\u3001\u8FDB\u5EA6\u63A8\u8FDB\u3001\u7EC8\u6001\u5224\u5B9A\u90FD\u5728\u670D\u52A1\u7AEF\u3002`serveTaskStream` \u6CE8\u518C\u4E00\u6761 SSE \u8DEF\u7531\uFF0C\u4E09\u6761\u6D41\u7269\u7406\u9694\u79BB\uFF1A`event: task-snapshot`\uFF08\u5168\u91CF\u57FA\u7EBF\uFF09\u4E0E `event: task`\uFF08\u8FDB\u5EA6/\u7EC8\u6001\u72B6\u6001\uFF09\u53EA\u6295\u5F71\u5217\u8868\u3001**\u6C38\u4E0D\u5F39\u5361**\uFF1B`event: task-notice`\uFF08\u5E26\u552F\u4E00 id \u7684\u4E00\u6B21\u6027\u5B8C\u6210\u901A\u77E5\uFF09\u624D\u89E6\u53D1 toast/notify\u3002`authorize` \u5F3A\u5236\u5FC5\u586B\uFF0C\u5F52\u5C5E\u8FC7\u6EE4\u5728\u670D\u52A1\u7AEF\u6309 viewer \u505A\u3002\u670D\u52A1\u7AEF\u6309\u9636\u6BB5\u5206\u7C7B\u9519\u8BEF\uFF1A\u9274\u6743\u5931\u8D25\uFF08`authorize` \u629B\u9519\u6216\u8FD4\u56DE\u7A7A\uFF09\u56DE 401\uFF0C\u670D\u52A1\u4FA7\u6545\u969C\uFF08\u8BA2\u9605/\u5FEB\u7167/\u63A8\u6D41\u5931\u8D25\uFF09\u56DE 503\u2014\u2014\u7EDD\u4E0D\u628A\u670D\u52A1\u6545\u969C\u5199\u6210 401\u3002\u5BA2\u6237\u7AEF `connectTaskCenter({ streamUrl })` \u8BA2\u9605\uFF1A\u6682\u65F6\u6545\u969C\uFF085xx/429/\u7F51\u7EDC\u5931\u8D25/\u5DF2\u8FDE\u4E0A\u540E\u65AD\u7EBF\uFF09\u6309\u9000\u907F\u6863\u91CD\u8BD5\u3001\u6863\u4F4D\u7528\u5C3D\u5373\u653E\u5F03\u5E76\u56DE\u8C03 `onGiveUp`\uFF1B\u6C38\u4E45\u9519\u8BEF\uFF08\u5176\u4F59 4xx\uFF09\u7ACB\u5373\u505C\u6D41\u5E76\u4E0A\u62A5\uFF08401 \u4F9B\u5E94\u7528\u5237\u65B0\u51ED\u8BC1\u540E\u663E\u5F0F\u91CD\u8FDE\uFF09\u2014\u2014\u4E0D\u4F1A\u65E0\u9650\u91CD\u8FDE\u3002\u901A\u77E5\u6309 id \u5B58 sessionStorage \u53BB\u91CD\uFF08\u6709\u754C\uFF09\uFF0C\u5237\u65B0 / \u91CD\u8FDE\u91CD\u63A8\u5386\u53F2\u4E0D\u4F1A\u91CD\u5F39\uFF0C\u800C\u6BCF\u4E2A\u6807\u7B7E\u9875\u5404\u81EA\u72EC\u7ACB\uFF0C\u5173\u9875\u5373\u6E05\u2014\u2014`scope:"all"` \u624D\u80FD\u8BA9\u540C\u6E90\u6BCF\u4E2A\u9875\u9762\u5404\u5F39\u4E00\u6B21\u3002\u65AD\u7EBF\u671F\u95F4\u7ED3\u7B97\u7684\u901A\u77E5\u9760\u670D\u52A1\u7AEF source \u7684 outbox \u56DE\u653E\u8865\u53D1\u3002\u5173\u952E\u4E0D\u53D8\u91CF\uFF1A\u72B6\u6001\u53EF\u53CD\u590D\u91CD\u653E\uFF0C\u901A\u77E5\u662F\u4E00\u6B21\u6027\u4E8B\u4EF6\u2014\u2014\u5F39\u5361\u7EDD\u4E0D\u6302\u5728\u72B6\u6001\u6295\u5F71\u4E0A\uFF08\u53C2\u7167 ledger \u7684\u901A\u9053 A/B \u6A21\u5F0F\uFF09\u3002',
-        "en": 'The server owns the truth: execution, progress and settlement all happen there. `serveTaskStream` registers one SSE route with three physically separated streams: `event: task-snapshot` (full baseline) and `event: task` (progress/terminal state) only project the list and **never announce**; `event: task-notice` (a one-shot completion event with a unique id) is the only toast/notify trigger. `authorize` is mandatory and viewer-based ownership filtering happens server-side. Errors are classified by phase: auth failure (`authorize` throws or returns empty) is 401, service-side failure (subscribe/snapshot/streaming) is 503 \u2014 a service fault is never written as 401. Clients subscribe with `connectTaskCenter({ streamUrl })`: transient faults (5xx/429/network/post-connect disconnect) retry with bounded backoff and give up via `onGiveUp` when the delay list is exhausted; permanent faults (other 4xx) stop immediately and report (401 lets the app refresh credentials and reconnect explicitly) \u2014 no infinite reconnect. Notices are de-duplicated by id in sessionStorage (bounded), so refresh / reconnect replays of history never re-announce, while each tab keeps its own copy and clears on close \u2014 that is what lets `scope:"all"` announce once per same-origin page. Notices settled during a disconnect are replayed from the server source outbox. Core invariant: state is replayable, notices are one-shot \u2014 announcing is never wired to state projection (mirrors ledger\'s channel A/B pattern).'
+        "zh": '\u670D\u52A1\u7AEF\u662F\u72B6\u6001\u771F\u6E90\uFF1A\u4EFB\u52A1\u6267\u884C\u3001\u8FDB\u5EA6\u63A8\u8FDB\u3001\u7EC8\u6001\u5224\u5B9A\u90FD\u5728\u670D\u52A1\u7AEF\u3002`serveTaskStream` \u6CE8\u518C\u4E00\u6761 SSE \u8DEF\u7531\uFF0C\u4E09\u6761\u6D41\u7269\u7406\u9694\u79BB\uFF1A`event: task-snapshot`\uFF08\u5168\u91CF\u57FA\u7EBF\uFF09\u4E0E `event: task`\uFF08\u8FDB\u5EA6/\u7EC8\u6001\u72B6\u6001\uFF09\u53EA\u6295\u5F71\u5217\u8868\u3001**\u6C38\u4E0D\u5F39\u5361**\uFF1B`event: task-notice`\uFF08\u5E26\u552F\u4E00 id \u7684\u4E00\u6B21\u6027\u5B8C\u6210\u901A\u77E5\uFF09\u624D\u89E6\u53D1 toast/notify\u3002`authorize` \u5F3A\u5236\u5FC5\u586B\uFF0C\u5F52\u5C5E\u8FC7\u6EE4\u5728\u670D\u52A1\u7AEF\u6309 viewer \u505A\u3002\u670D\u52A1\u7AEF\u6309\u9636\u6BB5\u5206\u7C7B\u9519\u8BEF\uFF1A\u9274\u6743\u5931\u8D25\uFF08`authorize` \u629B\u9519\u6216\u8FD4\u56DE\u7A7A\uFF09\u56DE 401\uFF0C\u670D\u52A1\u4FA7\u6545\u969C\uFF08\u8BA2\u9605/\u5FEB\u7167/\u63A8\u6D41\u5931\u8D25\uFF09\u56DE 503\u2014\u2014\u7EDD\u4E0D\u628A\u670D\u52A1\u6545\u969C\u5199\u6210 401\u3002\u5BA2\u6237\u7AEF `connectTaskCenter({ streamUrl, onGiveUp })` \u8BA2\u9605\uFF1A\u9000\u907F\u6863\u53EA\u7EA6\u675F\u300C\u65E0\u6570\u636E\u8FDB\u5C55\u7684\u8FDE\u63A5\u300D\uFF08\u8FDE\u4E0A\u5C31 EOF\u3001\u9996\u5E27\u524D reject\u3001fetch \u5931\u8D25\uFF09\uFF0C\u6863\u4F4D\u7528\u5C3D\u5373\u653E\u5F03\u5E76\u56DE\u8C03 `onGiveUp`\uFF1B\u4E00\u65E6\u67D0\u8F6E\u8BFB\u5230\u8FC7\u5B57\u8282\uFF08\u542B\u4FDD\u6D3B\uFF09\uFF0C\u65E0\u8BBA EOF \u8FD8\u662F\u5F02\u5E38\u65AD\u5F00\u90FD\u7B97\u6709\u8FDB\u5C55\u3001\u9000\u907F\u5F52\u96F6\u7EE7\u7EED\u91CD\u8FDE\uFF1B\u6C38\u4E45\u9519\u8BEF\uFF08\u5176\u4F59 4xx\uFF09\u7ACB\u5373\u505C\u6D41\u5E76\u4E0A\u62A5\u3002`onGiveUp` \u662F `TaskCenterHost` \u5B57\u6BB5\u3001\u9ED8\u8BA4\u63A5\u7EBF\u5373\u53EF\u62FF\u5230\uFF08401 \u7684 `reason.permanent=true`\uFF0C\u5E94\u7528\u636E\u6B64\u5237\u65B0\u51ED\u8BC1\u540E\u518D\u8C03\u4E00\u6B21 `connectTaskCenter` \u663E\u5F0F\u91CD\u8FDE\uFF0C`headers` \u662F\u51FD\u6570\u4F1A\u53D6\u65B0 token\uFF09\u3002\u901A\u77E5\u6309 id \u5B58 sessionStorage \u53BB\u91CD\uFF08\u6709\u754C\uFF09\uFF0C\u5237\u65B0 / \u91CD\u8FDE\u91CD\u63A8\u5386\u53F2\u4E0D\u4F1A\u91CD\u5F39\uFF0C\u800C\u6BCF\u4E2A\u6807\u7B7E\u9875\u5404\u81EA\u72EC\u7ACB\uFF0C\u5173\u9875\u5373\u6E05\u2014\u2014`scope:"all"` \u624D\u80FD\u8BA9\u540C\u6E90\u6BCF\u4E2A\u9875\u9762\u5404\u5F39\u4E00\u6B21\u3002\u65AD\u7EBF\u671F\u95F4\u7ED3\u7B97\u7684\u901A\u77E5\u9760\u670D\u52A1\u7AEF source \u7684 outbox \u56DE\u653E\u8865\u53D1\u3002\u5173\u952E\u4E0D\u53D8\u91CF\uFF1A\u72B6\u6001\u53EF\u53CD\u590D\u91CD\u653E\uFF0C\u901A\u77E5\u662F\u4E00\u6B21\u6027\u4E8B\u4EF6\u2014\u2014\u5F39\u5361\u7EDD\u4E0D\u6302\u5728\u72B6\u6001\u6295\u5F71\u4E0A\uFF08\u53C2\u7167 ledger \u7684\u901A\u9053 A/B \u6A21\u5F0F\uFF09\u3002',
+        "en": 'The server owns the truth: execution, progress and settlement all happen there. `serveTaskStream` registers one SSE route with three physically separated streams: `event: task-snapshot` (full baseline) and `event: task` (progress/terminal state) only project the list and **never announce**; `event: task-notice` (a one-shot completion event with a unique id) is the only toast/notify trigger. `authorize` is mandatory and viewer-based ownership filtering happens server-side. Errors are classified by phase: auth failure (`authorize` throws or returns empty) is 401, service-side failure (subscribe/snapshot/streaming) is 503 \u2014 a service fault is never written as 401. Clients subscribe with `connectTaskCenter({ streamUrl, onGiveUp })`: the bounded retry applies only to connections with **no data progress** (immediate EOF, reject before first frame, fetch failure) \u2014 exhausting the delays gives up and calls `onGiveUp`; once a round has read any bytes (keep-alive included), EOF or abnormal disconnect both count as progress and reset the budget to keep reconnecting; permanent faults (other 4xx) stop immediately and report. `onGiveUp` is a `TaskCenterHost` field available on the default wiring (401 has `reason.permanent=true`; the app refreshes credentials then calls `connectTaskCenter` again to reconnect explicitly \u2014 `headers` is a function and picks up the new token). Notices are de-duplicated by id in sessionStorage (bounded), so refresh / reconnect replays of history never re-announce, while each tab keeps its own copy and clears on close \u2014 that is what lets `scope:"all"` announce once per same-origin page. Notices settled during a disconnect are replayed from the server source outbox. Core invariant: state is replayable, notices are one-shot \u2014 announcing is never wired to state projection (mirrors ledger\'s channel A/B pattern).'
       },
       {
         "zh": "`connectTaskLayout(ctx)` \u662F\u4ECE\u5BBF\u4E3B client ctx \u63A5 layout \u7684\u4FBF\u6377\u5165\u53E3\uFF1A\u901A\u8FC7 `ctx.inject(['layout'])` \u62FF layout \u670D\u52A1\uFF0C\u53D1\u8D77\u65F6\u4ECE `panelInfo.getSnapshot().activePanelId` \u81EA\u52A8\u8BB0\u9762\u677F\uFF08\u5BBF\u4E3B 0.2.2-rc.3 \u6838\u5B9E\uFF0C\u4E0D\u5728 ILayout \u9876\u5C42\uFF09\uFF0C\u70B9\u6309\u94AE\u65F6\u7528 `selectPanel(panelId)` \u5207\u56DE\u3002\u4E0D\u4F20 `streamUrl` \u65F6\u662F\u7EAF\u672C\u5730\u5185\u5B58\u6A21\u5F0F\uFF0C\u9002\u5408\u5355\u6D4B\u4E0E\u9884\u89C8\u7AD9\u3002",
@@ -70599,8 +70624,8 @@ h(SideSheet, {
     },
     "prose": [
       {
-        "zh": "\u8BB0\u5F55\u5168\u662F\u670D\u52A1\u7AEF\u4E0B\u53D1\u6216\u8C03\u7528\u65B9\u7ED9\u7684\u7EAF\u6570\u636E\uFF0C\u8DE8\u9875\u514B\u9686\u5B89\u5168\u3001\u65E0\u51FD\u6570\u3002\u8EAB\u4EFD\u5B57\u6BB5\uFF1A`id`\u3001`key`\uFF08\u540C\u9879\u76EE\u5E42\u7B49\uFF09\u3001`project` / `group`\uFF08\u4E24\u7EA7\u5206\u7EC4\uFF09\u3001`startedAt`\uFF1B\u5F52\u5C5E\u5B57\u6BB5\uFF1A`panelId`\uFF08\u6838\u5FC3\u81EA\u52A8\u8BB0\uFF0C\u70B9\u6309\u94AE\u5207\u56DE\u9762\u677F\u7528\uFF09\u3001`origin`\uFF08\u6838\u5FC3\u81EA\u52A8\u8BB0\u7684\u53D1\u8D77\u6807\u7B7E\u9875 id\uFF0Cscope:origin \u636E\u6B64\u5224\u5B9A\u5F39\u5361\uFF09\uFF1B\u6267\u884C\u5B57\u6BB5\uFF1A`kind` / `args` / `detail` / `icon`\uFF1B\u5C55\u793A\u5B57\u6BB5\uFF1A`progress` / `toast` / `notify` / `rowButtons`\uFF1B\u7EC8\u6001\u5B57\u6BB5\uFF1A`state` / `reason` / `settledAt`\u3002`settledAt` \u662F\u7EC8\u6001\uFF08`done` / `failed`\uFF09\u7684**\u5FC5\u586B\u6709\u9650\u6570**\u7ED3\u7B97\u65F6\u523B\uFF0C\u7531\u7EC8\u6001\u771F\u6E90\uFF08\u672C\u5730\u6267\u884C\u5668\u6216\u670D\u52A1\u7AEF\uFF09\u7ED9\u51FA\uFF0C`running` \u5E27\u4E0D\u5F97\u643A\u5E26\uFF1B\u5165\u53E3 `isTaskRecord` \u6309\u72B6\u6001\u6821\u9A8C\uFF0C\u7EC8\u6001\u7F3A\u7ED3\u7B97\u65F6\u523B\u7684\u5E27\u88AB\u62D2\u6536\u2014\u2014\u5217\u8868\u9760\u5B83\u7B97\u7EC8\u6001\u884C\u505C\u7559\u4E0E\u9000\u573A\uFF0C\u7F3A\u4E86\u4F1A\u5BFC\u81F4\u7EC8\u6001\u884C\u4E0D\u6D88\u5931\u3001\u663E\u793A\u5047\u8BA1\u65F6\u3002\u670D\u52A1\u7AEF SSE \u662F\u72B6\u6001\u771F\u6E90\uFF0C\u8BF7\u52FF\u7701\u7565\uFF1B\u5BA2\u6237\u7AEF\u4E0D\u4F1A\u8865\u672C\u5730\u65F6\u95F4\u5192\u5145\u670D\u52A1\u7AEF\u65F6\u949F\u3002",
-        "en": "A record is all plain data from the server or the caller \u2014 structured-clone safe, no functions. Identity: `id`, `key` (idempotent per project), `project` / `group` (two-level grouping), `startedAt`; ownership: `panelId` (core-recorded, used to switch back on button presses) and `origin` (core-recorded originating tab id, the basis for scope:origin announcement); execution: `kind` / `args` / `detail` / `icon`; presentation: `progress` / `toast` / `notify` / `rowButtons`; terminal: `state` / `reason` / `settledAt`. `settledAt` is a **required finite number** for terminal states (`done` / `failed`), supplied by the terminal authority (local executor or server); `running` frames must not carry it. `isTaskRecord` validates by state and rejects terminal frames missing it \u2014 the list needs it for terminal row retention/eviction; without it rows never leave and show a fake timer. The server is the state source of truth via SSE: do not omit it; the client never injects a local timestamp to impersonate the server clock."
+        "zh": "\u8BB0\u5F55\u5168\u662F\u670D\u52A1\u7AEF\u4E0B\u53D1\u6216\u8C03\u7528\u65B9\u7ED9\u7684\u7EAF\u6570\u636E\uFF0C\u8DE8\u9875\u514B\u9686\u5B89\u5168\u3001\u65E0\u51FD\u6570\u3002\u8EAB\u4EFD\u5B57\u6BB5\uFF1A`id`\u3001`key`\uFF08\u540C\u9879\u76EE\u5E42\u7B49\uFF09\u3001`project` / `group`\uFF08\u4E24\u7EA7\u5206\u7EC4\uFF09\u3001`startedAt`\uFF1B\u5F52\u5C5E\u5B57\u6BB5\uFF1A`panelId`\uFF08\u6838\u5FC3\u81EA\u52A8\u8BB0\uFF0C\u70B9\u6309\u94AE\u5207\u56DE\u9762\u677F\u7528\uFF09\u3001`origin`\uFF08\u6838\u5FC3\u81EA\u52A8\u8BB0\u7684\u53D1\u8D77\u6807\u7B7E\u9875 id\uFF0Cscope:origin \u636E\u6B64\u5224\u5B9A\u5F39\u5361\uFF09\uFF1B\u6267\u884C\u5B57\u6BB5\uFF1A`kind` / `args` / `detail` / `icon`\uFF1B\u5C55\u793A\u5B57\u6BB5\uFF1A`progress` / `toast` / `notify` / `rowButtons`\uFF1B\u7EC8\u6001\u5B57\u6BB5\uFF1A`state` / `reason` / `settledAt`\u3002`settledAt` \u662F\u7EC8\u6001\uFF08`done` / `failed`\uFF09\u7684**\u5FC5\u586B\u6709\u9650\u6570**\u7ED3\u7B97\u65F6\u523B\uFF0C\u7531\u7EC8\u6001\u771F\u6E90\uFF08\u672C\u5730\u6267\u884C\u5668\u6216\u670D\u52A1\u7AEF\uFF09\u7ED9\u51FA\uFF0C`running` \u5E27\u4E0D\u5F97\u643A\u5E26\uFF1B\u5165\u53E3 `isTaskRecord` \u6309\u72B6\u6001\u6821\u9A8C\uFF0C\u7EC8\u6001\u7F3A\u7ED3\u7B97\u65F6\u523B\u7684\u5E27\u88AB\u62D2\u6536\u2014\u2014\u5217\u8868\u9760\u5B83\u7B97\u7EC8\u6001\u884C\u505C\u7559\u4E0E\u9000\u573A\uFF0C\u7F3A\u4E86\u4F1A\u5BFC\u81F4\u7EC8\u6001\u884C\u4E0D\u6D88\u5931\u3001\u663E\u793A\u5047\u8BA1\u65F6\u3002\u670D\u52A1\u7AEF SSE \u662F\u72B6\u6001\u771F\u6E90\uFF0C\u8BF7\u52FF\u7701\u7565\uFF1B\u5BA2\u6237\u7AEF\u4E0D\u4F1A\u8865\u672C\u5730\u65F6\u95F4\u5192\u5145\u670D\u52A1\u7AEF\u65F6\u949F\u3002\u670D\u52A1\u7AEF\u6A21\u5F0F\u4E0B `startTask` \u5148\u843D\u4E00\u6761\u5E26 `key`/`project`/`group` \u7684\u4E50\u89C2 running \u884C\u518D POST\uFF08\u7F3A\u7701\u90FD\u7531\u6838\u5FC3\u8865\u9F50\u5E76\u968F payload \u53D1\u51FA\uFF09\uFF1B**\u670D\u52A1\u7AEF\u5FC5\u987B\u5728\u6240\u6709 SSE \u5E27\u4E0E\u901A\u77E5\u91CC\u56DE\u663E\u540C\u4E00\u4E2A `key` \u548C\u63D0\u4EA4\u4F53\u91CC\u7684 `project`**\uFF08\u5F52\u4E00\u6309 `(project,key)`\uFF09\uFF0C\u771F\u6E90\u624D\u5F52\u4E00\u8986\u76D6\u4E50\u89C2\u884C\u2014\u2014\u5931\u914D\u4F1A\u7559\u4E0B\u4E00\u6761\u6C38\u4E0D\u6D88\u5931\u7684\u5E7D\u7075 `running` \u884C\uFF0C\u4E14\u5FEB\u901F\u4EFB\u52A1\u7684\u7EC8\u6001\u53EF\u80FD\u88AB\u665A\u5230\u7684\u4E50\u89C2\u884C\u8986\u56DE\u3002\u63D0\u4EA4\u5931\u8D25\u6838\u5FC3\u81EA\u52A8\u56DE\u6EDA\u4E50\u89C2\u884C\u3002",
+        "en": "A record is all plain data from the server or the caller \u2014 structured-clone safe, no functions. Identity: `id`, `key` (idempotent per project), `project` / `group` (two-level grouping), `startedAt`; ownership: `panelId` (core-recorded, used to switch back on button presses) and `origin` (core-recorded originating tab id, the basis for scope:origin announcement); execution: `kind` / `args` / `detail` / `icon`; presentation: `progress` / `toast` / `notify` / `rowButtons`; terminal: `state` / `reason` / `settledAt`. `settledAt` is a **required finite number** for terminal states (`done` / `failed`), supplied by the terminal authority (local executor or server); `running` frames must not carry it. `isTaskRecord` validates by state and rejects terminal frames missing it \u2014 the list needs it for terminal row retention/eviction; without it rows never leave and show a fake timer. The server is the state source of truth via SSE: do not omit it; the client never injects a local timestamp to impersonate the server clock. In server mode `startTask` first writes an optimistic running row carrying `key`/`project`/`group` (defaults are filled by the core and sent in the payload); **the server must echo the same `key` and the submitted `project` in every SSE frame and notice** \u2014 reconciliation is by `(project,key)` \u2014 otherwise a ghost `running` row persists and the terminal state of a fast task can be overwritten by the late optimistic write. A failed submit rolls the optimistic row back automatically."
       }
     ],
     "api": [
@@ -75753,9 +75778,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.43.6"}`],
-            [t3("buildDemo"), `v${"0.43.6"}`],
-            [t3("buildStamp"), "261121-003050-102"]
+            [t3("buildCore"), `v${"0.43.7"}`],
+            [t3("buildDemo"), `v${"0.43.7"}`],
+            [t3("buildStamp"), "261121-014111-921"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76070,9 +76095,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.43.6"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.43.6"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261121-003050-102")
+          (0, import_react112.createElement)("span", null, `core v${"0.43.7"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.43.7"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261121-014111-921")
         )
       )
     ),

@@ -7,6 +7,12 @@
  *   - `task-notice`（一次性完成通知）→ onNotice：只有它弹卡，客户端按 notice.id 持久去重。
  * 状态可安全重放；通知的一次性由服务端 id + 客户端持久去重保证，不靠 event 名猜新旧。
  */
+/** 放弃连接的原因：status=0 网络故障；permanent=true 为不可重试（如 401，需刷新凭证后显式重连）。 */
+export interface TaskStreamGiveUpReason {
+  readonly status: number
+  readonly permanent: boolean
+}
+
 export interface TaskStreamOptions {
   /** 路由根，如 `/api/task-center`（服务端 serveTaskStream 的 basePath + /stream）。 */
   readonly streamUrl: string
@@ -22,7 +28,7 @@ export interface TaskStreamOptions {
    */
   readonly retryDelaysMs?: readonly number[]
   /** 放弃连接时回调（退避次数用尽 / 不可重试错误）。401 用它触发 token 刷新后显式重连。 */
-  readonly onGiveUp?: (reason: { status: number; permanent: boolean }) => void
+  readonly onGiveUp?: (reason: TaskStreamGiveUpReason) => void
 }
 
 export interface TaskStreamConnection {
@@ -145,12 +151,15 @@ export function connectTaskStream(options: TaskStreamOptions): TaskStreamConnect
           if (value !== undefined && value.byteLength > 0) gotFrame = true
           buffer = parseTaskFrames(buffer + decoder.decode(value, { stream: true }), options.onTask, options.onNotice)
         }
-        // 只有真正传过数据的连接才算「成功连上」：断线是新的一次故障，退避归零。
-        // 若 200 后立即 EOF（网关剥掉 SSE / 服务端 accept 后立刻关），gotFrame=false，
-        // 不归零——否则每轮都从 delays[0] 重来，永不进入 giveUp，形成无限空刷。
-        if (gotFrame) retry = 0
       } catch {
         // 主动关闭不重试；其余按上面的 status 分类。
+      } finally {
+        // 只有真正传过数据的连接才算「成功连上」：无论以 EOF 正常收尾还是 read() reject
+        // 收尾，只要本轮读到过字节（含保活）就算有进展，断线是新的一次故障、退避归零。
+        // 放在 finally 而非 try 末尾，才能覆盖 reject 出口；否则「收到帧后异常断线」会
+        // 累积 retry、几次后就 giveUp。若 200 后立即 EOF（gotFrame=false）则不归零，
+        // 否则每轮从 delays[0] 重来、永不 giveUp，形成无限空刷。
+        if (gotFrame) retry = 0
       }
       if (closed) return
       // 不可重试（4xx，含 401/403）立即停；可重试的走有上限退避，次数用尽也停。

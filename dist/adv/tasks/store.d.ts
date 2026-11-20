@@ -28,6 +28,12 @@ export interface TaskStore {
     /** 服务端投影一批增量（upsert 语义）；返回真正有变化的记录（id 已归一到存活 id）。 */
     merge(records: readonly TaskRecord[]): readonly TaskRecord[];
     get(id: string): TaskRecord | undefined;
+    /**
+     * 删除一条仍在运行中的乐观行（提交失败回滚用）。
+     * 只删「ident 对应且仍是 running」的记录：真源已改写（终态或别的运行行）时不删，
+     * 避免回滚误伤真实进度。同步清幂等键，publish 通知列表。
+     */
+    removeRunning(id: string): boolean;
     /** 按 project / group 过滤；project 为 null 表示跨项目收全部。 */
     select(project: string | null, groups?: readonly string[]): readonly TaskRecord[];
     /**
