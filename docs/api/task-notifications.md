@@ -116,9 +116,9 @@ serveTaskStream(ctx, {
 
 > EN: Three notification channels: toast, notify, list buttons
 
-三条通道各司其职、互不混用：**Toast** 是终态弹卡，`toast.success` / `toast.failure` 两态完全对称，每态可配 `scope`（`all` 每个页面都弹、`origin` 只发起页弹）与一个按钮（`{ id, text }`）；**notify** 是终态消息，`message` + `detail` 纯数据，`scope` 同上，另有 `broadcast`（`plugin` 同项目 / `global` 同宿主所有插件 / 不写不广播），收到后怎么处理由接收方自己决定；**列表按钮**是 `rowButtons: [{ id, text, when }]`，`when` ∈ `running` / `done` / `failed` / `always`（缺省 always），同一 id 可按状态重复声明，跟着记录走。
+三条通道各司其职、互不混用：**Toast** 是终态弹卡，`toast.success` / `toast.failure` 两态完全对称，每态可配 `scope`（`all` 每个页面都弹、`origin` 只发起页弹）与一个按钮（`{ id, text }`）；**notify** 是终态消息，`message` + `detail` 纯数据，`scope` 同上，核心只把通知发出去、不做任何 UI（弹卡/alert 由接收方自己决定）；`broadcast` 字段保留兼容但核心不再据此决定发不发，范围由订阅方的 scope/project 决定；**列表按钮**是 `rowButtons: [{ id, text, when }]`，`when` ∈ `running` / `done` / `failed` / `always`（缺省 always），同一 id 可按状态重复声明，跟着记录走。
 
-> EN: Three channels with separate jobs: **toast** is the terminal card — `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`{ id, text }`). **Notify** is a terminal message — `message` plus plain `detail`, the same `scope`, and a separate `broadcast` (`plugin` same project, `global` every plugin in the host, omitted means no broadcast); what a receiver does with it is its own decision. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record.
+> EN: Three channels with separate jobs: **toast** is the terminal card — `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`{ id, text }`). **Notify** is a terminal message — `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send — scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record.
 
 按钮 id 查的是本页 `handlers`（列表与 Toast 共用同一份）。**本页没注册的按钮不画**，不出现死按钮。点击先 `selectPanel(panelId)` 切回发起面板，再执行 handler——这样「查看」这类动作才能把 UI 落在正确的面板上；`panelId` 由核心在 `startTask` 时自动记录，消费方不传。终态只分发一次：本地执行与服务端投影不会重复弹卡。
 
@@ -132,12 +132,12 @@ serveTaskStream(ctx, {
 | `toast.<态>.scope` | `'all' \| 'origin'` | — | 'origin' | 所有页面 / 只有发起页 | Every page / originating page only |
 | `notify.<态>.message` | `string` | — | — | 通知正文 | Notification text |
 | `notify.<态>.detail` | `NotifyDetail \| undefined` | — | undefined | 附带的纯 JSON，接收方自己取 | Attached plain JSON, read by the receiver |
-| `notify.<态>.scope` | `'all' \| 'origin'` | — | 'origin' | 所有页面 / 只有发起页；两态可不同 | Every page / originating page only; per state |
-| `notify.<态>.broadcast` | `'plugin' \| 'global' \| undefined` | — | undefined | 同项目 / 同宿主所有插件 / 不广播；不带按钮 | Same project / every plugin in the host / no broadcast; carries no buttons |
+| `notify.<态>.scope` | `'all' \| 'origin'` | — | 'origin' | 所有标签页 / 只在发起的那个标签页（页面级 origin，切面板不影响）；两态可不同 | Every tab / only the originating tab (page-level origin; switching panels does not affect it); per state |
+| `notify.<态>.broadcast` | `'plugin' \| 'global' \| undefined` | — | undefined | 兼容字段：核心忽略它，notify 一律发通知；范围由订阅方的 scope / project 决定 | Compatibility field: ignored by the core — notify always sends; scope is decided by the scope/project chosen by the subscriber |
 | `rowButtons[]` | `readonly TaskRowButton[]` | — | undefined | 列表行按钮声明，文案与 when 跟着记录走 | List-row button declarations; labels and when travel with the record |
 | `rowButtons[].when` | `'running' \| 'done' \| 'failed' \| 'always' \| undefined` | — | 'always' | 显示时机；同一 id 可按状态重复声明 | Visibility; the same id may be declared repeatedly per state |
-| `subscribeTaskNotifications(options)` | `(options) => () => void` | — | — | 收任务广播：scope=plugin 只收同项目，global 收所有；收到纯数据自己处理 | Receive task broadcasts: scope=plugin filters to same project, global receives all; plain data, consumer decides |
-| `mountTaskUI(options)` | `(options: MountTaskUIOptions) => () => void` | — | — | 注册 handlers + 订阅终态；返回注销函数 | Registers handlers and subscribes to terminal states; returns an unsubscribe function |
+| `subscribeTaskNotifications(options)` | `(options) => () => void` | — | — | 收任务广播：scope=plugin 只收同项目（不传 project 时回落全局默认项目，没设则报错），global 收所有；收到纯数据自己处理 | Receive task broadcasts: scope=plugin filters to same project (falls back to the global default project when project is omitted, throws if unset), global receives all; plain data, consumer decides |
+| `mountTaskUI(options)` | `(options: MountTaskUIOptions) => () => void` | — | — | 注册 handlers + 订阅终态；handlers 按 project 命名空间（同名按钮不同项目互不覆盖），返回注销函数 | Registers handlers and subscribes to terminal states; handlers are namespaced by project (same button id in different projects does not collide); returns an unsubscribe function |
 | `TaskBar` | `React component` | — | — | 核心原生展示栏：pill/icon 形态、sm/md/lg 尺寸、固定宽 / 最小宽 / 最大宽，超长 hover 跑马灯；数据来自共享池 | Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool |
 | `pressTaskButton(buttonId, taskId)` | `(buttonId: string, taskId: string) => boolean` | — | — | 先切回发起面板再执行 handler；找不到返回 false | Switches back to the originating panel before running the handler; false when not found |
 
@@ -181,15 +181,16 @@ const off = connectTaskCenter({
 
 > EN: TaskRecord: what one task record holds
 
-记录全是服务端下发或调用方给的纯数据，跨页克隆安全、无函数。身份字段：`id`、`key`（同项目幂等）、`project` / `group`（两级分组）、`startedAt`；归属字段：`panelId`（核心自动记）、`origin`；执行字段：`kind` / `args` / `detail` / `icon`；展示字段：`progress` / `toast` / `notify` / `rowButtons`；终态字段：`state` / `reason` / `settledAt`。
+记录全是服务端下发或调用方给的纯数据，跨页克隆安全、无函数。身份字段：`id`、`key`（同项目幂等）、`project` / `group`（两级分组）、`startedAt`；归属字段：`panelId`（核心自动记，点按钮切回面板用）、`origin`（核心自动记的发起标签页 id，scope:origin 据此判定弹卡）；执行字段：`kind` / `args` / `detail` / `icon`；展示字段：`progress` / `toast` / `notify` / `rowButtons`；终态字段：`state` / `reason` / `settledAt`。
 
-> EN: A record is all plain data from the server or the caller — structured-clone safe, no functions. Identity: `id`, `key` (idempotent per project), `project` / `group` (two-level grouping), `startedAt`; ownership: `panelId` (recorded by the core) and `origin`; execution: `kind` / `args` / `detail` / `icon`; presentation: `progress` / `toast` / `notify` / `rowButtons`; terminal: `state` / `reason` / `settledAt`.
+> EN: A record is all plain data from the server or the caller — structured-clone safe, no functions. Identity: `id`, `key` (idempotent per project), `project` / `group` (two-level grouping), `startedAt`; ownership: `panelId` (core-recorded, used to switch back on button presses) and `origin` (core-recorded originating tab id, the basis for scope:origin announcement); execution: `kind` / `args` / `detail` / `icon`; presentation: `progress` / `toast` / `notify` / `rowButtons`; terminal: `state` / `reason` / `settledAt`.
 
 | 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|
 | `record.state` | `'running' \| 'done' \| 'failed'` | — | 服务端投影下来的事实；终态到达后不再被迟到的 running 复活 | Fact projected from the server; a late running update cannot revive a settled state |
 | `record.progress` | `TaskProgress \| undefined` | undefined | 最后一段话 + 更新时间 + 可选数值，显式字段，不进 detail | Last message + update time + optional numbers, an explicit field never stored in detail |
 | `record.panelId` | `string \| undefined` | undefined | 发起面板；点按钮先切回它，再由 core 自动填 | Originating panel; buttons switch back to it first; filled automatically by the core |
+| `record.origin` | `string \| undefined` | undefined | 发起标签页 id（core 自动记）；scope:origin 只在同 id 标签页弹卡，服务端未回填时按多弹兜底 | Originating tab id (core-recorded); scope:origin announces only on the matching tab, fails open when the server omits it |
 | `startTask(input)` | `(input: StartTaskInput) => Promise<TaskRecord>` | — | 等登记成功，不等跑完；key 同项目幂等 | Resolves on registration, not completion; key is idempotent per project |
 
 ## 更新日志

@@ -1017,7 +1017,13 @@ function serveTaskSubmit(ctx, options) {
       kind: "exact",
       path: options.path,
       handler: async (req, res) => {
-        if (!await options.authorize(req)) {
+        let allowed = false;
+        try {
+          allowed = await options.authorize(req);
+        } catch (error) {
+          console.error("dsh-plugin-core: task submit authorize failed", error);
+        }
+        if (!allowed) {
           res.writeHead(403, JSON_HEADERS);
           res.end(JSON.stringify({ error: "forbidden" }));
           return;
@@ -1386,6 +1392,8 @@ function serveDemoTasks(ctx) {
         title: String(payload.title ?? "\u540E\u53F0\u4EFB\u52A1"),
         state: "running",
         startedAt: Date.now(),
+        // 发起页身份由 client 随 submit 提交：回填到记录后，服务端 notice 才能按 scope:'origin' 只在发起页弹。
+        ...typeof payload.origin === "string" ? { origin: payload.origin } : {},
         ...typeof payload.toast === "object" && payload.toast !== null ? { toast: payload.toast } : {},
         ...typeof payload.notify === "object" && payload.notify !== null ? { notify: payload.notify } : {},
         ...typeof payload.rowButtons === "object" && payload.rowButtons !== null ? { rowButtons: payload.rowButtons } : {}

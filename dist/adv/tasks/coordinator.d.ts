@@ -15,6 +15,11 @@ import { type TaskHandler, type TaskStore } from './store.js';
 export interface CoordinatorHost {
     /** 当前激活面板 id；startTask 时自动记进记录。 */
     activePanelId?(): string | undefined;
+    /**
+     * 当前标签页 id（页面级身份）；startTask 时自动记进 TaskRecord.origin，
+     * 供 scope:'origin' 判定「只在发起页弹卡」。与 panelId（面板级、只管切 UI）是两个维度。
+     */
+    originId?(): string | undefined;
     /** 切回面板；点按钮时先调它，再执行 handler。 */
     selectPanel?(panelId: string): void;
     /** 终态通知（notify 通道）：由调用方决定怎么弹、怎么广播。 */
@@ -52,7 +57,7 @@ export interface TaskCoordinator {
     deliverNotice(notice: TaskNotice): void;
     /** 点按钮：先切回发起面板（同页），再找本页 handler 执行。返回是否找到 handler。 */
     press(buttonId: string, taskId: string): boolean;
-    registerHandlers(map: Readonly<Record<string, TaskHandler>>): () => void;
+    registerHandlers(map: Readonly<Record<string, TaskHandler>>, project?: string | null): () => void;
     onSettled(listener: (s: TaskSettlement) => void): () => void;
 }
 export declare function createCoordinator(options?: CoordinatorOptions): TaskCoordinator;

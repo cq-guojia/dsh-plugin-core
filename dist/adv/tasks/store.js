@@ -62,10 +62,13 @@ function createStore() {
                 const settledAt = old?.settledAt !== undefined && record.settledAt !== undefined
                     ? old.settledAt
                     : record.settledAt;
+                // 消费方服务端未在 submit 回传 origin 时保留本地发起身份，避免 scope:'origin' 判定退化。
+                const origin = record.origin ?? old?.origin;
                 const next = {
                     ...record,
                     id: targetId,
                     ...(settledAt === undefined ? {} : { settledAt }),
+                    ...(origin === undefined ? {} : { origin }),
                 };
                 if (composite !== undefined)
                     byKey.set(composite, next.id);
@@ -86,21 +89,22 @@ function createStore() {
                 return groups === undefined ? rows : rows.filter((t) => groups.includes(t.group));
             return rows.filter((t) => t.project === project && (groups === undefined || groups.includes(t.group)));
         },
-        registerHandlers(map) {
+        registerHandlers(map, project) {
             const registered = [];
             for (const [id, handler] of Object.entries(map)) {
-                handlers.set(id, handler);
-                registered.push([id, handler]);
+                const key = project === undefined || project === null ? id : `${project}\u0000${id}`;
+                handlers.set(key, handler);
+                registered.push([key, handler]);
             }
             return () => {
-                for (const [id, handler] of registered) {
-                    if (handlers.get(id) === handler)
-                        handlers.delete(id);
+                for (const [key, handler] of registered) {
+                    if (handlers.get(key) === handler)
+                        handlers.delete(key);
                 }
             };
         },
-        getHandler(id) {
-            return handlers.get(id);
+        getHandler(id, project) {
+            return handlers.get(`${project}\u0000${id}`) ?? handlers.get(id);
         },
         onSettled(listener) {
             settledListeners.add(listener);
@@ -118,11 +122,11 @@ function createStore() {
         },
         claimSettled(task) {
             const key = settlementKey(task);
-            const at = task.settledAt ?? Date.now();
-            // 同一结算（同 settledAt）重放不重复分发；只有更晚的新结算才能再拿一次声明。
+            // 按结算键去重，不看 settledAt（重放一律不重复分发）；
+            // 重新发起（running）在 upsert 时删除声明，才会放行下一次结算。
             if (announced.has(key))
                 return false;
-            announced.set(key, at);
+            announced.set(key, task.settledAt ?? Date.now());
             return true;
         },
         clear() {

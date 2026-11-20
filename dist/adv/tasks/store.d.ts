@@ -30,15 +30,19 @@ export interface TaskStore {
     get(id: string): TaskRecord | undefined;
     /** 按 project / group 过滤；project 为 null 表示跨项目收全部。 */
     select(project: string | null, groups?: readonly string[]): readonly TaskRecord[];
-    /** 注册按钮 handlers（可增量多次调用，重复 id 覆盖）。返回注销函数。 */
-    registerHandlers(map: Readonly<Record<string, TaskHandler>>): () => void;
-    getHandler(id: string): TaskHandler | undefined;
+    /**
+     * 注册按钮 handlers（可增量多次调用）。project 作命名空间：同 id 不同项目互不覆盖；
+     * project 省略 / null 时落裸 id（跨项目兜底）。返回注销函数。
+     */
+    registerHandlers(map: Readonly<Record<string, TaskHandler>>, project?: string | null): () => void;
+    /** 先按 (project,id) 精确查，未命中回退裸 id 兜底。 */
+    getHandler(id: string, project?: string): TaskHandler | undefined;
     /** 订阅终态。 */
     onSettled(listener: TaskSettledListener): () => void;
     /** 广播终态给订阅者；单个坏监听者不影响其它监听者。 */
     emitSettled(settlement: TaskSettlement): void;
     /**
-     * 声明一次终态分发：同一结算（project + key/id + settledAt）只返回 true 一次；
+     * 声明一次终态分发：同一结算键（project + key/id）只返回 true 一次，不看 settledAt；
      * 同业务键重新发起（running）会重置声明，让下一次结算能正常分发。
      */
     claimSettled(task: TaskRecord): boolean;

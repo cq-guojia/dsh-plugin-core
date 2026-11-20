@@ -25,14 +25,18 @@ export interface TaskCenterHost extends CoordinatorHost {
 export interface LayoutClientContext {
     inject?: (deps: string[], cb: (sub: unknown) => void) => void;
 }
+/** 最小形状校验：畸形 SSE 帧不能进 store 污染列表（startedAt 参与排序，缺了会乱）。 */
+export declare function isTaskRecord(value: unknown): value is TaskRecord;
 /**
  * 默认宿主适配：toast/notify 接到核心已有的提示层。
  *
- * toast 的 scope 用「发起面板」判定：SSE 把同一条终态推给每个页面，每页都收到，
- * 但 `origin` 只在发起面板弹卡——按钮也只在那页显示（别页没有本页 handler，不画死按钮）。
- * notify 的 broadcast 走通知总线发一条纯数据消息，scope 决定发不发；按 project 过滤由订阅侧做。
+ * toast/notify 的 `scope:'origin'` 用「发起标签页」判定（不是面板）：SSE 把同一条终态推给
+ * 每个标签页，但只在发起它的那个标签页弹。`origin` 是页面级身份，随任务记录走；
+ * `panelId` 只管点按钮时切回面板，不参与弹卡归属。
+ * 任一侧缺 origin（服务端没透传 / 宿主没注入）时 fail-open 按「弹」处理——宁可多弹，绝不漏结果。
+ * notify 只把通知发到总线上、不做任何 UI；范围由订阅侧 scope/project 决定。
  */
-export declare function defaultTaskHost(activePanelId?: () => string | undefined): CoordinatorHost;
+export declare function defaultTaskHost(originId?: () => string | undefined): CoordinatorHost;
 /** 接线宿主能力。client apply 调一次；重复调用覆盖字段并重连 SSE，但不换 coordinator。 */
 export declare function connectTaskCenter(host: TaskCenterHost): () => void;
 /**

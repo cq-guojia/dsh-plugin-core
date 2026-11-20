@@ -82,13 +82,15 @@ export function createCoordinator(options = {}) {
             },
         };
         Promise.resolve()
-            .then(() => handler(task.args ?? {}, ctx))
+            // args 输入侧放宽成 object（消费方的 interface 可直接传）；到执行器边界收敛回索引签名。
+            .then(() => handler((task.args ?? {}), ctx))
             .then((result) => announce(store.get(task.id) ?? task, result.outcome, result.reason))
             .catch((error) => announce(store.get(task.id) ?? task, 'failed', String(error)));
     }
     return {
         start(input) {
             const panelId = host.activePanelId?.();
+            const origin = host.originId?.();
             const record = {
                 id: nextId(),
                 ...(input.key === undefined ? {} : { key: input.key }),
@@ -98,6 +100,7 @@ export function createCoordinator(options = {}) {
                 state: 'running',
                 startedAt: Date.now(),
                 ...(panelId === undefined ? {} : { panelId }),
+                ...(origin === undefined ? {} : { origin }),
                 ...(input.kind === undefined ? {} : { kind: input.kind }),
                 ...(input.args === undefined ? {} : { args: input.args }),
                 ...(input.detail === undefined ? {} : { detail: input.detail }),
@@ -121,8 +124,11 @@ export function createCoordinator(options = {}) {
                 return;
             const outcome = task.state; // 上面已收窄
             // 服务端推送的终态先投影进列表（同 id 覆盖乐观记录）；弹卡由 claimSettled 单页内去重。
+            // origin 是页面级身份：服务端没回填时沿用本地发起记录的那份，否则 scope:'origin' 会 fail-open 乱弹。
+            const origin = task.origin ?? store.get(task.id)?.origin;
             const final = {
                 ...task,
+                ...(origin === undefined ? {} : { origin }),
                 ...(task.settledAt === undefined ? { settledAt: Date.now() } : {}),
             };
             announce(final, outcome, final.reason);
@@ -131,16 +137,20 @@ export function createCoordinator(options = {}) {
             const task = store.get(taskId);
             if (task === undefined)
                 return false;
-            const handler = store.getHandler(buttonId);
+            const handler = store.getHandler(buttonId, task.project);
             // 没 handler 就是死按钮：不切面板（避免无意义跳走），直接告知失败。
             if (handler === undefined)
                 return false;
-            if (task.panelId !== undefined)
-                host.selectPanel?.(task.panelId);
-            handler(task);
+            if (task.panelId !== undefined) {
+                const pid = task.panelId;
+                safeCall('selectPanel', () => host.selectPanel?.(pid));
+            }
+            // 找到并调用了 handler 就返回 true；handler 自己内部抛错是它的责任，我们只记录、
+            // 不让异常冒泡打断核心的点击事件（职责分清：我们是联络点，不替被调方修 bug）。
+            safeCall('button handler', () => handler(task));
             return true;
         },
-        registerHandlers: (map) => store.registerHandlers(map),
+        registerHandlers: (map, project) => store.registerHandlers(map, project),
         onSettled: (listener) => store.onSettled(listener),
     };
 }

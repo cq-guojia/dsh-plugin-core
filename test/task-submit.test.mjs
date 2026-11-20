@@ -43,6 +43,34 @@ test('提交端点：鉴权拒绝返回 403', async () => {
   assert.deepEqual(JSON.parse(reply), { error: 'forbidden' })
 })
 
+test('提交端点：authorize 自身抛错也回 403，不挂死请求', async () => {
+  const { routes, ctx } = fakeCtx()
+  serveTaskSubmit(ctx, {
+    path: '/auth-throw',
+    authorize: () => { throw new Error('auth service down') },
+    onSubmit: () => 'x',
+  })
+  const reply = await Promise.race([
+    post(routes.get('/auth-throw'), {}),
+    new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 1000)),
+  ])
+  assert.deepEqual(JSON.parse(reply), { error: 'forbidden' })
+})
+
+test('提交端点：authorize 异步抛错也回 403，不挂死请求', async () => {
+  const { routes, ctx } = fakeCtx()
+  serveTaskSubmit(ctx, {
+    path: '/auth-reject',
+    authorize: async () => { throw new Error('auth down') },
+    onSubmit: () => 'x',
+  })
+  const reply = await Promise.race([
+    post(routes.get('/auth-reject'), {}),
+    new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 1000)),
+  ])
+  assert.deepEqual(JSON.parse(reply), { error: 'forbidden' })
+})
+
 test('刷新恢复：新 SSE 连接从 snapshot 拿到已提交且仍在运行的任务', async () => {
   const { routes, ctx } = fakeCtx()
   const tasks = new Map(), listeners = new Set()

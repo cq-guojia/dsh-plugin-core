@@ -4,6 +4,7 @@ import { createCoordinator } from '../dist/adv/tasks/coordinator.js'
 import { createTaskStore } from '../dist/adv/tasks/store.js'
 import { createExecutorRegistry } from '../dist/runtime/index.js'
 import { parseTaskFrames } from '../dist/adv/tasks/stream.js'
+import { isTaskRecord } from '../dist/adv/tasks/api.js'
 import { serveTaskStream } from '../dist/host/index.js'
 import { rowSettlePhase } from '../dist/adv/tasks/TaskBar.js'
 
@@ -29,6 +30,15 @@ test('加固：同 (project,key) 连续三次 upsert 仍只有一条', () => {
   assert.equal(s.getSnapshot().tasks.length, 1)
   assert.equal(s.getSnapshot().tasks[0].id, 'a')
   assert.equal(s.getSnapshot().tasks[0].title, '3')
+})
+
+test('加固：服务端投影缺 origin 时保留本地发起页身份', () => {
+  const s = createTaskStore()
+  const local = { id: 'a', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1, origin: 'tab-a' }
+  s.upsert(local)
+  // 消费方服务端未在 submit 回传 origin（防御性模拟）⇒ 不能把本地身份冲掉。
+  s.merge([{ id: 'a', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: 9 }])
+  assert.equal(s.get('a').origin, 'tab-a', 'origin 不丢，scope=origin 判定不退化')
 })
 
 test('加固：终态去重按 (project,key) 结算，重放不重复，重新发起后重置', () => {
@@ -92,6 +102,33 @@ test('加固：终态后迟到的 running 投影不复活、不二次分发', ()
   assert.equal(store.get('a').state, 'done')
   assert.equal(store.get('a').settledAt, 10)
   assert.equal(toasts.length, 1, '迟到状态与重复通知都不二次弹')
+})
+
+test('加固：按钮 handler 抛异常不冒泡，press 仍返回 true（联络点不替被调方修 bug）', () => {
+  const { c, store, registry } = setup()
+  registry.register('noop', () => ({ outcome: 'done' }))
+  const task = c.start({ project: 'p', title: 't', kind: 'noop' })
+  let threw = false
+  c.registerHandlers({
+    boom: () => { throw new Error('consumer bug') },
+  })
+  try {
+    const ok = c.press('boom', task.id)
+    assert.equal(ok, true, '找到并调用了 handler ⇒ true，错误只记日志')
+    assert.equal(store.get(task.id).state, 'running', '核心未被 handler 异常打断')
+  } catch {
+    threw = true
+  }
+  assert.equal(threw, false, '异常不得冒泡到点击链')
+})
+
+test('加固：isTaskRecord 拒收 settledAt 非数字的帧，running 帧无 settledAt 仍通过', () => {
+  const base = { id: 'x', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1 }
+  assert.equal(isTaskRecord({ ...base, settledAt: 'oops' }), false, '字符串 settledAt 被拒（避免 NaN）')
+  assert.equal(isTaskRecord({ ...base, settledAt: Number.NaN }), false, 'NaN 被拒')
+  assert.equal(isTaskRecord({ ...base, settledAt: 123 }), true, '数字 settledAt 通过')
+  assert.equal(isTaskRecord({ ...base, state: 'running', settledAt: undefined }), true, 'running 帧无 settledAt 通过')
+  assert.equal(isTaskRecord({ ...base, state: 'running' }), true, 'running 帧根本没这个字段也通过')
 })
 
 test('加固：parseTaskFrames 遇畸形 JSON 丢该帧、保留好帧，不拆流', () => {

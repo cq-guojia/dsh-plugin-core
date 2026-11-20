@@ -38,14 +38,23 @@ export function parseTaskFrames(
 ): string {
   let rest = buffer
   for (;;) {
-    const cut = rest.indexOf('\n\n')
+    // 帧分隔兼容 LF(`\n\n`) 与 CRLF(`\r\n\r\n`)：取更早出现的那个；
+    // 逐帧处理时不整段归一 \r，避免 chunk 边界把 \r\n 拆成两片后再也对不上。
+    const lf = rest.indexOf('\n\n')
+    const crlf = rest.indexOf('\r\n\r\n')
+    const cut = crlf >= 0 && (lf < 0 || crlf < lf) ? crlf : lf
     if (cut < 0) break
+    const sep = cut === crlf && crlf >= 0 ? 4 : 2
     const frame = rest.slice(0, cut)
-    rest = rest.slice(cut + 2)
-    const lines = frame.split('\n')
+    rest = rest.slice(cut + sep)
+    // 按行拆时去掉每行行尾的 \r；多行 data 按 SSE 规范用 \n 拼接。
+    const lines = frame.split(/\r?\n/)
     const event = lines.find((line) => line.startsWith('event:'))?.slice(6).trim()
-    const data = lines.find((line) => line.startsWith('data:'))?.slice(5).trim()
-    if (data === undefined) continue
+    const data = lines
+      .filter((line) => line.startsWith('data:'))
+      .map((line) => line.slice(5).trimStart())
+      .join('\n')
+    if (data === '') continue
     try {
       const payload = JSON.parse(data) as unknown
       if (event === 'task-snapshot') onTask(payload, true)
@@ -58,11 +67,26 @@ export function parseTaskFrames(
   return rest
 }
 
+/** 可取消的退避等待：shutdown abort 时立即 resolve，不让 close 后还挂满 delay。 */
+function sleep(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve) => {
+    if (signal.aborted) { resolve(); return }
+    const onAbort = (): void => { clearTimeout(timer); resolve() }
+    const timer = setTimeout(() => {
+      signal.removeEventListener('abort', onAbort)
+      resolve()
+    }, ms)
+    signal.addEventListener('abort', onAbort, { once: true })
+  })
+}
+
 export function connectTaskStream(options: TaskStreamOptions): TaskStreamConnection {
   const doFetch = options.fetchImpl ?? fetch
   const delays = options.retryDelaysMs ?? [1000, 2000, 4000]
   let controller: AbortController | undefined
   let closed = false
+  // 连接级关闭信号：与每轮的 fetch controller 分开，专门用来打断退避等待。
+  const shutdown = new AbortController()
 
   void (async () => {
     let retry = 0
@@ -94,7 +118,7 @@ export function connectTaskStream(options: TaskStreamOptions): TaskStreamConnect
       if (closed) return
       const delay = delays[Math.min(retry, delays.length - 1)] ?? 4000
       retry += 1
-      await new Promise((resolve) => setTimeout(resolve, delay))
+      await sleep(delay, shutdown.signal)
     }
   })()
 
@@ -102,6 +126,7 @@ export function connectTaskStream(options: TaskStreamOptions): TaskStreamConnect
     close() {
       closed = true
       controller?.abort()
+      shutdown.abort()
     },
   }
 }

@@ -30,7 +30,7 @@ export type TaskBarForm = 'icon' | 'pill'
  */
 export interface TaskActionFailure {
   task: TaskNotificationRecord
-  /** 动作下标（记录里 `actions` 的第几位）。 */
+  /** 可见动作（当前状态按 `when` 过滤后的 `rowButtons`）中的序号，非 `task.rowButtons` 原始下标。 */
   index: number
   /** 动作上的文案；没配就没有。 */
   label?: string

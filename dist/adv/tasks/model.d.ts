@@ -72,11 +72,16 @@ export interface TaskRecord {
     readonly startedAt: number;
     /** 发起面板 id：点击按钮时先切回这个面板再执行 handler。核心自动记，调用方不传。 */
     readonly panelId?: string;
-    /** 发起页的页面级 id：跨标签页时回源到它执行（同标签页忽略）。 */
+    /**
+     * 发起页的页面级（标签页）id。核心自动记，调用方不传。
+     * 兼作 `scope:'origin'` 的归属判定：通知只在发起它的那个标签页弹。
+     * `panelId` 只管切 UI，不参与弹卡归属——同标签页换面板不影响 origin。
+     */
     readonly origin?: string;
     /** 执行器种类（开放字符串）+ 纯数据参数。 */
     readonly kind?: string;
-    readonly args?: Readonly<Record<string, unknown>>;
+    /** 纯数据：JSON 安全值（普通对象/数组/基本类型），禁 class 实例 / Map / Set / 函数。 */
+    readonly args?: object;
     readonly detail?: NotifyDetail;
     readonly icon?: string;
     /** 最后进度；服务端上报，核心投影。 */
@@ -97,7 +102,8 @@ export interface StartTaskInput {
     readonly title: string;
     readonly key?: string;
     readonly kind: string;
-    readonly args?: Readonly<Record<string, unknown>>;
+    /** 纯数据：JSON 安全值（普通对象/数组/基本类型），禁 class 实例 / Map / Set / 函数。 */
+    readonly args?: object;
     readonly detail?: NotifyDetail;
     readonly icon?: string;
     readonly toast?: TaskToastConfig;

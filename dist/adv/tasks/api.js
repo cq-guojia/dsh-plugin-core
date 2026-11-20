@@ -8,7 +8,7 @@
  * handlers 与 Toast / TaskBar 共用同一份。状态真源在服务端，经 SSE 推 TaskRecord 进来由 coordinator 投影。
  */
 import { notify as notifyCard } from '../../ui/feedback/notify.js';
-import { notifyMessage, subscribeNotifications as subscribeNotifyBus, } from '../../runtime/notify.js';
+import { defaultNotifyScope, notifyMessage, resolveProject, subscribeNotifications as subscribeNotifyBus, } from '../../runtime/notify.js';
 import { createCoordinator } from './coordinator.js';
 import { connectTaskStream } from './stream.js';
 import { taskStore } from './store.js';
@@ -67,6 +67,18 @@ function rememberNotice(id) {
     return true;
 }
 /**
+ * onSettled 的过滤口径，与 store.select()（`store.ts`）逐字一致：
+ * project 为 undefined/null = 跨项目收全部；groups 省略 = 不过滤。
+ * 只作用于消费方回调，不影响核心列表刷新与 toast/notify 弹卡（scope:'all' 仍每页弹）。
+ */
+function matchesMount(task, project, groups) {
+    if (project !== undefined && project !== null && task.project !== project)
+        return false;
+    if (groups !== undefined && !groups.includes(task.group))
+        return false;
+    return true;
+}
+/**
  * 宿主对象是稳定的一份：coordinator 持有它的引用，重复接线只改字段，不重建 coordinator。
  * 重建会连同「终态去重上下文 / 已注册 handlers」一起换掉，是重复弹卡的来源之一。
  */
@@ -74,7 +86,7 @@ const stableHost = {};
 const coordinator = createCoordinator({ host: stableHost });
 let streamConn;
 /** 最小形状校验：畸形 SSE 帧不能进 store 污染列表（startedAt 参与排序，缺了会乱）。 */
-function isTaskRecord(value) {
+export function isTaskRecord(value) {
     if (value === null || typeof value !== 'object')
         return false;
     const v = value;
@@ -83,7 +95,9 @@ function isTaskRecord(value) {
         typeof v.group === 'string' &&
         typeof v.title === 'string' &&
         (v.state === 'running' || v.state === 'done' || v.state === 'failed') &&
-        typeof v.startedAt === 'number');
+        typeof v.startedAt === 'number' &&
+        // settledAt 只在存在时校验类型：running 帧多数没这个字段，不能改成必填整条丢弃。
+        (v.settledAt === undefined || (typeof v.settledAt === 'number' && Number.isFinite(v.settledAt))));
 }
 /** 状态投影（基线 / 增量）：只恢复列表，**不弹卡**。 */
 function ingestTask(raw) {
@@ -108,18 +122,23 @@ function ingestNotice(raw) {
 /**
  * 默认宿主适配：toast/notify 接到核心已有的提示层。
  *
- * toast 的 scope 用「发起面板」判定：SSE 把同一条终态推给每个页面，每页都收到，
- * 但 `origin` 只在发起面板弹卡——按钮也只在那页显示（别页没有本页 handler，不画死按钮）。
- * notify 的 broadcast 走通知总线发一条纯数据消息，scope 决定发不发；按 project 过滤由订阅侧做。
+ * toast/notify 的 `scope:'origin'` 用「发起标签页」判定（不是面板）：SSE 把同一条终态推给
+ * 每个标签页，但只在发起它的那个标签页弹。`origin` 是页面级身份，随任务记录走；
+ * `panelId` 只管点按钮时切回面板，不参与弹卡归属。
+ * 任一侧缺 origin（服务端没透传 / 宿主没注入）时 fail-open 按「弹」处理——宁可多弹，绝不漏结果。
+ * notify 只把通知发到总线上、不做任何 UI；范围由订阅侧 scope/project 决定。
  */
-export function defaultTaskHost(activePanelId) {
-    const isOrigin = (task) => task.panelId === undefined || task.panelId === activePanelId?.();
+export function defaultTaskHost(originId) {
+    const isOrigin = (task) => {
+        const current = originId?.();
+        return current === undefined || task.origin === undefined || task.origin === current;
+    };
     return {
         deliverToast(payload) {
             if (payload.scope === 'origin' && !isOrigin(payload.task))
                 return;
             const opts = { variant: payload.task.state === 'failed' ? 'error' : 'success' };
-            if (payload.buttonId !== undefined && taskStore.getHandler(payload.buttonId) !== undefined) {
+            if (payload.buttonId !== undefined && taskStore.getHandler(payload.buttonId, payload.task.project) !== undefined) {
                 opts.actions = [{
                         text: payload.buttonText ?? payload.buttonId,
                         onClick: () => { pressTaskButton(payload.buttonId, payload.task.id); },
@@ -130,12 +149,8 @@ export function defaultTaskHost(activePanelId) {
         deliverNotify(payload) {
             if (payload.scope === 'origin' && !isOrigin(payload.task))
                 return;
-            if (payload.broadcast === undefined) {
-                notifyCard(payload.message, {
-                    ...(payload.detail === undefined ? {} : { description: JSON.stringify(payload.detail) }),
-                });
-                return;
-            }
+            // notify 只把通知发出去，核心不做任何 UI：弹不弹卡、弹 alert 都由订阅方自己决定。
+            // （只有 toast 是明确要求弹卡的——见 deliverToast。）
             notifyMessage(payload.message, {
                 project: payload.project,
                 group: payload.group,
@@ -147,24 +162,44 @@ export function defaultTaskHost(activePanelId) {
 }
 /** 接线宿主能力。client apply 调一次；重复调用覆盖字段并重连 SSE，但不换 coordinator。 */
 export function connectTaskCenter(host) {
-    const hadDefault = stableHost.deliverToast !== undefined || stableHost.deliverNotify !== undefined;
-    Object.assign(stableHost, host);
-    // 第一次接线时补默认提示层，之后消费方仍可用自己的 deliverToast/deliverNotify 覆盖。
-    if (!hadDefault && stableHost.deliverToast === undefined && stableHost.deliverNotify === undefined) {
-        const defaults = defaultTaskHost(() => stableHost.activePanelId?.());
-        Object.assign(stableHost, defaults);
+    // 只覆盖显式提供的字段：传 undefined 不该抹掉上一次接线得到的 streamUrl/submitUrl 等。
+    const patch = {};
+    for (const [key, value] of Object.entries(host)) {
+        if (value !== undefined)
+            patch[key] = value;
     }
+    Object.assign(stableHost, patch);
+    // toast / notify 两个默认层各自独立补齐：只配了其中一个，另一个仍要有默认，不能永久静默。
+    const pageOrigin = () => defaultNotifyScope().origin;
+    const defaults = defaultTaskHost(pageOrigin);
+    if (stableHost.deliverToast === undefined && defaults.deliverToast !== undefined) {
+        stableHost.deliverToast = defaults.deliverToast;
+    }
+    if (stableHost.deliverNotify === undefined && defaults.deliverNotify !== undefined) {
+        stableHost.deliverNotify = defaults.deliverNotify;
+    }
+    // 页面级身份默认取通知总线的标签页 origin：startTask 本地/服务端两种模式都靠它记 TaskRecord.origin。
+    if (stableHost.originId === undefined)
+        stableHost.originId = pageOrigin;
+    // 新接线先关掉上一条流（防双 SSE 双投影），但返回值只关「自己这条」：
+    // A 接线、B 接线、A 卸载时不能把 B 的流关掉。
     streamConn?.close();
     streamConn = undefined;
+    let ownConn;
     if (stableHost.streamUrl !== undefined) {
-        streamConn = connectTaskStream({
+        ownConn = connectTaskStream({
             streamUrl: stableHost.streamUrl,
             headers: stableHost.headers,
             onTask: (task) => { ingestTask(task); },
             onNotice: ingestNotice,
         });
+        streamConn = ownConn;
     }
-    return () => { streamConn?.close(); streamConn = undefined; };
+    return () => {
+        ownConn?.close();
+        if (streamConn === ownConn)
+            streamConn = undefined;
+    };
 }
 /**
  * 从宿主 client ctx 接 layout：拿到 activePanelId（发起时记进任务）与 selectPanel（点按钮切回面板）。
@@ -184,13 +219,15 @@ export function connectTaskLayout(ctx) {
 }
 /** 发起一次后台任务。await 等登记成功，不等跑完。 */
 export async function startTask(input) {
+    const origin = stableHost.originId?.();
     if (stableHost.submitUrl === undefined)
         return coordinator.start(input);
     // 服务端执行模式：POST 提交，真实记录由服务端经 SSE 推回并投影到本地 store。
+    // origin 作为页面级身份随 payload 提交，供服务端回填到记录（不写进 StartTaskInput 公共契约）。
     const res = await fetch(stableHost.submitUrl, {
         method: 'POST',
         headers: { 'content-type': 'application/json', ...stableHost.headers?.() },
-        body: JSON.stringify(input),
+        body: JSON.stringify(origin === undefined ? input : { ...input, origin }),
     });
     if (!res.ok)
         throw new Error(`task submit failed: ${res.status}`);
@@ -202,6 +239,7 @@ export async function startTask(input) {
         title: input.title,
         state: 'running',
         startedAt: Date.now(),
+        ...(origin === undefined ? {} : { origin }),
     };
     // 本地先落一条，SSE 到达后按同 id 覆盖；避免提交到推送之间的空窗看不到任务。
     taskStore.upsert(optimistic);
@@ -209,11 +247,15 @@ export async function startTask(input) {
 }
 /** 本页接线一次：注册 handlers + 订阅终态。返回注销函数。 */
 export function mountTaskUI(options) {
-    const offHandlers = coordinator.registerHandlers(options.handlers);
+    const offHandlers = coordinator.registerHandlers(options.handlers, options.project);
     // 每次 mount 只注册自己这一个监听：不在共享集合里 fan-out，避免挂 N 次就放大 N 倍。
     const offSettled = options.onSettled === undefined
         ? () => { }
-        : coordinator.onSettled(({ task, outcome }) => { options.onSettled?.(task, outcome); });
+        : coordinator.onSettled(({ task, outcome }) => {
+            if (!matchesMount(task, options.project, options.groups))
+                return;
+            options.onSettled?.(task, outcome);
+        });
     return () => { offHandlers(); offSettled(); };
 }
 /** 点列表 / Toast 按钮：先切回发起面板，再执行本页 handler。 */
@@ -227,8 +269,9 @@ export function projectTasks(records) {
 /** 列表控件读取用的 store 快照。 */
 export const taskCenterStore = taskStore;
 export function subscribeTaskNotifications(options) {
+    const project = options.scope === 'plugin' ? resolveProject(options.project) : undefined;
     return subscribeNotifyBus((msg) => {
-        if (options.scope === 'plugin' && msg.project !== options.project)
+        if (options.scope === 'plugin' && msg.project !== project)
             return;
         options.handler({
             project: msg.project,

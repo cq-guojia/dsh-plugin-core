@@ -57380,10 +57380,12 @@ function createStore3() {
         if (old !== void 0 && old.settledAt !== void 0 && record.state === "running")
           continue;
         const settledAt = old?.settledAt !== void 0 && record.settledAt !== void 0 ? old.settledAt : record.settledAt;
+        const origin = record.origin ?? old?.origin;
         const next = {
           ...record,
           id: targetId,
-          ...settledAt === void 0 ? {} : { settledAt }
+          ...settledAt === void 0 ? {} : { settledAt },
+          ...origin === void 0 ? {} : { origin }
         };
         if (composite !== void 0)
           byKey.set(composite, next.id);
@@ -57404,21 +57406,22 @@ function createStore3() {
         return groups === void 0 ? rows : rows.filter((t4) => groups.includes(t4.group));
       return rows.filter((t4) => t4.project === project && (groups === void 0 || groups.includes(t4.group)));
     },
-    registerHandlers(map) {
+    registerHandlers(map, project) {
       const registered = [];
       for (const [id3, handler] of Object.entries(map)) {
-        handlers2.set(id3, handler);
-        registered.push([id3, handler]);
+        const key = project === void 0 || project === null ? id3 : `${project}\0${id3}`;
+        handlers2.set(key, handler);
+        registered.push([key, handler]);
       }
       return () => {
-        for (const [id3, handler] of registered) {
-          if (handlers2.get(id3) === handler)
-            handlers2.delete(id3);
+        for (const [key, handler] of registered) {
+          if (handlers2.get(key) === handler)
+            handlers2.delete(key);
         }
       };
     },
-    getHandler(id3) {
-      return handlers2.get(id3);
+    getHandler(id3, project) {
+      return handlers2.get(`${project}\0${id3}`) ?? handlers2.get(id3);
     },
     onSettled(listener) {
       settledListeners.add(listener);
@@ -57437,10 +57440,9 @@ function createStore3() {
     },
     claimSettled(task) {
       const key = settlementKey(task);
-      const at = task.settledAt ?? Date.now();
       if (announced.has(key))
         return false;
-      announced.set(key, at);
+      announced.set(key, task.settledAt ?? Date.now());
       return true;
     },
     clear() {
@@ -57537,6 +57539,7 @@ function createCoordinator(options = {}) {
   return {
     start(input) {
       const panelId = host.activePanelId?.();
+      const origin = host.originId?.();
       const record = {
         id: nextId(),
         ...input.key === void 0 ? {} : { key: input.key },
@@ -57546,6 +57549,7 @@ function createCoordinator(options = {}) {
         state: "running",
         startedAt: Date.now(),
         ...panelId === void 0 ? {} : { panelId },
+        ...origin === void 0 ? {} : { origin },
         ...input.kind === void 0 ? {} : { kind: input.kind },
         ...input.args === void 0 ? {} : { args: input.args },
         ...input.detail === void 0 ? {} : { detail: input.detail },
@@ -57566,8 +57570,10 @@ function createCoordinator(options = {}) {
       if (task.state !== "done" && task.state !== "failed")
         return;
       const outcome = task.state;
+      const origin = task.origin ?? store.get(task.id)?.origin;
       const final = {
         ...task,
+        ...origin === void 0 ? {} : { origin },
         ...task.settledAt === void 0 ? { settledAt: Date.now() } : {}
       };
       announce(final, outcome, final.reason);
@@ -57576,15 +57582,17 @@ function createCoordinator(options = {}) {
       const task = store.get(taskId);
       if (task === void 0)
         return false;
-      const handler = store.getHandler(buttonId);
+      const handler = store.getHandler(buttonId, task.project);
       if (handler === void 0)
         return false;
-      if (task.panelId !== void 0)
-        host.selectPanel?.(task.panelId);
-      handler(task);
+      if (task.panelId !== void 0) {
+        const pid = task.panelId;
+        safeCall("selectPanel", () => host.selectPanel?.(pid));
+      }
+      safeCall("button handler", () => handler(task));
       return true;
     },
-    registerHandlers: (map) => store.registerHandlers(map),
+    registerHandlers: (map, project) => store.registerHandlers(map, project),
     onSettled: (listener) => store.onSettled(listener)
   };
 }
@@ -57593,15 +57601,18 @@ function createCoordinator(options = {}) {
 function parseTaskFrames(buffer, onTask, onNotice) {
   let rest = buffer;
   for (; ; ) {
-    const cut = rest.indexOf("\n\n");
+    const lf = rest.indexOf("\n\n");
+    const crlf = rest.indexOf("\r\n\r\n");
+    const cut = crlf >= 0 && (lf < 0 || crlf < lf) ? crlf : lf;
     if (cut < 0)
       break;
+    const sep = cut === crlf && crlf >= 0 ? 4 : 2;
     const frame = rest.slice(0, cut);
-    rest = rest.slice(cut + 2);
-    const lines = frame.split("\n");
+    rest = rest.slice(cut + sep);
+    const lines = frame.split(/\r?\n/);
     const event = lines.find((line) => line.startsWith("event:"))?.slice(6).trim();
-    const data2 = lines.find((line) => line.startsWith("data:"))?.slice(5).trim();
-    if (data2 === void 0)
+    const data2 = lines.filter((line) => line.startsWith("data:")).map((line) => line.slice(5).trimStart()).join("\n");
+    if (data2 === "")
       continue;
     try {
       const payload = JSON.parse(data2);
@@ -57617,11 +57628,29 @@ function parseTaskFrames(buffer, onTask, onNotice) {
   }
   return rest;
 }
+function sleep(ms, signal) {
+  return new Promise((resolve) => {
+    if (signal.aborted) {
+      resolve();
+      return;
+    }
+    const onAbort = () => {
+      clearTimeout(timer);
+      resolve();
+    };
+    const timer = setTimeout(() => {
+      signal.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    signal.addEventListener("abort", onAbort, { once: true });
+  });
+}
 function connectTaskStream(options) {
   const doFetch = options.fetchImpl ?? fetch;
   const delays = options.retryDelaysMs ?? [1e3, 2e3, 4e3];
   let controller;
   let closed = false;
+  const shutdown = new AbortController();
   void (async () => {
     let retry = 0;
     while (!closed) {
@@ -57653,13 +57682,14 @@ function connectTaskStream(options) {
         return;
       const delay = delays[Math.min(retry, delays.length - 1)] ?? 4e3;
       retry += 1;
-      await new Promise((resolve) => setTimeout(resolve, delay));
+      await sleep(delay, shutdown.signal);
     }
   })();
   return {
     close() {
       closed = true;
       controller?.abort();
+      shutdown.abort();
     }
   };
 }
@@ -57708,6 +57738,13 @@ function rememberNotice(id3) {
   }
   return true;
 }
+function matchesMount(task, project, groups) {
+  if (project !== void 0 && project !== null && task.project !== project)
+    return false;
+  if (groups !== void 0 && !groups.includes(task.group))
+    return false;
+  return true;
+}
 var stableHost = {};
 var coordinator = createCoordinator({ host: stableHost });
 var streamConn;
@@ -57715,7 +57752,8 @@ function isTaskRecord(value) {
   if (value === null || typeof value !== "object")
     return false;
   const v = value;
-  return typeof v.id === "string" && typeof v.project === "string" && typeof v.group === "string" && typeof v.title === "string" && (v.state === "running" || v.state === "done" || v.state === "failed") && typeof v.startedAt === "number";
+  return typeof v.id === "string" && typeof v.project === "string" && typeof v.group === "string" && typeof v.title === "string" && (v.state === "running" || v.state === "done" || v.state === "failed") && typeof v.startedAt === "number" && // settledAt 只在存在时校验类型：running 帧多数没这个字段，不能改成必填整条丢弃。
+  (v.settledAt === void 0 || typeof v.settledAt === "number" && Number.isFinite(v.settledAt));
 }
 function ingestTask(raw) {
   if (!isTaskRecord(raw))
@@ -57735,14 +57773,17 @@ function ingestNotice(raw) {
     return;
   coordinator.deliverNotice(raw);
 }
-function defaultTaskHost(activePanelId) {
-  const isOrigin = (task) => task.panelId === void 0 || task.panelId === activePanelId?.();
+function defaultTaskHost(originId) {
+  const isOrigin = (task) => {
+    const current3 = originId?.();
+    return current3 === void 0 || task.origin === void 0 || task.origin === current3;
+  };
   return {
     deliverToast(payload) {
       if (payload.scope === "origin" && !isOrigin(payload.task))
         return;
       const opts = { variant: payload.task.state === "failed" ? "error" : "success" };
-      if (payload.buttonId !== void 0 && taskStore.getHandler(payload.buttonId) !== void 0) {
+      if (payload.buttonId !== void 0 && taskStore.getHandler(payload.buttonId, payload.task.project) !== void 0) {
         opts.actions = [{
           text: payload.buttonText ?? payload.buttonId,
           onClick: () => {
@@ -57755,12 +57796,6 @@ function defaultTaskHost(activePanelId) {
     deliverNotify(payload) {
       if (payload.scope === "origin" && !isOrigin(payload.task))
         return;
-      if (payload.broadcast === void 0) {
-        notify(payload.message, {
-          ...payload.detail === void 0 ? {} : { description: JSON.stringify(payload.detail) }
-        });
-        return;
-      }
       notifyMessage(payload.message, {
         project: payload.project,
         group: payload.group,
@@ -57771,16 +57806,27 @@ function defaultTaskHost(activePanelId) {
   };
 }
 function connectTaskCenter(host) {
-  const hadDefault = stableHost.deliverToast !== void 0 || stableHost.deliverNotify !== void 0;
-  Object.assign(stableHost, host);
-  if (!hadDefault && stableHost.deliverToast === void 0 && stableHost.deliverNotify === void 0) {
-    const defaults4 = defaultTaskHost(() => stableHost.activePanelId?.());
-    Object.assign(stableHost, defaults4);
+  const patch = {};
+  for (const [key, value] of Object.entries(host)) {
+    if (value !== void 0)
+      patch[key] = value;
   }
+  Object.assign(stableHost, patch);
+  const pageOrigin = () => defaultNotifyScope().origin;
+  const defaults4 = defaultTaskHost(pageOrigin);
+  if (stableHost.deliverToast === void 0 && defaults4.deliverToast !== void 0) {
+    stableHost.deliverToast = defaults4.deliverToast;
+  }
+  if (stableHost.deliverNotify === void 0 && defaults4.deliverNotify !== void 0) {
+    stableHost.deliverNotify = defaults4.deliverNotify;
+  }
+  if (stableHost.originId === void 0)
+    stableHost.originId = pageOrigin;
   streamConn?.close();
   streamConn = void 0;
+  let ownConn;
   if (stableHost.streamUrl !== void 0) {
-    streamConn = connectTaskStream({
+    ownConn = connectTaskStream({
       streamUrl: stableHost.streamUrl,
       headers: stableHost.headers,
       onTask: (task) => {
@@ -57788,19 +57834,22 @@ function connectTaskCenter(host) {
       },
       onNotice: ingestNotice
     });
+    streamConn = ownConn;
   }
   return () => {
-    streamConn?.close();
-    streamConn = void 0;
+    ownConn?.close();
+    if (streamConn === ownConn)
+      streamConn = void 0;
   };
 }
 async function startTask(input) {
+  const origin = stableHost.originId?.();
   if (stableHost.submitUrl === void 0)
     return coordinator.start(input);
   const res = await fetch(stableHost.submitUrl, {
     method: "POST",
     headers: { "content-type": "application/json", ...stableHost.headers?.() },
-    body: JSON.stringify(input)
+    body: JSON.stringify(origin === void 0 ? input : { ...input, origin })
   });
   if (!res.ok)
     throw new Error(`task submit failed: ${res.status}`);
@@ -57811,15 +57860,18 @@ async function startTask(input) {
     group: input.group ?? "default",
     title: input.title,
     state: "running",
-    startedAt: Date.now()
+    startedAt: Date.now(),
+    ...origin === void 0 ? {} : { origin }
   };
   taskStore.upsert(optimistic);
   return optimistic;
 }
 function mountTaskUI(options) {
-  const offHandlers = coordinator.registerHandlers(options.handlers);
+  const offHandlers = coordinator.registerHandlers(options.handlers, options.project);
   const offSettled = options.onSettled === void 0 ? () => {
   } : coordinator.onSettled(({ task, outcome }) => {
+    if (!matchesMount(task, options.project, options.groups))
+      return;
     options.onSettled?.(task, outcome);
   });
   return () => {
@@ -70517,8 +70569,8 @@ h(SideSheet, {
     },
     "prose": [
       {
-        "zh": "\u4E09\u6761\u901A\u9053\u5404\u53F8\u5176\u804C\u3001\u4E92\u4E0D\u6DF7\u7528\uFF1A**Toast** \u662F\u7EC8\u6001\u5F39\u5361\uFF0C`toast.success` / `toast.failure` \u4E24\u6001\u5B8C\u5168\u5BF9\u79F0\uFF0C\u6BCF\u6001\u53EF\u914D `scope`\uFF08`all` \u6BCF\u4E2A\u9875\u9762\u90FD\u5F39\u3001`origin` \u53EA\u53D1\u8D77\u9875\u5F39\uFF09\u4E0E\u4E00\u4E2A\u6309\u94AE\uFF08`{ id, text }`\uFF09\uFF1B**notify** \u662F\u7EC8\u6001\u6D88\u606F\uFF0C`message` + `detail` \u7EAF\u6570\u636E\uFF0C`scope` \u540C\u4E0A\uFF0C\u53E6\u6709 `broadcast`\uFF08`plugin` \u540C\u9879\u76EE / `global` \u540C\u5BBF\u4E3B\u6240\u6709\u63D2\u4EF6 / \u4E0D\u5199\u4E0D\u5E7F\u64AD\uFF09\uFF0C\u6536\u5230\u540E\u600E\u4E48\u5904\u7406\u7531\u63A5\u6536\u65B9\u81EA\u5DF1\u51B3\u5B9A\uFF1B**\u5217\u8868\u6309\u94AE**\u662F `rowButtons: [{ id, text, when }]`\uFF0C`when` \u2208 `running` / `done` / `failed` / `always`\uFF08\u7F3A\u7701 always\uFF09\uFF0C\u540C\u4E00 id \u53EF\u6309\u72B6\u6001\u91CD\u590D\u58F0\u660E\uFF0C\u8DDF\u7740\u8BB0\u5F55\u8D70\u3002",
-        "en": "Three channels with separate jobs: **toast** is the terminal card \u2014 `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`{ id, text }`). **Notify** is a terminal message \u2014 `message` plus plain `detail`, the same `scope`, and a separate `broadcast` (`plugin` same project, `global` every plugin in the host, omitted means no broadcast); what a receiver does with it is its own decision. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record."
+        "zh": "\u4E09\u6761\u901A\u9053\u5404\u53F8\u5176\u804C\u3001\u4E92\u4E0D\u6DF7\u7528\uFF1A**Toast** \u662F\u7EC8\u6001\u5F39\u5361\uFF0C`toast.success` / `toast.failure` \u4E24\u6001\u5B8C\u5168\u5BF9\u79F0\uFF0C\u6BCF\u6001\u53EF\u914D `scope`\uFF08`all` \u6BCF\u4E2A\u9875\u9762\u90FD\u5F39\u3001`origin` \u53EA\u53D1\u8D77\u9875\u5F39\uFF09\u4E0E\u4E00\u4E2A\u6309\u94AE\uFF08`{ id, text }`\uFF09\uFF1B**notify** \u662F\u7EC8\u6001\u6D88\u606F\uFF0C`message` + `detail` \u7EAF\u6570\u636E\uFF0C`scope` \u540C\u4E0A\uFF0C\u6838\u5FC3\u53EA\u628A\u901A\u77E5\u53D1\u51FA\u53BB\u3001\u4E0D\u505A\u4EFB\u4F55 UI\uFF08\u5F39\u5361/alert \u7531\u63A5\u6536\u65B9\u81EA\u5DF1\u51B3\u5B9A\uFF09\uFF1B`broadcast` \u5B57\u6BB5\u4FDD\u7559\u517C\u5BB9\u4F46\u6838\u5FC3\u4E0D\u518D\u636E\u6B64\u51B3\u5B9A\u53D1\u4E0D\u53D1\uFF0C\u8303\u56F4\u7531\u8BA2\u9605\u65B9\u7684 scope/project \u51B3\u5B9A\uFF1B**\u5217\u8868\u6309\u94AE**\u662F `rowButtons: [{ id, text, when }]`\uFF0C`when` \u2208 `running` / `done` / `failed` / `always`\uFF08\u7F3A\u7701 always\uFF09\uFF0C\u540C\u4E00 id \u53EF\u6309\u72B6\u6001\u91CD\u590D\u58F0\u660E\uFF0C\u8DDF\u7740\u8BB0\u5F55\u8D70\u3002",
+        "en": "Three channels with separate jobs: **toast** is the terminal card \u2014 `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`{ id, text }`). **Notify** is a terminal message \u2014 `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send \u2014 scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record."
       },
       {
         "zh": "\u6309\u94AE id \u67E5\u7684\u662F\u672C\u9875 `handlers`\uFF08\u5217\u8868\u4E0E Toast \u5171\u7528\u540C\u4E00\u4EFD\uFF09\u3002**\u672C\u9875\u6CA1\u6CE8\u518C\u7684\u6309\u94AE\u4E0D\u753B**\uFF0C\u4E0D\u51FA\u73B0\u6B7B\u6309\u94AE\u3002\u70B9\u51FB\u5148 `selectPanel(panelId)` \u5207\u56DE\u53D1\u8D77\u9762\u677F\uFF0C\u518D\u6267\u884C handler\u2014\u2014\u8FD9\u6837\u300C\u67E5\u770B\u300D\u8FD9\u7C7B\u52A8\u4F5C\u624D\u80FD\u628A UI \u843D\u5728\u6B63\u786E\u7684\u9762\u677F\u4E0A\uFF1B`panelId` \u7531\u6838\u5FC3\u5728 `startTask` \u65F6\u81EA\u52A8\u8BB0\u5F55\uFF0C\u6D88\u8D39\u65B9\u4E0D\u4F20\u3002\u7EC8\u6001\u53EA\u5206\u53D1\u4E00\u6B21\uFF1A\u672C\u5730\u6267\u884C\u4E0E\u670D\u52A1\u7AEF\u6295\u5F71\u4E0D\u4F1A\u91CD\u590D\u5F39\u5361\u3002",
@@ -70589,8 +70641,8 @@ h(SideSheet, {
             "type": "'all' | 'origin'",
             "def": "'origin'",
             "desc": {
-              "zh": "\u6240\u6709\u9875\u9762 / \u53EA\u6709\u53D1\u8D77\u9875\uFF1B\u4E24\u6001\u53EF\u4E0D\u540C",
-              "en": "Every page / originating page only; per state"
+              "zh": "\u6240\u6709\u6807\u7B7E\u9875 / \u53EA\u5728\u53D1\u8D77\u7684\u90A3\u4E2A\u6807\u7B7E\u9875\uFF08\u9875\u9762\u7EA7 origin\uFF0C\u5207\u9762\u677F\u4E0D\u5F71\u54CD\uFF09\uFF1B\u4E24\u6001\u53EF\u4E0D\u540C",
+              "en": "Every tab / only the originating tab (page-level origin; switching panels does not affect it); per state"
             }
           },
           {
@@ -70598,8 +70650,8 @@ h(SideSheet, {
             "type": "'plugin' | 'global' | undefined",
             "def": "undefined",
             "desc": {
-              "zh": "\u540C\u9879\u76EE / \u540C\u5BBF\u4E3B\u6240\u6709\u63D2\u4EF6 / \u4E0D\u5E7F\u64AD\uFF1B\u4E0D\u5E26\u6309\u94AE",
-              "en": "Same project / every plugin in the host / no broadcast; carries no buttons"
+              "zh": "\u517C\u5BB9\u5B57\u6BB5\uFF1A\u6838\u5FC3\u5FFD\u7565\u5B83\uFF0Cnotify \u4E00\u5F8B\u53D1\u901A\u77E5\uFF1B\u8303\u56F4\u7531\u8BA2\u9605\u65B9\u7684 scope / project \u51B3\u5B9A",
+              "en": "Compatibility field: ignored by the core \u2014 notify always sends; scope is decided by the scope/project chosen by the subscriber"
             }
           },
           {
@@ -70625,8 +70677,8 @@ h(SideSheet, {
             "type": "(options) => () => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6536\u4EFB\u52A1\u5E7F\u64AD\uFF1Ascope=plugin \u53EA\u6536\u540C\u9879\u76EE\uFF0Cglobal \u6536\u6240\u6709\uFF1B\u6536\u5230\u7EAF\u6570\u636E\u81EA\u5DF1\u5904\u7406",
-              "en": "Receive task broadcasts: scope=plugin filters to same project, global receives all; plain data, consumer decides"
+              "zh": "\u6536\u4EFB\u52A1\u5E7F\u64AD\uFF1Ascope=plugin \u53EA\u6536\u540C\u9879\u76EE\uFF08\u4E0D\u4F20 project \u65F6\u56DE\u843D\u5168\u5C40\u9ED8\u8BA4\u9879\u76EE\uFF0C\u6CA1\u8BBE\u5219\u62A5\u9519\uFF09\uFF0Cglobal \u6536\u6240\u6709\uFF1B\u6536\u5230\u7EAF\u6570\u636E\u81EA\u5DF1\u5904\u7406",
+              "en": "Receive task broadcasts: scope=plugin filters to same project (falls back to the global default project when project is omitted, throws if unset), global receives all; plain data, consumer decides"
             }
           },
           {
@@ -70634,8 +70686,8 @@ h(SideSheet, {
             "type": "(options: MountTaskUIOptions) => () => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6CE8\u518C handlers + \u8BA2\u9605\u7EC8\u6001\uFF1B\u8FD4\u56DE\u6CE8\u9500\u51FD\u6570",
-              "en": "Registers handlers and subscribes to terminal states; returns an unsubscribe function"
+              "zh": "\u6CE8\u518C handlers + \u8BA2\u9605\u7EC8\u6001\uFF1Bhandlers \u6309 project \u547D\u540D\u7A7A\u95F4\uFF08\u540C\u540D\u6309\u94AE\u4E0D\u540C\u9879\u76EE\u4E92\u4E0D\u8986\u76D6\uFF09\uFF0C\u8FD4\u56DE\u6CE8\u9500\u51FD\u6570",
+              "en": "Registers handlers and subscribes to terminal states; handlers are namespaced by project (same button id in different projects does not collide); returns an unsubscribe function"
             }
           },
           {
@@ -70744,8 +70796,8 @@ h(SideSheet, {
     },
     "prose": [
       {
-        "zh": "\u8BB0\u5F55\u5168\u662F\u670D\u52A1\u7AEF\u4E0B\u53D1\u6216\u8C03\u7528\u65B9\u7ED9\u7684\u7EAF\u6570\u636E\uFF0C\u8DE8\u9875\u514B\u9686\u5B89\u5168\u3001\u65E0\u51FD\u6570\u3002\u8EAB\u4EFD\u5B57\u6BB5\uFF1A`id`\u3001`key`\uFF08\u540C\u9879\u76EE\u5E42\u7B49\uFF09\u3001`project` / `group`\uFF08\u4E24\u7EA7\u5206\u7EC4\uFF09\u3001`startedAt`\uFF1B\u5F52\u5C5E\u5B57\u6BB5\uFF1A`panelId`\uFF08\u6838\u5FC3\u81EA\u52A8\u8BB0\uFF09\u3001`origin`\uFF1B\u6267\u884C\u5B57\u6BB5\uFF1A`kind` / `args` / `detail` / `icon`\uFF1B\u5C55\u793A\u5B57\u6BB5\uFF1A`progress` / `toast` / `notify` / `rowButtons`\uFF1B\u7EC8\u6001\u5B57\u6BB5\uFF1A`state` / `reason` / `settledAt`\u3002",
-        "en": "A record is all plain data from the server or the caller \u2014 structured-clone safe, no functions. Identity: `id`, `key` (idempotent per project), `project` / `group` (two-level grouping), `startedAt`; ownership: `panelId` (recorded by the core) and `origin`; execution: `kind` / `args` / `detail` / `icon`; presentation: `progress` / `toast` / `notify` / `rowButtons`; terminal: `state` / `reason` / `settledAt`."
+        "zh": "\u8BB0\u5F55\u5168\u662F\u670D\u52A1\u7AEF\u4E0B\u53D1\u6216\u8C03\u7528\u65B9\u7ED9\u7684\u7EAF\u6570\u636E\uFF0C\u8DE8\u9875\u514B\u9686\u5B89\u5168\u3001\u65E0\u51FD\u6570\u3002\u8EAB\u4EFD\u5B57\u6BB5\uFF1A`id`\u3001`key`\uFF08\u540C\u9879\u76EE\u5E42\u7B49\uFF09\u3001`project` / `group`\uFF08\u4E24\u7EA7\u5206\u7EC4\uFF09\u3001`startedAt`\uFF1B\u5F52\u5C5E\u5B57\u6BB5\uFF1A`panelId`\uFF08\u6838\u5FC3\u81EA\u52A8\u8BB0\uFF0C\u70B9\u6309\u94AE\u5207\u56DE\u9762\u677F\u7528\uFF09\u3001`origin`\uFF08\u6838\u5FC3\u81EA\u52A8\u8BB0\u7684\u53D1\u8D77\u6807\u7B7E\u9875 id\uFF0Cscope:origin \u636E\u6B64\u5224\u5B9A\u5F39\u5361\uFF09\uFF1B\u6267\u884C\u5B57\u6BB5\uFF1A`kind` / `args` / `detail` / `icon`\uFF1B\u5C55\u793A\u5B57\u6BB5\uFF1A`progress` / `toast` / `notify` / `rowButtons`\uFF1B\u7EC8\u6001\u5B57\u6BB5\uFF1A`state` / `reason` / `settledAt`\u3002",
+        "en": "A record is all plain data from the server or the caller \u2014 structured-clone safe, no functions. Identity: `id`, `key` (idempotent per project), `project` / `group` (two-level grouping), `startedAt`; ownership: `panelId` (core-recorded, used to switch back on button presses) and `origin` (core-recorded originating tab id, the basis for scope:origin announcement); execution: `kind` / `args` / `detail` / `icon`; presentation: `progress` / `toast` / `notify` / `rowButtons`; terminal: `state` / `reason` / `settledAt`."
       }
     ],
     "api": [
@@ -70777,6 +70829,15 @@ h(SideSheet, {
             "desc": {
               "zh": "\u53D1\u8D77\u9762\u677F\uFF1B\u70B9\u6309\u94AE\u5148\u5207\u56DE\u5B83\uFF0C\u518D\u7531 core \u81EA\u52A8\u586B",
               "en": "Originating panel; buttons switch back to it first; filled automatically by the core"
+            }
+          },
+          {
+            "name": "record.origin",
+            "type": "string | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "\u53D1\u8D77\u6807\u7B7E\u9875 id\uFF08core \u81EA\u52A8\u8BB0\uFF09\uFF1Bscope:origin \u53EA\u5728\u540C id \u6807\u7B7E\u9875\u5F39\u5361\uFF0C\u670D\u52A1\u7AEF\u672A\u56DE\u586B\u65F6\u6309\u591A\u5F39\u515C\u5E95",
+              "en": "Originating tab id (core-recorded); scope:origin announces only on the matching tab, fails open when the server omits it"
             }
           },
           {
@@ -75631,9 +75692,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.43.0"}`],
-            [t3("buildDemo"), `v${"0.43.0"}`],
-            [t3("buildStamp"), "261120-140347-331"]
+            [t3("buildCore"), `v${"0.43.1"}`],
+            [t3("buildDemo"), `v${"0.43.1"}`],
+            [t3("buildStamp"), "261120-190212-620"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -75948,9 +76009,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.43.0"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.43.0"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261120-140347-331")
+          (0, import_react112.createElement)("span", null, `core v${"0.43.1"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.43.1"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261120-190212-620")
         )
       )
     ),

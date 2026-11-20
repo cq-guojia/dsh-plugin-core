@@ -23,6 +23,11 @@ import { taskStore, type TaskHandler, type TaskStore } from './store.js'
 export interface CoordinatorHost {
   /** 当前激活面板 id；startTask 时自动记进记录。 */
   activePanelId?(): string | undefined
+  /**
+   * 当前标签页 id（页面级身份）；startTask 时自动记进 TaskRecord.origin，
+   * 供 scope:'origin' 判定「只在发起页弹卡」。与 panelId（面板级、只管切 UI）是两个维度。
+   */
+  originId?(): string | undefined
   /** 切回面板；点按钮时先调它，再执行 handler。 */
   selectPanel?(panelId: string): void
   /** 终态通知（notify 通道）：由调用方决定怎么弹、怎么广播。 */
@@ -68,7 +73,7 @@ export interface TaskCoordinator {
   deliverNotice(notice: TaskNotice): void
   /** 点按钮：先切回发起面板（同页），再找本页 handler 执行。返回是否找到 handler。 */
   press(buttonId: string, taskId: string): boolean
-  registerHandlers(map: Readonly<Record<string, TaskHandler>>): () => void
+  registerHandlers(map: Readonly<Record<string, TaskHandler>>, project?: string | null): () => void
   onSettled(listener: (s: TaskSettlement) => void): () => void
 }
 
@@ -139,7 +144,8 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
       },
     }
     Promise.resolve()
-      .then(() => handler(task.args ?? {}, ctx))
+      // args 输入侧放宽成 object（消费方的 interface 可直接传）；到执行器边界收敛回索引签名。
+      .then(() => handler((task.args ?? {}) as Readonly<Record<string, unknown>>, ctx))
       .then((result) => announce(store.get(task.id) ?? task, result.outcome, result.reason))
       .catch((error: unknown) => announce(store.get(task.id) ?? task, 'failed', String(error)))
   }
@@ -147,6 +153,7 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
   return {
     start(input) {
       const panelId = host.activePanelId?.()
+      const origin = host.originId?.()
       const record: TaskRecord = {
         id: nextId(),
         ...(input.key === undefined ? {} : { key: input.key }),
@@ -156,6 +163,7 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
         state: 'running',
         startedAt: Date.now(),
         ...(panelId === undefined ? {} : { panelId }),
+        ...(origin === undefined ? {} : { origin }),
         ...(input.kind === undefined ? {} : { kind: input.kind }),
         ...(input.args === undefined ? {} : { args: input.args }),
         ...(input.detail === undefined ? {} : { detail: input.detail }),
@@ -178,8 +186,11 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
       if (task.state !== 'done' && task.state !== 'failed') return
       const outcome: 'done' | 'failed' = task.state // 上面已收窄
       // 服务端推送的终态先投影进列表（同 id 覆盖乐观记录）；弹卡由 claimSettled 单页内去重。
+      // origin 是页面级身份：服务端没回填时沿用本地发起记录的那份，否则 scope:'origin' 会 fail-open 乱弹。
+      const origin = task.origin ?? store.get(task.id)?.origin
       const final: TaskRecord = {
         ...task,
+        ...(origin === undefined ? {} : { origin }),
         ...(task.settledAt === undefined ? { settledAt: Date.now() } : {}),
       }
       announce(final, outcome, final.reason)
@@ -187,14 +198,19 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
     press(buttonId, taskId) {
       const task = store.get(taskId)
       if (task === undefined) return false
-      const handler = store.getHandler(buttonId)
+      const handler = store.getHandler(buttonId, task.project)
       // 没 handler 就是死按钮：不切面板（避免无意义跳走），直接告知失败。
       if (handler === undefined) return false
-      if (task.panelId !== undefined) host.selectPanel?.(task.panelId)
-      handler(task)
+      if (task.panelId !== undefined) {
+        const pid = task.panelId
+        safeCall('selectPanel', () => host.selectPanel?.(pid))
+      }
+      // 找到并调用了 handler 就返回 true；handler 自己内部抛错是它的责任，我们只记录、
+      // 不让异常冒泡打断核心的点击事件（职责分清：我们是联络点，不替被调方修 bug）。
+      safeCall('button handler', () => handler(task))
       return true
     },
-    registerHandlers: (map) => store.registerHandlers(map),
+    registerHandlers: (map, project) => store.registerHandlers(map, project),
     onSettled: (listener) => store.onSettled(listener),
   }
 }

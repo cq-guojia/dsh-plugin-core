@@ -76,3 +76,20 @@ test('model：isSettled 只认 done/failed', () => {
   assert.equal(isSettled('done'), true)
   assert.equal(isSettled('failed'), true)
 })
+
+
+test('store：handler 按 project 命名空间，同 id 不同项目互不覆盖，裸 id 兜底', () => {
+  const s = createTaskStore()
+  const hA = () => {}
+  const hB = () => {}
+  const hGlobal = () => {}
+  const offA = s.registerHandlers({ open: hA }, 'proj-a')
+  s.registerHandlers({ open: hB }, 'proj-b')
+  s.registerHandlers({ open: hGlobal }) // 跨项目兜底
+  assert.equal(s.getHandler('open', 'proj-a'), hA)
+  assert.equal(s.getHandler('open', 'proj-b'), hB)
+  assert.equal(s.getHandler('open', 'proj-c'), hGlobal, '未命中的项目回退裸 id')
+  offA()
+  assert.equal(s.getHandler('open', 'proj-a'), hGlobal, '注销只删本项目的，落回兜底')
+  assert.equal(s.getHandler('open', 'proj-b'), hB, '别的项目不受影响')
+})

@@ -5061,8 +5061,8 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "三条通道各司其职、互不混用：**Toast** 是终态弹卡，`toast.success` / `toast.failure` 两态完全对称，每态可配 `scope`（`all` 每个页面都弹、`origin` 只发起页弹）与一个按钮（`{ id, text }`）；**notify** 是终态消息，`message` + `detail` 纯数据，`scope` 同上，另有 `broadcast`（`plugin` 同项目 / `global` 同宿主所有插件 / 不写不广播），收到后怎么处理由接收方自己决定；**列表按钮**是 `rowButtons: [{ id, text, when }]`，`when` ∈ `running` / `done` / `failed` / `always`（缺省 always），同一 id 可按状态重复声明，跟着记录走。",
-        "en": "Three channels with separate jobs: **toast** is the terminal card — `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`{ id, text }`). **Notify** is a terminal message — `message` plus plain `detail`, the same `scope`, and a separate `broadcast` (`plugin` same project, `global` every plugin in the host, omitted means no broadcast); what a receiver does with it is its own decision. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record."
+        "zh": "三条通道各司其职、互不混用：**Toast** 是终态弹卡，`toast.success` / `toast.failure` 两态完全对称，每态可配 `scope`（`all` 每个页面都弹、`origin` 只发起页弹）与一个按钮（`{ id, text }`）；**notify** 是终态消息，`message` + `detail` 纯数据，`scope` 同上，核心只把通知发出去、不做任何 UI（弹卡/alert 由接收方自己决定）；`broadcast` 字段保留兼容但核心不再据此决定发不发，范围由订阅方的 scope/project 决定；**列表按钮**是 `rowButtons: [{ id, text, when }]`，`when` ∈ `running` / `done` / `failed` / `always`（缺省 always），同一 id 可按状态重复声明，跟着记录走。",
+        "en": "Three channels with separate jobs: **toast** is the terminal card — `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`{ id, text }`). **Notify** is a terminal message — `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send — scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record."
       },
       {
         "zh": "按钮 id 查的是本页 `handlers`（列表与 Toast 共用同一份）。**本页没注册的按钮不画**，不出现死按钮。点击先 `selectPanel(panelId)` 切回发起面板，再执行 handler——这样「查看」这类动作才能把 UI 落在正确的面板上；`panelId` 由核心在 `startTask` 时自动记录，消费方不传。终态只分发一次：本地执行与服务端投影不会重复弹卡。",
@@ -5133,8 +5133,8 @@ export const docData = {
             "type": "'all' | 'origin'",
             "def": "'origin'",
             "desc": {
-              "zh": "所有页面 / 只有发起页；两态可不同",
-              "en": "Every page / originating page only; per state"
+              "zh": "所有标签页 / 只在发起的那个标签页（页面级 origin，切面板不影响）；两态可不同",
+              "en": "Every tab / only the originating tab (page-level origin; switching panels does not affect it); per state"
             }
           },
           {
@@ -5142,8 +5142,8 @@ export const docData = {
             "type": "'plugin' | 'global' | undefined",
             "def": "undefined",
             "desc": {
-              "zh": "同项目 / 同宿主所有插件 / 不广播；不带按钮",
-              "en": "Same project / every plugin in the host / no broadcast; carries no buttons"
+              "zh": "兼容字段：核心忽略它，notify 一律发通知；范围由订阅方的 scope / project 决定",
+              "en": "Compatibility field: ignored by the core — notify always sends; scope is decided by the scope/project chosen by the subscriber"
             }
           },
           {
@@ -5169,8 +5169,8 @@ export const docData = {
             "type": "(options) => () => void",
             "def": "—",
             "desc": {
-              "zh": "收任务广播：scope=plugin 只收同项目，global 收所有；收到纯数据自己处理",
-              "en": "Receive task broadcasts: scope=plugin filters to same project, global receives all; plain data, consumer decides"
+              "zh": "收任务广播：scope=plugin 只收同项目（不传 project 时回落全局默认项目，没设则报错），global 收所有；收到纯数据自己处理",
+              "en": "Receive task broadcasts: scope=plugin filters to same project (falls back to the global default project when project is omitted, throws if unset), global receives all; plain data, consumer decides"
             }
           },
           {
@@ -5178,8 +5178,8 @@ export const docData = {
             "type": "(options: MountTaskUIOptions) => () => void",
             "def": "—",
             "desc": {
-              "zh": "注册 handlers + 订阅终态；返回注销函数",
-              "en": "Registers handlers and subscribes to terminal states; returns an unsubscribe function"
+              "zh": "注册 handlers + 订阅终态；handlers 按 project 命名空间（同名按钮不同项目互不覆盖），返回注销函数",
+              "en": "Registers handlers and subscribes to terminal states; handlers are namespaced by project (same button id in different projects does not collide); returns an unsubscribe function"
             }
           },
           {
@@ -5288,8 +5288,8 @@ export const docData = {
     },
     "prose": [
       {
-        "zh": "记录全是服务端下发或调用方给的纯数据，跨页克隆安全、无函数。身份字段：`id`、`key`（同项目幂等）、`project` / `group`（两级分组）、`startedAt`；归属字段：`panelId`（核心自动记）、`origin`；执行字段：`kind` / `args` / `detail` / `icon`；展示字段：`progress` / `toast` / `notify` / `rowButtons`；终态字段：`state` / `reason` / `settledAt`。",
-        "en": "A record is all plain data from the server or the caller — structured-clone safe, no functions. Identity: `id`, `key` (idempotent per project), `project` / `group` (two-level grouping), `startedAt`; ownership: `panelId` (recorded by the core) and `origin`; execution: `kind` / `args` / `detail` / `icon`; presentation: `progress` / `toast` / `notify` / `rowButtons`; terminal: `state` / `reason` / `settledAt`."
+        "zh": "记录全是服务端下发或调用方给的纯数据，跨页克隆安全、无函数。身份字段：`id`、`key`（同项目幂等）、`project` / `group`（两级分组）、`startedAt`；归属字段：`panelId`（核心自动记，点按钮切回面板用）、`origin`（核心自动记的发起标签页 id，scope:origin 据此判定弹卡）；执行字段：`kind` / `args` / `detail` / `icon`；展示字段：`progress` / `toast` / `notify` / `rowButtons`；终态字段：`state` / `reason` / `settledAt`。",
+        "en": "A record is all plain data from the server or the caller — structured-clone safe, no functions. Identity: `id`, `key` (idempotent per project), `project` / `group` (two-level grouping), `startedAt`; ownership: `panelId` (core-recorded, used to switch back on button presses) and `origin` (core-recorded originating tab id, the basis for scope:origin announcement); execution: `kind` / `args` / `detail` / `icon`; presentation: `progress` / `toast` / `notify` / `rowButtons`; terminal: `state` / `reason` / `settledAt`."
       }
     ],
     "api": [
@@ -5321,6 +5321,15 @@ export const docData = {
             "desc": {
               "zh": "发起面板；点按钮先切回它，再由 core 自动填",
               "en": "Originating panel; buttons switch back to it first; filled automatically by the core"
+            }
+          },
+          {
+            "name": "record.origin",
+            "type": "string | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "发起标签页 id（core 自动记）；scope:origin 只在同 id 标签页弹卡，服务端未回填时按多弹兜底",
+              "en": "Originating tab id (core-recorded); scope:origin announces only on the matching tab, fails open when the server omits it"
             }
           },
           {

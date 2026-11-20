@@ -35,15 +35,19 @@ export interface TaskStore {
   get(id: string): TaskRecord | undefined
   /** 按 project / group 过滤；project 为 null 表示跨项目收全部。 */
   select(project: string | null, groups?: readonly string[]): readonly TaskRecord[]
-  /** 注册按钮 handlers（可增量多次调用，重复 id 覆盖）。返回注销函数。 */
-  registerHandlers(map: Readonly<Record<string, TaskHandler>>): () => void
-  getHandler(id: string): TaskHandler | undefined
+  /**
+   * 注册按钮 handlers（可增量多次调用）。project 作命名空间：同 id 不同项目互不覆盖；
+   * project 省略 / null 时落裸 id（跨项目兜底）。返回注销函数。
+   */
+  registerHandlers(map: Readonly<Record<string, TaskHandler>>, project?: string | null): () => void
+  /** 先按 (project,id) 精确查，未命中回退裸 id 兜底。 */
+  getHandler(id: string, project?: string): TaskHandler | undefined
   /** 订阅终态。 */
   onSettled(listener: TaskSettledListener): () => void
   /** 广播终态给订阅者；单个坏监听者不影响其它监听者。 */
   emitSettled(settlement: TaskSettlement): void
   /**
-   * 声明一次终态分发：同一结算（project + key/id + settledAt）只返回 true 一次；
+   * 声明一次终态分发：同一结算键（project + key/id）只返回 true 一次，不看 settledAt；
    * 同业务键重新发起（running）会重置声明，让下一次结算能正常分发。
    */
   claimSettled(task: TaskRecord): boolean
@@ -116,10 +120,13 @@ function createStore(): TaskStore {
           old?.settledAt !== undefined && record.settledAt !== undefined
             ? old.settledAt
             : record.settledAt
+        // 消费方服务端未在 submit 回传 origin 时保留本地发起身份，避免 scope:'origin' 判定退化。
+        const origin = record.origin ?? old?.origin
         const next: TaskRecord = {
           ...record,
           id: targetId,
           ...(settledAt === undefined ? {} : { settledAt }),
+          ...(origin === undefined ? {} : { origin }),
         }
         if (composite !== undefined) byKey.set(composite, next.id)
         tasks.set(next.id, next)
@@ -138,20 +145,21 @@ function createStore(): TaskStore {
         (t) => t.project === project && (groups === undefined || groups.includes(t.group)),
       )
     },
-    registerHandlers(map) {
+    registerHandlers(map, project) {
       const registered: Array<[string, TaskHandler]> = []
       for (const [id, handler] of Object.entries(map)) {
-        handlers.set(id, handler)
-        registered.push([id, handler])
+        const key = project === undefined || project === null ? id : `${project}\u0000${id}`
+        handlers.set(key, handler)
+        registered.push([key, handler])
       }
       return () => {
-        for (const [id, handler] of registered) {
-          if (handlers.get(id) === handler) handlers.delete(id)
+        for (const [key, handler] of registered) {
+          if (handlers.get(key) === handler) handlers.delete(key)
         }
       }
     },
-    getHandler(id) {
-      return handlers.get(id)
+    getHandler(id, project) {
+      return handlers.get(`${project}\u0000${id}`) ?? handlers.get(id)
     },
     onSettled(listener) {
       settledListeners.add(listener)
@@ -168,10 +176,10 @@ function createStore(): TaskStore {
     },
     claimSettled(task) {
       const key = settlementKey(task)
-      const at = task.settledAt ?? Date.now()
-      // 同一结算（同 settledAt）重放不重复分发；只有更晚的新结算才能再拿一次声明。
+      // 按结算键去重，不看 settledAt（重放一律不重复分发）；
+      // 重新发起（running）在 upsert 时删除声明，才会放行下一次结算。
       if (announced.has(key)) return false
-      announced.set(key, at)
+      announced.set(key, task.settledAt ?? Date.now())
       return true
     },
     clear() {
