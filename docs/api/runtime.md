@@ -107,7 +107,7 @@ pageB.dispose()
 
 > EN: The **only** place in the repo that touches `zustand`: callers only see `RuntimeStore`, so swapping the implementation (version bump or hand-rolled) is a one-file change in `src/runtime/store.ts`. The interface is deliberately four methods — no selectors, middleware or devtools, because exposing them would leak zustand's shape and make the isolation pointless.
 
-零 React：React 侧由消费方自己接 `useSyncExternalStore` 三参（现成例子是 `adv/tasks/task-list.ts` 的核心列表控件），和 `zustand/vanilla` 与 `zustand` 的分法一致。`subscribe` 只报「变了」，不带新旧值；需要派生数据在调用方算并自带缓存。
+零 React：React 侧由消费方自己接 `useSyncExternalStore` 三参（现成例子是 `adv/tasks/TaskBar.ts` 的任务栏），和 `zustand/vanilla` 与 `zustand` 的分法一致。`subscribe` 只报「变了」，不带新旧值；需要派生数据在调用方算并自带缓存。
 
 > EN: Zero React: the React side wires its own three-argument `useSyncExternalStore` (the working example is the task bar in `adv/tasks/TaskBar.ts`), mirroring the `zustand/vanilla` vs `zustand` split. `subscribe` only says "it changed" and carries no old or new value; derived data is computed and cached by the caller.
 

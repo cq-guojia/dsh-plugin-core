@@ -2,6 +2,7 @@ import { Icon } from '../../../../dist/ui/display/Icon.js'
 
 import {
   createElement as h,
+  useEffect,
   useState,
   useSyncExternalStore,
 } from 'react'
@@ -1773,12 +1774,12 @@ const [step, setStep] = useState('正在扫描工作区…')
 // 常驻扫光：文字不变也在动（默认关；弹窗 / 抽屉底栏的 notice 默认开）
 <FlipText text="正在写入台账…" sweep />`
 
-/** FlipText 演示用的过程文案（换一次翻一次牌）；第二条故意超长，用来看省略 + 跑马灯。 */
+/** 自动轮播的过程文案：长度接近，固定宽里换字不跳，扫光才看得清。 */
 const FLIP_STEPS = [
   '正在扫描工作区…',
-  '已读取 42 个任务，正在逐条比对工作区归属、上次更新时间与负责人是否一致，比对完成后统一写入台账',
-  '正在写入台账…',
-  '已完成',
+  '正在比对任务归属…',
+  '正在写入台账中…',
+  '全部任务已完成…',
 ]
 
 /** Chip 对外参数（与 src/ui/display/Chip.ts 的 ChipProps 逐条对齐）。 */
@@ -1852,41 +1853,38 @@ export function ChipPage(): ReturnType<typeof h> {
   )
 }
 
-/** FlipText：一行翻牌文本，换字即翻（弹窗底栏的过程提示就是它）。 */
+/** 自动轮播间隔：略长于一次扫光（1.5s），看清扫光再翻下一句。 */
+const FLIP_TICK_MS = 2000
+
+/** FlipText：一行翻牌文本，换字即翻 + 常驻扫光，自动轮播（弹窗底栏过程提示同款）。 */
 export function FlipTextPage(): ReturnType<typeof h> {
   const [flipStep, setFlipStep] = useState(0)
   const [shown, setShown] = useState(true)
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setShown(true)
+      setFlipStep((i) => (i + 1) % FLIP_STEPS.length)
+    }, FLIP_TICK_MS)
+    return () => window.clearInterval(id)
+  }, [])
   return h(
     'div',
     null,
     h(
       Example,
       { title: t('flipTitle'), hint: t('exFlipHint'), code: CODE_FLIP },
-      h(
-        'div',
-        { style: { display: 'flex', flexDirection: 'column', gap: '14px' } },
-        h(Labeled, { label: '换字即翻牌（旧的上移出、新的从下进）' },
-          h(
-            'div',
-            { style: { display: 'flex', gap: '8px', alignItems: 'center', minHeight: '28px' } },
-            h(FlipText, { text: shown ? FLIP_STEPS[flipStep] : '', maxWidth: 300 }),
-            h(Button, {
-              size: 'sm',
-              variant: 'outline',
-              onClick: () => { setShown(true); setFlipStep((i) => (i + 1) % FLIP_STEPS.length) },
-            }, '下一步'),
-            h(Button, { size: 'sm', variant: 'ghost', onClick: () => setShown(false) }, '清空（传空串）'),
-          )),
-        h(Labeled, { label: 'maxWidth（超长三点省略 + hover 跑马灯）' },
-          h(FlipText, {
-            text: '一条很长的过程提示：这一步正在把工作区里的所有任务逐个比对后写入台账，请稍候',
-            maxWidth: 220,
-          })),
-        h(Labeled, { label: 'width（固定宽）' },
-          h(FlipText, { text: '固定 200px', width: 200 })),
-        h(Labeled, { label: 'sweep（常驻扫光：文字不动也在动）' },
-          h(FlipText, { text: '正在写入台账…', sweep: true, maxWidth: 300 })),
-      ),
+      h(Labeled, { label: '自动轮播 + 常驻扫光（每 2 秒翻一句；也可点下一步）' },
+        h(
+          'div',
+          { style: { display: 'flex', gap: '8px', alignItems: 'center', minHeight: '28px' } },
+          h(FlipText, { text: shown ? FLIP_STEPS[flipStep] : '', sweep: true, width: 300 }),
+          h(Button, {
+            size: 'sm',
+            variant: 'outline',
+            onClick: () => { setShown(true); setFlipStep((i) => (i + 1) % FLIP_STEPS.length) },
+          }, '下一步'),
+          h(Button, { size: 'sm', variant: 'ghost', onClick: () => setShown(false) }, '清空（传空串）'),
+        )),
     ),
     h(DocApi, { id: 'flip-text' }),
   )

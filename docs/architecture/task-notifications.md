@@ -26,11 +26,11 @@
 
 ## 不变量（不可破）
 
-1. **终态只分发一次**：`coordinator` 用 `settledAnnounced` 去重；本地执行与服务端投影同时到达也不重复弹卡 / 回调。
+1. **终态只分发一次**：`store` 用 `announced` 去重；本地执行与服务端投影同时到达也不重复弹卡 / 回调。
 2. **终态不被迟到消息复活**：`store.merge` 见到本地已 `settledAt` 的记录时丢弃其 `running` 投影。
 3. **按钮先切面板再执行**：`press(buttonId, taskId)` 先 `host.selectPanel(task.panelId)`，再查本页 handler。
    `panelId` 由 `startTask` 从 `layout.panelInfo.getSnapshot().activePanelId` 自动记（宿主 0.2.2-rc.3 核实），消费方不传。
-4. **没注册 handler 的按钮不画**：列表控件按 `getHandler(id)` 过滤，不出现点了没反应的死按钮。
+4. **按钮按状态显示，不隐藏不置灰**：`TaskBar` 只按 `when` 过滤状态画按钮，不按 `getHandler` 过滤；点到的 handler 不在本页时结算为失败并走 `onActionFailure`，绝不画一个静默死按钮。
 5. **执行器开放、不写死、不兜底**：`kind` 是任意字符串；没有注册的执行体就结算为 failed，不自绘替代、不猜实现、不降级。
 6. **配置跟着记录走**：toast / notify / rowButtons 是记录上的纯数据，任何页面按同一份配置渲染；
    `scope: 'all'` 每页处理、`'origin'` 只发起页；按钮跨页时只在发起页显示。
@@ -49,3 +49,4 @@
 
 - 2026-11-18：整套重构为后端执行 + 开放执行器 + 服务端 SSE 投影 + 核心列表控件；
   删任务池 / 状态源 / 双时钟租约 / tombstone / 权威引擎 / 有界缓存 / `TaskBar` / `useTasks`。
+- 2026-11-20 13:44:37：校正不变量：去重符号改 store.announced、按钮按 when 显示不按 handler 隐藏

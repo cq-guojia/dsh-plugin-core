@@ -89,14 +89,6 @@
 .dshpc-taskbar__row-detail{display:inline-flex;align-items:center;gap:.35em;min-width:0;flex:1 1 auto;}
 /* 分隔横线前后留出可见空隙（flex 会吃掉裸空格字符，故用 gap + 独立 span）。 */
 .dshpc-taskbar__row-sep{flex:none;color:var(--dshpc-fg-4);}
-/* 终态时间位换成的小标签：极淡成功底色 + 细描边，比裸文字更像「已完成」的状态标记。 */
-.dshpc-taskbar__done-tag{
-  flex:none;display:inline-flex;align-items:center;
-  padding:0 5px;border-radius:var(--dshpc-radius-sm);
-  color:var(--dshpc-success);background:var(--dshpc-success-soft);
-  border:1px solid var(--dshpc-border);
-  font-size:var(--dshpc-font-xs);line-height:1.5;white-space:nowrap;
-}
 /* FlipText 里的扫光只裁在字形上，外层容器不能裁切；给个最小宽让它能收缩到省略。 */
 .dshpc-taskbar__row-detail .dshpc-flip{flex:1 1 auto;min-width:0;}
 .dshpc-taskbar__row-actions{flex:none;display:inline-flex;align-items:center;gap:var(--dshpc-space-1);}

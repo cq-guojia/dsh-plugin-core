@@ -4,6 +4,7 @@ import {
 } from 'react'
 import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react'
 import { Button, type ButtonSize } from '../../ui/actions/Button.js'
+import { Chip } from '../../ui/display/Chip.js'
 import { FontIcon, resolveIconName } from '../../ui/display/font-icon.js'
 import { FlipText } from '../../ui/display/FlipText.js'
 import { MarqueeText } from '../../ui/display/MarqueeText.js'
@@ -116,7 +117,7 @@ function Elapsed(props: { since: number; until?: number; progress?: string }): R
   const tick = useNowMs() // hook 必须无条件调；终态下取 until，tick 变化不会用到
   const nowMs = props.until ?? tick
   const leading = settled
-    ? h('span', { className: 'dshpc-taskbar__done-tag' }, t('taskbarDone'))
+    ? h(Chip, { tone: 'success', size: 'xs' }, t('taskbarDone'))
     : formatDurationHms(Math.max(0, nowMs - props.since))
   const message = props.progress
   return h(
