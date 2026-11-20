@@ -30,19 +30,26 @@ test('默认宿主：toast.scope=origin 只在发起标签页弹卡（页面级 
   }
 })
 
-test('默认宿主：toast 按钮只在注册了 handler 的页显示（无死按钮）', async () => {
-  const { mountTaskUI, taskCenterStore, defaultTaskHost: hostFn } = await import('../dist/adv/tasks/index.js')
+test('默认宿主：toast 按钮照画不隐藏，没 handler 点了给 i18n 提示（与 TaskBar 同口径）', async () => {
+  const { mountTaskUI, projectTasks, taskCenterStore, defaultTaskHost: hostFn } = await import('../dist/adv/tasks/index.js')
+  const { setLocale, t } = await import('../dist/utils/i18n.js')
   taskCenterStore.clear()
   const got = []
   const off = subscribeToasts((p) => got.push(p))
   try {
-    const offUi = mountTaskUI({ project: 'p', handlers: { view: () => {} } })
+    let clicked = 0
+    const offUi = mountTaskUI({ project: 'p', handlers: { view: () => { clicked += 1 } } })
+    // 真实链路里 startTask / deliverNotice 先把记录投影进 store，按钮才点得到。
+    projectTasks([record({ panelId: 'panel-b' })])
     const host = hostFn(() => 'panel-b')
     host.deliverToast({
       title: '完成', scope: 'all', buttonId: 'view', buttonText: '查看',
       task: record({ panelId: 'panel-b' }),
     })
     assert.equal(got[0].actions.length, 1, '注册了 handler，按钮出现')
+    got[0].actions[0].onClick()
+    assert.equal(clicked, 1, '有 handler 点了执行，不给失败提示')
+    assert.equal(got.length, 1, '有 handler 不多弹提示')
 
     offUi()
     got.length = 0
@@ -50,9 +57,23 @@ test('默认宿主：toast 按钮只在注册了 handler 的页显示（无死�
       title: '完成', scope: 'all', buttonId: 'missing', buttonText: '查看',
       task: record({ panelId: 'panel-b' }),
     })
-    assert.equal(got[0].actions, undefined, '没注册 handler，按钮不出现（无死按钮）')
+    assert.equal(got[0].actions.length, 1, '没注册 handler 按钮也照画，不隐藏')
+    got[0].actions[0].onClick()
+    assert.equal(got.length, 2, '没 handler 点了弹一次失败提示')
+    assert.equal(got[1].message, t('taskbarActionFailed'), '失败提示走 i18n 文案')
+    setLocale('en')
+    got.length = 0
+    host.deliverToast({
+      title: 'done', scope: 'all', buttonId: 'missing', buttonText: 'view',
+      task: record({ panelId: 'panel-b' }),
+    })
+    got[0].actions[0].onClick()
+    assert.equal(got[1].message, t('taskbarActionFailed'), '切到英文后提示跟随语言')
+    assert.notEqual(got[1].message, '这条任务的操作已失效，可能是发起它的页面已刷新或关闭', '英文不是中文文案')
+    setLocale(null)
     taskCenterStore.clear()
   } finally {
+    setLocale(null)
     off()
   }
 })

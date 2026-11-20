@@ -13,10 +13,9 @@ import { PanelSurface } from '../../ui/infra/panel.js'
 import { ensureComponentStyles } from '../../ui/infra/css.js'
 import { useLocale } from '../../ui/infra/locale.js'
 import { useNowMs } from '../../ui/infra/ticker.js'
-import { notify } from '../../ui/feedback/notify.js'
 import { t } from '../../utils/i18n.js'
 import { formatDurationHms } from '../../utils/date.js'
-import { pressTaskButton, taskCenterStore } from './api.js'
+import { notifyTaskActionFailed, pressTaskButton, taskCenterStore } from './api.js'
 import type { TaskButton, TaskNotificationRecord } from './model.js'
 import { TASK_BAR_CSS } from './task-bar-css.js'
 import { isSettled } from './store.js'
@@ -428,9 +427,9 @@ export function TaskBar(props: TaskBarProps): ReactNode {
                   onClick: () => {
                     const ok = pressTaskButton(action.id, task.id)
                     if (ok) return
-                    // 没生效一律要吭声：有回调交回调，否则核心给一次提示。
+                    // 没生效一律要吭声：有回调交回调，否则走与 Toast 按钮共用的一次提示。
                     if (onActionFailure !== undefined) onActionFailure({ task, index, ...(label === undefined ? {} : { label }) })
-                    else notify(t('taskbarActionFailed'))
+                    else notifyTaskActionFailed()
                   },
                 },
                 label,

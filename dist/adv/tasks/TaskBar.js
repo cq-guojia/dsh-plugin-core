@@ -10,10 +10,9 @@ import { PanelSurface } from '../../ui/infra/panel.js';
 import { ensureComponentStyles } from '../../ui/infra/css.js';
 import { useLocale } from '../../ui/infra/locale.js';
 import { useNowMs } from '../../ui/infra/ticker.js';
-import { notify } from '../../ui/feedback/notify.js';
 import { t } from '../../utils/i18n.js';
 import { formatDurationHms } from '../../utils/date.js';
-import { pressTaskButton, taskCenterStore } from './api.js';
+import { notifyTaskActionFailed, pressTaskButton, taskCenterStore } from './api.js';
 import { TASK_BAR_CSS } from './task-bar-css.js';
 import { isSettled } from './store.js';
 /** 本栏自己的图标：后台正在跑的任务，用 CPU 字形表示「机器在干活」。 */
@@ -312,11 +311,11 @@ export function TaskBar(props) {
                         const ok = pressTaskButton(action.id, task.id);
                         if (ok)
                             return;
-                        // 没生效一律要吭声：有回调交回调，否则核心给一次提示。
+                        // 没生效一律要吭声：有回调交回调，否则走与 Toast 按钮共用的一次提示。
                         if (onActionFailure !== undefined)
                             onActionFailure({ task, index, ...(label === undefined ? {} : { label }) });
                         else
-                            notify(t('taskbarActionFailed'));
+                            notifyTaskActionFailed();
                     },
                 }, label);
             })));

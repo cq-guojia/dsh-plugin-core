@@ -28,6 +28,11 @@ export interface LayoutClientContext {
 /** 最小形状校验：畸形 SSE 帧不能进 store 污染列表（startedAt 参与排序，缺了会乱）。 */
 export declare function isTaskRecord(value: unknown): value is TaskRecord;
 /**
+ * 按钮点了没生效时的统一提示：任务条目已失效 / 注册 handler 的插件已卸载（找不到方法）。
+ * Toast 按钮与 TaskBar 行按钮共用这一句，文案只走 t() 保持多语言一致。
+ */
+export declare function notifyTaskActionFailed(): void;
+/**
  * 默认宿主适配：toast/notify 接到核心已有的提示层。
  *
  * toast/notify 的 `scope:'origin'` 用「发起标签页」判定（不是面板）：SSE 把同一条终态推给

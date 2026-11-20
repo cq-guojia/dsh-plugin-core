@@ -8,6 +8,7 @@
  * handlers 与 Toast / TaskBar 共用同一份。状态真源在服务端，经 SSE 推 TaskRecord 进来由 coordinator 投影。
  */
 import { notify as notifyCard } from '../../ui/feedback/notify.js';
+import { t } from '../../utils/i18n.js';
 import { defaultNotifyScope, notifyMessage, resolveProject, subscribeNotifications as subscribeNotifyBus, } from '../../runtime/notify.js';
 import { createCoordinator } from './coordinator.js';
 import { connectTaskStream } from './stream.js';
@@ -120,6 +121,13 @@ function ingestNotice(raw) {
     coordinator.deliverNotice(raw);
 }
 /**
+ * 按钮点了没生效时的统一提示：任务条目已失效 / 注册 handler 的插件已卸载（找不到方法）。
+ * Toast 按钮与 TaskBar 行按钮共用这一句，文案只走 t() 保持多语言一致。
+ */
+export function notifyTaskActionFailed() {
+    notifyCard(t('taskbarActionFailed'));
+}
+/**
  * 默认宿主适配：toast/notify 接到核心已有的提示层。
  *
  * toast/notify 的 `scope:'origin'` 用「发起标签页」判定（不是面板）：SSE 把同一条终态推给
@@ -138,10 +146,15 @@ export function defaultTaskHost(originId) {
             if (payload.scope === 'origin' && !isOrigin(payload.task))
                 return;
             const opts = { variant: payload.task.state === 'failed' ? 'error' : 'success' };
-            if (payload.buttonId !== undefined && taskStore.getHandler(payload.buttonId, payload.task.project) !== undefined) {
+            // 按钮照画不隐藏：按用户 11-18 拍板「不屏蔽、不置灰、不提示（指不预警）」。
+            // 找不到 handler（条目失效 / 发起插件卸载）时点了给一次统一提示，与 TaskBar 行按钮同口径。
+            if (payload.buttonId !== undefined) {
                 opts.actions = [{
                         text: payload.buttonText ?? payload.buttonId,
-                        onClick: () => { pressTaskButton(payload.buttonId, payload.task.id); },
+                        onClick: () => {
+                            if (!pressTaskButton(payload.buttonId, payload.task.id))
+                                notifyTaskActionFailed();
+                        },
                     }];
             }
             notifyCard(payload.title, opts);
