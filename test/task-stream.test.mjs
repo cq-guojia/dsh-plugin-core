@@ -117,6 +117,30 @@ test('serveTaskStream：webServer 未就位时不抛，不连累同 apply 其它
   assert.equal(injected, true)
 })
 
+test('serveTaskStream：快照慢于 keepAliveMs 时保活不抢在 writeHead 前隐式发头', async () => {
+  let handler
+  const ctx = { inject: (_d, cb) => cb({ webServer: { register: (r) => { handler = r.handler } } }) }
+  const source = {
+    // 快照故意慢于保活间隔，模拟服务端取基线耗时的情况。
+    snapshot: () => new Promise((resolve) => setTimeout(() => resolve([]), 40)),
+    subscribe: () => () => {},
+  }
+  const order = []
+  const res = {
+    writeHead: () => { order.push('head') },
+    write: (c) => { order.push(String(c).includes('keep-alive') ? 'keepalive' : 'frame'); return true },
+    end: () => {},
+    on: () => {},
+  }
+  serveTaskStream(ctx, {
+    basePath: '/api/slow', authorize: () => 'v', source, keepAliveMs: 5,
+  })
+  await handler({ url: '/api/slow/stream' }, res)
+  await new Promise((r) => setTimeout(r, 60))
+  assert.equal(order[0], 'head', 'writeHead 必须是第一次写，保活不得抢先（否则 ERR_HTTP_HEADERS_SENT）')
+  assert.ok(order.includes('keepalive'), 'writeHead 之后保活仍正常启动')
+})
+
 test('serveTaskStream：基线先推全量，订阅增量，保活头正确', async () => {
   let handler
   const registered = []

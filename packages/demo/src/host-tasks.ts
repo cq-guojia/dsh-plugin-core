@@ -86,8 +86,10 @@ export function serveDemoTasks(ctx: HostContextLike): void {
         title: String(payload.title ?? '后台任务'),
         state: 'running',
         startedAt: Date.now(),
-        // 发起页身份由 client 随 submit 提交：回填到记录后，服务端 notice 才能按 scope:'origin' 只在发起页弹。
+        // 发起页身份由 client 随 submit 提交：origin 让 notice 按 scope:'origin' 只在发起页弹，
+        // panelId 让按钮点了先 selectPanel 切回发起面板——两者都要回填到记录。
         ...(typeof payload.origin === 'string' ? { origin: payload.origin } : {}),
+        ...(typeof payload.panelId === 'string' ? { panelId: payload.panelId } : {}),
         ...(typeof payload.toast === 'object' && payload.toast !== null ? { toast: payload.toast as TaskRecord['toast'] } : {}),
         ...(typeof payload.notify === 'object' && payload.notify !== null ? { notify: payload.notify as TaskRecord['notify'] } : {}),
         ...(typeof payload.rowButtons === 'object' && payload.rowButtons !== null ? { rowButtons: payload.rowButtons as TaskRecord['rowButtons'] } : {}),

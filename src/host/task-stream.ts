@@ -95,12 +95,15 @@ export function serveTaskStream(ctx: HostContextLike, options: TaskStreamOptions
             const offTask = options.source.subscribe(sendTask, viewer)
             const offNotice = options.source.subscribeNotices?.(sendNotice, viewer)
 
-            const timer = setInterval(() => { res.write(KEEP_ALIVE) }, keepAliveMs)
-            ;(timer as unknown as { unref?: () => void }).unref?.()
-
+            // 保活 timer 必须在 writeHead 之后再启动：快照慢于 keepAliveMs 时，
+            // 提前 setInterval 的第一次 res.write 会隐式发头，随后的 writeHead(200) 抛
+            // ERR_HTTP_HEADERS_SENT，这条流直接废掉。快照期间没有头可写，本就不该发保活。
+            let timer: ReturnType<typeof setInterval> | undefined
+            let closed = false
             const conn = {
               cleanup(): void {
-                clearInterval(timer)
+                closed = true
+                if (timer !== undefined) clearInterval(timer)
                 offTask()
                 offNotice?.()
                 connections.delete(conn)
@@ -111,19 +114,22 @@ export function serveTaskStream(ctx: HostContextLike, options: TaskStreamOptions
             res.on?.('close', () => { conn.cleanup() })
 
             void Promise.resolve(options.source.snapshot(viewer)).then((baseline) => {
+              if (closed) return
               res.writeHead(200, {
                 'content-type': 'text/event-stream; charset=utf-8',
                 'cache-control': 'no-cache, no-transform',
                 connection: 'keep-alive',
                 'x-accel-buffering': 'no',
               })
+              timer = setInterval(() => { if (!closed) res.write(KEEP_ALIVE) }, keepAliveMs)
+              ;(timer as unknown as { unref?: () => void }).unref?.()
               // 快照只恢复列表；历史终态绝不在此弹卡（否则刷新就重弹）。
               for (const task of baseline) res.write(`event: task-snapshot\ndata: ${JSON.stringify(task)}\n\n`)
               streaming = true
               for (const frame of buffered) res.write(frame)
               buffered.length = 0
             }).catch((error: unknown) => {
-              // 200 头已发，不能再写 401（ERR_HTTP_HEADERS_SENT）；只结束连接并清理。
+              // 快照失败发生在 writeHead 之前：头未发，可安全结束；不写 401 是因为鉴权已过。
               console.error('dsh-plugin-core: task stream baseline failed', error)
               conn.cleanup()
               res.end()

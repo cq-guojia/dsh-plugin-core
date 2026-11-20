@@ -57445,7 +57445,7 @@ function createStore3() {
       announced.set(key, task.settledAt ?? Date.now());
       return true;
     },
-    clear() {
+    clearAll() {
       tasks2.clear();
       byKey.clear();
       announced.clear();
@@ -57786,7 +57786,7 @@ function defaultTaskHost(originId) {
       if (payload.scope === "origin" && !isOrigin(payload.task))
         return;
       const opts = { variant: payload.task.state === "failed" ? "error" : "success" };
-      if (payload.buttonId !== void 0) {
+      if (payload.buttonId !== void 0 && isOrigin(payload.task)) {
         opts.actions = [{
           text: payload.buttonText ?? payload.buttonId,
           onClick: () => {
@@ -57846,14 +57846,31 @@ function connectTaskCenter(host) {
       streamConn = void 0;
   };
 }
+function connectTaskLayout(ctx) {
+  let layout;
+  ctx.inject?.(["layout"], (sub) => {
+    const candidate = sub?.layout ?? sub;
+    if (candidate !== null && candidate !== void 0 && typeof candidate === "object")
+      layout = candidate;
+  });
+  connectTaskCenter({
+    activePanelId: () => layout?.panelInfo?.getSnapshot().activePanelId ?? void 0,
+    selectPanel: (id3) => layout?.selectPanel?.(id3)
+  });
+}
 async function startTask(input) {
   const origin = stableHost.originId?.();
+  const panelId = stableHost.activePanelId?.();
   if (stableHost.submitUrl === void 0)
     return coordinator.start(input);
+  const extra = {
+    ...origin === void 0 ? {} : { origin },
+    ...panelId === void 0 ? {} : { panelId }
+  };
   const res = await fetch(stableHost.submitUrl, {
     method: "POST",
     headers: { "content-type": "application/json", ...stableHost.headers?.() },
-    body: JSON.stringify(origin === void 0 ? input : { ...input, origin })
+    body: JSON.stringify(Object.keys(extra).length === 0 ? input : { ...input, ...extra })
   });
   if (!res.ok)
     throw new Error(`task submit failed: ${res.status}`);
@@ -57865,7 +57882,7 @@ async function startTask(input) {
     title: input.title,
     state: "running",
     startedAt: Date.now(),
-    ...origin === void 0 ? {} : { origin }
+    ...extra
   };
   taskStore.upsert(optimistic);
   return optimistic;
@@ -70322,8 +70339,8 @@ h(SideSheet, {
         "en": "Three channels with separate jobs: **toast** is the terminal card \u2014 `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`{ id, text }`). **Notify** is a terminal message \u2014 `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send \u2014 scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record."
       },
       {
-        "zh": "\u6309\u94AE id \u67E5\u7684\u662F\u672C\u9875 `handlers`\uFF08\u5217\u8868\u4E0E Toast \u5171\u7528\u540C\u4E00\u4EFD\uFF09\uFF0C**\u4E00\u5F8B\u7167\u753B\u4E0D\u9690\u85CF\u3001\u4E0D\u7F6E\u7070**\u3002\u70B9\u51FB\u5148 `selectPanel(panelId)` \u5207\u56DE\u53D1\u8D77\u9762\u677F\uFF0C\u518D\u6267\u884C handler\u2014\u2014\u8FD9\u6837\u300C\u67E5\u770B\u300D\u8FD9\u7C7B\u52A8\u4F5C\u624D\u80FD\u628A UI \u843D\u5728\u6B63\u786E\u7684\u9762\u677F\u4E0A\uFF1B`panelId` \u7531\u6838\u5FC3\u5728 `startTask` \u65F6\u81EA\u52A8\u8BB0\u5F55\uFF0C\u6D88\u8D39\u65B9\u4E0D\u4F20\u3002\u82E5 handler \u627E\u4E0D\u5230\uFF08\u6761\u76EE\u5DF2\u5931\u6548\u6216\u6CE8\u518C\u5B83\u7684\u63D2\u4EF6\u5DF2\u5378\u8F7D\uFF09\uFF0CToast \u6309\u94AE\u4E0E\u5217\u8868\u6309\u94AE\u90FD\u7ED9\u4E00\u6B21\u63D0\u793A\uFF08\u8D70\u6838\u5FC3 i18n\uFF09\uFF1B\u5217\u8868\u6309\u94AE\u8FD8\u53EF\u4F20 `onActionFailure` \u81EA\u5DF1\u63A5\u7BA1\u3002\u7EC8\u6001\u53EA\u5206\u53D1\u4E00\u6B21\uFF1A\u672C\u5730\u6267\u884C\u4E0E\u670D\u52A1\u7AEF\u6295\u5F71\u4E0D\u4F1A\u91CD\u590D\u5F39\u5361\u3002",
-        "en": 'A button id resolves against this page\'s `handlers` (shared by the list and toast); **buttons are always drawn \u2014 never hidden or greyed out**. A click first calls `selectPanel(panelId)` to return to the originating panel, then runs the handler \u2014 so a "view" action lands its UI on the right panel. `panelId` is recorded automatically by the core in `startTask`; consumers never pass it. If the handler is missing (stale entry or the registering plugin was unloaded), both the toast button and the list button give one notice (through the core i18n); list buttons may also pass `onActionFailure` to handle it themselves. Terminal states are delivered once: local execution and server projection never double-toast.'
+        "zh": '\u6309\u94AE id \u67E5\u7684\u662F\u672C\u9875 `handlers`\uFF08\u5217\u8868\u4E0E Toast \u5171\u7528\u540C\u4E00\u4EFD\uFF09\u3002\u4E24\u4E2A\u7EF4\u5EA6\u522B\u6DF7\uFF1A**origin \u5F52\u5C5E**\u2014\u2014`scope:"all"` \u6BCF\u9875\u5F39\u5361\u4F46\u6309\u94AE\u53EA\u5728\u53D1\u8D77\u9875\u753B\uFF0C`scope:"origin"` \u53EA\u53D1\u8D77\u9875\u5F39\u5361\uFF1B**\u53EF\u89C1\u6027**\u2014\u2014\u5728\u5F52\u5C5E\u9875\u5185\u6309\u94AE\u4E00\u5F8B\u7167\u753B\u4E0D\u9690\u85CF\u3001\u4E0D\u7F6E\u7070\uFF0C\u4E0D\u56E0\u672C\u9875\u627E\u4E0D\u5230 handler \u800C\u9690\u85CF\u3002\u70B9\u51FB\u5148 `selectPanel(panelId)` \u5207\u56DE\u53D1\u8D77\u9762\u677F\uFF0C\u518D\u6267\u884C handler\u2014\u2014\u8FD9\u6837\u300C\u67E5\u770B\u300D\u8FD9\u7C7B\u52A8\u4F5C\u624D\u80FD\u628A UI \u843D\u5728\u6B63\u786E\u7684\u9762\u677F\u4E0A\uFF1B`panelId` \u7531\u6838\u5FC3\u5728 `startTask` \u65F6\u81EA\u52A8\u8BB0\u5F55\uFF08\u672C\u5730\u4E0E\u670D\u52A1\u7AEF\u6A21\u5F0F\u90FD\u8BB0\uFF0C\u968F\u63D0\u4EA4\u7ED9\u670D\u52A1\u7AEF\u56DE\u586B\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u4F20\u3002\u82E5 handler \u627E\u4E0D\u5230\uFF08\u6761\u76EE\u5DF2\u5931\u6548\u6216\u6CE8\u518C\u5B83\u7684\u63D2\u4EF6\u5DF2\u5378\u8F7D\uFF09\uFF0CToast \u6309\u94AE\u4E0E\u5217\u8868\u6309\u94AE\u90FD\u7ED9\u4E00\u6B21\u63D0\u793A\uFF08\u8D70\u6838\u5FC3 i18n\uFF09\uFF1B\u5217\u8868\u6309\u94AE\u8FD8\u53EF\u4F20 `onActionFailure` \u81EA\u5DF1\u63A5\u7BA1\u3002\u7EC8\u6001\u53EA\u5206\u53D1\u4E00\u6B21\uFF1A\u672C\u5730\u6267\u884C\u4E0E\u670D\u52A1\u7AEF\u6295\u5F71\u4E0D\u4F1A\u91CD\u590D\u5F39\u5361\u3002',
+        "en": "A button id resolves against this page's `handlers` (shared by the list and toast). Two separate dimensions: **origin ownership** \u2014 `scope:'all'` toasts every page but draws the button only on the originating page, `scope:'origin'` toasts only there; **visibility** \u2014 on the owning page the button is always drawn, never hidden or greyed out, and never hidden just because this page lacks a handler. A click first calls `selectPanel(panelId)` to return to the originating panel, then runs the handler \u2014 so a \"view\" action lands its UI on the right panel. `panelId` is recorded automatically by the core in `startTask` (both local and server modes, submitted for server backfill); consumers never pass it. If the handler is missing (stale entry or the registering plugin was unloaded), both the toast button and the list button give one notice (through the core i18n); list buttons may also pass `onActionFailure` to handle it themselves. Terminal states are delivered once: local execution and server projection never double-toast."
       }
     ],
     "api": [
@@ -70522,8 +70539,8 @@ h(SideSheet, {
             "type": "TaskStore",
             "def": "\u5168\u5C40\u5355\u4F8B",
             "desc": {
-              "zh": "\u540C\u6807\u7B7E\u9875\u5171\u4EAB\u7684\u4EFB\u52A1\u72B6\u6001\uFF1BgetSnapshot / subscribe / select / getHandler",
-              "en": "Shared task state per tab; getSnapshot / subscribe / select / getHandler"
+              "zh": "\u540C\u6807\u7B7E\u9875\u5171\u4EAB\u7684\u4EFB\u52A1\u72B6\u6001\uFF1BgetSnapshot / subscribe / select / getHandler / clearAll\uFF08\u5168\u6E05\uFF1A\u4EFB\u52A1\u3001\u5E42\u7B49\u952E\u3001\u7EC8\u6001\u58F0\u660E\u4E0E handlers\uFF0C\u6E05\u540E\u9700\u91CD\u65B0 mountTaskUI\uFF09",
+              "en": "Shared task state per tab; getSnapshot / subscribe / select / getHandler / clearAll (clears everything: tasks, idempotency keys, settlement claims and handlers \u2014 remount after)"
             }
           }
         ]
@@ -75699,9 +75716,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.43.3"}`],
-            [t3("buildDemo"), `v${"0.43.3"}`],
-            [t3("buildStamp"), "261120-203533-898"]
+            [t3("buildCore"), `v${"0.43.4"}`],
+            [t3("buildDemo"), `v${"0.43.4"}`],
+            [t3("buildStamp"), "261120-221441-317"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76016,9 +76033,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.43.3"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.43.3"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261120-203533-898")
+          (0, import_react112.createElement)("span", null, `core v${"0.43.4"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.43.4"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261120-221441-317")
         )
       )
     ),
@@ -76131,6 +76148,7 @@ function apply(ctx) {
   setTooltipRenderer((props) => (0, import_react112.createElement)(import_dsh_client_ui_primitives2.Tooltip, props));
   connectToasts();
   mountToasts();
+  connectTaskLayout(ctx);
   connectTaskCenter({ streamUrl: `${TASK_PATH}/stream`, submitUrl: `${TASK_PATH}/submit` });
   setDefaultTaskProject("dsh-plugin-core-demo");
   ctx.inject(["layout"], (sub) => {

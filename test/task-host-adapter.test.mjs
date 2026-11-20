@@ -33,7 +33,7 @@ test('默认宿主：toast.scope=origin 只在发起标签页弹卡（页面级 
 test('默认宿主：toast 按钮照画不隐藏，没 handler 点了给 i18n 提示（与 TaskBar 同口径）', async () => {
   const { mountTaskUI, projectTasks, taskCenterStore, defaultTaskHost: hostFn } = await import('../dist/adv/tasks/index.js')
   const { setLocale, t } = await import('../dist/utils/i18n.js')
-  taskCenterStore.clear()
+  taskCenterStore.clearAll()
   const got = []
   const off = subscribeToasts((p) => got.push(p))
   try {
@@ -71,16 +71,61 @@ test('默认宿主：toast 按钮照画不隐藏，没 handler 点了给 i18n �
     assert.equal(got[1].message, t('taskbarActionFailed'), '切到英文后提示跟随语言')
     assert.notEqual(got[1].message, '这条任务的操作已失效，可能是发起它的页面已刷新或关闭', '英文不是中文文案')
     setLocale(null)
-    taskCenterStore.clear()
+    taskCenterStore.clearAll()
   } finally {
     setLocale(null)
     off()
   }
 })
 
+test('默认宿主：toast scope:all 每页弹卡但按钮只在发起页画（origin 归属）', () => {
+  const got = []
+  const off = subscribeToasts((p) => got.push(p))
+  try {
+    const host = defaultTaskHost(() => 'tab-origin')
+    const common = { title: '完成', scope: 'all', buttonId: 'view', buttonText: '查看' }
+    // 发起页：卡片 + 按钮
+    host.deliverToast({ ...common, task: record({ origin: 'tab-origin' }) })
+    assert.equal(got.length, 1)
+    assert.equal(got[0].actions.length, 1, '发起页画按钮')
+    // 别的标签页：卡片照弹，按钮不画
+    host.deliverToast({ ...common, task: record({ origin: 'tab-other' }) })
+    assert.equal(got.length, 2, 'scope:all 跨页卡片照弹')
+    assert.equal(got[1].actions, undefined, '非发起页不画按钮（origin 归属）')
+    // origin 缺失 fail-open：按发起页处理，按钮照画（宁可多画不漏）
+    host.deliverToast({ ...common, task: record() })
+    assert.equal(got[2].actions.length, 1, '缺 origin fail-open 画按钮')
+  } finally {
+    off()
+  }
+})
+
+test('startTask 服务端模式：panelId 与 origin 随 payload 提交、乐观行带上', async () => {
+  const { connectTaskCenter, startTask, taskCenterStore } = await import('../dist/adv/tasks/index.js')
+  const originalFetch = globalThis.fetch
+  let sent
+  let off = () => {}
+  try {
+    globalThis.fetch = async (_url, init) => {
+      sent = JSON.parse(init.body)
+      return { ok: true, json: async () => ({ id: 'srv-1' }) }
+    }
+    off = connectTaskCenter({ submitUrl: '/submit', activePanelId: () => 'panel-x', originId: () => 'tab-z' })
+    const t = await startTask({ title: '服务端任务', project: 'p', kind: 'demo' })
+    assert.equal(sent.panelId, 'panel-x', 'panelId 随提交发出供服务端回填')
+    assert.equal(sent.origin, 'tab-z', 'origin 随提交发出')
+    assert.equal(t.panelId, 'panel-x', '乐观行带上 panelId，SSE 到达前也能切回面板')
+    assert.equal(t.origin, 'tab-z', '乐观行带上 origin')
+  } finally {
+    globalThis.fetch = originalFetch
+    off()
+    taskCenterStore.clearAll()
+  }
+})
+
 test('mountTaskUI：onSettled 按 project/groups 过滤（与列表 select 同口径）', async () => {
   const { mountTaskUI, taskCenterStore } = await import('../dist/adv/tasks/index.js')
-  taskCenterStore.clear()
+  taskCenterStore.clearAll()
   const got = []
   const off = mountTaskUI({
     project: 'p', groups: ['g1'], handlers: {},
@@ -95,13 +140,13 @@ test('mountTaskUI：onSettled 按 project/groups 过滤（与列表 select 同�
     assert.deepEqual(got, ['match'], '只收本项目本分组的终态')
   } finally {
     off()
-    taskCenterStore.clear()
+    taskCenterStore.clearAll()
   }
 })
 
 test('mountTaskUI：onSettled 不传 project/groups 时收全部项目', async () => {
   const { mountTaskUI, taskCenterStore } = await import('../dist/adv/tasks/index.js')
-  taskCenterStore.clear()
+  taskCenterStore.clearAll()
   const got = []
   const off = mountTaskUI({ handlers: {}, onSettled: (task) => got.push(task.id) })
   try {
@@ -110,7 +155,7 @@ test('mountTaskUI：onSettled 不传 project/groups 时收全部项目', async (
     assert.deepEqual(got, ['a', 'b'], '不过滤时收全部')
   } finally {
     off()
-    taskCenterStore.clear()
+    taskCenterStore.clearAll()
   }
 })
 

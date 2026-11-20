@@ -129,7 +129,7 @@ function createStore() {
             announced.set(key, task.settledAt ?? Date.now());
             return true;
         },
-        clear() {
+        clearAll() {
             tasks.clear();
             byKey.clear();
             announced.clear();

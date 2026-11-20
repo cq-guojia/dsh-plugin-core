@@ -46,7 +46,11 @@ export interface TaskStore {
      * 同业务键重新发起（running）会重置声明，让下一次结算能正常分发。
      */
     claimSettled(task: TaskRecord): boolean;
-    clear(): void;
+    /**
+     * 全清：任务记录、幂等键、终态声明与已注册的按钮 handlers 一并清空。
+     * 清掉 handlers 后需重新 mountTaskUI 才会再注册；只清列表不要用这个。
+     */
+    clearAll(): void;
 }
 /** 全局 store（同标签页共用）。 */
 export declare const taskStore: TaskStore;

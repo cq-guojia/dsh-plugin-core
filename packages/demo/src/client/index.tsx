@@ -46,6 +46,7 @@ import {
 } from '../../../../dist/runtime/index.js'
 import {
   connectTaskCenter,
+  connectTaskLayout,
 } from '../../../../dist/adv/tasks/index.js'
 import {
   connectFileServices,
@@ -484,6 +485,8 @@ export function apply(ctx: {
   mountToasts()
 
   // 任务终态的 toast / notify 宿主：接上后 startTask 的终态配置才会真正弹卡。
+  // connectTaskLayout 接宿主 layout：自动记 activePanelId（发起时写进任务）与 selectPanel（点按钮切回面板）。
+  connectTaskLayout(ctx)
   connectTaskCenter({ streamUrl: `${TASK_PATH}/stream`, submitUrl: `${TASK_PATH}/submit` })
 
   // 和真实插件一样：任务 / 通知的一级分组在入口设一次，之后只写二级分组。

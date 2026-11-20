@@ -939,13 +939,13 @@ data: ${JSON.stringify(payload)}
           };
           const offTask = options.source.subscribe(sendTask, viewer);
           const offNotice = options.source.subscribeNotices?.(sendNotice, viewer);
-          const timer = setInterval(() => {
-            res.write(KEEP_ALIVE);
-          }, keepAliveMs);
-          timer.unref?.();
+          let timer;
+          let closed = false;
           const conn = {
             cleanup() {
-              clearInterval(timer);
+              closed = true;
+              if (timer !== void 0)
+                clearInterval(timer);
               offTask();
               offNotice?.();
               connections.delete(conn);
@@ -956,12 +956,19 @@ data: ${JSON.stringify(payload)}
             conn.cleanup();
           });
           void Promise.resolve(options.source.snapshot(viewer)).then((baseline) => {
+            if (closed)
+              return;
             res.writeHead(200, {
               "content-type": "text/event-stream; charset=utf-8",
               "cache-control": "no-cache, no-transform",
               connection: "keep-alive",
               "x-accel-buffering": "no"
             });
+            timer = setInterval(() => {
+              if (!closed)
+                res.write(KEEP_ALIVE);
+            }, keepAliveMs);
+            timer.unref?.();
             for (const task of baseline)
               res.write(`event: task-snapshot
 data: ${JSON.stringify(task)}
@@ -1392,8 +1399,10 @@ function serveDemoTasks(ctx) {
         title: String(payload.title ?? "\u540E\u53F0\u4EFB\u52A1"),
         state: "running",
         startedAt: Date.now(),
-        // 发起页身份由 client 随 submit 提交：回填到记录后，服务端 notice 才能按 scope:'origin' 只在发起页弹。
+        // 发起页身份由 client 随 submit 提交：origin 让 notice 按 scope:'origin' 只在发起页弹，
+        // panelId 让按钮点了先 selectPanel 切回发起面板——两者都要回填到记录。
         ...typeof payload.origin === "string" ? { origin: payload.origin } : {},
+        ...typeof payload.panelId === "string" ? { panelId: payload.panelId } : {},
         ...typeof payload.toast === "object" && payload.toast !== null ? { toast: payload.toast } : {},
         ...typeof payload.notify === "object" && payload.notify !== null ? { notify: payload.notify } : {},
         ...typeof payload.rowButtons === "object" && payload.rowButtons !== null ? { rowButtons: payload.rowButtons } : {}

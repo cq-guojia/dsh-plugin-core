@@ -175,9 +175,11 @@ export function defaultTaskHost(originId?: () => string | undefined): Coordinato
     deliverToast(payload) {
       if (payload.scope === 'origin' && !isOrigin(payload.task)) return
       const opts: NotifyOptions = { variant: payload.task.state === 'failed' ? 'error' : 'success' }
-      // 按钮照画不隐藏：按用户 11-18 拍板「不屏蔽、不置灰、不提示（指不预警）」。
-      // 找不到 handler（条目失效 / 发起插件卸载）时点了给一次统一提示，与 TaskBar 行按钮同口径。
-      if (payload.buttonId !== undefined) {
+      // 两个独立维度，别混：
+      // ① origin 归属 —— scope:'all' 每页弹卡，但按钮只在发起页画（11-18 定稿 worklog:76/190）；
+      //    isOrigin 缺 origin 时 fail-open 按「是发起页」，宁可多画不漏。
+      // ② handler 缺失 —— 在发起页照画不隐藏、不置灰，点了给一次统一提示，与 TaskBar 行按钮同口径。
+      if (payload.buttonId !== undefined && isOrigin(payload.task)) {
         opts.actions = [{
           text: payload.buttonText ?? payload.buttonId,
           onClick: () => {
@@ -259,13 +261,19 @@ export function connectTaskLayout(ctx: LayoutClientContext): void {
 /** 发起一次后台任务。await 等登记成功，不等跑完。 */
 export async function startTask(input: StartTaskInput): Promise<TaskRecord> {
   const origin = stableHost.originId?.()
+  const panelId = stableHost.activePanelId?.()
   if (stableHost.submitUrl === undefined) return coordinator.start(input)
   // 服务端执行模式：POST 提交，真实记录由服务端经 SSE 推回并投影到本地 store。
-  // origin 作为页面级身份随 payload 提交，供服务端回填到记录（不写进 StartTaskInput 公共契约）。
+  // origin（页面级归属）与 panelId（面板级切 UI）都随 payload 提交，供服务端回填到记录
+  // ——两者都由核心自动记，不写进 StartTaskInput 公共契约。缺哪个就不带哪个。
+  const extra = {
+    ...(origin === undefined ? {} : { origin }),
+    ...(panelId === undefined ? {} : { panelId }),
+  }
   const res = await fetch(stableHost.submitUrl, {
     method: 'POST',
     headers: { 'content-type': 'application/json', ...stableHost.headers?.() },
-    body: JSON.stringify(origin === undefined ? input : { ...input, origin }),
+    body: JSON.stringify(Object.keys(extra).length === 0 ? input : { ...input, ...extra }),
   })
   if (!res.ok) throw new Error(`task submit failed: ${res.status}`)
   const ack = (await res.json()) as { id?: string }
@@ -276,7 +284,7 @@ export async function startTask(input: StartTaskInput): Promise<TaskRecord> {
     title: input.title,
     state: 'running',
     startedAt: Date.now(),
-    ...(origin === undefined ? {} : { origin }),
+    ...extra,
   }
   // 本地先落一条，SSE 到达后按同 id 覆盖；避免提交到推送之间的空窗看不到任务。
   taskStore.upsert(optimistic)

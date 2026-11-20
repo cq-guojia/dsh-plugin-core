@@ -5065,8 +5065,8 @@ export const docData = {
         "en": "Three channels with separate jobs: **toast** is the terminal card — `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`{ id, text }`). **Notify** is a terminal message — `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send — scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record."
       },
       {
-        "zh": "按钮 id 查的是本页 `handlers`（列表与 Toast 共用同一份），**一律照画不隐藏、不置灰**。点击先 `selectPanel(panelId)` 切回发起面板，再执行 handler——这样「查看」这类动作才能把 UI 落在正确的面板上；`panelId` 由核心在 `startTask` 时自动记录，消费方不传。若 handler 找不到（条目已失效或注册它的插件已卸载），Toast 按钮与列表按钮都给一次提示（走核心 i18n）；列表按钮还可传 `onActionFailure` 自己接管。终态只分发一次：本地执行与服务端投影不会重复弹卡。",
-        "en": "A button id resolves against this page's `handlers` (shared by the list and toast); **buttons are always drawn — never hidden or greyed out**. A click first calls `selectPanel(panelId)` to return to the originating panel, then runs the handler — so a \"view\" action lands its UI on the right panel. `panelId` is recorded automatically by the core in `startTask`; consumers never pass it. If the handler is missing (stale entry or the registering plugin was unloaded), both the toast button and the list button give one notice (through the core i18n); list buttons may also pass `onActionFailure` to handle it themselves. Terminal states are delivered once: local execution and server projection never double-toast."
+        "zh": "按钮 id 查的是本页 `handlers`（列表与 Toast 共用同一份）。两个维度别混：**origin 归属**——`scope:\"all\"` 每页弹卡但按钮只在发起页画，`scope:\"origin\"` 只发起页弹卡；**可见性**——在归属页内按钮一律照画不隐藏、不置灰，不因本页找不到 handler 而隐藏。点击先 `selectPanel(panelId)` 切回发起面板，再执行 handler——这样「查看」这类动作才能把 UI 落在正确的面板上；`panelId` 由核心在 `startTask` 时自动记录（本地与服务端模式都记，随提交给服务端回填），消费方不传。若 handler 找不到（条目已失效或注册它的插件已卸载），Toast 按钮与列表按钮都给一次提示（走核心 i18n）；列表按钮还可传 `onActionFailure` 自己接管。终态只分发一次：本地执行与服务端投影不会重复弹卡。",
+        "en": "A button id resolves against this page's `handlers` (shared by the list and toast). Two separate dimensions: **origin ownership** — `scope:'all'` toasts every page but draws the button only on the originating page, `scope:'origin'` toasts only there; **visibility** — on the owning page the button is always drawn, never hidden or greyed out, and never hidden just because this page lacks a handler. A click first calls `selectPanel(panelId)` to return to the originating panel, then runs the handler — so a \"view\" action lands its UI on the right panel. `panelId` is recorded automatically by the core in `startTask` (both local and server modes, submitted for server backfill); consumers never pass it. If the handler is missing (stale entry or the registering plugin was unloaded), both the toast button and the list button give one notice (through the core i18n); list buttons may also pass `onActionFailure` to handle it themselves. Terminal states are delivered once: local execution and server projection never double-toast."
       }
     ],
     "api": [
@@ -5265,8 +5265,8 @@ export const docData = {
             "type": "TaskStore",
             "def": "全局单例",
             "desc": {
-              "zh": "同标签页共享的任务状态；getSnapshot / subscribe / select / getHandler",
-              "en": "Shared task state per tab; getSnapshot / subscribe / select / getHandler"
+              "zh": "同标签页共享的任务状态；getSnapshot / subscribe / select / getHandler / clearAll（全清：任务、幂等键、终态声明与 handlers，清后需重新 mountTaskUI）",
+              "en": "Shared task state per tab; getSnapshot / subscribe / select / getHandler / clearAll (clears everything: tasks, idempotency keys, settlement claims and handlers — remount after)"
             }
           }
         ]

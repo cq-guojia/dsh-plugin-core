@@ -15,7 +15,8 @@
 ## 步骤
 
 1. **本页接线一次**（`client/task-ui.ts`）：注册按钮 id → 本页函数，订阅终态刷自己的数据。
-   列表与 Toast 共用这一份 handlers。按钮一律照画、不隐藏不置灰；找不到 handler 时（条目失效或注册它的插件已卸载）点了会给一次统一提示。
+   列表与 Toast 共用这一份 handlers。归属页内按钮一律照画、不隐藏不置灰；找不到 handler 时（条目失效或注册它的插件已卸载）点了会给一次统一提示。
+   注意归属：`toast.*.scope:'all'` 每个标签页都弹卡，但**按钮只在发起页画**；`'origin'` 只发起页弹卡。列表行按钮则任何页都画。
 
    ```ts
    import { mountTaskUI } from 'dsh-plugin-core/ui/task-ui'

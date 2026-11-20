@@ -49,3 +49,4 @@ docs/                                               # 项目文档库入口与�
 - 2026-11-17（v0.42.0）：`api/ui.md` 补 `ModalLockExempt` 与 Confirm/Alert 内置按钮例外、写明「有 locked 不等于有例外」边界；确认弹窗 `lockExceptions` 只收内置钮名
 - 2026-11-18：后台任务中心整套重构为后端执行 + 开放执行器 + 服务端 SSE 投影 + 核心列表控件；删旧任务池 / 状态源 / 双时钟租约 / 旧 `TaskBar` 实现 / `useTasks`，文档与索引同步收敛
 - 2026-11-20：修消费方审查意见——`TaskBar` 展示面出口拆到 `adv/tasks/ui`（`adv/tasks` 保持纯逻辑）；任务按钮（Toast 与列表）一律照画、点了找不到 handler 走统一 i18n 提示；三流隔离与按标签页去重口径入档，相关手写文档同步更新
+- 2026-11-20（消费方二次对照）：服务端 `startTask` 把 `panelId` 随提交发出供服务端回填（乐观行也带上，补上"核心自动记 panelId"承诺）；SSE 保活 timer 移到 `writeHead` 之后（防慢快照触发 `ERR_HTTP_HEADERS_SENT`）；Toast `scope:'all'` 每页弹卡但按钮只在发起页画，与"归属页内照画不隐藏"两个维度分列；`TaskStore.clear()` 改名 `clearAll()` 并写清清了什么

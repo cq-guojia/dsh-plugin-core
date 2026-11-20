@@ -51,7 +51,11 @@ export interface TaskStore {
    * 同业务键重新发起（running）会重置声明，让下一次结算能正常分发。
    */
   claimSettled(task: TaskRecord): boolean
-  clear(): void
+  /**
+   * 全清：任务记录、幂等键、终态声明与已注册的按钮 handlers 一并清空。
+   * 清掉 handlers 后需重新 mountTaskUI 才会再注册；只清列表不要用这个。
+   */
+  clearAll(): void
 }
 
 const STORE_KEY = Symbol.for('dsh-plugin-core/tasks/store/v1')
@@ -182,7 +186,7 @@ function createStore(): TaskStore {
       announced.set(key, task.settledAt ?? Date.now())
       return true
     },
-    clear() {
+    clearAll() {
       tasks.clear()
       byKey.clear()
       announced.clear()
