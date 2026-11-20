@@ -1,5 +1,6 @@
 {
   "tasks": {
+    "20261120-0641-1e18-修复消费方审查提出的任务中心缺陷": {"category": "缺陷修复", "created": "2026-11-20 06:41:29", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": null, "owner_name": null, "started": null, "status": "open", "tags": ["后台任务", "缺陷修复", "审查"], "title": "修复消费方审查提出的任务中心缺陷", "updated": "2026-11-20 06:41:29", "worklog": "worklog/202611/20-0641-1e18-修复消费方审查提出的任务中心缺陷.md"}
   },
   "version": "20261022000000"
 }
