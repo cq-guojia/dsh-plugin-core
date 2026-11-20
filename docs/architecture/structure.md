@@ -97,7 +97,7 @@ src/
 ├── adv/                    ⑤ 应用模块 —— 组件 + API 打包成成品
 │   ├── explorer/              文件浏览：FileBrowser · openFilePreview · pickWorkspaceFile · 预览体家族
 │   ├── session/               会话记录：SessionPreview
-│   └── tasks/                 后台任务：model · store · coordinator · api · TaskBar · stream · executor
+│   └── tasks/                 后台任务：model · store · coordinator · api · stream · TaskBar（实现）+ ui.ts（展示面出口）
 │
 ├── types/                  ⑥ 类型垫片 —— 只有 .d.ts，无运行时
 │
@@ -106,8 +106,8 @@ src/
 
 > 落地状态：`runtime/` 与 `adv/tasks/` 已于 2026-11-18 重构落盘 —— 开放执行器在
 > `src/runtime/executor.ts`，纯数据契约在 `model.ts`、共享状态在 `store.ts`、编排在 `coordinator.ts`、
-> 对外接线在 `api.ts`、展示栏 `TaskBar.ts`（含 task-bar.css）、SSE 在 `stream.ts` 与 `src/host/task-stream.ts`。
-> 旧的任务池 / 状态源 / 双时钟租约 / `TaskBar` / `useTasks` 已整套删除。
+> 对外接线在 `api.ts`、展示栏 `TaskBar.ts`（含 task-bar.css，展示面出口 `ui.ts`）、SSE 在 `stream.ts` 与 `src/host/task-stream.ts`。
+> 旧的任务池 / 状态源 / 双时钟租约 / 旧 `TaskBar` 实现 / `useTasks` 已整套删除；现 `TaskBar` 是新体系的展示栏，从 `adv/tasks/ui` 出口。
 
 **一个控件的四份东西放同一个目录**：`X.ts` + `X-logic.ts`（若有）+ `x.css`（真源）+ `x-css.generated.ts`（生成物）。
 
@@ -150,7 +150,8 @@ utils（谁都不依赖，谁都可以用）
 | `dsh-plugin-core/ui/host-toast` | 宿主原生 Toast | 入口静态 import 官方件会让 Node 单测崩（旧坑） |
 | `dsh-plugin-core/adv/explorer` | 文件浏览 | 应用模块独立子路径 |
 | `dsh-plugin-core/adv/session` | 会话预览 | 同上 |
-| `dsh-plugin-core/adv/tasks` | 后台任务：startTask + mountTaskUI + TaskBar + 开放执行器 + SSE | 同上 |
+| `dsh-plugin-core/adv/tasks` | 后台任务纯逻辑：startTask + mountTaskUI + 开放执行器 + SSE（不加载 React） | 应用模块独立子路径，Node 侧可裸引 |
+| `dsh-plugin-core/adv/tasks/ui` | `TaskBar`：核心展示栏（pill/icon、尺寸、宽度、跑马灯） | React 展示面与纯逻辑入口分开，引逻辑不带 React |
 | `dsh-plugin-core/ui/task-ui` | `mountTaskUI`：本页接线一次（handlers + 终态） | 消费方按文档固定路径 import，与控件入口同形态 |
 | `dsh-plugin-core/runtime` | 运行时底座：跨页消息 + 状态容器 + 开放执行器 | 无界面的能力，不想拖进控件时可单独引 |
 

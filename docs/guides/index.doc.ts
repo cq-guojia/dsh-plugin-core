@@ -70,7 +70,7 @@ const doc: DocTopic = {
               name: '把长耗时任务交给后端执行并在核心列表看进度',
               type: 'task-notifications.md',
               def: '—',
-              desc: { zh: '开放执行器、startTask、三处接线、Toast / notify / 按钮三通道与服务端 SSE 投影', en: 'Open executors, startTask, three wiring points, toast / notify / buttons, and server SSE projection' },
+              desc: { zh: '开放执行器、startTask、两处接线 + 展示挂载、Toast / notify / 按钮三通道与服务端 SSE 投影', en: 'Open executors, startTask, two wiring points plus a display mount, toast / notify / buttons, and server SSE projection' },
             },
             {
               name: '在同源多个页面之间广播一条提示 / 自己拿一个状态容器',

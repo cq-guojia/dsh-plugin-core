@@ -27,14 +27,14 @@ src/                                                # 源码根，按依赖方�
 ├── adv/                                            # 应用模块：组件 + API 打包成成品
 │   ├── explorer/                                   # 文件浏览：FileBrowser + 预览 API
 │   ├── session/                                    # 会话预览：SessionPreview
-│   ├── tasks/                                      # 后台任务：model / store / coordinator / api / TaskBar / stream
+│   ├── tasks/                                      # 后台任务：model / store / coordinator / api / stream / TaskBar（实现）+ ui.ts（展示面出口）
 │   └── (执行器在 src/runtime/executor.ts，SSE 端点在 src/host/task-stream.ts)
 └── host/                                           # 服务端：Node 侧路由与处理器
 ```
 
 > 分层自 2026-11-16 起新增 `runtime`（浏览器底座）与 `adv/tasks`（任务成品），2026-11-18 重构：
 > 通知与开放执行器在 `src/runtime/`，任务纯数据 / 共享状态 / 编排 / 接线 / 核心列表 / SSE 客户端在
-> `src/adv/tasks/`，SSE 服务端端点在 `src/host/task-stream.ts`；旧的任务池 / 状态源 / `TaskBar` / `useTasks` 已删。
+> `src/adv/tasks/`（展示面出口 `ui.ts`），SSE 服务端端点在 `src/host/task-stream.ts`；旧的任务池 / 状态源 / 旧 `TaskBar` 实现 / `useTasks` 已删，现 `TaskBar` 是新体系展示栏。
 > 分类判定顺序、每个类的成员、demo 分区见 `docs/architecture/structure.md`。
 
 ## 依赖方向（单向，不许反向）
@@ -155,9 +155,9 @@ React 绑定不进 `runtime`（它零 React）：`ui/infra/use-store.ts` 用 `us
 它借两样东西：`runtime/store` 记当前有哪些任务，`runtime/notify` 把「某个任务完成了」广播出去。
 `runtime` 不知道有「任务」这回事。
 
-任务列表要跨页显示时用的「发一整份 + 序号 + 新页面进来了补一份」，是任务池自己的同步策略，
-留在 `adv/tasks` 里，**不进 notify** —— 仓库里有三套独立序号（分片 / 消息 / 调用），
-分片去重还要读池自己的 `shards`，塞进传输层只会让通知反过来依赖任务。
+列表跨页同步走服务端 SSE 三流：`task-snapshot`（全量基线）和 `task`（进度 / 终态状态）只投影列表、
+永不弹卡；带唯一 id 的一次性 `task-notice` 才触发 toast / notify，客户端按 id 在 sessionStorage
+按标签页去重（刷新 / 重连重推历史不重弹）。这三条流物理隔离，通知不挂在状态投影上。
 
 ## 立包判据
 

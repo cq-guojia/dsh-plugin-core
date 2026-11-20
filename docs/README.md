@@ -14,7 +14,7 @@ docs/                                               # 项目文档库入口与�
 │   ├── overview.md                                 # 功能总索引槽位说明：职责已交帮助索引
 │   └── scope.md                                    # 需求范围、不做的部分与发布口径
 ├── guides/                                         # 做一件事的入口与步骤
-│   ├── background-task-center.md                   # 开放执行器 + 三处接线 + 服务端 SSE 的接入步骤
+│   ├── background-task-center.md                   # 开放执行器 + 两处接线 + 服务端 SSE 的接入步骤
 │   ├── index.md                                    # 帮助索引：按你要做的事挑一份文档
 │   ├── integration.md                              # 从零接入一个插件的步骤
 │   └── style.md                                    # 样式使用侧：token、换肤、前缀规则
@@ -44,7 +44,8 @@ docs/                                               # 项目文档库入口与�
 - 2026-11-13 17:30:00：新增 `api/icons.md`（字体图标 + 官方 primitives 图标同页枚举）
 - 2026-11-16：新增 `api/runtime.md`（运行时底座：跨页通知 / 状态容器 / 事件总线）；`api/task-notifications.md` 收 `TaskBar` 与 `useTasks`（原先在 `api/ui.md`）
 - 2026-11-16：任务模块对外展示名改为「后台任务中心」（底层仍用跨页通知）；`timeoutMs` 改为定时器到点自动回收
-- 2026-11-16 17:38:04：新增 architecture/background-task-center.md 与 guides/background-task-center.md
+- 2026-11-16 17:38:04：新增 architecture/task-notifications.md 与 guides/background-task-center.md
 - 2026-11-17：`api/ui.md` 补 Modal 例外控件 / 收起 / 保树隐藏契约与 `useModalBackground()`；`architecture/task-notifications.md` 阶段 2 标完成
 - 2026-11-17（v0.42.0）：`api/ui.md` 补 `ModalLockExempt` 与 Confirm/Alert 内置按钮例外、写明「有 locked 不等于有例外」边界；确认弹窗 `lockExceptions` 只收内置钮名
-- 2026-11-18：后台任务中心整套重构为后端执行 + 开放执行器 + 服务端 SSE 投影 + 核心列表控件；删旧任务池 / 状态源 / 双时钟租约 / `TaskBar` / `useTasks`，文档与索引同步收敛
+- 2026-11-18：后台任务中心整套重构为后端执行 + 开放执行器 + 服务端 SSE 投影 + 核心列表控件；删旧任务池 / 状态源 / 双时钟租约 / 旧 `TaskBar` 实现 / `useTasks`，文档与索引同步收敛
+- 2026-11-20：修消费方审查意见——`TaskBar` 展示面出口拆到 `adv/tasks/ui`（`adv/tasks` 保持纯逻辑）；任务按钮（Toast 与列表）一律照画、点了找不到 handler 走统一 i18n 提示；三流隔离与按标签页去重口径入档，相关手写文档同步更新

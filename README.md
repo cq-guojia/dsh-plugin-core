@@ -81,7 +81,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 | 引入路径 | 给你什么 | 需要 React |
 |---|---|---|
 | `dsh-plugin-core/design` | token 变量（明 + 暗）、`createStyleKit` 注入器工厂、明暗判据 | 否 |
-| `dsh-plugin-core/ui` | 整包：全部控件 + 通知任务中心（一张 re-export 清单，接受产物变大） | 是 |
+| `dsh-plugin-core/ui` | 整包：全部控件（一张 re-export 清单，接受产物变大） | 是 |
 | `dsh-plugin-core/ui/<控件>` | 单块：如 `/ui/button`、`/ui/input`、`/ui/picker`、`/ui/table`，只带这一块及其依赖闭包 | 是 |
 | `dsh-plugin-core/ui/official` | 官方 primitives 的直接再导出（少数确实要用官方原件的场景） | 是 |
 | `dsh-plugin-core/ui/code-viewer` | 只读 `CodeViewer` + 可编辑 `CodeEditor`，共用一份 CodeMirror 底座（文件预览源码态用查看器） | 是 |
@@ -90,7 +90,11 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 | `dsh-plugin-core/adv/explorer` | 文件浏览、文件选择、右侧停靠的文件预览 | 是 |
 | `dsh-plugin-core/adv/explorer/preview` | 预览体：图片、PDF、Markdown、HTML、Office、文本 / 代码 | 是 |
 | `dsh-plugin-core/adv/session` | 只读会话预览弹窗 + 变更文件 diff | 是 |
-| `dsh-plugin-core/host` | 宿主侧路由：只读 FS 路由、模型目录 | 否 |
+| `dsh-plugin-core/adv/tasks` | 后台任务纯逻辑：`startTask` / `mountTaskUI` / 开放执行器 / SSE（Node 可裸引，不带 React） | 否 |
+| `dsh-plugin-core/adv/tasks/ui` | 后台任务展示栏 `TaskBar`（从 `adv/tasks` 拆出的 React 展示面） | 是 |
+| `dsh-plugin-core/ui/task-ui` | `mountTaskUI`：本页接线一次（handlers + 终态） | 否 |
+| `dsh-plugin-core/runtime` | 运行时底座：跨页通知、状态容器、事件总线、开放执行器 | 否 |
+| `dsh-plugin-core/host` | 宿主侧路由：只读 FS 路由、模型目录、任务 SSE / 提交 | 否 |
 
 依赖方向单向：`design` ← `ui` ← `explorer` / `session`，`utils` 谁也不依赖。
 
@@ -149,16 +153,15 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 - `QuickToolbar`——随滚动出现的工具栏，带回到顶部与可见性规则。
 - `SplitGroup`、`startResizeLayoutWidth`、`Pagination`。
 
-### ui——通知任务中心
+### adv/tasks——后台任务中心
 
-长耗时任务在后台的统一登记与展示底座：状态池 + 事件总线两条通道，跨同源标签页即时可见，不轮询、不落文件、不含模拟数据。
+长耗时任务交给后端执行的底座：执行在服务端（开放执行器，kind 任意），状态真源在服务端经 SSE 投影，前端只登记、投影、转发按钮。没有前端心跳、状态源、双时钟租约——终态由执行器结果或服务端投影驱动一次。
 
-- `taskNotifications`——全局单例状态池：`getSnapshot` / `getServerSnapshot` / `subscribe` 可直接喂 `useSyncExternalStore`；`register()` 返回句柄，`done()` / `fail()` / `track(promise)` 结束，`background()` 只标记收起。
-- `selectTaskNotifications(snapshot, groups)`——过滤三态：不传 = 全站，一个 = 只看该组，多个 = 看这几个；分组名由调用方显式给。
-- `subscribeTaskNotificationEvents`——一次性事件：`registered` / `updated` / `backgrounded` / `settled` / `restored` / `peer-left`，不留存。
-- 跨页只传纯数据，跨页条目能看不能点；数据只在本页与同源标签页内存里，页面或进程关闭即失。
+- 逻辑从 `dsh-plugin-core/adv/tasks` 引（Node 可裸引、不带 React）：`startTask`（声明标题 / Toast / 通知 / 按钮，全是纯数据）、`mountTaskUI`（本页注册 handlers + 订阅终态）、`connectTaskCenter` / `connectTaskLayout`（服务端 SSE 接线 / 自动记发起面板）、开放执行器注册表。
+- 展示栏 `TaskBar` 从 `dsh-plugin-core/adv/tasks/ui` 引（React）：icon/pill 形态、sm/md/lg 尺寸、固定宽 / 最大宽、超长跑马灯；数据来自共享池，本插件不画行。
+- 通知三流隔离：快照 / 状态流只投影列表不弹卡，带唯一 id 的一次性 `task-notice` 才弹卡并按标签页去重（刷新 / 重连不重弹）。按钮一律照画，点了找不到 handler 给一次 i18n 提示。
 
-完整契约与用法见[通知任务中心](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/task-notifications.md)。
+完整契约与接入步骤见[后台任务中心](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/task-notifications.md)与[接入指南](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/guides/background-task-center.md)。
 
 ### utils——纯方法
 

@@ -21,7 +21,7 @@
 | 共享状态 | `src/adv/tasks/store.ts` | 同标签页共享池（Symbol.for 收口）、key 幂等、过滤、handlers、终态订阅 |
 | 编排 | `src/adv/tasks/coordinator.ts` | 登记→执行→进度→终态→toast/notify→切面板执行按钮；零 React / DOM，宿主能力全注入 |
 | 对外接线 | `src/adv/tasks/api.ts` | 三处消费方 API、SSE 自动订阅、layout 接线、默认 toast/notify 适配 |
-| 核心控件 | `src/adv/tasks/TaskBar.ts` | `TaskBar`：原 UI（pill/icon、sm/md/lg、width/min/max、跑马灯）；数据来自共享池，行按钮点击走 `pressTaskButton` |
+| 核心控件 | `src/adv/tasks/TaskBar.ts`（实现）、`src/adv/tasks/ui.ts`（展示面出口 `adv/tasks/ui`） | `TaskBar`：原 UI（pill/icon、sm/md/lg、width/min/max、跑马灯）；数据来自共享池，行按钮点击走 `pressTaskButton`。`adv/tasks` 保持纯逻辑入口，不加载 React |
 | 服务端推送 | `src/host/task-stream.ts` | `serveTaskStream` 三流隔离：快照 `event: task-snapshot` + 状态 `event: task`（都只投影、不弹卡）+ 一次性通知 `event: task-notice`（唯一弹卡源，source 的 outbox 补断线通知），强制 `authorize` |
 
 ## 不变量（不可破）
@@ -30,7 +30,7 @@
 2. **终态不被迟到消息复活**：`store.merge` 见到本地已 `settledAt` 的记录时丢弃其 `running` 投影。
 3. **按钮先切面板再执行**：`press(buttonId, taskId)` 先 `host.selectPanel(task.panelId)`，再查本页 handler。
    `panelId` 由 `startTask` 从 `layout.panelInfo.getSnapshot().activePanelId` 自动记（宿主 0.2.2-rc.3 核实），消费方不传。
-4. **按钮按状态显示，不隐藏不置灰**：`TaskBar` 只按 `when` 过滤状态画按钮，不按 `getHandler` 过滤；点到的 handler 不在本页时结算为失败并走 `onActionFailure`，绝不画一个静默死按钮。
+4. **按钮按状态显示，不隐藏不置灰**：`TaskBar` 行按钮只按 `when` 过滤状态，Toast 按钮一律画，都不按 `getHandler` 过滤。点击先 `selectPanel(panelId)` 再 `press`；返回 false（条目失效 / 注册 handler 的插件已卸载）时给一次统一 i18n 提示（`notifyTaskActionFailed()` → `taskbarActionFailed`），不静默。`TaskBar` 可传 `onActionFailure` 自己接管该提示。
 5. **执行器开放、不写死、不兜底**：`kind` 是任意字符串；没有注册的执行体就结算为 failed，不自绘替代、不猜实现、不降级。
 6. **配置跟着记录走**：toast / notify / rowButtons 是记录上的纯数据，任何页面按同一份配置渲染；
    `scope: 'all'` 每页处理、`'origin'` 只发起页；按钮跨页时只在发起页显示。

@@ -65334,8 +65334,8 @@ var docData = {
             "type": "task-notifications.md",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5F00\u653E\u6267\u884C\u5668\u3001startTask\u3001\u4E09\u5904\u63A5\u7EBF\u3001Toast / notify / \u6309\u94AE\u4E09\u901A\u9053\u4E0E\u670D\u52A1\u7AEF SSE \u6295\u5F71",
-              "en": "Open executors, startTask, three wiring points, toast / notify / buttons, and server SSE projection"
+              "zh": "\u5F00\u653E\u6267\u884C\u5668\u3001startTask\u3001\u4E24\u5904\u63A5\u7EBF + \u5C55\u793A\u6302\u8F7D\u3001Toast / notify / \u6309\u94AE\u4E09\u901A\u9053\u4E0E\u670D\u52A1\u7AEF SSE \u6295\u5F71",
+              "en": "Open executors, startTask, two wiring points plus a display mount, toast / notify / buttons, and server SSE projection"
             }
           },
           {
@@ -75699,9 +75699,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.43.1"}`],
-            [t3("buildDemo"), `v${"0.43.1"}`],
-            [t3("buildStamp"), "261120-200139-254"]
+            [t3("buildCore"), `v${"0.43.2"}`],
+            [t3("buildDemo"), `v${"0.43.2"}`],
+            [t3("buildStamp"), "261120-202150-938"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76016,9 +76016,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.43.1"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.43.1"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261120-200139-254")
+          (0, import_react112.createElement)("span", null, `core v${"0.43.2"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.43.2"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261120-202150-938")
         )
       )
     ),

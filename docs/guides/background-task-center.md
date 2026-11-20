@@ -1,7 +1,7 @@
 # 接入后台任务中心
 
 一个插件要把长任务交给后端执行、要终态弹卡 / 通知、要在核心列表里看到进度并带「查看 / 重跑」按钮时，
-按这篇接入。消费方只写三处代码，列表画面、进度展示、终态分发都归核心控件。
+按这篇接入。消费方只写两处接线代码（本页接线 + 每次发起），再加一次展示挂载；列表画面、进度展示、终态分发都归核心控件。
 
 > 签名与参数以 `docs/api/task-notifications.md` 为准；契约与不变量见 `docs/architecture/task-notifications.md`。
 
@@ -15,7 +15,7 @@
 ## 步骤
 
 1. **本页接线一次**（`client/task-ui.ts`）：注册按钮 id → 本页函数，订阅终态刷自己的数据。
-   列表与 Toast 共用这一份 handlers；没注册的按钮核心不画。
+   列表与 Toast 共用这一份 handlers。按钮一律照画、不隐藏不置灰；找不到 handler 时（条目失效或注册它的插件已卸载）点了会给一次统一提示。
 
    ```ts
    import { mountTaskUI } from 'dsh-plugin-core/ui/task-ui'
@@ -54,7 +54,7 @@
 3. **挂核心列表**（`client/index.ts`）：本插件不画行、不写 filter、不拼进度文案。
 
    ```ts
-   import { TaskBar } from 'dsh-plugin-core/adv/tasks'
+   import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'
    import { connectTaskLayout } from 'dsh-plugin-core/adv/tasks'
 
    connectTaskLayout(ctx)                  // 自动记 panelId，点按钮先切回发起面板
@@ -73,8 +73,9 @@
      basePath: '/api/task-center',
      authorize: (req) => currentViewer(req),
      source: {
-       snapshot: (viewer) => listTasks(viewer),
-       subscribe: (emit, viewer) => watchTasks(emit, viewer),
+       snapshot: (viewer) => listTasks(viewer),            // 全量基线，只恢复列表、不弹卡
+       subscribe: (emit, viewer) => watchTasks(emit, viewer), // 状态增量，只更新列表、不弹卡
+       subscribeNotices: (emit, viewer) => watchNotices(emit, viewer), // 一次性通知，才弹卡；订阅时回放 outbox 补断线期间的
      },
    })
    ```
@@ -85,13 +86,13 @@
 - 终态只弹一次卡、只跑一次 `onSettled`；同 key 再发起就地更新，不堆两条。
 - 去别的面板再点「查看」：先切回发起面板，再执行本页 handler。
 - 断开 SSE：客户端退避重连，重连后服务端重推基线，列表恢复且不重复弹卡。
-- 没注册 handler 的按钮 id 不出现在列表里。
+- 按钮一律照画；点一个失效按钮（条目过期 / 注册它的插件已卸载）会给一次统一提示，不静默。
 
 ## 常见失败
 
 | 现象 | 原因 | 处理 |
 |---|---|---|
-| 按钮点了没反应 | id 没在 handlers 注册 | 在 `mountTaskUI` 注册 handlers（TaskBar 共用同一份） |
+| 点了按钮提示「操作已失效」 | 条目已过期，或注册 handler 的插件已卸载（`TaskBar` / Toast 都照画按钮，找不到就提示） | 在 `mountTaskUI` 重新注册 handlers（TaskBar 共用同一份） |
 | 终态弹两次 | 本地执行与服务端投影都当成终态分发 | 用 `coordinator.project` 统一投影，不另写分发路径 |
 | 进度不显示 | 进度塞进了 `detail` | 用 `ctx.report({ message })` 上报到显式 `progress` 字段 |
 | 切面板后 UI 落错页 | 自行调 handler，没走 `press` | 点击统一走核心列表 / `pressTaskButton` |
@@ -104,4 +105,5 @@
 
 ## 更新日志
 
-- 2026-11-18：按新体系重写接入步骤（开放执行器 + 三处接线 + 服务端 SSE）；删状态源 / 双时钟 / 租约 / 幂等缓存口径。
+- 2026-11-18：按新体系重写接入步骤（开放执行器 + 两处接线 + 服务端 SSE）；删状态源 / 双时钟 / 租约 / 幂等缓存口径。
+- 2026-11-20：`TaskBar` 改从 `adv/tasks/ui` 引；按钮一律照画、点失败走统一 i18n 提示；服务端 `source` 补 `subscribeNotices`（唯一弹卡源）。

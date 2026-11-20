@@ -25,7 +25,7 @@
 | `处理日期、字符串、字节、HTTP` | `utils.md` | — | 纯函数清单与参数，含每个函数的失败返回值 | Pure helpers and their arguments, including each one’s failure return |
 | `加工作区文件浏览与预览` | `explorer.md` | — | 右侧分栏预览与文件选择器；都要宿主提供的工作区快照 | Right-dock preview and file picker; both need the host workspace snapshot |
 | `把一次会话渲染成只读预览` | `session.md` | — | 会话数据链与弹窗 props；归档会话同样可读 | The session data chain and dialog props; archived sessions read fine too |
-| `把长耗时任务交给后端执行并在核心列表看进度` | `task-notifications.md` | — | 开放执行器、startTask、三处接线、Toast / notify / 按钮三通道与服务端 SSE 投影 | Open executors, startTask, three wiring points, toast / notify / buttons, and server SSE projection |
+| `把长耗时任务交给后端执行并在核心列表看进度` | `task-notifications.md` | — | 开放执行器、startTask、两处接线 + 展示挂载、Toast / notify / 按钮三通道与服务端 SSE 投影 | Open executors, startTask, two wiring points plus a display mount, toast / notify / buttons, and server SSE projection |
 | `在同源多个页面之间广播一条提示 / 自己拿一个状态容器` | `runtime.md` | — | 运行时底座：跨页通知的收发与默认分组、状态容器与事件总线；不含任何界面 | Runtime foundations: sending and receiving cross-page notifications, the default group, the state container and the event bus — no UI at all |
 | `查方法的统一口径（失败不抛错、兜底不编造）` | `methods.md` | — | 所有 utils 方法的共同行为约定，写调用代码前先看它 | Shared behavior contract of every utils helper — read before writing call sites |
 | `用 token、配色或定制皮肤` | `style.md` | — | token 清单、明暗判据、能改什么改到哪为止 | Token inventory, dark-mode predicate, and how far customization goes |
