@@ -43,12 +43,10 @@ export interface TaskBarProps {
    * 只图标形态宽高恒等（纯图标钮就是正方形），长条形态只改高度与字号。
    */
   size?: ButtonSize
-  /** 与 `selectTaskNotifications` 同口径：不传 = 默认项目全部二级；数组 = 这几个二级；`'*'` = 全站。 */
+  /** 分组过滤：数组 = 只看这几个 group；`'*'` 或不传 = 不限分组。跨项目由下面 `project` 决定，省略则不限。 */
   groups?: readonly string[] | '*'
-  /** 换项目看；`null` = 不限项目。默认取全局默认项目。 */
+  /** 只收该项目的任务；省略 / `null` = 不限项目、跨项目全收。 */
   project?: string | null
-  /** 连 `hidden` 任务一起列（默认不列）。 */
-  includeHidden?: boolean
   /**
    * 行内按钮点了但没生效时调它（条目已失效 / 方法在别页且等不到 ack / 下标越界）。
    * 不传就由本栏弹一次核心自带提示 —— 「点了没反应」不该是静默的。

@@ -89,7 +89,7 @@ export type DocTopic = {
 - core 包 `files: ["dist","docs"]` 同时发 `.md` 与 `.doc.ts`；Agent 的入口是
   `node_modules/dsh-plugin-core/docs/guides/index.md`（按任务挑一份，不必全读）。
 - 插件产物不含文档：bundler 不吃 `.md`/`.ts` 文档（无 md/text loader），文档不进 bundle。
-- 消费方指引句（抄进各插件项目 `AGENTS.md`）见本仓 `docs/README.md` 阶段5 行。
+- 消费方指引句（抄进各插件项目 `AGENTS.md`）取本仓 `docs/guides/index.md` 的「按你要做的事挑一份」入口段；文档库整体索引见 `docs/README.md`。
 
 ## 更新日志
 

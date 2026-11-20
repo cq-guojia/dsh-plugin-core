@@ -64606,7 +64606,7 @@ var DICT2 = {
     icUsageTitle: "\u7528\u6CD5",
     icUsageHint: "\u683C\u5B50\u53EA\u590D\u5236\u540D\u5B57\uFF0C\u5B8C\u6574\u5199\u6CD5\u770B\u53F3\u8FB9",
     tnNote: "\u672C\u9875\u53EA\u6F14\u793A\u6570\u636E\u9762\uFF1A\u72B6\u6001\u6C60\u3001\u8BA2\u9605\u3001\u4E8B\u4EF6\u603B\u7EBF\u3001\u8DE8\u9875\u540C\u6B65\u4E0E\u7ED3\u675F\u53E5\u67C4\u3002\u4EFB\u52A1\u3001\u6761\u6570\u3001revision\u3001\u65F6\u95F4\u4E0E\u4E8B\u4EF6\u5168\u90E8\u6765\u81EA\u771F\u5B9E API \u8C03\u7528\uFF0C\u6CA1\u6709\u6A21\u62DF\u6570\u636E\u3001\u6CA1\u6709\u5B9A\u65F6\u5668\u3001\u6CA1\u6709\u5360\u4F4D\u884C\u3002\u53EF\u6536\u8D77\u5F39\u7A97\u4E0E\u4E8B\u4EF6\u67E5\u770B\u63A7\u4EF6\u4E0D\u5728\u8FD9\u91CC\uFF0C\u7531\u540E\u7EED\u4EFB\u52A1\u5355\u72EC\u63D0\u4F9B\u3002",
-    tnCrossPage: "\u8DE8\u9875\u6F14\u793A\uFF1A\u5728\u53E6\u4E00\u4E2A\u540C\u6E90\u6807\u7B7E\u9875\u6253\u5F00\u672C\u9875\uFF0C\u4E24\u8FB9\u5404\u81EA\u6CE8\u518C\u6216\u7ED3\u675F\u4EFB\u52A1\uFF0C\u5217\u8868\u4E0E\u4E8B\u4EF6\u4F1A\u5373\u65F6\u540C\u6B65\uFF1B\u5173\u6389\u5176\u4E2D\u4E00\u4E2A\u6807\u7B7E\u9875\u53EF\u770B\u5230 peer-left \u4E8B\u4EF6\u3002\u8DE8\u9875\u6761\u76EE\u80FD\u770B\u4E0D\u80FD\u70B9\u3002",
+    tnCrossPage: "\u8DE8\u9875\u6F14\u793A\uFF1A\u5728\u53E6\u4E00\u4E2A\u540C\u6E90\u6807\u7B7E\u9875\u6253\u5F00\u672C\u9875\uFF0C\u4E24\u8FB9\u90FD\u7ECF\u670D\u52A1\u7AEF SSE \u6295\u5F71\u540C\u4E00\u6279\u4EFB\u52A1\uFF1B\u7EC8\u6001\u901A\u77E5\u6309 id \u5728\u5404\u81EA\u6807\u7B7E\u9875\u53BB\u91CD\uFF0C\u5237\u65B0 / \u91CD\u8FDE\u91CD\u63A8\u5386\u53F2\u4E0D\u91CD\u5F39\u3002\u6309\u94AE\u4E00\u5F8B\u7167\u753B\uFF0C\u70B9\u4E86\u5148\u5207\u56DE\u53D1\u8D77\u9762\u677F\u518D\u6267\u884C\u3002",
     tnBarTitle: "\u901A\u7528\u5C55\u793A\u680F",
     tnBarHint: "\u89E6\u53D1\u5668\u7167\u4E0B\u62C9\u6846\u7684\u76AE\uFF1B\u70B9\u5F00\u6BCF\u884C\u6709\u52A8\u4F5C\u6309\u94AE\uFF08\u56FA\u5B9A\u6700\u5C0F\u53F7\uFF1A\u4E0D\u4F20\u8272\u7070\u5E95\u3001\u4F20 color \u6362\u5E95\u8272\uFF0C\u53EA\u4F20 icon \u662F\u6B63\u65B9\u5F62\uFF09\uFF1B\u6BCF\u6B21\u6CE8\u518C\u90FD\u968F\u673A\u751F\u6210 0/1/2 \u9897\uFF1B\u6700\u540E\u4E24\u9897\u6F14\u793A\u5BBD\u5EA6\uFF1A\u5B9A\u5BBD 220\uFF0C\u4EE5\u53CA\u4E0A\u9650 110\uFF08\u653E\u4E0D\u4E0B\u5C31\u662F\u4E09\u4E2A\u70B9\uFF0C\u79FB\u4E0A\u53BB\u8DD1\u9A6C\u706F\uFF09",
     tnOpsTitle: "\u771F\u5B9E\u64CD\u4F5C\u53F0",
@@ -64634,7 +64634,7 @@ var DICT2 = {
     tnEmptyEvents: "\u8FD8\u6CA1\u6709\u4E8B\u4EF6",
     tnCountLabel: "\u663E\u793A / \u5168\u6C60",
     tnBadgeLocal: "\u672C\u9875\u521B\u5EFA \xB7 \u53EF\u8FD8\u539F",
-    tnBadgeRemote: "\u8DE8\u9875\u6761\u76EE \xB7 \u80FD\u770B\u4E0D\u80FD\u70B9",
+    tnBadgeRemote: "\u5176\u5B83\u6807\u7B7E\u9875\u7684\u6761\u76EE \xB7 \u540C\u6837\u53EF\u70B9\uFF08\u5148\u5207\u56DE\u53D1\u8D77\u9762\u677F\uFF09",
     tnActionView: "\u67E5\u770B",
     tnActionCancel: "\u53D6\u6D88",
     tnActionShow: "\u663E\u793A",
@@ -64900,7 +64900,7 @@ var DICT2 = {
     icUsageTitle: "Usage",
     icUsageHint: "a cell copies just the name; the full form is on the right",
     tnNote: "This page demos the data plane only: pool, subscription, event bus, cross-page sync and settlement handles. Rows, counts, revision, timestamps and events all come from real API calls \u2014 no mock data, no timers, no placeholder rows. Collapsible dialogs and the event-viewer control are not here; they arrive in separate tasks.",
-    tnCrossPage: "Cross-page demo: open this page in another same-origin tab. Register or settle a task on either side and both lists and event streams update immediately; close one tab to see a peer-left event. Cross-page rows are view-only.",
+    tnCrossPage: "Cross-page demo: open this page in another same-origin tab; both project the same tasks from the server SSE. Terminal notices are de-duplicated by id per tab, so refresh / reconnect replays never re-toast. Buttons are always drawn; a click switches back to the originating panel before running.",
     tnBarTitle: "Ready-made bar",
     tnBarHint: "Trigger follows the dropdown skin; row actions are always the smallest size (grey by default, any color via color, icon-only renders as a square); every registration picks 0/1/2 buttons at random; the last two show sizing \u2014 width 220, and maxWidth 110 (ellipsis when it does not fit, marquee on hover)",
     tnOpsTitle: "Live controls",
@@ -64928,7 +64928,7 @@ var DICT2 = {
     tnEmptyEvents: "No events yet",
     tnCountLabel: "shown / total",
     tnBadgeLocal: "Created here \xB7 restorable",
-    tnBadgeRemote: "Cross-page row \xB7 view only",
+    tnBadgeRemote: "Row from another tab \xB7 also clickable (switches back to the originating panel)",
     tnActionView: "View",
     tnActionCancel: "Cancel",
     tnActionShow: "Show",
@@ -75699,9 +75699,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.43.2"}`],
-            [t3("buildDemo"), `v${"0.43.2"}`],
-            [t3("buildStamp"), "261120-202150-938"]
+            [t3("buildCore"), `v${"0.43.3"}`],
+            [t3("buildDemo"), `v${"0.43.3"}`],
+            [t3("buildStamp"), "261120-203533-898"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76016,9 +76016,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.43.2"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.43.2"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261120-202150-938")
+          (0, import_react112.createElement)("span", null, `core v${"0.43.3"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.43.3"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261120-203533-898")
         )
       )
     ),
