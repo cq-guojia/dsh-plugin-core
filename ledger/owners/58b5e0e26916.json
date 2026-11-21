@@ -1,7 +1,7 @@
 {
   "identity": {"uuid": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6"},
   "tasks": {
-    "20261121-1434-bcbb-单飞sse问题清单核实与修复": {"category": "缺陷修复", "created": "2026-11-21 14:34:37", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-21 14:34:37", "status": "doing", "tags": ["SSE", "单飞", "问题清单", "修复"], "title": "单飞SSE问题清单核实与修复", "updated": "2026-11-21 15:16:54", "worklog": "worklog/202611/21-1434-bcbb-单飞sse问题清单核实与修复.md"}
+    "20261121-1434-bcbb-单飞sse问题清单核实与修复": {"category": "缺陷修复", "created": "2026-11-21 14:34:37", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "owner_name": "GuoJia-Agent", "started": "2026-11-21 14:34:37", "status": "doing", "tags": ["SSE", "单飞", "问题清单", "修复"], "title": "单飞SSE问题清单核实与修复", "updated": "2026-11-21 15:32:22", "worklog": "worklog/202611/21-1434-bcbb-单飞sse问题清单核实与修复.md"}
   },
   "version": "20261022000000"
 }

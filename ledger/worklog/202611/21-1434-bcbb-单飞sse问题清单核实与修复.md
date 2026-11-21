@@ -1,7 +1,7 @@
 # 20261121-1434-bcbb-单飞sse问题清单核实与修复: 单飞SSE问题清单核实与修复
 
 - **Tags**: SSE, 单飞, 问题清单, 修复
-- **Status**: doing · 2026-11-21 15:16:54 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-21 15:32:22 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-21 14:34:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -77,6 +77,21 @@
 - #14 `shared-stream.ts:358` watchdog 只在 `asOwner` 建，follower 分支 `:367` 永远不可达。
 - #19 `shared-stream.ts:202-204` 节流用 `Date.now()` 挂钟，回拨即永久吞重拉。
 
+## 重写方案（工业界对标后定稿，2026-11-21）
+
+对标 `sse-coordinator@0.3.2`（npm pack 解包 `dist/index.js:1-292` 读全文）：工业界做法极简——Web Locks 排他锁 + 锁回调挂永不 resolve 的 Promise（abort 即释放、天然 failover）+ BC 转发 + `visibilitychange`/`online` 触发 recover + `cleanup()` 一次收干净。**它不做 epoch 大小比较、不做 BC 流量判活、不做双模选主**。我们这版把自创机制写复杂了，27 条里 19 条就是这么来的。
+
+重写原则（保留正确性必需项，砍掉自创复杂度）：
+
+1. **session / lease 两级分离**：session 管整个协调器生命周期；lease = 一次持锁届，有独立 AbortController。`onGiveUp` / watchdog / lifetime 只 `endLease()`（让出锁、run loop 自动重申请），**绝不 abort session**（根治 #1）。
+2. **epoch 改随机届 ID + 相等比较**，去掉挂钟与 `peerEpoch` 单调性（根治 #18）：新 owner 成为 owner 第一件事广播 `signal:epoch`，BroadcastChannel 保证同一发送者 FIFO，follower 先收到 epoch 再收帧，不需要大小比较；对不上当前 epoch 的帧直接丢。
+3. **底层 `stream.ts` 自己重连**：协调器只在 giveUp 时让出锁 + 递增退避（上限 30s）重申请，`headers()` 每次取新值 ⇒ 凭证刷新自动生效，不必显式重连调用（改写 #2 文档口径）；断流不再永久离线。
+4. **判活只认真 SSE 字节**：`onAlive` 刷新 lease 的 lastSseAliveAt，BC 消息一律不刷新（根治 #8）；watchdog 只在 owner 跑（follower 死代码分支删除，根治 #14），超时只 endLease。
+5. **基线请求**：节流用单调时钟（`performance.now()`，根治 #19），被节流必定补发定时器（根治 #6）；`state-reply` 同步 epoch/seq（根治 #11），定向回包只认 `to === selfId`（根治 #17）。
+6. **生命周期**：`visibilitychange` + `online` 触发 recover（工业界标配，本版缺）；`pagehide`/`freeze` 挂 document（根治 #3），`pageshow(persisted)`/`resume` 重建 session；所有监听器成对移除（根治 #12）。
+7. **资源集中管理**：所有定时器进一个 Set，`endLease()` 与 `dispose()` 各自一次清空（根治 #7/#13）。
+8. **store/api 侧**：基线按来源分语义（权威快照可覆盖陈旧本地行，根治 #4/#5）；Node 直连补 snapshot 透传（#9）；`merge` 在 running 分支清 announced（#24）；`connectTaskCenter` 的 headers/onGiveUp 改动态读取（#10）。
+
 ## Conclusion
 
 本轮只核实 + 方案，无代码变更。
@@ -109,3 +124,4 @@
 - 2026-11-21 14:39:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 消费方27条清单全部落入worklog并分6块；A块失真问题已逐条核实到 file:line 并给出方案与硬伤结论
 - 2026-11-21 15:06:46 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 撤回硬伤结论；解包webServer rc.5的lib/index.js:490核实宿主是node:http非HTTP2，6连接限制真实、多用户不成立挤爆
 - 2026-11-21 15:16:54 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 全方案穷举完成：官方mux无第三方注册口、SharedWorker/SW在CJS闭包下不可落地、h2/多端口/iframe全封死；最优解=保留单飞架构逐条修实现，已写入worklog Conclusion
+- 2026-11-21 15:32:22 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 对标 sse-coordinator@0.3.2 源码定稿重写方案：session/lease两级分离、随机epoch、单调时钟、判活只认真SSE字节、生命周期成对清理，已写入worklog
