@@ -1,7 +1,7 @@
 # 20261121-1434-bcbb-单飞sse问题清单核实与修复: 单飞SSE问题清单核实与修复
 
 - **Tags**: SSE, 单飞, 问题清单, 修复
-- **Status**: doing · 2026-11-21 15:06:46 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-21 15:16:54 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-21 14:34:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -56,7 +56,7 @@
 
 ## Next
 
-用户质疑「中间标签转发」这一架构本身，要求给出更完善的方案；先答复再定：继续修失真块，还是改用轮询（短请求、无选主/转发状态机）重做。本轮不动代码。
+全部可能性已查透（见 Conclusion「方案穷举」）。最优解：**保留单飞架构，按 27 条清单逐条修实现**（不推倒、不换轮询、不依赖宿主通道）。下一步先定 A 块失真的具体修法（基线覆盖语义 + Node snapshot 透传 + reply 同步 epoch + merge 清 announced），再进 B 块状态机重写。本轮不动代码。
 
 ## Process
 
@@ -87,6 +87,20 @@
 
 **宿主协议已核实（2026-11-21）**：`@deepseek-ai/dsh-host-webserver` 的 `dist-tags.next = 0.2.2-rc.5`（文档 dsh-host.md 记 rc.3，本机包 rc.5 为准）；解包 `lib/index.js:2,490,496` 用的是 `node:http` / `node:https` 的 `createServer`，**没有 http2 模块、没有 ALPN**。⇒ SSE 走 HTTP/1.1，浏览器每域 6 连接限制**真实存在**，多标签合并有实际价值，不是鸡肋；我上一轮「如果是 HTTP/2 就砍掉」的假设不成立。多用户场景不成立「8 用户挤爆」——每用户独立浏览器各自 6 名额，服务端连接数与浏览器名额是两码事。
 
+**方案穷举（2026-11-21，用户要求查一晚上找最优解，实际全查完）**：
+
+| 方案 | 判定 | 关键证据 |
+|---|---|---|
+| 官方 mux（`/api/remote.mux` WebSocket，所有 stream 复用一条物理连接） | 第三方插件**进不去** | `@deepseek-ai/dsh-client-connection@0.2.2-rc.1` `lib/client.browser.js:1348-1353`（`new WebSocket` + `/api/remote.mux`）、README.md:34；`@deepseek-ai/dsh-api-remotes` `lib/index.js:151-155` 要 `inject(['typertGateway'])` + 编译期白名单 `API_REMOTE_FORWARDED_EVENTS`（`:21-147`），`$on` 合法 key 固定、能力集构建期装配（`README.md:74-79`）；插件仓零 `typertGateway` |
+| SharedWorker | **不能** | 插件是 window 内 `window.__ModuleLoader__.load({id,factory})` CJS 闭包（dsh-task-ledger `packages/plugin/dist/client.js:1-6`），worker 全局无 `window`/`__ModuleLoader__`/`ctx.inject`；全仓与官方包零 worker 载入机制；Safari 长期不支持 |
+| Service Worker | **不能**（SSE 代理） | 事件驱动、空闲即终止，无 `ctx.inject`；Push 需 HTTPS+授权+VAPID 外部服务，不解决插件数据面 |
+| HTTP/2 / 多端口 / 子域 / iframe 异源 | **不能** | ALPN 实测只 http/1.1；webServer 单 host+单 port+单 `Server`（rc.5 `src/index.ts:97-109,392,405-437`）；Blob 继承同源、sandbox opaque origin 跨源请求仍计宿主域连接池 |
+| localStorage / storage 事件 | 不推荐 | `api.ts:26-31` 明确用 sessionStorage 而非 localStorage 保 `scope:'all'` 每页各弹一次；同步写+序列化重、无 ACK/基线 |
+| 长轮询 / 按需短连接 | 降级可自愈但非等价 | 失去服务端主动推送；hold 期仍占 socket；消费方 worklog `21-0330-ec37:40,221-222,241` 已收回该提法 |
+| **Web Locks 选主 + BroadcastChannel 扇出（现方案）** | **唯一保留实时性的正解，已实现发布** | `shared-stream.ts:123-126,292-386,388-412`；社区 `sse-coordinator` 同款；切换/断流空窗靠基线+outbox 补齐（方案 worklog `:52,95,131,138`） |
+
+**最优解结论**：不推倒现有单飞架构。理由——(1) 升不了 h2、官方 mux 无第三方注册口、单域单 listener，共享连接只剩单飞一条路；(2) SharedWorker/SW 在 CJS 闭包下无落地路径；(3) 轮询是降级不是等价；(4) 现方案的 27 条问题全是**实现缺陷**（状态机/基线语义/监听器/文档），不是架构病。最优解 = 保留架构、按清单逐条修实现 + 重写 `shared-stream.ts` 状态机 + 补测试覆盖，而不是换方案。边界诚实：单插件降到 1 条只是「不是本插件把全站搞死」，不免疫别人占满池（消费方 worklog `:44-46`）——那是平台责任。
+
 ## Execution Log
 
 <!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
@@ -94,3 +108,4 @@
 - 2026-11-21 14:34:37 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-11-21 14:39:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 消费方27条清单全部落入worklog并分6块；A块失真问题已逐条核实到 file:line 并给出方案与硬伤结论
 - 2026-11-21 15:06:46 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 撤回硬伤结论；解包webServer rc.5的lib/index.js:490核实宿主是node:http非HTTP2，6连接限制真实、多用户不成立挤爆
+- 2026-11-21 15:16:54 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 全方案穷举完成：官方mux无第三方注册口、SharedWorker/SW在CJS闭包下不可落地、h2/多端口/iframe全封死；最优解=保留单飞架构逐条修实现，已写入worklog Conclusion
