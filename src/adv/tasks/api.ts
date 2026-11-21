@@ -18,6 +18,7 @@ import {
 } from '../../runtime/notify.js'
 import { createCoordinator, type CoordinatorHost, type TaskCoordinator } from './coordinator.js'
 import type { StartTaskInput, TaskNotice, TaskRecord } from './model.js'
+import { connectSharedTaskStream, type SharedLifecycle } from './shared-stream.js'
 import { connectTaskStream, type TaskStreamConnection, type TaskStreamGiveUpReason } from './stream.js'
 import { taskStore } from './store.js'
 
@@ -92,6 +93,8 @@ export interface TaskCenterHost extends CoordinatorHost {
   submitUrl?: string
   /** SSE / 提交请求头（鉴权 token 等）。 */
   headers?: () => Record<string, string>
+  /** SSE 重连退避档（默认 1s/2s/4s）；透传给单飞协调器。 */
+  retryDelaysMs?: readonly number[]
   /**
    * SSE 放弃回调（退避用尽 / 不可重试错误，如 401）。默认接线在此收到信号后可以刷新凭证、
    * 再调一次 connectTaskCenter 显式重连（headers 是函数，天然取新 token）。不传则静默。
@@ -116,7 +119,8 @@ interface LayoutService {
  */
 const stableHost: TaskCenterHost = {}
 const coordinator: TaskCoordinator = createCoordinator({ host: stableHost })
-let streamConn: TaskStreamConnection | undefined
+/** 按 streamUrl 收口的单飞连接：同 key 只建一条，多引用靠 refcount 配平。 */
+let sharedConn: { key: string; refs: number; dispose: () => void } | undefined
 
 /**
  * 任务帧形状校验（服务端帧与 projectTasks 入口共用的一道闸）：畸形帧不能进 store 污染列表。
@@ -145,10 +149,11 @@ export function isTaskRecord(value: unknown): value is TaskRecord {
   )
 }
 
-/** 状态投影（基线 / 增量）：只恢复列表，**不弹卡**。 */
-function ingestTask(raw: unknown): void {
+/** 状态投影（基线 / 增量）：只恢复列表，**不弹卡**。快照帧走基线语义，不覆盖本地乐观行。 */
+function ingestTask(raw: unknown, snapshot = false): void {
   if (!isTaskRecord(raw)) return
-  coordinator.project([raw])
+  if (snapshot) taskStore.mergeBaseline([raw])
+  else coordinator.project([raw])
 }
 
 function isTaskNotice(value: unknown): value is TaskNotice {
@@ -241,24 +246,55 @@ export function connectTaskCenter(host: TaskCenterHost): () => void {
   if (stableHost.deliverNotify === undefined && defaults.deliverNotify !== undefined) {
     stableHost.deliverNotify = defaults.deliverNotify
   }
-  // 新接线先关掉上一条流（防双 SSE 双投影），但返回值只关「自己这条」：
-  // A 接线、B 接线、A 卸载时不能把 B 的流关掉。
-  streamConn?.close()
-  streamConn = undefined
-  let ownConn: TaskStreamConnection | undefined
-  if (stableHost.streamUrl !== undefined) {
-    ownConn = connectTaskStream({
-      streamUrl: stableHost.streamUrl,
-      headers: stableHost.headers,
-      onGiveUp: stableHost.onGiveUp,
-      onTask: (task) => { ingestTask(task) },
-      onNotice: ingestNotice,
-    })
-    streamConn = ownConn
+  // 按合并后的 streamUrl 收口：同 key 绝不 close 重建（否则 layout 二次接线会掐掉真流，
+  // refcount 也形同虚设）；只有 key 变化才释放旧协调器。这是跨标签单飞的入口不变量。
+  const key = stableHost.streamUrl
+  if (sharedConn !== undefined && sharedConn.key !== key) {
+    sharedConn.dispose()
+    sharedConn = undefined
   }
+  if (key === undefined) return () => {}
+  if (sharedConn === undefined) {
+    const lifecycle = typeof window === 'undefined' ? undefined : window
+    // Node / 测试环境没有 Web Locks 与多标签：直连保证既有测试语义（浏览器缺锁时协调器显式告警不开流）。
+    if (lifecycle === undefined) {
+      const direct: TaskStreamConnection = connectTaskStream({
+        streamUrl: key,
+        headers: stableHost.headers,
+        retryDelaysMs: stableHost.retryDelaysMs,
+        onGiveUp: stableHost.onGiveUp,
+        onTask: (task) => { ingestTask(task) },
+        onNotice: ingestNotice,
+      })
+      sharedConn = { key, refs: 0, dispose: () => direct.close() }
+    } else {
+    const dispose = connectSharedTaskStream({
+      streamUrl: key,
+      headers: stableHost.headers,
+      retryDelaysMs: stableHost.retryDelaysMs,
+      onGiveUp: stableHost.onGiveUp,
+      onTask: (task, snapshot) => { ingestTask(task, snapshot) },
+      onNotice: ingestNotice,
+      getState: () => [...taskStore.getSnapshot().tasks] as unknown[],
+      applyBaseline: (tasks) => {
+        const valid = tasks.filter((task): task is TaskRecord => isTaskRecord(task))
+        taskStore.mergeBaseline(valid)
+      },
+      lifecycle: lifecycle as unknown as SharedLifecycle,
+    })
+    sharedConn = { key, refs: 0, dispose }
+    }
+  }
+  const mine = sharedConn
+  mine.refs += 1
+  let released = false
   return () => {
-    ownConn?.close()
-    if (streamConn === ownConn) streamConn = undefined
+    if (released) return
+    released = true
+    mine.refs -= 1
+    if (mine.refs > 0) return
+    if (sharedConn === mine) sharedConn = undefined
+    mine.dispose()
   }
 }
 
@@ -266,13 +302,13 @@ export function connectTaskCenter(host: TaskCenterHost): () => void {
  * 从宿主 client ctx 接 layout：拿到 activePanelId（发起时记进任务）与 selectPanel（点按钮切回面板）。
  * 闸1（rc.3）核实：layout 服务由 ctx.inject(['layout']) 提供，activePanelId 在 panelInfo 快照里。
  */
-export function connectTaskLayout(ctx: LayoutClientContext): void {
+export function connectTaskLayout(ctx: LayoutClientContext): () => void {
   let layout: LayoutService | undefined
   ctx.inject?.(['layout'], (sub) => {
     const candidate = (sub as { layout?: LayoutService } | null)?.layout ?? (sub as LayoutService | null)
     if (candidate !== null && candidate !== undefined && typeof candidate === 'object') layout = candidate
   })
-  connectTaskCenter({
+  return connectTaskCenter({
     activePanelId: () => layout?.panelInfo?.getSnapshot().activePanelId ?? undefined,
     selectPanel: (id) => layout?.selectPanel?.(id),
   })

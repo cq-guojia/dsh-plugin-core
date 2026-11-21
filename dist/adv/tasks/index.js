@@ -5,4 +5,5 @@ export { createCoordinator, } from './coordinator.js';
 export { createExecutorRegistry, executors } from '../../runtime/executor.js';
 export { buttonsForState, notifyForState, toastForState } from './model.js';
 export { connectTaskStream, parseTaskFrames } from './stream.js';
+export { connectSharedTaskStream } from './shared-stream.js';
 //# sourceMappingURL=index.js.map

@@ -51,3 +51,13 @@ export type {
 export { buttonsForState, notifyForState, toastForState } from './model.js'
 export { connectTaskStream, parseTaskFrames } from './stream.js'
 export type { TaskStreamConnection, TaskStreamGiveUpReason, TaskStreamOptions } from './stream.js'
+export { connectSharedTaskStream } from './shared-stream.js'
+export type {
+  SharedChannelFactory,
+  SharedChannelLike,
+  SharedLifecycle,
+  SharedLockFactory,
+  SharedLockLike,
+  SharedLockManager,
+  SharedStreamOptions,
+} from './shared-stream.js'

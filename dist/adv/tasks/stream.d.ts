@@ -26,6 +26,8 @@ export interface TaskStreamOptions {
      * 服务端持续故障或鉴权失效时无限退避只会空刷请求、且不给人任何信号。
      */
     readonly retryDelaysMs?: readonly number[];
+    /** 收到任意响应字节（含保活注释帧）时回调——供上层判活，不解析内容。 */
+    readonly onAlive?: () => void;
     /** 放弃连接时回调（退避次数用尽 / 不可重试错误）。401 用它触发 token 刷新后显式重连。 */
     readonly onGiveUp?: (reason: TaskStreamGiveUpReason) => void;
 }

@@ -5244,11 +5244,11 @@ export const docData = {
           },
           {
             "name": "connectTaskLayout(ctx)",
-            "type": "(ctx: LayoutClientContext) => void",
+            "type": "(ctx: LayoutClientContext) => () => void",
             "def": "—",
             "desc": {
-              "zh": "从宿主 client ctx 接 layout：自动记 panelId、点按钮切回面板",
-              "en": "Wires layout from a host client ctx: records panelId and switches back on button presses"
+              "zh": "从宿主 client ctx 接 layout：自动记 panelId、点按钮切回面板；返回 disposer，须挂 cleanup",
+              "en": "Wires layout from a host client ctx: records panelId and switches back on button presses; returns a disposer that must be cleaned up"
             }
           },
           {
@@ -5276,7 +5276,7 @@ export const docData = {
       {
         "id": "bt-connect-example",
         "lang": "ts",
-        "src": "import { connectTaskLayout } from 'dsh-plugin-core/adv/tasks'\n\n// client apply 里接一次：核心自动记当前 panelId，点按钮先切回发起面板再执行 handler。\nconnectTaskLayout(ctx)\n\n// 或者自己接 host：带 streamUrl 时自动订阅 SSE 并投影。\nimport { connectTaskCenter } from 'dsh-plugin-core/adv/tasks'\nconst off = connectTaskCenter({\n  streamUrl: '/api/task-center/stream',\n  headers: () => ({ authorization: token() }),\n  activePanelId: () => currentPanel(),\n  selectPanel: (id) => switchPanel(id),\n})"
+        "src": "import { connectTaskCenter, connectTaskLayout } from 'dsh-plugin-core/adv/tasks'\n\n// client apply 里接一次：核心自动记当前 panelId，点按钮先切回发起面板再执行 handler。\n// 两个 disposer 都要挂进 cleanup —— 核心按 streamUrl 做 refcount，漏一个连接不会释放。\nconst offLayout = connectTaskLayout(ctx)\n\n// 或者自己接 host：带 streamUrl 时自动订阅 SSE 并投影（同源多标签只建一条）。\nconst offTasks = connectTaskCenter({\n  streamUrl: '/api/task-center/stream',\n  headers: () => ({ authorization: token() }),\n  activePanelId: () => currentPanel(),\n  selectPanel: (id) => switchPanel(id),\n})\nctx.effect(() => () => { offTasks(); offLayout() })"
       }
     ]
   },

@@ -57404,6 +57404,22 @@ function createStore3() {
         publish();
       return changed;
     },
+    mergeBaseline(records) {
+      let changed = false;
+      for (const record of records) {
+        const composite = keyOf(record);
+        const priorId = composite !== void 0 ? byKey.get(composite) : void 0;
+        if (priorId !== void 0 || tasks2.has(record.id))
+          continue;
+        const stored = carryIdentity(record, void 0);
+        tasks2.set(stored.id, stored);
+        if (composite !== void 0)
+          byKey.set(composite, stored.id);
+        changed = true;
+      }
+      if (changed)
+        publish();
+    },
     get(id3) {
       return tasks2.get(id3);
     },
@@ -57709,8 +57725,10 @@ function connectTaskStream(options) {
             }
             break;
           }
-          if (value !== void 0 && value.byteLength > 0)
+          if (value !== void 0 && value.byteLength > 0) {
             gotFrame = true;
+            options.onAlive?.();
+          }
           buffer = parseTaskFrames(buffer + decoder.decode(value, { stream: true }), options.onTask, options.onNotice);
         }
       } catch {
@@ -57739,6 +57757,437 @@ function connectTaskStream(options) {
       controller?.abort();
       shutdown.abort();
     }
+  };
+}
+
+// dist/adv/tasks/shared-stream.js
+var WIRE_VERSION = 1;
+var LOCK_PREFIX = "dshpc/task-stream/v1/";
+var CHANNEL_PREFIX = "dshpc/task-stream/v1/";
+var WATCHDOG_MS = 5e4;
+var LIFETIME_MS = 10 * 60 * 1e3;
+var NOTICE_LIMIT = 512;
+var STATE_RETRY_MS = 300;
+var REPLAY_WINDOW_MS = 600;
+function isWire(value) {
+  if (value === null || typeof value !== "object")
+    return false;
+  const w = value;
+  return w.v === WIRE_VERSION && typeof w.ns === "string" && typeof w.kind === "string" && typeof w.epoch === "number" && typeof w.seq === "number";
+}
+function noticeIdOf(value) {
+  if (value === null || typeof value !== "object")
+    return void 0;
+  const id3 = value.id;
+  return typeof id3 === "string" ? id3 : void 0;
+}
+function stableHash(input) {
+  let h100 = 2166136261;
+  for (let i2 = 0; i2 < input.length; i2 += 1) {
+    h100 ^= input.charCodeAt(i2);
+    h100 = Math.imul(h100, 16777619);
+  }
+  return (h100 >>> 0).toString(36);
+}
+function sleep2(ms, signal) {
+  return new Promise((resolve) => {
+    if (signal.aborted) {
+      resolve();
+      return;
+    }
+    const onAbort = () => {
+      clearTimeout(timer);
+      resolve();
+    };
+    const timer = setTimeout(() => {
+      signal.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    signal.addEventListener("abort", onAbort, { once: true });
+  });
+}
+function connectSharedTaskStream(options) {
+  const ns = `${WIRE_VERSION}:${stableHash(options.streamUrl)}`;
+  const lockName = `${LOCK_PREFIX}${ns}`;
+  const channelName = `${CHANNEL_PREFIX}${ns}`;
+  const selfId = `peer:${Math.random().toString(36).slice(2)}`;
+  let channel = null;
+  let disposed = false;
+  let peerEpoch = 0;
+  let session;
+  function openChannel() {
+    if (channel !== null)
+      return channel;
+    const factory = options.channelFactory ?? (() => {
+      if (typeof BroadcastChannel === "undefined")
+        return null;
+      try {
+        const raw = new BroadcastChannel(channelName);
+        let handler = null;
+        raw.onmessage = (event) => {
+          handler?.({ data: event.data });
+        };
+        return {
+          postMessage: (data2) => raw.postMessage(data2),
+          set onmessage(fn) {
+            handler = fn;
+          },
+          get onmessage() {
+            return handler;
+          },
+          close: () => raw.close()
+        };
+      } catch {
+        return null;
+      }
+    });
+    channel = factory(channelName);
+    if (channel !== null)
+      channel.onmessage = (event) => receive(event.data);
+    return channel;
+  }
+  function send(state, wire) {
+    if (disposed || state.controller.signal.aborted)
+      return;
+    const full = {
+      v: WIRE_VERSION,
+      ns,
+      epoch: wire.epoch ?? state.epoch,
+      seq: wire.seq ?? state.seq,
+      kind: wire.kind,
+      ...wire.event === void 0 ? {} : { event: wire.event },
+      ...wire.snapshot === void 0 ? {} : { snapshot: wire.snapshot },
+      ...wire.payload === void 0 ? {} : { payload: wire.payload },
+      ...wire.from === void 0 ? {} : { from: wire.from },
+      ...wire.to === void 0 ? {} : { to: wire.to },
+      ...wire.ready === void 0 ? {} : { ready: wire.ready },
+      ...wire.tasks === void 0 ? {} : { tasks: wire.tasks },
+      ...wire.notices === void 0 ? {} : { notices: wire.notices },
+      ...wire.what === void 0 ? {} : { what: wire.what }
+    };
+    try {
+      openChannel()?.postMessage(full);
+    } catch (error) {
+      console.error("dsh-plugin-core: shared task stream post failed", error);
+    }
+  }
+  function requestState(state, reason) {
+    if (disposed || state.controller.signal.aborted || state.offline)
+      return;
+    const now = Date.now();
+    if (reason !== "join" && now - state.baselineRequestAt < STATE_RETRY_MS)
+      return;
+    state.baselineRequestAt = now;
+    send(state, { kind: "state-request", from: selfId });
+    if (state.stateRetry !== void 0)
+      clearTimeout(state.stateRetry);
+    state.stateRetry = setTimeout(() => {
+      if (!state.ready && !disposed && !state.controller.signal.aborted)
+        requestState(state, "join");
+    }, STATE_RETRY_MS * 4);
+  }
+  function applyBaseline(state, tasks2, notices) {
+    try {
+      options.applyBaseline(tasks2);
+    } catch (error) {
+      console.error("dsh-plugin-core: shared task baseline failed", error);
+    }
+    for (const notice of notices) {
+      const id3 = noticeIdOf(notice);
+      if (id3 !== void 0) {
+        if (state.seenReplay.has(id3))
+          continue;
+        state.seenReplay.add(id3);
+      }
+      try {
+        options.onNotice?.(notice);
+      } catch (error) {
+        console.error("dsh-plugin-core: shared task notice replay failed", error);
+      }
+    }
+  }
+  function receive(data2) {
+    const state = session;
+    if (disposed || state === void 0 || state.offline || state.controller.signal.aborted)
+      return;
+    if (!isWire(data2) || data2.ns !== ns)
+      return;
+    if (data2.from === selfId || data2.to === selfId) {
+      if (data2.kind === "state-reply" && data2.to === selfId && data2.ready === true) {
+        state.ready = true;
+        if (state.stateRetry !== void 0) {
+          clearTimeout(state.stateRetry);
+          state.stateRetry = void 0;
+        }
+        applyBaseline(state, data2.tasks ?? [], data2.notices ?? []);
+      }
+      return;
+    }
+    state.lastAliveAt = Date.now();
+    if (data2.kind === "state-request") {
+      if (state.owner && state.ready) {
+        send(state, {
+          kind: "state-reply",
+          to: data2.from,
+          ready: true,
+          tasks: options.getState(),
+          notices: [...state.noticeCache]
+        });
+      }
+      return;
+    }
+    if (data2.epoch > peerEpoch)
+      peerEpoch = data2.epoch;
+    if (data2.epoch > state.epoch) {
+      state.epoch = data2.epoch;
+      state.seq = 0;
+      state.ready = false;
+      state.seenReplay.clear();
+      state.noticeCache = [];
+    } else if (data2.epoch < state.epoch) {
+      return;
+    }
+    if (data2.kind === "frame" && data2.seq <= state.seq)
+      return;
+    if (data2.kind === "frame") {
+      if (data2.seq > state.seq + 1)
+        requestState(state, "gap");
+      state.seq = data2.seq;
+      if (data2.event === "task") {
+        try {
+          options.onTask(data2.payload, data2.snapshot === true);
+        } catch (error) {
+          console.error("dsh-plugin-core: shared task frame failed", error);
+        }
+      } else if (data2.event === "notice") {
+        try {
+          options.onNotice?.(data2.payload);
+        } catch (error) {
+          console.error("dsh-plugin-core: shared notice frame failed", error);
+        }
+      }
+    } else if (data2.kind === "signal") {
+      if (data2.what === "dead")
+        state.ready = false;
+      else
+        requestState(state, "signal");
+    }
+  }
+  function cacheNotice(state, notice) {
+    const id3 = noticeIdOf(notice);
+    if (id3 !== void 0 && state.seenReplay.has(id3))
+      return;
+    if (id3 !== void 0)
+      state.seenReplay.add(id3);
+    state.noticeCache.push(notice);
+    if (state.noticeCache.length > NOTICE_LIMIT)
+      state.noticeCache.shift();
+  }
+  function asOwner(state, lock) {
+    state.hold = new AbortController();
+    state.owner = true;
+    state.epoch = Math.max(Date.now(), state.epoch + 1, peerEpoch + 1);
+    peerEpoch = state.epoch;
+    state.seq = 0;
+    state.ready = false;
+    state.seenReplay.clear();
+    state.noticeCache = [];
+    state.lastAliveAt = Date.now();
+    send(state, { kind: "signal", what: "epoch" });
+    let replayDone = false;
+    const finishReplay = () => {
+      if (replayDone)
+        return;
+      replayDone = true;
+      state.ready = true;
+      send(state, { kind: "signal", what: "cache" });
+    };
+    state.streamConn = connectTaskStream({
+      streamUrl: options.streamUrl,
+      headers: options.headers,
+      retryDelaysMs: options.retryDelaysMs,
+      // SSE 保活是 `:` 注释帧，parseTaskFrames 不上抛；单独判活，避免单标签 owner 被看门狗误杀。
+      onAlive: () => {
+        state.lastAliveAt = Date.now();
+      },
+      onTask: (task, snapshot) => {
+        try {
+          options.onTask(task, snapshot);
+        } catch (error) {
+          console.error("dsh-plugin-core: shared owner task failed", error);
+        }
+        if (!snapshot && !replayDone)
+          finishReplay();
+        if (!snapshot && state.ready) {
+          state.seq += 1;
+          send(state, { kind: "frame", event: "task", payload: task });
+        }
+      },
+      onNotice: (notice) => {
+        cacheNotice(state, notice);
+        try {
+          options.onNotice?.(notice);
+        } catch (error) {
+          console.error("dsh-plugin-core: shared owner notice failed", error);
+        }
+        if (!replayDone)
+          return;
+        state.seq += 1;
+        send(state, { kind: "frame", event: "notice", payload: notice });
+      },
+      onGiveUp: (reason) => {
+        if (options.onGiveUp !== void 0) {
+          try {
+            options.onGiveUp(reason);
+          } catch (error) {
+            console.error("dsh-plugin-core: shared task onGiveUp failed", error);
+          }
+        } else {
+          console.warn("dsh-plugin-core: task stream gave up", reason);
+        }
+        send(state, { kind: "signal", what: "dead" });
+        state.controller.abort();
+      }
+    });
+    state.replayGrace = setTimeout(finishReplay, REPLAY_WINDOW_MS);
+    const hold = state.hold;
+    state.lifetime = setTimeout(() => {
+      console.warn("dsh-plugin-core: task stream lifetime reached, rotating leadership");
+      hold.abort();
+    }, LIFETIME_MS);
+    state.watchdog = setInterval(() => {
+      if (disposed || state.controller.signal.aborted)
+        return;
+      if (Date.now() - state.lastAliveAt < WATCHDOG_MS)
+        return;
+      state.lastAliveAt = Date.now();
+      if (state.owner) {
+        console.warn("dsh-plugin-core: task stream looks stale, rotating leadership");
+        hold.abort();
+      } else {
+        requestState(state, "signal");
+      }
+    }, WATCHDOG_MS / 2);
+    return new Promise((resolve) => {
+      const done = () => {
+        resolve();
+      };
+      lock.signal.addEventListener("abort", done, { once: true });
+      hold.signal.addEventListener("abort", done, { once: true });
+      state.controller.signal.addEventListener("abort", done, { once: true });
+    }).finally(() => {
+      state.owner = false;
+      state.hold = void 0;
+      if (state.watchdog !== void 0)
+        clearInterval(state.watchdog);
+      if (state.lifetime !== void 0)
+        clearTimeout(state.lifetime);
+      if (state.replayGrace !== void 0)
+        clearTimeout(state.replayGrace);
+      state.streamConn?.close();
+      state.streamConn = void 0;
+    });
+  }
+  async function run(state) {
+    const lockFactory = options.lockFactory ?? (() => {
+      const nav2 = typeof navigator === "undefined" ? void 0 : navigator;
+      const locks2 = nav2?.locks;
+      return locks2 === void 0 ? null : locks2;
+    });
+    const locks = lockFactory();
+    if (locks === null) {
+      console.warn("dsh-plugin-core: Web Locks unavailable; task stream stays offline to avoid connection exhaustion");
+      state.offline = true;
+      return;
+    }
+    while (!disposed && !state.controller.signal.aborted) {
+      try {
+        await locks.request(lockName, { signal: state.controller.signal }, (lock) => asOwner(state, lock));
+      } catch (error) {
+        if (!disposed && !state.controller.signal.aborted) {
+          console.error("dsh-plugin-core: shared task lock failed", error);
+        }
+      }
+      if (disposed || state.controller.signal.aborted)
+        return;
+      await sleep2(STATE_RETRY_MS, state.controller.signal);
+    }
+  }
+  function stop(state) {
+    state.controller.abort();
+    state.hold?.abort();
+    if (state.stateRetry !== void 0)
+      clearTimeout(state.stateRetry);
+    if (state.watchdog !== void 0)
+      clearInterval(state.watchdog);
+    if (state.lifetime !== void 0)
+      clearTimeout(state.lifetime);
+    if (state.replayGrace !== void 0)
+      clearTimeout(state.replayGrace);
+    state.streamConn?.close();
+    state.streamConn = void 0;
+  }
+  function start() {
+    if (disposed)
+      return;
+    const state = {
+      controller: new AbortController(),
+      epoch: 0,
+      seq: 0,
+      ready: false,
+      owner: false,
+      lastAliveAt: Date.now(),
+      baselineRequestAt: 0,
+      noticeCache: [],
+      seenReplay: /* @__PURE__ */ new Set(),
+      streamConn: void 0,
+      hold: void 0,
+      offline: false,
+      stateRetry: void 0,
+      watchdog: void 0,
+      lifetime: void 0,
+      replayGrace: void 0
+    };
+    session = state;
+    openChannel();
+    void run(state).then(() => {
+      if (state.offline && state.stateRetry !== void 0) {
+        clearTimeout(state.stateRetry);
+        state.stateRetry = void 0;
+      }
+    });
+    requestState(state, "join");
+  }
+  const pageHide = () => {
+    if (session !== void 0)
+      stop(session);
+  };
+  const pageShow = (event) => {
+    if (event.persisted !== true || disposed)
+      return;
+    if (session !== void 0)
+      stop(session);
+    start();
+  };
+  if (options.lifecycle !== void 0) {
+    options.lifecycle.addEventListener("pagehide", pageHide);
+    options.lifecycle.addEventListener("freeze", pageHide);
+    options.lifecycle.addEventListener("pageshow", pageShow);
+  }
+  start();
+  return () => {
+    if (disposed)
+      return;
+    disposed = true;
+    if (session !== void 0)
+      stop(session);
+    if (options.lifecycle !== void 0) {
+      options.lifecycle.removeEventListener("pagehide", pageHide);
+      options.lifecycle.removeEventListener("freeze", pageHide);
+      options.lifecycle.removeEventListener("pageshow", pageShow);
+    }
+    channel?.close();
+    channel = null;
   };
 }
 
@@ -57795,7 +58244,7 @@ function matchesMount(task, project, groups) {
 }
 var stableHost = {};
 var coordinator = createCoordinator({ host: stableHost });
-var streamConn;
+var sharedConn;
 function isTaskRecord(value) {
   if (value === null || typeof value !== "object")
     return false;
@@ -57803,10 +58252,13 @@ function isTaskRecord(value) {
   const settledAtOk = typeof v.settledAt === "number" && Number.isFinite(v.settledAt);
   return typeof v.id === "string" && typeof v.project === "string" && typeof v.group === "string" && typeof v.title === "string" && (v.state === "running" || v.state === "done" || v.state === "failed") && typeof v.startedAt === "number" && Number.isFinite(v.startedAt) && (v.state === "running" ? v.settledAt === void 0 : settledAtOk);
 }
-function ingestTask(raw) {
+function ingestTask(raw, snapshot = false) {
   if (!isTaskRecord(raw))
     return;
-  coordinator.project([raw]);
+  if (snapshot)
+    taskStore.mergeBaseline([raw]);
+  else
+    coordinator.project([raw]);
 }
 function isTaskNotice(value) {
   if (value === null || typeof value !== "object")
@@ -57859,9 +58311,9 @@ function defaultTaskHost(originId) {
 }
 function connectTaskCenter(host) {
   const patch = {};
-  for (const [key, value] of Object.entries(host)) {
+  for (const [key2, value] of Object.entries(host)) {
     if (value !== void 0)
-      patch[key] = value;
+      patch[key2] = value;
   }
   Object.assign(stableHost, patch);
   const pageOrigin = () => defaultNotifyScope().origin;
@@ -57875,25 +58327,61 @@ function connectTaskCenter(host) {
   if (stableHost.deliverNotify === void 0 && defaults4.deliverNotify !== void 0) {
     stableHost.deliverNotify = defaults4.deliverNotify;
   }
-  streamConn?.close();
-  streamConn = void 0;
-  let ownConn;
-  if (stableHost.streamUrl !== void 0) {
-    ownConn = connectTaskStream({
-      streamUrl: stableHost.streamUrl,
-      headers: stableHost.headers,
-      onGiveUp: stableHost.onGiveUp,
-      onTask: (task) => {
-        ingestTask(task);
-      },
-      onNotice: ingestNotice
-    });
-    streamConn = ownConn;
+  const key = stableHost.streamUrl;
+  if (sharedConn !== void 0 && sharedConn.key !== key) {
+    sharedConn.dispose();
+    sharedConn = void 0;
   }
+  if (key === void 0)
+    return () => {
+    };
+  if (sharedConn === void 0) {
+    const lifecycle = typeof window === "undefined" ? void 0 : window;
+    if (lifecycle === void 0) {
+      const direct = connectTaskStream({
+        streamUrl: key,
+        headers: stableHost.headers,
+        retryDelaysMs: stableHost.retryDelaysMs,
+        onGiveUp: stableHost.onGiveUp,
+        onTask: (task) => {
+          ingestTask(task);
+        },
+        onNotice: ingestNotice
+      });
+      sharedConn = { key, refs: 0, dispose: () => direct.close() };
+    } else {
+      const dispose = connectSharedTaskStream({
+        streamUrl: key,
+        headers: stableHost.headers,
+        retryDelaysMs: stableHost.retryDelaysMs,
+        onGiveUp: stableHost.onGiveUp,
+        onTask: (task, snapshot) => {
+          ingestTask(task, snapshot);
+        },
+        onNotice: ingestNotice,
+        getState: () => [...taskStore.getSnapshot().tasks],
+        applyBaseline: (tasks2) => {
+          const valid = tasks2.filter((task) => isTaskRecord(task));
+          taskStore.mergeBaseline(valid);
+        },
+        lifecycle
+      });
+      sharedConn = { key, refs: 0, dispose };
+    }
+  }
+  const mine = sharedConn;
+  mine.refs += 1;
+  let released = false;
   return () => {
-    ownConn?.close();
-    if (streamConn === ownConn)
-      streamConn = void 0;
+    if (released)
+      return;
+    released = true;
+    mine.refs -= 1;
+    if (mine.refs > 0)
+      return;
+    if (sharedConn === mine)
+      sharedConn = void 0;
+    mine.dispose();
   };
 }
 function connectTaskLayout(ctx) {
@@ -57903,7 +58391,7 @@ function connectTaskLayout(ctx) {
     if (candidate !== null && candidate !== void 0 && typeof candidate === "object")
       layout = candidate;
   });
-  connectTaskCenter({
+  return connectTaskCenter({
     activePanelId: () => layout?.panelInfo?.getSnapshot().activePanelId ?? void 0,
     selectPanel: (id3) => layout?.selectPanel?.(id3)
   });
@@ -70580,11 +71068,11 @@ h(SideSheet, {
           },
           {
             "name": "connectTaskLayout(ctx)",
-            "type": "(ctx: LayoutClientContext) => void",
+            "type": "(ctx: LayoutClientContext) => () => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u4ECE\u5BBF\u4E3B client ctx \u63A5 layout\uFF1A\u81EA\u52A8\u8BB0 panelId\u3001\u70B9\u6309\u94AE\u5207\u56DE\u9762\u677F",
-              "en": "Wires layout from a host client ctx: records panelId and switches back on button presses"
+              "zh": "\u4ECE\u5BBF\u4E3B client ctx \u63A5 layout\uFF1A\u81EA\u52A8\u8BB0 panelId\u3001\u70B9\u6309\u94AE\u5207\u56DE\u9762\u677F\uFF1B\u8FD4\u56DE disposer\uFF0C\u987B\u6302 cleanup",
+              "en": "Wires layout from a host client ctx: records panelId and switches back on button presses; returns a disposer that must be cleaned up"
             }
           },
           {
@@ -70612,7 +71100,7 @@ h(SideSheet, {
       {
         "id": "bt-connect-example",
         "lang": "ts",
-        "src": "import { connectTaskLayout } from 'dsh-plugin-core/adv/tasks'\n\n// client apply \u91CC\u63A5\u4E00\u6B21\uFF1A\u6838\u5FC3\u81EA\u52A8\u8BB0\u5F53\u524D panelId\uFF0C\u70B9\u6309\u94AE\u5148\u5207\u56DE\u53D1\u8D77\u9762\u677F\u518D\u6267\u884C handler\u3002\nconnectTaskLayout(ctx)\n\n// \u6216\u8005\u81EA\u5DF1\u63A5 host\uFF1A\u5E26 streamUrl \u65F6\u81EA\u52A8\u8BA2\u9605 SSE \u5E76\u6295\u5F71\u3002\nimport { connectTaskCenter } from 'dsh-plugin-core/adv/tasks'\nconst off = connectTaskCenter({\n  streamUrl: '/api/task-center/stream',\n  headers: () => ({ authorization: token() }),\n  activePanelId: () => currentPanel(),\n  selectPanel: (id) => switchPanel(id),\n})"
+        "src": "import { connectTaskCenter, connectTaskLayout } from 'dsh-plugin-core/adv/tasks'\n\n// client apply \u91CC\u63A5\u4E00\u6B21\uFF1A\u6838\u5FC3\u81EA\u52A8\u8BB0\u5F53\u524D panelId\uFF0C\u70B9\u6309\u94AE\u5148\u5207\u56DE\u53D1\u8D77\u9762\u677F\u518D\u6267\u884C handler\u3002\n// \u4E24\u4E2A disposer \u90FD\u8981\u6302\u8FDB cleanup \u2014\u2014 \u6838\u5FC3\u6309 streamUrl \u505A refcount\uFF0C\u6F0F\u4E00\u4E2A\u8FDE\u63A5\u4E0D\u4F1A\u91CA\u653E\u3002\nconst offLayout = connectTaskLayout(ctx)\n\n// \u6216\u8005\u81EA\u5DF1\u63A5 host\uFF1A\u5E26 streamUrl \u65F6\u81EA\u52A8\u8BA2\u9605 SSE \u5E76\u6295\u5F71\uFF08\u540C\u6E90\u591A\u6807\u7B7E\u53EA\u5EFA\u4E00\u6761\uFF09\u3002\nconst offTasks = connectTaskCenter({\n  streamUrl: '/api/task-center/stream',\n  headers: () => ({ authorization: token() }),\n  activePanelId: () => currentPanel(),\n  selectPanel: (id) => switchPanel(id),\n})\nctx.effect(() => () => { offTasks(); offLayout() })"
       }
     ]
   },
@@ -75778,9 +76266,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.43.8"}`],
-            [t3("buildDemo"), `v${"0.43.8"}`],
-            [t3("buildStamp"), "261121-021421-363"]
+            [t3("buildCore"), `v${"0.44.0"}`],
+            [t3("buildDemo"), `v${"0.44.0"}`],
+            [t3("buildStamp"), "261121-201225-206"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76095,9 +76583,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.43.8"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.43.8"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261121-021421-363")
+          (0, import_react112.createElement)("span", null, `core v${"0.44.0"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.44.0"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261121-201225-206")
         )
       )
     ),

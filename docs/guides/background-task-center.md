@@ -105,7 +105,17 @@
   （其余 4xx）立即停流上报：401 的 `reason.permanent=true`，应用刷新凭证后再调一次
   `connectTaskCenter` 显式重连（`headers` 是函数会取新 token）。
 
-## 验证
+  **同源多标签只建一条 SSE**：`connectTaskCenter` 内部自动启用单飞协调器——`navigator.locks`
+  在同源标签中选一个 owner 建真连接，其它标签经 BroadcastChannel 收同一份帧；owner 关闭可由等待者接管。
+  连接数是「每个 `streamUrl` 全局一条」，不再是「每标签一条」，因此不会挤爆 http/1.1 每域 6 连接上限。
+  消费方接线不变（照上面调 `connectTaskCenter` 即可），但有两个契约：
+  - 按按钮提交任务的 POST 是瞬时请求、结束即释放 socket，不属于常驻连接，不并入 SSE（合并需换成双向协议，
+   既要新端点又照样占连接数，违反「零额外服务开销」）；按钮事件照常走 POST。
+  - `connectTaskLayout(ctx)` 现在返回 disposer，必须与 `connectTaskCenter` 的返回值一起挂进
+   `ctx.effect` 的 cleanup；核心内部按合并后的 `streamUrl` 做 refcount，漏接 cleanup 会让连接不释放。
+  浏览器缺 `navigator.locks` 时不会退回每标签各开一条——会显式告警并保持离线，提交仍可用。
+
+  ## 验证
 
 - 起一个任务：列表出现真实行，进度文案来自执行器 `ctx.report()`，不是占位值。
 - 终态只弹一次卡、只跑一次 `onSettled`；同 key 再发起就地更新，不堆两条。
@@ -132,3 +142,4 @@
 
 - 2026-11-18：按新体系重写接入步骤（开放执行器 + 两处接线 + 服务端 SSE）；删状态源 / 双时钟 / 租约 / 幂等缓存口径。
 - 2026-11-20：`TaskBar` 改从 `adv/tasks/ui` 引；按钮一律照画、点失败走统一 i18n 提示；服务端 `source` 补 `subscribeNotices`（唯一弹卡源）。
+- 2026-11-21 20:10:40：补跨标签单飞 SSE：一条常驻连接、按钮 POST 不并入、layout disposer 必须 cleanup、无 Web Locks 显式离线

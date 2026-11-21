@@ -11,6 +11,7 @@ import { notify as notifyCard } from '../../ui/feedback/notify.js';
 import { t } from '../../utils/i18n.js';
 import { defaultNotifyScope, notifyMessage, resolveProject, subscribeNotifications as subscribeNotifyBus, } from '../../runtime/notify.js';
 import { createCoordinator } from './coordinator.js';
+import { connectSharedTaskStream } from './shared-stream.js';
 import { connectTaskStream } from './stream.js';
 import { taskStore } from './store.js';
 /**
@@ -85,7 +86,8 @@ function matchesMount(task, project, groups) {
  */
 const stableHost = {};
 const coordinator = createCoordinator({ host: stableHost });
-let streamConn;
+/** 按 streamUrl 收口的单飞连接：同 key 只建一条，多引用靠 refcount 配平。 */
+let sharedConn;
 /**
  * 任务帧形状校验（服务端帧与 projectTasks 入口共用的一道闸）：畸形帧不能进 store 污染列表。
  *
@@ -111,11 +113,14 @@ export function isTaskRecord(value) {
             ? v.settledAt === undefined
             : settledAtOk));
 }
-/** 状态投影（基线 / 增量）：只恢复列表，**不弹卡**。 */
-function ingestTask(raw) {
+/** 状态投影（基线 / 增量）：只恢复列表，**不弹卡**。快照帧走基线语义，不覆盖本地乐观行。 */
+function ingestTask(raw, snapshot = false) {
     if (!isTaskRecord(raw))
         return;
-    coordinator.project([raw]);
+    if (snapshot)
+        taskStore.mergeBaseline([raw]);
+    else
+        coordinator.project([raw]);
 }
 function isTaskNotice(value) {
     if (value === null || typeof value !== 'object')
@@ -210,25 +215,60 @@ export function connectTaskCenter(host) {
     if (stableHost.deliverNotify === undefined && defaults.deliverNotify !== undefined) {
         stableHost.deliverNotify = defaults.deliverNotify;
     }
-    // 新接线先关掉上一条流（防双 SSE 双投影），但返回值只关「自己这条」：
-    // A 接线、B 接线、A 卸载时不能把 B 的流关掉。
-    streamConn?.close();
-    streamConn = undefined;
-    let ownConn;
-    if (stableHost.streamUrl !== undefined) {
-        ownConn = connectTaskStream({
-            streamUrl: stableHost.streamUrl,
-            headers: stableHost.headers,
-            onGiveUp: stableHost.onGiveUp,
-            onTask: (task) => { ingestTask(task); },
-            onNotice: ingestNotice,
-        });
-        streamConn = ownConn;
+    // 按合并后的 streamUrl 收口：同 key 绝不 close 重建（否则 layout 二次接线会掐掉真流，
+    // refcount 也形同虚设）；只有 key 变化才释放旧协调器。这是跨标签单飞的入口不变量。
+    const key = stableHost.streamUrl;
+    if (sharedConn !== undefined && sharedConn.key !== key) {
+        sharedConn.dispose();
+        sharedConn = undefined;
     }
+    if (key === undefined)
+        return () => { };
+    if (sharedConn === undefined) {
+        const lifecycle = typeof window === 'undefined' ? undefined : window;
+        // Node / 测试环境没有 Web Locks 与多标签：直连保证既有测试语义（浏览器缺锁时协调器显式告警不开流）。
+        if (lifecycle === undefined) {
+            const direct = connectTaskStream({
+                streamUrl: key,
+                headers: stableHost.headers,
+                retryDelaysMs: stableHost.retryDelaysMs,
+                onGiveUp: stableHost.onGiveUp,
+                onTask: (task) => { ingestTask(task); },
+                onNotice: ingestNotice,
+            });
+            sharedConn = { key, refs: 0, dispose: () => direct.close() };
+        }
+        else {
+            const dispose = connectSharedTaskStream({
+                streamUrl: key,
+                headers: stableHost.headers,
+                retryDelaysMs: stableHost.retryDelaysMs,
+                onGiveUp: stableHost.onGiveUp,
+                onTask: (task, snapshot) => { ingestTask(task, snapshot); },
+                onNotice: ingestNotice,
+                getState: () => [...taskStore.getSnapshot().tasks],
+                applyBaseline: (tasks) => {
+                    const valid = tasks.filter((task) => isTaskRecord(task));
+                    taskStore.mergeBaseline(valid);
+                },
+                lifecycle: lifecycle,
+            });
+            sharedConn = { key, refs: 0, dispose };
+        }
+    }
+    const mine = sharedConn;
+    mine.refs += 1;
+    let released = false;
     return () => {
-        ownConn?.close();
-        if (streamConn === ownConn)
-            streamConn = undefined;
+        if (released)
+            return;
+        released = true;
+        mine.refs -= 1;
+        if (mine.refs > 0)
+            return;
+        if (sharedConn === mine)
+            sharedConn = undefined;
+        mine.dispose();
     };
 }
 /**
@@ -242,7 +282,7 @@ export function connectTaskLayout(ctx) {
         if (candidate !== null && candidate !== undefined && typeof candidate === 'object')
             layout = candidate;
     });
-    connectTaskCenter({
+    return connectTaskCenter({
         activePanelId: () => layout?.panelInfo?.getSnapshot().activePanelId ?? undefined,
         selectPanel: (id) => layout?.selectPanel?.(id),
     });

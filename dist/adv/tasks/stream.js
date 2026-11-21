@@ -118,8 +118,10 @@ export function connectTaskStream(options) {
                         }
                         break;
                     }
-                    if (value !== undefined && value.byteLength > 0)
+                    if (value !== undefined && value.byteLength > 0) {
                         gotFrame = true;
+                        options.onAlive?.();
+                    }
                     buffer = parseTaskFrames(buffer + decoder.decode(value, { stream: true }), options.onTask, options.onNotice);
                 }
             }

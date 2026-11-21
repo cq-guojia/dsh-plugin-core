@@ -27,6 +27,11 @@ export interface TaskStore {
     };
     /** 服务端投影一批增量（upsert 语义）；返回真正有变化的记录（id 已归一到存活 id）。 */
     merge(records: readonly TaskRecord[]): readonly TaskRecord[];
+    /**
+     * 基线专用：只填本地尚不存在的 key，已有行（乐观行 / 已到的真源增量）绝不覆盖。
+     * 晚加入标签拉全量基线时用——否则一次旧基线可能盖掉本地刚提交的运行行。
+     */
+    mergeBaseline(records: readonly TaskRecord[]): void;
     get(id: string): TaskRecord | undefined;
     /**
      * 删除一条仍在运行中的乐观行（提交失败回滚用）。

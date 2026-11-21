@@ -100,6 +100,22 @@ function createStore() {
                 publish();
             return changed;
         },
+        mergeBaseline(records) {
+            let changed = false;
+            for (const record of records) {
+                const composite = keyOf(record);
+                const priorId = composite !== undefined ? byKey.get(composite) : undefined;
+                if (priorId !== undefined || tasks.has(record.id))
+                    continue;
+                const stored = carryIdentity(record, undefined);
+                tasks.set(stored.id, stored);
+                if (composite !== undefined)
+                    byKey.set(composite, stored.id);
+                changed = true;
+            }
+            if (changed)
+                publish();
+        },
         get(id) {
             return tasks.get(id);
         },

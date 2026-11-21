@@ -158,24 +158,25 @@ serveTaskStream(ctx, {
 |---|---|---|---|---|
 | `serveTaskStream(ctx, options)` | `(ctx, options: TaskStreamOptions) => () => void` | — | 宿主侧 SSE 端点；authorize 必填，source 给基线 + 订阅 | Host-side SSE endpoint; authorize is mandatory, source supplies baseline + subscribe |
 | `connectTaskCenter(host)` | `(host: TaskCenterHost) => () => void` | — | 一次接线；带 streamUrl 时自动订阅并重连，重复调用覆盖上一次 | One-shot wiring; with streamUrl it subscribes and reconnects; repeated calls replace the previous one |
-| `connectTaskLayout(ctx)` | `(ctx: LayoutClientContext) => void` | — | 从宿主 client ctx 接 layout：自动记 panelId、点按钮切回面板 | Wires layout from a host client ctx: records panelId and switches back on button presses |
+| `connectTaskLayout(ctx)` | `(ctx: LayoutClientContext) => () => void` | — | 从宿主 client ctx 接 layout：自动记 panelId、点按钮切回面板；返回 disposer，须挂 cleanup | Wires layout from a host client ctx: records panelId and switches back on button presses; returns a disposer that must be cleaned up |
 | `projectTasks(records)` | `(records: readonly TaskRecord[]) => void` | — | 手动投影入口：只把记录投影进列表，不弹卡、不分发终态（弹卡只走 task-notice） | Manual projection entry: projects records into the list only — no cards, no terminal delivery (cards come only from task-notice) |
 | `taskCenterStore` | `TaskStore` | 全局单例 | 同标签页共享的任务状态；getSnapshot / subscribe / select / getHandler / clearAll（全清：任务、幂等键、终态声明与 handlers，清后需重新 mountTaskUI） | Shared task state per tab; getSnapshot / subscribe / select / getHandler / clearAll (clears everything: tasks, idempotency keys, settlement claims and handlers — remount after) |
 
 ```ts id="bt-connect-example"
-import { connectTaskLayout } from 'dsh-plugin-core/adv/tasks'
+import { connectTaskCenter, connectTaskLayout } from 'dsh-plugin-core/adv/tasks'
 
 // client apply 里接一次：核心自动记当前 panelId，点按钮先切回发起面板再执行 handler。
-connectTaskLayout(ctx)
+// 两个 disposer 都要挂进 cleanup —— 核心按 streamUrl 做 refcount，漏一个连接不会释放。
+const offLayout = connectTaskLayout(ctx)
 
-// 或者自己接 host：带 streamUrl 时自动订阅 SSE 并投影。
-import { connectTaskCenter } from 'dsh-plugin-core/adv/tasks'
-const off = connectTaskCenter({
+// 或者自己接 host：带 streamUrl 时自动订阅 SSE 并投影（同源多标签只建一条）。
+const offTasks = connectTaskCenter({
   streamUrl: '/api/task-center/stream',
   headers: () => ({ authorization: token() }),
   activePanelId: () => currentPanel(),
   selectPanel: (id) => switchPanel(id),
 })
+ctx.effect(() => () => { offTasks(); offLayout() })
 ```
 
 ## TaskRecord：一条任务记录

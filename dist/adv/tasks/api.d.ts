@@ -21,6 +21,8 @@ export interface TaskCenterHost extends CoordinatorHost {
     submitUrl?: string;
     /** SSE / 提交请求头（鉴权 token 等）。 */
     headers?: () => Record<string, string>;
+    /** SSE 重连退避档（默认 1s/2s/4s）；透传给单飞协调器。 */
+    retryDelaysMs?: readonly number[];
     /**
      * SSE 放弃回调（退避用尽 / 不可重试错误，如 401）。默认接线在此收到信号后可以刷新凭证、
      * 再调一次 connectTaskCenter 显式重连（headers 是函数，天然取新 token）。不传则静默。
@@ -63,7 +65,7 @@ export declare function connectTaskCenter(host: TaskCenterHost): () => void;
  * 从宿主 client ctx 接 layout：拿到 activePanelId（发起时记进任务）与 selectPanel（点按钮切回面板）。
  * 闸1（rc.3）核实：layout 服务由 ctx.inject(['layout']) 提供，activePanelId 在 panelInfo 快照里。
  */
-export declare function connectTaskLayout(ctx: LayoutClientContext): void;
+export declare function connectTaskLayout(ctx: LayoutClientContext): () => void;
 /** 发起一次后台任务。await 等登记成功，不等跑完。 */
 export declare function startTask(input: StartTaskInput): Promise<TaskRecord>;
 /** 本页接线一次：注册 handlers + 订阅终态。返回注销函数。 */
