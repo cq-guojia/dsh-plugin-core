@@ -1,7 +1,7 @@
 # 20261121-1434-bcbb-单飞sse问题清单核实与修复: 单飞SSE问题清单核实与修复
 
 - **Tags**: SSE, 单飞, 问题清单, 修复
-- **Status**: doing · 2026-11-21 15:32:22 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-21 16:10:59 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-21 14:34:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -94,9 +94,21 @@
 
 ## Conclusion
 
-本轮只核实 + 方案，无代码变更。
+**已完成实现（2026-11-22）**：按上面的重写方案改完 8 类根因，27 条清单中本次引入的 19 条（#1-#19）在代码层全部消项：
 
-失真块方案要点：把「基线」按来源分成两类语义——`task-snapshot`/gap 重拉/state-reply 是**权威快照**，应能覆盖本地陈旧状态；本地乐观行靠「基线里无同 key 即保留」来护，而非靠「同 key 一律不覆盖」。Node 直连补 `snapshot` 透传；定向 reply 同步 epoch；`merge` 在 running 分支清 `announced`。
+| 项 | 改动 | 对应 |
+|---|---|---|
+| `src/adv/tasks/shared-stream.ts` 全文重写 | session/lease 两级分离、随机 epoch、单调时钟、判活只认真 SSE 字节、生命周期路由、定时器/监听器集中清理 | #1/#3/#6/#7/#8/#11/#12/#13/#14/#17/#18/#19 |
+| `store.ts` 基线语义 + 结算复位 | `mergeBaseline` 复用 merge（覆盖陈旧行 + 单调守卫）；`merge` 在 running 清 announced | #4/#5/#24 |
+| `api.ts` | Node snapshot 透传、headers/onGiveUp 动态读取、freeze/resume 路由到 document | #9/#10/#3 |
+| docs + 注释 | 接入指南挂 disposer、API 措辞改 refcount、重连改自动、消费方版本注释 | #15/#16/#26/#27 |
+| `test/shared-stream-regressions.test.mjs` 新增 5 例 | 断流重连、监听器成对移除、随机 epoch 切主、结算复位、基线覆盖 | #22 补洞 |
+
+**验证**：build ✅ / test 589/589 ✅ / typecheck ✅ / build:demo ✅；两仓 `koc-codelint` 全过（核心 8 文件、消费方 4 文件；首轮 6 条 lint 已修：模板内赋值、未用变量、markdown 缩进）。产物 dist/ 已随 build 更新入库。
+
+**未处理（不在本次范围，需另开）**：#20 不成立（不算问题）；#21 产物同步属发布卫生；#23 `scope:'origin'` 失效、#25 占位记录进快照属消费方/核心既有链路问题。真机 3 标签页验收尚未做。
+
+失真块方案要点（历史记录）：把「基线」按来源分成两类语义——`task-snapshot`/gap 重拉/state-reply 是**权威快照**，应能覆盖本地陈旧状态；本地乐观行靠真源归一覆盖来护。Node 直连补 `snapshot` 透传；定向 reply 同步 epoch；`merge` 在 running 分支清 `announced`。
 
 **硬伤结论撤回**：我上一轮把「业务键重跑时基线旧终态」判成无解硬伤，是错的。基线由服务端 `snapshot()` 生成（`src/host/task-stream.ts:147`），服务端在重跑发起时就把同 key 记录写成 running、SSE 增量会推达；本地那条乐观行在真源 running 到达时本就该被覆盖（这正是 `upsert` 归一覆盖的设计）。基线一旦只做「补齐本地缺的 key」而不覆盖，才会把旧状态留在界面上——这是 bug 不是两难。**不推翻原方案，也不存在不可解的取舍。**
 
@@ -125,3 +137,4 @@
 - 2026-11-21 15:06:46 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 撤回硬伤结论；解包webServer rc.5的lib/index.js:490核实宿主是node:http非HTTP2，6连接限制真实、多用户不成立挤爆
 - 2026-11-21 15:16:54 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 全方案穷举完成：官方mux无第三方注册口、SharedWorker/SW在CJS闭包下不可落地、h2/多端口/iframe全封死；最优解=保留单飞架构逐条修实现，已写入worklog Conclusion
 - 2026-11-21 15:32:22 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 对标 sse-coordinator@0.3.2 源码定稿重写方案：session/lease两级分离、随机epoch、单调时钟、判活只认真SSE字节、生命周期成对清理，已写入worklog
+- 2026-11-21 16:10:59 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 实现完成：重写shared-stream+store基线语义+api接线+5例回归+文档注释；#1-#19代码层消项；build/test589/typecheck/build:demo全过；两仓codelint全过
