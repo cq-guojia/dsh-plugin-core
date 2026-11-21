@@ -1,7 +1,7 @@
 # 20261121-1434-bcbb-单飞sse问题清单核实与修复: 单飞SSE问题清单核实与修复
 
 - **Tags**: SSE, 单飞, 问题清单, 修复
-- **Status**: doing · 2026-11-21 14:39:21 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-21 15:06:46 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-21 14:34:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -56,7 +56,7 @@
 
 ## Next
 
-失真块方案定稿后交用户确认是否进入修复；本轮不动代码。
+用户质疑「中间标签转发」这一架构本身，要求给出更完善的方案；先答复再定：继续修失真块，还是改用轮询（短请求、无选主/转发状态机）重做。本轮不动代码。
 
 ## Process
 
@@ -83,7 +83,9 @@
 
 失真块方案要点：把「基线」按来源分成两类语义——`task-snapshot`/gap 重拉/state-reply 是**权威快照**，应能覆盖本地陈旧状态；本地乐观行靠「基线里无同 key 即保留」来护，而非靠「同 key 一律不覆盖」。Node 直连补 `snapshot` 透传；定向 reply 同步 epoch；`merge` 在 running 分支清 `announced`。
 
-**硬伤（需用户拍板）**：业务键复用（服务端重跑同 key）时，「基线同 key 记录」可能是上一轮旧终态而非本轮权威状态，仅凭 `(project,key)` 无法区分「该覆盖」还是「该保留本地 running」。现有字段只有 `startedAt`/`settledAt` 可近似判代次，但乐观行用本地 `Date.now()`、与服务端时钟不同源 → 无银弹。彻底解需服务端给代次号（generation）或业务键不复用；否则只能选一侧取舍（保乐观行则容忍陈旧，或权威覆盖则重跑瞬间闪一下旧终态）。
+**硬伤结论撤回**：我上一轮把「业务键重跑时基线旧终态」判成无解硬伤，是错的。基线由服务端 `snapshot()` 生成（`src/host/task-stream.ts:147`），服务端在重跑发起时就把同 key 记录写成 running、SSE 增量会推达；本地那条乐观行在真源 running 到达时本就该被覆盖（这正是 `upsert` 归一覆盖的设计）。基线一旦只做「补齐本地缺的 key」而不覆盖，才会把旧状态留在界面上——这是 bug 不是两难。**不推翻原方案，也不存在不可解的取舍。**
+
+**宿主协议已核实（2026-11-21）**：`@deepseek-ai/dsh-host-webserver` 的 `dist-tags.next = 0.2.2-rc.5`（文档 dsh-host.md 记 rc.3，本机包 rc.5 为准）；解包 `lib/index.js:2,490,496` 用的是 `node:http` / `node:https` 的 `createServer`，**没有 http2 模块、没有 ALPN**。⇒ SSE 走 HTTP/1.1，浏览器每域 6 连接限制**真实存在**，多标签合并有实际价值，不是鸡肋；我上一轮「如果是 HTTP/2 就砍掉」的假设不成立。多用户场景不成立「8 用户挤爆」——每用户独立浏览器各自 6 名额，服务端连接数与浏览器名额是两码事。
 
 ## Execution Log
 
@@ -91,3 +93,4 @@
      Backfill with: progress log --id 20261121-1434-bcbb-单飞sse问题清单核实与修复 --note "...". -->
 - 2026-11-21 14:34:37 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created and claimed
 - 2026-11-21 14:39:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 消费方27条清单全部落入worklog并分6块；A块失真问题已逐条核实到 file:line 并给出方案与硬伤结论
+- 2026-11-21 15:06:46 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 撤回硬伤结论；解包webServer rc.5的lib/index.js:490核实宿主是node:http非HTTP2，6连接限制真实、多用户不成立挤爆
