@@ -1,7 +1,7 @@
 # 20261121-1434-bcbb-单飞sse问题清单核实与修复: 单飞SSE问题清单核实与修复
 
 - **Tags**: SSE, 单飞, 问题清单, 修复
-- **Status**: doing · 2026-11-21 16:10:59 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-21 16:31:23 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-21 14:34:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -106,6 +106,25 @@
 
 **验证**：build ✅ / test 589/589 ✅ / typecheck ✅ / build:demo ✅；两仓 `koc-codelint` 全过（核心 8 文件、消费方 4 文件；首轮 6 条 lint 已修：模板内赋值、未用变量、markdown 缩进）。产物 dist/ 已随 build 更新入库。
 
+## 专家团四轮复查（2026-11-22，用户要求「查到没问题为止」）
+
+三个独立视角（测试充分性 / 并发状态机 / 一致性回归）逐轮审查，每轮发现→修→再查，共四轮，终局「可以交付」。
+
+| 轮 | 发现 | 修复 |
+|---|---|---|
+| 1 | **P0** `state-reply` 无届校验：旧 owner 迟到 reply 把 follower 的 epoch 打回 → 永久失联（`shared-stream.ts:290`）| 加届校验：已有届必须相等，空届放行并采纳 reply 届 |
+| 1 | **中** session controller 的 abort 监听逐 lease 累积，闭包捕获旧 lease → 线性内存泄漏 | Lease 加 `abortOff`，`cleanupLease` 成对移除 |
+| 1 | **中** owner 每 1.2s 发无人应答的 state-request（晋升未清 stateRetry） | `requestState` 开头 owner 直接 return；晋升时 `clearStateRetry()` |
+| 1 | **严重** `mergeBaseline` 无条件覆盖：本地乐观 running 被「POST 已受理但 snapshot 尚旧」的终态基线盖掉，随后真 running 被单调守卫吞 → 永久卡旧终态 | store 加 `optimistic` 集合：本地 `submit:` running 打标，真源帧到达才清；基线遇标记跳过 |
+| 1 | 测试 #1/#18 假绿（fake 流永不 giveUp、`locks.holders.size>=0` 恒真），多数 #1-#19 无有效测试 | 重写 fake（BC 异步派发、401 真注入、通道关闭/锁释放断言），新增乐观行保护用例 |
+| 2 | `removeRunning` 回滚乐观行漏清 optimistic 标记 → 该 key 基线永久被跳 | `removeRunning` 补 `optimistic.delete(settlementKey(current))` |
+| 2 | `seenReplay` 无界增长（长寿命 session 慢泄漏） | 抽 `markSeen(id)`，超 512 按插入序淘汰最早项 |
+| 2 | bfcache 恢复退避最长空窗 30s（重置 backoffMs 不影响在飞 sleep） | Session 加 `wake` controller，`recover()` abort 打断在飞 sleep 并重建 |
+| 3 | 乐观行归一到别的 targetId 时 `removeRunning(乐观id)` 找不到行 → 标记仍泄漏 | 加 `optimisticById: Map<乐观id, sKey>`，`removeRunning` 按 id 反查 `clearOptimistic`；`clearAll` 同步清 |
+| 4 | 终局确认：Map/Set 由 `clearOptimistic` 同源维护无泄漏；27 条范围无残留真 bug | 无新增改动 |
+
+**最终验证**：build ✅ / test **592/592** ✅ / typecheck ✅ / build:demo ✅；两仓 `koc-codelint` 全过。四轮复查证据均在对应轮次的审查结论中（文件:行号已逐条核对，dist 与 src 同步、测试跑的是新产物）。
+
 **未处理（不在本次范围，需另开）**：#20 不成立（不算问题）；#21 产物同步属发布卫生；#23 `scope:'origin'` 失效、#25 占位记录进快照属消费方/核心既有链路问题。真机 3 标签页验收尚未做。
 
 失真块方案要点（历史记录）：把「基线」按来源分成两类语义——`task-snapshot`/gap 重拉/state-reply 是**权威快照**，应能覆盖本地陈旧状态；本地乐观行靠真源归一覆盖来护。Node 直连补 `snapshot` 透传；定向 reply 同步 epoch；`merge` 在 running 分支清 `announced`。
@@ -138,3 +157,4 @@
 - 2026-11-21 15:16:54 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 全方案穷举完成：官方mux无第三方注册口、SharedWorker/SW在CJS闭包下不可落地、h2/多端口/iframe全封死；最优解=保留单飞架构逐条修实现，已写入worklog Conclusion
 - 2026-11-21 15:32:22 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 对标 sse-coordinator@0.3.2 源码定稿重写方案：session/lease两级分离、随机epoch、单调时钟、判活只认真SSE字节、生命周期成对清理，已写入worklog
 - 2026-11-21 16:10:59 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 实现完成：重写shared-stream+store基线语义+api接线+5例回归+文档注释；#1-#19代码层消项；build/test589/typecheck/build:demo全过；两仓codelint全过
+- 2026-11-21 16:31:23 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 专家团四轮复查完成（P0届校验/内存泄漏/owner自请求/乐观行基线吞等全修）；文档同步refcount与重连措辞；592测试+codelint全过，终局可交付
