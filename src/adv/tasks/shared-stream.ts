@@ -1,28 +1,30 @@
 /**
  * 同源跨标签 task SSE 单飞协调器。
  *
- * N 个标签各开一条常驻 SSE 会耗尽 http/1.1 每域 6 连接上限，宿主自己的请求全在浏览器排队。
- * 这里让同源所有标签共用一条：Web Locks 选一个 owner 建真 SSE，帧经 BroadcastChannel
- * 扇出给其它标签；owner 关闭 / 崩溃 / 失联后锁释放，等待者自动成为新 owner。
+ * 工业界对标：`sse-coordinator@0.3.2`（Web Locks 排他锁 + 锁回调挂长 Promise、
+ * BroadcastChannel 扇出、visibility/online 恢复、cleanup 一次收干净）。在此骨架上
+ * 补本项目正确性必需项：随机届 epoch（相等比较，不依赖挂钟）、单调 seq + 缺口重拉、
+ * owner-ready 基线握手、有界 notice 缓存（含 outbox 回放批次）。
  *
- * 设计不变量：
- *   - 零 DOM at import time：navigator / BroadcastChannel 只在函数内惰性读取，Node 可直接 import。
- *   - 锁名 / 通道名只含协议版本 + streamUrl 命名空间（**不含 headers**，token 刷新不得击穿单飞）。
- *   - 帧带 epoch + 单调 seq：切主后的迟到旧帧丢弃；seq 缺口触发全量基线重拉。
- *   - 基线补齐靠 state-request/state-reply；owner 未 ready 时回 ready=false，绝不把空基线当权威。
- *   - notice 有界缓存含 outbox 回放批次，随 state-reply 补齐；回放批次不逐条广播，只发一次轻量信号。
- *   - 生命周期：AbortSignal + pagehide/freeze/onGiveUp/断流立即释放锁；pageshow(persisted) 重建 session。
+ * 两级生命周期（本版核心不变量）：
+ *   Session —— 一个协调器实例的整个寿命；controller 只在 dispose() 时 abort。
+ *   Lease   —— 一次持锁届；giveUp / watchdog / lifetime / pagehide 只 endLease()
+ *               （让出锁），run loop 退避后自动重申请，绝不 abort session。
+ *               因此断流不会永久离线，bfcache 恢复无需重建 session。
+ *
+ * 零 DOM at import time：navigator / BroadcastChannel / crypto / performance 只在函数内惰性读取。
  */
 import { connectTaskStream, type TaskStreamConnection, type TaskStreamGiveUpReason } from './stream.js'
 
 const WIRE_VERSION = 1
 const LOCK_PREFIX = 'dshpc/task-stream/v1/'
 const CHANNEL_PREFIX = 'dshpc/task-stream/v1/'
-const WATCHDOG_MS = 50_000          // > 2 × SSE keepAlive(25s)，避免把保活当失联
-const LIFETIME_MS = 10 * 60 * 1000  // 连接寿命上限，到期主动释放重选
+const WATCHDOG_MS = 50_000          // > 2 × keepAlive(25s)，保活字节重置计时
+const LIFETIME_MS = 10 * 60 * 1000  // 连接寿命上限，到期主动轮换
 const NOTICE_LIMIT = 512            // 与 api.ts 的 SEEN_NOTICE_LIMIT 对齐
 const STATE_RETRY_MS = 300
-const REPLAY_WINDOW_MS = 600        // 建连后的回放窗口：窗口内 notice 只入缓存不广播
+const REPLAY_WINDOW_MS = 600        // 建连回放窗口：窗口内 notice 只入缓存不逐条广播
+const BACKOFF_MAX_MS = 30_000       // 断流后重申请锁的退避上限
 
 /** 锁 / 通道的最小形状：浏览器原生即满足；测试注入内存实现。 */
 export interface SharedLockLike {
@@ -50,17 +52,20 @@ export interface SharedStreamOptions {
   readonly headers?: () => Record<string, string>
   readonly retryDelaysMs?: readonly number[]
   readonly onGiveUp?: (reason: TaskStreamGiveUpReason) => void
-  /** 注入点：测试用内存锁 / 通道；不传则惰性取 navigator.locks / BroadcastChannel。 */
+  /** 测试注入内存锁 / 通道；不传则惰性取 navigator.locks / BroadcastChannel。 */
   readonly lockFactory?: SharedLockFactory
   readonly channelFactory?: SharedChannelFactory
-  /** owner 的全量任务快照来源（取 taskStore.getSnapshot().tasks）。 */
+  /** owner 的全量任务快照来源（taskStore.getSnapshot().tasks）。 */
   readonly getState: () => readonly unknown[]
-  /** follower 收到基线后应用（mergeBaseline：只填本地不存在的 key）。 */
+  /** follower 收到基线后应用（幂等合并）。 */
   readonly applyBaseline: (tasks: readonly unknown[]) => void
-  /** 页面生命周期监听的宿主；不传则不挂（Node / 测试）。 */
+  /**
+   * 页面生命周期监听宿主。实现方负责把 document 事件（freeze/resume/
+   * visibilitychange）与 window 事件（pagehide/pageshow/online）路由到正确目标。
+   * 不传则不挂（Node / 测试）。
+   */
   readonly lifecycle?: SharedLifecycle
 }
-
 export interface SharedLifecycle {
   addEventListener(type: string, listener: (...args: never[]) => void): void
   removeEventListener(type: string, listener: (...args: never[]) => void): void
@@ -71,24 +76,24 @@ interface Wire {
   readonly v: number
   readonly ns: string
   readonly kind: WireKind
-  readonly epoch: number
+  /** 随机届 ID（相等比较，不比大小）；state-request 时可能是空串。 */
+  readonly epoch: string
   readonly seq: number
   readonly event?: 'task' | 'notice'
-  readonly snapshot?: boolean
   readonly payload?: unknown
   readonly from?: string
   readonly to?: string
   readonly ready?: boolean
   readonly tasks?: readonly unknown[]
   readonly notices?: readonly unknown[]
-  readonly what?: 'epoch' | 'cache' | 'dead'
+  readonly what?: 'epoch' | 'dead' | 'cache'
 }
 
 function isWire(value: unknown): value is Wire {
   if (value === null || typeof value !== 'object') return false
   const w = value as Record<string, unknown>
-  return w.v === WIRE_VERSION && typeof w.ns === 'string' && typeof w.kind === 'string' &&
-    typeof w.epoch === 'number' && typeof w.seq === 'number'
+  return w.v === WIRE_VERSION && typeof w.ns === 'string' &&
+    typeof w.kind === 'string' && typeof w.epoch === 'string' && typeof w.seq === 'number'
 }
 
 function noticeIdOf(value: unknown): string | undefined {
@@ -97,8 +102,22 @@ function noticeIdOf(value: unknown): string | undefined {
   return typeof id === 'string' ? id : undefined
 }
 
+/** 随机届 ID：只做相等比较，天然免疫挂钟回拨与冷启动回拨（原 #18）。 */
+function newEpoch(): string {
+  const c = typeof crypto === 'undefined' ? undefined : crypto
+  if (c !== undefined && typeof c.randomUUID === 'function') return c.randomUUID()
+  counter += 1
+  return `epoch:${Math.random().toString(36).slice(2)}:${counter.toString(36)}`
+}
+let counter = 0
+
+/** 单调时钟：节流不受系统时间回拨影响（原 #19）。 */
+function monotonic(): number {
+  const p = typeof performance === 'undefined' ? undefined : performance
+  return p !== undefined && typeof p.now === 'function' ? p.now() : Date.now()
+}
+
 function stableHash(input: string): string {
-  // FNV-1a 32bit：稳定、无依赖、同串同值；只用于命名，不用于安全。
   let h = 0x811c9dc5
   for (let i = 0; i < input.length; i += 1) {
     h ^= input.charCodeAt(i)
@@ -116,49 +135,80 @@ function sleep(ms: number, signal: AbortSignal): Promise<void> {
   })
 }
 
+/** 一次持锁届的状态；定时器集中，endLease/finally 一次收干净。 */
+interface Lease {
+  readonly epoch: string
+  seq: number
+  ready: boolean
+  replayDone: boolean
+  lastAliveAt: number
+  noticeCache: unknown[]
+  streamConn: TaskStreamConnection | undefined
+  ended: boolean
+  release: (() => void) | undefined
+  /** 移除 session controller 上的 abort 监听；每届一个，cleanup 必须成对摘掉（否则累积泄漏）。 */
+  abortOff: (() => void) | undefined
+  readonly timers: Set<ReturnType<typeof setTimeout>>
+}
+
+/** 一个协调器实例的会话状态。 */
+interface Session {
+  readonly controller: AbortController
+  readonly selfId: string
+  readonly ns: string
+  readonly lockName: string
+  readonly channelName: string
+  channel: SharedChannelLike | null
+  offline: boolean
+  disposed: boolean
+  /** 当前跟随的届；帧只认相等 epoch。 */
+  currentEpoch: string
+  seenSeq: number
+  baselineReceived: boolean
+  baselineRequestAt: number
+  stateRetry: ReturnType<typeof setTimeout> | undefined
+  lease: Lease | undefined
+  /** notice 去重跨 lease 保留，切主后不重复补齐同一条。 */
+  readonly seenReplay: Set<string>
+  backoffMs: number
+  /** 退避等待的可唤醒信号：recover 时 abort 打断在飞 sleep，避免最长 30s 空窗。 */
+  wake: AbortController
+  readonly lifecycleBound: Array<{ type: string; listener: (...args: never[]) => void }>
+}
+
 /**
  * 加入同源单飞。返回 disposer：只释放本标签持有的引用，不替别的标签关流。
  * `connectTaskCenter` 负责按 streamUrl 幂等 + refcount，这里每个实例就是一条引用。
  */
 export function connectSharedTaskStream(options: SharedStreamOptions): () => void {
   const ns = `${WIRE_VERSION}:${stableHash(options.streamUrl)}`
-  const lockName = `${LOCK_PREFIX}${ns}`
-  const channelName = `${CHANNEL_PREFIX}${ns}`
-  const selfId = `peer:${Math.random().toString(36).slice(2)}`
-  let channel: SharedChannelLike | null = null
-  let disposed = false
-  /** 跨标签见过最大 epoch：本机挂钟落后/回拨时也不发出比前任更小的 epoch。 */
-  let peerEpoch = 0
-
-  // 一次 session = 一次申请锁的生命周期。bfcache 恢复要整体重建（AbortSignal 一次性）。
-  interface Session {
-    controller: AbortController
-    epoch: number
-    seq: number
-    ready: boolean
-    owner: boolean
-    lastAliveAt: number
-    baselineRequestAt: number
-    noticeCache: unknown[]
-    seenReplay: Set<string>
-    streamConn: TaskStreamConnection | undefined
-    /** 本次持锁的独立信号：轮换 owner 只 abort 它，绝不 abort 整个 session。 */
-    hold: AbortController | undefined
-    /** 无 Web Locks：离线，不重发 state-request（否则每 1.2s 空转）。 */
-    offline: boolean
-    stateRetry: ReturnType<typeof setTimeout> | undefined
-    watchdog: ReturnType<typeof setInterval> | undefined
-    lifetime: ReturnType<typeof setTimeout> | undefined
-    replayGrace: ReturnType<typeof setTimeout> | undefined
+  const state: Session = {
+    controller: new AbortController(),
+    selfId: `peer:${Math.random().toString(36).slice(2)}`,
+    ns,
+    lockName: `${LOCK_PREFIX}${ns}`,
+    channelName: `${CHANNEL_PREFIX}${ns}`,
+    channel: null,
+    offline: false,
+    disposed: false,
+    currentEpoch: '',
+    seenSeq: 0,
+    baselineReceived: false,
+    baselineRequestAt: 0,
+    stateRetry: undefined,
+    lease: undefined,
+    seenReplay: new Set<string>(),
+    backoffMs: STATE_RETRY_MS,
+    wake: new AbortController(),
+    lifecycleBound: [],
   }
-  let session: Session | undefined
 
   function openChannel(): SharedChannelLike | null {
-    if (channel !== null) return channel
+    if (state.channel !== null) return state.channel
     const factory = options.channelFactory ?? (() => {
       if (typeof BroadcastChannel === 'undefined') return null
       try {
-        const raw = new BroadcastChannel(channelName)
+        const raw = new BroadcastChannel(state.channelName)
         let handler: ((event: { data: unknown }) => void) | null = null
         raw.onmessage = (event: MessageEvent) => { handler?.({ data: event.data }) }
         return {
@@ -169,21 +219,20 @@ export function connectSharedTaskStream(options: SharedStreamOptions): () => voi
         }
       } catch { return null }
     })
-    channel = factory(channelName)
-    if (channel !== null) channel.onmessage = (event) => receive(event.data)
-    return channel
+    state.channel = factory(state.channelName)
+    if (state.channel !== null) state.channel.onmessage = (event) => receive(event.data)
+    return state.channel
   }
 
-  function send(
-    state: Session,
-    wire: Omit<Wire, 'v' | 'ns' | 'epoch' | 'seq'> & Partial<Pick<Wire, 'epoch' | 'seq'>>,
-  ): void {
-    if (disposed || state.controller.signal.aborted) return
+  function send(wire: Omit<Wire, 'v' | 'ns' | 'epoch' | 'seq'> & Partial<Pick<Wire, 'epoch' | 'seq'>>): void {
+    if (state.disposed || state.controller.signal.aborted) return
     const full: Wire = {
-      v: WIRE_VERSION, ns, epoch: wire.epoch ?? state.epoch, seq: wire.seq ?? state.seq,
+      v: WIRE_VERSION,
+      ns: state.ns,
+      epoch: wire.epoch ?? state.lease?.epoch ?? state.currentEpoch,
+      seq: wire.seq ?? 0,
       kind: wire.kind,
       ...(wire.event === undefined ? {} : { event: wire.event }),
-      ...(wire.snapshot === undefined ? {} : { snapshot: wire.snapshot }),
       ...(wire.payload === undefined ? {} : { payload: wire.payload }),
       ...(wire.from === undefined ? {} : { from: wire.from }),
       ...(wire.to === undefined ? {} : { to: wire.to }),
@@ -192,33 +241,57 @@ export function connectSharedTaskStream(options: SharedStreamOptions): () => voi
       ...(wire.notices === undefined ? {} : { notices: wire.notices }),
       ...(wire.what === undefined ? {} : { what: wire.what }),
     }
-    try { openChannel()?.postMessage(full) } catch (error) {
+    try { state.channel?.postMessage(full) } catch (error) {
       console.error('dsh-plugin-core: shared task stream post failed', error)
     }
   }
 
-  function requestState(state: Session, reason: 'join' | 'gap' | 'signal'): void {
-    if (disposed || state.controller.signal.aborted || state.offline) return
-    const now = Date.now()
-    if (reason !== 'join' && now - state.baselineRequestAt < STATE_RETRY_MS) return
-    state.baselineRequestAt = now
-    send(state, { kind: 'state-request', from: selfId })
-    if (state.stateRetry !== undefined) clearTimeout(state.stateRetry)
+  function clearStateRetry(): void {
+    if (state.stateRetry !== undefined) { clearTimeout(state.stateRetry); state.stateRetry = undefined }
+  }
+
+  function scheduleStateRetry(): void {
+    if (state.stateRetry !== undefined) return
     state.stateRetry = setTimeout(() => {
-      if (!state.ready && !disposed && !state.controller.signal.aborted) requestState(state, 'join')
+      state.stateRetry = undefined
+      if (state.disposed || state.controller.signal.aborted || state.offline) return
+      if (state.baselineReceived) return
+      requestState('join')
     }, STATE_RETRY_MS * 4)
   }
 
-  function applyBaseline(state: Session, tasks: readonly unknown[], notices: readonly unknown[]): void {
+  /** 请求基线：节流命中必补发定时器（原 #6 根治），时钟单调（原 #19 根治）。 */
+  function requestState(reason: 'join' | 'gap' | 'signal'): void {
+    if (state.disposed || state.controller.signal.aborted || state.offline) return
+    // owner 自己就是基线来源，BC 不回环给自己，发包只会每 1.2s 无限自问（原专家 #4）。
+    if (state.lease !== undefined && !state.lease.ended) return
+    const now = monotonic()
+    if (reason !== 'join' && now - state.baselineRequestAt < STATE_RETRY_MS) {
+      scheduleStateRetry()
+      return
+    }
+    state.baselineRequestAt = now
+    send({ kind: 'state-request', from: state.selfId })
+    scheduleStateRetry()
+  }
+
+  /** notice 去重集合有界淘汰：Set 按插入序，超上限删最早的（长寿命 session 慢泄漏根治）。 */
+  function markSeen(id: string): void {
+    if (state.seenReplay.has(id)) return
+    if (state.seenReplay.size >= NOTICE_LIMIT) {
+      const oldest = state.seenReplay.values().next()
+      if (!oldest.done) state.seenReplay.delete(oldest.value)
+    }
+    state.seenReplay.add(id)
+  }
+
+  function applyBaseline(tasks: readonly unknown[], notices: readonly unknown[]): void {
     try { options.applyBaseline(tasks) } catch (error) {
       console.error('dsh-plugin-core: shared task baseline failed', error)
     }
     for (const notice of notices) {
       const id = noticeIdOf(notice)
-      if (id !== undefined) {
-        if (state.seenReplay.has(id)) continue
-        state.seenReplay.add(id)
-      }
+      if (id !== undefined) markSeen(id)
       try { options.onNotice?.(notice) } catch (error) {
         console.error('dsh-plugin-core: shared task notice replay failed', error)
       }
@@ -226,166 +299,197 @@ export function connectSharedTaskStream(options: SharedStreamOptions): () => voi
   }
 
   function receive(data: unknown): void {
-    const state = session
-    if (disposed || state === undefined || state.offline || state.controller.signal.aborted) return
-    if (!isWire(data) || data.ns !== ns) return
-    if (data.from === selfId || data.to === selfId) {
-      if (data.kind === 'state-reply' && data.to === selfId && data.ready === true) {
-        state.ready = true
-        if (state.stateRetry !== undefined) { clearTimeout(state.stateRetry); state.stateRetry = undefined }
-        applyBaseline(state, data.tasks ?? [], data.notices ?? [])
+    if (state.disposed || state.controller.signal.aborted || state.offline) return
+    if (!isWire(data) || data.ns !== state.ns) return
+    if (data.from === state.selfId) return
+
+    // 定向回包只认发给自己（原 #17 根治）；ready 才带权威基线。
+    // 必须过届校验：跨发送者 BC 无全局序，旧 owner 的 reply 可能迟到于新 owner 的 epoch 信号，
+    // 若无条件采纳会把 currentEpoch 打回旧届并清掉重试 → follower 永久收不到新 owner 的帧。
+    // 空届（新标签刚加入、还没收到 epoch 信号）放行并采纳 reply 的届，否则要求严格相等。
+    if (data.kind === 'state-reply') {
+      if (data.to !== state.selfId) return
+      if (state.currentEpoch !== '' && data.epoch !== state.currentEpoch) return
+      if (data.ready === true) {
+        state.currentEpoch = data.epoch
+        state.seenSeq = data.seq
+        state.baselineReceived = true
+        clearStateRetry()
+        applyBaseline(data.tasks ?? [], data.notices ?? [])
       }
       return
     }
-    state.lastAliveAt = Date.now()
+    if (data.to !== undefined && data.to !== state.selfId) return
 
-    // state-request 不带 owner epoch（新加入者 epoch=0），必须在 epoch 闸门之前处理，
-    // 否则晚加入标签的请求会被当「切主后的迟到旧帧」丢掉，永远拿不到基线。
+    // state-request 不携带可信 epoch（加入者 epoch 为空），必须在 epoch 闸门之前处理。
     if (data.kind === 'state-request') {
-      if (state.owner && state.ready) {
-        send(state, {
+      const lease = state.lease
+      if (lease !== undefined && !lease.ended && lease.ready) {
+        send({
           kind: 'state-reply', to: data.from, ready: true,
-          tasks: options.getState(), notices: [...state.noticeCache],
+          tasks: options.getState(), notices: [...lease.noticeCache],
         })
       }
       return
     }
 
-    if (data.epoch > peerEpoch) peerEpoch = data.epoch
-    if (data.epoch > state.epoch) {
-      state.epoch = data.epoch
-      state.seq = 0
-      state.ready = false
-      state.seenReplay.clear()
-      state.noticeCache = []
-    } else if (data.epoch < state.epoch) {
-      return // 切主后的迟到旧帧
-    }
-    if (data.kind === 'frame' && data.seq <= state.seq) return
-
-    if (data.kind === 'frame') {
-      if (data.seq > state.seq + 1) requestState(state, 'gap')
-      state.seq = data.seq
-      if (data.event === 'task') {
-        try { options.onTask(data.payload, data.snapshot === true) } catch (error) {
-          console.error('dsh-plugin-core: shared task frame failed', error)
+    // signal 不带数据帧的 seq 语义，单独处理，不进帧闸门。
+    if (data.kind === 'signal') {
+      if (data.what === 'epoch' || data.what === 'cache') {
+        if (data.epoch !== state.currentEpoch) {
+          state.currentEpoch = data.epoch
+          state.seenSeq = 0
         }
-      } else if (data.event === 'notice') {
-        try { options.onNotice?.(data.payload) } catch (error) {
-          console.error('dsh-plugin-core: shared notice frame failed', error)
-        }
+        state.baselineReceived = false
+        requestState('signal')
+      } else if (data.what === 'dead') {
+        state.baselineReceived = false
+        requestState('signal')
       }
-    } else if (data.kind === 'signal') {
-      if (data.what === 'dead') state.ready = false
-      else requestState(state, 'signal') // 切主 / 回放完成：重拉基线
+      return
+    }
+
+    // frame：只认当前届（相等比较，原 #18 根治）。
+    if (data.epoch !== state.currentEpoch) return
+    if (data.kind !== 'frame' || data.seq <= state.seenSeq) return
+    if (data.seq > state.seenSeq + 1) {
+      state.baselineReceived = false   // 缺口：重拉必须补发（原 #6）
+      requestState('gap')
+    }
+    state.seenSeq = data.seq
+    if (data.event === 'task') {
+      try { options.onTask(data.payload, false) } catch (error) {
+        console.error('dsh-plugin-core: shared task frame failed', error)
+      }
+    } else if (data.event === 'notice') {
+      try { options.onNotice?.(data.payload) } catch (error) {
+        console.error('dsh-plugin-core: shared notice frame failed', error)
+      }
     }
   }
 
-  function cacheNotice(state: Session, notice: unknown): void {
+  function cacheNotice(lease: Lease, notice: unknown): void {
     const id = noticeIdOf(notice)
     if (id !== undefined && state.seenReplay.has(id)) return
-    if (id !== undefined) state.seenReplay.add(id)
-    state.noticeCache.push(notice)
-    if (state.noticeCache.length > NOTICE_LIMIT) state.noticeCache.shift()
+    if (id !== undefined) markSeen(id)
+    lease.noticeCache.push(notice)
+    if (lease.noticeCache.length > NOTICE_LIMIT) lease.noticeCache.shift()
   }
 
-  function asOwner(state: Session, lock: SharedLockLike): Promise<void> {
-    // 逻辑时钟：同 ms 交接 / 挂钟回拨都不得让新 owner 的 epoch 不大于上一届。
-    state.hold = new AbortController()
-    state.owner = true
-    state.epoch = Math.max(Date.now(), state.epoch + 1, peerEpoch + 1)
-    peerEpoch = state.epoch
-    state.seq = 0
-    state.ready = false
-    state.seenReplay.clear()
-    state.noticeCache = []
-    state.lastAliveAt = Date.now()
-    send(state, { kind: 'signal', what: 'epoch' })
+  function finishReplay(lease: Lease): void {
+    if (lease.replayDone) return
+    lease.replayDone = true
+    lease.ready = true
+    // 广播一次轻量信号让 follower 自拉取缓存（outbox 回放批次不逐条扇出）。
+    send({ kind: 'signal', what: 'cache' })
+  }
 
-    // 回放窗口内 notice 只入缓存 + 本地投影；窗口结束发一次轻量信号让 follower 自拉。
-    let replayDone = false
-    const finishReplay = (): void => {
-      if (replayDone) return
-      replayDone = true
-      state.ready = true
-      send(state, { kind: 'signal', what: 'cache' })
+  function track(lease: Lease, timer: ReturnType<typeof setTimeout>): void {
+    lease.timers.add(timer)
+  }
+
+  function cleanupLease(lease: Lease): void {
+    for (const timer of lease.timers) clearTimeout(timer)
+    lease.timers.clear()
+    lease.abortOff?.()
+    lease.abortOff = undefined
+    lease.streamConn?.close()
+    lease.streamConn = undefined
+    if (state.lease === lease) state.lease = undefined
+  }
+
+  /** 让出一届锁：只 resolve 锁回调的 Promise，不动 session controller。 */
+  function endLease(lease: Lease): void {
+    if (lease.ended) return
+    lease.ended = true
+    lease.release?.()
+    // cleanupLease 由 asOwner 的 finally 执行；若 Promise 尚未建立则兜底。
+    if (lease.release === undefined) cleanupLease(lease)
+  }
+
+  function asOwner(lock: SharedLockLike): Promise<void> {
+    const lease: Lease = {
+      epoch: newEpoch(),
+      seq: 0,
+      ready: false,
+      replayDone: false,
+      lastAliveAt: monotonic(),
+      noticeCache: [],
+      streamConn: undefined,
+      ended: false,
+      release: undefined,
+      abortOff: undefined,
+      timers: new Set(),
     }
+    state.lease = lease
+    state.currentEpoch = lease.epoch
+    state.seenSeq = 0
+    state.baselineReceived = false
+    clearStateRetry()  // 晋升 owner 后不再做 follower 的基线重拉
 
-    state.streamConn = connectTaskStream({
+    // 成为 owner 的第一件事：广播新届（BC 同一发送者 FIFO，follower 先见 epoch 再见帧）。
+    send({ kind: 'signal', what: 'epoch' })
+
+    lease.streamConn = connectTaskStream({
       streamUrl: options.streamUrl,
       headers: options.headers,
       retryDelaysMs: options.retryDelaysMs,
-      // SSE 保活是 `:` 注释帧，parseTaskFrames 不上抛；单独判活，避免单标签 owner 被看门狗误杀。
-      onAlive: () => { state.lastAliveAt = Date.now() },
+      // 只有真实 SSE 字节才判活；BC 流量不刷新（原 #8 根治）。
+      onAlive: () => {
+        lease.lastAliveAt = monotonic()
+        state.backoffMs = STATE_RETRY_MS
+      },
       onTask: (task, snapshot) => {
         try { options.onTask(task, snapshot) } catch (error) {
           console.error('dsh-plugin-core: shared owner task failed', error)
         }
-        if (!snapshot && !replayDone) finishReplay() // 真增量到达 = 回放窗口结束
-        if (!snapshot && state.ready) {
-          state.seq += 1
-          send(state, { kind: 'frame', event: 'task', payload: task })
-        }
+        if (snapshot) return           // 基线帧不逐条广播，follower 靠 state-reply 拿全量
+        if (!lease.replayDone) return  // 回放窗口内不广播
+        if (lease.ended) return
+        lease.seq += 1
+        send({ kind: 'frame', event: 'task', payload: task, seq: lease.seq })
       },
       onNotice: (notice) => {
-        cacheNotice(state, notice)
+        cacheNotice(lease, notice)
         try { options.onNotice?.(notice) } catch (error) {
           console.error('dsh-plugin-core: shared owner notice failed', error)
         }
-        if (!replayDone) return // outbox 回放批次不逐条广播，靠 state-reply 补齐
-        state.seq += 1
-        send(state, { kind: 'frame', event: 'notice', payload: notice })
+        if (!lease.replayDone) return  // outbox 回放批次只入缓存
+        if (lease.ended) return
+        lease.seq += 1
+        send({ kind: 'frame', event: 'notice', payload: notice, seq: lease.seq })
       },
       onGiveUp: (reason) => {
-        if (options.onGiveUp !== undefined) {
-          try { options.onGiveUp(reason) } catch (error) {
-            console.error('dsh-plugin-core: shared task onGiveUp failed', error)
-          }
-        } else {
-          console.warn('dsh-plugin-core: task stream gave up', reason)
+        try { options.onGiveUp?.(reason) } catch (error) {
+          console.error('dsh-plugin-core: shared task onGiveUp failed', error)
         }
-        send(state, { kind: 'signal', what: 'dead' })
-        state.controller.abort()
+        send({ kind: 'signal', what: 'dead' })
+        endLease(lease)
       },
     })
 
-    state.replayGrace = setTimeout(finishReplay, REPLAY_WINDOW_MS)
-    const hold = state.hold
-    state.lifetime = setTimeout(() => {
-      console.warn('dsh-plugin-core: task stream lifetime reached, rotating leadership')
-      hold.abort() // 只释放本次持锁；session 仍活着，run() 会重新申请
-    }, LIFETIME_MS)
-    state.watchdog = setInterval(() => {
-      if (disposed || state.controller.signal.aborted) return
-      if (Date.now() - state.lastAliveAt < WATCHDOG_MS) return
-      state.lastAliveAt = Date.now()
-      // owner：保活/帧 50s 没动静视为流已死，释放锁重选；follower 只重拉，绝不抢锁。
-      // 只 abort hold —— 之前误 abort session controller 会让单标签永久离线。
-      if (state.owner) {
-        console.warn('dsh-plugin-core: task stream looks stale, rotating leadership')
-        hold.abort()
-      } else {
-        requestState(state, 'signal')
-      }
-    }, WATCHDOG_MS / 2)
+    track(lease, setTimeout(() => finishReplay(lease), REPLAY_WINDOW_MS))
+    // watchdog 只在 owner 跑（原 #14 根治）；超时只让出锁，run loop 重申请。
+    track(lease, setInterval(() => {
+      if (state.disposed || lease.ended || state.controller.signal.aborted) return
+      if (monotonic() - lease.lastAliveAt < WATCHDOG_MS) return
+      endLease(lease)
+    }, WATCHDOG_MS / 2))
+    track(lease, setTimeout(() => endLease(lease), LIFETIME_MS))
 
     return new Promise<void>((resolve) => {
-      const done = (): void => { resolve() }
-      lock.signal.addEventListener('abort', done, { once: true })
-      hold.signal.addEventListener('abort', done, { once: true })
-      state.controller.signal.addEventListener('abort', done, { once: true })
+      const release = (): void => { resolve() }
+      lease.release = release
+      lock.signal.addEventListener('abort', release, { once: true })
+      const onSessionAbort = (): void => { release() }
+      state.controller.signal.addEventListener('abort', onSessionAbort, { once: true })
+      lease.abortOff = () => state.controller.signal.removeEventListener('abort', onSessionAbort)
     }).finally(() => {
-      state.owner = false
-      state.hold = undefined
-      if (state.watchdog !== undefined) clearInterval(state.watchdog)
-      if (state.lifetime !== undefined) clearTimeout(state.lifetime)
-      if (state.replayGrace !== undefined) clearTimeout(state.replayGrace)
-      state.streamConn?.close()
-      state.streamConn = undefined
+      cleanupLease(lease)
     })
   }
 
-  async function run(state: Session): Promise<void> {
+  async function run(): Promise<void> {
     const lockFactory = options.lockFactory ?? (() => {
       const nav = typeof navigator === 'undefined' ? undefined : navigator
       const locks = nav?.locks
@@ -393,82 +497,79 @@ export function connectSharedTaskStream(options: SharedStreamOptions): () => voi
     })
     const locks = lockFactory()
     if (locks === null) {
-      // 浏览器无 Web Locks：不静默退回每标签各开一条。显式告警，submit 仍走短 POST。
+      // 无 Web Locks：显式离线，绝不退回每标签各开一条。
       console.warn('dsh-plugin-core: Web Locks unavailable; task stream stays offline to avoid connection exhaustion')
-      state.offline = true // 停掉 state-request 重试，避免每 1.2s 空转
+      state.offline = true
+      clearStateRetry()
       return
     }
-    while (!disposed && !state.controller.signal.aborted) {
+    while (!state.disposed && !state.controller.signal.aborted) {
       try {
-        await locks.request(lockName, { signal: state.controller.signal }, (lock) => asOwner(state, lock))
+        await locks.request(state.lockName, { signal: state.controller.signal }, (lock) => asOwner(lock))
       } catch (error) {
-        if (!disposed && !state.controller.signal.aborted) {
+        if (!state.disposed && !state.controller.signal.aborted) {
           console.error('dsh-plugin-core: shared task lock failed', error)
         }
       }
-      if (disposed || state.controller.signal.aborted) return
-      await sleep(STATE_RETRY_MS, state.controller.signal)
+      if (state.disposed || state.controller.signal.aborted) return
+      await sleep(state.backoffMs, state.wake.signal)
+      state.backoffMs = Math.min(state.backoffMs * 2, BACKOFF_MAX_MS)
     }
   }
 
-  function stop(state: Session): void {
-    state.controller.abort()
-    state.hold?.abort()
-    if (state.stateRetry !== undefined) clearTimeout(state.stateRetry)
-    if (state.watchdog !== undefined) clearInterval(state.watchdog)
-    if (state.lifetime !== undefined) clearTimeout(state.lifetime)
-    if (state.replayGrace !== undefined) clearTimeout(state.replayGrace)
-    state.streamConn?.close()
-    state.streamConn = undefined
-  }
-
-  function start(): void {
-    if (disposed) return
-    const state: Session = {
-      controller: new AbortController(),
-      epoch: 0, seq: 0, ready: false, owner: false,
-      lastAliveAt: Date.now(), baselineRequestAt: 0,
-      noticeCache: [], seenReplay: new Set<string>(), streamConn: undefined,
-      hold: undefined, offline: false,
-      stateRetry: undefined, watchdog: undefined, lifetime: undefined, replayGrace: undefined,
+  function recover(): void {
+    if (state.disposed || state.controller.signal.aborted || state.offline) return
+    // 从冻结/隐藏恢复时重置退避并打断在飞的 sleep，避免 bfcache 恢复后睡满 30s 空窗。
+    state.backoffMs = STATE_RETRY_MS
+    state.wake.abort()
+    state.wake = new AbortController()
+    const lease = state.lease
+    if (lease !== undefined && !lease.ended) {
+      // 疑似死流：交给 watchdog 语义，到阈值就让出锁重选。
+      if (monotonic() - lease.lastAliveAt >= WATCHDOG_MS) endLease(lease)
+    } else {
+      requestState('signal')
     }
-    session = state
-    openChannel()
-    void run(state).then(() => {
-      // 无锁离线：run() 已置 offline；这里确保不再重试（不重启 session）。
-      if (state.offline && state.stateRetry !== undefined) {
-        clearTimeout(state.stateRetry)
-        state.stateRetry = undefined
-      }
-    })
-    requestState(state, 'join')
   }
 
-  const pageHide = (): void => { if (session !== undefined) stop(session) }
-  const pageShow = (event: { persisted?: boolean }): void => {
-    if (event.persisted !== true || disposed) return
-    // AbortSignal 一次性：必须新建 session（新 controller），复用旧的会永久拿不到锁。
-    if (session !== undefined) stop(session)
-    start()
+  const onHide = (): void => {
+    const lease = state.lease
+    if (lease !== undefined) endLease(lease)
   }
-  if (options.lifecycle !== undefined) {
-    options.lifecycle.addEventListener('pagehide', pageHide as (...a: never[]) => void)
-    options.lifecycle.addEventListener('freeze', pageHide as (...a: never[]) => void)
-    options.lifecycle.addEventListener('pageshow', pageShow as (...a: never[]) => void)
+  const onShow = (): void => { recover() }
+  const onOnline = (): void => { recover() }
+
+  const lifecycle = options.lifecycle
+  if (lifecycle !== undefined) {
+    const bound = (type: string, listener: (...args: never[]) => void): void => {
+      lifecycle.addEventListener(type, listener)
+      state.lifecycleBound.push({ type, listener })
+    }
+    bound('pagehide', onHide)
+    bound('freeze', onHide)
+    bound('pageshow', onShow)
+    bound('resume', onShow)
+    bound('visibilitychange', onShow)
+    bound('online', onOnline)
   }
 
-  start()
+  openChannel()
+  void run()
+  requestState('join')
 
   return () => {
-    if (disposed) return
-    disposed = true
-    if (session !== undefined) stop(session)
-    if (options.lifecycle !== undefined) {
-      options.lifecycle.removeEventListener('pagehide', pageHide as (...a: never[]) => void)
-      options.lifecycle.removeEventListener('freeze', pageHide as (...a: never[]) => void)
-      options.lifecycle.removeEventListener('pageshow', pageShow as (...a: never[]) => void)
+    if (state.disposed) return
+    state.disposed = true
+    state.controller.abort()
+    state.wake.abort()
+    const lease = state.lease
+    if (lease !== undefined) endLease(lease)
+    clearStateRetry()
+    for (const { type, listener } of state.lifecycleBound) {
+      lifecycle?.removeEventListener(type, listener)
     }
-    channel?.close()
-    channel = null
+    state.lifecycleBound.length = 0
+    state.channel?.close()
+    state.channel = null
   }
 }

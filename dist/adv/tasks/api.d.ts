@@ -59,7 +59,7 @@ export declare function notifyTaskActionFailed(): void;
  * notify 只把通知发到总线上、不做任何 UI；范围由订阅侧 scope/project 决定。
  */
 export declare function defaultTaskHost(originId?: () => string | undefined): CoordinatorHost;
-/** 接线宿主能力。client apply 调一次；重复调用覆盖字段并重连 SSE，但不换 coordinator。 */
+/** 接线宿主能力。client apply 调一次；同 streamUrl 重复调用按 refcount 累加引用，不重复建流。 */
 export declare function connectTaskCenter(host: TaskCenterHost): () => void;
 /**
  * 从宿主 client ctx 接 layout：拿到 activePanelId（发起时记进任务）与 selectPanel（点按钮切回面板）。

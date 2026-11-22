@@ -33,8 +33,10 @@ export interface TaskStore {
   /** 服务端投影一批增量（upsert 语义）；返回真正有变化的记录（id 已归一到存活 id）。 */
   merge(records: readonly TaskRecord[]): readonly TaskRecord[]
   /**
-   * 基线专用：只填本地尚不存在的 key，已有行（乐观行 / 已到的真源增量）绝不覆盖。
-   * 晚加入标签拉全量基线时用——否则一次旧基线可能盖掉本地刚提交的运行行。
+   * 基线专用（权威快照）：与 merge 同语义——真源能覆盖本地陈旧行。
+   * 单调守卫（旧终态不被新 running 复活）+ carryIdentity（保留 origin/panelId/结算时刻）
+   * 已在 merge 内，基线不能绕过，否则 gap 重拉 / owner 首快照无法纠正本地旧状态。
+   * 本地乐观行在真源 running / done 到达时本就该被归一覆盖，不需要「只填不覆盖」兜。
    */
   mergeBaseline(records: readonly TaskRecord[]): void
   get(id: string): TaskRecord | undefined
@@ -126,6 +128,49 @@ function createStore(): TaskStore {
     for (const listener of [...snapshotListeners]) listener()
   }
 
+  /**
+   * 本地乐观行（startTask 先落的 running）记号，按结算键。真源任何帧（running 或终态）
+   * 到达即清除——此后该键才允许被权威基线覆盖。没有它，重连时「POST 已受理但 SSE
+   * snapshot 尚旧」的窗口里，旧终态基线会盖掉新发起的乐观行，随后的真 running 又被
+   * 单调守卫挡住，任务永久卡在旧终态（一致性专家 #1）。
+   */
+  const optimistic = new Set<string>()
+  /** 乐观行 id → 结算键：回滚时按 id 反查清标记（归一到别的 targetId 时也能清）。 */
+  const optimisticById = new Map<string, string>()
+
+  /** 清一个结算键的乐观标记及所有指向它的乐观行 id 映射。 */
+  function clearOptimistic(sKey: string): void {
+    optimistic.delete(sKey)
+    for (const [id, key] of optimisticById) if (key === sKey) optimisticById.delete(id)
+  }
+
+  /** 增量与基线共用同一合并语义：单调守卫 + 身份/时钟归一 + 结算声明复位。 */
+  function mergeInto(records: readonly TaskRecord[], baseline: boolean): readonly TaskRecord[] {
+    const changed: TaskRecord[] = []
+    for (const record of records) {
+      const composite = keyOf(record)
+      const sKey = settlementKey(record)
+      const priorId = composite !== undefined ? byKey.get(composite) : undefined
+      const targetId = priorId ?? record.id
+      const old = tasks.get(targetId)
+      // 基线不得覆盖「本地已发起、真源尚未确认」的乐观行；真源帧（baseline=false）到达时
+      // 先清记号再照常覆盖——这正是 #4/#5 要的「真源能纠正本地陈旧行」。
+      if (baseline && optimistic.has(sKey)) continue
+      clearOptimistic(sKey)
+      // 单调：本地已终态时，迟到的 running 投影直接丢弃，防乱序把终态复活。
+      // 判据用「状态是否为终态」而非「有无 settledAt」——后者是时钟，可能因重放/擦除而不在，
+      // 拿它当状态标志会让 guard 在时间戳缺失时静默失效。
+      if (old !== undefined && isSettled(old.state) && !isSettled(record.state)) continue
+      const next = carryIdentity({ ...record, id: targetId }, old)
+      if (composite !== undefined) byKey.set(composite, next.id)
+      tasks.set(next.id, next)
+      if (next.state === 'running') announced.delete(settlementKey(next))
+      if (old === undefined || !sameRecord(old, next)) changed.push(next)
+    }
+    if (changed.length > 0) publish()
+    return changed
+  }
+
   return {
     getSnapshot: () => snapshot,
     subscribe(listener) {
@@ -145,52 +190,38 @@ function createStore(): TaskStore {
       tasks.set(targetId, stored)
       // byKey 永远指向存活 id；否则第三次同键 upsert 会按不存在的旧 id 判成新建，堆出重复行。
       if (composite !== undefined) byKey.set(composite, targetId)
-      if (task.state === 'running') announced.delete(settlementKey(task))
+      const sKey = settlementKey(stored)
+      if (task.state === 'running') {
+        announced.delete(sKey)
+        if (task.id.startsWith('submit:')) {
+          optimistic.add(sKey)
+          optimisticById.set(task.id, sKey)
+        }
+      } else {
+        clearOptimistic(sKey)
+      }
       publish()
       return { created: !existed, task: stored }
     },
     merge(records) {
-      const changed: TaskRecord[] = []
-      for (const record of records) {
-        const composite = keyOf(record)
-        const priorId = composite !== undefined ? byKey.get(composite) : undefined
-        const targetId = priorId ?? record.id
-        const old = tasks.get(targetId)
-        // 单调：本地已终态时，迟到的 running 投影直接丢弃，防乱序把终态复活。
-        // 判据用「状态是否为终态」而非「有无 settledAt」——后者是时钟，可能因重放/擦除而不在，
-        // 拿它当状态标志会让 guard 在时间戳缺失时静默失效。
-        if (old !== undefined && isSettled(old.state) && !isSettled(record.state)) continue
-        // 归一 id + 权威身份/时钟合并，规则集中在 carryIdentity。
-        const next = carryIdentity({ ...record, id: targetId }, old)
-        if (composite !== undefined) byKey.set(composite, next.id)
-        tasks.set(next.id, next)
-        if (old === undefined || !sameRecord(old, next)) changed.push(next)
-      }
-      if (changed.length > 0) publish()
-      return changed
+      return mergeInto(records, false)
     },
     mergeBaseline(records) {
-      let changed = false
-      for (const record of records) {
-        const composite = keyOf(record)
-        const priorId = composite !== undefined ? byKey.get(composite) : undefined
-        if (priorId !== undefined || tasks.has(record.id)) continue
-        const stored = carryIdentity(record, undefined)
-        tasks.set(stored.id, stored)
-        if (composite !== undefined) byKey.set(composite, stored.id)
-        changed = true
-      }
-      if (changed) publish()
+      mergeInto(records, true)
     },
     get(id) {
       return tasks.get(id)
     },
     removeRunning(id) {
+      // 无论行归一到哪个 targetId，都按乐观行 id 反查清标记（复查 A 边界）。
+      const mapped = optimisticById.get(id)
+      if (mapped !== undefined) clearOptimistic(mapped)
       const current = tasks.get(id)
       if (current === undefined || isSettled(current.state)) return false
       tasks.delete(id)
       const composite = keyOf(current)
       if (composite !== undefined && byKey.get(composite) === id) byKey.delete(composite)
+      optimistic.delete(settlementKey(current))
       publish()
       return true
     },
@@ -242,6 +273,8 @@ function createStore(): TaskStore {
       tasks.clear()
       byKey.clear()
       announced.clear()
+      optimistic.clear()
+      optimisticById.clear()
       handlers.clear()
       publish()
     },

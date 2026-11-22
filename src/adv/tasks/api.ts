@@ -123,6 +123,24 @@ const coordinator: TaskCoordinator = createCoordinator({ host: stableHost })
 let sharedConn: { key: string; refs: number; dispose: () => void } | undefined
 
 /**
+ * 页面生命周期适配器：freeze/resume/visibilitychange 派发在 document，
+ * pagehide/pageshow/online 派发在 window（原 #3：不能全挂 window）。
+ * 只在浏览器环境构造，Node 测试不碰 DOM。
+ */
+function createPageLifecycle(): SharedLifecycle {
+  const docEvents = new Set(['freeze', 'resume', 'visibilitychange'])
+  const target = (type: string): Window | Document => docEvents.has(type) ? document : window
+  return {
+    addEventListener(type, listener) {
+      target(type).addEventListener(type, listener as EventListener)
+    },
+    removeEventListener(type, listener) {
+      target(type).removeEventListener(type, listener as EventListener)
+    },
+  }
+}
+
+/**
  * 任务帧形状校验（服务端帧与 projectTasks 入口共用的一道闸）：畸形帧不能进 store 污染列表。
  *
  * settledAt 按状态分支校验——终态(done/failed)必须有有限数结算时刻，否则拒收：
@@ -149,7 +167,7 @@ export function isTaskRecord(value: unknown): value is TaskRecord {
   )
 }
 
-/** 状态投影（基线 / 增量）：只恢复列表，**不弹卡**。快照帧走基线语义，不覆盖本地乐观行。 */
+/** 状态投影（基线 / 增量）：只恢复列表，**不弹卡**。基线与增量同语义——真源可归一覆盖本地旧行（含乐观行），但单调守卫挡住旧终态复活。 */
 function ingestTask(raw: unknown, snapshot = false): void {
   if (!isTaskRecord(raw)) return
   if (snapshot) taskStore.mergeBaseline([raw])
@@ -223,7 +241,7 @@ export function defaultTaskHost(originId?: () => string | undefined): Coordinato
   }
 }
 
-/** 接线宿主能力。client apply 调一次；重复调用覆盖字段并重连 SSE，但不换 coordinator。 */
+/** 接线宿主能力。client apply 调一次；同 streamUrl 重复调用按 refcount 累加引用，不重复建流。 */
 export function connectTaskCenter(host: TaskCenterHost): () => void {
   // 只覆盖显式提供的字段：传 undefined 不该抹掉上一次接线得到的 streamUrl/submitUrl 等。
   const patch: Record<string, unknown> = {}
@@ -255,7 +273,7 @@ export function connectTaskCenter(host: TaskCenterHost): () => void {
   }
   if (key === undefined) return () => {}
   if (sharedConn === undefined) {
-    const lifecycle = typeof window === 'undefined' ? undefined : window
+    const lifecycle = typeof window === 'undefined' ? undefined : createPageLifecycle()
     // Node / 测试环境没有 Web Locks 与多标签：直连保证既有测试语义（浏览器缺锁时协调器显式告警不开流）。
     if (lifecycle === undefined) {
       const direct: TaskStreamConnection = connectTaskStream({
@@ -263,16 +281,17 @@ export function connectTaskCenter(host: TaskCenterHost): () => void {
         headers: stableHost.headers,
         retryDelaysMs: stableHost.retryDelaysMs,
         onGiveUp: stableHost.onGiveUp,
-        onTask: (task) => { ingestTask(task) },
+        onTask: (task, snapshot) => { ingestTask(task, snapshot) },
         onNotice: ingestNotice,
       })
       sharedConn = { key, refs: 0, dispose: () => direct.close() }
     } else {
     const dispose = connectSharedTaskStream({
       streamUrl: key,
-      headers: stableHost.headers,
+      // 动态读取：接线更新 stableHost 后，新 owner 建流时取到最新 headers/回调（原 #10）。
+      headers: () => stableHost.headers?.() ?? {},
       retryDelaysMs: stableHost.retryDelaysMs,
-      onGiveUp: stableHost.onGiveUp,
+      onGiveUp: (reason) => { stableHost.onGiveUp?.(reason) },
       onTask: (task, snapshot) => { ingestTask(task, snapshot) },
       onNotice: ingestNotice,
       getState: () => [...taskStore.getSnapshot().tasks] as unknown[],

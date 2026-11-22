@@ -57357,6 +57357,40 @@ function createStore3() {
     for (const listener of [...snapshotListeners])
       listener();
   }
+  const optimistic = /* @__PURE__ */ new Set();
+  const optimisticById = /* @__PURE__ */ new Map();
+  function clearOptimistic(sKey) {
+    optimistic.delete(sKey);
+    for (const [id3, key] of optimisticById)
+      if (key === sKey)
+        optimisticById.delete(id3);
+  }
+  function mergeInto(records, baseline) {
+    const changed = [];
+    for (const record of records) {
+      const composite = keyOf(record);
+      const sKey = settlementKey(record);
+      const priorId = composite !== void 0 ? byKey.get(composite) : void 0;
+      const targetId = priorId ?? record.id;
+      const old = tasks2.get(targetId);
+      if (baseline && optimistic.has(sKey))
+        continue;
+      clearOptimistic(sKey);
+      if (old !== void 0 && isSettled(old.state) && !isSettled(record.state))
+        continue;
+      const next = carryIdentity({ ...record, id: targetId }, old);
+      if (composite !== void 0)
+        byKey.set(composite, next.id);
+      tasks2.set(next.id, next);
+      if (next.state === "running")
+        announced.delete(settlementKey(next));
+      if (old === void 0 || !sameRecord(old, next))
+        changed.push(next);
+    }
+    if (changed.length > 0)
+      publish();
+    return changed;
+  }
   return {
     getSnapshot: () => snapshot,
     subscribe(listener) {
@@ -57379,51 +57413,32 @@ function createStore3() {
       tasks2.set(targetId, stored);
       if (composite !== void 0)
         byKey.set(composite, targetId);
-      if (task.state === "running")
-        announced.delete(settlementKey(task));
+      const sKey = settlementKey(stored);
+      if (task.state === "running") {
+        announced.delete(sKey);
+        if (task.id.startsWith("submit:")) {
+          optimistic.add(sKey);
+          optimisticById.set(task.id, sKey);
+        }
+      } else {
+        clearOptimistic(sKey);
+      }
       publish();
       return { created: !existed, task: stored };
     },
     merge(records) {
-      const changed = [];
-      for (const record of records) {
-        const composite = keyOf(record);
-        const priorId = composite !== void 0 ? byKey.get(composite) : void 0;
-        const targetId = priorId ?? record.id;
-        const old = tasks2.get(targetId);
-        if (old !== void 0 && isSettled(old.state) && !isSettled(record.state))
-          continue;
-        const next = carryIdentity({ ...record, id: targetId }, old);
-        if (composite !== void 0)
-          byKey.set(composite, next.id);
-        tasks2.set(next.id, next);
-        if (old === void 0 || !sameRecord(old, next))
-          changed.push(next);
-      }
-      if (changed.length > 0)
-        publish();
-      return changed;
+      return mergeInto(records, false);
     },
     mergeBaseline(records) {
-      let changed = false;
-      for (const record of records) {
-        const composite = keyOf(record);
-        const priorId = composite !== void 0 ? byKey.get(composite) : void 0;
-        if (priorId !== void 0 || tasks2.has(record.id))
-          continue;
-        const stored = carryIdentity(record, void 0);
-        tasks2.set(stored.id, stored);
-        if (composite !== void 0)
-          byKey.set(composite, stored.id);
-        changed = true;
-      }
-      if (changed)
-        publish();
+      mergeInto(records, true);
     },
     get(id3) {
       return tasks2.get(id3);
     },
     removeRunning(id3) {
+      const mapped = optimisticById.get(id3);
+      if (mapped !== void 0)
+        clearOptimistic(mapped);
       const current3 = tasks2.get(id3);
       if (current3 === void 0 || isSettled(current3.state))
         return false;
@@ -57431,6 +57446,7 @@ function createStore3() {
       const composite = keyOf(current3);
       if (composite !== void 0 && byKey.get(composite) === id3)
         byKey.delete(composite);
+      optimistic.delete(settlementKey(current3));
       publish();
       return true;
     },
@@ -57483,6 +57499,8 @@ function createStore3() {
       tasks2.clear();
       byKey.clear();
       announced.clear();
+      optimistic.clear();
+      optimisticById.clear();
       handlers2.clear();
       publish();
     }
@@ -57769,17 +57787,30 @@ var LIFETIME_MS = 10 * 60 * 1e3;
 var NOTICE_LIMIT = 512;
 var STATE_RETRY_MS = 300;
 var REPLAY_WINDOW_MS = 600;
+var BACKOFF_MAX_MS = 3e4;
 function isWire(value) {
   if (value === null || typeof value !== "object")
     return false;
   const w = value;
-  return w.v === WIRE_VERSION && typeof w.ns === "string" && typeof w.kind === "string" && typeof w.epoch === "number" && typeof w.seq === "number";
+  return w.v === WIRE_VERSION && typeof w.ns === "string" && typeof w.kind === "string" && typeof w.epoch === "string" && typeof w.seq === "number";
 }
 function noticeIdOf(value) {
   if (value === null || typeof value !== "object")
     return void 0;
   const id3 = value.id;
   return typeof id3 === "string" ? id3 : void 0;
+}
+function newEpoch() {
+  const c4 = typeof crypto === "undefined" ? void 0 : crypto;
+  if (c4 !== void 0 && typeof c4.randomUUID === "function")
+    return c4.randomUUID();
+  counter += 1;
+  return `epoch:${Math.random().toString(36).slice(2)}:${counter.toString(36)}`;
+}
+var counter = 0;
+function monotonic() {
+  const p = typeof performance === "undefined" ? void 0 : performance;
+  return p !== void 0 && typeof p.now === "function" ? p.now() : Date.now();
 }
 function stableHash(input) {
   let h100 = 2166136261;
@@ -57808,21 +57839,34 @@ function sleep2(ms, signal) {
 }
 function connectSharedTaskStream(options) {
   const ns = `${WIRE_VERSION}:${stableHash(options.streamUrl)}`;
-  const lockName = `${LOCK_PREFIX}${ns}`;
-  const channelName = `${CHANNEL_PREFIX}${ns}`;
-  const selfId = `peer:${Math.random().toString(36).slice(2)}`;
-  let channel = null;
-  let disposed = false;
-  let peerEpoch = 0;
-  let session;
+  const state = {
+    controller: new AbortController(),
+    selfId: `peer:${Math.random().toString(36).slice(2)}`,
+    ns,
+    lockName: `${LOCK_PREFIX}${ns}`,
+    channelName: `${CHANNEL_PREFIX}${ns}`,
+    channel: null,
+    offline: false,
+    disposed: false,
+    currentEpoch: "",
+    seenSeq: 0,
+    baselineReceived: false,
+    baselineRequestAt: 0,
+    stateRetry: void 0,
+    lease: void 0,
+    seenReplay: /* @__PURE__ */ new Set(),
+    backoffMs: STATE_RETRY_MS,
+    wake: new AbortController(),
+    lifecycleBound: []
+  };
   function openChannel() {
-    if (channel !== null)
-      return channel;
+    if (state.channel !== null)
+      return state.channel;
     const factory = options.channelFactory ?? (() => {
       if (typeof BroadcastChannel === "undefined")
         return null;
       try {
-        const raw = new BroadcastChannel(channelName);
+        const raw = new BroadcastChannel(state.channelName);
         let handler = null;
         raw.onmessage = (event) => {
           handler?.({ data: event.data });
@@ -57841,22 +57885,21 @@ function connectSharedTaskStream(options) {
         return null;
       }
     });
-    channel = factory(channelName);
-    if (channel !== null)
-      channel.onmessage = (event) => receive(event.data);
-    return channel;
+    state.channel = factory(state.channelName);
+    if (state.channel !== null)
+      state.channel.onmessage = (event) => receive(event.data);
+    return state.channel;
   }
-  function send(state, wire) {
-    if (disposed || state.controller.signal.aborted)
+  function send(wire) {
+    if (state.disposed || state.controller.signal.aborted)
       return;
     const full = {
       v: WIRE_VERSION,
-      ns,
-      epoch: wire.epoch ?? state.epoch,
-      seq: wire.seq ?? state.seq,
+      ns: state.ns,
+      epoch: wire.epoch ?? state.lease?.epoch ?? state.currentEpoch,
+      seq: wire.seq ?? 0,
       kind: wire.kind,
       ...wire.event === void 0 ? {} : { event: wire.event },
-      ...wire.snapshot === void 0 ? {} : { snapshot: wire.snapshot },
       ...wire.payload === void 0 ? {} : { payload: wire.payload },
       ...wire.from === void 0 ? {} : { from: wire.from },
       ...wire.to === void 0 ? {} : { to: wire.to },
@@ -57866,27 +57909,54 @@ function connectSharedTaskStream(options) {
       ...wire.what === void 0 ? {} : { what: wire.what }
     };
     try {
-      openChannel()?.postMessage(full);
+      state.channel?.postMessage(full);
     } catch (error) {
       console.error("dsh-plugin-core: shared task stream post failed", error);
     }
   }
-  function requestState(state, reason) {
-    if (disposed || state.controller.signal.aborted || state.offline)
-      return;
-    const now = Date.now();
-    if (reason !== "join" && now - state.baselineRequestAt < STATE_RETRY_MS)
-      return;
-    state.baselineRequestAt = now;
-    send(state, { kind: "state-request", from: selfId });
-    if (state.stateRetry !== void 0)
+  function clearStateRetry() {
+    if (state.stateRetry !== void 0) {
       clearTimeout(state.stateRetry);
+      state.stateRetry = void 0;
+    }
+  }
+  function scheduleStateRetry() {
+    if (state.stateRetry !== void 0)
+      return;
     state.stateRetry = setTimeout(() => {
-      if (!state.ready && !disposed && !state.controller.signal.aborted)
-        requestState(state, "join");
+      state.stateRetry = void 0;
+      if (state.disposed || state.controller.signal.aborted || state.offline)
+        return;
+      if (state.baselineReceived)
+        return;
+      requestState("join");
     }, STATE_RETRY_MS * 4);
   }
-  function applyBaseline(state, tasks2, notices) {
+  function requestState(reason) {
+    if (state.disposed || state.controller.signal.aborted || state.offline)
+      return;
+    if (state.lease !== void 0 && !state.lease.ended)
+      return;
+    const now = monotonic();
+    if (reason !== "join" && now - state.baselineRequestAt < STATE_RETRY_MS) {
+      scheduleStateRetry();
+      return;
+    }
+    state.baselineRequestAt = now;
+    send({ kind: "state-request", from: state.selfId });
+    scheduleStateRetry();
+  }
+  function markSeen(id3) {
+    if (state.seenReplay.has(id3))
+      return;
+    if (state.seenReplay.size >= NOTICE_LIMIT) {
+      const oldest = state.seenReplay.values().next();
+      if (!oldest.done)
+        state.seenReplay.delete(oldest.value);
+    }
+    state.seenReplay.add(id3);
+  }
+  function applyBaseline(tasks2, notices) {
     try {
       options.applyBaseline(tasks2);
     } catch (error) {
@@ -57894,11 +57964,8 @@ function connectSharedTaskStream(options) {
     }
     for (const notice of notices) {
       const id3 = noticeIdOf(notice);
-      if (id3 !== void 0) {
-        if (state.seenReplay.has(id3))
-          continue;
-        state.seenReplay.add(id3);
-      }
+      if (id3 !== void 0)
+        markSeen(id3);
       try {
         options.onNotice?.(notice);
       } catch (error) {
@@ -57907,108 +57974,145 @@ function connectSharedTaskStream(options) {
     }
   }
   function receive(data2) {
-    const state = session;
-    if (disposed || state === void 0 || state.offline || state.controller.signal.aborted)
+    if (state.disposed || state.controller.signal.aborted || state.offline)
       return;
-    if (!isWire(data2) || data2.ns !== ns)
+    if (!isWire(data2) || data2.ns !== state.ns)
       return;
-    if (data2.from === selfId || data2.to === selfId) {
-      if (data2.kind === "state-reply" && data2.to === selfId && data2.ready === true) {
-        state.ready = true;
-        if (state.stateRetry !== void 0) {
-          clearTimeout(state.stateRetry);
-          state.stateRetry = void 0;
-        }
-        applyBaseline(state, data2.tasks ?? [], data2.notices ?? []);
+    if (data2.from === state.selfId)
+      return;
+    if (data2.kind === "state-reply") {
+      if (data2.to !== state.selfId)
+        return;
+      if (state.currentEpoch !== "" && data2.epoch !== state.currentEpoch)
+        return;
+      if (data2.ready === true) {
+        state.currentEpoch = data2.epoch;
+        state.seenSeq = data2.seq;
+        state.baselineReceived = true;
+        clearStateRetry();
+        applyBaseline(data2.tasks ?? [], data2.notices ?? []);
       }
       return;
     }
-    state.lastAliveAt = Date.now();
+    if (data2.to !== void 0 && data2.to !== state.selfId)
+      return;
     if (data2.kind === "state-request") {
-      if (state.owner && state.ready) {
-        send(state, {
+      const lease = state.lease;
+      if (lease !== void 0 && !lease.ended && lease.ready) {
+        send({
           kind: "state-reply",
           to: data2.from,
           ready: true,
           tasks: options.getState(),
-          notices: [...state.noticeCache]
+          notices: [...lease.noticeCache]
         });
       }
       return;
     }
-    if (data2.epoch > peerEpoch)
-      peerEpoch = data2.epoch;
-    if (data2.epoch > state.epoch) {
-      state.epoch = data2.epoch;
-      state.seq = 0;
-      state.ready = false;
-      state.seenReplay.clear();
-      state.noticeCache = [];
-    } else if (data2.epoch < state.epoch) {
+    if (data2.kind === "signal") {
+      if (data2.what === "epoch" || data2.what === "cache") {
+        if (data2.epoch !== state.currentEpoch) {
+          state.currentEpoch = data2.epoch;
+          state.seenSeq = 0;
+        }
+        state.baselineReceived = false;
+        requestState("signal");
+      } else if (data2.what === "dead") {
+        state.baselineReceived = false;
+        requestState("signal");
+      }
       return;
     }
-    if (data2.kind === "frame" && data2.seq <= state.seq)
+    if (data2.epoch !== state.currentEpoch)
       return;
-    if (data2.kind === "frame") {
-      if (data2.seq > state.seq + 1)
-        requestState(state, "gap");
-      state.seq = data2.seq;
-      if (data2.event === "task") {
-        try {
-          options.onTask(data2.payload, data2.snapshot === true);
-        } catch (error) {
-          console.error("dsh-plugin-core: shared task frame failed", error);
-        }
-      } else if (data2.event === "notice") {
-        try {
-          options.onNotice?.(data2.payload);
-        } catch (error) {
-          console.error("dsh-plugin-core: shared notice frame failed", error);
-        }
+    if (data2.kind !== "frame" || data2.seq <= state.seenSeq)
+      return;
+    if (data2.seq > state.seenSeq + 1) {
+      state.baselineReceived = false;
+      requestState("gap");
+    }
+    state.seenSeq = data2.seq;
+    if (data2.event === "task") {
+      try {
+        options.onTask(data2.payload, false);
+      } catch (error) {
+        console.error("dsh-plugin-core: shared task frame failed", error);
       }
-    } else if (data2.kind === "signal") {
-      if (data2.what === "dead")
-        state.ready = false;
-      else
-        requestState(state, "signal");
+    } else if (data2.event === "notice") {
+      try {
+        options.onNotice?.(data2.payload);
+      } catch (error) {
+        console.error("dsh-plugin-core: shared notice frame failed", error);
+      }
     }
   }
-  function cacheNotice(state, notice) {
+  function cacheNotice(lease, notice) {
     const id3 = noticeIdOf(notice);
     if (id3 !== void 0 && state.seenReplay.has(id3))
       return;
     if (id3 !== void 0)
-      state.seenReplay.add(id3);
-    state.noticeCache.push(notice);
-    if (state.noticeCache.length > NOTICE_LIMIT)
-      state.noticeCache.shift();
+      markSeen(id3);
+    lease.noticeCache.push(notice);
+    if (lease.noticeCache.length > NOTICE_LIMIT)
+      lease.noticeCache.shift();
   }
-  function asOwner(state, lock) {
-    state.hold = new AbortController();
-    state.owner = true;
-    state.epoch = Math.max(Date.now(), state.epoch + 1, peerEpoch + 1);
-    peerEpoch = state.epoch;
-    state.seq = 0;
-    state.ready = false;
-    state.seenReplay.clear();
-    state.noticeCache = [];
-    state.lastAliveAt = Date.now();
-    send(state, { kind: "signal", what: "epoch" });
-    let replayDone = false;
-    const finishReplay = () => {
-      if (replayDone)
-        return;
-      replayDone = true;
-      state.ready = true;
-      send(state, { kind: "signal", what: "cache" });
+  function finishReplay(lease) {
+    if (lease.replayDone)
+      return;
+    lease.replayDone = true;
+    lease.ready = true;
+    send({ kind: "signal", what: "cache" });
+  }
+  function track(lease, timer) {
+    lease.timers.add(timer);
+  }
+  function cleanupLease(lease) {
+    for (const timer of lease.timers)
+      clearTimeout(timer);
+    lease.timers.clear();
+    lease.abortOff?.();
+    lease.abortOff = void 0;
+    lease.streamConn?.close();
+    lease.streamConn = void 0;
+    if (state.lease === lease)
+      state.lease = void 0;
+  }
+  function endLease(lease) {
+    if (lease.ended)
+      return;
+    lease.ended = true;
+    lease.release?.();
+    if (lease.release === void 0)
+      cleanupLease(lease);
+  }
+  function asOwner(lock) {
+    const lease = {
+      epoch: newEpoch(),
+      seq: 0,
+      ready: false,
+      replayDone: false,
+      lastAliveAt: monotonic(),
+      noticeCache: [],
+      streamConn: void 0,
+      ended: false,
+      release: void 0,
+      abortOff: void 0,
+      timers: /* @__PURE__ */ new Set()
     };
-    state.streamConn = connectTaskStream({
+    state.lease = lease;
+    state.currentEpoch = lease.epoch;
+    state.seenSeq = 0;
+    state.baselineReceived = false;
+    clearStateRetry();
+    send({ kind: "signal", what: "epoch" });
+    lease.streamConn = connectTaskStream({
       streamUrl: options.streamUrl,
       headers: options.headers,
       retryDelaysMs: options.retryDelaysMs,
-      // SSE 保活是 `:` 注释帧，parseTaskFrames 不上抛；单独判活，避免单标签 owner 被看门狗误杀。
+      // 只有真实 SSE 字节才判活；BC 流量不刷新（原 #8 根治）。
       onAlive: () => {
-        state.lastAliveAt = Date.now();
+        lease.lastAliveAt = monotonic();
+        state.backoffMs = STATE_RETRY_MS;
       },
       onTask: (task, snapshot) => {
         try {
@@ -58016,79 +58120,64 @@ function connectSharedTaskStream(options) {
         } catch (error) {
           console.error("dsh-plugin-core: shared owner task failed", error);
         }
-        if (!snapshot && !replayDone)
-          finishReplay();
-        if (!snapshot && state.ready) {
-          state.seq += 1;
-          send(state, { kind: "frame", event: "task", payload: task });
-        }
+        if (snapshot)
+          return;
+        if (!lease.replayDone)
+          return;
+        if (lease.ended)
+          return;
+        lease.seq += 1;
+        send({ kind: "frame", event: "task", payload: task, seq: lease.seq });
       },
       onNotice: (notice) => {
-        cacheNotice(state, notice);
+        cacheNotice(lease, notice);
         try {
           options.onNotice?.(notice);
         } catch (error) {
           console.error("dsh-plugin-core: shared owner notice failed", error);
         }
-        if (!replayDone)
+        if (!lease.replayDone)
           return;
-        state.seq += 1;
-        send(state, { kind: "frame", event: "notice", payload: notice });
+        if (lease.ended)
+          return;
+        lease.seq += 1;
+        send({ kind: "frame", event: "notice", payload: notice, seq: lease.seq });
       },
       onGiveUp: (reason) => {
-        if (options.onGiveUp !== void 0) {
-          try {
-            options.onGiveUp(reason);
-          } catch (error) {
-            console.error("dsh-plugin-core: shared task onGiveUp failed", error);
-          }
-        } else {
-          console.warn("dsh-plugin-core: task stream gave up", reason);
+        try {
+          options.onGiveUp?.(reason);
+        } catch (error) {
+          console.error("dsh-plugin-core: shared task onGiveUp failed", error);
         }
-        send(state, { kind: "signal", what: "dead" });
-        state.controller.abort();
+        send({ kind: "signal", what: "dead" });
+        endLease(lease);
       }
     });
-    state.replayGrace = setTimeout(finishReplay, REPLAY_WINDOW_MS);
-    const hold = state.hold;
-    state.lifetime = setTimeout(() => {
-      console.warn("dsh-plugin-core: task stream lifetime reached, rotating leadership");
-      hold.abort();
-    }, LIFETIME_MS);
-    state.watchdog = setInterval(() => {
-      if (disposed || state.controller.signal.aborted)
+    track(lease, setTimeout(() => finishReplay(lease), REPLAY_WINDOW_MS));
+    track(lease, setInterval(() => {
+      if (state.disposed || lease.ended || state.controller.signal.aborted)
         return;
-      if (Date.now() - state.lastAliveAt < WATCHDOG_MS)
+      if (monotonic() - lease.lastAliveAt < WATCHDOG_MS)
         return;
-      state.lastAliveAt = Date.now();
-      if (state.owner) {
-        console.warn("dsh-plugin-core: task stream looks stale, rotating leadership");
-        hold.abort();
-      } else {
-        requestState(state, "signal");
-      }
-    }, WATCHDOG_MS / 2);
+      endLease(lease);
+    }, WATCHDOG_MS / 2));
+    track(lease, setTimeout(() => endLease(lease), LIFETIME_MS));
     return new Promise((resolve) => {
-      const done = () => {
+      const release = () => {
         resolve();
       };
-      lock.signal.addEventListener("abort", done, { once: true });
-      hold.signal.addEventListener("abort", done, { once: true });
-      state.controller.signal.addEventListener("abort", done, { once: true });
+      lease.release = release;
+      lock.signal.addEventListener("abort", release, { once: true });
+      const onSessionAbort = () => {
+        release();
+      };
+      state.controller.signal.addEventListener("abort", onSessionAbort, { once: true });
+      lease.abortOff = () => state.controller.signal.removeEventListener("abort", onSessionAbort);
     }).finally(() => {
-      state.owner = false;
-      state.hold = void 0;
-      if (state.watchdog !== void 0)
-        clearInterval(state.watchdog);
-      if (state.lifetime !== void 0)
-        clearTimeout(state.lifetime);
-      if (state.replayGrace !== void 0)
-        clearTimeout(state.replayGrace);
-      state.streamConn?.close();
-      state.streamConn = void 0;
+      cleanupLease(lease);
     });
   }
-  async function run(state) {
+  async function run() {
     const lockFactory = options.lockFactory ?? (() => {
       const nav2 = typeof navigator === "undefined" ? void 0 : navigator;
       const locks2 = nav2?.locks;
@@ -58098,96 +58187,80 @@ function connectSharedTaskStream(options) {
     if (locks === null) {
       console.warn("dsh-plugin-core: Web Locks unavailable; task stream stays offline to avoid connection exhaustion");
       state.offline = true;
+      clearStateRetry();
       return;
     }
-    while (!disposed && !state.controller.signal.aborted) {
+    while (!state.disposed && !state.controller.signal.aborted) {
       try {
-        await locks.request(lockName, { signal: state.controller.signal }, (lock) => asOwner(state, lock));
+        await locks.request(state.lockName, { signal: state.controller.signal }, (lock) => asOwner(lock));
       } catch (error) {
-        if (!disposed && !state.controller.signal.aborted) {
+        if (!state.disposed && !state.controller.signal.aborted) {
           console.error("dsh-plugin-core: shared task lock failed", error);
         }
       }
-      if (disposed || state.controller.signal.aborted)
+      if (state.disposed || state.controller.signal.aborted)
         return;
-      await sleep2(STATE_RETRY_MS, state.controller.signal);
+      await sleep2(state.backoffMs, state.wake.signal);
+      state.backoffMs = Math.min(state.backoffMs * 2, BACKOFF_MAX_MS);
     }
   }
-  function stop(state) {
-    state.controller.abort();
-    state.hold?.abort();
-    if (state.stateRetry !== void 0)
-      clearTimeout(state.stateRetry);
-    if (state.watchdog !== void 0)
-      clearInterval(state.watchdog);
-    if (state.lifetime !== void 0)
-      clearTimeout(state.lifetime);
-    if (state.replayGrace !== void 0)
-      clearTimeout(state.replayGrace);
-    state.streamConn?.close();
-    state.streamConn = void 0;
-  }
-  function start() {
-    if (disposed)
+  function recover() {
+    if (state.disposed || state.controller.signal.aborted || state.offline)
       return;
-    const state = {
-      controller: new AbortController(),
-      epoch: 0,
-      seq: 0,
-      ready: false,
-      owner: false,
-      lastAliveAt: Date.now(),
-      baselineRequestAt: 0,
-      noticeCache: [],
-      seenReplay: /* @__PURE__ */ new Set(),
-      streamConn: void 0,
-      hold: void 0,
-      offline: false,
-      stateRetry: void 0,
-      watchdog: void 0,
-      lifetime: void 0,
-      replayGrace: void 0
+    state.backoffMs = STATE_RETRY_MS;
+    state.wake.abort();
+    state.wake = new AbortController();
+    const lease = state.lease;
+    if (lease !== void 0 && !lease.ended) {
+      if (monotonic() - lease.lastAliveAt >= WATCHDOG_MS)
+        endLease(lease);
+    } else {
+      requestState("signal");
+    }
+  }
+  const onHide = () => {
+    const lease = state.lease;
+    if (lease !== void 0)
+      endLease(lease);
+  };
+  const onShow = () => {
+    recover();
+  };
+  const onOnline = () => {
+    recover();
+  };
+  const lifecycle = options.lifecycle;
+  if (lifecycle !== void 0) {
+    const bound = (type3, listener) => {
+      lifecycle.addEventListener(type3, listener);
+      state.lifecycleBound.push({ type: type3, listener });
     };
-    session = state;
-    openChannel();
-    void run(state).then(() => {
-      if (state.offline && state.stateRetry !== void 0) {
-        clearTimeout(state.stateRetry);
-        state.stateRetry = void 0;
-      }
-    });
-    requestState(state, "join");
+    bound("pagehide", onHide);
+    bound("freeze", onHide);
+    bound("pageshow", onShow);
+    bound("resume", onShow);
+    bound("visibilitychange", onShow);
+    bound("online", onOnline);
   }
-  const pageHide = () => {
-    if (session !== void 0)
-      stop(session);
-  };
-  const pageShow = (event) => {
-    if (event.persisted !== true || disposed)
-      return;
-    if (session !== void 0)
-      stop(session);
-    start();
-  };
-  if (options.lifecycle !== void 0) {
-    options.lifecycle.addEventListener("pagehide", pageHide);
-    options.lifecycle.addEventListener("freeze", pageHide);
-    options.lifecycle.addEventListener("pageshow", pageShow);
-  }
-  start();
+  openChannel();
+  void run();
+  requestState("join");
   return () => {
-    if (disposed)
+    if (state.disposed)
       return;
-    disposed = true;
-    if (session !== void 0)
-      stop(session);
-    if (options.lifecycle !== void 0) {
-      options.lifecycle.removeEventListener("pagehide", pageHide);
-      options.lifecycle.removeEventListener("freeze", pageHide);
-      options.lifecycle.removeEventListener("pageshow", pageShow);
+    state.disposed = true;
+    state.controller.abort();
+    state.wake.abort();
+    const lease = state.lease;
+    if (lease !== void 0)
+      endLease(lease);
+    clearStateRetry();
+    for (const { type: type3, listener } of state.lifecycleBound) {
+      lifecycle?.removeEventListener(type3, listener);
     }
-    channel?.close();
-    channel = null;
+    state.lifecycleBound.length = 0;
+    state.channel?.close();
+    state.channel = null;
   };
 }
 
@@ -58245,6 +58318,18 @@ function matchesMount(task, project, groups) {
 var stableHost = {};
 var coordinator = createCoordinator({ host: stableHost });
 var sharedConn;
+function createPageLifecycle() {
+  const docEvents = /* @__PURE__ */ new Set(["freeze", "resume", "visibilitychange"]);
+  const target = (type3) => docEvents.has(type3) ? document : window;
+  return {
+    addEventListener(type3, listener) {
+      target(type3).addEventListener(type3, listener);
+    },
+    removeEventListener(type3, listener) {
+      target(type3).removeEventListener(type3, listener);
+    }
+  };
+}
 function isTaskRecord(value) {
   if (value === null || typeof value !== "object")
     return false;
@@ -58336,15 +58421,15 @@ function connectTaskCenter(host) {
     return () => {
     };
   if (sharedConn === void 0) {
-    const lifecycle = typeof window === "undefined" ? void 0 : window;
+    const lifecycle = typeof window === "undefined" ? void 0 : createPageLifecycle();
     if (lifecycle === void 0) {
       const direct = connectTaskStream({
         streamUrl: key,
         headers: stableHost.headers,
         retryDelaysMs: stableHost.retryDelaysMs,
         onGiveUp: stableHost.onGiveUp,
-        onTask: (task) => {
-          ingestTask(task);
+        onTask: (task, snapshot) => {
+          ingestTask(task, snapshot);
         },
         onNotice: ingestNotice
       });
@@ -58352,9 +58437,12 @@ function connectTaskCenter(host) {
     } else {
       const dispose = connectSharedTaskStream({
         streamUrl: key,
-        headers: stableHost.headers,
+        // 动态读取：接线更新 stableHost 后，新 owner 建流时取到最新 headers/回调（原 #10）。
+        headers: () => stableHost.headers?.() ?? {},
         retryDelaysMs: stableHost.retryDelaysMs,
-        onGiveUp: stableHost.onGiveUp,
+        onGiveUp: (reason) => {
+          stableHost.onGiveUp?.(reason);
+        },
         onTask: (task, snapshot) => {
           ingestTask(task, snapshot);
         },
@@ -71036,8 +71124,8 @@ h(SideSheet, {
     },
     "prose": [
       {
-        "zh": '\u670D\u52A1\u7AEF\u662F\u72B6\u6001\u771F\u6E90\uFF1A\u4EFB\u52A1\u6267\u884C\u3001\u8FDB\u5EA6\u63A8\u8FDB\u3001\u7EC8\u6001\u5224\u5B9A\u90FD\u5728\u670D\u52A1\u7AEF\u3002`serveTaskStream` \u6CE8\u518C\u4E00\u6761 SSE \u8DEF\u7531\uFF0C\u4E09\u6761\u6D41\u7269\u7406\u9694\u79BB\uFF1A`event: task-snapshot`\uFF08\u5168\u91CF\u57FA\u7EBF\uFF09\u4E0E `event: task`\uFF08\u8FDB\u5EA6/\u7EC8\u6001\u72B6\u6001\uFF09\u53EA\u6295\u5F71\u5217\u8868\u3001**\u6C38\u4E0D\u5F39\u5361**\uFF1B`event: task-notice`\uFF08\u5E26\u552F\u4E00 id \u7684\u4E00\u6B21\u6027\u5B8C\u6210\u901A\u77E5\uFF09\u624D\u89E6\u53D1 toast/notify\u3002`authorize` \u5F3A\u5236\u5FC5\u586B\uFF0C\u5F52\u5C5E\u8FC7\u6EE4\u5728\u670D\u52A1\u7AEF\u6309 viewer \u505A\u3002\u670D\u52A1\u7AEF\u6309\u9636\u6BB5\u5206\u7C7B\u9519\u8BEF\uFF1A\u9274\u6743\u5931\u8D25\uFF08`authorize` \u629B\u9519\u6216\u8FD4\u56DE\u7A7A\uFF09\u56DE 401\uFF0C\u670D\u52A1\u4FA7\u6545\u969C\uFF08\u8BA2\u9605/\u5FEB\u7167/\u63A8\u6D41\u5931\u8D25\uFF09\u56DE 503\u2014\u2014\u7EDD\u4E0D\u628A\u670D\u52A1\u6545\u969C\u5199\u6210 401\u3002\u5BA2\u6237\u7AEF `connectTaskCenter({ streamUrl, onGiveUp })` \u8BA2\u9605\uFF1A\u9000\u907F\u6863\u53EA\u7EA6\u675F\u300C\u65E0\u6570\u636E\u8FDB\u5C55\u7684\u8FDE\u63A5\u300D\uFF08\u8FDE\u4E0A\u5C31 EOF\u3001\u9996\u5E27\u524D reject\u3001fetch \u5931\u8D25\uFF09\uFF0C\u6863\u4F4D\u7528\u5C3D\u5373\u653E\u5F03\u5E76\u56DE\u8C03 `onGiveUp`\uFF1B\u4E00\u65E6\u67D0\u8F6E\u8BFB\u5230\u8FC7\u5B57\u8282\uFF08\u542B\u4FDD\u6D3B\uFF09\uFF0C\u65E0\u8BBA EOF \u8FD8\u662F\u5F02\u5E38\u65AD\u5F00\u90FD\u7B97\u6709\u8FDB\u5C55\u3001\u9000\u907F\u5F52\u96F6\u7EE7\u7EED\u91CD\u8FDE\uFF1B\u6C38\u4E45\u9519\u8BEF\uFF08\u5176\u4F59 4xx\uFF09\u7ACB\u5373\u505C\u6D41\u5E76\u4E0A\u62A5\u3002`onGiveUp` \u662F `TaskCenterHost` \u5B57\u6BB5\u3001\u9ED8\u8BA4\u63A5\u7EBF\u5373\u53EF\u62FF\u5230\uFF08401 \u7684 `reason.permanent=true`\uFF0C\u5E94\u7528\u636E\u6B64\u5237\u65B0\u51ED\u8BC1\u540E\u518D\u8C03\u4E00\u6B21 `connectTaskCenter` \u663E\u5F0F\u91CD\u8FDE\uFF0C`headers` \u662F\u51FD\u6570\u4F1A\u53D6\u65B0 token\uFF09\u3002\u901A\u77E5\u6309 id \u5B58 sessionStorage \u53BB\u91CD\uFF08\u6709\u754C\uFF09\uFF0C\u5237\u65B0 / \u91CD\u8FDE\u91CD\u63A8\u5386\u53F2\u4E0D\u4F1A\u91CD\u5F39\uFF0C\u800C\u6BCF\u4E2A\u6807\u7B7E\u9875\u5404\u81EA\u72EC\u7ACB\uFF0C\u5173\u9875\u5373\u6E05\u2014\u2014`scope:"all"` \u624D\u80FD\u8BA9\u540C\u6E90\u6BCF\u4E2A\u9875\u9762\u5404\u5F39\u4E00\u6B21\u3002\u65AD\u7EBF\u671F\u95F4\u7ED3\u7B97\u7684\u901A\u77E5\u9760\u670D\u52A1\u7AEF source \u7684 outbox \u56DE\u653E\u8865\u53D1\u3002\u5173\u952E\u4E0D\u53D8\u91CF\uFF1A\u72B6\u6001\u53EF\u53CD\u590D\u91CD\u653E\uFF0C\u901A\u77E5\u662F\u4E00\u6B21\u6027\u4E8B\u4EF6\u2014\u2014\u5F39\u5361\u7EDD\u4E0D\u6302\u5728\u72B6\u6001\u6295\u5F71\u4E0A\uFF08\u53C2\u7167 ledger \u7684\u901A\u9053 A/B \u6A21\u5F0F\uFF09\u3002',
-        "en": 'The server owns the truth: execution, progress and settlement all happen there. `serveTaskStream` registers one SSE route with three physically separated streams: `event: task-snapshot` (full baseline) and `event: task` (progress/terminal state) only project the list and **never announce**; `event: task-notice` (a one-shot completion event with a unique id) is the only toast/notify trigger. `authorize` is mandatory and viewer-based ownership filtering happens server-side. Errors are classified by phase: auth failure (`authorize` throws or returns empty) is 401, service-side failure (subscribe/snapshot/streaming) is 503 \u2014 a service fault is never written as 401. Clients subscribe with `connectTaskCenter({ streamUrl, onGiveUp })`: the bounded retry applies only to connections with **no data progress** (immediate EOF, reject before first frame, fetch failure) \u2014 exhausting the delays gives up and calls `onGiveUp`; once a round has read any bytes (keep-alive included), EOF or abnormal disconnect both count as progress and reset the budget to keep reconnecting; permanent faults (other 4xx) stop immediately and report. `onGiveUp` is a `TaskCenterHost` field available on the default wiring (401 has `reason.permanent=true`; the app refreshes credentials then calls `connectTaskCenter` again to reconnect explicitly \u2014 `headers` is a function and picks up the new token). Notices are de-duplicated by id in sessionStorage (bounded), so refresh / reconnect replays of history never re-announce, while each tab keeps its own copy and clears on close \u2014 that is what lets `scope:"all"` announce once per same-origin page. Notices settled during a disconnect are replayed from the server source outbox. Core invariant: state is replayable, notices are one-shot \u2014 announcing is never wired to state projection (mirrors ledger\'s channel A/B pattern).'
+        "zh": '\u670D\u52A1\u7AEF\u662F\u72B6\u6001\u771F\u6E90\uFF1A\u4EFB\u52A1\u6267\u884C\u3001\u8FDB\u5EA6\u63A8\u8FDB\u3001\u7EC8\u6001\u5224\u5B9A\u90FD\u5728\u670D\u52A1\u7AEF\u3002`serveTaskStream` \u6CE8\u518C\u4E00\u6761 SSE \u8DEF\u7531\uFF0C\u4E09\u6761\u6D41\u7269\u7406\u9694\u79BB\uFF1A`event: task-snapshot`\uFF08\u5168\u91CF\u57FA\u7EBF\uFF09\u4E0E `event: task`\uFF08\u8FDB\u5EA6/\u7EC8\u6001\u72B6\u6001\uFF09\u53EA\u6295\u5F71\u5217\u8868\u3001**\u6C38\u4E0D\u5F39\u5361**\uFF1B`event: task-notice`\uFF08\u5E26\u552F\u4E00 id \u7684\u4E00\u6B21\u6027\u5B8C\u6210\u901A\u77E5\uFF09\u624D\u89E6\u53D1 toast/notify\u3002`authorize` \u5F3A\u5236\u5FC5\u586B\uFF0C\u5F52\u5C5E\u8FC7\u6EE4\u5728\u670D\u52A1\u7AEF\u6309 viewer \u505A\u3002\u670D\u52A1\u7AEF\u6309\u9636\u6BB5\u5206\u7C7B\u9519\u8BEF\uFF1A\u9274\u6743\u5931\u8D25\uFF08`authorize` \u629B\u9519\u6216\u8FD4\u56DE\u7A7A\uFF09\u56DE 401\uFF0C\u670D\u52A1\u4FA7\u6545\u969C\uFF08\u8BA2\u9605/\u5FEB\u7167/\u63A8\u6D41\u5931\u8D25\uFF09\u56DE 503\u2014\u2014\u7EDD\u4E0D\u628A\u670D\u52A1\u6545\u969C\u5199\u6210 401\u3002\u5BA2\u6237\u7AEF `connectTaskCenter({ streamUrl, onGiveUp })` \u8BA2\u9605\uFF1A\u9000\u907F\u6863\u53EA\u7EA6\u675F\u300C\u65E0\u6570\u636E\u8FDB\u5C55\u7684\u8FDE\u63A5\u300D\uFF08\u8FDE\u4E0A\u5C31 EOF\u3001\u9996\u5E27\u524D reject\u3001fetch \u5931\u8D25\uFF09\uFF0C\u6863\u4F4D\u7528\u5C3D\u5373\u653E\u5F03\u5E76\u56DE\u8C03 `onGiveUp`\uFF1B\u4E00\u65E6\u67D0\u8F6E\u8BFB\u5230\u8FC7\u5B57\u8282\uFF08\u542B\u4FDD\u6D3B\uFF09\uFF0C\u65E0\u8BBA EOF \u8FD8\u662F\u5F02\u5E38\u65AD\u5F00\u90FD\u7B97\u6709\u8FDB\u5C55\u3001\u9000\u907F\u5F52\u96F6\u7EE7\u7EED\u91CD\u8FDE\uFF1B\u6C38\u4E45\u9519\u8BEF\uFF08\u5176\u4F59 4xx\uFF09\u7ACB\u5373\u505C\u6D41\u5E76\u4E0A\u62A5\u3002`onGiveUp` \u662F `TaskCenterHost` \u5B57\u6BB5\u3001\u9ED8\u8BA4\u63A5\u7EBF\u5373\u53EF\u62FF\u5230\uFF08401 \u7684 `reason.permanent=true`\uFF0C\u5E94\u7528\u636E\u6B64\u5237\u65B0\u51ED\u8BC1\u5373\u53EF\uFF1A`headers` \u662F\u51FD\u6570\uFF0C\u6D4F\u89C8\u5668 Web Locks \u5355\u98DE\u8DEF\u5F84\u5728 giveUp \u540E\u81EA\u52A8\u8BA9\u51FA\u9501\u3001\u9000\u907F\u91CD\u7533\u8BF7\u5E76\u65B0\u5EFA\u6D41\uFF0C\u4E0B\u4E00\u6B21\u53D6\u5230\u7684\u5C31\u662F\u65B0 token\uFF0C\u65E0\u9700\u518D\u6B21\u8C03\u7528 `connectTaskCenter`\uFF1B\u65E0 Web Locks \u65F6\u4FDD\u6301\u79BB\u7EBF\u3001Node \u76F4\u8FDE\u8DEF\u5F84\u4E0D\u81EA\u52A8\u91CD\u5EFA\uFF09\u3002\u901A\u77E5\u6309 id \u5B58 sessionStorage \u53BB\u91CD\uFF08\u6709\u754C\uFF09\uFF0C\u5237\u65B0 / \u91CD\u8FDE\u91CD\u63A8\u5386\u53F2\u4E0D\u4F1A\u91CD\u5F39\uFF0C\u800C\u6BCF\u4E2A\u6807\u7B7E\u9875\u5404\u81EA\u72EC\u7ACB\uFF0C\u5173\u9875\u5373\u6E05\u2014\u2014`scope:"all"` \u624D\u80FD\u8BA9\u540C\u6E90\u6BCF\u4E2A\u9875\u9762\u5404\u5F39\u4E00\u6B21\u3002\u65AD\u7EBF\u671F\u95F4\u7ED3\u7B97\u7684\u901A\u77E5\u9760\u670D\u52A1\u7AEF source \u7684 outbox \u56DE\u653E\u8865\u53D1\u3002\u5173\u952E\u4E0D\u53D8\u91CF\uFF1A\u72B6\u6001\u53EF\u53CD\u590D\u91CD\u653E\uFF0C\u901A\u77E5\u662F\u4E00\u6B21\u6027\u4E8B\u4EF6\u2014\u2014\u5F39\u5361\u7EDD\u4E0D\u6302\u5728\u72B6\u6001\u6295\u5F71\u4E0A\uFF08\u53C2\u7167 ledger \u7684\u901A\u9053 A/B \u6A21\u5F0F\uFF09\u3002',
+        "en": 'The server owns the truth: execution, progress and settlement all happen there. `serveTaskStream` registers one SSE route with three physically separated streams: `event: task-snapshot` (full baseline) and `event: task` (progress/terminal state) only project the list and **never announce**; `event: task-notice` (a one-shot completion event with a unique id) is the only toast/notify trigger. `authorize` is mandatory and viewer-based ownership filtering happens server-side. Errors are classified by phase: auth failure (`authorize` throws or returns empty) is 401, service-side failure (subscribe/snapshot/streaming) is 503 \u2014 a service fault is never written as 401. Clients subscribe with `connectTaskCenter({ streamUrl, onGiveUp })`: the bounded retry applies only to connections with **no data progress** (immediate EOF, reject before first frame, fetch failure) \u2014 exhausting the delays gives up and calls `onGiveUp`; once a round has read any bytes (keep-alive included), EOF or abnormal disconnect both count as progress and reset the budget to keep reconnecting; permanent faults (other 4xx) stop immediately and report. `onGiveUp` is a `TaskCenterHost` field available on the default wiring (401 has `reason.permanent=true`; the app only needs to refresh credentials \u2014 `headers` is a function, and the browser Web Locks single-flight path gives up the lock on giveUp, then re-requests it with backoff and rebuilds the stream, so the next attempt picks up the new token without calling `connectTaskCenter` again; without Web Locks it stays offline and the Node direct path does not rebuild automatically). Notices are de-duplicated by id in sessionStorage (bounded), so refresh / reconnect replays of history never re-announce, while each tab keeps its own copy and clears on close \u2014 that is what lets `scope:"all"` announce once per same-origin page. Notices settled during a disconnect are replayed from the server source outbox. Core invariant: state is replayable, notices are one-shot \u2014 announcing is never wired to state projection (mirrors ledger\'s channel A/B pattern).'
       },
       {
         "zh": "`connectTaskLayout(ctx)` \u662F\u4ECE\u5BBF\u4E3B client ctx \u63A5 layout \u7684\u4FBF\u6377\u5165\u53E3\uFF1A\u901A\u8FC7 `ctx.inject(['layout'])` \u62FF layout \u670D\u52A1\uFF0C\u53D1\u8D77\u65F6\u4ECE `panelInfo.getSnapshot().activePanelId` \u81EA\u52A8\u8BB0\u9762\u677F\uFF08\u5BBF\u4E3B 0.2.2-rc.3 \u6838\u5B9E\uFF0C\u4E0D\u5728 ILayout \u9876\u5C42\uFF09\uFF0C\u70B9\u6309\u94AE\u65F6\u7528 `selectPanel(panelId)` \u5207\u56DE\u3002\u4E0D\u4F20 `streamUrl` \u65F6\u662F\u7EAF\u672C\u5730\u5185\u5B58\u6A21\u5F0F\uFF0C\u9002\u5408\u5355\u6D4B\u4E0E\u9884\u89C8\u7AD9\u3002",
@@ -71062,8 +71150,8 @@ h(SideSheet, {
             "type": "(host: TaskCenterHost) => () => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u4E00\u6B21\u63A5\u7EBF\uFF1B\u5E26 streamUrl \u65F6\u81EA\u52A8\u8BA2\u9605\u5E76\u91CD\u8FDE\uFF0C\u91CD\u590D\u8C03\u7528\u8986\u76D6\u4E0A\u4E00\u6B21",
-              "en": "One-shot wiring; with streamUrl it subscribes and reconnects; repeated calls replace the previous one"
+              "zh": "\u4E00\u6B21\u63A5\u7EBF\uFF1B\u5E26 streamUrl \u65F6\u9875\u9762\u7EF4\u62A4\u4E00\u6761\u5171\u4EAB SSE\uFF08\u4EE5\u5F53\u524D streamUrl \u4E3A key\uFF09\uFF0C\u540C\u6E90\u591A\u6807\u7B7E\u53EA\u5EFA\u4E00\u6761\uFF1B\u540C key \u91CD\u590D\u8C03\u7528\u7D2F\u52A0\u5F15\u7528\u3001\u5404\u81EA disposer \u5F52\u96F6\u624D\u91CA\u653E\uFF0Ckey \u53D8\u5316\u5219\u91CA\u653E\u65E7\u8FDE\u63A5\u91CD\u5EFA",
+              "en": "One-shot wiring; with streamUrl the page keeps one shared SSE keyed by the current streamUrl, so same-origin tabs use a single connection; repeated calls with the same key add a reference released when each disposer reaches zero, and a key change releases the old connection"
             }
           },
           {
@@ -76266,9 +76354,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.44.0"}`],
-            [t3("buildDemo"), `v${"0.44.0"}`],
-            [t3("buildStamp"), "261121-201225-206"]
+            [t3("buildCore"), `v${"0.44.1"}`],
+            [t3("buildDemo"), `v${"0.44.1"}`],
+            [t3("buildStamp"), "261122-123214-653"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76583,9 +76671,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.44.0"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.44.0"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261121-201225-206")
+          (0, import_react112.createElement)("span", null, `core v${"0.44.1"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.44.1"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261122-123214-653")
         )
       )
     ),

@@ -1,17 +1,18 @@
 /**
  * 同源跨标签 task SSE 单飞协调器。
  *
- * N 个标签各开一条常驻 SSE 会耗尽 http/1.1 每域 6 连接上限，宿主自己的请求全在浏览器排队。
- * 这里让同源所有标签共用一条：Web Locks 选一个 owner 建真 SSE，帧经 BroadcastChannel
- * 扇出给其它标签；owner 关闭 / 崩溃 / 失联后锁释放，等待者自动成为新 owner。
+ * 工业界对标：`sse-coordinator@0.3.2`（Web Locks 排他锁 + 锁回调挂长 Promise、
+ * BroadcastChannel 扇出、visibility/online 恢复、cleanup 一次收干净）。在此骨架上
+ * 补本项目正确性必需项：随机届 epoch（相等比较，不依赖挂钟）、单调 seq + 缺口重拉、
+ * owner-ready 基线握手、有界 notice 缓存（含 outbox 回放批次）。
  *
- * 设计不变量：
- *   - 零 DOM at import time：navigator / BroadcastChannel 只在函数内惰性读取，Node 可直接 import。
- *   - 锁名 / 通道名只含协议版本 + streamUrl 命名空间（**不含 headers**，token 刷新不得击穿单飞）。
- *   - 帧带 epoch + 单调 seq：切主后的迟到旧帧丢弃；seq 缺口触发全量基线重拉。
- *   - 基线补齐靠 state-request/state-reply；owner 未 ready 时回 ready=false，绝不把空基线当权威。
- *   - notice 有界缓存含 outbox 回放批次，随 state-reply 补齐；回放批次不逐条广播，只发一次轻量信号。
- *   - 生命周期：AbortSignal + pagehide/freeze/onGiveUp/断流立即释放锁；pageshow(persisted) 重建 session。
+ * 两级生命周期（本版核心不变量）：
+ *   Session —— 一个协调器实例的整个寿命；controller 只在 dispose() 时 abort。
+ *   Lease   —— 一次持锁届；giveUp / watchdog / lifetime / pagehide 只 endLease()
+ *               （让出锁），run loop 退避后自动重申请，绝不 abort session。
+ *               因此断流不会永久离线，bfcache 恢复无需重建 session。
+ *
+ * 零 DOM at import time：navigator / BroadcastChannel / crypto / performance 只在函数内惰性读取。
  */
 import { type TaskStreamGiveUpReason } from './stream.js';
 /** 锁 / 通道的最小形状：浏览器原生即满足；测试注入内存实现。 */
@@ -39,14 +40,18 @@ export interface SharedStreamOptions {
     readonly headers?: () => Record<string, string>;
     readonly retryDelaysMs?: readonly number[];
     readonly onGiveUp?: (reason: TaskStreamGiveUpReason) => void;
-    /** 注入点：测试用内存锁 / 通道；不传则惰性取 navigator.locks / BroadcastChannel。 */
+    /** 测试注入内存锁 / 通道；不传则惰性取 navigator.locks / BroadcastChannel。 */
     readonly lockFactory?: SharedLockFactory;
     readonly channelFactory?: SharedChannelFactory;
-    /** owner 的全量任务快照来源（取 taskStore.getSnapshot().tasks）。 */
+    /** owner 的全量任务快照来源（taskStore.getSnapshot().tasks）。 */
     readonly getState: () => readonly unknown[];
-    /** follower 收到基线后应用（mergeBaseline：只填本地不存在的 key）。 */
+    /** follower 收到基线后应用（幂等合并）。 */
     readonly applyBaseline: (tasks: readonly unknown[]) => void;
-    /** 页面生命周期监听的宿主；不传则不挂（Node / 测试）。 */
+    /**
+     * 页面生命周期监听宿主。实现方负责把 document 事件（freeze/resume/
+     * visibilitychange）与 window 事件（pagehide/pageshow/online）路由到正确目标。
+     * 不传则不挂（Node / 测试）。
+     */
     readonly lifecycle?: SharedLifecycle;
 }
 export interface SharedLifecycle {

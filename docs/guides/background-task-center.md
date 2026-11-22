@@ -57,9 +57,18 @@
 
    ```ts
    import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'
-   import { connectTaskLayout } from 'dsh-plugin-core/adv/tasks'
+   import { connectTaskLayout, connectTaskCenter } from 'dsh-plugin-core/adv/tasks'
 
-   connectTaskLayout(ctx)                  // 自动记 panelId，点按钮先切回发起面板
+   // 两个 disposer 都要挂进 cleanup：核心按 streamUrl 做 refcount，漏接就不释放连接。
+   const offTasks = connectTaskCenter({
+     streamUrl: '/api/task-center/stream',
+     headers: () => ({}),
+   })
+   const offLayout = connectTaskLayout(ctx)  // 自动记 panelId，点按钮先切回发起面板
+   ctx.effect(() => () => {
+     offTasks?.()
+     offLayout()
+   })
    // 展示用核心原生 TaskBar（形态 / 尺寸 / 宽度 / 跑马灯都沿用核心）
    h(TaskBar, { groups: ['close'] })
    h(TaskBar, { form: 'icon', size: 'lg', groups: ['close'] })
@@ -102,20 +111,23 @@
   退避档只约束「无数据进展的连接」（连上就 EOF / 首帧前 reject / fetch 失败），用尽即通过
   `connectTaskCenter({ onGiveUp })` 上报（`onGiveUp` 是 `TaskCenterHost` 字段，默认接线即可拿到）；
   一旦某轮读到过字节（含保活），无论 EOF 还是异常断开都算有进展、退避归零继续重连。永久错误
-  （其余 4xx）立即停流上报：401 的 `reason.permanent=true`，应用刷新凭证后再调一次
-  `connectTaskCenter` 显式重连（`headers` 是函数会取新 token）。
+  （其余 4xx）立即停流上报：401 的 `reason.permanent=true`，应用刷新凭证即可——浏览器 Web Locks
+  单飞路径在 giveUp 后自动让出锁、退避重申请并新建流，`headers` 是函数，下一次取到的就是新 token，
+  无需再次调用 `connectTaskCenter`；无 Web Locks 时保持离线。
 
   **同源多标签只建一条 SSE**：`connectTaskCenter` 内部自动启用单飞协调器——`navigator.locks`
   在同源标签中选一个 owner 建真连接，其它标签经 BroadcastChannel 收同一份帧；owner 关闭可由等待者接管。
   连接数是「每个 `streamUrl` 全局一条」，不再是「每标签一条」，因此不会挤爆 http/1.1 每域 6 连接上限。
   消费方接线不变（照上面调 `connectTaskCenter` 即可），但有两个契约：
-  - 按按钮提交任务的 POST 是瞬时请求、结束即释放 socket，不属于常驻连接，不并入 SSE（合并需换成双向协议，
-   既要新端点又照样占连接数，违反「零额外服务开销」）；按钮事件照常走 POST。
-  - `connectTaskLayout(ctx)` 现在返回 disposer，必须与 `connectTaskCenter` 的返回值一起挂进
-   `ctx.effect` 的 cleanup；核心内部按合并后的 `streamUrl` 做 refcount，漏接 cleanup 会让连接不释放。
-  浏览器缺 `navigator.locks` 时不会退回每标签各开一条——会显式告警并保持离线，提交仍可用。
 
-  ## 验证
+- 按按钮提交任务的 POST 是瞬时请求、结束即释放 socket，不属于常驻连接，不并入 SSE（合并需换成双向协议，
+  既要新端点又照样占连接数，违反「零额外服务开销」）；按钮事件照常走 POST。
+- `connectTaskLayout(ctx)` 现在返回 disposer，必须与 `connectTaskCenter` 的返回值一起挂进
+  `ctx.effect` 的 cleanup；核心内部按合并后的 `streamUrl` 做 refcount，漏接 cleanup 会让连接不释放。
+
+浏览器缺 `navigator.locks` 时不会退回每标签各开一条——会显式告警并保持离线，提交仍可用。
+
+## 验证
 
 - 起一个任务：列表出现真实行，进度文案来自执行器 `ctx.report()`，不是占位值。
 - 终态只弹一次卡、只跑一次 `onSettled`；同 key 再发起就地更新，不堆两条。
