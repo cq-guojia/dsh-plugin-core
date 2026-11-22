@@ -1,8 +1,9 @@
 # 20261121-1434-bcbb-单飞sse问题清单核实与修复: 单飞SSE问题清单核实与修复
 
 - **Tags**: SSE, 单飞, 问题清单, 修复
-- **Status**: doing · 2026-11-21 16:31:23 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: done · 2026-11-22 04:32:58 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-21 14:34:37 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-22 04:32:58 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -158,3 +159,4 @@
 - 2026-11-21 15:32:22 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 对标 sse-coordinator@0.3.2 源码定稿重写方案：session/lease两级分离、随机epoch、单调时钟、判活只认真SSE字节、生命周期成对清理，已写入worklog
 - 2026-11-21 16:10:59 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 实现完成：重写shared-stream+store基线语义+api接线+5例回归+文档注释；#1-#19代码层消项；build/test589/typecheck/build:demo全过；两仓codelint全过
 - 2026-11-21 16:31:23 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 专家团四轮复查完成（P0届校验/内存泄漏/owner自请求/乐观行基线吞等全修）；文档同步refcount与重连措辞；592测试+codelint全过，终局可交付
+- 2026-11-22 04:32:58 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed: 发版 v0.44.1 完成：四轮专家复查清零、592测试+两仓codelint全过、commit ffc1347d 已推 main、tag v0.44.1 已推
