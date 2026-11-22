@@ -108,7 +108,7 @@ test('N 个上下文只有 1 个 owner、1 条 SSE；owner 关闭后自动 failo
   }
 })
 
-test('晚加入标签拿到全量基线 + notice 缓存（含 outbox 回放批次）', async () => {
+test('晚加入标签拿到全量基线，但不被灌入加入前的历史 notice（#6）', async () => {
   const locks = makeLocks()
   const bus = makeBus()
   const baselineTasks = [task({ id: 'baseline-1' })]
@@ -151,7 +151,9 @@ test('晚加入标签拿到全量基线 + notice 缓存（含 outbox 回放批�
     })
     await new Promise((r) => setTimeout(r, 200))
     assert.ok(followerTasks.some((t) => t.id === 'baseline-1'), 'follower 收到 owner 全量基线')
-    assert.ok(followerNotices.some((n) => n.id === 'notice-replay'), 'follower 收到 outbox 回放批次的 notice')
+    // #6：晚加入标签的水位从加入时刻起算，加入前的历史 notice 不回放（避免被灌满 512 条）。
+    // 这条 notice 的 settledAt=2 远早于加入时刻，必须被裁掉。
+    assert.ok(!followerNotices.some((n) => n.id === 'notice-replay'), '晚加入标签不被灌入历史 notice')
     off()
   } finally {
     owner()

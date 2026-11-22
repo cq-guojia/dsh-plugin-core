@@ -29,6 +29,43 @@ const NOTICE_LIMIT = 512; // 与 api.ts 的 SEEN_NOTICE_LIMIT 对齐
 const STATE_RETRY_MS = 300;
 const REPLAY_WINDOW_MS = 600; // 建连回放窗口：窗口内 notice 只入缓存不逐条广播
 const BACKOFF_MAX_MS = 30000; // 断流后重申请锁的退避上限
+/**
+ * Lamport 时钟的跨会话持久化（冷启动届低于在册 follower 的根治）。
+ * 同源标签是一个逻辑进程，新标签必须继承「已见过的最大 tick」，否则冷标签 clock=0
+ * 会铸出 {1,B} 被在册 follower 的 {5,A} 三道闸门全拒 → follower 永久脱节。
+ * 用 localStorage（跨标签共享），与通知去重的 sessionStorage（每标签独立）用途不同、key 不混。
+ * 无存储环境（Node 测试 / 隐私模式 / 配额异常）退化为模块内存 Map，仍优于每次归零。
+ */
+const MAX_TICK_PREFIX = 'dshpc:task-stream:maxtick:';
+const maxTickFallback = new Map();
+function loadMaxTick(ns) {
+    const inMemory = maxTickFallback.get(ns) ?? 0;
+    try {
+        if (typeof localStorage === 'undefined')
+            return inMemory;
+        const raw = localStorage.getItem(MAX_TICK_PREFIX + ns);
+        const tick = raw === null ? 0 : Number(raw);
+        // 存储被清空 / 写入失败后恢复时，内存里更高的 tick 仍是本进程见过的真值，不能回拨。
+        return Math.max(inMemory, Number.isFinite(tick) && tick >= 0 ? tick : 0);
+    }
+    catch {
+        return inMemory;
+    }
+}
+function persistMaxTick(ns, tick) {
+    const inMemory = maxTickFallback.get(ns) ?? 0;
+    if (tick > inMemory)
+        maxTickFallback.set(ns, tick);
+    try {
+        if (typeof localStorage === 'undefined')
+            return;
+        const raw = localStorage.getItem(MAX_TICK_PREFIX + ns);
+        const current = raw === null ? 0 : Number(raw);
+        if (!Number.isFinite(current) || tick > current)
+            localStorage.setItem(MAX_TICK_PREFIX + ns, String(tick));
+    }
+    catch { /* 存储不可用：内存兜底已做，届仍在本会话单调 */ }
+}
 const ZERO_EPOCH = { tick: 0, id: '' };
 function compareEpoch(a, b) {
     if (a.tick !== b.tick)
@@ -57,6 +94,19 @@ function noticeIdOf(value) {
         return undefined;
     const id = value.id;
     return typeof id === 'string' ? id : undefined;
+}
+/**
+ * 通知的结算水位：TaskNotice = { id, task: TaskRecord }，取 task.settledAt（服务端权威时间）。
+ * 畸形/缺字段的通知返回 undefined——不参与水位推进，也不会被水位裁掉（保守放行，不丢通知）。
+ */
+function noticeSettledAtOf(value) {
+    if (value === null || typeof value !== 'object')
+        return undefined;
+    const task = value.task;
+    if (task === null || typeof task !== 'object')
+        return undefined;
+    const at = task.settledAt;
+    return typeof at === 'number' && Number.isFinite(at) ? at : undefined;
 }
 /** 单调时钟：节流不受系统时间回拨影响（原 #19）。 */
 function monotonic() {
@@ -98,7 +148,7 @@ export function connectSharedTaskStream(options) {
         offline: false,
         disposed: false,
         currentEpoch: ZERO_EPOCH,
-        clock: 0,
+        clock: loadMaxTick(ns),
         halted: false,
         seenSeq: 0,
         baselineReceived: false,
@@ -107,6 +157,9 @@ export function connectSharedTaskStream(options) {
         lease: undefined,
         seenReplay: new Set(),
         noticeCache: [],
+        // 通知水位用挂钟基准，与服务端 settledAt 同源（isTaskRecord 要求它是 Date.now() 级别）。
+        // 新标签从「加入时刻」起算 → 历史通知全被裁掉；这不是 epoch（届仍纯 Lamport、不碰挂钟）。
+        noticeSince: Date.now(),
         backoffMs: STATE_RETRY_MS,
         wake: new AbortController(),
         lifecycleBound: [],
@@ -154,6 +207,8 @@ export function connectSharedTaskStream(options) {
             ...(wire.tasks === undefined ? {} : { tasks: wire.tasks }),
             ...(wire.notices === undefined ? {} : { notices: wire.notices }),
             ...(wire.what === undefined ? {} : { what: wire.what }),
+            ...(wire.noticeSince === undefined ? {} : { noticeSince: wire.noticeSince }),
+            ...(wire.noticeWatermark === undefined ? {} : { noticeWatermark: wire.noticeWatermark }),
         };
         try {
             state.channel?.postMessage(full);
@@ -193,7 +248,8 @@ export function connectSharedTaskStream(options) {
             return;
         }
         state.baselineRequestAt = now;
-        send({ kind: 'state-request', from: state.selfId });
+        // 带接收方水位：owner 只回放 settledAt > 此值的 notice（#6 根治）。
+        send({ kind: 'state-request', from: state.selfId, noticeSince: state.noticeSince });
         scheduleStateRetry();
     }
     /** notice 去重集合有界淘汰：Set 按插入序，超上限删最早的（长寿命 session 慢泄漏根治）。 */
@@ -215,7 +271,16 @@ export function connectSharedTaskStream(options) {
             console.error('dsh-plugin-core: shared task baseline failed', error);
         }
         for (const notice of notices) {
+            // #9 根治：在 cacheNotice 之前快照 fresh——cacheNotice 内部会 markSeen，
+            // 之后再查 seenReplay 会把「当前这条新 notice」自己吞掉。无 id 的通知一律视为新。
+            const id = noticeIdOf(notice);
+            const fresh = id === undefined || !state.seenReplay.has(id);
             cacheNotice(notice); // 基线 notices 也进 session 缓存，晋升 owner 后可回放（#8）
+            const at = noticeSettledAtOf(notice);
+            if (at !== undefined && at > state.noticeSince)
+                state.noticeSince = at;
+            if (!fresh)
+                continue;
             try {
                 options.onNotice?.(notice);
             }
@@ -232,6 +297,9 @@ export function connectSharedTaskStream(options) {
         if (data.from === state.selfId)
             return;
         // Lamport：任何合法消息都把本地时钟抬到所见最大 tick，保证新届严格大于所有已见旧届。
+        // 这里只抬内存时钟、不写存储：带届的消息（signal / frame / state-reply / state-request）
+        // 全部由持锁 owner 发出，它铸届时已在 asOwner 落盘；follower 再写一次就是跨标签
+        // read-modify-write，低 tick 标签会把已落盘的高值覆盖回去（冷标签届回拨的根因）。
         if (data.epoch.tick > state.clock)
             state.clock = data.epoch.tick;
         // 定向回包只认发给自己（原 #17）；state-reply 是唯一权威安装入口。
@@ -252,6 +320,10 @@ export function connectSharedTaskStream(options) {
             state.seenSeq = cmp > 0 ? data.seq : Math.max(state.seenSeq, data.seq);
             state.baselineReceived = true;
             clearStateRetry();
+            // reply 自带 owner 的回放水位：接收方据此推进，下次重拉只拿增量。
+            if (data.noticeWatermark !== undefined && data.noticeWatermark > state.noticeSince) {
+                state.noticeSince = data.noticeWatermark;
+            }
             applyBaseline(data.tasks ?? [], data.notices ?? []);
             return;
         }
@@ -261,10 +333,26 @@ export function connectSharedTaskStream(options) {
         if (data.kind === 'state-request') {
             const lease = state.lease;
             if (lease !== undefined && !lease.ended && lease.ready) {
+                // #6 根治：按接收方水位裁切回放，新标签（since=加入时刻）拿不到历史洪水。
+                // 缓存本身保留全量（#8：切主后新 owner 仍有历史可回放），只裁「回包」不裁缓存。
+                const since = data.noticeSince ?? 0;
+                const replay = state.noticeCache.filter((notice) => {
+                    const at = noticeSettledAtOf(notice);
+                    // `>=`：水位是效率提示、不是通知身份。同毫秒结算时严格 `>` 会漏掉后一条；
+                    // 多投一条无害——接收方按 notice id 永久去重。无时间戳的畸形通知同样保守放行。
+                    return at === undefined || at >= since;
+                });
+                let watermark = since;
+                for (const notice of state.noticeCache) {
+                    const at = noticeSettledAtOf(notice);
+                    if (at !== undefined && at > watermark)
+                        watermark = at;
+                }
                 send({
                     kind: 'state-reply', to: data.from, ready: true,
                     seq: lease.seq, // #7：带 owner 当前 seq
-                    tasks: options.getState(), notices: [...state.noticeCache], // #8：session 级缓存
+                    tasks: options.getState(), notices: replay,
+                    noticeWatermark: watermark,
                 });
             }
             return;
@@ -300,6 +388,9 @@ export function connectSharedTaskStream(options) {
         }
         else if (data.event === 'notice') {
             cacheNotice(data.payload); // follower 也缓存，切主后可回放（#8）
+            const at = noticeSettledAtOf(data.payload);
+            if (at !== undefined && at > state.noticeSince)
+                state.noticeSince = at;
             try {
                 options.onNotice?.(data.payload);
             }
@@ -355,8 +446,10 @@ export function connectSharedTaskStream(options) {
         // 新届必须基于 max(clock, 当前届.tick) 并回写 clock：owner 自己发的 epoch 信号不回环给自己
         // （BC 语义），若只靠 receive 收别人的消息抬时钟，连续两次任职且期间没收到任何带 tick 的
         // 消息时，newEpoch(clock) 会算出与上一届完全相同的届 → follower 把它当旧届/同届低 seq 拒收。
-        const epoch = newEpoch(Math.max(state.clock, state.currentEpoch.tick), state.selfId);
+        const epoch = newEpoch(Math.max(state.clock, state.currentEpoch.tick, loadMaxTick(state.ns)), state.selfId);
         state.clock = epoch.tick;
+        // 自己铸的届也必须落盘：否则本标签关门后存储里只有更旧的 tick，冷标签仍会回拨。
+        persistMaxTick(state.ns, epoch.tick);
         const lease = {
             epoch,
             seq: 0,
@@ -403,6 +496,9 @@ export function connectSharedTaskStream(options) {
             },
             onNotice: (notice) => {
                 cacheNotice(notice);
+                const at = noticeSettledAtOf(notice);
+                if (at !== undefined && at > state.noticeSince)
+                    state.noticeSince = at;
                 try {
                     options.onNotice?.(notice);
                 }
@@ -511,14 +607,20 @@ export function connectSharedTaskStream(options) {
             requestState('signal');
         }
     }
+    const lifecycle = options.lifecycle;
     const onHide = () => {
         const lease = state.lease;
         if (lease !== undefined)
             endLease(lease);
     };
-    const onShow = () => { recover(); };
-    const onOnline = () => { recover(); };
-    const lifecycle = options.lifecycle;
+    // #7 根治：visibilitychange 隐藏时也触发；online / pageshow / resume 同样可能在后台发生。
+    // 所有唤醒事件统一过可见性闸门，隐藏期间不清 401 halted、不打断退避——
+    // 只挡 visibilitychange 是补丁，事件来源换了就漏。未注入 isVisible 的环境按可见处理。
+    const onWake = () => {
+        if (!(lifecycle?.isVisible?.() ?? true))
+            return;
+        recover();
+    };
     if (lifecycle !== undefined) {
         const bound = (type, listener) => {
             lifecycle.addEventListener(type, listener);
@@ -526,10 +628,10 @@ export function connectSharedTaskStream(options) {
         };
         bound('pagehide', onHide);
         bound('freeze', onHide);
-        bound('pageshow', onShow);
-        bound('resume', onShow);
-        bound('visibilitychange', onShow);
-        bound('online', onOnline);
+        bound('pageshow', onWake);
+        bound('resume', onWake);
+        bound('visibilitychange', onWake);
+        bound('online', onWake);
     }
     openChannel();
     void run();

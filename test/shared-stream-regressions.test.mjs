@@ -50,6 +50,17 @@ function makeLocks() {
   }
 }
 
+/** 延迟拿锁：让实例先作为 follower 发出 state-request，测试才拿得到 selfId / ns。 */
+function makeSlowLocks(locks, delayMs = 50) {
+  return {
+    request(name, options, cb) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => { locks.request(name, options, cb).then(resolve, reject) }, delayMs)
+      })
+    },
+  }
+}
+
 /** 内存 BroadcastChannel：异步派发（queueMicrotask）、不回环给发送者。 */
 function makeBus() {
   const channels = new Map()
@@ -163,22 +174,30 @@ test('#12 dispose 成对移除监听 + 关闭通道 + 不再发帧', async () =>
     ch.close = () => { closed = true; origClose() }
     return ch
   }
-  const off = connectSharedTaskStream({
-    streamUrl: '/stream', lockFactory: () => locks, channelFactory,
-    lifecycle, getState: () => [], applyBaseline: () => {}, onTask: () => {},
-  })
-  await wait(30)
-  off()
-  await wait(20) // 等微任务跑完 Promise.finally → fake lock 释放
-  assert.equal(added.length, 6, '挂了 6 个生命周期监听')
-  assert.equal(removed.length, added.length, 'dispose 全部移除')
-  for (let i = 0; i < added.length; i += 1) {
-    assert.equal(removed[i].type, added[i].type)
-    assert.equal(removed[i].listener, added[i].listener)
+  let off
+  try {
+    off = connectSharedTaskStream({
+      streamUrl: '/stream', lockFactory: () => locks, channelFactory,
+      lifecycle, getState: () => [], applyBaseline: () => {}, onTask: () => {},
+    })
+    await wait(30)
+    off()
+    off = undefined
+    await wait(20) // 等微任务跑完 Promise.finally → fake lock 释放
+    for (const type of ['pagehide', 'freeze', 'pageshow', 'resume', 'visibilitychange', 'online']) {
+      assert.ok(added.some((x) => x.type === type), `挂了 ${type} 监听`)
+    }
+    assert.equal(removed.length, added.length, 'dispose 全部移除')
+    for (let i = 0; i < added.length; i += 1) {
+      assert.equal(removed[i].type, added[i].type)
+      assert.equal(removed[i].listener, added[i].listener)
+    }
+    assert.equal(closed, true, 'dispose 关闭了 BroadcastChannel')
+    assert.equal(locks.holders.size, 0, 'dispose 释放了锁，无残留 owner')
+  } finally {
+    off?.()
+    globalThis.fetch = originalFetch
   }
-  assert.equal(closed, true, 'dispose 关闭了 BroadcastChannel')
-  assert.equal(locks.holders.size, 0, 'dispose 释放了锁，无残留 owner')
-  globalThis.fetch = originalFetch
 })
 
 test('#1/#7 Lamport 届：旧届 reply 丢弃、新届安装、同届 seq 不回退', async () => {
@@ -501,4 +520,286 @@ test('乐观行归一到已有服务端行后回滚，标记按 id 反查清除�
   store.removeRunning(optimisticId)
   store.mergeBaseline([task({ id: 'srv-4', key: 'k4', state: 'done', settledAt: 11 })])
   assert.equal(store.get('srv-4')?.state, 'done', '归一回滚后基线仍能覆盖真源行')
+})
+
+// ===== 消费方 v0.45.0 复查反馈的回归（9 条中 core 侧真问题的根因解验证）=====
+
+test('#2 冷标签继承持久化的最大 tick；存储被清空也不回拨内存真值（复查 P0）', async () => {
+  // 唯一 streamUrl → 唯一 ns → 内存 fallback Map 隔离，不受其它测试污染。
+  const url = `/stream-cold-owner-${Math.random().toString(36).slice(2)}`
+  const bus = makeBus()
+  const locks = makeLocks()
+  const slowLocks = makeSlowLocks(locks)
+  const originalFetch = globalThis.fetch
+  const originalStorage = globalThis.localStorage
+  const stored = new Map()
+  globalThis.fetch = sseFetch()
+  globalThis.localStorage = {
+    getItem: (key) => stored.get(key) ?? null,
+    setItem: (key, value) => { stored.set(key, String(value)) },
+    removeItem: (key) => { stored.delete(key) },
+    clear: () => stored.clear(),
+  }
+  const { factory, sent } = spyChannel(bus)
+  const connect = (channelFactory) => connectSharedTaskStream({
+    streamUrl: url, lockFactory: () => slowLocks, channelFactory,
+    getState: () => [], applyBaseline: () => {}, onTask: () => {},
+  })
+  let offSeed
+  let offCold
+  let offCleared
+  try {
+    // 种子实例只用来取 ns：真实系统里该 key 由前一个 owner 铸届时写入。
+    offSeed = connect(factory)
+    await wait(250)
+    const req = sent.find((m) => m.kind === 'state-request')
+    assert.ok(req?.ns, '假绿守卫：取到 ns')
+    offSeed()
+    offSeed = undefined
+    await wait(50)
+
+    // 前一个 owner 把最大 tick 5 落盘；冷标签必须继承后 +1，而不是从 0 铸出 1。
+    stored.set(`dshpc:task-stream:maxtick:${req.ns}`, '5')
+    const coldSent = []
+    const coldFactory = (name) => {
+      const ch = bus.factory(name)
+      const orig = ch.postMessage.bind(ch)
+      ch.postMessage = (data) => { coldSent.push(data); orig(data) }
+      return ch
+    }
+    offCold = connect(coldFactory)
+    await wait(250)
+    const coldEpoch = coldSent.find((m) => m.kind === 'signal' && m.what === 'epoch')?.epoch
+    assert.ok(coldEpoch, '冷标签广播了自己的届（否则假绿）')
+    assert.equal(coldEpoch.tick, 6, `冷标签届继承存储最大值 +1，实际 ${coldEpoch.tick}`)
+
+    // 用户清空站点数据：存储没了，但本进程内存里已见 6，第三个标签不能回拨。
+    offCold()
+    offCold = undefined
+    stored.clear()
+    await wait(50)
+    const clearedSent = []
+    const clearedFactory = (name) => {
+      const ch = bus.factory(name)
+      const orig = ch.postMessage.bind(ch)
+      ch.postMessage = (data) => { clearedSent.push(data); orig(data) }
+      return ch
+    }
+    offCleared = connect(clearedFactory)
+    await wait(250)
+    const clearedEpoch = clearedSent.find((m) => m.kind === 'signal' && m.what === 'epoch')?.epoch
+    assert.ok(clearedEpoch, '存储清空后的新标签广播了自己的届（否则假绿）')
+    assert.ok(clearedEpoch.tick > coldEpoch.tick,
+      `存储清空后仍继承内存真值：${clearedEpoch.tick} > ${coldEpoch.tick}`)
+  } finally {
+    offCleared?.()
+    offCold?.()
+    offSeed?.()
+    globalThis.fetch = originalFetch
+    globalThis.localStorage = originalStorage
+  }
+})
+
+test('#3 跨运行的新终态 settledAt 不被旧运行污染；同运行仍 first-wins', () => {
+  const store = createTaskStore()
+  const oldDone = task({ id: 'x', key: 'k', startedAt: 100, state: 'done', settledAt: 200 })
+  store.merge([oldDone])
+  assert.equal(store.get('x').settledAt, 200, '初次落库')
+  // 同运行（startedAt 相同）的 notice 带不同 settledAt：保留先到的（既有不变量）。
+  store.merge([task({ id: 'x', key: 'k', startedAt: 100, state: 'done', settledAt: 250 })])
+  assert.equal(store.get('x').settledAt, 200, '同运行 first-wins 不被放宽')
+  // 跨运行（startedAt 更大）只见到新终态：settledAt 必须取新值（消费方 #3）。
+  store.merge([task({ id: 'x', key: 'k', startedAt: 300, state: 'done', settledAt: 400 })])
+  assert.equal(store.get('x').startedAt, 300, '运行身份已更新')
+  assert.equal(store.get('x').settledAt, 400, '跨运行 settledAt 取新值，不被旧 200 污染')
+})
+
+test('#6 基线回放按接收方水位裁切；晚加入者不拿历史，老 follower 只拿增量', async () => {
+  const bus = makeBus()
+  const locks = makeLocks()
+  const slowLocks = makeSlowLocks(locks)
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = sseFetch()
+  const { factory, sent, inject } = spyChannel(bus)
+  const noticeAt = (id, at) => ({ id, task: task({ id: `t-${id}`, state: 'done', startedAt: at, settledAt: at }) })
+  const oldNotice = noticeAt('old', 999)
+  const edgeNotice = noticeAt('edge', 1000) // 与水位同毫秒：严格 > 会漏，必须 >= 重放（id 去重兜底）
+  const newNotice = noticeAt('new', 9999999999999)
+  let off
+  try {
+    // owner 缓存两条：一条历史（settledAt=1000），一条未来（远超新标签加入时刻）。
+    off = connectSharedTaskStream({
+      streamUrl: `/stream-watermark-${Math.random().toString(36).slice(2)}`,
+      lockFactory: () => slowLocks, channelFactory: factory,
+      getState: () => [], applyBaseline: () => {}, onTask: () => {},
+      onNotice: () => {},
+    })
+    await wait(700)
+    const req = sent.find((m) => m.kind === 'state-request')
+    const signal = sent.find((m) => m.kind === 'signal' && m.what === 'epoch')
+    assert.ok(req && signal, '假绿守卫：owner 已发出 state-request 与 epoch 信号')
+    inject().postMessage({
+      v: 2, ns: req.ns, kind: 'state-reply', epoch: signal.epoch, seq: 1,
+      to: req.from, from: 'injector', ready: true, tasks: [],
+      notices: [oldNotice, edgeNotice, newNotice], noticeWatermark: 9999999999999,
+    })
+    await wait(50)
+
+    // 新标签：since 默认 Date.now()，只应拿到 settledAt 远超现在的 newNotice。
+    inject().postMessage({
+      v: 2, ns: req.ns, epoch: signal.epoch, seq: 0, kind: 'state-request',
+      from: 'fresh-tab', noticeSince: Date.now(),
+    })
+    await wait(50)
+    const freshReply = sent.find((m) => m.kind === 'state-reply' && m.to === 'fresh-tab')
+    assert.ok(freshReply, 'owner 回了基线（否则假绿）')
+    assert.ok(!freshReply.notices.some((n) => n.id === 'old'), '新标签不拿历史 notice（#6）')
+    assert.ok(!freshReply.notices.some((n) => n.id === 'edge'), '新标签不拿早于加入时刻的 notice')
+    assert.ok(freshReply.notices.some((n) => n.id === 'new'), '新标签拿加入后的 notice')
+
+    // 老 follower：since=1000，早于水位的 old 不拿；同毫秒 edge 必须重放（宁可多投，按 id 去重）。
+    inject().postMessage({
+      v: 2, ns: req.ns, epoch: signal.epoch, seq: 0, kind: 'state-request',
+      from: 'old-follower', noticeSince: 1000,
+    })
+    await wait(50)
+    const oldReply = sent.find((m) => m.kind === 'state-reply' && m.to === 'old-follower')
+    assert.ok(oldReply.notices.some((n) => n.id === 'new'), '老 follower 拿断档增量')
+    assert.ok(oldReply.notices.some((n) => n.id === 'edge'), '同毫秒通知不被水位吞掉')
+    assert.ok(!oldReply.notices.some((n) => n.id === 'old'), '早于水位的历史不重拿')
+  } finally {
+    off?.()
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('#9 基线重复投递同一 notice 只回调一次（去重发生在 cacheNotice 前）', async () => {
+  const bus = makeBus()
+  const locks = makeLocks()
+  const slowLocks = makeSlowLocks(locks)
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = sseFetch()
+  const { factory, sent, inject } = spyChannel(bus)
+  const once = []
+  let off
+  try {
+    off = connectSharedTaskStream({
+      streamUrl: `/stream-dedup-${Math.random().toString(36).slice(2)}`,
+      lockFactory: () => slowLocks, channelFactory: factory,
+      getState: () => [], applyBaseline: () => {}, onTask: () => {},
+      onNotice: (n) => once.push(n.id),
+    })
+    await wait(700)
+    const req = sent.find((m) => m.kind === 'state-request')
+    const signal = sent.find((m) => m.kind === 'signal' && m.what === 'epoch')
+    assert.ok(req && signal, '假绿守卫：owner 已发出 state-request 与 epoch 信号')
+    const duplicate = {
+      id: 'dup', task: task({ id: 't-dup', state: 'done', startedAt: 9999999999999, settledAt: 9999999999999 }),
+    }
+    for (let i = 0; i < 2; i += 1) {
+      inject().postMessage({
+        v: 2, ns: req.ns, kind: 'state-reply', epoch: signal.epoch, seq: 1,
+        to: req.from, from: 'injector', ready: true, tasks: [], notices: [duplicate],
+      })
+    }
+    await wait(50)
+    assert.equal(once.filter((id) => id === 'dup').length, 1, '同一 notice 重复基线只回调一次（#9）')
+  } finally {
+    off?.()
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('#7 visibilitychange 隐藏时不 recover；可见时才清 halted', async () => {
+  const bus = makeBus()
+  const locks = makeLocks()
+  const originalFetch = globalThis.fetch
+  let fetches = 0
+  globalThis.fetch = sseFetch((_init, index) => {
+    fetches += 1
+    return index === 0 ? httpError(401) : undefined
+  })
+  let visible = false
+  const listeners = new Map()
+  const lifecycle = {
+    addEventListener(type, fn) {
+      const set = listeners.get(type) ?? new Set()
+      set.add(fn)
+      listeners.set(type, set)
+    },
+    removeEventListener(type, fn) { listeners.get(type)?.delete(fn) },
+    isVisible: () => visible,
+    fire(type) { for (const fn of listeners.get(type) ?? []) fn() },
+  }
+  let halted = false
+  let off
+  try {
+    off = connectSharedTaskStream({
+      streamUrl: `/stream-vis-${Math.random().toString(36).slice(2)}`,
+      lockFactory: () => locks, channelFactory: bus.factory, lifecycle,
+      getState: () => [], applyBaseline: () => {}, onTask: () => {},
+      onGiveUp: (reason) => { if (reason.permanent) halted = true },
+    })
+    await wait(200)
+    assert.equal(halted, true, '假绿守卫：401 已触发 permanent halted')
+    const atHalt = fetches
+    assert.ok(atHalt >= 1, '假绿守卫：至少发过一次 fetch')
+    // 隐藏态的每一种唤醒事件都不得清 halted——只挡 visibilitychange 是补丁。
+    visible = false
+    for (const type of ['visibilitychange', 'online', 'pageshow', 'resume']) lifecycle.fire(type)
+    await wait(400)
+    assert.equal(fetches, atHalt, '隐藏态任何唤醒事件都不清 halted（无新 fetch）')
+    // 可见时派发：recover 生效，重新建流。
+    visible = true
+    lifecycle.fire('visibilitychange')
+    await wait(400)
+    assert.ok(fetches > atHalt, '可见态 visibilitychange 触发 recover 重新建流')
+  } finally {
+    off?.()
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('协议 v2 物理隔离：v1 帧被拒，锁与通道名均带 v2', async () => {
+  const bus = makeBus()
+  const locks = makeLocks()
+  const slowLocks = makeSlowLocks(locks)
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = sseFetch()
+  const names = []
+  const { factory, sent, inject } = spyChannel(bus)
+  const channelFactory = (name) => { names.push(name); return factory(name) }
+  const versionedLocks = {
+    request(name, options, callback) { names.push(name); return slowLocks.request(name, options, callback) },
+  }
+  let applied = 0
+  let tasks = 0
+  let off
+  try {
+    off = connectSharedTaskStream({
+      streamUrl: `/stream-v1-${Math.random().toString(36).slice(2)}`,
+      lockFactory: () => versionedLocks, channelFactory,
+      getState: () => [], applyBaseline: () => { applied += 1 }, onTask: () => { tasks += 1 },
+    })
+    await wait(250)
+    const req = sent.find((m) => m.kind === 'state-request')
+    const signal = sent.find((m) => m.kind === 'signal' && m.what === 'epoch')
+    assert.ok(req && signal, '假绿守卫：owner 已接线')
+    inject().postMessage({
+      v: 1, ns: req.ns, kind: 'state-reply', epoch: { tick: 99, id: 'v1-owner' }, seq: 1,
+      to: req.from, from: 'v1', ready: true, tasks: [task()], notices: [],
+    })
+    inject().postMessage({
+      v: 1, ns: req.ns, kind: 'frame', epoch: signal.epoch, seq: 999,
+      event: 'task', payload: task(), from: 'v1',
+    })
+    await wait(50)
+    assert.equal(applied, 0, 'v1 reply 被 isWire 拒收')
+    assert.equal(tasks, 0, 'v1 frame 被 isWire 拒收')
+    assert.ok(names.length >= 2 && names.every((name) => name.includes('v2/')),
+      '锁名与通道名都在 v2 命名空间')
+  } finally {
+    off?.()
+    globalThis.fetch = originalFetch
+  }
 })

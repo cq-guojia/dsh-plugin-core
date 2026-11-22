@@ -35,9 +35,23 @@
 6. **配置跟着记录走**：toast / notify / rowButtons 是记录上的纯数据，任何页面按同一份配置渲染；
    `scope: 'all'` 每页弹卡、`'origin'` 只发起页弹卡；按钮（Toast 与列表行）一律照画不隐藏，点了跳回发起面板执行。
 7. **服务端是唯一状态通道**：不接 `follow()`（仅宿主领域状态）与 `remote.$on`（仅审批瀑布）；重连靠服务端基线，
-   客户端不维护 cursor / 版本门。
+   客户端不维护 cursor / 版本门。跨标签 BC 扇出层的 `noticeSince` 水位只裁「本地回放哪些通知」，
+   不参与服务端状态同步，也不是 cursor。
 8. **多副本收口**：executor 注册表与 task store 都挂 `globalThis[Symbol.for(...)]`，同页所有插件副本共用一份。
 9. **进度是显式字段**：`progress: { message, updatedAt, current?, total?, percent? }` 由 `ctx.report()` 上报，不塞进 `detail`。
+10. **同源单飞、届全序**：每个 `streamUrl` 一条真 SSE，Web Locks 选主 + BroadcastChannel 扇出。届是 Lamport `{tick,id}`，
+    最大 tick 只由持锁 owner 落 localStorage（follower 不写，避免跨标签 read-modify-write 把高值覆盖回低值）；
+    无存储退模块内存，且读取时取存储与内存的最大值。`signal` 只是「去拉基线」的 hint、不安装届，
+    `state-reply` 是唯一安装入口，旧届 reply 一律丢弃，真换届重置 seq 水位。
+11. **通知回放按水位裁切、按 id 保证正确性**：`state-request` 带接收方 `noticeSince`（已收通知的最大服务端
+    `settledAt`），owner 只回放 `settledAt >= since` 的缓存项——新标签从加入时刻起算不被历史灌满，
+    同毫秒多投由 notice id 在 sessionStorage 有界去重兜底，不靠时间戳近似身份。缓存保留全量，切主后仍可回放。
+12. **halted 只在可见时清**：401 等 permanent giveUp 让锁停机；`pagehide`/`freeze` 让锁，
+    `visibilitychange`/`online`/`pageshow`/`resume` 统一过可见性闸门后才 `recover`，隐藏期间不刷鉴权失败。
+    显式 `resume()` 是应用主动恢复通道，不受闸门约束。
+13. **运行身份由服务端给**：同 key 的 `startedAt` 须严格递增，`settledAt` 是终态必填的服务端时刻；
+    同运行 `settledAt` first-wins，跨运行取新值。`TaskNotice.id` 须跨会话/重启全局唯一；
+    `origin` / `panelId` 由核心随提交发出、服务端回显，缺失时核心 fail-open 保留本地值而非拒收。
 
 ## 边界与已知限制
 
@@ -50,3 +64,4 @@
 - 2026-11-18：整套重构为后端执行 + 开放执行器 + 服务端 SSE 投影 + 核心列表控件；
   删任务池 / 状态源 / 双时钟租约 / tombstone / 权威引擎 / 有界缓存 / `TaskBar` / `useTasks`。
 - 2026-11-20 13:44:37：校正不变量：去重符号改 store.announced、按钮按 when 显示不按 handler 隐藏
+- 2026-11-22（v0.45.0）：补单飞 SSE 四条不变量（届全序与持久化、通知水位与 id 去重、halted 可见性闸门、服务端运行身份契约）；澄清客户端水位不是服务端 cursor

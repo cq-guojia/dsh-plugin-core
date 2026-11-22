@@ -16,8 +16,13 @@ function sameRecord(a, b) {
 function carryIdentity(next, old) {
     const origin = next.origin ?? old?.origin;
     const panelId = next.panelId ?? old?.panelId;
+    // settledAt 的 first-wins 只在「同一次运行」内成立：state 帧与 notice 帧各带自己的时间时，
+    // 保留先到的那份（同一次结算不各算时间戳）。跨运行（startedAt 不同）必须取新值，
+    // 否则断网重跑只见到新终态时，新行会被打上旧运行的结算时刻 → TaskBar 判为早已过期（消费方 #3）。
+    const sameRun = old !== undefined && old.startedAt === next.startedAt;
     const settledAt = isSettled(next.state)
-        ? (old !== undefined && isSettled(old.state) && old.settledAt !== undefined ? old.settledAt : next.settledAt)
+        ? (sameRun && old !== undefined && isSettled(old.state) && old.settledAt !== undefined
+            ? old.settledAt : next.settledAt)
         : undefined;
     const base = { ...next };
     // running 必须不带 settledAt：显式删除，不能因 spread 旧键而残留。

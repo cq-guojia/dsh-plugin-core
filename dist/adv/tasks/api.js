@@ -96,6 +96,8 @@ function createPageLifecycle() {
     const docEvents = new Set(['freeze', 'resume', 'visibilitychange']);
     const target = (type) => docEvents.has(type) ? document : window;
     return {
+        // 惰性读取 document，保持零 DOM at import time（Node 不会构造这个适配器）。
+        isVisible: () => document.visibilityState === 'visible',
         addEventListener(type, listener) {
             target(type).addEventListener(type, listener);
         },

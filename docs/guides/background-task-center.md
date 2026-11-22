@@ -129,6 +129,31 @@
 
 浏览器缺 `navigator.locks` 时不会退回每标签各开一条——会显式告警并保持离线，提交仍可用。
 
+**届与通知水位（v0.45.x，含 0.45.1 加固）**：同源标签视为一个逻辑进程，owner 的届是 Lamport `{tick,id}`；
+最大 tick 只由持锁 owner 写 localStorage（follower 不写，避免跨标签 read-modify-write 把高值覆盖回低值），
+无存储时退模块内存；读取取存储与内存的最大值，存储被清空也不回拨。新标签继承后 +1，不会铸出低于在册
+follower 的届。`signal` 只是「去拉基线」的提示、不安装届，只有 `state-reply` 是安装入口；旧届 reply
+一律丢弃，真换届重置 seq 水位。`state-request` 带接收方的 `noticeSince`（已收通知的最大服务端
+`settledAt`），owner 回放 `settledAt >= since` 的缓存项：新标签从加入时刻起算，不会被历史通知灌满；
+同毫秒多投靠 notice id 去重兜底，不拿时间戳当身份。缓存保留全量，切主后新 owner 仍可回放。这里的
+水位只裁本地 BC 回放，不是服务端 cursor；服务端须用真实时钟生成 `settledAt`，不要给远未来的值。
+`visibilitychange` 隐藏时也触发，`online` / `pageshow` / `resume` 也可能在后台发生——所有唤醒事件
+统一过可见性闸门，隐藏期间不清 halted。
+
+## 消费方复查反馈的处置（v0.45.0）
+
+| 反馈 | 研判结论 | 责任方 / 处理 |
+|---|---|---|
+| ① 升级后仍见旧行为 | 消费方依赖仍钉 `dsh-plugin-core@0.44.0`，旧包当然没有 v2 修复；core 不做旧版本兼容分支（已定口径，兼容分支只会把协议倒回不可比较的随机届） | 消费方升到 `0.45.1` 并重新构建产物 |
+| ② 冷标签 owner 届低于在册 follower | core 真问题：Lamport 时钟只存内存，新标签从 0 起铸届会被 follower 三道闸门全拒；已改为最大 tick 只由持锁 owner 落盘，读取取存储与内存最大值 | core 已修（#2），消费方随升级获得 |
+| ③ 跨运行 `settledAt` 被旧运行污染 | core 真问题：`carryIdentity` 无条件继承旧终态时刻；同运行 first-wins 应保留，跨运行必须取新值 | core 已修（#3），消费方随升级获得 |
+| ④ notice id 重启后重号 | 非 core bug：core 按 `TaskNotice.id` 在 sessionStorage 有界去重（最近 512 个），id 必须**跨会话/重启全局唯一**；按内容或时间去重会误吞真重跑的同内容通知，core 无法替服务端造身份（这条去重链有端到端回归） | 消费方用持久化单调序号或 UUID 生成 id，不要从 0 重计 |
+| ⑤ `origin` / `panelId` 未回显 | 非 core bug：core 在 `startTask` 时随提交体发出这两个字段，要求服务端在帧与通知里回显；store 对缺失做 fail-open 本地兜底是刻意的「不漏结果」——强校验拒收会让任务从列表消失，比归属判错更糟 | 服务端回显 `origin` / `panelId`；core 不改为拒收 |
+| ⑥ 新标签被灌历史 notice | core 真问题：回放没有接收方水位；已加 `noticeSince` / `noticeWatermark`，并按 `>=` 重放同毫秒通知、由 id 去重兜底 | core 已修（#6），消费方随升级获得 |
+| ⑦ 切走标签误清 halted | core 真问题：`visibilitychange` 隐藏时也触发，被当纯 show；所有唤醒事件已统一过 `isVisible()` 闸门 | core 已修（#7），消费方随升级获得 |
+| ⑧ 同毫秒 `startedAt` 撞号 | 非 core bug：core 只能用服务端已有的 `startedAt` 认运行实例，单方加随机/计数会伪造一个与真源对不上的身份；同 key 严格递增是服务端可保证的契约 | 服务端保证同 key `startedAt` 严格递增，或另行评审引入显式 `runId` 契约 |
+| ⑨ 基线声明去重但重复回调 | core 真问题：`cacheNotice()` 内部先 `markSeen`，`applyBaseline` 再查集合会把当前这条自己吞掉；已改为入缓存前快照 `fresh` | core 已修（#9），消费方随升级获得 |
+
 ## 验证
 
 - 起一个任务：列表出现真实行，进度文案来自执行器 `ctx.report()`，不是占位值。
@@ -137,6 +162,10 @@
 - 断开 SSE：客户端退避重连，重连后服务端重推基线，列表恢复且不重复弹卡。
 - 让服务端返回 401：`reason.permanent=true`，协调器让锁停机、不刷鉴权失败；刷新凭证后重新调一次
   `connectTaskCenter`（或页面恢复可见 / 网络恢复）即恢复订阅，不重复弹卡。
+- 401 停机后切走标签（页面隐藏）不应触发重连；切回来才恢复订阅。
+- 新开标签后不弹加入前的历史通知，只收加入后结算的通知；老标签断档重连只拿增量。
+- 先开 A、再开 B 并让 A 退出后 B 接管；A 中的 follower 仍能收到 B 的帧（届不回拨）。
+- 同一任务重跑（`startedAt` 更新）后再次结算会弹卡，旧运行的 `settledAt` 不会带过来。
 - 按钮一律照画；点一个失效按钮（条目过期 / 注册它的插件已卸载）会给一次统一提示，不静默。
 
 ## 常见失败
@@ -160,3 +189,5 @@
 - 2026-11-20：`TaskBar` 改从 `adv/tasks/ui` 引；按钮一律照画、点失败走统一 i18n 提示；服务端 `source` 补 `subscribeNotices`（唯一弹卡源）。
 - 2026-11-21 20:10:40：补跨标签单飞 SSE：一条常驻连接、按钮 POST 不并入、layout disposer 必须 cleanup、无 Web Locks 显式离线
 - 2026-11-22：401 permanent 改为「让锁停机 + resume/可见性恢复」（不再无意义退避重连）；协议升 v2（Lamport 届），验证清单补 401 恢复步骤
+- 2026-11-22（消费方 v0.45.0 复查）：补届/水位契约与 9 条反馈的处置表（core 修 ②③⑥⑦⑨，其余 ④条判定为消费方/服务端契约并写明依据）；验收补冷标签接管、新标签不弹历史通知、重跑再结算、隐藏态不唤醒
+- 2026-11-22（专家复查加固）：tick 改由持锁 owner 独占落盘 + 读取取存储/内存最大值，消除跨标签 RMW 回拨；通知水位改 `>=` 避免同毫秒漏投；所有唤醒事件统一过可见性闸门；补 v1 隔离、sessionStorage 去重与存储清空回归

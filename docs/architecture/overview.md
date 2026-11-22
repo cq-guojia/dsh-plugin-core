@@ -102,8 +102,10 @@ React 绑定不进 `runtime`（它零 React）：`ui/infra/use-store.ts` 用 `us
 `renderToStaticMarkup` 测，立刻踩到）。`getServerSnapshot` 由调用方给（池里那个冻结的空快照），
 不由容器提供。
 
-**副作用不进容器**：池的 `subscribe` 会顺手 `connect()`（开通道、抢存活锁、发 hello、重连补发）。
-那是任务的跨页 bring-up，属于池；`RuntimeStore` 保持纯容器，不加任何生命周期钩子。
+**副作用不进容器**：`taskCenterStore.subscribe` 只登记快照监听，不开通道、不抢锁、不补发；
+跨页 bring-up 是 `connectTaskCenter`（`src/adv/tasks/api.ts`）显式接线的事——它经 Web Locks
+选主 + BroadcastChannel 扇出维护同源唯一一条 SSE（`src/adv/tasks/shared-stream.ts`，Lamport 届 +
+基线握手 + 通知水位）。`RuntimeStore` 保持纯容器，不加任何生命周期钩子。
 
 不许把 selector / 中间件 / devtools 塞进 `RuntimeStore` —— 一暴露，上层就依赖具体实现，收口就白做了。
 
@@ -256,5 +258,7 @@ dist/**                产物形态不变，仍由 createStyleKit 拼成一份�
 - 2026-11-16 11:18:01：分层树新增 runtime 与 adv/tasks，补三个无界面层的判据、通知的两层、任务归 adv 的理由
 - 2026-11-16 11:22:50：新增状态容器一节：runtime/store 三方法、收口判据、React 绑定留 ui；runtime 定义改为有状态或有副作用
 - 2026-11-16 11:44:06：取消 channel 一层：notify 兼做跨页消息，按主题区分；任务只借 store 与 notify，整份同步留给任务自己
+- 2026-11-18：任务池重构为服务端权威；跨页连接改由 `connectTaskCenter` 显式接线，不再挂在 store.subscribe 上
+- 2026-11-22（v0.45.0）：补单飞 SSE 的届/水位口径——Lamport 最大 tick 跨标签持久化、signal 只提示且 state-reply 唯一安装、通知按服务端 `settledAt` 水位裁切回放、隐藏态不清 halted；纠正「subscribe 顺手 connect/发 hello」的过时描述
 - 2026-11-16 11:52:01：跨页消息改叫 runtime/message（notify 已被提示层占用）；默认分组随 message 归 runtime，避免 ui 依赖 adv
 - 2026-11-16 12:00:33：评审后修正：跨页层改回 runtime/notify（message 接不住 notifyMessage）；store 补 getServerSnapshot 与副作用边界；事件总线唯一主；adv 判据改为「一整块功能」而非「绑业务对象」

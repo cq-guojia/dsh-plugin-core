@@ -57326,7 +57326,8 @@ function sameRecord(a, b) {
 function carryIdentity(next, old) {
   const origin = next.origin ?? old?.origin;
   const panelId = next.panelId ?? old?.panelId;
-  const settledAt = isSettled(next.state) ? old !== void 0 && isSettled(old.state) && old.settledAt !== void 0 ? old.settledAt : next.settledAt : void 0;
+  const sameRun = old !== void 0 && old.startedAt === next.startedAt;
+  const settledAt = isSettled(next.state) ? sameRun && old !== void 0 && isSettled(old.state) && old.settledAt !== void 0 ? old.settledAt : next.settledAt : void 0;
   const base3 = { ...next };
   if (!isSettled(next.state))
     delete base3.settledAt;
@@ -57806,6 +57807,34 @@ var NOTICE_LIMIT = 512;
 var STATE_RETRY_MS = 300;
 var REPLAY_WINDOW_MS = 600;
 var BACKOFF_MAX_MS = 3e4;
+var MAX_TICK_PREFIX = "dshpc:task-stream:maxtick:";
+var maxTickFallback = /* @__PURE__ */ new Map();
+function loadMaxTick(ns) {
+  const inMemory = maxTickFallback.get(ns) ?? 0;
+  try {
+    if (typeof localStorage === "undefined")
+      return inMemory;
+    const raw = localStorage.getItem(MAX_TICK_PREFIX + ns);
+    const tick = raw === null ? 0 : Number(raw);
+    return Math.max(inMemory, Number.isFinite(tick) && tick >= 0 ? tick : 0);
+  } catch {
+    return inMemory;
+  }
+}
+function persistMaxTick(ns, tick) {
+  const inMemory = maxTickFallback.get(ns) ?? 0;
+  if (tick > inMemory)
+    maxTickFallback.set(ns, tick);
+  try {
+    if (typeof localStorage === "undefined")
+      return;
+    const raw = localStorage.getItem(MAX_TICK_PREFIX + ns);
+    const current3 = raw === null ? 0 : Number(raw);
+    if (!Number.isFinite(current3) || tick > current3)
+      localStorage.setItem(MAX_TICK_PREFIX + ns, String(tick));
+  } catch {
+  }
+}
 var ZERO_EPOCH = { tick: 0, id: "" };
 function compareEpoch(a, b) {
   if (a.tick !== b.tick)
@@ -57832,6 +57861,15 @@ function noticeIdOf(value) {
     return void 0;
   const id3 = value.id;
   return typeof id3 === "string" ? id3 : void 0;
+}
+function noticeSettledAtOf(value) {
+  if (value === null || typeof value !== "object")
+    return void 0;
+  const task = value.task;
+  if (task === null || typeof task !== "object")
+    return void 0;
+  const at = task.settledAt;
+  return typeof at === "number" && Number.isFinite(at) ? at : void 0;
 }
 function monotonic() {
   const p = typeof performance === "undefined" ? void 0 : performance;
@@ -57874,7 +57912,7 @@ function connectSharedTaskStream(options) {
     offline: false,
     disposed: false,
     currentEpoch: ZERO_EPOCH,
-    clock: 0,
+    clock: loadMaxTick(ns),
     halted: false,
     seenSeq: 0,
     baselineReceived: false,
@@ -57883,6 +57921,9 @@ function connectSharedTaskStream(options) {
     lease: void 0,
     seenReplay: /* @__PURE__ */ new Set(),
     noticeCache: [],
+    // 通知水位用挂钟基准，与服务端 settledAt 同源（isTaskRecord 要求它是 Date.now() 级别）。
+    // 新标签从「加入时刻」起算 → 历史通知全被裁掉；这不是 epoch（届仍纯 Lamport、不碰挂钟）。
+    noticeSince: Date.now(),
     backoffMs: STATE_RETRY_MS,
     wake: new AbortController(),
     lifecycleBound: []
@@ -57934,7 +57975,9 @@ function connectSharedTaskStream(options) {
       ...wire.ready === void 0 ? {} : { ready: wire.ready },
       ...wire.tasks === void 0 ? {} : { tasks: wire.tasks },
       ...wire.notices === void 0 ? {} : { notices: wire.notices },
-      ...wire.what === void 0 ? {} : { what: wire.what }
+      ...wire.what === void 0 ? {} : { what: wire.what },
+      ...wire.noticeSince === void 0 ? {} : { noticeSince: wire.noticeSince },
+      ...wire.noticeWatermark === void 0 ? {} : { noticeWatermark: wire.noticeWatermark }
     };
     try {
       state.channel?.postMessage(full);
@@ -57971,7 +58014,7 @@ function connectSharedTaskStream(options) {
       return;
     }
     state.baselineRequestAt = now;
-    send({ kind: "state-request", from: state.selfId });
+    send({ kind: "state-request", from: state.selfId, noticeSince: state.noticeSince });
     scheduleStateRetry();
   }
   function markSeen(id3) {
@@ -57991,7 +58034,14 @@ function connectSharedTaskStream(options) {
       console.error("dsh-plugin-core: shared task baseline failed", error);
     }
     for (const notice of notices) {
+      const id3 = noticeIdOf(notice);
+      const fresh = id3 === void 0 || !state.seenReplay.has(id3);
       cacheNotice(notice);
+      const at = noticeSettledAtOf(notice);
+      if (at !== void 0 && at > state.noticeSince)
+        state.noticeSince = at;
+      if (!fresh)
+        continue;
       try {
         options.onNotice?.(notice);
       } catch (error) {
@@ -58020,6 +58070,9 @@ function connectSharedTaskStream(options) {
       state.seenSeq = cmp > 0 ? data2.seq : Math.max(state.seenSeq, data2.seq);
       state.baselineReceived = true;
       clearStateRetry();
+      if (data2.noticeWatermark !== void 0 && data2.noticeWatermark > state.noticeSince) {
+        state.noticeSince = data2.noticeWatermark;
+      }
       applyBaseline(data2.tasks ?? [], data2.notices ?? []);
       return;
     }
@@ -58028,6 +58081,17 @@ function connectSharedTaskStream(options) {
     if (data2.kind === "state-request") {
       const lease = state.lease;
       if (lease !== void 0 && !lease.ended && lease.ready) {
+        const since = data2.noticeSince ?? 0;
+        const replay = state.noticeCache.filter((notice) => {
+          const at = noticeSettledAtOf(notice);
+          return at === void 0 || at >= since;
+        });
+        let watermark = since;
+        for (const notice of state.noticeCache) {
+          const at = noticeSettledAtOf(notice);
+          if (at !== void 0 && at > watermark)
+            watermark = at;
+        }
         send({
           kind: "state-reply",
           to: data2.from,
@@ -58035,8 +58099,8 @@ function connectSharedTaskStream(options) {
           seq: lease.seq,
           // #7：带 owner 当前 seq
           tasks: options.getState(),
-          notices: [...state.noticeCache]
-          // #8：session 级缓存
+          notices: replay,
+          noticeWatermark: watermark
         });
       }
       return;
@@ -58067,6 +58131,9 @@ function connectSharedTaskStream(options) {
       }
     } else if (data2.event === "notice") {
       cacheNotice(data2.payload);
+      const at = noticeSettledAtOf(data2.payload);
+      if (at !== void 0 && at > state.noticeSince)
+        state.noticeSince = at;
       try {
         options.onNotice?.(data2.payload);
       } catch (error) {
@@ -58114,8 +58181,9 @@ function connectSharedTaskStream(options) {
       cleanupLease(lease);
   }
   function asOwner(lock) {
-    const epoch = newEpoch(Math.max(state.clock, state.currentEpoch.tick), state.selfId);
+    const epoch = newEpoch(Math.max(state.clock, state.currentEpoch.tick, loadMaxTick(state.ns)), state.selfId);
     state.clock = epoch.tick;
+    persistMaxTick(state.ns, epoch.tick);
     const lease = {
       epoch,
       seq: 0,
@@ -58160,6 +58228,9 @@ function connectSharedTaskStream(options) {
       },
       onNotice: (notice) => {
         cacheNotice(notice);
+        const at = noticeSettledAtOf(notice);
+        if (at !== void 0 && at > state.noticeSince)
+          state.noticeSince = at;
         try {
           options.onNotice?.(notice);
         } catch (error) {
@@ -58256,18 +58327,17 @@ function connectSharedTaskStream(options) {
       requestState("signal");
     }
   }
+  const lifecycle = options.lifecycle;
   const onHide = () => {
     const lease = state.lease;
     if (lease !== void 0)
       endLease(lease);
   };
-  const onShow = () => {
+  const onWake = () => {
+    if (!(lifecycle?.isVisible?.() ?? true))
+      return;
     recover();
   };
-  const onOnline = () => {
-    recover();
-  };
-  const lifecycle = options.lifecycle;
   if (lifecycle !== void 0) {
     const bound = (type3, listener) => {
       lifecycle.addEventListener(type3, listener);
@@ -58275,10 +58345,10 @@ function connectSharedTaskStream(options) {
     };
     bound("pagehide", onHide);
     bound("freeze", onHide);
-    bound("pageshow", onShow);
-    bound("resume", onShow);
-    bound("visibilitychange", onShow);
-    bound("online", onOnline);
+    bound("pageshow", onWake);
+    bound("resume", onWake);
+    bound("visibilitychange", onWake);
+    bound("online", onWake);
   }
   openChannel();
   void run();
@@ -58371,6 +58441,8 @@ function createPageLifecycle() {
   const docEvents = /* @__PURE__ */ new Set(["freeze", "resume", "visibilitychange"]);
   const target = (type3) => docEvents.has(type3) ? document : window;
   return {
+    // 惰性读取 document，保持零 DOM at import time（Node 不会构造这个适配器）。
+    isVisible: () => document.visibilityState === "visible",
     addEventListener(type3, listener) {
       target(type3).addEventListener(type3, listener);
     },
@@ -71199,6 +71271,10 @@ h(SideSheet, {
         "en": 'The server owns the truth: execution, progress and settlement all happen there. `serveTaskStream` registers one SSE route with three physically separated streams: `event: task-snapshot` (full baseline) and `event: task` (progress/terminal state) only project the list and **never announce**; `event: task-notice` (a one-shot completion event with a unique id) is the only toast/notify trigger. `authorize` is mandatory and viewer-based ownership filtering happens server-side. Errors are classified by phase: auth failure (`authorize` throws or returns empty) is 401, service-side failure (subscribe/snapshot/streaming) is 503 \u2014 a service fault is never written as 401. Clients subscribe with `connectTaskCenter({ streamUrl, onGiveUp })`: the bounded retry applies only to connections with **no data progress** (immediate EOF, reject before first frame, fetch failure) \u2014 exhausting the delays gives up and calls `onGiveUp`; once a round has read any bytes (keep-alive included), EOF or abnormal disconnect both count as progress and reset the budget to keep reconnecting; permanent faults (other 4xx) stop immediately and report. `onGiveUp` is a `TaskCenterHost` field available on the default wiring (401 has `reason.permanent=true`). A permanent fault puts the single-flight coordinator into a halted state: it releases its lock and stops re-requesting, so it never spins on repeated auth failures. It resumes either automatically on visibility / network recovery (`visibilitychange` / `online`), or when the app refreshes credentials in `onGiveUp` and calls `connectTaskCenter` once more to trigger `resume` (`headers` is a function, so the new connection picks up the new token) \u2014 neither path stays permanently offline. Without Web Locks it stays offline; the Node direct path rebuilds on re-wiring after a permanent giveUp. Notices are de-duplicated by id in sessionStorage (bounded), so refresh / reconnect replays of history never re-announce, while each tab keeps its own copy and clears on close \u2014 that is what lets `scope:"all"` announce once per same-origin page. Notices settled during a disconnect are replayed from the server source outbox. Core invariant: state is replayable, notices are one-shot \u2014 announcing is never wired to state projection (mirrors ledger\'s channel A/B pattern).'
       },
       {
+        "zh": "\u5355\u98DE\u534F\u8C03\u5668\u7684\u4E09\u6761\u6B63\u786E\u6027\u5951\u7EA6\uFF08v0.45.x\uFF0C\u542B 0.45.1 \u52A0\u56FA\uFF09\uFF1A\u2460 \u5C4A\u7528 Lamport `{tick,id}`\uFF0C\u6700\u5927 tick \u53EA\u7531\u6301\u9501 owner \u5199 localStorage\uFF08follower \u4E0D\u5199\uFF0C\u907F\u514D\u8DE8\u6807\u7B7E read-modify-write \u628A\u9AD8\u503C\u8986\u76D6\u56DE\u4F4E\u503C\uFF09\uFF0C\u65E0\u5B58\u50A8\u9000\u6A21\u5757\u5185\u5B58\u4E14\u8BFB\u53D6\u53D6\u5B58\u50A8\u4E0E\u5185\u5B58\u7684\u6700\u5927\u503C\uFF0C\u65B0\u6807\u7B7E\u7EE7\u627F\u540E\u518D +1\uFF1B`signal` \u53EA\u63D0\u793A\u91CD\u62C9\u57FA\u7EBF\u3001\u4E0D\u5B89\u88C5\u5C4A\uFF0C`state-reply` \u662F\u552F\u4E00\u5B89\u88C5\u5165\u53E3\uFF0C\u65E7\u5C4A reply \u4E22\u5F03\u3002\u2461 \u901A\u77E5\u56DE\u653E\u5E26\u63A5\u6536\u65B9\u6C34\u4F4D `noticeSince`\uFF08\u5DF2\u6536\u901A\u77E5\u7684\u6700\u5927\u670D\u52A1\u7AEF `settledAt`\uFF09\uFF0Cowner \u56DE\u653E `settledAt >= since` \u7684\u9879\uFF1A\u65B0\u6807\u7B7E\u4ECE\u52A0\u5165\u65F6\u523B\u8D77\u7B97\u4E0D\u88AB\u5386\u53F2\u704C\u6EE1\uFF0C\u540C\u6BEB\u79D2\u591A\u6295\u7531 id \u53BB\u91CD\u515C\u5E95\uFF1B\u8BE5\u6C34\u4F4D\u53EA\u88C1\u672C\u5730 BC \u56DE\u653E\u3001\u4E0D\u662F\u670D\u52A1\u7AEF cursor\uFF0C\u670D\u52A1\u7AEF\u987B\u7528\u771F\u5B9E\u65F6\u949F\u751F\u6210 `settledAt`\uFF0C\u4E0D\u8981\u7ED9\u8FDC\u672A\u6765\u7684\u503C\uFF1B\u65AD\u7EBF\u671F\u95F4\u7684\u901A\u77E5\u4ECD\u7531\u670D\u52A1\u7AEF outbox \u56DE\u653E\u8865\u53D1\u3002\u2462 `visibilitychange` \u9690\u85CF\u65F6\u4E5F\u89E6\u53D1\uFF0C`online` / `pageshow` / `resume` \u4E5F\u53EF\u80FD\u5728\u540E\u53F0\u53D1\u751F\u2014\u2014\u6240\u6709\u5524\u9192\u4E8B\u4EF6\u7EDF\u4E00\u8FC7\u53EF\u89C1\u6027\u95F8\u95E8\uFF0C\u9690\u85CF\u671F\u95F4\u4E0D\u6E05 halted\u3002\u53E6\uFF1A`TaskNotice.id` \u5FC5\u987B\u8DE8\u4F1A\u8BDD / \u91CD\u542F\u5168\u5C40\u552F\u4E00\u2014\u2014core \u6309 id \u5728 sessionStorage \u6709\u754C\u53BB\u91CD\uFF08\u6700\u8FD1 512 \u4E2A\uFF09\uFF0C\u6309\u5185\u5BB9\u6216\u65F6\u95F4\u53BB\u91CD\u4F1A\u8BEF\u541E\u771F\u5B9E\u91CD\u8DD1\u7684\u540C\u5185\u5BB9\u901A\u77E5\u3002",
+        "en": "Three correctness contracts of the single-flight coordinator (v0.45.x, hardened in 0.45.1): (1) epochs are Lamport `{tick,id}`; the max tick is written to localStorage only by the lock-holding owner (followers never write, avoiding a cross-tab read-modify-write that could overwrite a high value with a lower one), with a module-memory fallback whose max is taken together with the stored value; a new tab inherits that maximum before incrementing. `signal` only hints a baseline refetch and never installs an epoch, while `state-reply` is the sole installation entry and stale-epoch replies are dropped. (2) Notice replay carries the receiver watermark `noticeSince` (max server `settledAt` already received); the owner replays items with `settledAt >= since`, so a fresh tab is not flooded with history and same-millisecond extras are safe thanks to id de-duplication; this watermark only trims local BC replay and is not a server cursor \u2014 the server must generate real-clock `settledAt` values, never far-future ones; notices settled during a disconnect still come from the server outbox. (3) `visibilitychange` also fires when hiding, and `online` / `pageshow` / `resume` can happen in the background too \u2014 every wake event passes the same visibility gate, so a hidden page never clears halted. Also: a `TaskNotice.id` must be globally unique across sessions and restarts \u2014 the core de-duplicates by id in bounded sessionStorage (latest 512), and de-duplicating by content or time would swallow genuine re-run notices with identical content."
+      },
+      {
         "zh": "`connectTaskLayout(ctx)` \u662F\u4ECE\u5BBF\u4E3B client ctx \u63A5 layout \u7684\u4FBF\u6377\u5165\u53E3\uFF1A\u901A\u8FC7 `ctx.inject(['layout'])` \u62FF layout \u670D\u52A1\uFF0C\u53D1\u8D77\u65F6\u4ECE `panelInfo.getSnapshot().activePanelId` \u81EA\u52A8\u8BB0\u9762\u677F\uFF08\u5BBF\u4E3B 0.2.2-rc.3 \u6838\u5B9E\uFF0C\u4E0D\u5728 ILayout \u9876\u5C42\uFF09\uFF0C\u70B9\u6309\u94AE\u65F6\u7528 `selectPanel(panelId)` \u5207\u56DE\u3002\u4E0D\u4F20 `streamUrl` \u65F6\u662F\u7EAF\u672C\u5730\u5185\u5B58\u6A21\u5F0F\uFF0C\u9002\u5408\u5355\u6D4B\u4E0E\u9884\u89C8\u7AD9\u3002",
         "en": "`connectTaskLayout(ctx)` is the convenience wiring from a host client ctx: it obtains the layout service through `ctx.inject(['layout'])`, records `panelInfo.getSnapshot().activePanelId` automatically at start (verified against host 0.2.2-rc.3 \u2014 it is not a top-level ILayout field), and calls `selectPanel(panelId)` on button presses. Without `streamUrl` it runs as a local in-memory mode for tests and the preview site."
       }
@@ -71271,8 +71347,8 @@ h(SideSheet, {
     },
     "prose": [
       {
-        "zh": "\u8BB0\u5F55\u5168\u662F\u670D\u52A1\u7AEF\u4E0B\u53D1\u6216\u8C03\u7528\u65B9\u7ED9\u7684\u7EAF\u6570\u636E\uFF0C\u8DE8\u9875\u514B\u9686\u5B89\u5168\u3001\u65E0\u51FD\u6570\u3002\u8EAB\u4EFD\u5B57\u6BB5\uFF1A`id`\u3001`key`\uFF08\u540C\u9879\u76EE\u5E42\u7B49\uFF09\u3001`project` / `group`\uFF08\u4E24\u7EA7\u5206\u7EC4\uFF09\u3001`startedAt`\uFF1B\u5F52\u5C5E\u5B57\u6BB5\uFF1A`panelId`\uFF08\u6838\u5FC3\u81EA\u52A8\u8BB0\uFF0C\u70B9\u6309\u94AE\u5207\u56DE\u9762\u677F\u7528\uFF09\u3001`origin`\uFF08\u6838\u5FC3\u81EA\u52A8\u8BB0\u7684\u53D1\u8D77\u6807\u7B7E\u9875 id\uFF0Cscope:origin \u636E\u6B64\u5224\u5B9A\u5F39\u5361\uFF09\uFF1B\u6267\u884C\u5B57\u6BB5\uFF1A`kind` / `args` / `detail` / `icon`\uFF1B\u5C55\u793A\u5B57\u6BB5\uFF1A`progress` / `toast` / `notify` / `rowButtons`\uFF1B\u7EC8\u6001\u5B57\u6BB5\uFF1A`state` / `reason` / `settledAt`\u3002`settledAt` \u662F\u7EC8\u6001\uFF08`done` / `failed`\uFF09\u7684**\u5FC5\u586B\u6709\u9650\u6570**\u7ED3\u7B97\u65F6\u523B\uFF0C\u7531\u7EC8\u6001\u771F\u6E90\uFF08\u672C\u5730\u6267\u884C\u5668\u6216\u670D\u52A1\u7AEF\uFF09\u7ED9\u51FA\uFF0C`running` \u5E27\u4E0D\u5F97\u643A\u5E26\uFF1B\u5165\u53E3 `isTaskRecord` \u6309\u72B6\u6001\u6821\u9A8C\uFF0C\u7EC8\u6001\u7F3A\u7ED3\u7B97\u65F6\u523B\u7684\u5E27\u88AB\u62D2\u6536\u2014\u2014\u5217\u8868\u9760\u5B83\u7B97\u7EC8\u6001\u884C\u505C\u7559\u4E0E\u9000\u573A\uFF0C\u7F3A\u4E86\u4F1A\u5BFC\u81F4\u7EC8\u6001\u884C\u4E0D\u6D88\u5931\u3001\u663E\u793A\u5047\u8BA1\u65F6\u3002\u670D\u52A1\u7AEF SSE \u662F\u72B6\u6001\u771F\u6E90\uFF0C\u8BF7\u52FF\u7701\u7565\uFF1B\u5BA2\u6237\u7AEF\u4E0D\u4F1A\u8865\u672C\u5730\u65F6\u95F4\u5192\u5145\u670D\u52A1\u7AEF\u65F6\u949F\u3002\u670D\u52A1\u7AEF\u6A21\u5F0F\u4E0B `startTask` \u5148\u843D\u4E00\u6761\u5E26 `key`/`project`/`group` \u7684\u4E50\u89C2 running \u884C\u518D POST\uFF08\u7F3A\u7701\u90FD\u7531\u6838\u5FC3\u8865\u9F50\u5E76\u968F payload \u53D1\u51FA\uFF09\uFF1B**\u670D\u52A1\u7AEF\u5FC5\u987B\u5728\u6240\u6709 SSE \u5E27\u4E0E\u901A\u77E5\u91CC\u56DE\u663E\u540C\u4E00\u4E2A `key` \u548C\u63D0\u4EA4\u4F53\u91CC\u7684 `project`**\uFF08\u5F52\u4E00\u6309 `(project,key)`\uFF09\uFF0C\u771F\u6E90\u624D\u5F52\u4E00\u8986\u76D6\u4E50\u89C2\u884C\u2014\u2014\u5931\u914D\u4F1A\u7559\u4E0B\u4E00\u6761\u6C38\u4E0D\u6D88\u5931\u7684\u5E7D\u7075 `running` \u884C\uFF0C\u4E14\u5FEB\u901F\u4EFB\u52A1\u7684\u7EC8\u6001\u53EF\u80FD\u88AB\u665A\u5230\u7684\u4E50\u89C2\u884C\u8986\u56DE\u3002\u63D0\u4EA4\u5931\u8D25\u6838\u5FC3\u81EA\u52A8\u56DE\u6EDA\u4E50\u89C2\u884C\u3002",
-        "en": "A record is all plain data from the server or the caller \u2014 structured-clone safe, no functions. Identity: `id`, `key` (idempotent per project), `project` / `group` (two-level grouping), `startedAt`; ownership: `panelId` (core-recorded, used to switch back on button presses) and `origin` (core-recorded originating tab id, the basis for scope:origin announcement); execution: `kind` / `args` / `detail` / `icon`; presentation: `progress` / `toast` / `notify` / `rowButtons`; terminal: `state` / `reason` / `settledAt`. `settledAt` is a **required finite number** for terminal states (`done` / `failed`), supplied by the terminal authority (local executor or server); `running` frames must not carry it. `isTaskRecord` validates by state and rejects terminal frames missing it \u2014 the list needs it for terminal row retention/eviction; without it rows never leave and show a fake timer. The server is the state source of truth via SSE: do not omit it; the client never injects a local timestamp to impersonate the server clock. In server mode `startTask` first writes an optimistic running row carrying `key`/`project`/`group` (defaults are filled by the core and sent in the payload); **the server must echo the same `key` and the submitted `project` in every SSE frame and notice** \u2014 reconciliation is by `(project,key)` \u2014 otherwise a ghost `running` row persists and the terminal state of a fast task can be overwritten by the late optimistic write. A failed submit rolls the optimistic row back automatically."
+        "zh": "\u8BB0\u5F55\u5168\u662F\u670D\u52A1\u7AEF\u4E0B\u53D1\u6216\u8C03\u7528\u65B9\u7ED9\u7684\u7EAF\u6570\u636E\uFF0C\u8DE8\u9875\u514B\u9686\u5B89\u5168\u3001\u65E0\u51FD\u6570\u3002\u8EAB\u4EFD\u5B57\u6BB5\uFF1A`id`\u3001`key`\uFF08\u540C\u9879\u76EE\u5E42\u7B49\uFF09\u3001`project` / `group`\uFF08\u4E24\u7EA7\u5206\u7EC4\uFF09\u3001`startedAt`\uFF1B\u5F52\u5C5E\u5B57\u6BB5\uFF1A`panelId`\uFF08\u6838\u5FC3\u81EA\u52A8\u8BB0\uFF0C\u70B9\u6309\u94AE\u5207\u56DE\u9762\u677F\u7528\uFF09\u3001`origin`\uFF08\u6838\u5FC3\u81EA\u52A8\u8BB0\u7684\u53D1\u8D77\u6807\u7B7E\u9875 id\uFF0Cscope:origin \u636E\u6B64\u5224\u5B9A\u5F39\u5361\uFF09\uFF1B\u6267\u884C\u5B57\u6BB5\uFF1A`kind` / `args` / `detail` / `icon`\uFF1B\u5C55\u793A\u5B57\u6BB5\uFF1A`progress` / `toast` / `notify` / `rowButtons`\uFF1B\u7EC8\u6001\u5B57\u6BB5\uFF1A`state` / `reason` / `settledAt`\u3002`settledAt` \u662F\u7EC8\u6001\uFF08`done` / `failed`\uFF09\u7684**\u5FC5\u586B\u6709\u9650\u6570**\u7ED3\u7B97\u65F6\u523B\uFF0C\u7531\u7EC8\u6001\u771F\u6E90\uFF08\u672C\u5730\u6267\u884C\u5668\u6216\u670D\u52A1\u7AEF\uFF09\u7ED9\u51FA\uFF0C`running` \u5E27\u4E0D\u5F97\u643A\u5E26\uFF1B\u5165\u53E3 `isTaskRecord` \u6309\u72B6\u6001\u6821\u9A8C\uFF0C\u7EC8\u6001\u7F3A\u7ED3\u7B97\u65F6\u523B\u7684\u5E27\u88AB\u62D2\u6536\u2014\u2014\u5217\u8868\u9760\u5B83\u7B97\u7EC8\u6001\u884C\u505C\u7559\u4E0E\u9000\u573A\uFF0C\u7F3A\u4E86\u4F1A\u5BFC\u81F4\u7EC8\u6001\u884C\u4E0D\u6D88\u5931\u3001\u663E\u793A\u5047\u8BA1\u65F6\u3002\u670D\u52A1\u7AEF SSE \u662F\u72B6\u6001\u771F\u6E90\uFF0C\u8BF7\u52FF\u7701\u7565\uFF1B\u5BA2\u6237\u7AEF\u4E0D\u4F1A\u8865\u672C\u5730\u65F6\u95F4\u5192\u5145\u670D\u52A1\u7AEF\u65F6\u949F\u3002\u670D\u52A1\u7AEF\u6A21\u5F0F\u4E0B `startTask` \u5148\u843D\u4E00\u6761\u5E26 `key`/`project`/`group` \u7684\u4E50\u89C2 running \u884C\u518D POST\uFF08\u7F3A\u7701\u90FD\u7531\u6838\u5FC3\u8865\u9F50\u5E76\u968F payload \u53D1\u51FA\uFF09\uFF1B**\u670D\u52A1\u7AEF\u5FC5\u987B\u5728\u6240\u6709 SSE \u5E27\u4E0E\u901A\u77E5\u91CC\u56DE\u663E\u540C\u4E00\u4E2A `key` \u548C\u63D0\u4EA4\u4F53\u91CC\u7684 `project`**\uFF08\u5F52\u4E00\u6309 `(project,key)`\uFF09\uFF0C\u771F\u6E90\u624D\u5F52\u4E00\u8986\u76D6\u4E50\u89C2\u884C\u2014\u2014\u5931\u914D\u4F1A\u7559\u4E0B\u4E00\u6761\u6C38\u4E0D\u6D88\u5931\u7684\u5E7D\u7075 `running` \u884C\uFF0C\u4E14\u5FEB\u901F\u4EFB\u52A1\u7684\u7EC8\u6001\u53EF\u80FD\u88AB\u665A\u5230\u7684\u4E50\u89C2\u884C\u8986\u56DE\u3002\u63D0\u4EA4\u5931\u8D25\u6838\u5FC3\u81EA\u52A8\u56DE\u6EDA\u4E50\u89C2\u884C\u3002`origin` / `panelId` \u7531\u6838\u5FC3\u968F\u63D0\u4EA4\u4F53\u53D1\u51FA\uFF0C\u670D\u52A1\u7AEF\u5FC5\u987B\u5728\u5E27\u4E0E\u901A\u77E5\u91CC\u56DE\u663E\uFF1B\u7F3A\u5931\u65F6\u6838\u5FC3 fail-open \u7528\u672C\u5730\u503C\u515C\u5E95\uFF0C\u523B\u610F\u9009\u62E9\u300C\u4E0D\u6F0F\u7ED3\u679C\u300D\u800C\u975E\u62D2\u6536\uFF08\u62D2\u6536\u4F1A\u8BA9\u4EFB\u52A1\u4ECE\u5217\u8868\u6D88\u5931\uFF09\u3002\u540C key \u7684 `startedAt` \u5FC5\u987B\u4E25\u683C\u9012\u589E\uFF1Acore \u7528\u5B83\u8BA4\u8FD0\u884C\u5B9E\u4F8B\uFF0C\u5355\u65B9\u52A0\u968F\u673A\u6216\u8BA1\u6570\u4F1A\u4F2A\u9020\u4E00\u4E2A\u4E0E\u771F\u6E90\u5BF9\u4E0D\u4E0A\u7684\u8EAB\u4EFD\uFF1B\u82E5\u670D\u52A1\u7AEF\u65E0\u6CD5\u4FDD\u8BC1\u9012\u589E\uFF0C\u9700\u53E6\u884C\u8BC4\u5BA1\u5F15\u5165\u663E\u5F0F `runId` \u5951\u7EA6\u3002",
+        "en": 'A record is all plain data from the server or the caller \u2014 structured-clone safe, no functions. Identity: `id`, `key` (idempotent per project), `project` / `group` (two-level grouping), `startedAt`; ownership: `panelId` (core-recorded, used to switch back on button presses) and `origin` (core-recorded originating tab id, the basis for scope:origin announcement); execution: `kind` / `args` / `detail` / `icon`; presentation: `progress` / `toast` / `notify` / `rowButtons`; terminal: `state` / `reason` / `settledAt`. `settledAt` is a **required finite number** for terminal states (`done` / `failed`), supplied by the terminal authority (local executor or server); `running` frames must not carry it. `isTaskRecord` validates by state and rejects terminal frames missing it \u2014 the list needs it for terminal row retention/eviction; without it rows never leave and show a fake timer. The server is the state source of truth via SSE: do not omit it; the client never injects a local timestamp to impersonate the server clock. In server mode `startTask` first writes an optimistic running row carrying `key`/`project`/`group` (defaults are filled by the core and sent in the payload); **the server must echo the same `key` and the submitted `project` in every SSE frame and notice** \u2014 reconciliation is by `(project,key)` \u2014 otherwise a ghost `running` row persists and the terminal state of a fast task can be overwritten by the late optimistic write. A failed submit rolls the optimistic row back automatically. `origin` / `panelId` are emitted by the core in the submit body and must be echoed by the server in every frame and notice; when absent the core fail-opens to local values, deliberately choosing "never lose a result" over rejection (rejecting would make the task vanish from the list). `startedAt` must strictly increase for the same key: the core uses it to identify a run, and inventing a random or counter value client-side would fabricate an identity the server cannot match. If the server cannot guarantee monotonicity, an explicit `runId` contract needs a separate review.'
       }
     ],
     "api": [
@@ -76425,9 +76501,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.45.0"}`],
-            [t3("buildDemo"), `v${"0.45.0"}`],
-            [t3("buildStamp"), "261122-180433-075"]
+            [t3("buildCore"), `v${"0.45.1"}`],
+            [t3("buildDemo"), `v${"0.45.1"}`],
+            [t3("buildStamp"), "261122-202248-667"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76742,9 +76818,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.45.0"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.45.0"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261122-180433-075")
+          (0, import_react112.createElement)("span", null, `core v${"0.45.1"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.45.1"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261122-202248-667")
         )
       )
     ),
