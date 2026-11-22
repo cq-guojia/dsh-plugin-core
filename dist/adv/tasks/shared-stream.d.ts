@@ -20,9 +20,14 @@
  * 零 DOM at import time：navigator / BroadcastChannel / performance 只在函数内惰性读取。
  */
 import { type TaskStreamGiveUpReason } from './stream.js';
-/** 锁 / 通道的最小形状：浏览器原生即满足；测试注入内存实现。 */
+/**
+ * 锁 / 通道的最小形状：浏览器原生 Lock 只有 name / mode，取消信号是 `request()` 第二个参数的
+ * `options.signal`，不在 Lock 对象上。测试注入内存实现也必须照真实形状给，不得捏 signal 兜底，
+ * 否则核心误读 lock.signal 时测试全绿、真机一拿锁就 TypeError。
+ */
 export interface SharedLockLike {
-    readonly signal: AbortSignal;
+    readonly name: string;
+    readonly mode: 'exclusive' | 'shared';
 }
 export interface SharedLockManager {
     request(name: string, options: {

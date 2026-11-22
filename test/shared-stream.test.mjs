@@ -19,13 +19,12 @@ function makeLocks() {
         const run = () => {
           // 重入检查：多个等待者同时被唤醒时只有一个能拿到锁。
           if (holders.has(name) || options.signal.aborted) { reject(new Error('busy/aborted')); return }
-          const ac = new AbortController()
-          holders.set(name, ac)
-          const onOuter = () => ac.abort()
-          options.signal.addEventListener('abort', onOuter, { once: true })
-          callback({ signal: ac.signal }).finally(() => {
-            options.signal.removeEventListener('abort', onOuter)
-            if (holders.get(name) === ac) holders.delete(name)
+          const held = Symbol(name)
+          holders.set(name, held)
+          // 真实 Lock 只有 name / mode，没有 signal。绝不捏 signal 兜底——
+          // 核心若误读 lock.signal，这里必须红，否则真机一拿锁就 TypeError。
+          callback({ name, mode: 'exclusive' }).finally(() => {
+            if (holders.get(name) === held) holders.delete(name)
             resolve()
           })
         }

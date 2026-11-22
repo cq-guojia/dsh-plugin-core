@@ -25,13 +25,11 @@ function makeLocks() {
           const next = (queues.get(name) ?? []).shift()
           if (next === undefined) return
           if (options.signal.aborted) { reject(new Error('aborted')); return }
-          const ac = new AbortController()
-          holders.set(name, ac)
-          const onAbort = () => ac.abort()
-          options.signal.addEventListener('abort', onAbort, { once: true })
-          callback({ signal: ac.signal }).finally(() => {
-            options.signal.removeEventListener('abort', onAbort)
-            if (holders.get(name) === ac) holders.delete(name)
+          const held = Symbol(name)
+          holders.set(name, held)
+          // 真实 Lock 只有 name / mode，没有 signal；不捏 signal 兜住核心的错误接口假设。
+          callback({ name, mode: 'exclusive' }).finally(() => {
+            if (holders.get(name) === held) holders.delete(name)
             resolve()
             dispatch()
           })
@@ -1012,6 +1010,29 @@ test('延迟鉴权（600ms 后 401）不误清零 streak，冷却仍生效（第
     off.resume() // streak=2 → 冷却 no-op
     await wait(200)
     assert.equal(fetches, afterTwo, '延迟 401 下冷却仍生效，无界轮转被堵住')
+  } finally {
+    off?.()
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('真实 Lock 形状（只有 name/mode，无 signal）下 owner 正常建流（真机误接回归）', async () => {
+  // 夹具若给 Lock 捏一个 signal，核心误读 lock.signal 时测试仍全绿、真机一拿锁就 TypeError。
+  // 本用例锁定浏览器真实形状：Lock 只有 name / mode，取消信号在 request 的 options 上。
+  const locks = makeLocks()
+  const originalFetch = globalThis.fetch
+  let fetches = 0
+  globalThis.fetch = sseFetch(() => { fetches += 1; return undefined })
+  let off
+  try {
+    off = connectSharedTaskStream({
+      streamUrl: `/stream-real-lock-${Math.random().toString(36).slice(2)}`,
+      lockFactory: () => locks, channelFactory: makeBus().factory,
+      getState: () => [], applyBaseline: () => {}, onTask: () => {},
+    })
+    await wait(250)
+    assert.ok(fetches >= 1, 'owner 建起 SSE：真实 Lock 无 signal，不再一拿锁就 TypeError')
+    assert.equal(locks.holders.size, 1, 'owner 确实持锁，不是退避重申请')
   } finally {
     off?.()
     globalThis.fetch = originalFetch

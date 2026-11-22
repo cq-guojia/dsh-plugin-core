@@ -221,3 +221,4 @@ follower 的届。`signal` 只是「去拉基线」的提示、不安装届，�
 - 2026-11-22（专家评判复核）：六条契约逐条独立评审，四条判为 core 责任已修（符号 v2 隔离、512+settledAt 水位、origin 缺失告警、401 冷却真实有界），`autoRecoverOnOnline` 开关落地；删提交响应回显死条款，评审结论写入「专家评判后的 core 责任与契约」表
 - 2026-11-22（消费方第二轮残留封口）：fencing 挑战从只挡开局 signal 扩到低届 state-reply / frame，晚重拉的 high-epoch follower 不再冻到 owner 寿命轮换；401 连续失败计数改在真实 SSE 字节上清零，600ms 后才返 401 的延迟鉴权也被冷却覆盖；补两条针对性回归
 - 2026-11-22（边缘项封口）：`autoRecoverOnOnline` 改每次事件读当前值、online 监听始终只绑一次（先 false 后 true 后置生效）；Node 直连 401 计数移到 `onGiveUp` 回调之后（回调内重接不被冷却吞）；sessionStorage 写入失败时并集内存 fallback 与存储值（配额满仍去重）；跨副本重复 warn 判定可接受不修。新增第三轮封口表，补三条回归，616 项测试全绿
+- 2026-11-22（真机 Lock 接口纠错）：修单飞锁每次拿锁就 TypeError 导致 owner 永远当不上、SSE 一条建不起来的 P0；`SharedLockLike` 按浏览器真实形状改为 name / mode，删掉误接的 `lock.signal.addEventListener`（释放已有 controller.signal 与 endLease 两条路径）；两个测试夹具去掉假 signal 防假绿，补真实形状下 owner 建流持锁回归，617 测试全绿

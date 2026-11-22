@@ -63,9 +63,14 @@ function persistMaxTick(ns: string, tick: number): void {
   } catch { /* 存储不可用：内存兜底已做，届仍在本会话单调 */ }
 }
 
-/** 锁 / 通道的最小形状：浏览器原生即满足；测试注入内存实现。 */
+/**
+ * 锁 / 通道的最小形状：浏览器原生 Lock 只有 name / mode，取消信号是 `request()` 第二个参数的
+ * `options.signal`，不在 Lock 对象上。测试注入内存实现也必须照真实形状给，不得捏 signal 兜底，
+ * 否则核心误读 lock.signal 时测试全绿、真机一拿锁就 TypeError。
+ */
 export interface SharedLockLike {
-  readonly signal: AbortSignal
+  readonly name: string
+  readonly mode: 'exclusive' | 'shared'
 }
 export interface SharedLockManager {
   request(
@@ -593,7 +598,7 @@ export function connectSharedTaskStream(options: SharedStreamOptions): SharedStr
     if (lease.release === undefined) cleanupLease(lease)
   }
 
-  function asOwner(lock: SharedLockLike): Promise<void> {
+  function asOwner(): Promise<void> {
     // 新届必须基于 max(clock, 当前届.tick) 并回写 clock：owner 自己发的 epoch 信号不回环给自己
     // （BC 语义），若只靠 receive 收别人的消息抬时钟，连续两次任职且期间没收到任何带 tick 的
     // 消息时，newEpoch(clock) 会算出与上一届完全相同的届 → follower 把它当旧届/同届低 seq 拒收。
@@ -687,7 +692,9 @@ export function connectSharedTaskStream(options: SharedStreamOptions): SharedStr
     return new Promise<void>((resolve) => {
       const release = (): void => { resolve() }
       lease.release = release
-      lock.signal.addEventListener('abort', release, { once: true })
+      // 不读 lock.signal：真实 Lock 没有 signal。释放有两条真路径——
+      // options.signal（state.controller.signal）abort 时浏览器自动放锁，且下方监听 resolve
+      // 本 Promise；endLease 显式 release 也让本 Promise settle 放锁。两条都已覆盖。
       const onSessionAbort = (): void => { release() }
       state.controller.signal.addEventListener('abort', onSessionAbort, { once: true })
       lease.abortOff = () => state.controller.signal.removeEventListener('abort', onSessionAbort)
@@ -718,7 +725,7 @@ export function connectSharedTaskStream(options: SharedStreamOptions): SharedStr
         continue
       }
       try {
-        await locks.request(state.lockName, { signal: state.controller.signal }, (lock) => asOwner(lock))
+        await locks.request(state.lockName, { signal: state.controller.signal }, () => asOwner())
       } catch (error) {
         if (!state.disposed && !state.controller.signal.aborted) {
           console.error('dsh-plugin-core: shared task lock failed', error)

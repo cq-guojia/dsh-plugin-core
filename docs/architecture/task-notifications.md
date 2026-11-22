@@ -45,7 +45,9 @@
     出现低届 owner 时，持更高届的 follower 在低届权威消息（signal / state-reply / frame）上广播 fencing claim，
    低届 owner 收到更高届 claim 立即让锁并重铸更高届；晚重拉者收到低届 reply / frame 也挑战，不会冻到寿命轮换。
     `signal` 只是「去拉基线」的 hint、不安装届，`state-reply` 是唯一安装入口，旧届 reply 一律丢弃，
-    真换届重置 seq 水位。
+    真换届重置 seq 水位。锁对象按浏览器真实形状使用：Lock 只有 `name` / `mode`，取消信号在 `request()` 的
+   `options.signal`（会话 controller）上，不在 Lock 对象上；释放靠 callback Promise settle 或 options.signal
+   abort 两条真路径。注入的测试锁不得捏造 `signal` 字段，否则接口误读会被测试假绿掩盖、真机一拿锁就抛 TypeError。
 11. **通知回放按水位裁切、按 id 保证正确性**：`state-request` 带接收方 `noticeSince`（已收通知的最大服务端
     `settledAt`），owner 只回放 `settledAt >= since` 的缓存项——新标签从加入时刻起算不被历史灌满，
     同毫秒多投由 notice id 在 sessionStorage 有界去重兜底，不靠时间戳近似身份。缓存保留全量，切主后仍可回放。
@@ -83,3 +85,4 @@
 - 2026-11-22（专家评判复核）：新增不变量 14（401 冷却真实有界、online 可关闭、512+settledAt 水位去重、origin 缺失可诊断），15 顺延；同页 store / executor 收口符号升 v2 与协议对齐；删去「提交响应回显 origin/panelId」死条款
 - 2026-11-22（消费方第二轮残留封口）：不变量 10 的 fencing 扩到低届 reply / frame；不变量 14 的 streak 清零改挂真实 SSE 字节
 - 2026-11-22（边缘项封口）：不变量 14 补三项——online 监听器始终只绑一次且事件时读当前开关值（后置改值即时生效）、401 streak 在 `onGiveUp` 回调后累加（Node 直连同序，回调内重接不被冷却吞）、sessionStorage 写入失败时读路径并集内存 fallback（配额满仍按 id 去重）
+- 2026-11-22（真机 Lock 接口纠错）：不变量 10 补真实 Lock 形状（只有 name / mode，取消信号在 request 的 options.signal）与两条释放路径；测试夹具不得捏 signal 兜住接口误读

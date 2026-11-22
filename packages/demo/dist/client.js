@@ -58215,7 +58215,7 @@ function connectSharedTaskStream(options) {
     if (lease.release === void 0)
       cleanupLease(lease);
   }
-  function asOwner(lock) {
+  function asOwner() {
     const epoch = newEpoch(Math.max(state.clock, state.currentEpoch.tick, loadMaxTick(state.ns)), state.selfId);
     state.clock = epoch.tick;
     persistMaxTick(state.ns, epoch.tick);
@@ -58309,7 +58309,6 @@ function connectSharedTaskStream(options) {
         resolve();
       };
       lease.release = release;
-      lock.signal.addEventListener("abort", release, { once: true });
       const onSessionAbort = () => {
         release();
       };
@@ -58338,7 +58337,7 @@ function connectSharedTaskStream(options) {
         continue;
       }
       try {
-        await locks.request(state.lockName, { signal: state.controller.signal }, (lock) => asOwner(lock));
+        await locks.request(state.lockName, { signal: state.controller.signal }, () => asOwner());
       } catch (error) {
         if (!state.disposed && !state.controller.signal.aborted) {
           console.error("dsh-plugin-core: shared task lock failed", error);
@@ -76612,9 +76611,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.45.4"}`],
-            [t3("buildDemo"), `v${"0.45.4"}`],
-            [t3("buildStamp"), "261122-215531-379"]
+            [t3("buildCore"), `v${"0.45.5"}`],
+            [t3("buildDemo"), `v${"0.45.5"}`],
+            [t3("buildStamp"), "261122-232042-143"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76929,9 +76928,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.45.4"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.45.4"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261122-215531-379")
+          (0, import_react112.createElement)("span", null, `core v${"0.45.5"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.45.5"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261122-232042-143")
         )
       )
     ),
