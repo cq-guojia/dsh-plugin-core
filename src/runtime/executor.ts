@@ -54,8 +54,8 @@ export interface ExecutorRegistry {
   clear(): void
 }
 
-/** 与池一致的多副本收口键；版本号变化时所有副本一起换，不会读到半新半旧。 */
-const REGISTRY_KEY = Symbol.for('dsh-plugin-core/executors/v1')
+/** 与池一致的多副本收口键；版本号变化时所有副本一起换，不会读到半新半旧（现为 v2）。 */
+const REGISTRY_KEY = Symbol.for('dsh-plugin-core/executors/v2')
 
 interface GlobalWithExecutors {
   [REGISTRY_KEY]?: ExecutorRegistry

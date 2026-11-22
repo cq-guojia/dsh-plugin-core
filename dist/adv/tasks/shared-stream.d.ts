@@ -64,6 +64,11 @@ export interface SharedLifecycle {
     removeEventListener(type: string, listener: (...args: never[]) => void): void;
     /** 可选：页面当前是否可见。visibilitychange 隐藏时也触发，只有可见时才能 recover（#7）。 */
     readonly isVisible?: () => boolean;
+    /**
+     * 可选：是否把 online 当作停机唤醒源，默认 true。需要「仅在凭证就绪后显式恢复」的应用
+     * 设为 false——否则 online 会先用旧 headers 打一次 401，消费方无法在 core 内部拦住它。
+     */
+    readonly autoRecoverOnOnline?: boolean | (() => boolean);
 }
 /** 连接句柄：可调用释放；resume 供 permanent giveUp 后显式恢复（刷新凭证）。 */
 export interface SharedStreamHandle {

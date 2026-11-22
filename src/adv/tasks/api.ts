@@ -28,32 +28,55 @@ import { taskStore } from './store.js'
  * 用 sessionStorage 而非 localStorage：刷新保留（outbox 重放的历史不重弹），但每个标签页
  * 独立、关页即清——`scope:'all'` 要求每个页面各弹一次，同源共享的 localStorage 会让先到的
  * 页面写 id、后到的页面读到后吞卡。node / 无存储环境退化为模块内存 Set（测试用）。
- * 有界：只留最近 512 个 id。
+ * 有界：只留最近 512 个 id；另按 project 记已见通知的最大 settledAt 水位——
+ * 服务端 outbox 超过 512 条时最早那批 id 会被挤出集合，只靠 id 会重弹；
+ * 水位按时间兜底，`settledAt < 水位` 的老回放直接吞（同毫秒用 `<` 不误伤，靠 id 去重）。
  */
 const SEEN_NOTICE_KEY = 'dshpc:task-notices:seen'
 const SEEN_NOTICE_LIMIT = 512
-const seenFallback = new Set<string>()
+interface SeenNotices { ids: string[]; watermark: Record<string, number> }
+const emptySeen = (): SeenNotices => ({ ids: [], watermark: {} })
+const seenFallback = emptySeen()
 function noticeStore(): Storage | undefined {
   try { return typeof sessionStorage === 'undefined' ? undefined : sessionStorage } catch { return undefined }
 }
-function loadSeenNotices(): Set<string> {
+function loadSeenNotices(): SeenNotices {
   const store = noticeStore()
+  if (store === undefined) return seenFallback
   try {
-    if (store === undefined) return seenFallback
     const raw = store.getItem(SEEN_NOTICE_KEY)
-    return new Set(raw === null ? [] : (JSON.parse(raw) as string[]))
+    if (raw === null) return emptySeen()
+    const parsed = JSON.parse(raw) as SeenNotices | string[]
+    // 兼容旧格式（纯 id 数组）：升级后首次读取不会把历史去重状态丢掉。
+    return Array.isArray(parsed)
+      ? { ids: parsed, watermark: {} }
+      : { ids: Array.isArray(parsed.ids) ? parsed.ids : [], watermark: parsed.watermark ?? {} }
   } catch { return seenFallback }
 }
-function rememberNotice(id: string): boolean {
-  const seen = loadSeenNotices()
-  if (seen.has(id)) return false
-  seen.add(id)
-  const trimmed = [...seen].slice(-SEEN_NOTICE_LIMIT)
+function saveSeenNotices(seen: SeenNotices): void {
+  const trimmed = seen.ids.slice(-SEEN_NOTICE_LIMIT)
   const store = noticeStore()
-  try {
-    if (store !== undefined) store.setItem(SEEN_NOTICE_KEY, JSON.stringify(trimmed))
-    else { seenFallback.clear(); for (const value of trimmed) seenFallback.add(value) }
-  } catch { seenFallback.clear(); for (const value of trimmed) seenFallback.add(value) }
+  if (store === undefined) {
+    seenFallback.ids = trimmed
+    seenFallback.watermark = seen.watermark
+    return
+  }
+  try { store.setItem(SEEN_NOTICE_KEY, JSON.stringify({ ids: trimmed, watermark: seen.watermark })) }
+  catch {
+    seenFallback.ids = trimmed
+    seenFallback.watermark = seen.watermark
+  }
+}
+function rememberNotice(id: string, settledAt?: number, project?: string): boolean {
+  const seen = loadSeenNotices()
+  if (settledAt !== undefined && Number.isFinite(settledAt) && project !== undefined) {
+    const prior = seen.watermark[project]
+    if (prior !== undefined && settledAt < prior) return false
+    if (prior === undefined || settledAt > prior) seen.watermark[project] = settledAt
+  }
+  if (seen.ids.includes(id)) return false
+  seen.ids.push(id)
+  saveSeenNotices(seen)
   return true
 }
 
@@ -102,6 +125,12 @@ export interface TaskCenterHost extends CoordinatorHost {
    * visibilitychange / online 也会自动唤醒。不传则静默。
    */
   onGiveUp?: (reason: TaskStreamGiveUpReason) => void
+  /**
+   * 是否把 online 事件当作停机唤醒源（默认 true）。设为 false 后不会因网络恢复自动用旧
+   * headers 重试——适合"凭证刷新完成后才显式 resume"的应用。visibilitychange/pageshow/
+   * resume 仍按可见性闸门恢复；要完全仅显式恢复，请同时不接入页面生命周期（Node 模式）。
+   */
+  autoRecoverOnOnline?: boolean
 }
 
 /** 宿主 client ctx 的最小形状：注入 layout 服务拿面板 id 与切面板。 */
@@ -142,6 +171,8 @@ function createPageLifecycle(): SharedLifecycle {
   return {
     // 惰性读取 document，保持零 DOM at import time（Node 不会构造这个适配器）。
     isVisible: () => document.visibilityState === 'visible',
+    // 建流时读取接线配置：同 key 重复接线不重建（也就不会重绑监听），首次接线的值生效。
+    autoRecoverOnOnline: () => stableHost.autoRecoverOnOnline !== false,
     addEventListener(type, listener) {
       target(type).addEventListener(type, listener as EventListener)
     },
@@ -194,8 +225,9 @@ function isTaskNotice(value: unknown): value is TaskNotice {
 /** 一次性完成通知：持久去重后交给 coordinator 弹卡；同一 id 跨刷新只弹一次。 */
 function ingestNotice(raw: unknown): void {
   if (!isTaskNotice(raw)) return
-  if (!rememberNotice(raw.id)) return
-  coordinator.deliverNotice(raw)
+  const notice = raw as TaskNotice
+  if (!rememberNotice(notice.id, notice.task.settledAt, notice.task.project)) return
+  coordinator.deliverNotice(notice)
 }
 
 /**
@@ -216,8 +248,18 @@ export function notifyTaskActionFailed(): void {
  * notify 只把通知发到总线上、不做任何 UI；范围由订阅侧 scope/project 决定。
  */
 export function defaultTaskHost(originId?: () => string | undefined): CoordinatorHost {
+  const warnedMissingOrigin = new Set<string>()
   const isOrigin = (task: TaskRecord): boolean => {
     const current = originId?.()
+    if (current !== undefined && task.origin === undefined) {
+      // 服务端没回显 origin 时 fail-open 按「弹」处理（不漏结果），但必须可诊断——
+      // 否则配置错误表现为「每个标签都弹」，消费方无从定位（专家评判 #3）。
+      const key = `${task.project}\u0000${task.id}`
+      if (!warnedMissingOrigin.has(key)) {
+        warnedMissingOrigin.add(key)
+        console.warn('dsh-plugin-core: task.origin missing, origin-scoped toast falls open', task.project, task.id)
+      }
+    }
     return current === undefined || task.origin === undefined || task.origin === current
   }
 
@@ -252,7 +294,19 @@ export function defaultTaskHost(originId?: () => string | undefined): Coordinato
   }
 }
 
-/** 接线宿主能力。client apply 调一次；同 streamUrl 重复调用按 refcount 累加引用，不重复建流。 */
+/**
+ * 接线宿主能力。client apply 调一次；同 streamUrl 重复调用按 refcount 累加引用，不重复建流。
+ *
+ * 消费方契约（core 不代劳，详见 docs/guides/background-task-center.md「第二轮封口」）：
+ * - 依赖必须与本包同号；钉旧版则 v2 协议修复全部不生效
+ * - TaskNotice.id 要跨宿主重启全局唯一（UUID / 持久化计数），不能只用内存 ++seq
+ * - onSubmit 与所有 SSE 帧 / 通知回显 origin / panelId，否则 scope:'origin' 与面板跳回失效
+ * - 同 key 的 startedAt 严格递增；core 用它认运行实例，撞号时新运行会被当重放吞掉
+ * - 401 停机后请在 onGiveUp 里同步刷新凭证再重接线；连续两次 permanent 失败后 core 进入
+ *   冷却窗口，窗口内 resume / 在线唤醒 no-op（成功建流清零），同步刷新后重接线仍立即生效
+ * - online 默认唤醒停机，失败再次停机（有界）；严格「仅显式恢复」应用设
+ *   autoRecoverOnOnline:false，凭证就绪后显式调 resume
+ */
 export function connectTaskCenter(host: TaskCenterHost): () => void {
   // 只覆盖显式提供的字段：传 undefined 不该抹掉上一次接线得到的 streamUrl/submitUrl 等。
   const patch: Record<string, unknown> = {}
@@ -289,13 +343,19 @@ export function connectTaskCenter(host: TaskCenterHost): () => void {
     if (lifecycle === undefined) {
       let direct: TaskStreamConnection | undefined
       let directHalted = false
+      let directStreak = 0
+      let lastPermanentAt = 0
       const openDirect = (): void => {
         direct = connectTaskStream({
           streamUrl: key,
           headers: stableHost.headers,
           retryDelaysMs: stableHost.retryDelaysMs,
           onGiveUp: (reason) => {
-            if (reason.permanent) directHalted = true
+            if (reason.permanent) {
+              directHalted = true
+              directStreak += 1
+              lastPermanentAt = Date.now()
+            }
             stableHost.onGiveUp?.(reason)
           },
           onTask: (task, snapshot) => { ingestTask(task, snapshot) },
@@ -307,9 +367,12 @@ export function connectTaskCenter(host: TaskCenterHost): () => void {
         key, refs: 0,
         dispose: () => direct?.close(),
         // 直连没有 Web Locks，401 后底层流已 closed：只有真停机时才重建（headers 取新凭证）。
+        // 连续 permanent 失败且凭证未刷新时冷却，与单飞路径同一"有界"语义。
         resume: () => {
           if (!directHalted) return
+          if (directStreak >= 2 && Date.now() - lastPermanentAt < 3_000) return
           directHalted = false
+          directStreak = 0
           direct?.close()
           openDirect()
         },
@@ -323,7 +386,9 @@ export function connectTaskCenter(host: TaskCenterHost): () => void {
         onGiveUp: (reason) => { stableHost.onGiveUp?.(reason) },
         onTask: (task, snapshot) => { ingestTask(task, snapshot) },
         onNotice: ingestNotice,
-        getState: () => [...taskStore.getSnapshot().tasks] as unknown[],
+        // 只把「真源已确认」的行当基线：本地乐观行随 POST 在飞，回滚只在本标签发生，
+        // 发出去会让别的标签留下永不消失的幽灵 running（消费方复查 #6）。
+        getState: () => taskStore.getBaseline() as unknown[],
         applyBaseline: (tasks) => {
           const valid = tasks.filter((task): task is TaskRecord => isTaskRecord(task))
           taskStore.mergeBaseline(valid)

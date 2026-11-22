@@ -27,6 +27,8 @@ const WATCHDOG_MS = 50000; // > 2 × keepAlive(25s)，保活字节重置计时
 const LIFETIME_MS = 10 * 60 * 1000; // 连接寿命上限，到期主动轮换
 const NOTICE_LIMIT = 512; // 与 api.ts 的 SEEN_NOTICE_LIMIT 对齐
 const STATE_RETRY_MS = 300;
+/** 连续 permanent giveUp 达 2 次后的 resume 冷却窗口：凭证未就绪的恢复在此窗口内 no-op。 */
+const RESUME_COOLDOWN_MS = 3000;
 const REPLAY_WINDOW_MS = 600; // 建连回放窗口：窗口内 notice 只入缓存不逐条广播
 const BACKOFF_MAX_MS = 30000; // 断流后重申请锁的退避上限
 /**
@@ -162,6 +164,10 @@ export function connectSharedTaskStream(options) {
         noticeSince: Date.now(),
         backoffMs: STATE_RETRY_MS,
         wake: new AbortController(),
+        lastClaimKey: undefined,
+        lastClaimAt: 0,
+        permanentStreak: 0,
+        lastPermanentAt: 0,
         lifecycleBound: [],
     };
     function openChannel() {
@@ -222,6 +228,21 @@ export function connectSharedTaskStream(options) {
             clearTimeout(state.stateRetry);
             state.stateRetry = undefined;
         }
+    }
+    /**
+     * Fencing 挑战（跨 realm 低届的根治）：收到低届 owner 的信号时，持有更高届的非 owner
+     * 广播 claim 要求对方让锁。localStorage 被清空 / 隐私模式下每个标签的内存兜底各自独立，
+     * 冷标签可能以 tick=1 抢锁，在册高届 follower 会把它当旧届丢弃且不再拉基线——
+     * 没有这条挑战就永久冻结。同一低届 5s 内只挑战一次，避免每帧刷 claim。
+     */
+    function challengeLowEpoch(low) {
+        const key = `${low.tick}:${low.id}`;
+        const now = monotonic();
+        if (state.lastClaimKey === key && now - state.lastClaimAt < 5000)
+            return;
+        state.lastClaimKey = key;
+        state.lastClaimAt = now;
+        send({ kind: 'signal', what: 'claim' }); // epoch 取本标签 currentEpoch（非 owner 走它）
     }
     function scheduleStateRetry() {
         if (state.stateRetry !== undefined)
@@ -358,10 +379,21 @@ export function connectSharedTaskStream(options) {
             return;
         }
         // signal 降级为纯 hint（#1）：只触发重拉，绝不改 currentEpoch/seenSeq。
-        // 旧届 hint 直接丢弃，避免无谓重拉（即便放行也只是多拉一次，不破坏正确性）。
         if (data.kind === 'signal') {
-            if (compareEpoch(data.epoch, state.currentEpoch) < 0)
+            const cmp = compareEpoch(data.epoch, state.currentEpoch);
+            if (cmp < 0) {
+                // 低届 owner 存在：若本标签持有更高届，fencing 挑战让它让锁（跨 realm 唯一自愈路径）。
+                if (state.currentEpoch.tick > 0 && state.lease === undefined)
+                    challengeLowEpoch(data.epoch);
                 return;
+            }
+            // 更高届的 claim：本标签若正在持锁，立即让锁给高届方（它会在 run loop 中重申请）。
+            // 仍不改 currentEpoch/seenSeq——届安装只走 state-reply。
+            if (data.what === 'claim') {
+                if (cmp > 0 && state.lease !== undefined)
+                    endLease(state.lease);
+                return;
+            }
             if (data.what === 'epoch' || data.what === 'cache' || data.what === 'dead') {
                 state.baselineReceived = false;
                 requestState('signal');
@@ -415,6 +447,8 @@ export function connectSharedTaskStream(options) {
             return;
         lease.replayDone = true;
         lease.ready = true;
+        // 真源连通即凭证有效：清零连续 401 计数，下次停机重新从 0 算（有界不误伤已恢复的应用）。
+        state.permanentStreak = 0;
         // 广播一次轻量信号让 follower 自拉取缓存（outbox 回放批次不逐条扇出）。
         send({ kind: 'signal', what: 'cache' });
     }
@@ -524,6 +558,10 @@ export function connectSharedTaskStream(options) {
                     console.error('dsh-plugin-core: shared task onGiveUp failed', error);
                 }
                 send({ kind: 'signal', what: 'dead' });
+                if (reason.permanent) {
+                    state.permanentStreak += 1;
+                    state.lastPermanentAt = monotonic();
+                }
                 // permanent（401/403/404）：让出锁 + 置 halted 停重申请，杜绝无限轮转刷请求（#2）。
                 // 非 permanent（5xx/网络退避用尽）：只让锁，run loop 正常退避重申请。
                 // 两条路都释放锁——持锁停机是错的；恢复靠 recover/resume 唤醒，不会永久离线。
@@ -588,8 +626,19 @@ export function connectSharedTaskStream(options) {
             state.backoffMs = Math.min(state.backoffMs * 2, BACKOFF_MAX_MS);
         }
     }
+    /** 连续 permanent 失败后的冷却：防止凭证未就绪的 resume/在线唤醒刷出无界 401（专家评判 #5）。 */
+    function resumeCoolingDown() {
+        return state.permanentStreak >= 2 && monotonic() - state.lastPermanentAt < RESUME_COOLDOWN_MS;
+    }
     function recover() {
         if (state.disposed || state.controller.signal.aborted || state.offline)
+            return;
+        if (!state.halted) {
+            // 未停机时 awaken 只重置退避即可，不必打断在飞 sleep（保持原语义）。
+            state.backoffMs = STATE_RETRY_MS;
+            return;
+        }
+        if (resumeCoolingDown())
             return;
         // 可见性/在线恢复：清除 permanent 停机，允许重新申请锁（#2：不永久离线）。
         state.halted = false;
@@ -631,7 +680,10 @@ export function connectSharedTaskStream(options) {
         bound('pageshow', onWake);
         bound('resume', onWake);
         bound('visibilitychange', onWake);
-        bound('online', onWake);
+        const autoOnline = lifecycle.autoRecoverOnOnline;
+        if (autoOnline === undefined || (typeof autoOnline === 'function' ? autoOnline() : autoOnline)) {
+            bound('online', onWake);
+        }
     }
     openChannel();
     void run();
@@ -663,6 +715,8 @@ export function connectSharedTaskStream(options) {
             return;
         if (!state.halted)
             return; // 没停机就不动，避免重复接线打断在飞退避
+        if (resumeCoolingDown())
+            return; // 连续 401 未刷新凭证时冷却，杜绝无界轮转
         state.halted = false;
         state.backoffMs = STATE_RETRY_MS;
         state.wake.abort();

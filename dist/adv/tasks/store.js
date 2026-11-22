@@ -1,4 +1,5 @@
-const STORE_KEY = Symbol.for('dsh-plugin-core/tasks/store/v1');
+// 与单飞协议 v2 / notify v2 对齐：同页混版插件不得共享同一 store（消费方第二轮封口 #1）。
+const STORE_KEY = Symbol.for('dsh-plugin-core/tasks/store/v2');
 function sameRecord(a, b) {
     return JSON.stringify(a) === JSON.stringify(b);
 }
@@ -161,6 +162,9 @@ function createStore() {
         },
         mergeBaseline(records) {
             mergeInto(records, true);
+        },
+        getBaseline() {
+            return snapshot.tasks.filter((task) => !optimistic.has(settlementKey(task)));
         },
         get(id) {
             return tasks.get(id);

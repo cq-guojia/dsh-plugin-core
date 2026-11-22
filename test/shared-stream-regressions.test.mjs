@@ -524,8 +524,8 @@ test('乐观行归一到已有服务端行后回滚，标记按 id 反查清除�
 
 // ===== 消费方 v0.45.0 复查反馈的回归（9 条中 core 侧真问题的根因解验证）=====
 
-test('#2 冷标签继承持久化的最大 tick；存储被清空也不回拨内存真值（复查 P0）', async () => {
-  // 唯一 streamUrl → 唯一 ns → 内存 fallback Map 隔离，不受其它测试污染。
+test('#2 同 realm：冷标签继承持久化的最大 tick，存储清空不回拨内存真值（复查 P0）', async () => {
+  // 注意：本例同进程共享模块级 fallback，只覆盖单 realm；跨 realm 场景见下一条 fencing 测试。
   const url = `/stream-cold-owner-${Math.random().toString(36).slice(2)}`
   const bus = makeBus()
   const locks = makeLocks()
@@ -595,6 +595,63 @@ test('#2 冷标签继承持久化的最大 tick；存储被清空也不回拨内
     offCleared?.()
     offCold?.()
     offSeed?.()
+    globalThis.fetch = originalFetch
+    globalThis.localStorage = originalStorage
+  }
+})
+
+test('#2 跨 realm：低届 owner 被高届 follower fencing 后让锁并重铸更高届（消费方 P0）', async () => {
+  // 真跨 realm：带不同 query 的动态 import 得到两份模块实例，各自持有独立的 maxTickFallback。
+  // 内存兜底不再共享，正是隐私模式 / 存储清空后每个浏览器标签的真实处境。
+  const stamp = Math.random().toString(36).slice(2)
+  const { connectSharedTaskStream: connectRealmB } = await import(
+    `../dist/adv/tasks/shared-stream.js?fencing-realm=${stamp}`
+  )
+  const originalFetch = globalThis.fetch
+  const originalStorage = globalThis.localStorage
+  globalThis.fetch = sseFetch()
+  globalThis.localStorage = undefined // 无存储：两 realm 的 fallback 各从 0 起
+  const bus = makeBus()
+  const locks = makeLocks()
+  // A 用永不授予的锁管理器：保持在册 follower 态（消费方场景里 A 是刚让锁的老 owner）。
+  const followerLocks = { request: () => new Promise(() => {}) }
+  const opts = (factory, lockManager) => ({
+    streamUrl: `/stream-fence-${stamp}`, lockFactory: () => lockManager, channelFactory: factory,
+    getState: () => [], applyBaseline: () => {}, onTask: () => {},
+  })
+  let offA
+  let offB
+  try {
+    // A（本模块 realm）：注入高届 reply，使它成为持有 {5,A} 的在册 follower。
+    const spyA = spyChannel(bus)
+    offA = connectSharedTaskStream(opts(spyA.factory, followerLocks))
+    await wait(250)
+    const reqA = spyA.sent.find((m) => m.kind === 'state-request')
+    assert.ok(reqA?.from, '假绿守卫：A 发出基线请求')
+    const high = { tick: 5, id: 'in-service-A' }
+    spyA.inject().postMessage({
+      v: 2, ns: reqA.ns, kind: 'state-reply', epoch: high, seq: 0,
+      to: reqA.from, from: 'injector', ready: true, tasks: [], notices: [],
+    })
+    await wait(50)
+
+    // B（另一 realm，空存储 / 空内存兜底）：抢锁后从 0 铸出 {1,B}——低于在册 A。
+    const spyB = spyChannel(bus)
+    offB = connectRealmB(opts(spyB.factory, locks))
+    await wait(700)
+    const bEpochs = spyB.sent.filter((m) => m.kind === 'signal' && m.what === 'epoch').map((m) => m.epoch)
+    assert.ok(bEpochs.length >= 1 && bEpochs[0].tick === 1, `B 初始低届 1，实际 ${bEpochs[0]?.tick}`)
+
+    // A 应以自己的高届广播 claim；B 收到后让锁，重铸出严格更高的届。
+    const claims = spyA.sent.filter((m) => m.kind === 'signal' && m.what === 'claim')
+    assert.ok(claims.some((m) => m.epoch.tick === high.tick), '高届 follower 广播了 fencing claim')
+    await wait(700)
+    const bFinal = spyB.sent.filter((m) => m.kind === 'signal' && m.what === 'epoch').map((m) => m.epoch)
+    assert.ok(bFinal.some((e) => e.tick > high.tick),
+      `低届 owner 让锁后重铸出 >${high.tick} 的届，实际 ${bFinal.map((e) => e.tick).join(',')}`)
+  } finally {
+    offB?.()
+    offA?.()
     globalThis.fetch = originalFetch
     globalThis.localStorage = originalStorage
   }
@@ -798,6 +855,64 @@ test('协议 v2 物理隔离：v1 帧被拒，锁与通道名均带 v2', async (
     assert.equal(tasks, 0, 'v1 frame 被 isWire 拒收')
     assert.ok(names.length >= 2 && names.every((name) => name.includes('v2/')),
       '锁名与通道名都在 v2 命名空间')
+  } finally {
+    off?.()
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('连续 permanent 401 后的 resume 有冷却；建流成功清零（专家评判 #5）', async () => {
+  const bus = makeBus()
+  const locks = makeLocks()
+  const originalFetch = globalThis.fetch
+  let fetches = 0
+  globalThis.fetch = sseFetch((_init, index) => {
+    fetches += 1
+    return index < 2 ? httpError(401) : undefined
+  })
+  let off
+  try {
+    off = connectSharedTaskStream({
+      streamUrl: `/stream-cooldown-${Math.random().toString(36).slice(2)}`,
+      lockFactory: () => locks, channelFactory: bus.factory,
+      getState: () => [], applyBaseline: () => {}, onTask: () => {},
+    })
+    await wait(400)
+    assert.ok(fetches >= 1, '首次 401 已请求')
+    off.resume() // 第一次恢复：streak=1，放通 → 第二次 401
+    await wait(400)
+    const afterTwo = fetches
+    assert.ok(afterTwo >= 2, `两次 401 各请求一次（实际 ${afterTwo}）`)
+    // 凭证未刷新就重复接线：连续两次 permanent 后冷却窗口内 resume 必须 no-op。
+    off.resume()
+    off.resume()
+    await wait(200)
+    assert.equal(fetches, afterTwo, '冷却期内 resume 不刷 401')
+  } finally {
+    off?.()
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('autoRecoverOnOnline=false 时不绑 online 监听（专家评判 #6）', async () => {
+  const added = []
+  const lifecycle = {
+    addEventListener(type, listener) { added.push({ type, listener }) },
+    removeEventListener(type) { added.splice(added.findIndex((x) => x.type === type), 1) },
+    isVisible: () => true,
+    autoRecoverOnOnline: false,
+  }
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = sseFetch()
+  let off
+  try {
+    off = connectSharedTaskStream({
+      streamUrl: `/stream-online-off-${Math.random().toString(36).slice(2)}`,
+      lockFactory: () => makeLocks(), channelFactory: makeBus().factory, lifecycle,
+      getState: () => [], applyBaseline: () => {}, onTask: () => {},
+    })
+    assert.ok(!added.some((x) => x.type === 'online'), '未绑 online')
+    assert.ok(added.some((x) => x.type === 'visibilitychange'), '仍绑可见性事件')
   } finally {
     off?.()
     globalThis.fetch = originalFetch

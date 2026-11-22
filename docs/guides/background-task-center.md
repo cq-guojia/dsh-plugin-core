@@ -129,7 +129,7 @@
 
 浏览器缺 `navigator.locks` 时不会退回每标签各开一条——会显式告警并保持离线，提交仍可用。
 
-**届与通知水位（v0.45.x，含 0.45.1 加固）**：同源标签视为一个逻辑进程，owner 的届是 Lamport `{tick,id}`；
+**届与通知水位（v0.45.x，含后续加固，以核心 `package.json` 为准）**：同源标签视为一个逻辑进程，owner 的届是 Lamport `{tick,id}`；
 最大 tick 只由持锁 owner 写 localStorage（follower 不写，避免跨标签 read-modify-write 把高值覆盖回低值），
 无存储时退模块内存；读取取存储与内存的最大值，存储被清空也不回拨。新标签继承后 +1，不会铸出低于在册
 follower 的届。`signal` 只是「去拉基线」的提示、不安装届，只有 `state-reply` 是安装入口；旧届 reply
@@ -144,7 +144,7 @@ follower 的届。`signal` 只是「去拉基线」的提示、不安装届，�
 
 | 反馈 | 研判结论 | 责任方 / 处理 |
 |---|---|---|
-| ① 升级后仍见旧行为 | 消费方依赖仍钉 `dsh-plugin-core@0.44.0`，旧包当然没有 v2 修复；core 不做旧版本兼容分支（已定口径，兼容分支只会把协议倒回不可比较的随机届） | 消费方升到 `0.45.1` 并重新构建产物 |
+| ① 升级后仍见旧行为 | 消费方依赖仍钉 `dsh-plugin-core@0.44.0`，旧包当然没有 v2 修复；core 不做旧版本兼容分支（已定口径，兼容分支只会把协议倒回不可比较的随机届） | 消费方升到**核心当前版本**（两包同号，以 `package.json` 为准）并重新构建产物 |
 | ② 冷标签 owner 届低于在册 follower | core 真问题：Lamport 时钟只存内存，新标签从 0 起铸届会被 follower 三道闸门全拒；已改为最大 tick 只由持锁 owner 落盘，读取取存储与内存最大值 | core 已修（#2），消费方随升级获得 |
 | ③ 跨运行 `settledAt` 被旧运行污染 | core 真问题：`carryIdentity` 无条件继承旧终态时刻；同运行 first-wins 应保留，跨运行必须取新值 | core 已修（#3），消费方随升级获得 |
 | ④ notice id 重启后重号 | 非 core bug：core 按 `TaskNotice.id` 在 sessionStorage 有界去重（最近 512 个），id 必须**跨会话/重启全局唯一**；按内容或时间去重会误吞真重跑的同内容通知，core 无法替服务端造身份（这条去重链有端到端回归） | 消费方用持久化单调序号或 UUID 生成 id，不要从 0 重计 |
@@ -153,6 +153,23 @@ follower 的届。`signal` 只是「去拉基线」的提示、不安装届，�
 | ⑦ 切走标签误清 halted | core 真问题：`visibilitychange` 隐藏时也触发，被当纯 show；所有唤醒事件已统一过 `isVisible()` 闸门 | core 已修（#7），消费方随升级获得 |
 | ⑧ 同毫秒 `startedAt` 撞号 | 非 core bug：core 只能用服务端已有的 `startedAt` 认运行实例，单方加随机/计数会伪造一个与真源对不上的身份；同 key 严格递增是服务端可保证的契约 | 服务端保证同 key `startedAt` 严格递增，或另行评审引入显式 `runId` 契约 |
 | ⑨ 基线声明去重但重复回调 | core 真问题：`cacheNotice()` 内部先 `markSeen`，`applyBaseline` 再查集合会把当前这条自己吞掉；已改为入缓存前快照 `fresh` | core 已修（#9），消费方随升级获得 |
+
+### 第二轮封口：专家评判后的 core 责任与契约
+
+六条「非 bug」经独立 API 评审逐条复核，结论并非全部甩给消费方——其中四条暴露了 core 自身的责任缺口，已一并治本；剩余两条维持契约但写清可履行方式。
+
+| 条目 | 专家评判与结论 | 消费方 / 服务端怎么用 |
+|---|---|---|
+| 跨 realm 低届 owner（隐私模式 / 存储被清空，各标签内存兜底独立） | **core 真缺口，已修**：高届 follower 广播 fencing claim，低届 owner 让锁并重铸更高届；不再依赖共享存储 | 随升级获得 |
+| 乐观行随 owner 基线传播成跨标签幽灵 running | **core 真缺口，已修**：`getBaseline()` 只发真源已确认的行，乐观行不外泄 | 随升级获得；POST 在飞期间别的标签看不到该行 |
+| 同页混版共享 store / executor | **core 隔离缺口，已修**：store / executor 的全局收口符号随协议升到 v2，与 wire / notify 一致；0.44 与新版插件同页不再共享池和注册表 | 同页并存版本各自独立；仍应统一升到当前版本 |
+| 512 条 outbox 回放后老通知重弹 | **core 缺口，已修**：去重除 id 集合外，按 project 记已见最大 `settledAt` 水位；id 被挤出 512 后，`settledAt` 更早的回放仍被吞（同毫秒靠 id 去重，不误伤） | 随升级获得；通知 id 仍须全局唯一 |
+| `origin` / `panelId` 缺失静默多弹 | **core 诊断缺口，已修**：`scope:'origin'` 且服务端没回显 origin 时，每个任务 id 打一次 `console.warn`，不再静默退化 | 服务端在 SSE 帧 / 通知里回显 `origin` / `panelId`（提交响应无需回显，core 不读它）。fail-open 保留本地值仍刻意不改为拒收——拒收会让任务从列表消失 |
+| 连续 401 的「有界」无 core 机制 | **core 缺口，已修**：连续两次 permanent giveUp 后，冷却窗口内的 resume / online 唤醒 no-op；成功建流清零。有界从文档承诺变成 core 保证 | 在 `onGiveUp` 里刷新凭证；同步刷新后立即重接线仍立即生效（streak=1 不受冷却） |
+| `online` 唤醒无法关闭 | **core 缺口，已修**：`TaskCenterHost.autoRecoverOnOnline?: boolean`（默认 true），设 false 则完全不绑 online 监听 | 严格「仅显式恢复」应用设 `autoRecoverOnOnline:false`，凭证就绪后显式调 `resume`。`visibilitychange` 等可见性恢复仍生效 |
+| 消费方仍钉 `0.44.0` | 先决条件，非 core 可代劳 | 把依赖升到**核心当前版本**（两包同号，以 `package.json` 为准），重构产物再部署；钉旧版等于所有修复都不生效 |
+| notice id 重启重号被吞 | 契约，非 core bug：`id` 是通知唯一身份，core 无法替服务端造一个跨重启稳定的 id | 生成 id 时加入**宿主实例级随机熵**（UUID 或持久化到磁盘的单调计数），不要只用内存 `++seq` |
+| 同毫秒 `startedAt` 撞号 | 契约，非 core bug：core 只能认服务端给的 `startedAt`，单方造 id 会与真源对不上；撞号时新 running 会被当重放吞 | 服务端保证同 key 的 `startedAt` **严格递增**（`max(Date.now(), last+1)`）；做不到时需评审显式 `runId` 契约（包含 store 身份判定与文档同步），core 不单方扩展协议 |
 
 ## 验证
 
@@ -191,3 +208,5 @@ follower 的届。`signal` 只是「去拉基线」的提示、不安装届，�
 - 2026-11-22：401 permanent 改为「让锁停机 + resume/可见性恢复」（不再无意义退避重连）；协议升 v2（Lamport 届），验证清单补 401 恢复步骤
 - 2026-11-22（消费方 v0.45.0 复查）：补届/水位契约与 9 条反馈的处置表（core 修 ②③⑥⑦⑨，其余 ④条判定为消费方/服务端契约并写明依据）；验收补冷标签接管、新标签不弹历史通知、重跑再结算、隐藏态不唤醒
 - 2026-11-22（专家复查加固）：tick 改由持锁 owner 独占落盘 + 读取取存储/内存最大值，消除跨标签 RMW 回拨；通知水位改 `>=` 避免同毫秒漏投；所有唤醒事件统一过可见性闸门；补 v1 隔离、sessionStorage 去重与存储清空回归
+- 2026-11-22（第二轮封口）：修跨 realm 低届 owner 永久脱节（fencing claim + 让锁重铸，真跨 realm 动态 import 回归替掉同进程假绿）；修乐观行随基线传播成跨标签幽灵行（`getBaseline` 只发真源确认行）；其余六条明确为消费方 / 服务端契约并写入「第二轮封口」表与 API 文档，含升级同号、notice id 全局唯一、回显 origin/panelId、startedAt 严格递增、凭证刷新时机、online 唤醒口径
+- 2026-11-22（专家评判复核）：六条契约逐条独立评审，四条判为 core 责任已修（符号 v2 隔离、512+settledAt 水位、origin 缺失告警、401 冷却真实有界），`autoRecoverOnOnline` 开关落地；删提交响应回显死条款，评审结论写入「专家评判后的 core 责任与契约」表

@@ -78,6 +78,19 @@ test('model：isSettled 只认 done/failed', () => {
 })
 
 
+test('store：getBaseline 排除本地乐观行，回滚前后都不外泄幽灵 running（消费方 #6）', () => {
+  const s = createTaskStore()
+  const confirmed = rec({ id: 'srv-1', key: 'k1', state: 'done', startedAt: 1, settledAt: 2 })
+  s.merge([confirmed])
+  const optimistic = s.upsert(rec({ id: 'submit:p\u0000k2', key: 'k2' })).task
+  const baseline = s.getBaseline()
+  assert.ok(baseline.some((t) => t.id === 'srv-1'), '真源行照常进基线')
+  assert.ok(!baseline.some((t) => t.id === optimistic.id), '本地乐观行不进跨标签基线')
+  assert.equal(s.getSnapshot().tasks.some((t) => t.id === optimistic.id), true, '乐观行本地仍可见')
+  s.removeRunning(optimistic.id)
+  assert.equal(s.getBaseline().some((t) => t.id === optimistic.id), false, '回滚后基线干净')
+})
+
 test('store：handler 按 project 命名空间，同 id 不同项目互不覆盖，裸 id 兜底', () => {
   const s = createTaskStore()
   const hA = () => {}

@@ -9,8 +9,8 @@
  * （Symbol.for 收口），所以 A 插件注册的 handler，B 插件发起的同名任务也能调到。
  * 零 React、零宿主模块、零 DOM，可在 node 裸跑。
  */
-/** 与池一致的多副本收口键；版本号变化时所有副本一起换，不会读到半新半旧。 */
-const REGISTRY_KEY = Symbol.for('dsh-plugin-core/executors/v1');
+/** 与池一致的多副本收口键；版本号变化时所有副本一起换，不会读到半新半旧（现为 v2）。 */
+const REGISTRY_KEY = Symbol.for('dsh-plugin-core/executors/v2');
 function createRegistry() {
     const handlers = new Map();
     /** 每次注册一个唯一 token：dispose 只认自己那一次，同名重注册后旧 dispose 绝不误删。 */

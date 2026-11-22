@@ -30,6 +30,12 @@ export interface TaskCenterHost extends CoordinatorHost {
      * visibilitychange / online 也会自动唤醒。不传则静默。
      */
     onGiveUp?: (reason: TaskStreamGiveUpReason) => void;
+    /**
+     * 是否把 online 事件当作停机唤醒源（默认 true）。设为 false 后不会因网络恢复自动用旧
+     * headers 重试——适合"凭证刷新完成后才显式 resume"的应用。visibilitychange/pageshow/
+     * resume 仍按可见性闸门恢复；要完全仅显式恢复，请同时不接入页面生命周期（Node 模式）。
+     */
+    autoRecoverOnOnline?: boolean;
 }
 /** 宿主 client ctx 的最小形状：注入 layout 服务拿面板 id 与切面板。 */
 export interface LayoutClientContext {
@@ -61,7 +67,19 @@ export declare function notifyTaskActionFailed(): void;
  * notify 只把通知发到总线上、不做任何 UI；范围由订阅侧 scope/project 决定。
  */
 export declare function defaultTaskHost(originId?: () => string | undefined): CoordinatorHost;
-/** 接线宿主能力。client apply 调一次；同 streamUrl 重复调用按 refcount 累加引用，不重复建流。 */
+/**
+ * 接线宿主能力。client apply 调一次；同 streamUrl 重复调用按 refcount 累加引用，不重复建流。
+ *
+ * 消费方契约（core 不代劳，详见 docs/guides/background-task-center.md「第二轮封口」）：
+ * - 依赖必须与本包同号；钉旧版则 v2 协议修复全部不生效
+ * - TaskNotice.id 要跨宿主重启全局唯一（UUID / 持久化计数），不能只用内存 ++seq
+ * - onSubmit 与所有 SSE 帧 / 通知回显 origin / panelId，否则 scope:'origin' 与面板跳回失效
+ * - 同 key 的 startedAt 严格递增；core 用它认运行实例，撞号时新运行会被当重放吞掉
+ * - 401 停机后请在 onGiveUp 里同步刷新凭证再重接线；连续两次 permanent 失败后 core 进入
+ *   冷却窗口，窗口内 resume / 在线唤醒 no-op（成功建流清零），同步刷新后重接线仍立即生效
+ * - online 默认唤醒停机，失败再次停机（有界）；严格「仅显式恢复」应用设
+ *   autoRecoverOnOnline:false，凭证就绪后显式调 resume
+ */
 export declare function connectTaskCenter(host: TaskCenterHost): () => void;
 /**
  * 从宿主 client ctx 接 layout：拿到 activePanelId（发起时记进任务）与 selectPanel（点按钮切回面板）。

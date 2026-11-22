@@ -20,11 +20,14 @@ import { taskStore } from './store.js';
  * 用 sessionStorage 而非 localStorage：刷新保留（outbox 重放的历史不重弹），但每个标签页
  * 独立、关页即清——`scope:'all'` 要求每个页面各弹一次，同源共享的 localStorage 会让先到的
  * 页面写 id、后到的页面读到后吞卡。node / 无存储环境退化为模块内存 Set（测试用）。
- * 有界：只留最近 512 个 id。
+ * 有界：只留最近 512 个 id；另按 project 记已见通知的最大 settledAt 水位——
+ * 服务端 outbox 超过 512 条时最早那批 id 会被挤出集合，只靠 id 会重弹；
+ * 水位按时间兜底，`settledAt < 水位` 的老回放直接吞（同毫秒用 `<` 不误伤，靠 id 去重）。
  */
 const SEEN_NOTICE_KEY = 'dshpc:task-notices:seen';
 const SEEN_NOTICE_LIMIT = 512;
-const seenFallback = new Set();
+const emptySeen = () => ({ ids: [], watermark: {} });
+const seenFallback = emptySeen();
 function noticeStore() {
     try {
         return typeof sessionStorage === 'undefined' ? undefined : sessionStorage;
@@ -35,37 +38,51 @@ function noticeStore() {
 }
 function loadSeenNotices() {
     const store = noticeStore();
+    if (store === undefined)
+        return seenFallback;
     try {
-        if (store === undefined)
-            return seenFallback;
         const raw = store.getItem(SEEN_NOTICE_KEY);
-        return new Set(raw === null ? [] : JSON.parse(raw));
+        if (raw === null)
+            return emptySeen();
+        const parsed = JSON.parse(raw);
+        // 兼容旧格式（纯 id 数组）：升级后首次读取不会把历史去重状态丢掉。
+        return Array.isArray(parsed)
+            ? { ids: parsed, watermark: {} }
+            : { ids: Array.isArray(parsed.ids) ? parsed.ids : [], watermark: parsed.watermark ?? {} };
     }
     catch {
         return seenFallback;
     }
 }
-function rememberNotice(id) {
-    const seen = loadSeenNotices();
-    if (seen.has(id))
-        return false;
-    seen.add(id);
-    const trimmed = [...seen].slice(-SEEN_NOTICE_LIMIT);
+function saveSeenNotices(seen) {
+    const trimmed = seen.ids.slice(-SEEN_NOTICE_LIMIT);
     const store = noticeStore();
+    if (store === undefined) {
+        seenFallback.ids = trimmed;
+        seenFallback.watermark = seen.watermark;
+        return;
+    }
     try {
-        if (store !== undefined)
-            store.setItem(SEEN_NOTICE_KEY, JSON.stringify(trimmed));
-        else {
-            seenFallback.clear();
-            for (const value of trimmed)
-                seenFallback.add(value);
-        }
+        store.setItem(SEEN_NOTICE_KEY, JSON.stringify({ ids: trimmed, watermark: seen.watermark }));
     }
     catch {
-        seenFallback.clear();
-        for (const value of trimmed)
-            seenFallback.add(value);
+        seenFallback.ids = trimmed;
+        seenFallback.watermark = seen.watermark;
     }
+}
+function rememberNotice(id, settledAt, project) {
+    const seen = loadSeenNotices();
+    if (settledAt !== undefined && Number.isFinite(settledAt) && project !== undefined) {
+        const prior = seen.watermark[project];
+        if (prior !== undefined && settledAt < prior)
+            return false;
+        if (prior === undefined || settledAt > prior)
+            seen.watermark[project] = settledAt;
+    }
+    if (seen.ids.includes(id))
+        return false;
+    seen.ids.push(id);
+    saveSeenNotices(seen);
     return true;
 }
 /**
@@ -98,6 +115,8 @@ function createPageLifecycle() {
     return {
         // 惰性读取 document，保持零 DOM at import time（Node 不会构造这个适配器）。
         isVisible: () => document.visibilityState === 'visible',
+        // 建流时读取接线配置：同 key 重复接线不重建（也就不会重绑监听），首次接线的值生效。
+        autoRecoverOnOnline: () => stableHost.autoRecoverOnOnline !== false,
         addEventListener(type, listener) {
             target(type).addEventListener(type, listener);
         },
@@ -150,9 +169,10 @@ function isTaskNotice(value) {
 function ingestNotice(raw) {
     if (!isTaskNotice(raw))
         return;
-    if (!rememberNotice(raw.id))
+    const notice = raw;
+    if (!rememberNotice(notice.id, notice.task.settledAt, notice.task.project))
         return;
-    coordinator.deliverNotice(raw);
+    coordinator.deliverNotice(notice);
 }
 /**
  * 按钮点了没生效时的统一提示：任务条目已失效 / 注册 handler 的插件已卸载（找不到方法）。
@@ -171,8 +191,18 @@ export function notifyTaskActionFailed() {
  * notify 只把通知发到总线上、不做任何 UI；范围由订阅侧 scope/project 决定。
  */
 export function defaultTaskHost(originId) {
+    const warnedMissingOrigin = new Set();
     const isOrigin = (task) => {
         const current = originId?.();
+        if (current !== undefined && task.origin === undefined) {
+            // 服务端没回显 origin 时 fail-open 按「弹」处理（不漏结果），但必须可诊断——
+            // 否则配置错误表现为「每个标签都弹」，消费方无从定位（专家评判 #3）。
+            const key = `${task.project}\u0000${task.id}`;
+            if (!warnedMissingOrigin.has(key)) {
+                warnedMissingOrigin.add(key);
+                console.warn('dsh-plugin-core: task.origin missing, origin-scoped toast falls open', task.project, task.id);
+            }
+        }
         return current === undefined || task.origin === undefined || task.origin === current;
     };
     return {
@@ -208,7 +238,19 @@ export function defaultTaskHost(originId) {
         },
     };
 }
-/** 接线宿主能力。client apply 调一次；同 streamUrl 重复调用按 refcount 累加引用，不重复建流。 */
+/**
+ * 接线宿主能力。client apply 调一次；同 streamUrl 重复调用按 refcount 累加引用，不重复建流。
+ *
+ * 消费方契约（core 不代劳，详见 docs/guides/background-task-center.md「第二轮封口」）：
+ * - 依赖必须与本包同号；钉旧版则 v2 协议修复全部不生效
+ * - TaskNotice.id 要跨宿主重启全局唯一（UUID / 持久化计数），不能只用内存 ++seq
+ * - onSubmit 与所有 SSE 帧 / 通知回显 origin / panelId，否则 scope:'origin' 与面板跳回失效
+ * - 同 key 的 startedAt 严格递增；core 用它认运行实例，撞号时新运行会被当重放吞掉
+ * - 401 停机后请在 onGiveUp 里同步刷新凭证再重接线；连续两次 permanent 失败后 core 进入
+ *   冷却窗口，窗口内 resume / 在线唤醒 no-op（成功建流清零），同步刷新后重接线仍立即生效
+ * - online 默认唤醒停机，失败再次停机（有界）；严格「仅显式恢复」应用设
+ *   autoRecoverOnOnline:false，凭证就绪后显式调 resume
+ */
 export function connectTaskCenter(host) {
     // 只覆盖显式提供的字段：传 undefined 不该抹掉上一次接线得到的 streamUrl/submitUrl 等。
     const patch = {};
@@ -248,14 +290,19 @@ export function connectTaskCenter(host) {
         if (lifecycle === undefined) {
             let direct;
             let directHalted = false;
+            let directStreak = 0;
+            let lastPermanentAt = 0;
             const openDirect = () => {
                 direct = connectTaskStream({
                     streamUrl: key,
                     headers: stableHost.headers,
                     retryDelaysMs: stableHost.retryDelaysMs,
                     onGiveUp: (reason) => {
-                        if (reason.permanent)
+                        if (reason.permanent) {
                             directHalted = true;
+                            directStreak += 1;
+                            lastPermanentAt = Date.now();
+                        }
                         stableHost.onGiveUp?.(reason);
                     },
                     onTask: (task, snapshot) => { ingestTask(task, snapshot); },
@@ -267,10 +314,14 @@ export function connectTaskCenter(host) {
                 key, refs: 0,
                 dispose: () => direct?.close(),
                 // 直连没有 Web Locks，401 后底层流已 closed：只有真停机时才重建（headers 取新凭证）。
+                // 连续 permanent 失败且凭证未刷新时冷却，与单飞路径同一"有界"语义。
                 resume: () => {
                     if (!directHalted)
                         return;
+                    if (directStreak >= 2 && Date.now() - lastPermanentAt < 3000)
+                        return;
                     directHalted = false;
+                    directStreak = 0;
                     direct?.close();
                     openDirect();
                 },
@@ -285,7 +336,9 @@ export function connectTaskCenter(host) {
                 onGiveUp: (reason) => { stableHost.onGiveUp?.(reason); },
                 onTask: (task, snapshot) => { ingestTask(task, snapshot); },
                 onNotice: ingestNotice,
-                getState: () => [...taskStore.getSnapshot().tasks],
+                // 只把「真源已确认」的行当基线：本地乐观行随 POST 在飞，回滚只在本标签发生，
+                // 发出去会让别的标签留下永不消失的幽灵 running（消费方复查 #6）。
+                getState: () => taskStore.getBaseline(),
                 applyBaseline: (tasks) => {
                     const valid = tasks.filter((task) => isTaskRecord(task));
                     taskStore.mergeBaseline(valid);

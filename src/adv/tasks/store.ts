@@ -39,6 +39,13 @@ export interface TaskStore {
    * 本地乐观行在真源 running / done 到达时本就该被归一覆盖，不需要「只填不覆盖」兜。
    */
   mergeBaseline(records: readonly TaskRecord[]): void
+  /**
+   * 跨标签基线专用视图：排除本地乐观行。
+   * 乐观行是「本标签 POST 在飞」的临时状态，没有服务端 ack、也没有真源 id；
+   * 一旦随 owner 基线发给别的标签，对端就会拿到一条永远不会被真源纠正的幽灵 running
+   * （POST 失败只在本标签回滚，BC 没有删除帧）。乐观行只留在发起标签本地。
+   */
+  getBaseline(): readonly TaskRecord[]
   get(id: string): TaskRecord | undefined
   /**
    * 删除一条仍在运行中的乐观行（提交失败回滚用）。
@@ -77,7 +84,8 @@ export interface TaskStore {
   clearAll(): void
 }
 
-const STORE_KEY = Symbol.for('dsh-plugin-core/tasks/store/v1')
+// 与单飞协议 v2 / notify v2 对齐：同页混版插件不得共享同一 store（消费方第二轮封口 #1）。
+const STORE_KEY = Symbol.for('dsh-plugin-core/tasks/store/v2')
 
 function sameRecord(a: TaskRecord, b: TaskRecord): boolean {
   return JSON.stringify(a) === JSON.stringify(b)
@@ -236,6 +244,9 @@ function createStore(): TaskStore {
     },
     mergeBaseline(records) {
       mergeInto(records, true)
+    },
+    getBaseline() {
+      return snapshot.tasks.filter((task) => !optimistic.has(settlementKey(task)))
     },
     get(id) {
       return tasks.get(id)
