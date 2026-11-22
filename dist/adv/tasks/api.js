@@ -297,6 +297,8 @@ export function connectTaskCenter(host) {
                     streamUrl: key,
                     headers: stableHost.headers,
                     retryDelaysMs: stableHost.retryDelaysMs,
+                    // 与单飞路径同一口径：只有真源吐字节才算凭证有效，resume 本身不清零。
+                    onAlive: () => { directStreak = 0; },
                     onGiveUp: (reason) => {
                         if (reason.permanent) {
                             directHalted = true;
@@ -321,7 +323,6 @@ export function connectTaskCenter(host) {
                     if (directStreak >= 2 && Date.now() - lastPermanentAt < 3000)
                         return;
                     directHalted = false;
-                    directStreak = 0;
                     direct?.close();
                     openDirect();
                 },

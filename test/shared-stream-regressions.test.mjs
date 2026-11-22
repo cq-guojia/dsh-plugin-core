@@ -918,3 +918,84 @@ test('autoRecoverOnOnline=false 时不绑 online 监听（专家评判 #6）', a
     globalThis.fetch = originalFetch
   }
 })
+
+test('fencing：晚重拉者收到低届 reply / frame 也挑战（第二轮残留 P1）', async () => {
+  const bus = makeBus()
+  const followerLocks = { request: () => new Promise(() => {}) }
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = sseFetch()
+  const { factory, sent, inject } = spyChannel(bus)
+  let off
+  try {
+    off = connectSharedTaskStream({
+      streamUrl: `/stream-fence-late-${Math.random().toString(36).slice(2)}`,
+      lockFactory: () => followerLocks, channelFactory: factory,
+      getState: () => [], applyBaseline: () => {}, onTask: () => {},
+    })
+    await wait(250)
+    const req = sent.find((m) => m.kind === 'state-request')
+    assert.ok(req?.from, '假绿守卫： follower 发出基线请求')
+
+    // A 持有高届 5。低届 owner B（tick=1）已经 ready 并回包：A 晚重拉拿到低届 reply。
+    inject().postMessage({
+      v: 2, ns: req.ns, kind: 'state-reply', epoch: { tick: 5, id: 'in-service-A' }, seq: 0,
+      to: req.from, from: 'injector', ready: true, tasks: [], notices: [],
+    })
+    await wait(50)
+    inject().postMessage({
+      v: 2, ns: req.ns, kind: 'state-reply', epoch: { tick: 1, id: 'low-B' }, seq: 0,
+      to: req.from, from: 'low-B', ready: true, tasks: [], notices: [],
+    })
+    await wait(50)
+    const claims = sent.filter((m) => m.kind === 'signal' && m.what === 'claim')
+    assert.ok(claims.some((m) => m.epoch.tick === 5), '低届 state-reply 触发 fencing claim')
+
+    // 同低届的 frame 走同一 challengeLowEpoch；换一个低届 id 绕过 5s 节流验证第二分支。
+    inject().postMessage({
+      v: 2, ns: req.ns, kind: 'frame', epoch: { tick: 1, id: 'low-C' }, seq: 1,
+      event: 'task', payload: task(), from: 'low-C',
+    })
+    await wait(50)
+    assert.ok(sent.filter((m) => m.kind === 'signal' && m.what === 'claim').length >= 2,
+      '低届 frame 也触发 fencing claim')
+  } finally {
+    off?.()
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('延迟鉴权（600ms 后 401）不误清零 streak，冷却仍生效（第二轮残留 P2）', async () => {
+  const bus = makeBus()
+  const locks = makeLocks()
+  const originalFetch = globalThis.fetch
+  let fetches = 0
+  // 无字节流在 700ms 后才回 401：finishReplay 的 600ms 定时器已到点。
+  globalThis.fetch = (_url, init) => {
+    fetches += 1
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (!init?.signal?.aborted) resolve(httpError(401))
+      }, 700)
+    })
+  }
+  let off
+  try {
+    off = connectSharedTaskStream({
+      streamUrl: `/stream-slow-401-${Math.random().toString(36).slice(2)}`,
+      lockFactory: () => locks, channelFactory: bus.factory,
+      getState: () => [], applyBaseline: () => {}, onTask: () => {},
+    })
+    await wait(900)
+    assert.ok(fetches >= 1, '首轮 401 已请求')
+    off.resume() // streak=1 放通
+    await wait(900)
+    const afterTwo = fetches
+    assert.ok(afterTwo >= 2, `二轮 401 已请求（实际 ${afterTwo}）`)
+    off.resume() // streak=2 → 冷却 no-op
+    await wait(200)
+    assert.equal(fetches, afterTwo, '延迟 401 下冷却仍生效，无界轮转被堵住')
+  } finally {
+    off?.()
+    globalThis.fetch = originalFetch
+  }
+})

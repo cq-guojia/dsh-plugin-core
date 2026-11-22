@@ -364,12 +364,15 @@ export function connectSharedTaskStream(options: SharedStreamOptions): SharedStr
   }
 
   /**
-   * Fencing 挑战（跨 realm 低届的根治）：收到低届 owner 的信号时，持有更高届的非 owner
-   * 广播 claim 要求对方让锁。localStorage 被清空 / 隐私模式下每个标签的内存兜底各自独立，
-   * 冷标签可能以 tick=1 抢锁，在册高届 follower 会把它当旧届丢弃且不再拉基线——
-   * 没有这条挑战就永久冻结。同一低届 5s 内只挑战一次，避免每帧刷 claim。
+   * Fencing 挑战（跨 realm 低届的根治）：持有更高届的非 owner 见到低届 owner 的任何
+   * 权威消息（signal 开局信号 / state-reply 基线回包 / frame 增量帧）都广播 claim
+   * 要求对方让锁。localStorage 被清空 / 隐私模式下各标签内存兜底独立，冷标签可能以
+   * tick=1 抢锁；晚重拉的高届 follower 若只在 signal 分支挑战，拿到的低届 reply / frame
+   * 会被静默丢弃且 baselineReceived 永远 false，冻到 owner 10 分钟寿命轮换。
+   * 同一低届 5s 内只挑战一次，避免每帧刷 claim。
    */
   function challengeLowEpoch(low: Epoch): void {
+    if (state.currentEpoch.tick === 0 || state.lease !== undefined) return
     const key = `${low.tick}:${low.id}`
     const now = monotonic()
     if (state.lastClaimKey === key && now - state.lastClaimAt < 5000) return
@@ -449,7 +452,10 @@ export function connectSharedTaskStream(options: SharedStreamOptions): SharedStr
     if (data.kind === 'state-reply') {
       if (data.to !== state.selfId || data.ready !== true) return
       const cmp = compareEpoch(data.epoch, state.currentEpoch)
-      if (cmp < 0) return
+      if (cmp < 0) {
+        challengeLowEpoch(data.epoch)  // 晚重拉者拿到低届 reply 也要挑战，不能只挡开局 signal
+        return
+      }
       if (cmp === 0 && data.seq < state.seenSeq) return  // 同届 seq 不回退（#7）
       state.currentEpoch = data.epoch
       // seq 是每 lease 从 0 重计：真换届（cmp>0）必须把水位重置到 reply 的 seq，
@@ -517,7 +523,12 @@ export function connectSharedTaskStream(options: SharedStreamOptions): SharedStr
     }
 
     // frame：只认当前届（Lamport 全序相等），旧届帧一律丢弃。
-    if (compareEpoch(data.epoch, state.currentEpoch) !== 0) return
+    const frameCmp = compareEpoch(data.epoch, state.currentEpoch)
+    if (frameCmp < 0) {
+      challengeLowEpoch(data.epoch)  // 低届 owner 持续扇帧时同样挑战，避免冻到寿命轮换
+      return
+    }
+    if (frameCmp !== 0) return
     if (data.kind !== 'frame' || data.seq <= state.seenSeq) return
     if (data.seq > state.seenSeq + 1) {
       state.baselineReceived = false   // 缺口：重拉必须补发（原 #6）
@@ -551,8 +562,9 @@ export function connectSharedTaskStream(options: SharedStreamOptions): SharedStr
     if (lease.replayDone) return
     lease.replayDone = true
     lease.ready = true
-    // 真源连通即凭证有效：清零连续 401 计数，下次停机重新从 0 算（有界不误伤已恢复的应用）。
-    state.permanentStreak = 0
+    // 注意：这里不能清零 permanentStreak——它是定时到点，不代表真源连通。
+    // 服务端延迟鉴权时 600ms 后仍返 401，若在此清零，streak 永远到不了 2，有界失效。
+    // 清零只在 onAlive（读到真实 SSE 字节）里做。
     // 广播一次轻量信号让 follower 自拉取缓存（outbox 回放批次不逐条扇出）。
     send({ kind: 'signal', what: 'cache' })
   }
@@ -617,6 +629,9 @@ export function connectSharedTaskStream(options: SharedStreamOptions): SharedStr
       onAlive: () => {
         lease.lastAliveAt = monotonic()
         state.backoffMs = STATE_RETRY_MS
+        // 只有真源真的吐了字节才算凭证有效——延迟鉴权（600ms 后 401）不会误清零，
+        // 连续 permanent 计数得以累加、冷却真正有界。
+        state.permanentStreak = 0
       },
       onTask: (task, snapshot) => {
         try { options.onTask(task, snapshot) } catch (error) {

@@ -42,7 +42,8 @@
 10. **同源单飞、届全序**：每个 `streamUrl` 一条真 SSE，Web Locks 选主 + BroadcastChannel 扇出。届是 Lamport `{tick,id}`，
     最大 tick 只由持锁 owner 落 localStorage（follower 不写，避免跨标签 read-modify-write 把高值覆盖回低值）；
     无存储退模块内存，且读取时取存储与内存的最大值。跨 realm（隐私模式 / 存储被清空，各标签内存兜底独立）
-    出现低届 owner 时，持更高届的 follower 广播 fencing claim，低届 owner 收到更高届 claim 立即让锁并重铸更高届。
+    出现低届 owner 时，持更高届的 follower 在低届权威消息（signal / state-reply / frame）上广播 fencing claim，
+   低届 owner 收到更高届 claim 立即让锁并重铸更高届；晚重拉者收到低届 reply / frame 也挑战，不会冻到寿命轮换。
     `signal` 只是「去拉基线」的 hint、不安装届，`state-reply` 是唯一安装入口，旧届 reply 一律丢弃，
     真换届重置 seq 水位。
 11. **通知回放按水位裁切、按 id 保证正确性**：`state-request` 带接收方 `noticeSince`（已收通知的最大服务端
@@ -53,7 +54,7 @@
     显式 `resume()` 是应用主动恢复通道，不受闸门约束。
 13. **跨标签基线只发真源行**：本地乐观行（POST 在飞）不外泄——BC 没有删除帧，发出去后回滚只在本标签生效，
     别的标签会留一条永不消失的幽灵 running。`store.getBaseline()` 是跨标签基线的唯一来源。
-14. **有界容错与可诊断**：连续两次 permanent 401 后 resume / 在线唤醒进入冷却（成功建流清零），
+14. **有界容错与可诊断**：连续两次 permanent 401 后 resume / 在线唤醒进入冷却（仅读到真实 SSE 字节清零，非定时到点），
     "有界"是 core 保证而非消费方自觉；`autoRecoverOnOnline:false` 可完全不绑 online 唤醒。
     通知去重除按 id 的 512 有界集合外，按 project 记已见最大 `settledAt` 水位，防 outbox 超限时老通知重弹。
     `scope:'origin'` 却缺 `origin` 时打一次 console.warn，配置错误可发现。
@@ -77,3 +78,4 @@
 - 2026-11-22（v0.45.0）：补单飞 SSE 四条不变量（届全序与持久化、通知水位与 id 去重、halted 可见性闸门、服务端运行身份契约）；澄清客户端水位不是服务端 cursor
 - 2026-11-22（第二轮封口）：届不变量补跨 realm fencing claim（低届 owner 让锁重铸）；新增「跨标签基线只发真源行」不变量；消费方契约补齐 notice id 全局唯一、依赖同号、凭证刷新时机与 online 唤醒口径
 - 2026-11-22（专家评判复核）：新增不变量 14（401 冷却真实有界、online 可关闭、512+settledAt 水位去重、origin 缺失可诊断），15 顺延；同页 store / executor 收口符号升 v2 与协议对齐；删去「提交响应回显 origin/panelId」死条款
+- 2026-11-22（消费方第二轮残留封口）：不变量 10 的 fencing 扩到低届 reply / frame；不变量 14 的 streak 清零改挂真实 SSE 字节
