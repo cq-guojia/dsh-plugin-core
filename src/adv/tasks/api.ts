@@ -96,8 +96,10 @@ export interface TaskCenterHost extends CoordinatorHost {
   /** SSE 重连退避档（默认 1s/2s/4s）；透传给单飞协调器。 */
   retryDelaysMs?: readonly number[]
   /**
-   * SSE 放弃回调（退避用尽 / 不可重试错误，如 401）。默认接线在此收到信号后可以刷新凭证、
-   * 再调一次 connectTaskCenter 显式重连（headers 是函数，天然取新 token）。不传则静默。
+   * SSE 放弃回调（退避用尽 / 不可重试错误，如 401）。permanent（401）会让单飞协调器
+   * 进入 halted（让出锁、停重申请，杜绝无限轮转）；消费方在此刷新凭证后，再次调用
+   * connectTaskCenter 会触发 resume 重新申请锁（headers 是函数，新 lease 取新 token）。
+   * visibilitychange / online 也会自动唤醒。不传则静默。
    */
   onGiveUp?: (reason: TaskStreamGiveUpReason) => void
 }
@@ -120,7 +122,14 @@ interface LayoutService {
 const stableHost: TaskCenterHost = {}
 const coordinator: TaskCoordinator = createCoordinator({ host: stableHost })
 /** 按 streamUrl 收口的单飞连接：同 key 只建一条，多引用靠 refcount 配平。 */
-let sharedConn: { key: string; refs: number; dispose: () => void } | undefined
+interface SharedConn {
+  readonly key: string
+  refs: number
+  readonly dispose: () => void
+  /** permanent giveUp 后恢复；内部自行判断是否真停机，正常接线是 no-op。 */
+  readonly resume: () => void
+}
+let sharedConn: SharedConn | undefined
 
 /**
  * 页面生命周期适配器：freeze/resume/visibilitychange 派发在 document，
@@ -276,36 +285,56 @@ export function connectTaskCenter(host: TaskCenterHost): () => void {
     const lifecycle = typeof window === 'undefined' ? undefined : createPageLifecycle()
     // Node / 测试环境没有 Web Locks 与多标签：直连保证既有测试语义（浏览器缺锁时协调器显式告警不开流）。
     if (lifecycle === undefined) {
-      const direct: TaskStreamConnection = connectTaskStream({
+      let direct: TaskStreamConnection | undefined
+      let directHalted = false
+      const openDirect = (): void => {
+        direct = connectTaskStream({
+          streamUrl: key,
+          headers: stableHost.headers,
+          retryDelaysMs: stableHost.retryDelaysMs,
+          onGiveUp: (reason) => {
+            if (reason.permanent) directHalted = true
+            stableHost.onGiveUp?.(reason)
+          },
+          onTask: (task, snapshot) => { ingestTask(task, snapshot) },
+          onNotice: ingestNotice,
+        })
+      }
+      openDirect()
+      sharedConn = {
+        key, refs: 0,
+        dispose: () => direct?.close(),
+        // 直连没有 Web Locks，401 后底层流已 closed：只有真停机时才重建（headers 取新凭证）。
+        resume: () => {
+          if (!directHalted) return
+          directHalted = false
+          direct?.close()
+          openDirect()
+        },
+      }
+    } else {
+      const handle = connectSharedTaskStream({
         streamUrl: key,
-        headers: stableHost.headers,
+        // 动态读取：接线更新 stableHost 后，新 owner 建流时取到最新 headers/回调（原 #10）。
+        headers: () => stableHost.headers?.() ?? {},
         retryDelaysMs: stableHost.retryDelaysMs,
-        onGiveUp: stableHost.onGiveUp,
+        onGiveUp: (reason) => { stableHost.onGiveUp?.(reason) },
         onTask: (task, snapshot) => { ingestTask(task, snapshot) },
         onNotice: ingestNotice,
+        getState: () => [...taskStore.getSnapshot().tasks] as unknown[],
+        applyBaseline: (tasks) => {
+          const valid = tasks.filter((task): task is TaskRecord => isTaskRecord(task))
+          taskStore.mergeBaseline(valid)
+        },
+        lifecycle: lifecycle as unknown as SharedLifecycle,
       })
-      sharedConn = { key, refs: 0, dispose: () => direct.close() }
-    } else {
-    const dispose = connectSharedTaskStream({
-      streamUrl: key,
-      // 动态读取：接线更新 stableHost 后，新 owner 建流时取到最新 headers/回调（原 #10）。
-      headers: () => stableHost.headers?.() ?? {},
-      retryDelaysMs: stableHost.retryDelaysMs,
-      onGiveUp: (reason) => { stableHost.onGiveUp?.(reason) },
-      onTask: (task, snapshot) => { ingestTask(task, snapshot) },
-      onNotice: ingestNotice,
-      getState: () => [...taskStore.getSnapshot().tasks] as unknown[],
-      applyBaseline: (tasks) => {
-        const valid = tasks.filter((task): task is TaskRecord => isTaskRecord(task))
-        taskStore.mergeBaseline(valid)
-      },
-      lifecycle: lifecycle as unknown as SharedLifecycle,
-    })
-    sharedConn = { key, refs: 0, dispose }
+      sharedConn = { key, refs: 0, dispose: handle, resume: handle.resume }
     }
   }
   const mine = sharedConn
   mine.refs += 1
+  // 重复接线（如 layout 二次 apply）触发恢复：仅真停机时生效，正常接线不掐流（#2/#10）。
+  mine.resume()
   let released = false
   return () => {
     if (released) return

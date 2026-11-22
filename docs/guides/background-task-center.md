@@ -111,9 +111,11 @@
   退避档只约束「无数据进展的连接」（连上就 EOF / 首帧前 reject / fetch 失败），用尽即通过
   `connectTaskCenter({ onGiveUp })` 上报（`onGiveUp` 是 `TaskCenterHost` 字段，默认接线即可拿到）；
   一旦某轮读到过字节（含保活），无论 EOF 还是异常断开都算有进展、退避归零继续重连。永久错误
-  （其余 4xx）立即停流上报：401 的 `reason.permanent=true`，应用刷新凭证即可——浏览器 Web Locks
-  单飞路径在 giveUp 后自动让出锁、退避重申请并新建流，`headers` 是函数，下一次取到的就是新 token，
-  无需再次调用 `connectTaskCenter`；无 Web Locks 时保持离线。
+  （其余 4xx，`reason.permanent=true`，如 401）让单飞协调器进入停机（halted）：**让出持有的锁、
+  停掉重申请**，不再无限轮转刷鉴权失败。恢复有两条路：① 页面恢复可见 / 网络恢复（`visibilitychange`
+  / `online`）自动唤醒；② 应用在 `onGiveUp` 里刷新凭证后，重新调用一次 `connectTaskCenter` 触发
+  `resume`（`headers` 是函数，新连接取到新 token）。两条路都重新申请锁、不会永久离线。无 Web Locks
+  时保持离线；Node 直连路径在 permanent giveUp 后由再次接线重建连接。
 
   **同源多标签只建一条 SSE**：`connectTaskCenter` 内部自动启用单飞协调器——`navigator.locks`
   在同源标签中选一个 owner 建真连接，其它标签经 BroadcastChannel 收同一份帧；owner 关闭可由等待者接管。
@@ -133,6 +135,8 @@
 - 终态只弹一次卡、只跑一次 `onSettled`；同 key 再发起就地更新，不堆两条。
 - 去别的面板再点「查看」：先切回发起面板，再执行本页 handler。
 - 断开 SSE：客户端退避重连，重连后服务端重推基线，列表恢复且不重复弹卡。
+- 让服务端返回 401：`reason.permanent=true`，协调器让锁停机、不刷鉴权失败；刷新凭证后重新调一次
+  `connectTaskCenter`（或页面恢复可见 / 网络恢复）即恢复订阅，不重复弹卡。
 - 按钮一律照画；点一个失效按钮（条目过期 / 注册它的插件已卸载）会给一次统一提示，不静默。
 
 ## 常见失败
@@ -155,3 +159,4 @@
 - 2026-11-18：按新体系重写接入步骤（开放执行器 + 两处接线 + 服务端 SSE）；删状态源 / 双时钟 / 租约 / 幂等缓存口径。
 - 2026-11-20：`TaskBar` 改从 `adv/tasks/ui` 引；按钮一律照画、点失败走统一 i18n 提示；服务端 `source` 补 `subscribeNotices`（唯一弹卡源）。
 - 2026-11-21 20:10:40：补跨标签单飞 SSE：一条常驻连接、按钮 POST 不并入、layout disposer 必须 cleanup、无 Web Locks 显式离线
+- 2026-11-22：401 permanent 改为「让锁停机 + resume/可见性恢复」（不再无意义退避重连）；协议升 v2（Lamport 届），验证清单补 401 恢复步骤

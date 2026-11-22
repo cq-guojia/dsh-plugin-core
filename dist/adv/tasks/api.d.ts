@@ -24,8 +24,10 @@ export interface TaskCenterHost extends CoordinatorHost {
     /** SSE 重连退避档（默认 1s/2s/4s）；透传给单飞协调器。 */
     retryDelaysMs?: readonly number[];
     /**
-     * SSE 放弃回调（退避用尽 / 不可重试错误，如 401）。默认接线在此收到信号后可以刷新凭证、
-     * 再调一次 connectTaskCenter 显式重连（headers 是函数，天然取新 token）。不传则静默。
+     * SSE 放弃回调（退避用尽 / 不可重试错误，如 401）。permanent（401）会让单飞协调器
+     * 进入 halted（让出锁、停重申请，杜绝无限轮转）；消费方在此刷新凭证后，再次调用
+     * connectTaskCenter 会触发 resume 重新申请锁（headers 是函数，新 lease 取新 token）。
+     * visibilitychange / online 也会自动唤醒。不传则静默。
      */
     onGiveUp?: (reason: TaskStreamGiveUpReason) => void;
 }

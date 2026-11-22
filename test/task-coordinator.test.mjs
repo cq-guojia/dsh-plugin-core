@@ -128,3 +128,89 @@ test('coordinator：状态投影（基线/增量）不弹卡，只有 notice 弹
   assert.equal(toasts.length, 1, 'notice 弹一次')
   assert.equal(notices.length, 1)
 })
+
+test('coordinator：陈旧 notice 不覆盖新 running、不误弹结算（复查 F5）', () => {
+  const { c, store, toasts, notices } = setup()
+  const settled = []
+  c.onSettled((s) => settled.push(s))
+  // 同键先重跑：新 running（startedAt=300）已投影为当前存活行。
+  const rerun = {
+    id: 'srv', project: 'p', group: 'g', title: '重跑', key: 'k',
+    state: 'running', startedAt: 300, settledAt: undefined,
+  }
+  c.project([rerun])
+  assert.equal(store.get('srv').state, 'running')
+  // 旧运行的迟到 notice（startedAt=100）到达：必须整条丢弃。
+  const staleNotice = {
+    id: 'n-stale', task: {
+      id: 'srv', project: 'p', group: 'g', title: '旧运行', key: 'k',
+      state: 'done', startedAt: 100, settledAt: 200,
+      toast: { success: { title: '旧结算' } },
+      notify: { success: { message: '旧通知' } },
+    },
+  }
+  c.deliverNotice(staleNotice)
+  assert.equal(store.get('srv').state, 'running', '旧 notice 不把新 running 盖回终态')
+  assert.equal(store.get('srv').startedAt, 300, '运行身份未被旧 notice 改写')
+  assert.equal(toasts.length, 0, '旧结算不误弹 toast')
+  assert.equal(notices.length, 0, '旧结算不误弹 notify')
+  assert.equal(settled.length, 0, '旧结算不触发 onSettled')
+
+  // 当前运行的真 notice 正常到达：能覆盖并弹一次。
+  c.deliverNotice({
+    id: 'n-fresh', task: {
+      ...rerun, state: 'done', settledAt: 400,
+      toast: { success: { title: '新结算' } },
+    },
+  })
+  assert.equal(store.get('srv').state, 'done', '新 notice 正常结算')
+  assert.equal(toasts.length, 1, '新结算弹一次')
+})
+
+test('coordinator：乐观行归一后（id 永久带 submit: 前缀）重跑的陈旧 notice 仍被挡（复查 P0）', () => {
+  const { c, store, toasts, notices } = setup()
+  const settled = []
+  c.onSettled((s) => settled.push(s))
+  // 模拟 startTask 落的乐观行：id=submit:<key>，本地时钟很大。
+  const optimisticId = 'submit:p\u0000k-opt'
+  store.upsert({
+    id: optimisticId, project: 'p', group: 'g', title: '乐观', key: 'k-opt',
+    state: 'running', startedAt: 99999, settledAt: undefined,
+  })
+  // 真源 run1 running 归一到乐观 id（标记随之被清，id 前缀保留）。
+  c.project([{
+    id: 'srv-1', project: 'p', group: 'g', title: '真源1', key: 'k-opt',
+    state: 'running', startedAt: 100, settledAt: undefined,
+  }])
+  assert.equal(store.get(optimisticId).startedAt, 100, '真源归一覆盖乐观本地时钟')
+  c.deliverNotice({
+    id: 'n-run1', task: {
+      id: 'srv-1', project: 'p', group: 'g', title: '真源1', key: 'k-opt',
+      state: 'done', startedAt: 100, settledAt: 150,
+      toast: { success: { title: 'run1' } },
+    },
+  })
+  assert.equal(toasts.length, 1, 'run1 正常结算')
+
+  // run2 重跑：新 running 归一到同一 submit: id，声明被复位。
+  c.project([{
+    id: 'srv-2', project: 'p', group: 'g', title: '真源2', key: 'k-opt',
+    state: 'running', startedAt: 300, settledAt: undefined,
+  }])
+  assert.equal(store.get(optimisticId).state, 'running')
+  assert.equal(store.get(optimisticId).startedAt, 300)
+  // run1 的迟到 notice（新 id、startedAt=100）必须被挡——前缀短路修复前这里会误弹并翻状态。
+  c.deliverNotice({
+    id: 'n-run1-late', task: {
+      id: 'srv-1', project: 'p', group: 'g', title: '真源1', key: 'k-opt',
+      state: 'done', startedAt: 100, settledAt: 150,
+      toast: { success: { title: 'run1 迟到' } },
+      notify: { success: { message: 'run1 迟到' } },
+    },
+  })
+  assert.equal(store.get(optimisticId).state, 'running', '陈旧 notice 不翻转新 running（submit: id 不再短路守卫）')
+  assert.equal(store.get(optimisticId).startedAt, 300, '运行身份不被改写')
+  assert.equal(toasts.length, 1, '陈旧 notice 不误弹 toast')
+  assert.equal(notices.length, 0, '陈旧 notice 不误弹 notify')
+  assert.equal(settled.length, 1, '陈旧 notice 不触发 onSettled')
+})

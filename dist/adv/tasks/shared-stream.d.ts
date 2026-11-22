@@ -3,16 +3,21 @@
  *
  * 工业界对标：`sse-coordinator@0.3.2`（Web Locks 排他锁 + 锁回调挂长 Promise、
  * BroadcastChannel 扇出、visibility/online 恢复、cleanup 一次收干净）。在此骨架上
- * 补本项目正确性必需项：随机届 epoch（相等比较，不依赖挂钟）、单调 seq + 缺口重拉、
- * owner-ready 基线握手、有界 notice 缓存（含 outbox 回放批次）。
+ * 补本项目正确性必需项：Lamport 逻辑届（全序可比较）、单调 seq + 缺口重拉、
+ * owner-ready 基线握手、session 级 notice 缓存、permanent giveUp 的 halted/resume。
  *
- * 两级生命周期（本版核心不变量）：
- *   Session —— 一个协调器实例的整个寿命；controller 只在 dispose() 时 abort。
- *   Lease   —— 一次持锁届；giveUp / watchdog / lifetime / pagehide 只 endLease()
- *               （让出锁），run loop 退避后自动重申请，绝不 abort session。
- *               因此断流不会永久离线，bfcache 恢复无需重建 session。
+ * 核心不变量（本版）：
+ *   Epoch      —— Lamport 届 {tick,id}，全序可比较；只有「更新」的届能安装，旧届任何消息被挡。
+ *                 随机 epoch 无法比较新旧，是「新主 reply 被旧届校验拒绝→follower 永久脱节」的根因。
+ *   signal     —— 纯 hint：只触发重拉基线，绝不改 currentEpoch/seenSeq。
+ *   state-reply —— 唯一权威安装入口：带 owner 的届 + seq + tasks + notices。
+ *   Session    —— 协调器实例整个寿命；controller 只在 dispose() 时 abort；noticeCache 在 session 级。
+ *   Lease      —— 一次持锁届；giveUp / watchdog / lifetime / pagehide 只 endLease() 让出锁。
+ *   halted     —— permanent giveUp（401）置位：让出锁、停重申请，等 recover/resume 唤醒。
  *
- * 零 DOM at import time：navigator / BroadcastChannel / crypto / performance 只在函数内惰性读取。
+ * 协议 v2：届从 string 改为 Lamport 对象，锁/通道前缀同步升 v2，与旧版本物理隔离
+ * （旧标签继续用 v1 各自单飞，刷新后自愈，不会出现新旧混用同一通道的死锁）。
+ * 零 DOM at import time：navigator / BroadcastChannel / performance 只在函数内惰性读取。
  */
 import { type TaskStreamGiveUpReason } from './stream.js';
 /** 锁 / 通道的最小形状：浏览器原生即满足；测试注入内存实现。 */
@@ -58,9 +63,14 @@ export interface SharedLifecycle {
     addEventListener(type: string, listener: (...args: never[]) => void): void;
     removeEventListener(type: string, listener: (...args: never[]) => void): void;
 }
+/** 连接句柄：可调用释放；resume 供 permanent giveUp 后显式恢复（刷新凭证）。 */
+export interface SharedStreamHandle {
+    (): void;
+    resume(): void;
+}
 /**
  * 加入同源单飞。返回 disposer：只释放本标签持有的引用，不替别的标签关流。
  * `connectTaskCenter` 负责按 streamUrl 幂等 + refcount，这里每个实例就是一条引用。
  */
-export declare function connectSharedTaskStream(options: SharedStreamOptions): () => void;
+export declare function connectSharedTaskStream(options: SharedStreamOptions): SharedStreamHandle;
 //# sourceMappingURL=shared-stream.d.ts.map

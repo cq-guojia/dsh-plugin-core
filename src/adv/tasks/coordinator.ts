@@ -196,6 +196,10 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
     deliverNotice(notice) {
       const task = notice.task
       if (task.state !== 'done' && task.state !== 'failed') return
+      // 陈旧 notice 属于更早的一次运行：必须先于任何写入丢弃。否则 announce 内的
+      // upsert（按归一 id 整行写、不带运行身份守卫）会把新 running 盖回旧终态，并误弹
+      // 一次过期结算。状态 merge 虽有守卫，但 notice 走的是另一条 announce 路径。
+      if (store.isStale(task)) return
       const outcome: 'done' | 'failed' = task.state // 上面已收窄
       // 先把终态投影进列表（可能早于 notice 到达的 task 帧已投影过，这里幂等）。
       // 不补 settledAt：服务端是这份终态的真源，时间由它给、经 isTaskRecord 校验必带；

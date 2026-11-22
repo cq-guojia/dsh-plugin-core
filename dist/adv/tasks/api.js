@@ -86,7 +86,6 @@ function matchesMount(task, project, groups) {
  */
 const stableHost = {};
 const coordinator = createCoordinator({ host: stableHost });
-/** 按 streamUrl 收口的单飞连接：同 key 只建一条，多引用靠 refcount 配平。 */
 let sharedConn;
 /**
  * 页面生命周期适配器：freeze/resume/visibilitychange 派发在 document，
@@ -245,18 +244,38 @@ export function connectTaskCenter(host) {
         const lifecycle = typeof window === 'undefined' ? undefined : createPageLifecycle();
         // Node / 测试环境没有 Web Locks 与多标签：直连保证既有测试语义（浏览器缺锁时协调器显式告警不开流）。
         if (lifecycle === undefined) {
-            const direct = connectTaskStream({
-                streamUrl: key,
-                headers: stableHost.headers,
-                retryDelaysMs: stableHost.retryDelaysMs,
-                onGiveUp: stableHost.onGiveUp,
-                onTask: (task, snapshot) => { ingestTask(task, snapshot); },
-                onNotice: ingestNotice,
-            });
-            sharedConn = { key, refs: 0, dispose: () => direct.close() };
+            let direct;
+            let directHalted = false;
+            const openDirect = () => {
+                direct = connectTaskStream({
+                    streamUrl: key,
+                    headers: stableHost.headers,
+                    retryDelaysMs: stableHost.retryDelaysMs,
+                    onGiveUp: (reason) => {
+                        if (reason.permanent)
+                            directHalted = true;
+                        stableHost.onGiveUp?.(reason);
+                    },
+                    onTask: (task, snapshot) => { ingestTask(task, snapshot); },
+                    onNotice: ingestNotice,
+                });
+            };
+            openDirect();
+            sharedConn = {
+                key, refs: 0,
+                dispose: () => direct?.close(),
+                // 直连没有 Web Locks，401 后底层流已 closed：只有真停机时才重建（headers 取新凭证）。
+                resume: () => {
+                    if (!directHalted)
+                        return;
+                    directHalted = false;
+                    direct?.close();
+                    openDirect();
+                },
+            };
         }
         else {
-            const dispose = connectSharedTaskStream({
+            const handle = connectSharedTaskStream({
                 streamUrl: key,
                 // 动态读取：接线更新 stableHost 后，新 owner 建流时取到最新 headers/回调（原 #10）。
                 headers: () => stableHost.headers?.() ?? {},
@@ -271,11 +290,13 @@ export function connectTaskCenter(host) {
                 },
                 lifecycle: lifecycle,
             });
-            sharedConn = { key, refs: 0, dispose };
+            sharedConn = { key, refs: 0, dispose: handle, resume: handle.resume };
         }
     }
     const mine = sharedConn;
     mine.refs += 1;
+    // 重复接线（如 layout 二次 apply）触发恢复：仅真停机时生效，正常接线不掐流（#2/#10）。
+    mine.resume();
     let released = false;
     return () => {
         if (released)

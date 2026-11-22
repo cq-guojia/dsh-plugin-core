@@ -60,10 +60,16 @@ export interface TaskStore {
   /** 广播终态给订阅者；单个坏监听者不影响其它监听者。 */
   emitSettled(settlement: TaskSettlement): void
   /**
-   * 声明一次终态分发：同一结算键（project + key/id）只返回 true 一次，不看 settledAt；
-   * 同业务键重新发起（running）会重置声明，让下一次结算能正常分发。
+   * 声明一次终态分发：同一结算键（project + key/id）+ 同一运行实例（startedAt）只返回 true 一次。
+   * 同键更大 startedAt 视为新运行，放行新的结算；重新发起（running）也会重置声明。
    */
   claimSettled(task: TaskRecord): boolean
+  /**
+   * 按运行身份守卫判断一条记录是否陈旧（比当前存活记录更早的一次运行）。
+   * deliverNotice 用它挡掉「旧运行的迟到 notice」——状态 merge 会被守卫丢弃，但 notice 是
+   * 一次性事件、另有 announce/upsert 路径，必须在入口统一判定，否则旧终态会覆盖新 running。
+   */
+  isStale(task: TaskRecord): boolean
   /**
    * 全清：任务记录、幂等键、终态声明与已注册的按钮 handlers 一并清空。
    * 清掉 handlers 后需重新 mountTaskUI 才会再注册；只清列表不要用这个。
@@ -108,6 +114,7 @@ function carryIdentity(next: TaskRecord, old: TaskRecord | undefined): TaskRecor
 function createStore(): TaskStore {
   const tasks = new Map<string, TaskRecord>()
   const byKey = new Map<string, string>()
+  /** 结算声明：结算键 → 该次运行的 startedAt（作为运行实例身份，重放同值被吞、新值放行）。 */
   const announced = new Map<string, number>()
   const handlers = new Map<string, TaskHandler>()
   const snapshotListeners = new Set<() => void>()
@@ -144,6 +151,23 @@ function createStore(): TaskStore {
     for (const [id, key] of optimisticById) if (key === sKey) optimisticById.delete(id)
   }
 
+  /**
+   * 运行身份守卫（单一真源，merge 与 deliverNotice 共用）：一条记录相对当前存活行是否陈旧。
+   *   1. 仍是本地乐观行（optimistic 标记在）时放行——本地 Date.now() 与服务端 startedAt
+   *      时钟基准不同，不能拿它比新旧。**只用标记判断，绝不用 id 的 submit: 前缀**：
+   *      乐观行归一到真源后 id 永久带此前缀、标记却被首个真源帧清掉，前缀短路会让守卫
+   *      在此后所有重跑里永久失效（陈旧 notice 覆盖新 running 的根因）。
+   *   2. 有 key：key 是业务身份，startedAt 区分运行实例。更早运行的任何帧（含旧终态
+   *      基线）丢弃；新运行的帧放行覆盖并清结算声明，让重跑能再次结算（#4/#5）。
+   *   3. 无 key：id 即运行身份，同 id 的终态是最终事实，任何 running 都是迟到回放。
+   */
+  function isStaleAgainst(record: TaskRecord, old: TaskRecord | undefined, composite: string | undefined, stillOptimistic: boolean): boolean {
+    if (old === undefined || stillOptimistic) return false
+    if (record.startedAt < old.startedAt) return true
+    const lateRunning = isSettled(old.state) && !isSettled(record.state)
+    return lateRunning && (record.startedAt === old.startedAt || composite === undefined)
+  }
+
   /** 增量与基线共用同一合并语义：单调守卫 + 身份/时钟归一 + 结算声明复位。 */
   function mergeInto(records: readonly TaskRecord[], baseline: boolean): readonly TaskRecord[] {
     const changed: TaskRecord[] = []
@@ -154,13 +178,12 @@ function createStore(): TaskStore {
       const targetId = priorId ?? record.id
       const old = tasks.get(targetId)
       // 基线不得覆盖「本地已发起、真源尚未确认」的乐观行；真源帧（baseline=false）到达时
-      // 先清记号再照常覆盖——这正是 #4/#5 要的「真源能纠正本地陈旧行」。
-      if (baseline && optimistic.has(sKey)) continue
+      // 无条件让位覆盖——这正是 #4/#5 要的「真源能纠正本地陈旧行」。
+      // 必须在 clearOptimistic 前记住标记：真源帧一到就清标记并让位，之后一律走运行身份守卫。
+      const wasOptimistic = optimistic.has(sKey)
+      if (baseline && wasOptimistic) continue
       clearOptimistic(sKey)
-      // 单调：本地已终态时，迟到的 running 投影直接丢弃，防乱序把终态复活。
-      // 判据用「状态是否为终态」而非「有无 settledAt」——后者是时钟，可能因重放/擦除而不在，
-      // 拿它当状态标志会让 guard 在时间戳缺失时静默失效。
-      if (old !== undefined && isSettled(old.state) && !isSettled(record.state)) continue
+      if (isStaleAgainst(record, old, composite, wasOptimistic)) continue
       const next = carryIdentity({ ...record, id: targetId }, old)
       if (composite !== undefined) byKey.set(composite, next.id)
       tasks.set(next.id, next)
@@ -263,11 +286,22 @@ function createStore(): TaskStore {
     },
     claimSettled(task) {
       const key = settlementKey(task)
-      // 按结算键去重，不看 settledAt（重放一律不重复分发）；
-      // 重新发起（running）在 upsert 时删除声明，才会放行下一次结算。
-      if (announced.has(key)) return false
-      announced.set(key, task.settledAt ?? Date.now())
+      const priorAt = announced.get(key)
+      // announced 记的是运行身份 startedAt，不是结算时刻 settledAt：
+      //   - 同一运行重放（startedAt <= 已声明值）：吞掉，不重复分发；
+      //   - 更大 startedAt：断网期间已完成一次重跑、只见到新终态（没见到新 running）时，
+      //     也要让新通知放行，否则断线重连后新结算会被旧声明吞掉。
+      // running 到达时删除声明（见 upsert/mergeInto）仍保留，属正常重跑路径。
+      if (priorAt !== undefined && task.startedAt <= priorAt) return false
+      announced.set(key, task.startedAt)
       return true
+    },
+    isStale(task) {
+      const composite = keyOf(task)
+      const priorId = composite !== undefined ? byKey.get(composite) : undefined
+      const targetId = priorId ?? task.id
+      // 归一后的乐观行 id 带 submit: 前缀但标记已清，必须走守卫（不能当前缀短路）。
+      return isStaleAgainst(task, tasks.get(targetId), composite, optimistic.has(settlementKey(task)))
     },
     clearAll() {
       tasks.clear()

@@ -55,10 +55,16 @@ export interface TaskStore {
     /** 广播终态给订阅者；单个坏监听者不影响其它监听者。 */
     emitSettled(settlement: TaskSettlement): void;
     /**
-     * 声明一次终态分发：同一结算键（project + key/id）只返回 true 一次，不看 settledAt；
-     * 同业务键重新发起（running）会重置声明，让下一次结算能正常分发。
+     * 声明一次终态分发：同一结算键（project + key/id）+ 同一运行实例（startedAt）只返回 true 一次。
+     * 同键更大 startedAt 视为新运行，放行新的结算；重新发起（running）也会重置声明。
      */
     claimSettled(task: TaskRecord): boolean;
+    /**
+     * 按运行身份守卫判断一条记录是否陈旧（比当前存活记录更早的一次运行）。
+     * deliverNotice 用它挡掉「旧运行的迟到 notice」——状态 merge 会被守卫丢弃，但 notice 是
+     * 一次性事件、另有 announce/upsert 路径，必须在入口统一判定，否则旧终态会覆盖新 running。
+     */
+    isStale(task: TaskRecord): boolean;
     /**
      * 全清：任务记录、幂等键、终态声明与已注册的按钮 handlers 一并清空。
      * 清掉 handlers 后需重新 mountTaskUI 才会再注册；只清列表不要用这个。
