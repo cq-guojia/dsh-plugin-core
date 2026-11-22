@@ -67,6 +67,7 @@ export interface SharedLifecycle {
     /**
      * 可选：是否把 online 当作停机唤醒源，默认 true。需要「仅在凭证就绪后显式恢复」的应用
      * 设为 false——否则 online 会先用旧 headers 打一次 401，消费方无法在 core 内部拦住它。
+     * 每次 online 事件触发时才读取（支持函数），接线后改值即时生效、不重绑监听器。
      */
     readonly autoRecoverOnOnline?: boolean | (() => boolean);
 }

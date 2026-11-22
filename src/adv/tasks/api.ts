@@ -40,17 +40,27 @@ const seenFallback = emptySeen()
 function noticeStore(): Storage | undefined {
   try { return typeof sessionStorage === 'undefined' ? undefined : sessionStorage } catch { return undefined }
 }
+function mergeSeen(a: SeenNotices, b: SeenNotices): SeenNotices {
+  const ids = [...new Set([...a.ids, ...b.ids])]
+  const watermark: Record<string, number> = { ...a.watermark }
+  for (const [project, at] of Object.entries(b.watermark)) {
+    if (watermark[project] === undefined || at > watermark[project]) watermark[project] = at
+  }
+  return { ids, watermark }
+}
 function loadSeenNotices(): SeenNotices {
   const store = noticeStore()
   if (store === undefined) return seenFallback
   try {
     const raw = store.getItem(SEEN_NOTICE_KEY)
-    if (raw === null) return emptySeen()
-    const parsed = JSON.parse(raw) as SeenNotices | string[]
+    const parsed = raw === null ? emptySeen() : JSON.parse(raw) as SeenNotices | string[]
     // 兼容旧格式（纯 id 数组）：升级后首次读取不会把历史去重状态丢掉。
-    return Array.isArray(parsed)
+    const fromStore: SeenNotices = Array.isArray(parsed)
       ? { ids: parsed, watermark: {} }
       : { ids: Array.isArray(parsed.ids) ? parsed.ids : [], watermark: parsed.watermark ?? {} }
+    // sessionStorage 写入失败（配额满 / 禁用）时状态留在 seenFallback；读时必须并集兜底，
+    // 否则每次都从存储拿到旧值或空值，同一 notice 反复重弹（专家评判 B-2）。
+    return mergeSeen(fromStore, seenFallback)
   } catch { return seenFallback }
 }
 function saveSeenNotices(seen: SeenNotices): void {
@@ -127,8 +137,9 @@ export interface TaskCenterHost extends CoordinatorHost {
   onGiveUp?: (reason: TaskStreamGiveUpReason) => void
   /**
    * 是否把 online 事件当作停机唤醒源（默认 true）。设为 false 后不会因网络恢复自动用旧
-   * headers 重试——适合"凭证刷新完成后才显式 resume"的应用。visibilitychange/pageshow/
-   * resume 仍按可见性闸门恢复；要完全仅显式恢复，请同时不接入页面生命周期（Node 模式）。
+   * headers 重试——适合"凭证刷新完成后才显式 resume"的应用。每次 online 事件时读取，
+   * 接线后改值即时生效（不重绑监听器）；visibilitychange/pageshow/resume 仍按可见性闸门恢复；
+   * 要完全仅显式恢复，请同时不接入页面生命周期（Node 模式）。
    */
   autoRecoverOnOnline?: boolean
 }
@@ -171,7 +182,7 @@ function createPageLifecycle(): SharedLifecycle {
   return {
     // 惰性读取 document，保持零 DOM at import time（Node 不会构造这个适配器）。
     isVisible: () => document.visibilityState === 'visible',
-    // 建流时读取接线配置：同 key 重复接线不重建（也就不会重绑监听），首次接线的值生效。
+    // 每次 online 事件读取当前接线值：同 key 重复接线不重建（也不重绑监听），后置改值即时生效。
     autoRecoverOnOnline: () => stableHost.autoRecoverOnOnline !== false,
     addEventListener(type, listener) {
       target(type).addEventListener(type, listener as EventListener)
@@ -305,7 +316,8 @@ export function defaultTaskHost(originId?: () => string | undefined): Coordinato
  * - 401 停机后请在 onGiveUp 里同步刷新凭证再重接线；连续两次 permanent 失败后 core 进入
  *   冷却窗口，窗口内 resume / 在线唤醒 no-op（成功建流清零），同步刷新后重接线仍立即生效
  * - online 默认唤醒停机，失败再次停机（有界）；严格「仅显式恢复」应用设
- *   autoRecoverOnOnline:false，凭证就绪后显式调 resume
+ *   autoRecoverOnOnline:false，凭证就绪后显式调 resume。该开关每次 online 事件读取，
+ *   接线后改值即时生效（不重绑监听），可先用 false 拦旧 headers、刷新完再置 true
  */
 export function connectTaskCenter(host: TaskCenterHost): () => void {
   // 只覆盖显式提供的字段：传 undefined 不该抹掉上一次接线得到的 streamUrl/submitUrl 等。
@@ -353,12 +365,18 @@ export function connectTaskCenter(host: TaskCenterHost): () => void {
           // 与单飞路径同一口径：只有真源吐字节才算凭证有效，resume 本身不清零。
           onAlive: () => { directStreak = 0 },
           onGiveUp: (reason) => {
+            // 与单飞路径同序（shared-stream.ts 的 owner onGiveUp）：先置停机让回调里的同步重接
+            // 不被 `!directHalted` 吞掉；计数放在回调之后——回调里刷新凭证重连再失败时才算第二连败。
+            // 若在回调前就累加，重连的第二次 401 直接踩到 streak>=2 冷却被 no-op，Node 无其他
+            // 恢复路径会永久停机。
+            if (reason.permanent) directHalted = true
+            try { stableHost.onGiveUp?.(reason) } catch (error) {
+              console.error('dsh-plugin-core: task onGiveUp failed', error)
+            }
             if (reason.permanent) {
-              directHalted = true
               directStreak += 1
               lastPermanentAt = Date.now()
             }
-            stableHost.onGiveUp?.(reason)
           },
           onTask: (task, snapshot) => { ingestTask(task, snapshot) },
           onNotice: ingestNotice,

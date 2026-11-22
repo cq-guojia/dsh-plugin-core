@@ -894,7 +894,7 @@ test('连续 permanent 401 后的 resume 有冷却；建流成功清零（专家
   }
 })
 
-test('autoRecoverOnOnline=false 时不绑 online 监听（专家评判 #6）', async () => {
+test('autoRecoverOnOnline 后置改值即时生效：online 始终只绑一次，事件时读当前值（专家评判 A1）', async () => {
   const added = []
   const lifecycle = {
     addEventListener(type, listener) { added.push({ type, listener }) },
@@ -902,17 +902,35 @@ test('autoRecoverOnOnline=false 时不绑 online 监听（专家评判 #6）', a
     isVisible: () => true,
     autoRecoverOnOnline: false,
   }
+  const locks = makeLocks()
   const originalFetch = globalThis.fetch
-  globalThis.fetch = sseFetch()
+  let fetches = 0
+  globalThis.fetch = sseFetch((_init, index) => {
+    fetches += 1
+    return index === 0 ? httpError(401) : undefined
+  })
   let off
   try {
     off = connectSharedTaskStream({
-      streamUrl: `/stream-online-off-${Math.random().toString(36).slice(2)}`,
-      lockFactory: () => makeLocks(), channelFactory: makeBus().factory, lifecycle,
+      streamUrl: `/stream-online-live-${Math.random().toString(36).slice(2)}`,
+      lockFactory: () => locks, channelFactory: makeBus().factory, lifecycle,
       getState: () => [], applyBaseline: () => {}, onTask: () => {},
     })
-    assert.ok(!added.some((x) => x.type === 'online'), '未绑 online')
+    const online = added.filter((x) => x.type === 'online')
+    assert.equal(online.length, 1, 'online 监听始终绑定，不按初始值决定是否绑定')
     assert.ok(added.some((x) => x.type === 'visibilitychange'), '仍绑可见性事件')
+    await wait(250)
+    assert.ok(fetches >= 1, '假绿守卫：已发生建流尝试')
+    const atHalt = fetches
+    online[0].listener()
+    await wait(120)
+    assert.equal(fetches, atHalt, 'autoRecoverOnOnline=false 时 online 不唤醒停机')
+    // 凭证就绪，消费方后置改值：同一监听器立即放行，不重绑、不掐在飞流。
+    lifecycle.autoRecoverOnOnline = true
+    online[0].listener()
+    await wait(250)
+    assert.ok(fetches > atHalt, '后置改 true 后同一监听器即时唤醒')
+    assert.equal(added.filter((x) => x.type === 'online').length, 1, '改值不重绑监听器')
   } finally {
     off?.()
     globalThis.fetch = originalFetch

@@ -32,8 +32,9 @@ export interface TaskCenterHost extends CoordinatorHost {
     onGiveUp?: (reason: TaskStreamGiveUpReason) => void;
     /**
      * 是否把 online 事件当作停机唤醒源（默认 true）。设为 false 后不会因网络恢复自动用旧
-     * headers 重试——适合"凭证刷新完成后才显式 resume"的应用。visibilitychange/pageshow/
-     * resume 仍按可见性闸门恢复；要完全仅显式恢复，请同时不接入页面生命周期（Node 模式）。
+     * headers 重试——适合"凭证刷新完成后才显式 resume"的应用。每次 online 事件时读取，
+     * 接线后改值即时生效（不重绑监听器）；visibilitychange/pageshow/resume 仍按可见性闸门恢复；
+     * 要完全仅显式恢复，请同时不接入页面生命周期（Node 模式）。
      */
     autoRecoverOnOnline?: boolean;
 }
@@ -78,7 +79,8 @@ export declare function defaultTaskHost(originId?: () => string | undefined): Co
  * - 401 停机后请在 onGiveUp 里同步刷新凭证再重接线；连续两次 permanent 失败后 core 进入
  *   冷却窗口，窗口内 resume / 在线唤醒 no-op（成功建流清零），同步刷新后重接线仍立即生效
  * - online 默认唤醒停机，失败再次停机（有界）；严格「仅显式恢复」应用设
- *   autoRecoverOnOnline:false，凭证就绪后显式调 resume
+ *   autoRecoverOnOnline:false，凭证就绪后显式调 resume。该开关每次 online 事件读取，
+ *   接线后改值即时生效（不重绑监听），可先用 false 拦旧 headers、刷新完再置 true
  */
 export declare function connectTaskCenter(host: TaskCenterHost): () => void;
 /**

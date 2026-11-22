@@ -55,8 +55,11 @@
 13. **跨标签基线只发真源行**：本地乐观行（POST 在飞）不外泄——BC 没有删除帧，发出去后回滚只在本标签生效，
     别的标签会留一条永不消失的幽灵 running。`store.getBaseline()` 是跨标签基线的唯一来源。
 14. **有界容错与可诊断**：连续两次 permanent 401 后 resume / 在线唤醒进入冷却（仅读到真实 SSE 字节清零，非定时到点），
-    "有界"是 core 保证而非消费方自觉；`autoRecoverOnOnline:false` 可完全不绑 online 唤醒。
-    通知去重除按 id 的 512 有界集合外，按 project 记已见最大 `settledAt` 水位，防 outbox 超限时老通知重弹。
+    "有界"是 core 保证而非消费方自觉；401 计数在 `onGiveUp` 回调之后累加，回调内同步重接的第二次失败才计入连败，
+    Node 直连与单飞同序。`autoRecoverOnOnline:false` 关闭 online 唤醒，但监听器始终只绑一次、
+    事件时读当前值，接线后改值即时生效（不重绑、不掐在飞流）。
+    通知去重除按 id 的 512 有界集合外，按 project 记已见最大 `settledAt` 水位，防 outbox 超限时老通知重弹；
+    sessionStorage 写入失败时读路径并集内存 fallback 与存储值（ids 去重、watermark 取最大），配额满也不失效。
     `scope:'origin'` 却缺 `origin` 时打一次 console.warn，配置错误可发现。
 15. **运行身份由服务端给**：同 key 的 `startedAt` 须严格递增，`settledAt` 是终态必填的服务端时刻；
     同运行 `settledAt` first-wins，跨运行取新值。`TaskNotice.id` 须跨会话/重启全局唯一（UUID 或持久化计数，
@@ -79,3 +82,4 @@
 - 2026-11-22（第二轮封口）：届不变量补跨 realm fencing claim（低届 owner 让锁重铸）；新增「跨标签基线只发真源行」不变量；消费方契约补齐 notice id 全局唯一、依赖同号、凭证刷新时机与 online 唤醒口径
 - 2026-11-22（专家评判复核）：新增不变量 14（401 冷却真实有界、online 可关闭、512+settledAt 水位去重、origin 缺失可诊断），15 顺延；同页 store / executor 收口符号升 v2 与协议对齐；删去「提交响应回显 origin/panelId」死条款
 - 2026-11-22（消费方第二轮残留封口）：不变量 10 的 fencing 扩到低届 reply / frame；不变量 14 的 streak 清零改挂真实 SSE 字节
+- 2026-11-22（边缘项封口）：不变量 14 补三项——online 监听器始终只绑一次且事件时读当前开关值（后置改值即时生效）、401 streak 在 `onGiveUp` 回调后累加（Node 直连同序，回调内重接不被冷却吞）、sessionStorage 写入失败时读路径并集内存 fallback（配额满仍按 id 去重）

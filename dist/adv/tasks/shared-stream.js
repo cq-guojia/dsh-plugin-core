@@ -695,10 +695,16 @@ export function connectSharedTaskStream(options) {
         bound('pageshow', onWake);
         bound('resume', onWake);
         bound('visibilitychange', onWake);
-        const autoOnline = lifecycle.autoRecoverOnOnline;
-        if (autoOnline === undefined || (typeof autoOnline === 'function' ? autoOnline() : autoOnline)) {
-            bound('online', onWake);
-        }
+        // online 监听始终只绑一次：autoRecoverOnOnline 是接线配置，消费方可能在凭证就绪后改值
+        // （先 false 拦住旧 headers 的 401，刷新完再放行）。开关在事件触发时读，后置改值即时生效；
+        // 若按初始值决定是否绑定，晚放行的应用永远收不到 online 唤醒。重绑会掐流，也不做。
+        const onOnline = () => {
+            const autoOnline = lifecycle.autoRecoverOnOnline;
+            if (autoOnline !== undefined && !(typeof autoOnline === 'function' ? autoOnline() : autoOnline))
+                return;
+            onWake();
+        };
+        bound('online', onOnline);
     }
     openChannel();
     void run();

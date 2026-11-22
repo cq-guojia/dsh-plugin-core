@@ -96,3 +96,40 @@ test('通知按 id 去重：同 id 重放与刷新后都不重弹，不同 id �
     else globalThis.sessionStorage = originalStorage
   }
 })
+
+test('sessionStorage 写入失败时按内存兜底去重，同一 notice 不重弹（专家评判 B-2）', async () => {
+  const originalFetch = globalThis.fetch
+  const originalStorage = globalThis.sessionStorage
+  const backing = new Map()
+  globalThis.sessionStorage = {
+    getItem: (key) => backing.get(key) ?? null,
+    setItem: () => { throw new Error('quota exceeded') },  // 写失败：状态只能留在 seenFallback
+    removeItem: (key) => { backing.delete(key) },
+    clear: () => backing.clear(),
+  }
+  const sse = makeSse()
+  globalThis.fetch = sse.fetchImpl
+  const toasts = []
+  let off
+  try {
+    off = connectTaskCenter({
+      streamUrl: '/api/tc/dedup-fallback',
+      deliverToast: (payload) => toasts.push(payload.title),
+    })
+    await wait(60)
+    const notice = { id: 'fallback-1', task: terminal('job-fallback') }
+    sse.push('task-notice', notice)
+    await wait(40)
+    assert.deepEqual(toasts, ['完成 job-fallback'], '首次到达弹一次')
+
+    sse.push('task-notice', notice)
+    await wait(40)
+    // 修复前：写入失败后 loadSeenNotices 每次都拿到空值，同一 id 会重弹。
+    assert.equal(toasts.length, 1, '写入失败后仍按内存兜底按 id 去重，不重弹')
+  } finally {
+    off?.()
+    globalThis.fetch = originalFetch
+    if (originalStorage === undefined) delete globalThis.sessionStorage
+    else globalThis.sessionStorage = originalStorage
+  }
+})

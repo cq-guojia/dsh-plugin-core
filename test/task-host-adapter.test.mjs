@@ -166,6 +166,43 @@ test('connectTaskCenter：onGiveUp 透传到 SSE 流，401 上报且 permanent',
   }
 })
 
+test('connectTaskCenter Node 直连：onGiveUp 内同步重接不被提前冷却吞掉（专家评判 B-1）', async () => {
+  const { connectTaskCenter, taskCenterStore } = await import('../dist/adv/tasks/index.js')
+  const originalFetch = globalThis.fetch
+  let calls = 0
+  globalThis.fetch = async (_url, init) => {
+    calls += 1
+    // 头两次 401 后消费方在回调里同步重接；第三次起凭证刷新成功，挂起真流。
+    if (calls <= 2) return { ok: false, status: 401, body: null }
+    return {
+      ok: true,
+      body: { getReader: () => ({
+        read: () => new Promise((resolve) => {
+          if (init?.signal?.aborted) { resolve({ done: true }); return }
+          init?.signal?.addEventListener('abort', () => resolve({ done: true }), { once: true })
+        }),
+        cancel() {},
+      }) },
+    }
+  }
+  const disposers = []
+  try {
+    const connect = () => disposers.push(connectTaskCenter({
+      streamUrl: '/stream-node-401-callback',
+      onGiveUp: () => { connect() },  // 回调里刷新凭证并同步重接（走 resume）
+    }))
+    connect()
+    await new Promise((r) => setTimeout(r, 150))
+    // 修复前：第一次 401 就把 streak 记成 1，回调重连的第二次 401 在回调前被记成 2，
+    // 第二次回调里的 resume 被冷却吞掉 → 只有 2 次请求、Node 永久停机。
+    assert.equal(calls, 3, '回调内重接两次都放通：计数在回调之后，第二次不被冷却吞掉')
+  } finally {
+    while (disposers.length) disposers.pop()()
+    globalThis.fetch = originalFetch
+    taskCenterStore.clearAll()
+  }
+})
+
 test('startTask 服务端模式：panelId 与 origin 随 payload 提交、乐观行带上', async () => {
   const { connectTaskCenter, startTask, taskCenterStore } = await import('../dist/adv/tasks/index.js')
   const originalFetch = globalThis.fetch
