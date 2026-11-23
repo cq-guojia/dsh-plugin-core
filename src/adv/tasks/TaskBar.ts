@@ -11,7 +11,7 @@ import { MarqueeText } from '../../ui/display/MarqueeText.js'
 import { Chevron } from '../../ui/infra/chevron.js'
 import { PanelSurface } from '../../ui/infra/panel.js'
 import { ensureComponentStyles } from '../../ui/infra/css.js'
-import { useDismissOnForegroundOverlay } from '../../ui/infra/overlay.js'
+import { useDismissOnForegroundOverlay, useForegroundOverlayActive } from '../../ui/infra/overlay.js'
 import { useLocale } from '../../ui/infra/locale.js'
 import { useNowMs } from '../../ui/infra/ticker.js'
 import { t } from '../../utils/i18n.js'
@@ -112,17 +112,22 @@ export type OpenStateDecision =
   | { readonly kind: 'setInternal'; readonly value: boolean }
   | { readonly kind: 'emit'; readonly value: boolean }
 
-export function decideOpenState(
-  current: boolean,
-  next: boolean,
-  controlled: boolean,
-  lastEmitted: boolean,
-): OpenStateDecision {
+export function decideOpenState(current: boolean, next: boolean, controlled: boolean): OpenStateDecision {
   if (current === next) return { kind: 'noop' }
   if (!controlled) return { kind: 'setInternal', value: next }
-  // 受控分支只发回调、不写内部 state；父组件尚未回写时连续两次 false 只发一次。
-  if (lastEmitted === next) return { kind: 'noop' }
+  // 受控分支只发回调、不写内部 state。不做「上次发过就不再发」的去重：父组件若故意不回写，
+  // 后续每一次用户显式关闭都必须重新发出；父组件正常回写后 current === next 自然不再发。
   return { kind: 'emit', value: next }
+}
+
+/** closeOnAction=false 时前台主浮层期间只挂起、不关闭；其它情形面板照常收起。 */
+export function shouldSuspendFloatingLayer(closeOnAction: boolean, foregroundActive: boolean): boolean {
+  return !closeOnAction && foregroundActive
+}
+
+/** 点到自己外面才关；挂起期间（弹窗正开着）任何事件都不响应。 */
+export function shouldCloseOnOutsidePointer(suspended: boolean, targetInside: boolean): boolean {
+  return !suspended && !targetInside
 }
 
 /**
@@ -326,10 +331,6 @@ export function TaskBar(props: TaskBarProps): ReactNode {
 
   const [internalOpen, setInternalOpen] = useState(false)
   const open = controlledOpen ?? internalOpen
-  // 受控分支只发回调，绝不替父组件改 state；ref 记录上次发出的值，避免父组件尚未重渲时重复发 false。
-  // props.open 变化时复位 ref —— 否则父组件先回写 false 再打开 true 后，下一次关闭会被去重吞掉。
-  const lastEmitted = useRef(open)
-  useEffect(() => { lastEmitted.current = open }, [open])
   const warnedControlled = useRef(false)
   useEffect(() => {
     if (controlledOpen === undefined || onOpenChange !== undefined || warnedControlled.current) return
@@ -337,20 +338,18 @@ export function TaskBar(props: TaskBarProps): ReactNode {
     console.warn('[dsh-plugin-core] TaskBar: open requires onOpenChange; close paths will only emit the callback')
   }, [controlledOpen, onOpenChange])
   const setOpenState = useCallback((next: boolean): void => {
-    const decision = decideOpenState(
-      controlledOpen ?? internalOpen,
-      next,
-      controlledOpen !== undefined,
-      lastEmitted.current,
-    )
+    const decision = decideOpenState(controlledOpen ?? internalOpen, next, controlledOpen !== undefined)
     if (decision.kind === 'noop') return
     if (decision.kind === 'emit') {
-      lastEmitted.current = decision.value
       onOpenChange?.(decision.value)
       return
     }
     setInternalOpen(decision.value)
   }, [controlledOpen, internalOpen, onOpenChange])
+
+  const foregroundActive = useForegroundOverlayActive()
+  // closeOnAction=false 时「保持 open 但让位」；默认模式下前台浮层仍走原来的关闭语义。
+  const suspended = shouldSuspendFloatingLayer(closeOnAction, foregroundActive)
 
   useSyncExternalStore(
     taskCenterStore.subscribe,
@@ -375,25 +374,27 @@ export function TaskBar(props: TaskBarProps): ReactNode {
     whileElementsMounted: autoUpdate,
   })
 
-  // 前台主浮层（Modal / SideSheet / 选文件弹窗）一出现就收起本面板；不自动恢复。
-  const closeOnForeground = useCallback((): void => { setOpenState(false) }, [setOpenState])
+  // 默认模式：前台主浮层一出现就收起本面板。closeOnAction=false 时只挂起、不关闭。
+  const closeOnForeground = useCallback((): void => {
+    if (!closeOnAction) return
+    setOpenState(false)
+  }, [closeOnAction, setOpenState])
   useDismissOnForegroundOverlay(closeOnForeground)
 
-  // 点外部 / Esc 关闭：与 Picker 同一口径，不引入遮罩。
+  // 点外部 / Esc 关闭：挂起期间整层不响应事件，弹窗关掉后监听立即恢复。
   useEffect(() => {
-    if (!open || typeof document === 'undefined') return
+    if (!open || suspended || typeof document === 'undefined') return
     const onPointerDown = (event: Event): void => {
       const target = event.target as Node | null
       if (target === null) return
       // 引用元素可能是 floating-ui 的 virtual element，不保证有 contains。
       const reference = refs.reference.current as { contains?: (node: Node) => boolean } | null
       const floating = refs.floating.current as { contains?: (node: Node) => boolean } | null
-      if (reference?.contains?.(target) === true) return
-      if (floating?.contains?.(target) === true) return
-      setOpenState(false)
+      const inside = reference?.contains?.(target) === true || floating?.contains?.(target) === true
+      if (shouldCloseOnOutsidePointer(suspended, inside)) setOpenState(false)
     }
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') setOpenState(false)
+      if (event.key === 'Escape' && !suspended) setOpenState(false)
     }
     document.addEventListener('pointerdown', onPointerDown)
     document.addEventListener('keydown', onKeyDown)
@@ -401,7 +402,7 @@ export function TaskBar(props: TaskBarProps): ReactNode {
       document.removeEventListener('pointerdown', onPointerDown)
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [open, refs, setOpenState])
+  }, [open, refs, setOpenState, suspended])
 
   const icon = h(
     'span',
@@ -410,7 +411,7 @@ export function TaskBar(props: TaskBarProps): ReactNode {
     busy ? h('span', { className: 'dshpc-taskbar__dot' }) : null,
   )
 
-  const toggle = (): void => { setOpenState(!open) }
+  const toggle = (): void => { if (!suspended) setOpenState(!open) }
 
   // 被宽度约束时把「后台任务 + N 个运行中」并成**一段**文字：只留一个可收缩槽，
   // 计数不再作为 flex:none 的独立元素把箭头顶出边框；省略号与 hover 跑马灯都由这同一段负责。
@@ -515,8 +516,14 @@ export function TaskBar(props: TaskBarProps): ReactNode {
           h(
             'div',
             // 浮动层自身必须带 z-index：floatingStyles 的 transform 会给它建 stacking context，
-            // 把 z-index 写在 PanelSurface 上会被困在内部，盖不住同页 z-index≥1 的元素。
-            { ref: refs.setFloating, style: floatingStyles, className: 'dshpc-taskbar__float' },
+            // 把 z-index 写在 PanelSurface 上会被困在内部。
+            // 层级走 page-float（低于抽屉 / 弹窗）：页面级面板永远不许浮到主浮层遮罩之上。
+            {
+              ref: refs.setFloating,
+              style: floatingStyles,
+              className: 'dshpc-taskbar__float',
+              ...(suspended ? { 'data-dshpc-taskbar-suspended': '' } : {}),
+            },
             h(
               PanelSurface,
               { tier: 'menu', role: 'menu', className: 'dshpc-taskbar__panel' },

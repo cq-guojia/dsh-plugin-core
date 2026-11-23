@@ -14,6 +14,10 @@
 
 > EN: This is the **background task hub**: work runs on the backend through open executors, the server owns task state, and the front end only registers, projects and forwards button presses. There is no client pull heartbeat, no status source, no dual-clock lease and no tombstone gate — a terminal state is driven once by the executor result or a server projection. Consumers write two wiring points: `mountTaskUI` registers handlers / terminal callback, `startTask` starts work; display uses the original `TaskBar` (icon/pill forms, sm/md/lg sizes, width and marquee) — no hand-drawn list.
 
+`TaskBar` 面板是**页面级瞬时浮层**，层级低于抽屉 / 弹窗 / 耳朵 / 菜单：任何主浮层的遮罩都盖得住它，永远不许浮到弹窗遮罩之上。`closeOnAction:false` 表示点行按钮后面板保持 open；若此时打开 Modal / SideSheet，面板只**挂起**（整层隐藏且不吃指针），弹窗内操作既不关它也不开它；弹窗一关自动恢复，之后点面板外、Esc 或再点触发器都正常收起。受控模式下 `onOpenChange(false)` 可能重复发出，消费方应把它当幂等信号；不回写会让面板停在受控的 `true`。
+
+> EN: The `TaskBar` panel is a **page-level transient floating layer** below drawers / modals / ears / menus: any primary overlay mask covers it; it must never float above a modal mask. `closeOnAction:false` keeps the panel open after a row action; if a Modal / SideSheet then opens, the panel is only **suspended** (hidden and pointer-inert), so actions inside the overlay neither close nor open it; when the overlay closes the panel resumes, and outside clicks, Escape or the trigger close it normally. In controlled mode `onOpenChange(false)` may be emitted repeatedly — treat it as idempotent; not writing it back keeps the panel pinned to controlled `true`.
+
 所有配置都是**纯数据跟着记录走**：标题、Toast、通知、按钮文案与显示时机在发起时声明，任何页面看到同一条任务都按同一份配置渲染，不需要发起页在场。跨页只传结构化克隆安全的值，不带函数、组件或 Promise。
 
 > EN: All configuration is **plain data carried by the record**: title, toast, notification, button labels and visibility are declared at start time, so every page renders the same task from the same configuration without the originating page being present. Only structured-cloneable values cross pages — no functions, components or promises.
@@ -78,9 +82,9 @@ h(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })
 // 定宽 220；上限 110（放不下省略号、hover 跑马灯）
 h(TaskBar, { width: 220, groups: ['scan'] })
 h(TaskBar, { maxWidth: 110, groups: ['scan'] })
-// 点行按钮后默认收起面板；要留着就关掉
+// 点行按钮后默认收起面板；false = 保持 open，前台弹窗期间只挂起不关闭
 h(TaskBar, { closeOnAction: false, groups: ['scan'] })
-// 受控：传 open 必须同时接 onOpenChange 并回写，否则四条关闭路径只发回调、面板不真的收
+// 受控：传 open 必须同时接 onOpenChange 并回写；onOpenChange(false) 幂等，可重复发
 h(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })
 ```
 
@@ -149,9 +153,9 @@ serveTaskStream(ctx, {
 | `subscribeTaskNotifications(options)` | `(options) => () => void` | — | — | 收任务广播：scope=plugin 只收同项目（不传 project 时回落全局默认项目，没设则报错），global 收所有；收到纯数据自己处理 | Receive task broadcasts: scope=plugin filters to same project (falls back to the global default project when project is omitted, throws if unset), global receives all; plain data, consumer decides |
 | `mountTaskUI(options)` | `(options: MountTaskUIOptions) => () => void` | — | — | 注册 handlers + 订阅终态；handlers 按 project 命名空间（同名按钮不同项目互不覆盖），返回注销函数 | Registers handlers and subscribes to terminal states; handlers are namespaced by project (same button id in different projects does not collide); returns an unsubscribe function |
 | `TaskBar` | `React component` | — | — | 核心原生展示栏：pill/icon 形态、sm/md/lg 尺寸、固定宽 / 最小宽 / 最大宽，超长 hover 跑马灯；数据来自共享池 | Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool |
-| `TaskBar.closeOnAction` | `boolean` | — | true | 点行按钮后是否收起面板；false 则保持展开，动作失败时也不收 | Close the panel after a row action; false keeps it open, including on action failure |
+| `TaskBar.closeOnAction` | `boolean` | — | true | 点行按钮后是否收起面板；false 保持展开，前台主浮层期间只挂起（隐藏且不响应事件），弹窗关后自动恢复，之后外部点击 / Esc / 触发器照常收 | Close the panel after a row action; false keeps it open and only suspends it while a primary overlay is up (hidden and inert), resuming when the overlay closes; outside click / Escape / trigger then close normally |
 | `TaskBar.open` | `boolean \| undefined` | — | undefined | 受控展开态；传了就必须同时传 onOpenChange 并回写，运行中不要切换受控 / 非受控 | Controlled open state; pass together with onOpenChange and write it back; never switch controlled/uncontrolled at runtime |
-| `TaskBar.onOpenChange` | `(open: boolean) => void` | — | undefined | 展开态变化；自动收起发 false、触发器点开发 true，受控时必须回写 | Open-state changes; automatic dismissal emits false and the trigger emits true; controlled callers must write back |
+| `TaskBar.onOpenChange` | `(open: boolean) => void` | — | undefined | 展开态变化；自动收起发 false、触发器点开发 true；回调幂等可重复发，受控时必须回写 | Open-state changes; automatic dismissal emits false and the trigger emits true; idempotent and may repeat; controlled callers must write back |
 | `pressTaskButton(buttonId, taskId)` | `(buttonId: string, taskId: string) => boolean` | — | — | 先切回发起面板再执行 handler；找不到返回 false | Switches back to the originating panel before running the handler; false when not found |
 
 ## 服务端投影：SSE 是唯一状态通道

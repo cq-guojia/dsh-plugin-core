@@ -38,6 +38,10 @@
    核心按 `分类丨说明` 渲染；分类建议中文 2–4 字 / 英文最多 2 词，代码只校验非空、不判字数，超长交给跑马灯。
    `isTaskRecord` 同时校验顶层与 toast 两态标题，旧 string 帧一律拒收、不做兜底；宿主 `deliverToast({ title: string })`
    与 notify 线上协议不变，格式化只在 `coordinator` 出宿主前发生。
+   `TaskBar` 面板走 `--dshpc-z-page-float`（= dock 900），低于抽屉 / 弹窗 / 耳朵 / 菜单：
+   任何主浮层的遮罩都盖得住它，不许借用 popmenu / tip 档。默认点行按钮即收；
+   `closeOnAction:false` 时前台主浮层出现只挂起（隐藏 + 不吃指针 + 关闭事件 gate），
+   弹窗关闭后原样恢复，外部点击 / Esc / 触发器照常收起；受控 `onOpenChange(false)` 幂等可重复发。
 7. **服务端是唯一状态通道**：不接 `follow()`（仅宿主领域状态）与 `remote.$on`（仅审批瀑布）；重连靠服务端基线，
    客户端不维护 cursor / 版本门。跨标签 BC 扇出层的 `noticeSince` 水位只裁「本地回放哪些通知」，
    不参与服务端状态同步，也不是 cursor。

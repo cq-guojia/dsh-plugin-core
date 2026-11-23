@@ -12,6 +12,15 @@ export declare function releaseForegroundOverlay(): void;
 export declare function getForegroundOverlayCount(): number;
 /** SSR 快照：服务端永远没有前台浮层。 */
 export declare function getForegroundOverlayServerCount(): number;
+/** 前台主浮层是否正开着；与计数共用同一个 store，不做第二份状态。 */
+export declare function getForegroundOverlayActive(): boolean;
+/** SSR 快照：服务端永远没有前台浮层。 */
+export declare function getForegroundOverlayServerActive(): boolean;
+/**
+ * 读前台主浮层的开 / 关状态：弹窗内操作要让位时用它，而不是再发一次关闭信号。
+ * 与 `useDismissOnForegroundOverlay` 同源，两者可以并存：一个读状态，一个只在 0→正数边沿关面板。
+ */
+export declare function useForegroundOverlayActive(): boolean;
 export declare function subscribeForegroundOverlay(listener: () => void): () => void;
 /** 只在 0 → 正数的边沿收起，嵌套浮层与计数回落都不重复触发。 */
 export declare function shouldDismissOnForegroundOverlay(previous: number, current: number): boolean;

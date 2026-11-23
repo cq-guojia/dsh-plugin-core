@@ -72,7 +72,11 @@ export type OpenStateDecision = {
     readonly kind: 'emit';
     readonly value: boolean;
 };
-export declare function decideOpenState(current: boolean, next: boolean, controlled: boolean, lastEmitted: boolean): OpenStateDecision;
+export declare function decideOpenState(current: boolean, next: boolean, controlled: boolean): OpenStateDecision;
+/** closeOnAction=false 时前台主浮层期间只挂起、不关闭；其它情形面板照常收起。 */
+export declare function shouldSuspendFloatingLayer(closeOnAction: boolean, foregroundActive: boolean): boolean;
+/** 点到自己外面才关；挂起期间（弹窗正开着）任何事件都不响应。 */
+export declare function shouldCloseOnOutsidePointer(suspended: boolean, targetInside: boolean): boolean;
 /** 一条终态行在时刻 now 的展示阶段（纯派生，组件重挂也从 settledAt 重算，不会「恢复」）。 */
 export type RowSettlePhase = 'rest' | 'leaving' | 'gone';
 /**

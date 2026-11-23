@@ -72,6 +72,28 @@ export function getForegroundOverlayServerCount(): number {
   return 0
 }
 
+/** 前台主浮层是否正开着；与计数共用同一个 store，不做第二份状态。 */
+export function getForegroundOverlayActive(): boolean {
+  return getForegroundOverlayCount() > 0
+}
+
+/** SSR 快照：服务端永远没有前台浮层。 */
+export function getForegroundOverlayServerActive(): boolean {
+  return false
+}
+
+/**
+ * 读前台主浮层的开 / 关状态：弹窗内操作要让位时用它，而不是再发一次关闭信号。
+ * 与 `useDismissOnForegroundOverlay` 同源，两者可以并存：一个读状态，一个只在 0→正数边沿关面板。
+ */
+export function useForegroundOverlayActive(): boolean {
+  return useSyncExternalStore(
+    subscribeForegroundOverlay,
+    getForegroundOverlayActive,
+    getForegroundOverlayServerActive,
+  )
+}
+
 export function subscribeForegroundOverlay(listener: () => void): () => void {
   const store = foregroundStore()
   store.listeners.add(listener)

@@ -5007,6 +5007,10 @@ export const docData = {
         "en": "This is the **background task hub**: work runs on the backend through open executors, the server owns task state, and the front end only registers, projects and forwards button presses. There is no client pull heartbeat, no status source, no dual-clock lease and no tombstone gate — a terminal state is driven once by the executor result or a server projection. Consumers write two wiring points: `mountTaskUI` registers handlers / terminal callback, `startTask` starts work; display uses the original `TaskBar` (icon/pill forms, sm/md/lg sizes, width and marquee) — no hand-drawn list."
       },
       {
+        "zh": "`TaskBar` 面板是**页面级瞬时浮层**，层级低于抽屉 / 弹窗 / 耳朵 / 菜单：任何主浮层的遮罩都盖得住它，永远不许浮到弹窗遮罩之上。`closeOnAction:false` 表示点行按钮后面板保持 open；若此时打开 Modal / SideSheet，面板只**挂起**（整层隐藏且不吃指针），弹窗内操作既不关它也不开它；弹窗一关自动恢复，之后点面板外、Esc 或再点触发器都正常收起。受控模式下 `onOpenChange(false)` 可能重复发出，消费方应把它当幂等信号；不回写会让面板停在受控的 `true`。",
+        "en": "The `TaskBar` panel is a **page-level transient floating layer** below drawers / modals / ears / menus: any primary overlay mask covers it; it must never float above a modal mask. `closeOnAction:false` keeps the panel open after a row action; if a Modal / SideSheet then opens, the panel is only **suspended** (hidden and pointer-inert), so actions inside the overlay neither close nor open it; when the overlay closes the panel resumes, and outside clicks, Escape or the trigger close it normally. In controlled mode `onOpenChange(false)` may be emitted repeatedly — treat it as idempotent; not writing it back keeps the panel pinned to controlled `true`."
+      },
+      {
         "zh": "所有配置都是**纯数据跟着记录走**：标题、Toast、通知、按钮文案与显示时机在发起时声明，任何页面看到同一条任务都按同一份配置渲染，不需要发起页在场。跨页只传结构化克隆安全的值，不带函数、组件或 Promise。",
         "en": "All configuration is **plain data carried by the record**: title, toast, notification, button labels and visibility are declared at start time, so every page renders the same task from the same configuration without the originating page being present. Only structured-cloneable values cross pages — no functions, components or promises."
       },
@@ -5029,7 +5033,7 @@ export const docData = {
       {
         "id": "bt-taskbar-example",
         "lang": "ts",
-        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar 是高级控件的展示面，单独从 adv/tasks/ui 引；adv/tasks 只出逻辑，Node 引它不带 React。\n// 展示栏沿用核心原 UI：icon / pill 两形态、sm/md/lg 尺寸、width/min/max 宽度，\n// 文字过长自动省略 + hover 跑马灯。数据来自共享任务池，无需本插件画行。\n// pill 长条\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// 只有图标（正方形，有任务在跑时带绿点）\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// 定宽 220；上限 110（放不下省略号、hover 跑马灯）\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// 点行按钮后默认收起面板；要留着就关掉\nh(TaskBar, { closeOnAction: false, groups: ['scan'] })\n// 受控：传 open 必须同时接 onOpenChange 并回写，否则四条关闭路径只发回调、面板不真的收\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
+        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar 是高级控件的展示面，单独从 adv/tasks/ui 引；adv/tasks 只出逻辑，Node 引它不带 React。\n// 展示栏沿用核心原 UI：icon / pill 两形态、sm/md/lg 尺寸、width/min/max 宽度，\n// 文字过长自动省略 + hover 跑马灯。数据来自共享任务池，无需本插件画行。\n// pill 长条\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// 只有图标（正方形，有任务在跑时带绿点）\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// 定宽 220；上限 110（放不下省略号、hover 跑马灯）\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// 点行按钮后默认收起面板；false = 保持 open，前台弹窗期间只挂起不关闭\nh(TaskBar, { closeOnAction: false, groups: ['scan'] })\n// 受控：传 open 必须同时接 onOpenChange 并回写；onOpenChange(false) 幂等，可重复发\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
       }
     ]
   },
@@ -5210,8 +5214,8 @@ export const docData = {
             "type": "boolean",
             "def": "true",
             "desc": {
-              "zh": "点行按钮后是否收起面板；false 则保持展开，动作失败时也不收",
-              "en": "Close the panel after a row action; false keeps it open, including on action failure"
+              "zh": "点行按钮后是否收起面板；false 保持展开，前台主浮层期间只挂起（隐藏且不响应事件），弹窗关后自动恢复，之后外部点击 / Esc / 触发器照常收",
+              "en": "Close the panel after a row action; false keeps it open and only suspends it while a primary overlay is up (hidden and inert), resuming when the overlay closes; outside click / Escape / trigger then close normally"
             }
           },
           {
@@ -5228,8 +5232,8 @@ export const docData = {
             "type": "(open: boolean) => void",
             "def": "undefined",
             "desc": {
-              "zh": "展开态变化；自动收起发 false、触发器点开发 true，受控时必须回写",
-              "en": "Open-state changes; automatic dismissal emits false and the trigger emits true; controlled callers must write back"
+              "zh": "展开态变化；自动收起发 false、触发器点开发 true；回调幂等可重复发，受控时必须回写",
+              "en": "Open-state changes; automatic dismissal emits false and the trigger emits true; idempotent and may repeat; controlled callers must write back"
             }
           },
           {

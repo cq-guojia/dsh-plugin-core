@@ -2,7 +2,9 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   acquireForegroundOverlay,
+  getForegroundOverlayActive,
   getForegroundOverlayCount,
+  getForegroundOverlayServerActive,
   getForegroundOverlayServerCount,
   releaseForegroundOverlay,
   shouldDismissOnForegroundOverlay,
@@ -18,17 +20,22 @@ test('前台浮层 store：计数增减、通知与 SSR 快照', () => {
     let notified = 0
     const off = subscribeForegroundOverlay(() => { notified += 1 })
     assert.equal(getForegroundOverlayCount(), 0)
+    assert.equal(getForegroundOverlayActive(), false)
     assert.equal(getForegroundOverlayServerCount(), 0, '服务端快照恒为 0')
+    assert.equal(getForegroundOverlayServerActive(), false)
 
     acquireForegroundOverlay()
     acquireForegroundOverlay()
     assert.equal(getForegroundOverlayCount(), 2, '嵌套浮层累加')
+    assert.equal(getForegroundOverlayActive(), true, 'active 只需知道有没有前台浮层')
     assert.equal(notified, 2)
 
     releaseForegroundOverlay()
     assert.equal(getForegroundOverlayCount(), 1)
+    assert.equal(getForegroundOverlayActive(), true, '还有一个前台浮层时也保持 active')
     releaseForegroundOverlay()
     assert.equal(getForegroundOverlayCount(), 0)
+    assert.equal(getForegroundOverlayActive(), false)
     releaseForegroundOverlay()
     assert.equal(getForegroundOverlayCount(), 0, '计数不低于 0')
     assert.equal(notified, 4, '计数为 0 时重复 release 不再发通知')
