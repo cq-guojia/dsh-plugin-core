@@ -9,6 +9,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { Toaster, toast } from 'sonner'
 import { Button } from '../actions/Button.js'
 import { FontIcon } from '../display/font-icon.js'
+import { MarqueeText } from '../display/MarqueeText.js'
 import { claimToastHost, type ToastHost } from './toast-host.js'
 import {
   subscribeToasts,
@@ -158,7 +159,7 @@ function createToasterHost(): ToastHost {
           h(
             'div',
             { style: { flex: 1, minWidth: 0 } },
-            h('div', { style: { fontWeight: 600 } }, payload.message),
+            h(MarqueeText, { text: payload.message, style: { fontWeight: 600 } }),
             payload.description !== undefined
               ? h(
                   'div',

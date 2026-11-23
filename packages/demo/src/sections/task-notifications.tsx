@@ -1,6 +1,7 @@
 import { createElement as h, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Button } from '../../../../dist/ui/index.js'
 import {
+  formatDisplayTitle,
   mountTaskUI,
   startTask,
   taskCenterStore,
@@ -43,9 +44,10 @@ mountTaskUI({
 
 // ③ 发起：10 秒、渐进披露；配置全是纯数据，跟着记录走
 await startTask({
-  project: 'dsh-plugin-core-demo', group: 'demo-jobs', title: '结案',
+  project: 'dsh-plugin-core-demo', group: 'demo-jobs',
+  title: { category: '结案', description: '后台任务演示' },
   kind: 'demo:job', args: { seconds: 10, steps: 20 },
-  toast: { success: { title: '完成', button: { id: 'open-log', text: '看日志' }, scope: 'all' } },
+  toast: { success: { title: { category: '完成', description: '后台任务演示' }, button: { id: 'open-log', text: '看日志' }, scope: 'all' } },
   rowButtons: [
         { id: 'open-log', text: '看日志', when: 'done' },
         { id: 'open-log', text: '看日志', when: 'failed' },
@@ -77,8 +79,8 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
   const [events, setEvents] = useState<readonly string[]>([])
   const serial = useRef(0)
   const handlers = useRef({ 'open-log': (task: TaskRecord) => {
-    window.alert(`查看日志：${task.title}`)
-    setEvents((prev) => [`按钮 看日志: ${task.title}`, ...prev].slice(0, 8))
+    window.alert(`查看日志：${formatDisplayTitle(task.title)}`)
+    setEvents((prev) => [`按钮 看日志: ${formatDisplayTitle(task.title)}`, ...prev].slice(0, 8))
   } })
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
       project: PROJECT,
       handlers: handlers.current,
       onSettled: (task, outcome) => {
-        setEvents((prev) => [`终态 ${outcome}: ${task.title}${task.reason ? ` · ${task.reason}` : ''}`, ...prev].slice(0, 8))
+        setEvents((prev) => [`终态 ${outcome}: ${formatDisplayTitle(task.title)}${task.reason ? ` · ${task.reason}` : ''}`, ...prev].slice(0, 8))
       },
     })
     return () => { offUi() }
@@ -98,14 +100,14 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
     void startTask({
       project: PROJECT,
       group: GROUP,
-      title: `${label} #${index}`,
+      title: { category: '任务', description: `${label} #${index}` },
       key: `${label}:${index}`,
       kind: 'demo:job',
       args: { ...args, label, index },
       detail: { label, index },
       toast: {
-        success: { title: `${label} #${index} 成功`, button: { id: 'open-log', text: '看日志' }, scope: 'all' },
-        failure: { title: `${label} #${index} 失败`, button: { id: 'open-log', text: '看日志' }, scope: 'origin' },
+        success: { title: { category: '完成', description: `${label} #${index}` }, button: { id: 'open-log', text: '看日志' }, scope: 'all' },
+        failure: { title: { category: '失败', description: `${label} #${index}` }, button: { id: 'open-log', text: '看日志' }, scope: 'origin' },
       },
       rowButtons: [
         { id: 'open-log', text: '看日志', when: 'done' },
@@ -147,7 +149,7 @@ export function TaskNotificationsPage(): ReturnType<typeof h> {
         snapshot.tasks.length === 0
           ? h(Note, { text: t('tnEmptyTasks') })
           : snapshot.tasks.map((task) => h('div', { key: task.id, style: mono },
-            `${task.title} · ${task.state}${task.progress ? ` · ${task.progress.message}` : ''}`)),
+            `${formatDisplayTitle(task.title)} · ${task.state}${task.progress ? ` · ${task.progress.message}` : ''}`)),
       ),
     ),
     h(Example, { title: t('tnEventsTitle'), hint: t('tnEventsHint') },

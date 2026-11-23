@@ -1383,6 +1383,14 @@ var MODELS_PATH = "/api/dsh-plugin-core-demo/models";
 var FS_PATH = "/api/dsh-plugin-core-demo/fs";
 var TASK_PATH = "/api/dsh-plugin-core-demo/tasks";
 
+// dist/adv/tasks/model.js
+function isDisplayTitle(value) {
+  if (value === null || typeof value !== "object")
+    return false;
+  const candidate = value;
+  return typeof candidate.category === "string" && candidate.category.trim() !== "" && typeof candidate.description === "string" && candidate.description.trim() !== "";
+}
+
 // packages/demo/src/host-tasks.ts
 var VIEWER = "demo-viewer";
 var tasks = /* @__PURE__ */ new Map();
@@ -1451,6 +1459,7 @@ function serveDemoTasks(ctx) {
     path: `${TASK_PATH}/submit`,
     authorize: () => true,
     onSubmit: (payload) => {
+      if (!isDisplayTitle(payload.title)) throw new Error("invalid task title");
       const id = `task:${Date.now().toString(36)}:${Math.random().toString(36).slice(2, 7)}`;
       const args = typeof payload.args === "object" && payload.args !== null ? payload.args : {};
       const seconds = Number(args.seconds) || 10;
@@ -1463,7 +1472,7 @@ function serveDemoTasks(ctx) {
         key: typeof payload.key === "string" && payload.key !== "" ? payload.key : id,
         project: String(payload.project ?? "dsh-plugin-core-demo"),
         group: String(payload.group ?? "demo-jobs"),
-        title: String(payload.title ?? "\u540E\u53F0\u4EFB\u52A1"),
+        title: payload.title,
         state: "running",
         startedAt: Date.now(),
         // 发起页身份由 client 随 submit 提交：origin 让 notice 按 scope:'origin' 只在发起页弹，

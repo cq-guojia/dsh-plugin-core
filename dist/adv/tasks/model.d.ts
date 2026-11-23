@@ -10,6 +10,16 @@
  */
 import type { NotifyDetail } from '../../runtime/notify.js';
 export type TaskState = 'running' | 'done' | 'failed';
+/**
+ * 对外显示的标题：**分类 + 说明**两段，core 统一拼成 `分类丨说明`。
+ * 分类建议中文 2–4 字 / 英文最多 2 个单词（软约定，代码不判字数）；整串过长由跑马灯处理。
+ */
+export interface DisplayTitle {
+    readonly category: string;
+    readonly description: string;
+}
+export declare function isDisplayTitle(value: unknown): value is DisplayTitle;
+export declare function formatDisplayTitle(title: DisplayTitle): string;
 /** 通知范围：all = 每个页面都处理；origin = 只发起页处理。 */
 export type TaskScope = 'all' | 'origin';
 /** 广播范围：plugin = 同项目消费者；global = 同宿主所有插件。 */
@@ -25,7 +35,8 @@ export interface TaskButton {
 }
 /** 一个终态（success / failure）的 toast 配置。整态不写 = 该态不弹卡。 */
 export interface TaskToastState {
-    readonly title: string;
+    /** 显示为 `分类丨说明` 的结构化标题，由调用方给。 */
+    readonly title: DisplayTitle;
     readonly button?: TaskButton;
     readonly scope?: TaskScope;
 }
@@ -67,7 +78,8 @@ export interface TaskRecord {
     readonly key?: string;
     readonly project: string;
     readonly group: string;
-    readonly title: string;
+    /** 显示为 `分类丨说明` 的结构化标题，由调用方给。 */
+    readonly title: DisplayTitle;
     readonly state: TaskState;
     readonly startedAt: number;
     /** 发起面板 id：点击按钮时先切回这个面板再执行 handler。核心自动记，调用方不传。 */
@@ -99,7 +111,8 @@ export type TaskNotificationRecord = TaskRecord;
 export interface StartTaskInput {
     readonly project?: string;
     readonly group?: string;
-    readonly title: string;
+    /** 显示为 `分类丨说明` 的结构化标题，由调用方给。 */
+    readonly title: DisplayTitle;
     readonly key?: string;
     readonly kind: string;
     /** 纯数据：JSON 安全值（普通对象/数组/基本类型），禁 class 实例 / Map / Set / 函数。 */

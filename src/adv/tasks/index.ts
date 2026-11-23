@@ -32,6 +32,7 @@ export type {
   ExecutorResult,
 } from '../../runtime/executor.js'
 export type {
+  DisplayTitle,
   StartTaskInput,
   TaskBroadcast,
   TaskButton,
@@ -48,7 +49,7 @@ export type {
   TaskWhen,
   TaskNotificationRecord,
 } from './model.js'
-export { buttonsForState, notifyForState, toastForState } from './model.js'
+export { buttonsForState, formatDisplayTitle, isDisplayTitle, notifyForState, toastForState } from './model.js'
 export { connectTaskStream, parseTaskFrames } from './stream.js'
 export type { TaskStreamConnection, TaskStreamGiveUpReason, TaskStreamOptions } from './stream.js'
 export { connectSharedTaskStream } from './shared-stream.js'

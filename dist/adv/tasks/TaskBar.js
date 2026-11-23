@@ -1,4 +1,4 @@
-import { createElement as h, useEffect, useState, useSyncExternalStore, } from 'react';
+import { createElement as h, useCallback, useEffect, useRef, useState, useSyncExternalStore, } from 'react';
 import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react';
 import { Button } from '../../ui/actions/Button.js';
 import { Chip } from '../../ui/display/Chip.js';
@@ -8,11 +8,13 @@ import { MarqueeText } from '../../ui/display/MarqueeText.js';
 import { Chevron } from '../../ui/infra/chevron.js';
 import { PanelSurface } from '../../ui/infra/panel.js';
 import { ensureComponentStyles } from '../../ui/infra/css.js';
+import { useDismissOnForegroundOverlay } from '../../ui/infra/overlay.js';
 import { useLocale } from '../../ui/infra/locale.js';
 import { useNowMs } from '../../ui/infra/ticker.js';
 import { t } from '../../utils/i18n.js';
 import { formatDurationHms } from '../../utils/date.js';
 import { notifyTaskActionFailed, pressTaskButton, taskCenterStore } from './api.js';
+import { formatDisplayTitle } from './model.js';
 import { TASK_BAR_CSS } from './task-bar-css.js';
 import { isSettled } from './store.js';
 /** 本栏自己的图标：后台正在跑的任务，用 CPU 字形表示「机器在干活」。 */
@@ -32,6 +34,16 @@ function iconNameOf(task, fallback) {
 function actionIconOf(action, fallback) {
     const name = action.icon;
     return name === undefined || resolveIconName(name) === undefined ? fallback : name;
+}
+export function decideOpenState(current, next, controlled, lastEmitted) {
+    if (current === next)
+        return { kind: 'noop' };
+    if (!controlled)
+        return { kind: 'setInternal', value: next };
+    // 受控分支只发回调、不写内部 state；父组件尚未回写时连续两次 false 只发一次。
+    if (lastEmitted === next)
+        return { kind: 'noop' };
+    return { kind: 'emit', value: next };
 }
 /**
  * 第二行小字。运行中 = `MM:SS - 披露文字`（满小时 `HH:MM:SS - …`），秒级跳动；
@@ -192,7 +204,7 @@ export function TaskBar(props) {
     ensureComponentStyles('task-bar', TASK_BAR_CSS);
     // 切语言要重渲，否则计数与空态文字停在旧语种。
     useLocale();
-    const { form = 'pill', size = 'md', groups, project, onActionFailure, placement = 'down', defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className, style, settleRetainMs = DEFAULT_SETTLE_RETAIN_MS, } = props;
+    const { form = 'pill', size = 'md', groups, project, onActionFailure, placement = 'down', defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className, style, settleRetainMs = DEFAULT_SETTLE_RETAIN_MS, open: controlledOpen, onOpenChange, closeOnAction = true, } = props;
     // 行内动作按钮一律最小号：面板里的动作是次要操作，不跟着触发器尺寸变（2026-11-15 用户）。
     const actionSize = 'sm';
     // 宽度三轴与 Button 同口径：固定宽优先，min / max 只在 width 未设时生效。
@@ -210,7 +222,30 @@ export function TaskBar(props) {
     }
     // 只有被宽度约束（定宽或给了上限）才需要「省略号 + hover 跑马灯」；否则别多套一层测宽组件。
     const truncatable = form === 'pill' && (width !== undefined || maxWidth !== undefined);
-    const [open, setOpen] = useState(false);
+    const [internalOpen, setInternalOpen] = useState(false);
+    const open = controlledOpen ?? internalOpen;
+    // 受控分支只发回调，绝不替父组件改 state；ref 记录上次发出的值，避免父组件尚未重渲时重复发 false。
+    // props.open 变化时复位 ref —— 否则父组件先回写 false 再打开 true 后，下一次关闭会被去重吞掉。
+    const lastEmitted = useRef(open);
+    useEffect(() => { lastEmitted.current = open; }, [open]);
+    const warnedControlled = useRef(false);
+    useEffect(() => {
+        if (controlledOpen === undefined || onOpenChange !== undefined || warnedControlled.current)
+            return;
+        warnedControlled.current = true;
+        console.warn('[dsh-plugin-core] TaskBar: open requires onOpenChange; close paths will only emit the callback');
+    }, [controlledOpen, onOpenChange]);
+    const setOpenState = useCallback((next) => {
+        const decision = decideOpenState(controlledOpen ?? internalOpen, next, controlledOpen !== undefined, lastEmitted.current);
+        if (decision.kind === 'noop')
+            return;
+        if (decision.kind === 'emit') {
+            lastEmitted.current = decision.value;
+            onOpenChange?.(decision.value);
+            return;
+        }
+        setInternalOpen(decision.value);
+    }, [controlledOpen, internalOpen, onOpenChange]);
     useSyncExternalStore(taskCenterStore.subscribe, taskCenterStore.getSnapshot, taskCenterStore.getSnapshot);
     // 新体系没有 hidden / 跨站开关：project=null 收全部，groups='*' 也收全部。
     const scopeProject = project === undefined ? null : project;
@@ -223,11 +258,14 @@ export function TaskBar(props) {
     const busy = running > 0;
     const { refs, floatingStyles } = useFloating({
         open,
-        onOpenChange: setOpen,
+        onOpenChange: setOpenState,
         placement: placement === 'up' ? 'top-end' : 'bottom-end',
         middleware: [offset(6), flip({ padding: 8 }), shift({ padding: 8 })],
         whileElementsMounted: autoUpdate,
     });
+    // 前台主浮层（Modal / SideSheet / 选文件弹窗）一出现就收起本面板；不自动恢复。
+    const closeOnForeground = useCallback(() => { setOpenState(false); }, [setOpenState]);
+    useDismissOnForegroundOverlay(closeOnForeground);
     // 点外部 / Esc 关闭：与 Picker 同一口径，不引入遮罩。
     useEffect(() => {
         if (!open || typeof document === 'undefined')
@@ -243,11 +281,11 @@ export function TaskBar(props) {
                 return;
             if (floating?.contains?.(target) === true)
                 return;
-            setOpen(false);
+            setOpenState(false);
         };
         const onKeyDown = (event) => {
             if (event.key === 'Escape')
-                setOpen(false);
+                setOpenState(false);
         };
         document.addEventListener('pointerdown', onPointerDown);
         document.addEventListener('keydown', onKeyDown);
@@ -255,9 +293,9 @@ export function TaskBar(props) {
             document.removeEventListener('pointerdown', onPointerDown);
             document.removeEventListener('keydown', onKeyDown);
         };
-    }, [open, refs]);
+    }, [open, refs, setOpenState]);
     const icon = h('span', { className: `dshpc-taskbar__iconwrap${busy ? ' dshpc-taskbar__iconwrap--busy' : ''}` }, h(FontIcon, { name: defaultIcon }), busy ? h('span', { className: 'dshpc-taskbar__dot' }) : null);
-    const toggle = () => { setOpen(!open); };
+    const toggle = () => { setOpenState(!open); };
     // 被宽度约束时把「后台任务 + N 个运行中」并成**一段**文字：只留一个可收缩槽，
     // 计数不再作为 flex:none 的独立元素把箭头顶出边框；省略号与 hover 跑马灯都由这同一段负责。
     const labelText = t('taskbarLabel');
@@ -288,7 +326,7 @@ export function TaskBar(props) {
         return h('div', {
             key: task.id,
             className: `dshpc-taskbar__item${leavingIds.has(task.id) ? ' dshpc-taskbar__item--leaving' : ''}`,
-        }, h('span', { className: 'dshpc-taskbar__row-icon' }, h(FontIcon, { name: iconNameOf(task, defaultIcon) })), h('div', { className: 'dshpc-taskbar__row-main' }, h('span', { className: 'dshpc-taskbar__row-title', title: task.title }, task.title), h(Elapsed, { since: task.startedAt, until: task.settledAt, progress: task.progress?.message })), actions.length === 0
+        }, h('span', { className: 'dshpc-taskbar__row-icon' }, h(FontIcon, { name: iconNameOf(task, defaultIcon) })), h('div', { className: 'dshpc-taskbar__row-main' }, h(MarqueeText, { text: formatDisplayTitle(task.title), className: 'dshpc-taskbar__row-title' }), h(Elapsed, { since: task.startedAt, until: task.settledAt, progress: task.progress?.message })), actions.length === 0
             ? null
             : h('div', {
                 className: 'dshpc-taskbar__row-actions',
@@ -308,6 +346,9 @@ export function TaskBar(props) {
                     icon: h(FontIcon, { name: glyph }),
                     ...(label === undefined ? { label: glyph } : {}),
                     onClick: () => {
+                        // 通用菜单「点项即收」：先关面板，再派发动作；失败仍按原口径报告。
+                        if (closeOnAction)
+                            setOpenState(false);
                         const ok = pressTaskButton(action.id, task.id);
                         if (ok)
                             return;

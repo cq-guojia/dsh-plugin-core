@@ -1,5 +1,5 @@
 import {
-  createElement as h, useEffect, useState, useSyncExternalStore,
+  createElement as h, useCallback, useEffect, useRef, useState, useSyncExternalStore,
   type CSSProperties, type MouseEvent, type ReactNode,
 } from 'react'
 import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react'
@@ -11,12 +11,13 @@ import { MarqueeText } from '../../ui/display/MarqueeText.js'
 import { Chevron } from '../../ui/infra/chevron.js'
 import { PanelSurface } from '../../ui/infra/panel.js'
 import { ensureComponentStyles } from '../../ui/infra/css.js'
+import { useDismissOnForegroundOverlay } from '../../ui/infra/overlay.js'
 import { useLocale } from '../../ui/infra/locale.js'
 import { useNowMs } from '../../ui/infra/ticker.js'
 import { t } from '../../utils/i18n.js'
 import { formatDurationHms } from '../../utils/date.js'
 import { notifyTaskActionFailed, pressTaskButton, taskCenterStore } from './api.js'
-import type { TaskButton, TaskNotificationRecord } from './model.js'
+import { formatDisplayTitle, type TaskButton, type TaskNotificationRecord } from './model.js'
 import { TASK_BAR_CSS } from './task-bar-css.js'
 import { isSettled } from './store.js'
 
@@ -66,6 +67,15 @@ export interface TaskBarProps {
   /** 最大宽：`width` 未设时生效；文字放不下折叠成省略号，hover 跑马灯展开（同 `Button`）。 */
   maxWidth?: number | string
   /**
+   * 受控展开态。传了就必须同时传 `onOpenChange` 并回写，否则点外部 / Esc / 行按钮 / 前台浮层
+   * 四条关闭路径只会发回调、DOM 不会真的收起。运行中不要切换受控 / 非受控。
+   */
+  open?: boolean
+  /** 展开态变化。自动收起发 `false`，触发器点开发 `true`；受控时必须回写到 `open`。 */
+  onOpenChange?: (open: boolean) => void
+  /** 点行按钮后是否收起面板，默认 `true`（通用菜单「点项即收」）。传 `false` 可保持面板。 */
+  closeOnAction?: boolean
+  /**
    * 终态行在列表里停留多久再退场（毫秒），默认 60000 —— 给 `when: done/failed` 的行按钮留点击窗口。
    * 到点先播退场动画再移除；传 0 则终态即时退场。
    */
@@ -94,6 +104,25 @@ function iconNameOf(task: TaskNotificationRecord, fallback: string): string {
 function actionIconOf(action: TaskButton, fallback: string): string {
   const name = action.icon
   return name === undefined || resolveIconName(name) === undefined ? fallback : name
+}
+
+/** 展开态变更的纯判定：抽出来是为了在无 jsdom 的 node 自检里覆盖受控 / 非受控与去重边界。 */
+export type OpenStateDecision =
+  | { readonly kind: 'noop' }
+  | { readonly kind: 'setInternal'; readonly value: boolean }
+  | { readonly kind: 'emit'; readonly value: boolean }
+
+export function decideOpenState(
+  current: boolean,
+  next: boolean,
+  controlled: boolean,
+  lastEmitted: boolean,
+): OpenStateDecision {
+  if (current === next) return { kind: 'noop' }
+  if (!controlled) return { kind: 'setInternal', value: next }
+  // 受控分支只发回调、不写内部 state；父组件尚未回写时连续两次 false 只发一次。
+  if (lastEmitted === next) return { kind: 'noop' }
+  return { kind: 'emit', value: next }
 }
 
 /**
@@ -276,6 +305,7 @@ export function TaskBar(props: TaskBarProps): ReactNode {
     form = 'pill', size = 'md', groups, project, onActionFailure, placement = 'down',
     defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className, style,
     settleRetainMs = DEFAULT_SETTLE_RETAIN_MS,
+    open: controlledOpen, onOpenChange, closeOnAction = true,
   } = props
 
   // 行内动作按钮一律最小号：面板里的动作是次要操作，不跟着触发器尺寸变（2026-11-15 用户）。
@@ -294,7 +324,34 @@ export function TaskBar(props: TaskBarProps): ReactNode {
   // 只有被宽度约束（定宽或给了上限）才需要「省略号 + hover 跑马灯」；否则别多套一层测宽组件。
   const truncatable = form === 'pill' && (width !== undefined || maxWidth !== undefined)
 
-  const [open, setOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlledOpen ?? internalOpen
+  // 受控分支只发回调，绝不替父组件改 state；ref 记录上次发出的值，避免父组件尚未重渲时重复发 false。
+  // props.open 变化时复位 ref —— 否则父组件先回写 false 再打开 true 后，下一次关闭会被去重吞掉。
+  const lastEmitted = useRef(open)
+  useEffect(() => { lastEmitted.current = open }, [open])
+  const warnedControlled = useRef(false)
+  useEffect(() => {
+    if (controlledOpen === undefined || onOpenChange !== undefined || warnedControlled.current) return
+    warnedControlled.current = true
+    console.warn('[dsh-plugin-core] TaskBar: open requires onOpenChange; close paths will only emit the callback')
+  }, [controlledOpen, onOpenChange])
+  const setOpenState = useCallback((next: boolean): void => {
+    const decision = decideOpenState(
+      controlledOpen ?? internalOpen,
+      next,
+      controlledOpen !== undefined,
+      lastEmitted.current,
+    )
+    if (decision.kind === 'noop') return
+    if (decision.kind === 'emit') {
+      lastEmitted.current = decision.value
+      onOpenChange?.(decision.value)
+      return
+    }
+    setInternalOpen(decision.value)
+  }, [controlledOpen, internalOpen, onOpenChange])
+
   useSyncExternalStore(
     taskCenterStore.subscribe,
     taskCenterStore.getSnapshot,
@@ -312,11 +369,15 @@ export function TaskBar(props: TaskBarProps): ReactNode {
 
   const { refs, floatingStyles } = useFloating({
     open,
-    onOpenChange: setOpen,
+    onOpenChange: setOpenState,
     placement: placement === 'up' ? 'top-end' : 'bottom-end',
     middleware: [offset(6), flip({ padding: 8 }), shift({ padding: 8 })],
     whileElementsMounted: autoUpdate,
   })
+
+  // 前台主浮层（Modal / SideSheet / 选文件弹窗）一出现就收起本面板；不自动恢复。
+  const closeOnForeground = useCallback((): void => { setOpenState(false) }, [setOpenState])
+  useDismissOnForegroundOverlay(closeOnForeground)
 
   // 点外部 / Esc 关闭：与 Picker 同一口径，不引入遮罩。
   useEffect(() => {
@@ -329,10 +390,10 @@ export function TaskBar(props: TaskBarProps): ReactNode {
       const floating = refs.floating.current as { contains?: (node: Node) => boolean } | null
       if (reference?.contains?.(target) === true) return
       if (floating?.contains?.(target) === true) return
-      setOpen(false)
+      setOpenState(false)
     }
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') setOpen(false)
+      if (event.key === 'Escape') setOpenState(false)
     }
     document.addEventListener('pointerdown', onPointerDown)
     document.addEventListener('keydown', onKeyDown)
@@ -340,7 +401,7 @@ export function TaskBar(props: TaskBarProps): ReactNode {
       document.removeEventListener('pointerdown', onPointerDown)
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [open, refs])
+  }, [open, refs, setOpenState])
 
   const icon = h(
     'span',
@@ -349,7 +410,7 @@ export function TaskBar(props: TaskBarProps): ReactNode {
     busy ? h('span', { className: 'dshpc-taskbar__dot' }) : null,
   )
 
-  const toggle = (): void => { setOpen(!open) }
+  const toggle = (): void => { setOpenState(!open) }
 
   // 被宽度约束时把「后台任务 + N 个运行中」并成**一段**文字：只留一个可收缩槽，
   // 计数不再作为 flex:none 的独立元素把箭头顶出边框；省略号与 hover 跑马灯都由这同一段负责。
@@ -396,7 +457,7 @@ export function TaskBar(props: TaskBarProps): ReactNode {
       h(
         'div',
         { className: 'dshpc-taskbar__row-main' },
-        h('span', { className: 'dshpc-taskbar__row-title', title: task.title }, task.title),
+        h(MarqueeText, { text: formatDisplayTitle(task.title), className: 'dshpc-taskbar__row-title' }),
         h(Elapsed, { since: task.startedAt, until: task.settledAt, progress: task.progress?.message }),
       ),
       actions.length === 0
@@ -423,6 +484,8 @@ export function TaskBar(props: TaskBarProps): ReactNode {
                   icon: h(FontIcon, { name: glyph }),
                   ...(label === undefined ? { label: glyph } : {}),
                   onClick: () => {
+                    // 通用菜单「点项即收」：先关面板，再派发动作；失败仍按原口径报告。
+                    if (closeOnAction) setOpenState(false)
                     const ok = pressTaskButton(action.id, task.id)
                     if (ok) return
                     // 没生效一律要吭声：有回调交回调，否则走与 Toast 按钮共用的一次提示。

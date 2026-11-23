@@ -17,7 +17,7 @@ import {
   type NotifyDetail,
 } from '../../runtime/notify.js'
 import { createCoordinator, type CoordinatorHost, type TaskCoordinator } from './coordinator.js'
-import type { StartTaskInput, TaskNotice, TaskRecord } from './model.js'
+import { isDisplayTitle, type StartTaskInput, type TaskNotice, type TaskRecord } from './model.js'
 import { connectSharedTaskStream, type SharedLifecycle } from './shared-stream.js'
 import { connectTaskStream, type TaskStreamConnection, type TaskStreamGiveUpReason } from './stream.js'
 import { taskStore } from './store.js'
@@ -203,6 +203,19 @@ function createPageLifecycle(): SharedLifecycle {
  * running 帧不得带 settledAt（状态与时钟分离）。
  * 校验放在唯一入口，store 只负责合并，不再任何地方本地造时间冒充服务端真源。
  */
+function isTaskToastConfig(value: unknown): boolean {
+  if (value === undefined) return true
+  if (value === null || typeof value !== 'object') return false
+  const config = value as Record<string, unknown>
+  for (const key of ['success', 'failure']) {
+    const state = config[key]
+    if (state === undefined) continue
+    if (state === null || typeof state !== 'object') return false
+    if (!isDisplayTitle((state as Record<string, unknown>).title)) return false
+  }
+  return true
+}
+
 export function isTaskRecord(value: unknown): value is TaskRecord {
   if (value === null || typeof value !== 'object') return false
   const v = value as Record<string, unknown>
@@ -211,7 +224,8 @@ export function isTaskRecord(value: unknown): value is TaskRecord {
     typeof v.id === 'string' &&
     typeof v.project === 'string' &&
     typeof v.group === 'string' &&
-    typeof v.title === 'string' &&
+    isDisplayTitle(v.title) &&
+    isTaskToastConfig(v.toast) &&
     (v.state === 'running' || v.state === 'done' || v.state === 'failed') &&
     typeof v.startedAt === 'number' && Number.isFinite(v.startedAt) &&
     (v.state === 'running'

@@ -26,11 +26,11 @@ test('提交端点：POST payload 交给 onSubmit，回 id', async () => {
   const { routes, ctx } = fakeCtx()
   serveTaskSubmit(ctx, { path: '/s', authorize: () => true, onSubmit: (p) => { got = p; return 'id-1' } })
   const reply = await Promise.race([
-    post(routes.get('/s'), { title: '中文', seconds: 30 }),
+    post(routes.get('/s'), { title: { category: '任务', description: '中文' }, seconds: 30 }),
     new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 1000)),
   ])
   assert.deepEqual(JSON.parse(reply.body), { ok: true, id: 'id-1' })
-  assert.equal(got.title, '中文')
+  assert.deepEqual(got.title, { category: '任务', description: '中文' })
   assert.equal(got.seconds, 30)
 })
 
@@ -140,7 +140,7 @@ test('刷新恢复：新 SSE 连接从 snapshot 拿到已提交且仍在运行�
     source: { snapshot: () => [...tasks.values()], subscribe: (l) => { listeners.add(l); return () => listeners.delete(l) } },
   })
   await Promise.race([
-    post(routes.get('/submit'), { title: '中文' }),
+    post(routes.get('/submit'), { title: { category: '任务', description: '中文' } }),
     new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 1000)),
   ])
   const frames = []

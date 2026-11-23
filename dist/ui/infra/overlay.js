@@ -4,11 +4,86 @@
  * 抽出来的判据：这两件在两种浮层里完全同构（遮罩让位分栏、头部四槽、Esc 判定），
  * 差异只在「面板怎么排」（居中 vs 贴边），那部分留在各自的控件里。
  */
-import { createContext, createElement as h, useContext, useEffect } from 'react';
+import { createContext, createElement as h, useContext, useEffect, useRef, useSyncExternalStore } from 'react';
 import { ensureComponentStyles } from './css.js';
 import { OVERLAY_CSS } from './overlay-css.js';
 import { PANEL_CSS } from './panel-css.js';
 import { PanelClose } from './panel.js';
+/**
+ * 前台主浮层广播 —— 与 `LockedContext` 互补的另一条轴。
+ *
+ * LockedContext 管「弹窗锁死时 portal 出去的菜单要收」靠 React 树传递；这里要管的是
+ * **不在弹窗子树里**的页面级浮层（TaskBar 面板）：Modal / SideSheet / 选文件弹窗一出现，
+ * 它们就得让位。Context 跨不过去，所以用模块级外部 store + `globalThis[Symbol.for]` 跨副本收口。
+ * 只登记 `OverlayMask` 三档主浮层，Picker / 日期那些 portal 菜单不登记 —— 它们仍可高于弹窗。
+ */
+const FOREGROUND_OVERLAY_KEY = Symbol.for('dshpc.foregroundOverlay.v1');
+function isForegroundOverlayStore(value) {
+    if (value === null || typeof value !== 'object')
+        return false;
+    const candidate = value;
+    return typeof candidate.count === 'number' && candidate.listeners instanceof Set;
+}
+function foregroundStore() {
+    const g = globalThis;
+    const existing = g[FOREGROUND_OVERLAY_KEY];
+    if (existing !== undefined) {
+        if (!isForegroundOverlayStore(existing))
+            throw new Error('[dsh-plugin-core] incompatible foreground overlay store');
+        return existing;
+    }
+    const store = { count: 0, listeners: new Set() };
+    g[FOREGROUND_OVERLAY_KEY] = store;
+    return store;
+}
+function emitForegroundOverlay() {
+    for (const listener of foregroundStore().listeners) {
+        try {
+            listener();
+        }
+        catch { /* 单个订阅者出错不影响其它订阅者 */ }
+    }
+}
+/** 登记一个前台主浮层。与 `releaseForegroundOverlay` 成对使用（effect + cleanup）。 */
+export function acquireForegroundOverlay() {
+    foregroundStore().count += 1;
+    emitForegroundOverlay();
+}
+/** 注销一个前台主浮层；计数不会低于 0。 */
+export function releaseForegroundOverlay() {
+    const store = foregroundStore();
+    if (store.count === 0)
+        return;
+    store.count -= 1;
+    emitForegroundOverlay();
+}
+export function getForegroundOverlayCount() {
+    return foregroundStore().count;
+}
+/** SSR 快照：服务端永远没有前台浮层。 */
+export function getForegroundOverlayServerCount() {
+    return 0;
+}
+export function subscribeForegroundOverlay(listener) {
+    const store = foregroundStore();
+    store.listeners.add(listener);
+    return () => { store.listeners.delete(listener); };
+}
+/** 只在 0 → 正数的边沿收起，嵌套浮层与计数回落都不重复触发。 */
+export function shouldDismissOnForegroundOverlay(previous, current) {
+    return previous === 0 && current > 0;
+}
+/** 任意瞬时浮层订阅本 hook：前台主浮层出现即收起，自己不倒回去自动恢复。 */
+export function useDismissOnForegroundOverlay(onDismiss) {
+    const count = useSyncExternalStore(subscribeForegroundOverlay, getForegroundOverlayCount, getForegroundOverlayServerCount);
+    const previous = useRef(count);
+    useEffect(() => {
+        const prev = previous.current;
+        previous.current = count;
+        if (onDismiss !== undefined && shouldDismissOnForegroundOverlay(prev, count))
+            onDismiss();
+    }, [count, onDismiss]);
+}
 /**
  * 锁定广播：Modal / SideSheet `locked` 时把 true 传下去。
  * 为什么要有它：面板挂 `inert` 管不到 **portal 到 body** 的那几个浮层（Picker / 日期选择的菜单
@@ -79,6 +154,15 @@ export function useEscapeClose(enabled, onClose) {
 /** 遮罩 + 承载盒。右边界让位分栏的规则只有这一份。 */
 export function OverlayMask(props) {
     ensureComponentStyles('overlay', OVERLAY_CSS);
+    // backgrounded 是受控 prop，同一个 fiber 上 attrs 的键会 true↔false 变化；依赖必须是派生布尔值，
+    // 不能是每次渲染新建的 props.attrs 对象，否则还原弹窗时不会重新登记（计数不增 ⇒ 面板不让位）。
+    const foreground = props.attrs?.['data-dshpc-backgrounded'] === undefined;
+    useEffect(() => {
+        if (!foreground)
+            return;
+        acquireForegroundOverlay();
+        return () => { releaseForegroundOverlay(); };
+    }, [foreground]);
     return h('div', {
         ...props.attrs,
         className: `dshpc-overlay dshpc-overlay--${props.kind}`,

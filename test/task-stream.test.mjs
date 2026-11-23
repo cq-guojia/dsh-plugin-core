@@ -4,7 +4,7 @@ import { parseTaskFrames, connectTaskStream } from '../dist/adv/tasks/stream.js'
 import { serveTaskStream } from '../dist/host/index.js'
 
 function rec(id, state = 'running') {
-  return { id, project: 'p', group: 'g', title: 't', state, startedAt: 1 }
+  return { id, project: 'p', group: 'g', title: { category: '任务', description: 't' }, state, startedAt: 1 }
 }
 
 test('parseTaskFrames：只解 event: task 的完整帧，保留半帧', () => {
@@ -235,7 +235,7 @@ test('serveTaskStream：头已发后基线写失败只 end，不再 writeHead 50
   let handler
   const ctx = { inject: (_d, cb) => cb({ webServer: { register: (r) => { handler = r.handler } } }) }
   const source = {
-    snapshot: () => [{ id: 'a', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1 }],
+    snapshot: () => [{ id: 'a', project: 'p', group: 'g', title: { category: '任务', description: 't' }, state: 'running', startedAt: 1 }],
     subscribe: () => () => {},
   }
   const heads = []

@@ -1,6 +1,6 @@
 import { type NotifyDetail } from '../../runtime/notify.js';
 import { type CoordinatorHost, type TaskCoordinator } from './coordinator.js';
-import type { StartTaskInput, TaskRecord } from './model.js';
+import { type StartTaskInput, type TaskRecord } from './model.js';
 import { type TaskStreamGiveUpReason } from './stream.js';
 /** 挂载选项：列表与 UI 接线共用同一组过滤条件与 handlers。 */
 export interface MountTasksOptions {
@@ -42,16 +42,6 @@ export interface TaskCenterHost extends CoordinatorHost {
 export interface LayoutClientContext {
     inject?: (deps: string[], cb: (sub: unknown) => void) => void;
 }
-/**
- * 任务帧形状校验（服务端帧与 projectTasks 入口共用的一道闸）：畸形帧不能进 store 污染列表。
- *
- * settledAt 按状态分支校验——终态(done/failed)必须有有限数结算时刻，否则拒收：
- * 展示层靠它算终态行的停留/退场（TaskBar settledAtOf），缺了就永不退场 + 假计时；
- * store 的单调防复活用「状态是否终态」（isSettled(state)）判据，不是有无 settledAt——
- * settledAt 是时钟，可能因重放/擦除而不在，拿它当状态标志会让 guard 静默失效。
- * running 帧不得带 settledAt（状态与时钟分离）。
- * 校验放在唯一入口，store 只负责合并，不再任何地方本地造时间冒充服务端真源。
- */
 export declare function isTaskRecord(value: unknown): value is TaskRecord;
 /**
  * 按钮点了没生效时的统一提示：任务条目已失效 / 注册 handler 的插件已卸载（找不到方法）。

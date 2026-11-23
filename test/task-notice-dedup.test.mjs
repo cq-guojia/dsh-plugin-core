@@ -3,10 +3,12 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { connectTaskCenter } from '../dist/adv/tasks/api.js'
+import { formatDisplayTitle } from '../dist/adv/tasks/index.js'
 
+const done = (id) => ({ category: '完成', description: id })
 const terminal = (id) => ({
-  id, project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: 2,
-  toast: { success: { title: `完成 ${id}` } },
+  id, project: 'p', group: 'g', title: { category: '任务', description: id }, state: 'done', startedAt: 1, settledAt: 2,
+  toast: { success: { title: done(id) } },
 })
 
 function makeSse() {
@@ -69,7 +71,7 @@ test('通知按 id 去重：同 id 重放与刷新后都不重弹，不同 id �
     const notice = { id: 'persist-1', task: terminal('job-a') }
     sse.push('task-notice', notice)
     await wait(40)
-    assert.deepEqual(toasts, ['完成 job-a'], '首次到达弹一次')
+    assert.deepEqual(toasts, [formatDisplayTitle(done('job-a'))], '首次到达弹一次')
 
     sse.push('task-notice', notice)
     await wait(40)
@@ -88,7 +90,7 @@ test('通知按 id 去重：同 id 重放与刷新后都不重弹，不同 id �
     // 不同 id 走不同任务身份，避免 claimSettled 的运行身份守卫干扰这条去重断言。
     sse.push('task-notice', { id: 'persist-2', task: terminal('job-b') })
     await wait(40)
-    assert.deepEqual(toasts, ['完成 job-a', '完成 job-b'], '不同 id 各自弹一次')
+    assert.deepEqual(toasts, [formatDisplayTitle(done('job-a')), formatDisplayTitle(done('job-b'))], '不同 id 各自弹一次')
   } finally {
     off?.()
     globalThis.fetch = originalFetch
@@ -120,7 +122,7 @@ test('sessionStorage 写入失败时按内存兜底去重，同一 notice 不重
     const notice = { id: 'fallback-1', task: terminal('job-fallback') }
     sse.push('task-notice', notice)
     await wait(40)
-    assert.deepEqual(toasts, ['完成 job-fallback'], '首次到达弹一次')
+    assert.deepEqual(toasts, [formatDisplayTitle(done('job-fallback'))], '首次到达弹一次')
 
     sse.push('task-notice', notice)
     await wait(40)

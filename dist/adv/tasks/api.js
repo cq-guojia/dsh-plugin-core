@@ -11,6 +11,7 @@ import { notify as notifyCard } from '../../ui/feedback/notify.js';
 import { t } from '../../utils/i18n.js';
 import { defaultNotifyScope, notifyMessage, resolveProject, subscribeNotifications as subscribeNotifyBus, } from '../../runtime/notify.js';
 import { createCoordinator } from './coordinator.js';
+import { isDisplayTitle } from './model.js';
 import { connectSharedTaskStream } from './shared-stream.js';
 import { connectTaskStream } from './stream.js';
 import { taskStore } from './store.js';
@@ -145,6 +146,23 @@ function createPageLifecycle() {
  * running 帧不得带 settledAt（状态与时钟分离）。
  * 校验放在唯一入口，store 只负责合并，不再任何地方本地造时间冒充服务端真源。
  */
+function isTaskToastConfig(value) {
+    if (value === undefined)
+        return true;
+    if (value === null || typeof value !== 'object')
+        return false;
+    const config = value;
+    for (const key of ['success', 'failure']) {
+        const state = config[key];
+        if (state === undefined)
+            continue;
+        if (state === null || typeof state !== 'object')
+            return false;
+        if (!isDisplayTitle(state.title))
+            return false;
+    }
+    return true;
+}
 export function isTaskRecord(value) {
     if (value === null || typeof value !== 'object')
         return false;
@@ -153,7 +171,8 @@ export function isTaskRecord(value) {
     return (typeof v.id === 'string' &&
         typeof v.project === 'string' &&
         typeof v.group === 'string' &&
-        typeof v.title === 'string' &&
+        isDisplayTitle(v.title) &&
+        isTaskToastConfig(v.toast) &&
         (v.state === 'running' || v.state === 'done' || v.state === 'failed') &&
         typeof v.startedAt === 'number' && Number.isFinite(v.startedAt) &&
         (v.state === 'running'

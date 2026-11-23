@@ -3,9 +3,12 @@ import assert from 'node:assert/strict'
 import { connectTaskCenter, defaultTaskHost } from '../dist/adv/tasks/api.js'
 import { subscribeToasts } from '../dist/ui/feedback/toast-queue.js'
 
+const title = (description) => ({ category: '任务', description })
+const doneTitle = { category: '完成', description: '完成' }
+
 function record(over = {}) {
   // 终态夹具带合法 settledAt：projectTasks 按新契约（终态必带结算时刻）校验，缺了会被拒收。
-  return { id: 'a', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: 2, ...over }
+  return { id: 'a', project: 'p', group: 'g', title: title('t'), state: 'done', startedAt: 1, settledAt: 2, ...over }
 }
 
 test('默认宿主：toast.scope=origin 只在发起标签页弹卡（页面级 origin，非面板）', () => {
@@ -133,8 +136,8 @@ test('connectTaskCenter：重复接线注入不同 originId，默认 toast 归�
     // 二次接线换成 tab-b，默认 toast 层不会重建，但归属判定必须跟随最新 originId。
     offB = connectTaskCenter({ originId: () => 'tab-b' })
     const task = await startTask({
-      title: 'origin 跟随', project: 'p', kind: 'origin-follow-test',
-      toast: { success: { title: '完成', scope: 'origin' } },
+      title: title('origin 跟随'), project: 'p', kind: 'origin-follow-test',
+      toast: { success: { title: doneTitle, scope: 'origin' } },
     })
     assert.equal(task.origin, 'tab-b', 'startTask 记的是最新注入的 originId')
     await new Promise((r) => setTimeout(r, 10))
@@ -214,7 +217,7 @@ test('startTask 服务端模式：panelId 与 origin 随 payload 提交、乐观
       return { ok: true, json: async () => ({ id: 'srv-1' }) }
     }
     off = connectTaskCenter({ submitUrl: '/submit', activePanelId: () => 'panel-x', originId: () => 'tab-z' })
-    const t = await startTask({ title: '服务端任务', project: 'p', kind: 'demo' })
+    const t = await startTask({ title: title('服务端任务'), project: 'p', kind: 'demo' })
     assert.equal(sent.panelId, 'panel-x', 'panelId 随提交发出供服务端回填')
     assert.equal(sent.origin, 'tab-z', 'origin 随提交发出')
     assert.equal(typeof sent.key, 'string', '核心生成 key 随 payload 提交')
@@ -238,12 +241,12 @@ test('startTask 服务端模式：SSE 终态先于响应到达时，乐观行不
       const payload = JSON.parse(init.body)
       // 服务端在 HTTP 响应前就完成：模拟 SSE 终态先于响应到达（按 key 归一）。
       projectTasks([{
-        id: 'srv-done', key: payload.key, project: 'p', group: 'g', title: '服务端任务',
+        id: 'srv-done', key: payload.key, project: 'p', group: 'g', title: title('服务端任务'),
         state: 'done', startedAt: 1, settledAt: 99,
       }])
       return { ok: true, json: async () => ({ id: 'srv-done' }) }
     }
-    const optimistic = await startTask({ title: '服务端任务', project: 'p', group: 'g', key: 'k-race', kind: 'demo' })
+    const optimistic = await startTask({ title: title('服务端任务'), project: 'p', group: 'g', key: 'k-race', kind: 'demo' })
     const rows = taskCenterStore.select('p')
     assert.equal(rows.length, 1, '乐观行与真源终态归一成一行，不堆两条')
     assert.equal(rows[0].id, optimistic.id, '真源按 key 归一后存活 id 仍是 startTask 返回的乐观 id')
@@ -264,7 +267,7 @@ test('startTask 服务端模式：提交失败回滚乐观行，不留幽灵 run
   try {
     off = connectTaskCenter({ submitUrl: '/submit' })
     globalThis.fetch = async () => { throw new Error('network down') }
-    await assert.rejects(() => startTask({ title: '失败任务', project: 'p', group: 'g', key: 'k-fail', kind: 'demo' }), /network down/)
+    await assert.rejects(() => startTask({ title: title('失败任务'), project: 'p', group: 'g', key: 'k-fail', kind: 'demo' }), /network down/)
     assert.equal(taskCenterStore.select('p').length, 0, '提交失败后乐观行被回滚，列表无残留')
   } finally {
     globalThis.fetch = originalFetch
@@ -287,11 +290,11 @@ test('startTask 服务端模式：省略 project/group 时提交体带核心补�
         id: 'srv-done', key: sent.key,
         project: sent.project ?? 'dsh-plugin-core-demo',
         group: sent.group ?? 'demo-jobs',
-        title: '缺省字段任务', state: 'done', startedAt: 1, settledAt: 99,
+        title: title('缺省字段任务'), state: 'done', startedAt: 1, settledAt: 99,
       }])
       return { ok: true, json: async () => ({ id: 'srv-done' }) }
     }
-    const optimistic = await startTask({ title: '缺省字段任务', key: 'k-default', kind: 'demo' })
+    const optimistic = await startTask({ title: title('缺省字段任务'), key: 'k-default', kind: 'demo' })
     assert.equal(sent.project, 'default', '提交体带上核心补齐的 project 缺省值')
     assert.equal(sent.group, 'default', '提交体带上核心补齐的 group 缺省值')
     assert.equal(optimistic.project, sent.project, '乐观行 project 与提交体一致')
@@ -316,7 +319,7 @@ test('mountTaskUI：onSettled 按 project/groups 过滤（与列表 select 同�
     onSettled: (task) => got.push(task.id),
   })
   try {
-    const mk = (id, project, group) => ({ id, project, group, title: 't', state: 'done', startedAt: 1 })
+    const mk = (id, project, group) => ({ id, project, group, title: title('t'), state: 'done', startedAt: 1 })
     taskCenterStore.emitSettled({ outcome: 'done', task: mk('match', 'p', 'g1') })
     taskCenterStore.emitSettled({ outcome: 'done', task: mk('other-project', 'q', 'g1') })
     taskCenterStore.emitSettled({ outcome: 'done', task: mk('other-group', 'p', 'g2') })
@@ -334,8 +337,8 @@ test('mountTaskUI：onSettled 不传 project/groups 时收全部项目', async (
   const got = []
   const off = mountTaskUI({ handlers: {}, onSettled: (task) => got.push(task.id) })
   try {
-    taskCenterStore.emitSettled({ outcome: 'done', task: { id: 'a', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1 } })
-    taskCenterStore.emitSettled({ outcome: 'done', task: { id: 'b', project: 'q', group: 'g', title: 't', state: 'done', startedAt: 1 } })
+    taskCenterStore.emitSettled({ outcome: 'done', task: { id: 'a', project: 'p', group: 'g', title: title('t'), state: 'done', startedAt: 1 } })
+    taskCenterStore.emitSettled({ outcome: 'done', task: { id: 'b', project: 'q', group: 'g', title: title('t'), state: 'done', startedAt: 1 } })
     assert.deepEqual(got, ['a', 'b'], '不过滤时收全部')
   } finally {
     off()

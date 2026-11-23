@@ -10,6 +10,7 @@
 import { executors, type ExecutorContext, type ExecutorProgress } from '../../runtime/executor.js'
 import type { NotifyDetail, NotifyLevel } from '../../runtime/notify.js'
 import {
+  formatDisplayTitle,
   notifyForState,
   toastForState,
   type StartTaskInput,
@@ -114,7 +115,8 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
     const toast = toastForState(stored.toast, state)
     if (toast !== undefined) {
       safeCall('toast', () => host.deliverToast?.({
-        title: toast.title,
+        // 宿主契约是 string，结构化标题只到这一层；跨页 notify 协议也不改。
+        title: formatDisplayTitle(toast.title),
         ...(toast.button === undefined ? {} : { buttonId: toast.button.id, buttonText: toast.button.text }),
         scope: toast.scope ?? 'origin',
         task: stored,

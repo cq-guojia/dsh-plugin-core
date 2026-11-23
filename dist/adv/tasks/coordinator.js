@@ -8,7 +8,7 @@
  * 或服务端投影直接驱动一次，进度由执行器 report 上报，本地只做投影与分发。
  */
 import { executors } from '../../runtime/executor.js';
-import { notifyForState, toastForState, } from './model.js';
+import { formatDisplayTitle, notifyForState, toastForState, } from './model.js';
 import { taskStore } from './store.js';
 let seq = 0;
 function nextId() {
@@ -51,7 +51,8 @@ export function createCoordinator(options = {}) {
         const toast = toastForState(stored.toast, state);
         if (toast !== undefined) {
             safeCall('toast', () => host.deliverToast?.({
-                title: toast.title,
+                // 宿主契约是 string，结构化标题只到这一层；跨页 notify 协议也不改。
+                title: formatDisplayTitle(toast.title),
                 ...(toast.button === undefined ? {} : { buttonId: toast.button.id, buttonText: toast.button.text }),
                 scope: toast.scope ?? 'origin',
                 task: stored,

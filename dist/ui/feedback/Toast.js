@@ -9,6 +9,7 @@ import { createRoot } from 'react-dom/client';
 import { Toaster, toast } from 'sonner';
 import { Button } from '../actions/Button.js';
 import { FontIcon } from '../display/font-icon.js';
+import { MarqueeText } from '../display/MarqueeText.js';
 import { claimToastHost } from './toast-host.js';
 import { subscribeToasts, } from './toast-queue.js';
 const ROOT_ID = 'dshpc-toast-root';
@@ -132,7 +133,7 @@ function createToasterHost() {
                 fontSize: '13px',
                 fontWeight: 700,
             },
-        }, h(FontIcon, { name: palette.glyph })), h('div', { style: { flex: 1, minWidth: 0 } }, h('div', { style: { fontWeight: 600 } }, payload.message), payload.description !== undefined
+        }, h(FontIcon, { name: palette.glyph })), h('div', { style: { flex: 1, minWidth: 0 } }, h(MarqueeText, { text: payload.message, style: { fontWeight: 600 } }), payload.description !== undefined
             ? h('div', { style: { opacity: 0.9, fontSize: '13px', marginTop: '2px', whiteSpace: 'pre-line' } }, payload.description)
             : null), actions !== undefined && actions.length > 0
             ? h('div', { style: { display: 'flex', gap: '8px', flexShrink: 0 } }, ...actions.slice(0, 2).map((a) => {

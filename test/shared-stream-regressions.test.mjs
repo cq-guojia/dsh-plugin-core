@@ -9,7 +9,7 @@ import { createTaskStore } from '../dist/adv/tasks/store.js'
 
 const task = (over = {}) => ({
   id: `t-${Math.random().toString(36).slice(2)}`, project: 'p', group: 'g',
-  title: 'x', state: 'done', startedAt: 1, settledAt: 2, ...over,
+  title: { category: '任务', description: 'x' }, state: 'done', startedAt: 1, settledAt: 2, ...over,
 })
 
 /** 内存 Web Locks：同 name 排他；abort 或 callback resolve 即释放；FIFO 排队。 */

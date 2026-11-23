@@ -5,7 +5,7 @@
  * 「刷新后任务继续执行」：client 只 POST 提交 + 订阅 SSE，刷新后重连从 snapshot 恢复。
  */
 import { serveTaskStream, serveTaskSubmit, type HostContextLike, type TaskStreamSource } from '../../../dist/host/index.js'
-import type { TaskNotice, TaskRecord } from '../../../dist/adv/tasks/model.js'
+import { isDisplayTitle, type TaskNotice, type TaskRecord } from '../../../dist/adv/tasks/model.js'
 import { TASK_PATH } from './paths.js'
 
 const VIEWER = 'demo-viewer'
@@ -73,6 +73,7 @@ export function serveDemoTasks(ctx: HostContextLike): void {
     path: `${TASK_PATH}/submit`,
     authorize: () => true,
     onSubmit: (payload) => {
+      if (!isDisplayTitle(payload.title)) throw new Error('invalid task title')
       const id = `task:${Date.now().toString(36)}:${Math.random().toString(36).slice(2, 7)}`
       // startTask 把整份 input POST 过来，执行参数在 input.args 里（不是顶层）。
       const args = (typeof payload.args === 'object' && payload.args !== null ? payload.args : {}) as Record<string, unknown>
@@ -86,7 +87,7 @@ export function serveDemoTasks(ctx: HostContextLike): void {
         key: typeof payload.key === 'string' && payload.key !== '' ? payload.key : id,
         project: String(payload.project ?? 'dsh-plugin-core-demo'),
         group: String(payload.group ?? 'demo-jobs'),
-        title: String(payload.title ?? '后台任务'),
+        title: payload.title,
         state: 'running',
         startedAt: Date.now(),
         // 发起页身份由 client 随 submit 提交：origin 让 notice 按 scope:'origin' 只在发起页弹，

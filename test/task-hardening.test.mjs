@@ -8,6 +8,9 @@ import { isTaskRecord, projectTasks, taskCenterStore } from '../dist/adv/tasks/a
 import { serveTaskStream } from '../dist/host/index.js'
 import { rowSettlePhase } from '../dist/adv/tasks/TaskBar.js'
 
+const title = (description) => ({ category: '任务', description })
+const toastTitle = { category: '完成', description: '完成' }
+
 function setup() {
   const store = createTaskStore()
   const registry = createExecutorRegistry()
@@ -21,7 +24,7 @@ function setup() {
 }
 
 test('契约：终态帧必带有限数 settledAt，running 帧不得带', () => {
-  const base = { id: 'a', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1 }
+  const base = { id: 'a', project: 'p', group: 'g', title: title('t'), state: 'done', startedAt: 1 }
   assert.equal(isTaskRecord({ ...base, settledAt: 2 }), true, '终态带合法结算时刻通过')
   assert.equal(isTaskRecord(base), false, '终态缺 settledAt 必须拒收（否则 UI 永不退场 + 假计时）')
   assert.equal(isTaskRecord({ ...base, settledAt: Number.NaN }), false, '非有限数拒收')
@@ -31,19 +34,19 @@ test('契约：终态帧必带有限数 settledAt，running 帧不得带', () =>
 
 test('加固：终态投影后迟到的 running 不复活（guard 依赖状态而非时间戳）', () => {
   const s = createTaskStore()
-  s.upsert({ id: 'a', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1 })
-  const changed = s.merge([{ id: 'a', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: 9 }])
+  s.upsert({ id: 'a', project: 'p', group: 'g', title: title('t'), state: 'running', startedAt: 1 })
+  const changed = s.merge([{ id: 'a', project: 'p', group: 'g', title: title('t'), state: 'done', startedAt: 1, settledAt: 9 }])
   assert.equal(changed.length, 1)
   assert.equal(s.get('a').state, 'done')
-  const revived = s.merge([{ id: 'a', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 100 }])
+  const revived = s.merge([{ id: 'a', project: 'p', group: 'g', title: title('t'), state: 'running', startedAt: 100 }])
   assert.equal(revived.length, 0, '终态后的 running 帧被静默丢弃')
   assert.equal(s.get('a').state, 'done', '状态保持终态')
   assert.equal(s.get('a').settledAt, 9, '结算时刻未被 running 帧擦除')
 })
 
 test('契约：projectTasks 手动投影入口也拒收缺 settledAt 的终态帧（与 SSE 同一道闸）', () => {
-  const bad = { id: 'pt-bad', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1 }
-  const good = { id: 'pt-good', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: 9 }
+  const bad = { id: 'pt-bad', project: 'p', group: 'g', title: title('t'), state: 'done', startedAt: 1 }
+  const good = { id: 'pt-good', project: 'p', group: 'g', title: title('t'), state: 'done', startedAt: 1, settledAt: 9 }
   projectTasks([bad, good])
   assert.equal(taskCenterStore.get('pt-bad'), undefined, '缺时刻的终态帧被拒收，不进 store')
   assert.equal(taskCenterStore.get('pt-good')?.state, 'done', '合法终态帧照常投影')
@@ -54,35 +57,35 @@ test('加固：终态缺 settledAt 的历史脏数据也不会被迟到 running 
   const s = createTaskStore()
   // 直接 upsert 一条终态但无 settledAt 的脏数据（绕过 isTaskRecord，模拟旧版本留下的数据）。
   // 旧 guard 以「有无 settledAt」为判据会放行迟到 running；新 guard 以状态为判据必须挡住。
-  s.upsert({ id: 'dirty', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1 })
+  s.upsert({ id: 'dirty', project: 'p', group: 'g', title: title('t'), state: 'done', startedAt: 1 })
   assert.equal(s.get('dirty').state, 'done')
   assert.equal(s.get('dirty').settledAt, undefined)
-  const revived = s.merge([{ id: 'dirty', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 100 }])
+  const revived = s.merge([{ id: 'dirty', project: 'p', group: 'g', title: title('t'), state: 'running', startedAt: 100 }])
   assert.equal(revived.length, 0, '即便旧记录无结算时刻，终态也不被 running 复活')
   assert.equal(s.get('dirty').state, 'done', '状态保持终态')
 })
 
 test('加固：同 (project,key) 连续三次 upsert 仍只有一条', () => {
   const s = createTaskStore()
-  const a = s.upsert({ id: 'a', key: 'k', project: 'p', group: 'g', title: '1', state: 'running', startedAt: 1 })
-  s.upsert({ id: 'b', key: 'k', project: 'p', group: 'g', title: '2', state: 'running', startedAt: 2 })
-  const c = s.upsert({ id: 'c', key: 'k', project: 'p', group: 'g', title: '3', state: 'running', startedAt: 3 })
+  const a = s.upsert({ id: 'a', key: 'k', project: 'p', group: 'g', title: title('1'), state: 'running', startedAt: 1 })
+  s.upsert({ id: 'b', key: 'k', project: 'p', group: 'g', title: title('2'), state: 'running', startedAt: 2 })
+  const c = s.upsert({ id: 'c', key: 'k', project: 'p', group: 'g', title: title('3'), state: 'running', startedAt: 3 })
   assert.equal(a.created, true)
   assert.equal(c.created, false)
   assert.equal(s.getSnapshot().tasks.length, 1)
   assert.equal(s.getSnapshot().tasks[0].id, 'a')
-  assert.equal(s.getSnapshot().tasks[0].title, '3')
+  assert.deepEqual(s.getSnapshot().tasks[0].title, title('3'))
 })
 
 test('加固：服务端投影缺 origin / panelId 时保留本地发起身份', () => {
   const s = createTaskStore()
   const local = {
-    id: 'a', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1,
+    id: 'a', project: 'p', group: 'g', title: title('t'), state: 'running', startedAt: 1,
     origin: 'tab-a', panelId: 'panel-a',
   }
   s.upsert(local)
   // 消费方服务端未在 submit 回传这两个身份字段（防御性模拟）⇒ 不能把本地身份冲掉。
-  s.merge([{ id: 'a', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: 9 }])
+  s.merge([{ id: 'a', project: 'p', group: 'g', title: title('t'), state: 'done', startedAt: 1, settledAt: 9 }])
   assert.equal(s.get('a').origin, 'tab-a', 'origin 不丢，scope=origin 判定不退化')
   assert.equal(s.get('a').panelId, 'panel-a', 'panelId 不丢，点按钮仍切回发起面板')
 })
@@ -90,11 +93,11 @@ test('加固：服务端投影缺 origin / panelId 时保留本地发起身份',
 test('加固：同 key 不同服务端 id 的终态通知，panelId/origin 不被全量 upsert 抹掉', () => {
   const { c, store, toasts } = setup()
   // 乐观行（submit 阶段记下 panelId / origin，id=local）。
-  store.upsert({ id: 'local', key: 'k', project: 'p', group: 'g', title: 't',
+  store.upsert({ id: 'local', key: 'k', project: 'p', group: 'g', title: title('t'),
     state: 'running', startedAt: 1, panelId: 'panel-a', origin: 'tab-a' })
   // 服务端终态通知换了新的服务端 id，且没回填 panelId / origin。
-  const terminal = { id: 'srv-99', key: 'k', project: 'p', group: 'g', title: 't',
-    state: 'done', startedAt: 1, settledAt: 10, toast: { success: { title: '完成' } } }
+  const terminal = { id: 'srv-99', key: 'k', project: 'p', group: 'g', title: title('t'),
+    state: 'done', startedAt: 1, settledAt: 10, toast: { success: { title: toastTitle } } }
   c.deliverNotice({ id: 'n1', task: terminal })
   const row = store.get('local')
   assert.ok(row, '存活行仍是本地 id（按 key 归一）')
@@ -106,10 +109,10 @@ test('加固：同 key 不同服务端 id 的终态通知，panelId/origin 不�
 
 test('加固：终态先投影再通知（merge 无变化），身份字段仍不被抹掉', () => {
   const { c, store, toasts } = setup()
-  store.upsert({ id: 'local', key: 'k', project: 'p', group: 'g', title: 't',
+  store.upsert({ id: 'local', key: 'k', project: 'p', group: 'g', title: title('t'),
     state: 'running', startedAt: 1, panelId: 'panel-a', origin: 'tab-a' })
-  const terminal = { id: 'srv-99', key: 'k', project: 'p', group: 'g', title: 't',
-    state: 'done', startedAt: 1, settledAt: 10, toast: { success: { title: '完成' } } }
+  const terminal = { id: 'srv-99', key: 'k', project: 'p', group: 'g', title: title('t'),
+    state: 'done', startedAt: 1, settledAt: 10, toast: { success: { title: toastTitle } } }
   // 正常 SSE 顺序：state 帧先把终态投影进来（按 key 归一、保住本地身份，merge 有变化）。
   c.project([terminal])
   // notice 帧随后到达，settledAt=20 与已投影的 10 不同：
@@ -126,8 +129,8 @@ test('加固：终态先投影再通知（merge 无变化），身份字段仍�
 
 test('加固：终态去重按 (project,key) 结算，重放不重复，重新发起后重置', () => {
   const s = createTaskStore()
-  const done = (id, at) => ({ id, key: 'k', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: at })
-  const running = { id: 'a', key: 'k', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1 }
+  const done = (id, at) => ({ id, key: 'k', project: 'p', group: 'g', title: title('t'), state: 'done', startedAt: 1, settledAt: at })
+  const running = { id: 'a', key: 'k', project: 'p', group: 'g', title: title('t'), state: 'running', startedAt: 1 }
   assert.equal(s.claimSettled(done('a', 10)), true)
   assert.equal(s.claimSettled(done('b', 10)), false, '同业务键同结算（含重连重放）不重复')
   assert.equal(s.claimSettled(done('c', 11)), false, '没重新发起就不放行新结算')
@@ -142,8 +145,8 @@ test('加固：本地执行与 SSE 投影同一任务只分发一次', async () 
   let resolve
   registry.register('job', () => new Promise((r) => { resolve = r }))
   const task = c.start({
-    project: 'p', title: 't', kind: 'job',
-    toast: { success: { title: '完成' } },
+    project: 'p', title: title('t'), kind: 'job',
+    toast: { success: { title: toastTitle } },
     notify: { success: { message: 'done' } },
   })
   // 等执行器 handler 被调用，resolve 就绪。
@@ -161,10 +164,10 @@ test('加固：本地执行与 SSE 投影同一任务只分发一次', async () 
 
 test('加固：同 key 不同 id 的终态折叠到存活 id，投影不弹、通知按 id 弹一次', () => {
   const { c, store, toasts, notices } = setup()
-  const running = { id: 'a', key: 'k', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1 }
+  const running = { id: 'a', key: 'k', project: 'p', group: 'g', title: title('t'), state: 'running', startedAt: 1 }
   store.upsert(running)
   const terminal = { ...running, id: 'b', state: 'done', settledAt: 10,
-    toast: { success: { title: '完成' } }, notify: { success: { message: 'done' } } }
+    toast: { success: { title: toastTitle } }, notify: { success: { message: 'done' } } }
   c.project([terminal])
   assert.equal(store.get('a').state, 'done', '状态投影折叠到存活 id')
   assert.equal(store.get('a').id, 'a')
@@ -176,8 +179,8 @@ test('加固：同 key 不同 id 的终态折叠到存活 id，投影不弹、�
 
 test('加固：终态后迟到的 running 投影不复活、不二次分发', () => {
   const { c, store, toasts } = setup()
-  const base = { id: 'a', key: 'k', project: 'p', group: 'g', title: 't', startedAt: 1 }
-  const terminal = { ...base, state: 'done', settledAt: 10, toast: { success: { title: '完成' } } }
+  const base = { id: 'a', key: 'k', project: 'p', group: 'g', title: title('t'), startedAt: 1 }
+  const terminal = { ...base, state: 'done', settledAt: 10, toast: { success: { title: toastTitle } } }
   c.project([terminal])
   c.deliverNotice({ id: 'n1', task: terminal })
   c.project([{ ...base, state: 'running' }]) // 迟到的状态回放
@@ -190,7 +193,7 @@ test('加固：终态后迟到的 running 投影不复活、不二次分发', ()
 test('加固：按钮 handler 抛异常不冒泡，press 仍返回 true（联络点不替被调方修 bug）', () => {
   const { c, store, registry } = setup()
   registry.register('noop', () => ({ outcome: 'done' }))
-  const task = c.start({ project: 'p', title: 't', kind: 'noop' })
+  const task = c.start({ project: 'p', title: title('t'), kind: 'noop' })
   let threw = false
   c.registerHandlers({
     boom: () => { throw new Error('consumer bug') },
@@ -206,7 +209,7 @@ test('加固：按钮 handler 抛异常不冒泡，press 仍返回 true（联络
 })
 
 test('加固：isTaskRecord 拒收 settledAt 非数字的帧，running 帧无 settledAt 仍通过', () => {
-  const base = { id: 'x', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1 }
+  const base = { id: 'x', project: 'p', group: 'g', title: title('t'), state: 'done', startedAt: 1 }
   assert.equal(isTaskRecord({ ...base, settledAt: 'oops' }), false, '字符串 settledAt 被拒（避免 NaN）')
   assert.equal(isTaskRecord({ ...base, settledAt: Number.NaN }), false, 'NaN 被拒')
   assert.equal(isTaskRecord({ ...base, settledAt: 123 }), true, '数字 settledAt 通过')
@@ -268,7 +271,7 @@ test('加固：serveTaskStream 基线期间增量不丢（先订阅后基线回�
   const ctx = { inject: (_d, cb) => cb({ webServer: { register: (r) => { handler = r.handler } } }) }
   let listener
   const source = {
-    snapshot: () => new Promise((r) => setTimeout(() => r([{ id: 'base', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1 }]), 5)),
+    snapshot: () => new Promise((r) => setTimeout(() => r([{ id: 'base', project: 'p', group: 'g', title: title('t'), state: 'running', startedAt: 1 }]), 5)),
     subscribe: (cb) => { listener = cb; return () => {} },
   }
   const written = []
@@ -279,7 +282,7 @@ test('加固：serveTaskStream 基线期间增量不丢（先订阅后基线回�
   serveTaskStream(ctx, { basePath: '/x', authorize: () => 'v', source, keepAliveMs: 100000 })
   await handler({}, res)
   // 基线 await 期间推一条增量
-  setTimeout(() => listener({ id: 'delta', project: 'p', group: 'g', title: 't', state: 'done', startedAt: 2 }), 1)
+  setTimeout(() => listener({ id: 'delta', project: 'p', group: 'g', title: title('t'), state: 'done', startedAt: 2 }), 1)
   await new Promise((r) => setTimeout(r, 15))
   assert.ok(written.some((w) => String(w).includes('"id":"base"')))
   assert.ok(written.some((w) => String(w).includes('"id":"delta"')), '基线窗口内的增量被回放')

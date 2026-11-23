@@ -8,11 +8,12 @@ import { connectTaskStream } from '../dist/adv/tasks/stream.js'
 import { serveTaskStream } from '../dist/host/index.js'
 import { createCoordinator } from '../dist/adv/tasks/coordinator.js'
 import { createTaskStore } from '../dist/adv/tasks/store.js'
+import { formatDisplayTitle } from '../dist/adv/tasks/index.js'
 
 function terminal(id) {
   return {
-    id, project: 'p', group: 'g', title: 't', state: 'done', startedAt: 1, settledAt: 2,
-    toast: { success: { title: `完成 ${id}` } },
+    id, project: 'p', group: 'g', title: { category: '任务', description: id }, state: 'done', startedAt: 1, settledAt: 2,
+    toast: { success: { title: { category: '完成', description: id } } },
     notify: { success: { message: `done ${id}` } },
   }
 }
@@ -87,7 +88,7 @@ test('端到端：成功 notice 经 SSE 到达后 toast + notify 各弹一次', 
   await new Promise((r) => setTimeout(r, 20))
 
   assert.equal(toasts.length, 1, '成功 toast 弹一次')
-  assert.equal(toasts[0].title, '完成 job-1')
+  assert.equal(toasts[0].title, formatDisplayTitle({ category: '完成', description: 'job-1' }))
   assert.equal(notices.length, 1, '成功 notify 弹一次')
   conn.close()
   dispose()

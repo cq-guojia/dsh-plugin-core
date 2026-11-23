@@ -34,6 +34,10 @@
 5. **执行器开放、不写死、不兜底**：`kind` 是任意字符串；没有注册的执行体就结算为 failed，不自绘替代、不猜实现、不降级。
 6. **配置跟着记录走**：toast / notify / rowButtons 是记录上的纯数据，任何页面按同一份配置渲染；
    `scope: 'all'` 每页弹卡、`'origin'` 只发起页弹卡；按钮（Toast 与列表行）一律照画不隐藏，点了跳回发起面板执行。
+   所有显示标题（`startTask.title` / `TaskRecord.title` / `toast.*.title`）必须是 `DisplayTitle { category, description }`，
+   核心按 `分类丨说明` 渲染；分类建议中文 2–4 字 / 英文最多 2 词，代码只校验非空、不判字数，超长交给跑马灯。
+   `isTaskRecord` 同时校验顶层与 toast 两态标题，旧 string 帧一律拒收、不做兜底；宿主 `deliverToast({ title: string })`
+   与 notify 线上协议不变，格式化只在 `coordinator` 出宿主前发生。
 7. **服务端是唯一状态通道**：不接 `follow()`（仅宿主领域状态）与 `remote.$on`（仅审批瀑布）；重连靠服务端基线，
    客户端不维护 cursor / 版本门。跨标签 BC 扇出层的 `noticeSince` 水位只裁「本地回放哪些通知」，
    不参与服务端状态同步，也不是 cursor。

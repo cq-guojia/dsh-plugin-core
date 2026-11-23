@@ -4337,6 +4337,70 @@ function PanelClose(props) {
 }
 
 // dist/ui/infra/overlay.js
+var FOREGROUND_OVERLAY_KEY = /* @__PURE__ */ Symbol.for("dshpc.foregroundOverlay.v1");
+function isForegroundOverlayStore(value) {
+  if (value === null || typeof value !== "object")
+    return false;
+  const candidate = value;
+  return typeof candidate.count === "number" && candidate.listeners instanceof Set;
+}
+function foregroundStore() {
+  const g = globalThis;
+  const existing = g[FOREGROUND_OVERLAY_KEY];
+  if (existing !== void 0) {
+    if (!isForegroundOverlayStore(existing))
+      throw new Error("[dsh-plugin-core] incompatible foreground overlay store");
+    return existing;
+  }
+  const store = { count: 0, listeners: /* @__PURE__ */ new Set() };
+  g[FOREGROUND_OVERLAY_KEY] = store;
+  return store;
+}
+function emitForegroundOverlay() {
+  for (const listener of foregroundStore().listeners) {
+    try {
+      listener();
+    } catch {
+    }
+  }
+}
+function acquireForegroundOverlay() {
+  foregroundStore().count += 1;
+  emitForegroundOverlay();
+}
+function releaseForegroundOverlay() {
+  const store = foregroundStore();
+  if (store.count === 0)
+    return;
+  store.count -= 1;
+  emitForegroundOverlay();
+}
+function getForegroundOverlayCount() {
+  return foregroundStore().count;
+}
+function getForegroundOverlayServerCount() {
+  return 0;
+}
+function subscribeForegroundOverlay(listener) {
+  const store = foregroundStore();
+  store.listeners.add(listener);
+  return () => {
+    store.listeners.delete(listener);
+  };
+}
+function shouldDismissOnForegroundOverlay(previous, current3) {
+  return previous === 0 && current3 > 0;
+}
+function useDismissOnForegroundOverlay(onDismiss) {
+  const count4 = (0, import_react11.useSyncExternalStore)(subscribeForegroundOverlay, getForegroundOverlayCount, getForegroundOverlayServerCount);
+  const previous = (0, import_react11.useRef)(count4);
+  (0, import_react11.useEffect)(() => {
+    const prev = previous.current;
+    previous.current = count4;
+    if (onDismiss !== void 0 && shouldDismissOnForegroundOverlay(prev, count4))
+      onDismiss();
+  }, [count4, onDismiss]);
+}
 var LockedContext = (0, import_react11.createContext)(false);
 var LockExemptContext = (0, import_react11.createContext)(false);
 function useOverlayLocked() {
@@ -4378,6 +4442,15 @@ function useEscapeClose(enabled, onClose) {
 }
 function OverlayMask(props) {
   ensureComponentStyles("overlay", OVERLAY_CSS);
+  const foreground = props.attrs?.["data-dshpc-backgrounded"] === void 0;
+  (0, import_react11.useEffect)(() => {
+    if (!foreground)
+      return;
+    acquireForegroundOverlay();
+    return () => {
+      releaseForegroundOverlay();
+    };
+  }, [foreground]);
   return (0, import_react11.createElement)("div", {
     ...props.attrs,
     className: `dshpc-overlay dshpc-overlay--${props.kind}`,
@@ -9061,7 +9134,7 @@ function createToasterHost() {
         fontSize: "13px",
         fontWeight: 700
       }
-    }, (0, import_react36.createElement)(FontIcon, { name: palette.glyph })), (0, import_react36.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react36.createElement)("div", { style: { fontWeight: 600 } }, payload.message), payload.description !== void 0 ? (0, import_react36.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px", whiteSpace: "pre-line" } }, payload.description) : null), actions2 !== void 0 && actions2.length > 0 ? (0, import_react36.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions2.slice(0, 2).map((a) => {
+    }, (0, import_react36.createElement)(FontIcon, { name: palette.glyph })), (0, import_react36.createElement)("div", { style: { flex: 1, minWidth: 0 } }, (0, import_react36.createElement)(MarqueeText, { text: payload.message, style: { fontWeight: 600 } }), payload.description !== void 0 ? (0, import_react36.createElement)("div", { style: { opacity: 0.9, fontSize: "13px", marginTop: "2px", whiteSpace: "pre-line" } }, payload.description) : null), actions2 !== void 0 && actions2.length > 0 ? (0, import_react36.createElement)("div", { style: { display: "flex", gap: "8px", flexShrink: 0 } }, ...actions2.slice(0, 2).map((a) => {
       const successSurface = payload.variant === "success";
       return (0, import_react36.createElement)(Button, {
         variant: successSurface ? "secondary" : a.variant ?? "info",
@@ -57311,6 +57384,16 @@ var executors = (() => {
 })();
 
 // dist/adv/tasks/model.js
+var TITLE_SEPARATOR = "\u4E28";
+function isDisplayTitle(value) {
+  if (value === null || typeof value !== "object")
+    return false;
+  const candidate = value;
+  return typeof candidate.category === "string" && candidate.category.trim() !== "" && typeof candidate.description === "string" && candidate.description.trim() !== "";
+}
+function formatDisplayTitle(title) {
+  return `${title.category}${TITLE_SEPARATOR}${title.description}`;
+}
 function toastForState(config2, state) {
   return state === "done" ? config2?.success : state === "failed" ? config2?.failure : void 0;
 }
@@ -57568,7 +57651,8 @@ function createCoordinator(options = {}) {
     const toast2 = toastForState(stored.toast, state);
     if (toast2 !== void 0) {
       safeCall("toast", () => host.deliverToast?.({
-        title: toast2.title,
+        // 宿主契约是 string，结构化标题只到这一层；跨页 notify 协议也不改。
+        title: formatDisplayTitle(toast2.title),
         ...toast2.button === void 0 ? {} : { buttonId: toast2.button.id, buttonText: toast2.button.text },
         scope: toast2.scope ?? "origin",
         task: stored
@@ -58529,12 +58613,29 @@ function createPageLifecycle() {
     }
   };
 }
+function isTaskToastConfig(value) {
+  if (value === void 0)
+    return true;
+  if (value === null || typeof value !== "object")
+    return false;
+  const config2 = value;
+  for (const key of ["success", "failure"]) {
+    const state = config2[key];
+    if (state === void 0)
+      continue;
+    if (state === null || typeof state !== "object")
+      return false;
+    if (!isDisplayTitle(state.title))
+      return false;
+  }
+  return true;
+}
 function isTaskRecord(value) {
   if (value === null || typeof value !== "object")
     return false;
   const v = value;
   const settledAtOk = typeof v.settledAt === "number" && Number.isFinite(v.settledAt);
-  return typeof v.id === "string" && typeof v.project === "string" && typeof v.group === "string" && typeof v.title === "string" && (v.state === "running" || v.state === "done" || v.state === "failed") && typeof v.startedAt === "number" && Number.isFinite(v.startedAt) && (v.state === "running" ? v.settledAt === void 0 : settledAtOk);
+  return typeof v.id === "string" && typeof v.project === "string" && typeof v.group === "string" && isDisplayTitle(v.title) && isTaskToastConfig(v.toast) && (v.state === "running" || v.state === "done" || v.state === "failed") && typeof v.startedAt === "number" && Number.isFinite(v.startedAt) && (v.state === "running" ? v.settledAt === void 0 : settledAtOk);
 }
 function ingestTask(raw, snapshot = false) {
   if (!isTaskRecord(raw))
@@ -71170,13 +71271,17 @@ h(SideSheet, {
       {
         "zh": "\u6240\u6709\u914D\u7F6E\u90FD\u662F**\u7EAF\u6570\u636E\u8DDF\u7740\u8BB0\u5F55\u8D70**\uFF1A\u6807\u9898\u3001Toast\u3001\u901A\u77E5\u3001\u6309\u94AE\u6587\u6848\u4E0E\u663E\u793A\u65F6\u673A\u5728\u53D1\u8D77\u65F6\u58F0\u660E\uFF0C\u4EFB\u4F55\u9875\u9762\u770B\u5230\u540C\u4E00\u6761\u4EFB\u52A1\u90FD\u6309\u540C\u4E00\u4EFD\u914D\u7F6E\u6E32\u67D3\uFF0C\u4E0D\u9700\u8981\u53D1\u8D77\u9875\u5728\u573A\u3002\u8DE8\u9875\u53EA\u4F20\u7ED3\u6784\u5316\u514B\u9686\u5B89\u5168\u7684\u503C\uFF0C\u4E0D\u5E26\u51FD\u6570\u3001\u7EC4\u4EF6\u6216 Promise\u3002",
         "en": "All configuration is **plain data carried by the record**: title, toast, notification, button labels and visibility are declared at start time, so every page renders the same task from the same configuration without the originating page being present. Only structured-cloneable values cross pages \u2014 no functions, components or promises."
+      },
+      {
+        "zh": "**\u6240\u6709\u5BF9\u5916\u663E\u793A\u7684\u6807\u9898\u90FD\u5FC5\u987B\u662F `{ category, description }` \u4E24\u6BB5**\uFF0C\u6838\u5FC3\u7EDF\u4E00\u6E32\u67D3\u6210 `\u5206\u7C7B\u4E28\u8BF4\u660E`\uFF08\u5982 `\u4EFB\u52A1\u7ED3\u6848\u4E28\u540E\u53F0\u4EFB\u52A1 SSE 401 \u96F6\u5EF6\u8FDF\u65E0\u9650\u91CD\u8FDE`\uFF09\u3002\u5206\u7C7B\u7531\u8C03\u7528\u65B9\u81EA\u5DF1\u5B9A\uFF0C\u5EFA\u8BAE\u4E2D\u6587 2\u20134 \u5B57\u3001\u82F1\u6587\u6700\u591A 2 \u4E2A\u5355\u8BCD\uFF1B\u6838\u5FC3**\u4E0D\u6821\u9A8C\u5B57\u6570\u3001\u4E0D\u5199\u6B7B\u5206\u7C7B\u5B57\u5178**\uFF0C\u6574\u4E32\u8FC7\u957F\u7531\u8DD1\u9A6C\u706F\u5728 hover \u65F6\u5C55\u5F00\u3002\u8FC1\u79FB\u65F6\u628A\u539F\u6765\u7684 `title: string` \u6539\u6210\u5BF9\u8C61\uFF0C\u65E7\u5B57\u7B26\u4E32\u5E27\u4F1A\u88AB\u62D2\u6536\uFF0C\u4E0D\u5B58\u5728\u5B57\u7B26\u4E32\u515C\u5E95\u3002",
+        "en": "**Every user-visible title must be `{ category, description }`**; the core renders it as `category\u4E28description` (for example `Task closed\u4E28Background job SSE 401 reconnected`). The caller owns the category: 2\u20134 Chinese characters or at most two English words is recommended; the core does not validate length or hard-code a category dictionary, and overlong text expands on hover through the marquee. Migrate `title: string` to the object form \u2014 legacy string frames are rejected, with no string fallback."
       }
     ],
     "code": [
       {
         "id": "bt-start-example",
         "lang": "ts",
-        "src": "import { startTask } from 'dsh-plugin-core/adv/tasks'\n\n// await \u7B49\u7684\u662F\u767B\u8BB0\u6210\u529F\uFF0C\u4E0D\u662F\u4EFB\u52A1\u8DD1\u5B8C\u3002\u6807\u9898 / \u901A\u77E5 / \u6309\u94AE\u5168\u662F\u7EAF\u6570\u636E\uFF0C\u8DDF\u7740\u8BB0\u5F55\u8D70\u3002\nawait startTask({\n  project: 'dsh-task-reminder',\n  group: 'scan',\n  title: '\u626B\u63CF\u5DE5\u4F5C\u533A',\n  key: 'scan:workspace-1',          // \u540C (project, key) \u540C\u65F6\u6700\u591A\u4E00\u6761\uFF0C\u91CD\u590D\u53D1\u8D77\u5C31\u5730\u66F4\u65B0\n  kind: 'reminder:scan',            // \u5F00\u653E\u6267\u884C\u5668\u540D\uFF0C\u6838\u5FC3\u4E0D\u679A\u4E3E\u3001\u4E0D\u6821\u9A8C\n  args: { path: '/ws' },            // \u7EAF\u6570\u636E\uFF0C\u8FC7\u4E0D\u4E86\u8FDB\u7A0B\u8FB9\u754C\uFF0C\u4E0D\u5E26\u51FD\u6570\n\n  toast: {                          // \u7EC8\u6001\u5F39\u5361\uFF1B\u6574\u6001\u4E0D\u5199 = \u8BE5\u6001\u4E0D\u5F39\n    success: { title: '\u626B\u63CF\u5B8C\u6210', button: { id: 'view', text: '\u770B\u65E5\u5FD7' }, scope: 'all' },\n    failure: { title: '\u626B\u63CF\u5931\u8D25', scope: 'origin' },\n  },\n  notify: {                         // \u7EC8\u6001\u901A\u77E5\uFF0C\u4E0E toast \u662F\u4E24\u4EF6\u4E8B\n    success: { message: '\u626B\u63CF\u5B8C\u6210', detail: { count: 12 }, scope: 'all', broadcast: 'plugin' },\n  },\n  rowButtons: [                     // \u5217\u8868\u884C\u6309\u94AE\uFF1B\u6587\u6848\u4E0E when \u7531\u6838\u5FC3\u63A7\u4EF6\u753B\n    { id: 'view', text: '\u67E5\u770B', when: 'running' },\n    { id: 'view', text: '\u770B\u65E5\u5FD7', when: 'done' },\n  ],\n})"
+        "src": "import { startTask } from 'dsh-plugin-core/adv/tasks'\n\n// await \u7B49\u7684\u662F\u767B\u8BB0\u6210\u529F\uFF0C\u4E0D\u662F\u4EFB\u52A1\u8DD1\u5B8C\u3002\u6807\u9898 / \u901A\u77E5 / \u6309\u94AE\u5168\u662F\u7EAF\u6570\u636E\uFF0C\u8DDF\u7740\u8BB0\u5F55\u8D70\u3002\nawait startTask({\n  project: 'dsh-task-reminder',\n  group: 'scan',\n  title: { category: '\u4EFB\u52A1\u7ED3\u6848', description: '\u626B\u63CF\u5DE5\u4F5C\u533A' }, // \u5206\u7C7B + \u8BF4\u660E\u4E24\u6BB5\uFF0C\u5C55\u793A\u6210\u300C\u5206\u7C7B\u4E28\u8BF4\u660E\u300D\n  key: 'scan:workspace-1',          // \u540C (project, key) \u540C\u65F6\u6700\u591A\u4E00\u6761\uFF0C\u91CD\u590D\u53D1\u8D77\u5C31\u5730\u66F4\u65B0\n  kind: 'reminder:scan',            // \u5F00\u653E\u6267\u884C\u5668\u540D\uFF0C\u6838\u5FC3\u4E0D\u679A\u4E3E\u3001\u4E0D\u6821\u9A8C\n  args: { path: '/ws' },            // \u7EAF\u6570\u636E\uFF0C\u8FC7\u4E0D\u4E86\u8FDB\u7A0B\u8FB9\u754C\uFF0C\u4E0D\u5E26\u51FD\u6570\n\n  toast: {                          // \u7EC8\u6001\u5F39\u5361\uFF1B\u6574\u6001\u4E0D\u5199 = \u8BE5\u6001\u4E0D\u5F39\n    success: { title: { category: '\u4EFB\u52A1\u7ED3\u6848', description: '\u626B\u63CF\u5B8C\u6210' }, button: { id: 'view', text: '\u770B\u65E5\u5FD7' }, scope: 'all' },\n    failure: { title: { category: '\u4EFB\u52A1\u5931\u8D25', description: '\u626B\u63CF\u4E2D\u65AD' }, scope: 'origin' },\n  },\n  notify: {                         // \u7EC8\u6001\u901A\u77E5\uFF0C\u4E0E toast \u662F\u4E24\u4EF6\u4E8B\n    success: { message: '\u626B\u63CF\u5B8C\u6210', detail: { count: 12 }, scope: 'all', broadcast: 'plugin' },\n  },\n  rowButtons: [                     // \u5217\u8868\u884C\u6309\u94AE\uFF1B\u6587\u6848\u4E0E when \u7531\u6838\u5FC3\u63A7\u4EF6\u753B\n    { id: 'view', text: '\u67E5\u770B', when: 'running' },\n    { id: 'view', text: '\u770B\u65E5\u5FD7', when: 'done' },\n  ],\n})"
       },
       {
         "id": "bt-mount-ui-example",
@@ -71186,7 +71291,7 @@ h(SideSheet, {
       {
         "id": "bt-taskbar-example",
         "lang": "ts",
-        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar \u662F\u9AD8\u7EA7\u63A7\u4EF6\u7684\u5C55\u793A\u9762\uFF0C\u5355\u72EC\u4ECE adv/tasks/ui \u5F15\uFF1Badv/tasks \u53EA\u51FA\u903B\u8F91\uFF0CNode \u5F15\u5B83\u4E0D\u5E26 React\u3002\n// \u5C55\u793A\u680F\u6CBF\u7528\u6838\u5FC3\u539F UI\uFF1Aicon / pill \u4E24\u5F62\u6001\u3001sm/md/lg \u5C3A\u5BF8\u3001width/min/max \u5BBD\u5EA6\uFF0C\n// \u6587\u5B57\u8FC7\u957F\u81EA\u52A8\u7701\u7565 + hover \u8DD1\u9A6C\u706F\u3002\u6570\u636E\u6765\u81EA\u5171\u4EAB\u4EFB\u52A1\u6C60\uFF0C\u65E0\u9700\u672C\u63D2\u4EF6\u753B\u884C\u3002\n// pill \u957F\u6761\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// \u53EA\u6709\u56FE\u6807\uFF08\u6B63\u65B9\u5F62\uFF0C\u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u5E26\u7EFF\u70B9\uFF09\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// \u5B9A\u5BBD 220\uFF1B\u4E0A\u9650 110\uFF08\u653E\u4E0D\u4E0B\u7701\u7565\u53F7\u3001hover \u8DD1\u9A6C\u706F\uFF09\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })"
+        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar \u662F\u9AD8\u7EA7\u63A7\u4EF6\u7684\u5C55\u793A\u9762\uFF0C\u5355\u72EC\u4ECE adv/tasks/ui \u5F15\uFF1Badv/tasks \u53EA\u51FA\u903B\u8F91\uFF0CNode \u5F15\u5B83\u4E0D\u5E26 React\u3002\n// \u5C55\u793A\u680F\u6CBF\u7528\u6838\u5FC3\u539F UI\uFF1Aicon / pill \u4E24\u5F62\u6001\u3001sm/md/lg \u5C3A\u5BF8\u3001width/min/max \u5BBD\u5EA6\uFF0C\n// \u6587\u5B57\u8FC7\u957F\u81EA\u52A8\u7701\u7565 + hover \u8DD1\u9A6C\u706F\u3002\u6570\u636E\u6765\u81EA\u5171\u4EAB\u4EFB\u52A1\u6C60\uFF0C\u65E0\u9700\u672C\u63D2\u4EF6\u753B\u884C\u3002\n// pill \u957F\u6761\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// \u53EA\u6709\u56FE\u6807\uFF08\u6B63\u65B9\u5F62\uFF0C\u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u5E26\u7EFF\u70B9\uFF09\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// \u5B9A\u5BBD 220\uFF1B\u4E0A\u9650 110\uFF08\u653E\u4E0D\u4E0B\u7701\u7565\u53F7\u3001hover \u8DD1\u9A6C\u706F\uFF09\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// \u70B9\u884C\u6309\u94AE\u540E\u9ED8\u8BA4\u6536\u8D77\u9762\u677F\uFF1B\u8981\u7559\u7740\u5C31\u5173\u6389\nh(TaskBar, { closeOnAction: false, groups: ['scan'] })\n// \u53D7\u63A7\uFF1A\u4F20 open \u5FC5\u987B\u540C\u65F6\u63A5 onOpenChange \u5E76\u56DE\u5199\uFF0C\u5426\u5219\u56DB\u6761\u5173\u95ED\u8DEF\u5F84\u53EA\u53D1\u56DE\u8C03\u3001\u9762\u677F\u4E0D\u771F\u7684\u6536\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
       }
     ]
   },
@@ -71244,13 +71349,23 @@ h(SideSheet, {
             }
           },
           {
+            "name": "startTask.title",
+            "type": "DisplayTitle",
+            "def": "\u2014",
+            "required": "\u5FC5\u586B",
+            "desc": {
+              "zh": "\u4EFB\u52A1\u884C\u6807\u9898\uFF1A{ category, description }\uFF0C\u6838\u5FC3\u6E32\u67D3\u6210\u300C\u5206\u7C7B\u4E28\u8BF4\u660E\u300D\uFF0C\u5206\u7C7B\u5EFA\u8BAE\u4E2D\u6587 2\u20134 \u5B57 / \u82F1\u6587\u6700\u591A 2 \u8BCD\uFF0C\u8D85\u957F\u8DD1\u9A6C\u706F",
+              "en": 'Task row title: { category, description }, rendered as "category\u4E28description"; 2\u20134 Chinese characters or at most two English words recommended, marquee when overlong'
+            }
+          },
+          {
             "name": "toast.<\u6001>.title",
-            "type": "string",
+            "type": "DisplayTitle",
             "def": "\u2014",
             "required": "\u8BE5\u6001\u8981\u5F39\u5361\u65F6\u5FC5\u586B",
             "desc": {
-              "zh": "\u5361\u7247\u4E3B\u884C",
-              "en": "Card headline"
+              "zh": "\u5361\u7247\u4E3B\u884C\uFF1A{ category, description }\uFF0C\u540C\u6837\u6309\u300C\u5206\u7C7B\u4E28\u8BF4\u660E\u300D\u6E32\u67D3",
+              "en": "Card headline: { category, description }, rendered the same way"
             }
           },
           {
@@ -71350,6 +71465,33 @@ h(SideSheet, {
             "desc": {
               "zh": "\u6838\u5FC3\u539F\u751F\u5C55\u793A\u680F\uFF1Apill/icon \u5F62\u6001\u3001sm/md/lg \u5C3A\u5BF8\u3001\u56FA\u5B9A\u5BBD / \u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\uFF0C\u8D85\u957F hover \u8DD1\u9A6C\u706F\uFF1B\u6570\u636E\u6765\u81EA\u5171\u4EAB\u6C60",
               "en": "Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool"
+            }
+          },
+          {
+            "name": "TaskBar.closeOnAction",
+            "type": "boolean",
+            "def": "true",
+            "desc": {
+              "zh": "\u70B9\u884C\u6309\u94AE\u540E\u662F\u5426\u6536\u8D77\u9762\u677F\uFF1Bfalse \u5219\u4FDD\u6301\u5C55\u5F00\uFF0C\u52A8\u4F5C\u5931\u8D25\u65F6\u4E5F\u4E0D\u6536",
+              "en": "Close the panel after a row action; false keeps it open, including on action failure"
+            }
+          },
+          {
+            "name": "TaskBar.open",
+            "type": "boolean | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "\u53D7\u63A7\u5C55\u5F00\u6001\uFF1B\u4F20\u4E86\u5C31\u5FC5\u987B\u540C\u65F6\u4F20 onOpenChange \u5E76\u56DE\u5199\uFF0C\u8FD0\u884C\u4E2D\u4E0D\u8981\u5207\u6362\u53D7\u63A7 / \u975E\u53D7\u63A7",
+              "en": "Controlled open state; pass together with onOpenChange and write it back; never switch controlled/uncontrolled at runtime"
+            }
+          },
+          {
+            "name": "TaskBar.onOpenChange",
+            "type": "(open: boolean) => void",
+            "def": "undefined",
+            "desc": {
+              "zh": "\u5C55\u5F00\u6001\u53D8\u5316\uFF1B\u81EA\u52A8\u6536\u8D77\u53D1 false\u3001\u89E6\u53D1\u5668\u70B9\u5F00\u53D1 true\uFF0C\u53D7\u63A7\u65F6\u5FC5\u987B\u56DE\u5199",
+              "en": "Open-state changes; automatic dismissal emits false and the trigger emits true; controlled callers must write back"
             }
           },
           {
@@ -76047,7 +76189,7 @@ var import_react108 = require("react");
 var import_react106 = require("react");
 
 // dist/adv/tasks/task-bar-css.generated.js
-var TASK_BAR_CSS = "/* \u2500\u2500 TaskBar \xB7 \u540E\u53F0\u4EFB\u52A1\u4E2D\u5FC3\u7684\u901A\u7528\u5C55\u793A\u680F \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u89E6\u53D1\u5668\u672C\u4F53\u662F Button\uFF08\u957F\u6761 / \u7EAF\u56FE\u6807\u6B63\u65B9\u5F62\uFF09\u7684\u63CF\u8FB9\u6863\uFF1A\n   \u5706\u89D2 / \u8FB9\u6846 / hover / \u7126\u70B9\u73AF\u5168\u5728 button.css\uFF0C\u672C\u6587\u4EF6\u53EA\u8865\u5B83\u6CA1\u6709\u7684\uFF1A\n   \u56FE\u6807\u4F4D\u7684\u5C0F\u7EFF\u70B9\u4E0E\u547C\u5438\u3001\u8BA1\u6570\u6587\u6848\u3001\u4E0B\u62C9\u91CC\u300C\u4E00\u6761\u865A\u7EBF\u4E00\u683C\u300D\u7684\u6392\u7248\u3002\n   \u4E0B\u62C9\u5BB9\u5668\u8D70 PanelSurface(menu)\uFF0C\u8FD9\u91CC\u53EA\u7ED9\u5BBD\u5EA6\u4E0E\u6EDA\u52A8\u533A\uFF0C\u4E0D\u6539\u9762\u677F\u76AE\u80A4\u3002 */\n\n.dshpc-taskbar{display:inline-flex;}\n\n/* \u89E6\u53D1\u5668\uFF1A\u6574\u6BB5\u76AE\u80A4\u7167\u4E0B\u62C9\u6846\uFF08Picker \u7684 trigger\uFF09\u6765 \u2014\u2014 \u540C\u9AD8\u5EA6\u6863\u3001\u540C 1px \u52A0\u91CD\u63CF\u8FB9\u3001\n   \u540C md \u5706\u89D2\u3001\u540C 8px \u5DE6\u53F3\u5185\u8DDD\uFF1B\u53F3\u4FA7\u4E09\u89D2\u4E5F\u5C31 6px\uFF0C\u522B\u518D\u653E\u5927\u4E00\u53F7\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4E00\u5957\u76AE\uFF1A--pill \u662F\u56FE\u6807 + \u6587\u5B57 + \u8BA1\u6570 + \u4E09\u89D2\uFF0C--icon \u53EA\u6709\u56FE\u6807\u4E14\u5BBD\u9AD8\u76F8\u7B49\u3002 */\n.dshpc-taskbar__trigger{\n  display:inline-flex;align-items:center;gap:6px;box-sizing:border-box;overflow:hidden;\n  height:28px;padding:0 8px;\n  color:var(--dshpc-fg);background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);\n  font-family:inherit;font-size:var(--dshpc-font-md);line-height:1;cursor:pointer;\n}\n.dshpc-taskbar__trigger:hover{background:var(--dshpc-hover);}\n.dshpc-taskbar__trigger:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-taskbar__trigger--sm{height:24px;font-size:var(--dshpc-font-sm);}\n.dshpc-taskbar__trigger--lg{height:32px;}\n.dshpc-taskbar__trigger--icon{justify-content:center;padding:0;width:28px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--sm{width:24px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--lg{width:32px;}\n/* \u6587\u5B57\u5403\u5269\u4F59\u5BBD\uFF1A\u5B9A\u5BBD / \u7ED9\u4E86\u4E0A\u9650\u65F6\u5148\u538B\u5B83\uFF08\u56FE\u6807\u3001\u4E09\u89D2 flex:none \u4E0D\u8BA9\u4F4D\uFF09\u3002\n   \u7701\u7565\u53F7\u4E0E hover \u8DD1\u9A6C\u706F\u7531 MarqueeText\uFF08.dshpc-mq\uFF09\u81EA\u5DF1\u7BA1\uFF0C\u672C\u6587\u4EF6\u53EA\u7ED9\u53EF\u6536\u7F29\u7684\u5916\u58F3\u3002 */\n.dshpc-taskbar__label{flex:0 1 auto;min-width:0;white-space:nowrap;}\n.dshpc-taskbar__count{flex:none;}\n/* \u4E09\u89D2\u6C38\u8FDC\u8D34\u53F3\uFF1Aauto \u5916\u8FB9\u8DDD\u5403\u6389\u5B9A\u5BBD\u65F6\u7684\u5269\u4F59\u7A7A\u95F4\uFF1B\u6536\u7F29\u65F6\u5B83\u662F\u6700\u540E\u4E00\u4E2A flex:none\uFF0C\u4E0D\u4F1A\u88AB\u6324\u51FA\u6846\u3002 */\n.dshpc-taskbar__caret{flex:none;color:var(--dshpc-fg-3);margin-left:auto;}\n\n/* \u56FE\u6807\u4F4D\uFF1A\u7EFF\u70B9\u9489\u5728\u53F3\u4E0A\u89D2\uFF0C\u4E0D\u53C2\u4E0E\u5E03\u5C40\u3002\n   \u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u53EA\u6709\u5B57\u5F62\u81EA\u5DF1\u547C\u5438\uFF08\u5927\u5C0F\u5FAA\u73AF\uFF09\u2014\u2014 \u7EFF\u70B9\u8DDF\u7740\u7F29\u653E\u4F1A\u6643\u4F4D\u7F6E\uFF0C\u6240\u4EE5\u52A8\u753B\u6302\u5728 <i> \u4E0A\u3002 */\n.dshpc-taskbar__iconwrap{position:relative;display:inline-flex;align-items:center;justify-content:center;}\n.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:dshpc-taskbar-breathe 1.6s var(--dshpc-ease) infinite;}\n@keyframes dshpc-taskbar-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}\n@media (prefers-reduced-motion:reduce){.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:none}}\n.dshpc-taskbar__dot{\n  position:absolute;top:-2px;right:-3px;width:5px;height:5px;border-radius:50%;\n  background:var(--dshpc-success);box-shadow:0 0 0 2px var(--dshpc-surface-base);\n}\n.dshpc-taskbar__count{color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;margin-left:2px;}\n\n/* \u6D6E\u52A8\u5C42\u63A5\u4E0E Picker \u540C\u4E00\u6863 z-index\uFF08popmenu\uFF09\uFF1ATaskBar \u7ECF FloatingPortal \u6302\u5230 body\uFF0C\n   \u4E0D\u8BBE\u7684\u8BDD\u505C\u5728 z-index:auto\uFF0C\u540C\u9875\u4EFB\u4F55 z-index\u22651 \u7684\u5143\u7D20\u90FD\u80FD\u628A\u5B83\u76D6\u4F4F\u3002\n   \u5FC5\u987B\u6302\u5728\u5916\u5C42\u5B9A\u4F4D div \u4E0A\uFF08floatingStyles \u5E26 transform\uFF0C\u4F1A\u5EFA stacking context\uFF09\u3002 */\n.dshpc-taskbar__float{z-index:var(--dshpc-z-popmenu);}\n\n/* \u9762\u677F\u53EA\u8865\u5E03\u5C40\uFF1A\u5BBD\u5EA6\u8DDF\u7740\u89C6\u53E3\u6536\uFF0C\u5185\u8DDD\u5F52\u96F6 \u2014\u2014 \u884C\u81EA\u5DF1\u5E26\u5185\u8DDD\uFF0C\u865A\u7EBF\u624D\u80FD\u4E00\u6761\u901A\u5230\u5E95\u3002 */\n.dshpc-taskbar__panel{width:min(400px,calc(100vw - 24px));padding:0;overflow:hidden;}\n.dshpc-taskbar__list{max-height:320px;overflow:auto;}\n.dshpc-taskbar__empty{\n  padding:var(--dshpc-space-4) var(--dshpc-space-3);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n}\n\n/* \u4E00\u683C\u4E00\u6761\u865A\u7EBF\uFF1A\u884C\u4E0E\u884C\u4E4B\u95F4\u53EA\u753B\u5206\u9694\u7EBF\uFF0C\u884C\u672C\u8EAB\u4E0D\u5957\u5E95 / \u4E0D\u63CF\u8FB9 / \u4E0D\u5706\u89D2 \u2014\u2014 \u9762\u677F\u5DF2\u7ECF\u662F\u4E00\u5C42\u6846\u3002 */\n.dshpc-taskbar__item{\n  display:flex;align-items:center;gap:var(--dshpc-space-2);\n  padding:var(--dshpc-space-2) var(--dshpc-space-3);\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-taskbar__item + .dshpc-taskbar__item{border-top:1px dashed var(--dshpc-border);}\n/* \u884C hover\uFF082026-11-15 \u7528\u6237\uFF1A\u8DDF\u8868\u683C\u9009\u4E2D\u90A3\u79CD\u84DD\u5DEE\u4E0D\u591A\u3001\u6216\u66F4\u6D45\u7684\u6781\u6DE1\u84DD\uFF09\u3002\n   \u53EA\u662F\u300C\u9F20\u6807\u5728\u8FD9\u513F\u300D\u7684\u53CD\u9988 \u2014\u2014 \u884C\u4E0D\u7ED9 cursor / \u7126\u70B9\u73AF\uFF0C\u4E5F\u6CA1\u6709\u70B9\u51FB\u884C\u4E3A\uFF1B\u9009\u4E2D\u6001\u4E0D\u505A\u3002 */\n.dshpc-taskbar__item:hover{background:var(--dshpc-taskbar-row-hover);}\n/* \u7EC8\u6001\u505C\u7559\u5230\u70B9\u540E\u9000\u573A\uFF1A\u6DE1\u51FA + \u8F7B\u5FAE\u6536\u7F29\u6536\u8D77\uFF0C200ms \u4E0E JS \u7684 EXIT_ANIM_MS \u5BF9\u9F50\u3002\n   \u884C\u672C\u8EAB\u4E0D\u8BBE\u56FA\u5B9A\u9AD8\u5EA6\uFF0C\u7528 max-height + padding \u6536\u62E2\u5230 0 \u505A\u51FA\u300C\u8FD9\u4E00\u6761\u6CA1\u4E86\u300D\u7684\u6536\u8D77\u611F\u3002 */\n.dshpc-taskbar__item--leaving{\n  animation:dshpc-taskbar-row-out .2s var(--dshpc-ease) forwards;\n  overflow:hidden;pointer-events:none;\n}\n@keyframes dshpc-taskbar-row-out{\n  from{opacity:1;max-height:80px;padding-top:var(--dshpc-space-2);padding-bottom:var(--dshpc-space-2)}\n  to{opacity:0;max-height:0;padding-top:0;padding-bottom:0}\n}\n@media (prefers-reduced-motion:reduce){\n  .dshpc-taskbar__item{transition:none}\n  .dshpc-taskbar__item--leaving{animation-duration:.01ms}\n}\n\n/* \u884C\u5185\uFF1A\u56FE\u6807 + \u4E24\u884C\u6587\u5B57 + \u53F3\u4FA7\u52A8\u4F5C\u3002\u56FE\u6807\u4E0D\u5E26\u5E95\u677F\uFF0C\u53EA\u7559\u5B57\u5F62\u3002 */\n.dshpc-taskbar__row-icon{flex:none;display:inline-flex;align-items:center;color:var(--dshpc-fg-2);}\n.dshpc-taskbar__row-main{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1 1 auto;}\n.dshpc-taskbar__row-title{font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}\n/* \u7B2C\u4E8C\u884C\uFF1A\u65F6\u95F4 + \u5206\u9694\u7B26 + \u62AB\u9732\u6587\u5B57\u3002\u6574\u884C\u53EF\u6536\u7F29\uFF0C\u62AB\u9732\u6587\u5B57\u8D85\u957F\u7531\u5185\u5C42 MarqueeText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-taskbar__row-meta{display:flex;align-items:center;min-width:0;font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;}\n.dshpc-taskbar__row-detail{display:inline-flex;align-items:center;gap:.35em;min-width:0;flex:1 1 auto;}\n/* \u5206\u9694\u6A2A\u7EBF\u524D\u540E\u7559\u51FA\u53EF\u89C1\u7A7A\u9699\uFF08flex \u4F1A\u5403\u6389\u88F8\u7A7A\u683C\u5B57\u7B26\uFF0C\u6545\u7528 gap + \u72EC\u7ACB span\uFF09\u3002 */\n.dshpc-taskbar__row-sep{flex:none;color:var(--dshpc-fg-4);}\n/* FlipText \u91CC\u7684\u626B\u5149\u53EA\u88C1\u5728\u5B57\u5F62\u4E0A\uFF0C\u5916\u5C42\u5BB9\u5668\u4E0D\u80FD\u88C1\u5207\uFF1B\u7ED9\u4E2A\u6700\u5C0F\u5BBD\u8BA9\u5B83\u80FD\u6536\u7F29\u5230\u7701\u7565\u3002 */\n.dshpc-taskbar__row-detail .dshpc-flip{flex:1 1 auto;min-width:0;}\n.dshpc-taskbar__row-actions{flex:none;display:inline-flex;align-items:center;gap:var(--dshpc-space-1);}\n";
+var TASK_BAR_CSS = "/* \u2500\u2500 TaskBar \xB7 \u540E\u53F0\u4EFB\u52A1\u4E2D\u5FC3\u7684\u901A\u7528\u5C55\u793A\u680F \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u89E6\u53D1\u5668\u672C\u4F53\u662F Button\uFF08\u957F\u6761 / \u7EAF\u56FE\u6807\u6B63\u65B9\u5F62\uFF09\u7684\u63CF\u8FB9\u6863\uFF1A\n   \u5706\u89D2 / \u8FB9\u6846 / hover / \u7126\u70B9\u73AF\u5168\u5728 button.css\uFF0C\u672C\u6587\u4EF6\u53EA\u8865\u5B83\u6CA1\u6709\u7684\uFF1A\n   \u56FE\u6807\u4F4D\u7684\u5C0F\u7EFF\u70B9\u4E0E\u547C\u5438\u3001\u8BA1\u6570\u6587\u6848\u3001\u4E0B\u62C9\u91CC\u300C\u4E00\u6761\u865A\u7EBF\u4E00\u683C\u300D\u7684\u6392\u7248\u3002\n   \u4E0B\u62C9\u5BB9\u5668\u8D70 PanelSurface(menu)\uFF0C\u8FD9\u91CC\u53EA\u7ED9\u5BBD\u5EA6\u4E0E\u6EDA\u52A8\u533A\uFF0C\u4E0D\u6539\u9762\u677F\u76AE\u80A4\u3002 */\n\n.dshpc-taskbar{display:inline-flex;}\n\n/* \u89E6\u53D1\u5668\uFF1A\u6574\u6BB5\u76AE\u80A4\u7167\u4E0B\u62C9\u6846\uFF08Picker \u7684 trigger\uFF09\u6765 \u2014\u2014 \u540C\u9AD8\u5EA6\u6863\u3001\u540C 1px \u52A0\u91CD\u63CF\u8FB9\u3001\n   \u540C md \u5706\u89D2\u3001\u540C 8px \u5DE6\u53F3\u5185\u8DDD\uFF1B\u53F3\u4FA7\u4E09\u89D2\u4E5F\u5C31 6px\uFF0C\u522B\u518D\u653E\u5927\u4E00\u53F7\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4E00\u5957\u76AE\uFF1A--pill \u662F\u56FE\u6807 + \u6587\u5B57 + \u8BA1\u6570 + \u4E09\u89D2\uFF0C--icon \u53EA\u6709\u56FE\u6807\u4E14\u5BBD\u9AD8\u76F8\u7B49\u3002 */\n.dshpc-taskbar__trigger{\n  display:inline-flex;align-items:center;gap:6px;box-sizing:border-box;overflow:hidden;\n  height:28px;padding:0 8px;\n  color:var(--dshpc-fg);background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);\n  font-family:inherit;font-size:var(--dshpc-font-md);line-height:1;cursor:pointer;\n}\n.dshpc-taskbar__trigger:hover{background:var(--dshpc-hover);}\n.dshpc-taskbar__trigger:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-taskbar__trigger--sm{height:24px;font-size:var(--dshpc-font-sm);}\n.dshpc-taskbar__trigger--lg{height:32px;}\n.dshpc-taskbar__trigger--icon{justify-content:center;padding:0;width:28px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--sm{width:24px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--lg{width:32px;}\n/* \u6587\u5B57\u5403\u5269\u4F59\u5BBD\uFF1A\u5B9A\u5BBD / \u7ED9\u4E86\u4E0A\u9650\u65F6\u5148\u538B\u5B83\uFF08\u56FE\u6807\u3001\u4E09\u89D2 flex:none \u4E0D\u8BA9\u4F4D\uFF09\u3002\n   \u7701\u7565\u53F7\u4E0E hover \u8DD1\u9A6C\u706F\u7531 MarqueeText\uFF08.dshpc-mq\uFF09\u81EA\u5DF1\u7BA1\uFF0C\u672C\u6587\u4EF6\u53EA\u7ED9\u53EF\u6536\u7F29\u7684\u5916\u58F3\u3002 */\n.dshpc-taskbar__label{flex:0 1 auto;min-width:0;white-space:nowrap;}\n.dshpc-taskbar__count{flex:none;}\n/* \u4E09\u89D2\u6C38\u8FDC\u8D34\u53F3\uFF1Aauto \u5916\u8FB9\u8DDD\u5403\u6389\u5B9A\u5BBD\u65F6\u7684\u5269\u4F59\u7A7A\u95F4\uFF1B\u6536\u7F29\u65F6\u5B83\u662F\u6700\u540E\u4E00\u4E2A flex:none\uFF0C\u4E0D\u4F1A\u88AB\u6324\u51FA\u6846\u3002 */\n.dshpc-taskbar__caret{flex:none;color:var(--dshpc-fg-3);margin-left:auto;}\n\n/* \u56FE\u6807\u4F4D\uFF1A\u7EFF\u70B9\u9489\u5728\u53F3\u4E0A\u89D2\uFF0C\u4E0D\u53C2\u4E0E\u5E03\u5C40\u3002\n   \u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u53EA\u6709\u5B57\u5F62\u81EA\u5DF1\u547C\u5438\uFF08\u5927\u5C0F\u5FAA\u73AF\uFF09\u2014\u2014 \u7EFF\u70B9\u8DDF\u7740\u7F29\u653E\u4F1A\u6643\u4F4D\u7F6E\uFF0C\u6240\u4EE5\u52A8\u753B\u6302\u5728 <i> \u4E0A\u3002 */\n.dshpc-taskbar__iconwrap{position:relative;display:inline-flex;align-items:center;justify-content:center;}\n.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:dshpc-taskbar-breathe 1.6s var(--dshpc-ease) infinite;}\n@keyframes dshpc-taskbar-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}\n@media (prefers-reduced-motion:reduce){.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:none}}\n.dshpc-taskbar__dot{\n  position:absolute;top:-2px;right:-3px;width:5px;height:5px;border-radius:50%;\n  background:var(--dshpc-success);box-shadow:0 0 0 2px var(--dshpc-surface-base);\n}\n.dshpc-taskbar__count{color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;margin-left:2px;}\n\n/* \u6D6E\u52A8\u5C42\u63A5\u4E0E Picker \u540C\u4E00\u6863 z-index\uFF08popmenu\uFF09\uFF1ATaskBar \u7ECF FloatingPortal \u6302\u5230 body\uFF0C\n   \u4E0D\u8BBE\u7684\u8BDD\u505C\u5728 z-index:auto\uFF0C\u540C\u9875\u4EFB\u4F55 z-index\u22651 \u7684\u5143\u7D20\u90FD\u80FD\u628A\u5B83\u76D6\u4F4F\u3002\n   \u5FC5\u987B\u6302\u5728\u5916\u5C42\u5B9A\u4F4D div \u4E0A\uFF08floatingStyles \u5E26 transform\uFF0C\u4F1A\u5EFA stacking context\uFF09\u3002 */\n.dshpc-taskbar__float{z-index:var(--dshpc-z-popmenu);}\n\n/* \u9762\u677F\u53EA\u8865\u5E03\u5C40\uFF1A\u5BBD\u5EA6\u8DDF\u7740\u89C6\u53E3\u6536\uFF0C\u5185\u8DDD\u5F52\u96F6 \u2014\u2014 \u884C\u81EA\u5DF1\u5E26\u5185\u8DDD\uFF0C\u865A\u7EBF\u624D\u80FD\u4E00\u6761\u901A\u5230\u5E95\u3002 */\n.dshpc-taskbar__panel{width:min(400px,calc(100vw - 24px));padding:0;overflow:hidden;}\n.dshpc-taskbar__list{max-height:320px;overflow:auto;}\n.dshpc-taskbar__empty{\n  padding:var(--dshpc-space-4) var(--dshpc-space-3);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n}\n\n/* \u4E00\u683C\u4E00\u6761\u865A\u7EBF\uFF1A\u884C\u4E0E\u884C\u4E4B\u95F4\u53EA\u753B\u5206\u9694\u7EBF\uFF0C\u884C\u672C\u8EAB\u4E0D\u5957\u5E95 / \u4E0D\u63CF\u8FB9 / \u4E0D\u5706\u89D2 \u2014\u2014 \u9762\u677F\u5DF2\u7ECF\u662F\u4E00\u5C42\u6846\u3002 */\n.dshpc-taskbar__item{\n  display:flex;align-items:center;gap:var(--dshpc-space-2);\n  padding:var(--dshpc-space-2) var(--dshpc-space-3);\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-taskbar__item + .dshpc-taskbar__item{border-top:1px dashed var(--dshpc-border);}\n/* \u884C hover\uFF082026-11-15 \u7528\u6237\uFF1A\u8DDF\u8868\u683C\u9009\u4E2D\u90A3\u79CD\u84DD\u5DEE\u4E0D\u591A\u3001\u6216\u66F4\u6D45\u7684\u6781\u6DE1\u84DD\uFF09\u3002\n   \u53EA\u662F\u300C\u9F20\u6807\u5728\u8FD9\u513F\u300D\u7684\u53CD\u9988 \u2014\u2014 \u884C\u4E0D\u7ED9 cursor / \u7126\u70B9\u73AF\uFF0C\u4E5F\u6CA1\u6709\u70B9\u51FB\u884C\u4E3A\uFF1B\u9009\u4E2D\u6001\u4E0D\u505A\u3002 */\n.dshpc-taskbar__item:hover{background:var(--dshpc-taskbar-row-hover);}\n/* \u7EC8\u6001\u505C\u7559\u5230\u70B9\u540E\u9000\u573A\uFF1A\u6DE1\u51FA + \u8F7B\u5FAE\u6536\u7F29\u6536\u8D77\uFF0C200ms \u4E0E JS \u7684 EXIT_ANIM_MS \u5BF9\u9F50\u3002\n   \u884C\u672C\u8EAB\u4E0D\u8BBE\u56FA\u5B9A\u9AD8\u5EA6\uFF0C\u7528 max-height + padding \u6536\u62E2\u5230 0 \u505A\u51FA\u300C\u8FD9\u4E00\u6761\u6CA1\u4E86\u300D\u7684\u6536\u8D77\u611F\u3002 */\n.dshpc-taskbar__item--leaving{\n  animation:dshpc-taskbar-row-out .2s var(--dshpc-ease) forwards;\n  overflow:hidden;pointer-events:none;\n}\n@keyframes dshpc-taskbar-row-out{\n  from{opacity:1;max-height:80px;padding-top:var(--dshpc-space-2);padding-bottom:var(--dshpc-space-2)}\n  to{opacity:0;max-height:0;padding-top:0;padding-bottom:0}\n}\n@media (prefers-reduced-motion:reduce){\n  .dshpc-taskbar__item{transition:none}\n  .dshpc-taskbar__item--leaving{animation-duration:.01ms}\n}\n\n/* \u884C\u5185\uFF1A\u56FE\u6807 + \u4E24\u884C\u6587\u5B57 + \u53F3\u4FA7\u52A8\u4F5C\u3002\u56FE\u6807\u4E0D\u5E26\u5E95\u677F\uFF0C\u53EA\u7559\u5B57\u5F62\u3002 */\n.dshpc-taskbar__row-icon{flex:none;display:inline-flex;align-items:center;color:var(--dshpc-fg-2);}\n.dshpc-taskbar__row-main{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1 1 auto;}\n/* \u6807\u9898\u4EA4\u7ED9 MarqueeText\uFF1A\u8FD9\u91CC\u53EA\u8865\u5B57\u4F53\u4E0E\u6536\u7F29\u7EA6\u675F\uFF0C\u7701\u7565\u53F7 / hover \u6EDA\u52A8\u7531 .dshpc-mq \u53CC\u5C42\u8D1F\u8D23\u3002 */\n.dshpc-taskbar__row-title{min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}\n/* \u7B2C\u4E8C\u884C\uFF1A\u65F6\u95F4 + \u5206\u9694\u7B26 + \u62AB\u9732\u6587\u5B57\u3002\u6574\u884C\u53EF\u6536\u7F29\uFF0C\u62AB\u9732\u6587\u5B57\u8D85\u957F\u7531\u5185\u5C42 MarqueeText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-taskbar__row-meta{display:flex;align-items:center;min-width:0;font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;}\n.dshpc-taskbar__row-detail{display:inline-flex;align-items:center;gap:.35em;min-width:0;flex:1 1 auto;}\n/* \u5206\u9694\u6A2A\u7EBF\u524D\u540E\u7559\u51FA\u53EF\u89C1\u7A7A\u9699\uFF08flex \u4F1A\u5403\u6389\u88F8\u7A7A\u683C\u5B57\u7B26\uFF0C\u6545\u7528 gap + \u72EC\u7ACB span\uFF09\u3002 */\n.dshpc-taskbar__row-sep{flex:none;color:var(--dshpc-fg-4);}\n/* FlipText \u91CC\u7684\u626B\u5149\u53EA\u88C1\u5728\u5B57\u5F62\u4E0A\uFF0C\u5916\u5C42\u5BB9\u5668\u4E0D\u80FD\u88C1\u5207\uFF1B\u7ED9\u4E2A\u6700\u5C0F\u5BBD\u8BA9\u5B83\u80FD\u6536\u7F29\u5230\u7701\u7565\u3002 */\n.dshpc-taskbar__row-detail .dshpc-flip{flex:1 1 auto;min-width:0;}\n.dshpc-taskbar__row-actions{flex:none;display:inline-flex;align-items:center;gap:var(--dshpc-space-1);}\n";
 
 // dist/adv/tasks/TaskBar.js
 var DEFAULT_ICON = "common.base:cpu";
@@ -76058,6 +76200,15 @@ function iconNameOf(task, fallback) {
 function actionIconOf(action, fallback) {
   const name2 = action.icon;
   return name2 === void 0 || resolveIconName(name2) === void 0 ? fallback : name2;
+}
+function decideOpenState(current3, next, controlled, lastEmitted) {
+  if (current3 === next)
+    return { kind: "noop" };
+  if (!controlled)
+    return { kind: "setInternal", value: next };
+  if (lastEmitted === next)
+    return { kind: "noop" };
+  return { kind: "emit", value: next };
 }
 function Elapsed(props) {
   const settled = props.until !== void 0;
@@ -76161,7 +76312,7 @@ function useSettledRows(all, retainMs) {
 function TaskBar(props) {
   ensureComponentStyles("task-bar", TASK_BAR_CSS);
   useLocale();
-  const { form = "pill", size: size4 = "md", groups, project, onActionFailure, placement = "down", defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className: className2, style: style2, settleRetainMs = DEFAULT_SETTLE_RETAIN_MS } = props;
+  const { form = "pill", size: size4 = "md", groups, project, onActionFailure, placement = "down", defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className: className2, style: style2, settleRetainMs = DEFAULT_SETTLE_RETAIN_MS, open: controlledOpen, onOpenChange, closeOnAction = true } = props;
   const actionSize = "sm";
   const triggerWidth = {};
   if (form === "pill") {
@@ -76175,7 +76326,30 @@ function TaskBar(props) {
     }
   }
   const truncatable = form === "pill" && (width !== void 0 || maxWidth !== void 0);
-  const [open, setOpen] = (0, import_react106.useState)(false);
+  const [internalOpen, setInternalOpen] = (0, import_react106.useState)(false);
+  const open = controlledOpen ?? internalOpen;
+  const lastEmitted = (0, import_react106.useRef)(open);
+  (0, import_react106.useEffect)(() => {
+    lastEmitted.current = open;
+  }, [open]);
+  const warnedControlled = (0, import_react106.useRef)(false);
+  (0, import_react106.useEffect)(() => {
+    if (controlledOpen === void 0 || onOpenChange !== void 0 || warnedControlled.current)
+      return;
+    warnedControlled.current = true;
+    console.warn("[dsh-plugin-core] TaskBar: open requires onOpenChange; close paths will only emit the callback");
+  }, [controlledOpen, onOpenChange]);
+  const setOpenState = (0, import_react106.useCallback)((next) => {
+    const decision = decideOpenState(controlledOpen ?? internalOpen, next, controlledOpen !== void 0, lastEmitted.current);
+    if (decision.kind === "noop")
+      return;
+    if (decision.kind === "emit") {
+      lastEmitted.current = decision.value;
+      onOpenChange?.(decision.value);
+      return;
+    }
+    setInternalOpen(decision.value);
+  }, [controlledOpen, internalOpen, onOpenChange]);
   (0, import_react106.useSyncExternalStore)(taskCenterStore.subscribe, taskCenterStore.getSnapshot, taskCenterStore.getSnapshot);
   const scopeProject = project === void 0 ? null : project;
   const scopeGroups = groups === "*" ? void 0 : groups;
@@ -76185,11 +76359,15 @@ function TaskBar(props) {
   const busy = running > 0;
   const { refs, floatingStyles } = useFloating2({
     open,
-    onOpenChange: setOpen,
+    onOpenChange: setOpenState,
     placement: placement === "up" ? "top-end" : "bottom-end",
     middleware: [offset3(6), flip3({ padding: 8 }), shift3({ padding: 8 })],
     whileElementsMounted: autoUpdate
   });
+  const closeOnForeground = (0, import_react106.useCallback)(() => {
+    setOpenState(false);
+  }, [setOpenState]);
+  useDismissOnForegroundOverlay(closeOnForeground);
   (0, import_react106.useEffect)(() => {
     if (!open || typeof document === "undefined")
       return;
@@ -76203,11 +76381,11 @@ function TaskBar(props) {
         return;
       if (floating?.contains?.(target) === true)
         return;
-      setOpen(false);
+      setOpenState(false);
     };
     const onKeyDown = (event) => {
       if (event.key === "Escape")
-        setOpen(false);
+        setOpenState(false);
     };
     document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
@@ -76215,10 +76393,10 @@ function TaskBar(props) {
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, refs]);
+  }, [open, refs, setOpenState]);
   const icon = (0, import_react106.createElement)("span", { className: `dshpc-taskbar__iconwrap${busy ? " dshpc-taskbar__iconwrap--busy" : ""}` }, (0, import_react106.createElement)(FontIcon, { name: defaultIcon }), busy ? (0, import_react106.createElement)("span", { className: "dshpc-taskbar__dot" }) : null);
   const toggle = () => {
-    setOpen(!open);
+    setOpenState(!open);
   };
   const labelText = t("taskbarLabel");
   const countText2 = busy ? t("taskbarCount", { n: running }) : "";
@@ -76245,7 +76423,7 @@ function TaskBar(props) {
     return (0, import_react106.createElement)("div", {
       key: task.id,
       className: `dshpc-taskbar__item${leavingIds.has(task.id) ? " dshpc-taskbar__item--leaving" : ""}`
-    }, (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-icon" }, (0, import_react106.createElement)(FontIcon, { name: iconNameOf(task, defaultIcon) })), (0, import_react106.createElement)("div", { className: "dshpc-taskbar__row-main" }, (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-title", title: task.title }, task.title), (0, import_react106.createElement)(Elapsed, { since: task.startedAt, until: task.settledAt, progress: task.progress?.message })), actions2.length === 0 ? null : (0, import_react106.createElement)(
+    }, (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-icon" }, (0, import_react106.createElement)(FontIcon, { name: iconNameOf(task, defaultIcon) })), (0, import_react106.createElement)("div", { className: "dshpc-taskbar__row-main" }, (0, import_react106.createElement)(MarqueeText, { text: formatDisplayTitle(task.title), className: "dshpc-taskbar__row-title" }), (0, import_react106.createElement)(Elapsed, { since: task.startedAt, until: task.settledAt, progress: task.progress?.message })), actions2.length === 0 ? null : (0, import_react106.createElement)(
       "div",
       {
         className: "dshpc-taskbar__row-actions",
@@ -76267,6 +76445,8 @@ function TaskBar(props) {
           icon: (0, import_react106.createElement)(FontIcon, { name: glyph }),
           ...label === void 0 ? { label: glyph } : {},
           onClick: () => {
+            if (closeOnAction)
+              setOpenState(false);
             const ok = pressTaskButton(action.id, task.id);
             if (ok)
               return;
@@ -76326,9 +76506,10 @@ mountTaskUI({
 
 // \u2462 \u53D1\u8D77\uFF1A10 \u79D2\u3001\u6E10\u8FDB\u62AB\u9732\uFF1B\u914D\u7F6E\u5168\u662F\u7EAF\u6570\u636E\uFF0C\u8DDF\u7740\u8BB0\u5F55\u8D70
 await startTask({
-  project: 'dsh-plugin-core-demo', group: 'demo-jobs', title: '\u7ED3\u6848',
+  project: 'dsh-plugin-core-demo', group: 'demo-jobs',
+  title: { category: '\u7ED3\u6848', description: '\u540E\u53F0\u4EFB\u52A1\u6F14\u793A' },
   kind: 'demo:job', args: { seconds: 10, steps: 20 },
-  toast: { success: { title: '\u5B8C\u6210', button: { id: 'open-log', text: '\u770B\u65E5\u5FD7' }, scope: 'all' } },
+  toast: { success: { title: { category: '\u5B8C\u6210', description: '\u540E\u53F0\u4EFB\u52A1\u6F14\u793A' }, button: { id: 'open-log', text: '\u770B\u65E5\u5FD7' }, scope: 'all' } },
   rowButtons: [
         { id: 'open-log', text: '\u770B\u65E5\u5FD7', when: 'done' },
         { id: 'open-log', text: '\u770B\u65E5\u5FD7', when: 'failed' },
@@ -76352,15 +76533,15 @@ function TaskNotificationsPage() {
   const [events, setEvents] = (0, import_react108.useState)([]);
   const serial = (0, import_react108.useRef)(0);
   const handlers2 = (0, import_react108.useRef)({ "open-log": (task) => {
-    window.alert(`\u67E5\u770B\u65E5\u5FD7\uFF1A${task.title}`);
-    setEvents((prev) => [`\u6309\u94AE \u770B\u65E5\u5FD7: ${task.title}`, ...prev].slice(0, 8));
+    window.alert(`\u67E5\u770B\u65E5\u5FD7\uFF1A${formatDisplayTitle(task.title)}`);
+    setEvents((prev) => [`\u6309\u94AE \u770B\u65E5\u5FD7: ${formatDisplayTitle(task.title)}`, ...prev].slice(0, 8));
   } });
   (0, import_react108.useEffect)(() => {
     const offUi = mountTaskUI({
       project: PROJECT,
       handlers: handlers2.current,
       onSettled: (task, outcome) => {
-        setEvents((prev) => [`\u7EC8\u6001 ${outcome}: ${task.title}${task.reason ? ` \xB7 ${task.reason}` : ""}`, ...prev].slice(0, 8));
+        setEvents((prev) => [`\u7EC8\u6001 ${outcome}: ${formatDisplayTitle(task.title)}${task.reason ? ` \xB7 ${task.reason}` : ""}`, ...prev].slice(0, 8));
       }
     });
     return () => {
@@ -76373,14 +76554,14 @@ function TaskNotificationsPage() {
     void startTask({
       project: PROJECT,
       group: GROUP,
-      title: `${label} #${index3}`,
+      title: { category: "\u4EFB\u52A1", description: `${label} #${index3}` },
       key: `${label}:${index3}`,
       kind: "demo:job",
       args: { ...args, label, index: index3 },
       detail: { label, index: index3 },
       toast: {
-        success: { title: `${label} #${index3} \u6210\u529F`, button: { id: "open-log", text: "\u770B\u65E5\u5FD7" }, scope: "all" },
-        failure: { title: `${label} #${index3} \u5931\u8D25`, button: { id: "open-log", text: "\u770B\u65E5\u5FD7" }, scope: "origin" }
+        success: { title: { category: "\u5B8C\u6210", description: `${label} #${index3}` }, button: { id: "open-log", text: "\u770B\u65E5\u5FD7" }, scope: "all" },
+        failure: { title: { category: "\u5931\u8D25", description: `${label} #${index3}` }, button: { id: "open-log", text: "\u770B\u65E5\u5FD7" }, scope: "origin" }
       },
       rowButtons: [
         { id: "open-log", text: "\u770B\u65E5\u5FD7", when: "done" },
@@ -76437,7 +76618,7 @@ function TaskNotificationsPage() {
         snapshot.tasks.length === 0 ? (0, import_react108.createElement)(Note, { text: t3("tnEmptyTasks") }) : snapshot.tasks.map((task) => (0, import_react108.createElement)(
           "div",
           { key: task.id, style: mono2 },
-          `${task.title} \xB7 ${task.state}${task.progress ? ` \xB7 ${task.progress.message}` : ""}`
+          `${formatDisplayTitle(task.title)} \xB7 ${task.state}${task.progress ? ` \xB7 ${task.progress.message}` : ""}`
         ))
       )
     ),
@@ -76611,9 +76792,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.45.5"}`],
-            [t3("buildDemo"), `v${"0.45.5"}`],
-            [t3("buildStamp"), "261122-232042-143"]
+            [t3("buildCore"), `v${"0.46.0"}`],
+            [t3("buildDemo"), `v${"0.46.0"}`],
+            [t3("buildStamp"), "261123-163543-169"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -76928,9 +77109,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.45.5"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.45.5"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261122-232042-143")
+          (0, import_react112.createElement)("span", null, `core v${"0.46.0"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.46.0"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261123-163543-169")
         )
       )
     ),

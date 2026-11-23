@@ -1,6 +1,6 @@
 import { type CSSProperties, type ReactNode } from 'react';
 import { type ButtonSize } from '../../ui/actions/Button.js';
-import type { TaskNotificationRecord } from './model.js';
+import { type TaskNotificationRecord } from './model.js';
 /** 展示形态：只图标 / 图标 + 文字长条。 */
 export type TaskBarForm = 'icon' | 'pill';
 /**
@@ -45,6 +45,15 @@ export interface TaskBarProps {
     /** 最大宽：`width` 未设时生效；文字放不下折叠成省略号，hover 跑马灯展开（同 `Button`）。 */
     maxWidth?: number | string;
     /**
+     * 受控展开态。传了就必须同时传 `onOpenChange` 并回写，否则点外部 / Esc / 行按钮 / 前台浮层
+     * 四条关闭路径只会发回调、DOM 不会真的收起。运行中不要切换受控 / 非受控。
+     */
+    open?: boolean;
+    /** 展开态变化。自动收起发 `false`，触发器点开发 `true`；受控时必须回写到 `open`。 */
+    onOpenChange?: (open: boolean) => void;
+    /** 点行按钮后是否收起面板，默认 `true`（通用菜单「点项即收」）。传 `false` 可保持面板。 */
+    closeOnAction?: boolean;
+    /**
      * 终态行在列表里停留多久再退场（毫秒），默认 60000 —— 给 `when: done/failed` 的行按钮留点击窗口。
      * 到点先播退场动画再移除；传 0 则终态即时退场。
      */
@@ -53,6 +62,17 @@ export interface TaskBarProps {
     className?: string;
     style?: CSSProperties;
 }
+/** 展开态变更的纯判定：抽出来是为了在无 jsdom 的 node 自检里覆盖受控 / 非受控与去重边界。 */
+export type OpenStateDecision = {
+    readonly kind: 'noop';
+} | {
+    readonly kind: 'setInternal';
+    readonly value: boolean;
+} | {
+    readonly kind: 'emit';
+    readonly value: boolean;
+};
+export declare function decideOpenState(current: boolean, next: boolean, controlled: boolean, lastEmitted: boolean): OpenStateDecision;
 /** 一条终态行在时刻 now 的展示阶段（纯派生，组件重挂也从 settledAt 重算，不会「恢复」）。 */
 export type RowSettlePhase = 'rest' | 'leaving' | 'gone';
 /**

@@ -43,11 +43,12 @@
    await startTask({
      project: 'dsh-task-reminder',
      group: 'close',
-     title: '结案',
+     title: { category: '任务结案', description: `结案 ${taskId}` }, // 分类 + 说明，展示成「分类丨说明」
      key: `close:${taskId}`,              // 同项目幂等，重复发起就地更新
      kind: 'reminder:close-task',         // 执行器名，核心不枚举
      args: { taskId },                    // 纯数据，不带函数
-     toast: { success: { title: '已结案', button: { id: 'open-log', text: '看日志' }, scope: 'all' } },
+     toast: { success: { title: { category: '任务结案', description: `已结案 ${taskId}` }, button: { id: 'open-log', text: '看日志' }, scope: 'all' } },
+
      notify: { success: { message: '结案完成', broadcast: 'plugin' } },
      rowButtons: [{ id: 'open-log', text: '看日志', when: 'done' }],
    })

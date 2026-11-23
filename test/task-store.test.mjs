@@ -3,17 +3,19 @@ import assert from 'node:assert/strict'
 import { createTaskStore, isSettled, visibleButtons } from '../dist/adv/tasks/store.js'
 import { buttonsForState, notifyForState, toastForState } from '../dist/adv/tasks/model.js'
 
+const title = (description) => ({ category: '任务', description })
+
 function rec(over = {}) {
-  return { id: 'a', project: 'p', group: 'g', title: 't', state: 'running', startedAt: 1, ...over }
+  return { id: 'a', project: 'p', group: 'g', title: title('t'), state: 'running', startedAt: 1, ...over }
 }
 
 test('store：同 (project,key) 幂等 upsert，复用同一 id', () => {
   const s = createTaskStore()
-  const first = s.upsert(rec({ key: 'k', title: 'one' }))
+  const first = s.upsert(rec({ key: 'k', title: title('one') }))
   assert.equal(first.created, true)
-  const second = s.upsert(rec({ id: 'b', key: 'k', title: 'two' }))
+  const second = s.upsert(rec({ id: 'b', key: 'k', title: title('two') }))
   assert.equal(second.created, false)
-  assert.equal(second.task.title, 'two')
+  assert.deepEqual(second.task.title, title('two'))
   assert.equal(s.getSnapshot().tasks.length, 1)
   assert.equal(s.getSnapshot().tasks[0].id, 'a')
 })
@@ -64,9 +66,11 @@ test('model：按钮按 when 过滤；toast/notify 按态取，整态缺省为�
   assert.deepEqual(buttonsForState(buttons, 'done').map((b) => b.id), ['l', 'a'])
   assert.deepEqual(buttonsForState(buttons, 'failed').map((b) => b.id), ['a'])
   assert.deepEqual(visibleButtons(rec({ rowButtons: buttons })).map((b) => b.id), ['v', 'a'])
-  const cfg = { success: { title: 'ok' }, failure: { title: 'no' } }
-  assert.equal(toastForState(cfg, 'done').title, 'ok')
-  assert.equal(toastForState(cfg, 'failed').title, 'no')
+  const okTitle = { category: '完成', description: 'ok' }
+  const noTitle = { category: '失败', description: 'no' }
+  const cfg = { success: { title: okTitle }, failure: { title: noTitle } }
+  assert.deepEqual(toastForState(cfg, 'done').title, okTitle)
+  assert.deepEqual(toastForState(cfg, 'failed').title, noTitle)
   assert.equal(toastForState(cfg, 'running'), undefined)
   assert.equal(notifyForState({ success: { message: 'x' } }, 'failed'), undefined)
 })

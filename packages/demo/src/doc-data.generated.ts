@@ -5009,13 +5009,17 @@ export const docData = {
       {
         "zh": "所有配置都是**纯数据跟着记录走**：标题、Toast、通知、按钮文案与显示时机在发起时声明，任何页面看到同一条任务都按同一份配置渲染，不需要发起页在场。跨页只传结构化克隆安全的值，不带函数、组件或 Promise。",
         "en": "All configuration is **plain data carried by the record**: title, toast, notification, button labels and visibility are declared at start time, so every page renders the same task from the same configuration without the originating page being present. Only structured-cloneable values cross pages — no functions, components or promises."
+      },
+      {
+        "zh": "**所有对外显示的标题都必须是 `{ category, description }` 两段**，核心统一渲染成 `分类丨说明`（如 `任务结案丨后台任务 SSE 401 零延迟无限重连`）。分类由调用方自己定，建议中文 2–4 字、英文最多 2 个单词；核心**不校验字数、不写死分类字典**，整串过长由跑马灯在 hover 时展开。迁移时把原来的 `title: string` 改成对象，旧字符串帧会被拒收，不存在字符串兜底。",
+        "en": "**Every user-visible title must be `{ category, description }`**; the core renders it as `category丨description` (for example `Task closed丨Background job SSE 401 reconnected`). The caller owns the category: 2–4 Chinese characters or at most two English words is recommended; the core does not validate length or hard-code a category dictionary, and overlong text expands on hover through the marquee. Migrate `title: string` to the object form — legacy string frames are rejected, with no string fallback."
       }
     ],
     "code": [
       {
         "id": "bt-start-example",
         "lang": "ts",
-        "src": "import { startTask } from 'dsh-plugin-core/adv/tasks'\n\n// await 等的是登记成功，不是任务跑完。标题 / 通知 / 按钮全是纯数据，跟着记录走。\nawait startTask({\n  project: 'dsh-task-reminder',\n  group: 'scan',\n  title: '扫描工作区',\n  key: 'scan:workspace-1',          // 同 (project, key) 同时最多一条，重复发起就地更新\n  kind: 'reminder:scan',            // 开放执行器名，核心不枚举、不校验\n  args: { path: '/ws' },            // 纯数据，过不了进程边界，不带函数\n\n  toast: {                          // 终态弹卡；整态不写 = 该态不弹\n    success: { title: '扫描完成', button: { id: 'view', text: '看日志' }, scope: 'all' },\n    failure: { title: '扫描失败', scope: 'origin' },\n  },\n  notify: {                         // 终态通知，与 toast 是两件事\n    success: { message: '扫描完成', detail: { count: 12 }, scope: 'all', broadcast: 'plugin' },\n  },\n  rowButtons: [                     // 列表行按钮；文案与 when 由核心控件画\n    { id: 'view', text: '查看', when: 'running' },\n    { id: 'view', text: '看日志', when: 'done' },\n  ],\n})"
+        "src": "import { startTask } from 'dsh-plugin-core/adv/tasks'\n\n// await 等的是登记成功，不是任务跑完。标题 / 通知 / 按钮全是纯数据，跟着记录走。\nawait startTask({\n  project: 'dsh-task-reminder',\n  group: 'scan',\n  title: { category: '任务结案', description: '扫描工作区' }, // 分类 + 说明两段，展示成「分类丨说明」\n  key: 'scan:workspace-1',          // 同 (project, key) 同时最多一条，重复发起就地更新\n  kind: 'reminder:scan',            // 开放执行器名，核心不枚举、不校验\n  args: { path: '/ws' },            // 纯数据，过不了进程边界，不带函数\n\n  toast: {                          // 终态弹卡；整态不写 = 该态不弹\n    success: { title: { category: '任务结案', description: '扫描完成' }, button: { id: 'view', text: '看日志' }, scope: 'all' },\n    failure: { title: { category: '任务失败', description: '扫描中断' }, scope: 'origin' },\n  },\n  notify: {                         // 终态通知，与 toast 是两件事\n    success: { message: '扫描完成', detail: { count: 12 }, scope: 'all', broadcast: 'plugin' },\n  },\n  rowButtons: [                     // 列表行按钮；文案与 when 由核心控件画\n    { id: 'view', text: '查看', when: 'running' },\n    { id: 'view', text: '看日志', when: 'done' },\n  ],\n})"
       },
       {
         "id": "bt-mount-ui-example",
@@ -5025,7 +5029,7 @@ export const docData = {
       {
         "id": "bt-taskbar-example",
         "lang": "ts",
-        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar 是高级控件的展示面，单独从 adv/tasks/ui 引；adv/tasks 只出逻辑，Node 引它不带 React。\n// 展示栏沿用核心原 UI：icon / pill 两形态、sm/md/lg 尺寸、width/min/max 宽度，\n// 文字过长自动省略 + hover 跑马灯。数据来自共享任务池，无需本插件画行。\n// pill 长条\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// 只有图标（正方形，有任务在跑时带绿点）\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// 定宽 220；上限 110（放不下省略号、hover 跑马灯）\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })"
+        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar 是高级控件的展示面，单独从 adv/tasks/ui 引；adv/tasks 只出逻辑，Node 引它不带 React。\n// 展示栏沿用核心原 UI：icon / pill 两形态、sm/md/lg 尺寸、width/min/max 宽度，\n// 文字过长自动省略 + hover 跑马灯。数据来自共享任务池，无需本插件画行。\n// pill 长条\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// 只有图标（正方形，有任务在跑时带绿点）\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// 定宽 220；上限 110（放不下省略号、hover 跑马灯）\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// 点行按钮后默认收起面板；要留着就关掉\nh(TaskBar, { closeOnAction: false, groups: ['scan'] })\n// 受控：传 open 必须同时接 onOpenChange 并回写，否则四条关闭路径只发回调、面板不真的收\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
       }
     ]
   },
@@ -5083,13 +5087,23 @@ export const docData = {
             }
           },
           {
+            "name": "startTask.title",
+            "type": "DisplayTitle",
+            "def": "—",
+            "required": "必填",
+            "desc": {
+              "zh": "任务行标题：{ category, description }，核心渲染成「分类丨说明」，分类建议中文 2–4 字 / 英文最多 2 词，超长跑马灯",
+              "en": "Task row title: { category, description }, rendered as \"category丨description\"; 2–4 Chinese characters or at most two English words recommended, marquee when overlong"
+            }
+          },
+          {
             "name": "toast.<态>.title",
-            "type": "string",
+            "type": "DisplayTitle",
             "def": "—",
             "required": "该态要弹卡时必填",
             "desc": {
-              "zh": "卡片主行",
-              "en": "Card headline"
+              "zh": "卡片主行：{ category, description }，同样按「分类丨说明」渲染",
+              "en": "Card headline: { category, description }, rendered the same way"
             }
           },
           {
@@ -5189,6 +5203,33 @@ export const docData = {
             "desc": {
               "zh": "核心原生展示栏：pill/icon 形态、sm/md/lg 尺寸、固定宽 / 最小宽 / 最大宽，超长 hover 跑马灯；数据来自共享池",
               "en": "Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool"
+            }
+          },
+          {
+            "name": "TaskBar.closeOnAction",
+            "type": "boolean",
+            "def": "true",
+            "desc": {
+              "zh": "点行按钮后是否收起面板；false 则保持展开，动作失败时也不收",
+              "en": "Close the panel after a row action; false keeps it open, including on action failure"
+            }
+          },
+          {
+            "name": "TaskBar.open",
+            "type": "boolean | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "受控展开态；传了就必须同时传 onOpenChange 并回写，运行中不要切换受控 / 非受控",
+              "en": "Controlled open state; pass together with onOpenChange and write it back; never switch controlled/uncontrolled at runtime"
+            }
+          },
+          {
+            "name": "TaskBar.onOpenChange",
+            "type": "(open: boolean) => void",
+            "def": "undefined",
+            "desc": {
+              "zh": "展开态变化；自动收起发 false、触发器点开发 true，受控时必须回写",
+              "en": "Open-state changes; automatic dismissal emits false and the trigger emits true; controlled callers must write back"
             }
           },
           {

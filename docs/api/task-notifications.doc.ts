@@ -8,14 +8,14 @@ const startExample = `import { startTask } from 'dsh-plugin-core/adv/tasks'
 await startTask({
   project: 'dsh-task-reminder',
   group: 'scan',
-  title: '扫描工作区',
+  title: { category: '任务结案', description: '扫描工作区' }, // 分类 + 说明两段，展示成「分类丨说明」
   key: 'scan:workspace-1',          // 同 (project, key) 同时最多一条，重复发起就地更新
   kind: 'reminder:scan',            // 开放执行器名，核心不枚举、不校验
   args: { path: '/ws' },            // 纯数据，过不了进程边界，不带函数
 
   toast: {                          // 终态弹卡；整态不写 = 该态不弹
-    success: { title: '扫描完成', button: { id: 'view', text: '看日志' }, scope: 'all' },
-    failure: { title: '扫描失败', scope: 'origin' },
+    success: { title: { category: '任务结案', description: '扫描完成' }, button: { id: 'view', text: '看日志' }, scope: 'all' },
+    failure: { title: { category: '任务失败', description: '扫描中断' }, scope: 'origin' },
   },
   notify: {                         // 终态通知，与 toast 是两件事
     success: { message: '扫描完成', detail: { count: 12 }, scope: 'all', broadcast: 'plugin' },
@@ -52,7 +52,11 @@ h(TaskBar, { form: 'icon', groups: ['scan'] })
 h(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })
 // 定宽 220；上限 110（放不下省略号、hover 跑马灯）
 h(TaskBar, { width: 220, groups: ['scan'] })
-h(TaskBar, { maxWidth: 110, groups: ['scan'] })`
+h(TaskBar, { maxWidth: 110, groups: ['scan'] })
+// 点行按钮后默认收起面板；要留着就关掉
+h(TaskBar, { closeOnAction: false, groups: ['scan'] })
+// 受控：传 open 必须同时接 onOpenChange 并回写，否则四条关闭路径只发回调、面板不真的收
+h(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })`
 
 const executorExample = `import { executors } from 'dsh-plugin-core/adv/tasks'
 
@@ -108,6 +112,9 @@ const doc: DocTopic = {
     'executors',
     'createExecutorRegistry',
     'TaskRecord',
+    'DisplayTitle',
+    'formatDisplayTitle',
+    'isDisplayTitle',
     'StartTaskInput',
     'TaskProgress',
     'TaskButton',
@@ -130,6 +137,10 @@ const doc: DocTopic = {
         {
           zh: '所有配置都是**纯数据跟着记录走**：标题、Toast、通知、按钮文案与显示时机在发起时声明，任何页面看到同一条任务都按同一份配置渲染，不需要发起页在场。跨页只传结构化克隆安全的值，不带函数、组件或 Promise。',
           en: 'All configuration is **plain data carried by the record**: title, toast, notification, button labels and visibility are declared at start time, so every page renders the same task from the same configuration without the originating page being present. Only structured-cloneable values cross pages — no functions, components or promises.',
+        },
+        {
+          zh: '**所有对外显示的标题都必须是 `{ category, description }` 两段**，核心统一渲染成 `分类丨说明`（如 `任务结案丨后台任务 SSE 401 零延迟无限重连`）。分类由调用方自己定，建议中文 2–4 字、英文最多 2 个单词；核心**不校验字数、不写死分类字典**，整串过长由跑马灯在 hover 时展开。迁移时把原来的 `title: string` 改成对象，旧字符串帧会被拒收，不存在字符串兜底。',
+          en: '**Every user-visible title must be `{ category, description }`**; the core renders it as `category丨description` (for example `Task closed丨Background job SSE 401 reconnected`). The caller owns the category: 2–4 Chinese characters or at most two English words is recommended; the core does not validate length or hard-code a category dictionary, and overlong text expands on hover through the marquee. Migrate `title: string` to the object form — legacy string frames are rejected, with no string fallback.',
         },
       ],
       code: [
@@ -171,7 +182,8 @@ const doc: DocTopic = {
           id: 'bt-toast-api',
           rows: [
             { name: 'toast.success / failure', type: 'TaskToastState | undefined', def: 'undefined', desc: { zh: '每态独立；整态不写 = 该态不弹卡', en: 'Per state; omitting the whole state means no card for it' } },
-            { name: 'toast.<态>.title', type: 'string', def: '—', required: '该态要弹卡时必填', desc: { zh: '卡片主行', en: 'Card headline' } },
+            { name: 'startTask.title', type: 'DisplayTitle', def: '—', required: '必填', desc: { zh: '任务行标题：{ category, description }，核心渲染成「分类丨说明」，分类建议中文 2–4 字 / 英文最多 2 词，超长跑马灯', en: 'Task row title: { category, description }, rendered as "category丨description"; 2–4 Chinese characters or at most two English words recommended, marquee when overlong' } },
+            { name: 'toast.<态>.title', type: 'DisplayTitle', def: '—', required: '该态要弹卡时必填', desc: { zh: '卡片主行：{ category, description }，同样按「分类丨说明」渲染', en: 'Card headline: { category, description }, rendered the same way' } },
             { name: 'toast.<态>.button', type: 'TaskButton | undefined', def: 'undefined', desc: { zh: '该态一个按钮：{ id, text, icon?, color? }，id 对应 handlers；画在每页（scope:all）或发起页（scope:origin）', en: 'One button for that state: { id, text, icon?, color? }; id resolves to handlers; drawn on every page (scope:all) or the originating page (scope:origin)' } },
             { name: 'toast.<态>.scope', type: "'all' | 'origin'", def: "'origin'", desc: { zh: '所有页面 / 只有发起页', en: 'Every page / originating page only' } },
             { name: 'notify.<态>.message', type: 'string', def: '—', desc: { zh: '通知正文', en: 'Notification text' } },
@@ -183,6 +195,9 @@ const doc: DocTopic = {
             { name: 'subscribeTaskNotifications(options)', type: '(options) => () => void', def: '—', desc: { zh: '收任务广播：scope=plugin 只收同项目（不传 project 时回落全局默认项目，没设则报错），global 收所有；收到纯数据自己处理', en: 'Receive task broadcasts: scope=plugin filters to same project (falls back to the global default project when project is omitted, throws if unset), global receives all; plain data, consumer decides' } },
             { name: 'mountTaskUI(options)', type: '(options: MountTaskUIOptions) => () => void', def: '—', desc: { zh: '注册 handlers + 订阅终态；handlers 按 project 命名空间（同名按钮不同项目互不覆盖），返回注销函数', en: 'Registers handlers and subscribes to terminal states; handlers are namespaced by project (same button id in different projects does not collide); returns an unsubscribe function' } },
             { name: 'TaskBar', type: 'React component', def: '—', desc: { zh: '核心原生展示栏：pill/icon 形态、sm/md/lg 尺寸、固定宽 / 最小宽 / 最大宽，超长 hover 跑马灯；数据来自共享池', en: 'Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool' } },
+            { name: 'TaskBar.closeOnAction', type: 'boolean', def: 'true', desc: { zh: '点行按钮后是否收起面板；false 则保持展开，动作失败时也不收', en: 'Close the panel after a row action; false keeps it open, including on action failure' } },
+            { name: 'TaskBar.open', type: 'boolean | undefined', def: 'undefined', desc: { zh: '受控展开态；传了就必须同时传 onOpenChange 并回写，运行中不要切换受控 / 非受控', en: 'Controlled open state; pass together with onOpenChange and write it back; never switch controlled/uncontrolled at runtime' } },
+            { name: 'TaskBar.onOpenChange', type: '(open: boolean) => void', def: 'undefined', desc: { zh: '展开态变化；自动收起发 false、触发器点开发 true，受控时必须回写', en: 'Open-state changes; automatic dismissal emits false and the trigger emits true; controlled callers must write back' } },
             { name: 'pressTaskButton(buttonId, taskId)', type: '(buttonId: string, taskId: string) => boolean', def: '—', desc: { zh: '先切回发起面板再执行 handler；找不到返回 false', en: 'Switches back to the originating panel before running the handler; false when not found' } },
           ],
         },

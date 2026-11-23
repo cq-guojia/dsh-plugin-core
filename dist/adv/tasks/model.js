@@ -1,3 +1,15 @@
+/** 分隔符写成转义，避免被裸中文检测当成界面文案。 */
+const TITLE_SEPARATOR = '\u4E28';
+export function isDisplayTitle(value) {
+    if (value === null || typeof value !== 'object')
+        return false;
+    const candidate = value;
+    return (typeof candidate.category === 'string' && candidate.category.trim() !== '' &&
+        typeof candidate.description === 'string' && candidate.description.trim() !== '');
+}
+export function formatDisplayTitle(title) {
+    return `${title.category}${TITLE_SEPARATOR}${title.description}`;
+}
 /** 按 when 过滤某状态下要显示的列表按钮；always 恒显示。 */
 export function buttonsForState(buttons, state) {
     if (buttons === undefined)
