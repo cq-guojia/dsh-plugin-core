@@ -46,6 +46,10 @@ import 期不访问 `window` / `document` / `BroadcastChannel`：通道在第一
 
 > EN: There is no default behaviour: without a subscriber nothing is shown and the broadcast goes nowhere. The ready-made receiver is `ui/feedback/notify-bridge.ts` (turns a message into a toast payload); a plugin that wants no toasts simply never imports it.
 
+消息字段刻意保持通用：**不带 `taskId`、不带 `outcome`**。runtime 不认识任务，只关心事情发生了；不认识任务 UI 的订阅方也能按自己的职责处理。任务层若要把终态语义带出来，只映射成通用 `level: 'success' | 'error'`——那是语义级别，不是任务结果本体；要拿完整结果请用任务层的 `onSettled`。
+
+> EN: Message fields are deliberately generic: **no `taskId`, no `outcome`**. The runtime knows nothing about tasks, only that something happened, so a subscriber that never imports task UI can still act on it. The task layer maps terminal semantics to a generic `level: 'success' | 'error'` — a semantic level, not the task outcome itself; consumers that need the full result use the task-layer `onSettled`.
+
 | 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|---|
 | `notifyMessage(title, options?)` | `(title: string, options?: NotifyMessageOptions) => NotifyMessage` | title 必填 | — | 发一条：本页订阅者先收，再广播给同源其它页面；返回消息本体（含 id / at） | Send one: local subscribers first, then broadcast to same-origin pages; returns the message itself (with id / at) |

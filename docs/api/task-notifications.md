@@ -4,7 +4,7 @@
 
 本文件由 `scripts/gen-docs.mjs` 从同名 `.doc.ts` 生成，请勿手改。
 
-导出：startTask、mountTaskUI、TaskBar、connectTaskCenter、connectTaskLayout、defaultTaskHost、pressTaskButton、projectTasks、subscribeTaskNotifications、taskCenterStore、executors、createExecutorRegistry、TaskRecord、DisplayTitle、formatDisplayTitle、isDisplayTitle、StartTaskInput、TaskProgress、TaskButton、TaskToastConfig、TaskNotifyConfig、TaskRowButton、TaskNotificationRecord、serveTaskStream、connectTaskStream
+导出：startTask、mountTaskUI、TaskBar、connectTaskCenter、connectTaskLayout、defaultTaskHost、pressTaskButton、projectTasks、subscribeTaskNotifications、taskCenterStore、executors、createExecutorRegistry、TaskRecord、TaskSettlement、DisplayTitle、formatDisplayTitle、isDisplayTitle、StartTaskInput、TaskProgress、TaskButton、TaskToastConfig、TaskNotifyConfig、TaskRowButton、TaskNotificationRecord、serveTaskStream、connectTaskStream
 
 ## 后端执行 + 通知 + 核心控件
 
@@ -129,6 +129,10 @@ serveTaskStream(ctx, {
 
 > EN: Three notification channels: toast, notify, list buttons
 
+选择口径：要给用户看就配 `toast`，要跨组件广播事情就发 `notify`，要在注册 UI 里干活就用 `onSettled`。三者不在同一层：前两者是声明在任务记录上的纯数据、由核心按终态分发；`onSettled` 是 `mountTaskUI` 的 UI 接线。因此下面的「三通道」只指 toast / notify / 列表按钮，**不含 `onSettled`**。三者都能表达成败，但交付形式不同：toast 是核心消化后的弹卡，notify 是纯数据消息（成败只落在 `level`），onSettled 是原始 `outcome` 加整条记录。
+
+> EN: Rule of thumb: configure `toast` to show something to the user, send `notify` to broadcast an event across components, and use `onSettled` to do work inside a registered UI. They are not three flavours of the same channel: the first two are plain data on the task record, dispatched by the core on settlement; `onSettled` is `mountTaskUI` wiring. The "three channels" below therefore mean toast / notify / list buttons and **exclude `onSettled`**. All three can express success or failure, but they deliver it differently: toast is a card rendered by the core, notify is a plain message whose outcome only appears as `level`, and onSettled hands over the raw `outcome` plus the whole record.
+
 三条通道各司其职、互不混用：**Toast** 是终态弹卡，`toast.success` / `toast.failure` 两态完全对称，每态可配 `scope`（`all` 每个页面都弹、`origin` 只发起页弹）与一个按钮（`TaskButton`：`{ id, text, icon?, color? }`）；**notify** 是终态消息，`message` + `detail` 纯数据，`scope` 同上，核心只把通知发出去、不做任何 UI（弹卡/alert 由接收方自己决定）；`broadcast` 字段保留兼容但核心不再据此决定发不发，范围由订阅方的 scope/project 决定；**列表按钮**是 `rowButtons: [{ id, text, when }]`，`when` ∈ `running` / `done` / `failed` / `always`（缺省 always），同一 id 可按状态重复声明，跟着记录走。
 
 > EN: Three channels with separate jobs: **toast** is the terminal card — `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`TaskButton`: `{ id, text, icon?, color? }`). **Notify** is a terminal message — `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send — scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record.
@@ -146,6 +150,7 @@ serveTaskStream(ctx, {
 | `toast.<态>.scope` | `'all' \| 'origin'` | — | 'origin' | 所有页面 / 只有发起页 | Every page / originating page only |
 | `notify.<态>.message` | `string` | — | — | 通知正文 | Notification text |
 | `notify.<态>.detail` | `NotifyDetail \| undefined` | — | undefined | 附带的纯 JSON，接收方自己取 | Attached plain JSON, read by the receiver |
+| `notify.<态>.level` | `'success' \| 'error'` | — | 按终态派生 | 任务层把 outcome 映射成通用 level；消息本身不带 taskId / outcome，运行时总线对任务无语义 | The task layer maps outcome to a generic level; the message carries no taskId/outcome and the runtime bus has no task semantics |
 | `notify.<态>.scope` | `'all' \| 'origin'` | — | 'origin' | 所有标签页 / 只在发起的那个标签页（页面级 origin，切面板不影响）；两态可不同 | Every tab / only the originating tab (page-level origin; switching panels does not affect it); per state |
 | `notify.<态>.broadcast` | `'plugin' \| 'global' \| undefined` | — | undefined | 兼容字段：核心忽略它，notify 一律发通知；范围由订阅方的 scope / project 决定 | Compatibility field: ignored by the core — notify always sends; scope is decided by the scope/project chosen by the subscriber |
 | `rowButtons[]` | `readonly TaskRowButton[]` | — | undefined | 列表行按钮声明，文案与 when 跟着记录走 | List-row button declarations; labels and when travel with the record |
@@ -157,6 +162,27 @@ serveTaskStream(ctx, {
 | `TaskBar.open` | `boolean \| undefined` | — | undefined | 受控展开态；传了就必须同时传 onOpenChange 并回写，运行中不要切换受控 / 非受控 | Controlled open state; pass together with onOpenChange and write it back; never switch controlled/uncontrolled at runtime |
 | `TaskBar.onOpenChange` | `(open: boolean) => void` | — | undefined | 展开态变化；自动收起发 false、触发器点开发 true；回调幂等可重复发，受控时必须回写 | Open-state changes; automatic dismissal emits false and the trigger emits true; idempotent and may repeat; controlled callers must write back |
 | `pressTaskButton(buttonId, taskId)` | `(buttonId: string, taskId: string) => boolean` | — | — | 先切回发起面板再执行 handler；找不到返回 false | Switches back to the originating panel before running the handler; false when not found |
+
+## 交付边界：toast / notify / onSettled
+
+> EN: Delivery boundaries: toast / notify / onSettled
+
+这三者都能表达成败，但处在不同的层次、由不同的消费者接管。`onSettled` 是 UI 接线，不是第四种通知通道；它不参与跨页广播，核心列表的刷新也不依赖它。选择口径：要给用户看就配 toast，要跨组件广播事情就发 notify，要在注册 UI 里干活就用 onSettled。
+
+> EN: All three can express success or failure, but they live at different layers and are consumed by different parties. `onSettled` is UI wiring, not a fourth notification channel: it does not broadcast across pages, and the core list does not depend on it to refresh. Choose by intent: configure toast to show the user, send notify to broadcast an event across components, and wire onSettled to do work inside a registered UI.
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `层次` | `toast / notify / onSettled` | — | toast：任务记录上的显示配置，核心按终态挑一份弹卡；notify：runtime 通用通知总线的纯事件；onSettled：任务层 UI 接线回调 | toast: display config on the task record, picked by the core on settlement; notify: plain event on the runtime bus; onSettled: task-layer UI wiring callback |
+| `消费者` | `toast / notify / onSettled` | — | toast：核心直接弹卡，消费方不写 UI；notify：订阅方自己决定弹卡 / 刷新 / 转发；onSettled：调用 mountTaskUI 并传入它的本页 UI | toast: the core renders the card, consumers write no UI; notify: subscribers decide whether to show, refresh or forward; onSettled: only the in-page UI that called mountTaskUI and supplied it |
+| `页面范围` | `toast / notify / onSettled` | — | toast 按 scope 决定本页 / 所有页；notify 经事件总线到本页与同源其它页；onSettled 只在本标签页进程内，不跨页 | toast uses scope for this page or all pages; notify reaches local and same-origin subscribers through the bus; onSettled stays inside the current tab process |
+| `携带数据` | `toast / notify / onSettled` | — | toast：按终态选中的文案 + 可选按钮，核心消化成败；notify：message + 通用 level + detail，刻意不带 taskId / outcome；onSettled：完整 TaskRecord + outcome 原文 | toast: selected copy plus optional button, with outcome already consumed by the core; notify: message plus generic level and detail, deliberately without taskId/outcome; onSettled: the full TaskRecord and raw outcome |
+| `典型场景` | `toast / notify / onSettled` | — | toast：终态需要直接可见反馈且不依赖发起页在场；notify：事件要与任务 UI 解耦，接收方按自身职责处理；onSettled：已挂载的 UI 要归档或刷新自己的数据 | toast: terminal feedback must be directly visible without the originating page; notify: an event must stay decoupled from task UI and receivers handle it on their own terms; onSettled: a mounted UI needs to archive or refresh its own data |
+
+| 参数 | 类型 | 默认 | 说明(zh) | 说明(en) |
+|---|---|---|---|---|
+| `mountTaskUI.onSettled` | `((task: TaskRecord, outcome: TaskSettlement['outcome']) => void) \| undefined` | undefined | 本页 UI 接线；不传就不注册，核心列表刷新与它无关 | In-page UI wiring; omitted means no listener, and the core list refresh is independent of it |
+| `TaskSettlement` | `{ task: TaskRecord; outcome: 'done' \| 'failed' }` | — | 终态回调载荷：整条归一化记录加原始 outcome | Settlement payload: the full normalized record plus the raw outcome |
 
 ## 服务端投影：SSE 是唯一状态通道
 

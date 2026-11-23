@@ -66790,6 +66790,10 @@ var docData = {
       {
         "zh": "\u6CA1\u6709\u9ED8\u8BA4\u884C\u4E3A\uFF1A\u4E0D\u8BA2\u9605\u5C31\u6CA1\u4EBA\u663E\u793A\uFF0C\u5E7F\u64AD\u7B49\u4E8E\u7A7A\u653E\u3002\u73B0\u6210\u7684\u63A5\u6536\u7AEF\u662F `ui/feedback/notify-bridge.ts`\uFF08\u628A\u6D88\u606F\u7FFB\u6210 toast \u8F7D\u8377\uFF09\uFF0C\u4E0D\u60F3\u5F39\u63D0\u793A\u7684\u63D2\u4EF6\u6839\u672C\u4E0D\u7528\u5F15\u5B83\u3002",
         "en": "There is no default behaviour: without a subscriber nothing is shown and the broadcast goes nowhere. The ready-made receiver is `ui/feedback/notify-bridge.ts` (turns a message into a toast payload); a plugin that wants no toasts simply never imports it."
+      },
+      {
+        "zh": "\u6D88\u606F\u5B57\u6BB5\u523B\u610F\u4FDD\u6301\u901A\u7528\uFF1A**\u4E0D\u5E26 `taskId`\u3001\u4E0D\u5E26 `outcome`**\u3002runtime \u4E0D\u8BA4\u8BC6\u4EFB\u52A1\uFF0C\u53EA\u5173\u5FC3\u4E8B\u60C5\u53D1\u751F\u4E86\uFF1B\u4E0D\u8BA4\u8BC6\u4EFB\u52A1 UI \u7684\u8BA2\u9605\u65B9\u4E5F\u80FD\u6309\u81EA\u5DF1\u7684\u804C\u8D23\u5904\u7406\u3002\u4EFB\u52A1\u5C42\u82E5\u8981\u628A\u7EC8\u6001\u8BED\u4E49\u5E26\u51FA\u6765\uFF0C\u53EA\u6620\u5C04\u6210\u901A\u7528 `level: 'success' | 'error'`\u2014\u2014\u90A3\u662F\u8BED\u4E49\u7EA7\u522B\uFF0C\u4E0D\u662F\u4EFB\u52A1\u7ED3\u679C\u672C\u4F53\uFF1B\u8981\u62FF\u5B8C\u6574\u7ED3\u679C\u8BF7\u7528\u4EFB\u52A1\u5C42\u7684 `onSettled`\u3002",
+        "en": "Message fields are deliberately generic: **no `taskId`, no `outcome`**. The runtime knows nothing about tasks, only that something happened, so a subscriber that never imports task UI can still act on it. The task layer maps terminal semantics to a generic `level: 'success' | 'error'` \u2014 a semantic level, not the task outcome itself; consumers that need the full result use the task-layer `onSettled`."
       }
     ],
     "api": [
@@ -71297,6 +71301,10 @@ h(SideSheet, {
     },
     "prose": [
       {
+        "zh": "\u9009\u62E9\u53E3\u5F84\uFF1A\u8981\u7ED9\u7528\u6237\u770B\u5C31\u914D `toast`\uFF0C\u8981\u8DE8\u7EC4\u4EF6\u5E7F\u64AD\u4E8B\u60C5\u5C31\u53D1 `notify`\uFF0C\u8981\u5728\u6CE8\u518C UI \u91CC\u5E72\u6D3B\u5C31\u7528 `onSettled`\u3002\u4E09\u8005\u4E0D\u5728\u540C\u4E00\u5C42\uFF1A\u524D\u4E24\u8005\u662F\u58F0\u660E\u5728\u4EFB\u52A1\u8BB0\u5F55\u4E0A\u7684\u7EAF\u6570\u636E\u3001\u7531\u6838\u5FC3\u6309\u7EC8\u6001\u5206\u53D1\uFF1B`onSettled` \u662F `mountTaskUI` \u7684 UI \u63A5\u7EBF\u3002\u56E0\u6B64\u4E0B\u9762\u7684\u300C\u4E09\u901A\u9053\u300D\u53EA\u6307 toast / notify / \u5217\u8868\u6309\u94AE\uFF0C**\u4E0D\u542B `onSettled`**\u3002\u4E09\u8005\u90FD\u80FD\u8868\u8FBE\u6210\u8D25\uFF0C\u4F46\u4EA4\u4ED8\u5F62\u5F0F\u4E0D\u540C\uFF1Atoast \u662F\u6838\u5FC3\u6D88\u5316\u540E\u7684\u5F39\u5361\uFF0Cnotify \u662F\u7EAF\u6570\u636E\u6D88\u606F\uFF08\u6210\u8D25\u53EA\u843D\u5728 `level`\uFF09\uFF0ConSettled \u662F\u539F\u59CB `outcome` \u52A0\u6574\u6761\u8BB0\u5F55\u3002",
+        "en": 'Rule of thumb: configure `toast` to show something to the user, send `notify` to broadcast an event across components, and use `onSettled` to do work inside a registered UI. They are not three flavours of the same channel: the first two are plain data on the task record, dispatched by the core on settlement; `onSettled` is `mountTaskUI` wiring. The "three channels" below therefore mean toast / notify / list buttons and **exclude `onSettled`**. All three can express success or failure, but they deliver it differently: toast is a card rendered by the core, notify is a plain message whose outcome only appears as `level`, and onSettled hands over the raw `outcome` plus the whole record.'
+      },
+      {
         "zh": "\u4E09\u6761\u901A\u9053\u5404\u53F8\u5176\u804C\u3001\u4E92\u4E0D\u6DF7\u7528\uFF1A**Toast** \u662F\u7EC8\u6001\u5F39\u5361\uFF0C`toast.success` / `toast.failure` \u4E24\u6001\u5B8C\u5168\u5BF9\u79F0\uFF0C\u6BCF\u6001\u53EF\u914D `scope`\uFF08`all` \u6BCF\u4E2A\u9875\u9762\u90FD\u5F39\u3001`origin` \u53EA\u53D1\u8D77\u9875\u5F39\uFF09\u4E0E\u4E00\u4E2A\u6309\u94AE\uFF08`TaskButton`\uFF1A`{ id, text, icon?, color? }`\uFF09\uFF1B**notify** \u662F\u7EC8\u6001\u6D88\u606F\uFF0C`message` + `detail` \u7EAF\u6570\u636E\uFF0C`scope` \u540C\u4E0A\uFF0C\u6838\u5FC3\u53EA\u628A\u901A\u77E5\u53D1\u51FA\u53BB\u3001\u4E0D\u505A\u4EFB\u4F55 UI\uFF08\u5F39\u5361/alert \u7531\u63A5\u6536\u65B9\u81EA\u5DF1\u51B3\u5B9A\uFF09\uFF1B`broadcast` \u5B57\u6BB5\u4FDD\u7559\u517C\u5BB9\u4F46\u6838\u5FC3\u4E0D\u518D\u636E\u6B64\u51B3\u5B9A\u53D1\u4E0D\u53D1\uFF0C\u8303\u56F4\u7531\u8BA2\u9605\u65B9\u7684 scope/project \u51B3\u5B9A\uFF1B**\u5217\u8868\u6309\u94AE**\u662F `rowButtons: [{ id, text, when }]`\uFF0C`when` \u2208 `running` / `done` / `failed` / `always`\uFF08\u7F3A\u7701 always\uFF09\uFF0C\u540C\u4E00 id \u53EF\u6309\u72B6\u6001\u91CD\u590D\u58F0\u660E\uFF0C\u8DDF\u7740\u8BB0\u5F55\u8D70\u3002",
         "en": "Three channels with separate jobs: **toast** is the terminal card \u2014 `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`TaskButton`: `{ id, text, icon?, color? }`). **Notify** is a terminal message \u2014 `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send \u2014 scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record."
       },
@@ -71372,6 +71380,15 @@ h(SideSheet, {
             "desc": {
               "zh": "\u9644\u5E26\u7684\u7EAF JSON\uFF0C\u63A5\u6536\u65B9\u81EA\u5DF1\u53D6",
               "en": "Attached plain JSON, read by the receiver"
+            }
+          },
+          {
+            "name": "notify.<\u6001>.level",
+            "type": "'success' | 'error'",
+            "def": "\u6309\u7EC8\u6001\u6D3E\u751F",
+            "desc": {
+              "zh": "\u4EFB\u52A1\u5C42\u628A outcome \u6620\u5C04\u6210\u901A\u7528 level\uFF1B\u6D88\u606F\u672C\u8EAB\u4E0D\u5E26 taskId / outcome\uFF0C\u8FD0\u884C\u65F6\u603B\u7EBF\u5BF9\u4EFB\u52A1\u65E0\u8BED\u4E49",
+              "en": "The task layer maps outcome to a generic level; the message carries no taskId/outcome and the runtime bus has no task semantics"
             }
           },
           {
@@ -71471,6 +71488,94 @@ h(SideSheet, {
             "desc": {
               "zh": "\u5148\u5207\u56DE\u53D1\u8D77\u9762\u677F\u518D\u6267\u884C handler\uFF1B\u627E\u4E0D\u5230\u8FD4\u56DE false",
               "en": "Switches back to the originating panel before running the handler; false when not found"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "bt-settlement-boundaries": {
+    "id": "bt-settlement-boundaries",
+    "heading": {
+      "zh": "\u4EA4\u4ED8\u8FB9\u754C\uFF1Atoast / notify / onSettled",
+      "en": "Delivery boundaries: toast / notify / onSettled"
+    },
+    "prose": [
+      {
+        "zh": "\u8FD9\u4E09\u8005\u90FD\u80FD\u8868\u8FBE\u6210\u8D25\uFF0C\u4F46\u5904\u5728\u4E0D\u540C\u7684\u5C42\u6B21\u3001\u7531\u4E0D\u540C\u7684\u6D88\u8D39\u8005\u63A5\u7BA1\u3002`onSettled` \u662F UI \u63A5\u7EBF\uFF0C\u4E0D\u662F\u7B2C\u56DB\u79CD\u901A\u77E5\u901A\u9053\uFF1B\u5B83\u4E0D\u53C2\u4E0E\u8DE8\u9875\u5E7F\u64AD\uFF0C\u6838\u5FC3\u5217\u8868\u7684\u5237\u65B0\u4E5F\u4E0D\u4F9D\u8D56\u5B83\u3002\u9009\u62E9\u53E3\u5F84\uFF1A\u8981\u7ED9\u7528\u6237\u770B\u5C31\u914D toast\uFF0C\u8981\u8DE8\u7EC4\u4EF6\u5E7F\u64AD\u4E8B\u60C5\u5C31\u53D1 notify\uFF0C\u8981\u5728\u6CE8\u518C UI \u91CC\u5E72\u6D3B\u5C31\u7528 onSettled\u3002",
+        "en": "All three can express success or failure, but they live at different layers and are consumed by different parties. `onSettled` is UI wiring, not a fourth notification channel: it does not broadcast across pages, and the core list does not depend on it to refresh. Choose by intent: configure toast to show the user, send notify to broadcast an event across components, and wire onSettled to do work inside a registered UI."
+      }
+    ],
+    "api": [
+      {
+        "id": "bt-delivery-boundaries",
+        "rows": [
+          {
+            "name": "\u5C42\u6B21",
+            "type": "toast / notify / onSettled",
+            "def": "\u2014",
+            "desc": {
+              "zh": "toast\uFF1A\u4EFB\u52A1\u8BB0\u5F55\u4E0A\u7684\u663E\u793A\u914D\u7F6E\uFF0C\u6838\u5FC3\u6309\u7EC8\u6001\u6311\u4E00\u4EFD\u5F39\u5361\uFF1Bnotify\uFF1Aruntime \u901A\u7528\u901A\u77E5\u603B\u7EBF\u7684\u7EAF\u4E8B\u4EF6\uFF1BonSettled\uFF1A\u4EFB\u52A1\u5C42 UI \u63A5\u7EBF\u56DE\u8C03",
+              "en": "toast: display config on the task record, picked by the core on settlement; notify: plain event on the runtime bus; onSettled: task-layer UI wiring callback"
+            }
+          },
+          {
+            "name": "\u6D88\u8D39\u8005",
+            "type": "toast / notify / onSettled",
+            "def": "\u2014",
+            "desc": {
+              "zh": "toast\uFF1A\u6838\u5FC3\u76F4\u63A5\u5F39\u5361\uFF0C\u6D88\u8D39\u65B9\u4E0D\u5199 UI\uFF1Bnotify\uFF1A\u8BA2\u9605\u65B9\u81EA\u5DF1\u51B3\u5B9A\u5F39\u5361 / \u5237\u65B0 / \u8F6C\u53D1\uFF1BonSettled\uFF1A\u8C03\u7528 mountTaskUI \u5E76\u4F20\u5165\u5B83\u7684\u672C\u9875 UI",
+              "en": "toast: the core renders the card, consumers write no UI; notify: subscribers decide whether to show, refresh or forward; onSettled: only the in-page UI that called mountTaskUI and supplied it"
+            }
+          },
+          {
+            "name": "\u9875\u9762\u8303\u56F4",
+            "type": "toast / notify / onSettled",
+            "def": "\u2014",
+            "desc": {
+              "zh": "toast \u6309 scope \u51B3\u5B9A\u672C\u9875 / \u6240\u6709\u9875\uFF1Bnotify \u7ECF\u4E8B\u4EF6\u603B\u7EBF\u5230\u672C\u9875\u4E0E\u540C\u6E90\u5176\u5B83\u9875\uFF1BonSettled \u53EA\u5728\u672C\u6807\u7B7E\u9875\u8FDB\u7A0B\u5185\uFF0C\u4E0D\u8DE8\u9875",
+              "en": "toast uses scope for this page or all pages; notify reaches local and same-origin subscribers through the bus; onSettled stays inside the current tab process"
+            }
+          },
+          {
+            "name": "\u643A\u5E26\u6570\u636E",
+            "type": "toast / notify / onSettled",
+            "def": "\u2014",
+            "desc": {
+              "zh": "toast\uFF1A\u6309\u7EC8\u6001\u9009\u4E2D\u7684\u6587\u6848 + \u53EF\u9009\u6309\u94AE\uFF0C\u6838\u5FC3\u6D88\u5316\u6210\u8D25\uFF1Bnotify\uFF1Amessage + \u901A\u7528 level + detail\uFF0C\u523B\u610F\u4E0D\u5E26 taskId / outcome\uFF1BonSettled\uFF1A\u5B8C\u6574 TaskRecord + outcome \u539F\u6587",
+              "en": "toast: selected copy plus optional button, with outcome already consumed by the core; notify: message plus generic level and detail, deliberately without taskId/outcome; onSettled: the full TaskRecord and raw outcome"
+            }
+          },
+          {
+            "name": "\u5178\u578B\u573A\u666F",
+            "type": "toast / notify / onSettled",
+            "def": "\u2014",
+            "desc": {
+              "zh": "toast\uFF1A\u7EC8\u6001\u9700\u8981\u76F4\u63A5\u53EF\u89C1\u53CD\u9988\u4E14\u4E0D\u4F9D\u8D56\u53D1\u8D77\u9875\u5728\u573A\uFF1Bnotify\uFF1A\u4E8B\u4EF6\u8981\u4E0E\u4EFB\u52A1 UI \u89E3\u8026\uFF0C\u63A5\u6536\u65B9\u6309\u81EA\u8EAB\u804C\u8D23\u5904\u7406\uFF1BonSettled\uFF1A\u5DF2\u6302\u8F7D\u7684 UI \u8981\u5F52\u6863\u6216\u5237\u65B0\u81EA\u5DF1\u7684\u6570\u636E",
+              "en": "toast: terminal feedback must be directly visible without the originating page; notify: an event must stay decoupled from task UI and receivers handle it on their own terms; onSettled: a mounted UI needs to archive or refresh its own data"
+            }
+          }
+        ]
+      },
+      {
+        "id": "bt-settlement-api",
+        "rows": [
+          {
+            "name": "mountTaskUI.onSettled",
+            "type": "((task: TaskRecord, outcome: TaskSettlement['outcome']) => void) | undefined",
+            "def": "undefined",
+            "desc": {
+              "zh": "\u672C\u9875 UI \u63A5\u7EBF\uFF1B\u4E0D\u4F20\u5C31\u4E0D\u6CE8\u518C\uFF0C\u6838\u5FC3\u5217\u8868\u5237\u65B0\u4E0E\u5B83\u65E0\u5173",
+              "en": "In-page UI wiring; omitted means no listener, and the core list refresh is independent of it"
+            }
+          },
+          {
+            "name": "TaskSettlement",
+            "type": "{ task: TaskRecord; outcome: 'done' | 'failed' }",
+            "def": "\u2014",
+            "desc": {
+              "zh": "\u7EC8\u6001\u56DE\u8C03\u8F7D\u8377\uFF1A\u6574\u6761\u5F52\u4E00\u5316\u8BB0\u5F55\u52A0\u539F\u59CB outcome",
+              "en": "Settlement payload: the full normalized record plus the raw outcome"
             }
           }
         ]
@@ -76769,7 +76874,7 @@ function ReferencePage() {
           [
             [t3("buildCore"), `v${"0.46.2"}`],
             [t3("buildDemo"), `v${"0.46.2"}`],
-            [t3("buildStamp"), "261123-210324-435"]
+            [t3("buildStamp"), "261123-221859-451"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77086,7 +77191,7 @@ function DemoPage() {
           },
           (0, import_react112.createElement)("span", null, `core v${"0.46.2"}`),
           (0, import_react112.createElement)("span", null, `demo v${"0.46.2"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261123-210324-435")
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261123-221859-451")
         )
       )
     ),

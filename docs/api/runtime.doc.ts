@@ -115,6 +115,10 @@ const doc: DocTopic = {
           zh: '没有默认行为：不订阅就没人显示，广播等于空放。现成的接收端是 `ui/feedback/notify-bridge.ts`（把消息翻成 toast 载荷），不想弹提示的插件根本不用引它。',
           en: 'There is no default behaviour: without a subscriber nothing is shown and the broadcast goes nowhere. The ready-made receiver is `ui/feedback/notify-bridge.ts` (turns a message into a toast payload); a plugin that wants no toasts simply never imports it.',
         },
+        {
+          zh: '消息字段刻意保持通用：**不带 `taskId`、不带 `outcome`**。runtime 不认识任务，只关心事情发生了；不认识任务 UI 的订阅方也能按自己的职责处理。任务层若要把终态语义带出来，只映射成通用 `level: \'success\' | \'error\'`——那是语义级别，不是任务结果本体；要拿完整结果请用任务层的 `onSettled`。',
+          en: 'Message fields are deliberately generic: **no `taskId`, no `outcome`**. The runtime knows nothing about tasks, only that something happened, so a subscriber that never imports task UI can still act on it. The task layer maps terminal semantics to a generic `level: \'success\' | \'error\'` — a semantic level, not the task outcome itself; consumers that need the full result use the task-layer `onSettled`.',
+        },
       ],
       api: [
         {

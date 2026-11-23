@@ -44,6 +44,10 @@
    活动模态期间冻结外部 click / Esc / 触发器，关闭后原样恢复；外部收起由 pointerdown 采样模态、
    click 双时刻判定：既覆盖「点外部按钮开弹窗」，也覆盖「点关闭弹窗」时 click 已卸载、pointerdown 仍开着。
    受控 `onOpenChange(false)` 幂等可重复发。
+6a. **交付边界不混层**：toast 是记录上的显示配置、核心直接弹卡；notify 是 runtime 通用事件、不带 `taskId`/`outcome`，
+   核心只发消息、UI 与后续动作全由订阅方决定；`onSettled` 是 `mountTaskUI` 的 UI 接线，本页进程内收到完整
+   `TaskRecord + outcome`，不是第四种通知通道，也不驱动核心列表刷新。五维对照见 `docs/api/task-notifications.doc.ts`
+   的 `bt-settlement-boundaries`。选择口径：给用户看配 toast，跨组件广播发 notify，注册 UI 里干活用 onSettled。
 7. **服务端是唯一状态通道**：不接 `follow()`（仅宿主领域状态）与 `remote.$on`（仅审批瀑布）；重连靠服务端基线，
    客户端不维护 cursor / 版本门。跨标签 BC 扇出层的 `noticeSince` 水位只裁「本地回放哪些通知」，
    不参与服务端状态同步，也不是 cursor。

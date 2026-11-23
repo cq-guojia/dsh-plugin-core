@@ -112,6 +112,7 @@ const doc: DocTopic = {
     'executors',
     'createExecutorRegistry',
     'TaskRecord',
+    'TaskSettlement',
     'DisplayTitle',
     'formatDisplayTitle',
     'isDisplayTitle',
@@ -173,6 +174,10 @@ const doc: DocTopic = {
       heading: { zh: '通知三通道：Toast、notify、列表按钮', en: 'Three notification channels: toast, notify, list buttons' },
       prose: [
         {
+          zh: '选择口径：要给用户看就配 `toast`，要跨组件广播事情就发 `notify`，要在注册 UI 里干活就用 `onSettled`。三者不在同一层：前两者是声明在任务记录上的纯数据、由核心按终态分发；`onSettled` 是 `mountTaskUI` 的 UI 接线。因此下面的「三通道」只指 toast / notify / 列表按钮，**不含 `onSettled`**。三者都能表达成败，但交付形式不同：toast 是核心消化后的弹卡，notify 是纯数据消息（成败只落在 `level`），onSettled 是原始 `outcome` 加整条记录。',
+          en: 'Rule of thumb: configure `toast` to show something to the user, send `notify` to broadcast an event across components, and use `onSettled` to do work inside a registered UI. They are not three flavours of the same channel: the first two are plain data on the task record, dispatched by the core on settlement; `onSettled` is `mountTaskUI` wiring. The "three channels" below therefore mean toast / notify / list buttons and **exclude `onSettled`**. All three can express success or failure, but they deliver it differently: toast is a card rendered by the core, notify is a plain message whose outcome only appears as `level`, and onSettled hands over the raw `outcome` plus the whole record.',
+        },
+        {
           zh: '三条通道各司其职、互不混用：**Toast** 是终态弹卡，`toast.success` / `toast.failure` 两态完全对称，每态可配 `scope`（`all` 每个页面都弹、`origin` 只发起页弹）与一个按钮（`TaskButton`：`{ id, text, icon?, color? }`）；**notify** 是终态消息，`message` + `detail` 纯数据，`scope` 同上，核心只把通知发出去、不做任何 UI（弹卡/alert 由接收方自己决定）；`broadcast` 字段保留兼容但核心不再据此决定发不发，范围由订阅方的 scope/project 决定；**列表按钮**是 `rowButtons: [{ id, text, when }]`，`when` ∈ `running` / `done` / `failed` / `always`（缺省 always），同一 id 可按状态重复声明，跟着记录走。',
           en: 'Three channels with separate jobs: **toast** is the terminal card — `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`TaskButton`: `{ id, text, icon?, color? }`). **Notify** is a terminal message — `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send — scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record.',
         },
@@ -192,6 +197,7 @@ const doc: DocTopic = {
             { name: 'toast.<态>.scope', type: "'all' | 'origin'", def: "'origin'", desc: { zh: '所有页面 / 只有发起页', en: 'Every page / originating page only' } },
             { name: 'notify.<态>.message', type: 'string', def: '—', desc: { zh: '通知正文', en: 'Notification text' } },
             { name: 'notify.<态>.detail', type: 'NotifyDetail | undefined', def: 'undefined', desc: { zh: '附带的纯 JSON，接收方自己取', en: 'Attached plain JSON, read by the receiver' } },
+            { name: 'notify.<态>.level', type: "'success' | 'error'", def: '按终态派生', desc: { zh: '任务层把 outcome 映射成通用 level；消息本身不带 taskId / outcome，运行时总线对任务无语义', en: 'The task layer maps outcome to a generic level; the message carries no taskId/outcome and the runtime bus has no task semantics' } },
             { name: 'notify.<态>.scope', type: "'all' | 'origin'", def: "'origin'", desc: { zh: '所有标签页 / 只在发起的那个标签页（页面级 origin，切面板不影响）；两态可不同', en: 'Every tab / only the originating tab (page-level origin; switching panels does not affect it); per state' } },
             { name: 'notify.<态>.broadcast', type: "'plugin' | 'global' | undefined", def: 'undefined', desc: { zh: '兼容字段：核心忽略它，notify 一律发通知；范围由订阅方的 scope / project 决定', en: "Compatibility field: ignored by the core — notify always sends; scope is decided by the scope/project chosen by the subscriber" } },
             { name: 'rowButtons[]', type: 'readonly TaskRowButton[]', def: 'undefined', desc: { zh: '列表行按钮声明，文案与 when 跟着记录走', en: 'List-row button declarations; labels and when travel with the record' } },
@@ -203,6 +209,35 @@ const doc: DocTopic = {
             { name: 'TaskBar.open', type: 'boolean | undefined', def: 'undefined', desc: { zh: '受控展开态；传了就必须同时传 onOpenChange 并回写，运行中不要切换受控 / 非受控', en: 'Controlled open state; pass together with onOpenChange and write it back; never switch controlled/uncontrolled at runtime' } },
             { name: 'TaskBar.onOpenChange', type: '(open: boolean) => void', def: 'undefined', desc: { zh: '展开态变化；自动收起发 false、触发器点开发 true；回调幂等可重复发，受控时必须回写', en: 'Open-state changes; automatic dismissal emits false and the trigger emits true; idempotent and may repeat; controlled callers must write back' } },
             { name: 'pressTaskButton(buttonId, taskId)', type: '(buttonId: string, taskId: string) => boolean', def: '—', desc: { zh: '先切回发起面板再执行 handler；找不到返回 false', en: 'Switches back to the originating panel before running the handler; false when not found' } },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'bt-settlement-boundaries',
+      heading: { zh: '交付边界：toast / notify / onSettled', en: 'Delivery boundaries: toast / notify / onSettled' },
+      prose: [
+        {
+          zh: '这三者都能表达成败，但处在不同的层次、由不同的消费者接管。`onSettled` 是 UI 接线，不是第四种通知通道；它不参与跨页广播，核心列表的刷新也不依赖它。选择口径：要给用户看就配 toast，要跨组件广播事情就发 notify，要在注册 UI 里干活就用 onSettled。',
+          en: 'All three can express success or failure, but they live at different layers and are consumed by different parties. `onSettled` is UI wiring, not a fourth notification channel: it does not broadcast across pages, and the core list does not depend on it to refresh. Choose by intent: configure toast to show the user, send notify to broadcast an event across components, and wire onSettled to do work inside a registered UI.',
+        },
+      ],
+      api: [
+        {
+          id: 'bt-delivery-boundaries',
+          rows: [
+            { name: '层次', type: 'toast / notify / onSettled', def: '—', desc: { zh: 'toast：任务记录上的显示配置，核心按终态挑一份弹卡；notify：runtime 通用通知总线的纯事件；onSettled：任务层 UI 接线回调', en: 'toast: display config on the task record, picked by the core on settlement; notify: plain event on the runtime bus; onSettled: task-layer UI wiring callback' } },
+            { name: '消费者', type: 'toast / notify / onSettled', def: '—', desc: { zh: 'toast：核心直接弹卡，消费方不写 UI；notify：订阅方自己决定弹卡 / 刷新 / 转发；onSettled：调用 mountTaskUI 并传入它的本页 UI', en: 'toast: the core renders the card, consumers write no UI; notify: subscribers decide whether to show, refresh or forward; onSettled: only the in-page UI that called mountTaskUI and supplied it' } },
+            { name: '页面范围', type: 'toast / notify / onSettled', def: '—', desc: { zh: 'toast 按 scope 决定本页 / 所有页；notify 经事件总线到本页与同源其它页；onSettled 只在本标签页进程内，不跨页', en: 'toast uses scope for this page or all pages; notify reaches local and same-origin subscribers through the bus; onSettled stays inside the current tab process' } },
+            { name: '携带数据', type: 'toast / notify / onSettled', def: '—', desc: { zh: 'toast：按终态选中的文案 + 可选按钮，核心消化成败；notify：message + 通用 level + detail，刻意不带 taskId / outcome；onSettled：完整 TaskRecord + outcome 原文', en: 'toast: selected copy plus optional button, with outcome already consumed by the core; notify: message plus generic level and detail, deliberately without taskId/outcome; onSettled: the full TaskRecord and raw outcome' } },
+            { name: '典型场景', type: 'toast / notify / onSettled', def: '—', desc: { zh: 'toast：终态需要直接可见反馈且不依赖发起页在场；notify：事件要与任务 UI 解耦，接收方按自身职责处理；onSettled：已挂载的 UI 要归档或刷新自己的数据', en: 'toast: terminal feedback must be directly visible without the originating page; notify: an event must stay decoupled from task UI and receivers handle it on their own terms; onSettled: a mounted UI needs to archive or refresh its own data' } },
+          ],
+        },
+        {
+          id: 'bt-settlement-api',
+          rows: [
+            { name: 'mountTaskUI.onSettled', type: '((task: TaskRecord, outcome: TaskSettlement[\'outcome\']) => void) | undefined', def: 'undefined', desc: { zh: '本页 UI 接线；不传就不注册，核心列表刷新与它无关', en: 'In-page UI wiring; omitted means no listener, and the core list refresh is independent of it' } },
+            { name: 'TaskSettlement', type: '{ task: TaskRecord; outcome: \'done\' | \'failed\' }', def: '—', desc: { zh: '终态回调载荷：整条归一化记录加原始 outcome', en: 'Settlement payload: the full normalized record plus the raw outcome' } },
           ],
         },
       ],
