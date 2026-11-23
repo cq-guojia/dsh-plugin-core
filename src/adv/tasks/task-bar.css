@@ -45,9 +45,6 @@
 /* 页面级瞬时面板：走 page-float 档（低于抽屉/弹窗），任何主浮层的遮罩都盖得住它。
    必须挂在外层定位 div 上（floatingStyles 带 transform，会建 stacking context）。 */
 .dshpc-taskbar__float{z-index:var(--dshpc-z-page-float);}
-/* closeOnAction=false 时前台主浮层期间只挂起、不关闭：整层隐藏且不吃指针。
-   与 backgrounded 同手法（visibility 保布局 / 滚动位置），弹窗一关立刻恢复。 */
-.dshpc-taskbar__float[data-dshpc-taskbar-suspended]{visibility:hidden;pointer-events:none;}
 
 /* 面板只补布局：宽度跟着视口收，内距归零 —— 行自己带内距，虚线才能一条通到底。 */
 .dshpc-taskbar__panel{width:min(400px,calc(100vw - 24px));padding:0;overflow:hidden;}

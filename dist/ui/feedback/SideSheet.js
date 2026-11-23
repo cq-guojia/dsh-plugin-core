@@ -110,6 +110,8 @@ export function SideSheet(props) {
                 setUnmounted(true);
         },
         'aria-label': typeof props.title === 'string' ? props.title : undefined,
+        role: 'dialog',
+        'aria-modal': 'true',
         // 面板上的点击不能再冒到遮罩（否则点正文就把自己关了）。
         onClick: (e) => e.stopPropagation(),
     }, props.resizable === false

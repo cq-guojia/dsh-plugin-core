@@ -73,10 +73,11 @@ export type OpenStateDecision = {
     readonly value: boolean;
 };
 export declare function decideOpenState(current: boolean, next: boolean, controlled: boolean): OpenStateDecision;
-/** closeOnAction=false 时前台主浮层期间只挂起、不关闭；其它情形面板照常收起。 */
-export declare function shouldSuspendFloatingLayer(closeOnAction: boolean, foregroundActive: boolean): boolean;
-/** 点到自己外面才关；挂起期间（弹窗正开着）任何事件都不响应。 */
-export declare function shouldCloseOnOutsidePointer(suspended: boolean, targetInside: boolean): boolean;
+/**
+ * 只有点在面板 / 触发器之外，且 pointerdown 与 click 两个时刻都不在模态中才收起。
+ * 关弹窗的那一下：pointerdown 时模态还在，click 时已卸载，不能把面板一起收掉。
+ */
+export declare function shouldCloseOnOutsideClick(targetInside: boolean, modalOpenAtPointerDown: boolean, modalOpenAtClick: boolean): boolean;
 /** 一条终态行在时刻 now 的展示阶段（纯派生，组件重挂也从 settledAt 重算，不会「恢复」）。 */
 export type RowSettlePhase = 'rest' | 'leaving' | 'gone';
 /**

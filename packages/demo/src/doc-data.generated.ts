@@ -5007,8 +5007,8 @@ export const docData = {
         "en": "This is the **background task hub**: work runs on the backend through open executors, the server owns task state, and the front end only registers, projects and forwards button presses. There is no client pull heartbeat, no status source, no dual-clock lease and no tombstone gate — a terminal state is driven once by the executor result or a server projection. Consumers write two wiring points: `mountTaskUI` registers handlers / terminal callback, `startTask` starts work; display uses the original `TaskBar` (icon/pill forms, sm/md/lg sizes, width and marquee) — no hand-drawn list."
       },
       {
-        "zh": "`TaskBar` 面板是**页面级瞬时浮层**，层级低于抽屉 / 弹窗 / 耳朵 / 菜单：任何主浮层的遮罩都盖得住它，永远不许浮到弹窗遮罩之上。`closeOnAction:false` 表示点行按钮后面板保持 open；若此时打开 Modal / SideSheet，面板只**挂起**（整层隐藏且不吃指针），弹窗内操作既不关它也不开它；弹窗一关自动恢复，之后点面板外、Esc 或再点触发器都正常收起。受控模式下 `onOpenChange(false)` 可能重复发出，消费方应把它当幂等信号；不回写会让面板停在受控的 `true`。",
-        "en": "The `TaskBar` panel is a **page-level transient floating layer** below drawers / modals / ears / menus: any primary overlay mask covers it; it must never float above a modal mask. `closeOnAction:false` keeps the panel open after a row action; if a Modal / SideSheet then opens, the panel is only **suspended** (hidden and pointer-inert), so actions inside the overlay neither close nor open it; when the overlay closes the panel resumes, and outside clicks, Escape or the trigger close it normally. In controlled mode `onOpenChange(false)` may be emitted repeatedly — treat it as idempotent; not writing it back keeps the panel pinned to controlled `true`."
+        "zh": "`TaskBar` 面板是**页面级瞬时浮层**，层级低于抽屉 / 弹窗 / 耳朵 / 菜单：视觉上由主浮层遮罩自然盖住，永远不许浮到弹窗遮罩之上；面板从不被隐藏或恢复，弹窗关掉后它本来就在。行为侧只认标准模态语义（原生 `dialog` / `aria-modal=\"true\"` / `alertdialog`）：只要页面存在活动模态，外部点击、Esc、触发器都不改 `open`；模态关闭后这些路径恢复。外部收起由 `pointerdown` 采样模态、`click` 双时刻判定：既覆盖「点外部按钮开弹窗」时弹窗尚未挂载，也覆盖「点关闭弹窗」时 click 已卸载但 pointerdown 仍开着。不声明模态语义的自绘浮层只能得到视觉遮挡，得不到事件冻结——这是浮层自身的可访问性契约，不是 TaskBar 去猜私有类名。受控 `onOpenChange(false)` 幂等可重复发；不回写会让面板停在受控的 `true`。",
+        "en": "The `TaskBar` panel is a **page-level transient floating layer** below drawers / modals / ears / menus: the primary overlay mask covers it visually; it is never hidden or restored, so it is still there when the overlay closes. Behavior uses standard modal semantics only (native `dialog`, `aria-modal=\"true\"`, `alertdialog`): while an active modal exists, outside clicks, Escape and the trigger never change `open`; those paths resume when it closes. Outside dismissal samples modal state on `pointerdown` and decides on `click` using both moments: a click that opens a modal is judged after it mounts, and a click that closes a modal is not mistaken for an outside click on the task panel. A custom overlay that does not declare modal semantics gets visual coverage but not event freezing — that is the overlay's accessibility contract, not something TaskBar should guess from private class names. Controlled `onOpenChange(false)` is idempotent and may repeat; not writing it back keeps the panel pinned to controlled `true`."
       },
       {
         "zh": "所有配置都是**纯数据跟着记录走**：标题、Toast、通知、按钮文案与显示时机在发起时声明，任何页面看到同一条任务都按同一份配置渲染，不需要发起页在场。跨页只传结构化克隆安全的值，不带函数、组件或 Promise。",
@@ -5033,7 +5033,7 @@ export const docData = {
       {
         "id": "bt-taskbar-example",
         "lang": "ts",
-        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar 是高级控件的展示面，单独从 adv/tasks/ui 引；adv/tasks 只出逻辑，Node 引它不带 React。\n// 展示栏沿用核心原 UI：icon / pill 两形态、sm/md/lg 尺寸、width/min/max 宽度，\n// 文字过长自动省略 + hover 跑马灯。数据来自共享任务池，无需本插件画行。\n// pill 长条\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// 只有图标（正方形，有任务在跑时带绿点）\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// 定宽 220；上限 110（放不下省略号、hover 跑马灯）\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// 点行按钮后默认收起面板；false = 保持 open，前台弹窗期间只挂起不关闭\nh(TaskBar, { closeOnAction: false, groups: ['scan'] })\n// 受控：传 open 必须同时接 onOpenChange 并回写；onOpenChange(false) 幂等，可重复发\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
+        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar 是高级控件的展示面，单独从 adv/tasks/ui 引；adv/tasks 只出逻辑，Node 引它不带 React。\n// 展示栏沿用核心原 UI：icon / pill 两形态、sm/md/lg 尺寸、width/min/max 宽度，\n// 文字过长自动省略 + hover 跑马灯。数据来自共享任务池，无需本插件画行。\n// pill 长条\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// 只有图标（正方形，有任务在跑时带绿点）\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// 定宽 220；上限 110（放不下省略号、hover 跑马灯）\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// 点行按钮后默认收起面板；false = 保持 open，遮罩会自然盖住它\nh(TaskBar, { closeOnAction: false, groups: ['scan'] })\n// 受控：传 open 必须同时接 onOpenChange 并回写；onOpenChange(false) 幂等，可重复发\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
       }
     ]
   },
@@ -5214,8 +5214,8 @@ export const docData = {
             "type": "boolean",
             "def": "true",
             "desc": {
-              "zh": "点行按钮后是否收起面板；false 保持展开，前台主浮层期间只挂起（隐藏且不响应事件），弹窗关后自动恢复，之后外部点击 / Esc / 触发器照常收",
-              "en": "Close the panel after a row action; false keeps it open and only suspends it while a primary overlay is up (hidden and inert), resuming when the overlay closes; outside click / Escape / trigger then close normally"
+              "zh": "点行按钮后是否收起面板；false 保持展开，活动模态的遮罩自然盖住它，模态内操作不改 open；模态关闭后外部点击 / Esc / 触发器照常收",
+              "en": "Close the panel after a row action; false keeps it open under an active modal mask without changing open; after the modal closes, outside click / Escape / trigger close normally"
             }
           },
           {

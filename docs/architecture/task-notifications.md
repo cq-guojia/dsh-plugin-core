@@ -39,9 +39,11 @@
    `isTaskRecord` 同时校验顶层与 toast 两态标题，旧 string 帧一律拒收、不做兜底；宿主 `deliverToast({ title: string })`
    与 notify 线上协议不变，格式化只在 `coordinator` 出宿主前发生。
    `TaskBar` 面板走 `--dshpc-z-page-float`（= dock 900），低于抽屉 / 弹窗 / 耳朵 / 菜单：
-   任何主浮层的遮罩都盖得住它，不许借用 popmenu / tip 档。默认点行按钮即收；
-   `closeOnAction:false` 时前台主浮层出现只挂起（隐藏 + 不吃指针 + 关闭事件 gate），
-   弹窗关闭后原样恢复，外部点击 / Esc / 触发器照常收起；受控 `onOpenChange(false)` 幂等可重复发。
+   视觉只靠层级——任何主浮层遮罩自然盖住它，面板从不被隐藏或恢复，弹窗关掉后它本来就在。
+   行为侧没有逐组件登记：只认标准模态语义（原生 `dialog` / `aria-modal="true"` / `alertdialog`），
+   活动模态期间冻结外部 click / Esc / 触发器，关闭后原样恢复；外部收起由 pointerdown 采样模态、
+   click 双时刻判定：既覆盖「点外部按钮开弹窗」，也覆盖「点关闭弹窗」时 click 已卸载、pointerdown 仍开着。
+   受控 `onOpenChange(false)` 幂等可重复发。
 7. **服务端是唯一状态通道**：不接 `follow()`（仅宿主领域状态）与 `remote.$on`（仅审批瀑布）；重连靠服务端基线，
    客户端不维护 cursor / 版本门。跨标签 BC 扇出层的 `noticeSince` 水位只裁「本地回放哪些通知」，
    不参与服务端状态同步，也不是 cursor。

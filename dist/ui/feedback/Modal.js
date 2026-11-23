@@ -63,6 +63,8 @@ export function Modal(props) {
     // 且继续作为既有类名别名存在（消费方写在它上面的覆盖不受影响）。
     h(PanelSurface, {
         tier: 'modal',
+        role: 'dialog',
+        attrs: { 'aria-modal': 'true' },
         className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}${locked ? ' dshpc-modal--locked dshpc-locked' : ''}${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
         style: {
             width: props.width ?? s.width,

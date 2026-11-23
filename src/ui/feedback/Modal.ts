@@ -168,6 +168,8 @@ export function Modal(props: ModalProps): ReturnType<typeof h> {
           PanelSurface,
           {
             tier: 'modal',
+            role: 'dialog',
+            attrs: { 'aria-modal': 'true' },
             className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ''}${locked ? ' dshpc-modal--locked dshpc-locked' : ''}${props.className !== undefined && props.className !== '' ? ` ${props.className}` : ''}`,
             style: {
               width: props.width ?? s.width,

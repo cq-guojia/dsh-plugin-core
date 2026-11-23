@@ -5,27 +5,7 @@
  * 差异只在「面板怎么排」（居中 vs 贴边），那部分留在各自的控件里。
  */
 import { type ReactNode } from 'react';
-/** 登记一个前台主浮层。与 `releaseForegroundOverlay` 成对使用（effect + cleanup）。 */
-export declare function acquireForegroundOverlay(): void;
-/** 注销一个前台主浮层；计数不会低于 0。 */
-export declare function releaseForegroundOverlay(): void;
-export declare function getForegroundOverlayCount(): number;
-/** SSR 快照：服务端永远没有前台浮层。 */
-export declare function getForegroundOverlayServerCount(): number;
-/** 前台主浮层是否正开着；与计数共用同一个 store，不做第二份状态。 */
-export declare function getForegroundOverlayActive(): boolean;
-/** SSR 快照：服务端永远没有前台浮层。 */
-export declare function getForegroundOverlayServerActive(): boolean;
-/**
- * 读前台主浮层的开 / 关状态：弹窗内操作要让位时用它，而不是再发一次关闭信号。
- * 与 `useDismissOnForegroundOverlay` 同源，两者可以并存：一个读状态，一个只在 0→正数边沿关面板。
- */
-export declare function useForegroundOverlayActive(): boolean;
-export declare function subscribeForegroundOverlay(listener: () => void): () => void;
-/** 只在 0 → 正数的边沿收起，嵌套浮层与计数回落都不重复触发。 */
-export declare function shouldDismissOnForegroundOverlay(previous: number, current: number): boolean;
-/** 任意瞬时浮层订阅本 hook：前台主浮层出现即收起，自己不倒回去自动恢复。 */
-export declare function useDismissOnForegroundOverlay(onDismiss: (() => void) | undefined): void;
+export declare function isModalDialogOpen(doc: Document | undefined): boolean;
 /** 外层浮层是否锁死（不在浮层里 = false）。例外域内恒为 false。 */
 export declare function useOverlayLocked(): boolean;
 /** 当前节点是否落在例外域里（焦点守卫用，含 portal 出来的菜单）。 */

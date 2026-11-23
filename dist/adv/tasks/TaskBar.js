@@ -8,7 +8,7 @@ import { MarqueeText } from '../../ui/display/MarqueeText.js';
 import { Chevron } from '../../ui/infra/chevron.js';
 import { PanelSurface } from '../../ui/infra/panel.js';
 import { ensureComponentStyles } from '../../ui/infra/css.js';
-import { useDismissOnForegroundOverlay, useForegroundOverlayActive } from '../../ui/infra/overlay.js';
+import { isModalDialogOpen } from '../../ui/infra/overlay.js';
 import { useLocale } from '../../ui/infra/locale.js';
 import { useNowMs } from '../../ui/infra/ticker.js';
 import { t } from '../../utils/i18n.js';
@@ -44,13 +44,12 @@ export function decideOpenState(current, next, controlled) {
     // 后续每一次用户显式关闭都必须重新发出；父组件正常回写后 current === next 自然不再发。
     return { kind: 'emit', value: next };
 }
-/** closeOnAction=false 时前台主浮层期间只挂起、不关闭；其它情形面板照常收起。 */
-export function shouldSuspendFloatingLayer(closeOnAction, foregroundActive) {
-    return !closeOnAction && foregroundActive;
-}
-/** 点到自己外面才关；挂起期间（弹窗正开着）任何事件都不响应。 */
-export function shouldCloseOnOutsidePointer(suspended, targetInside) {
-    return !suspended && !targetInside;
+/**
+ * 只有点在面板 / 触发器之外，且 pointerdown 与 click 两个时刻都不在模态中才收起。
+ * 关弹窗的那一下：pointerdown 时模态还在，click 时已卸载，不能把面板一起收掉。
+ */
+export function shouldCloseOnOutsideClick(targetInside, modalOpenAtPointerDown, modalOpenAtClick) {
+    return !targetInside && !modalOpenAtPointerDown && !modalOpenAtClick;
 }
 /**
  * 第二行小字。运行中 = `MM:SS - 披露文字`（满小时 `HH:MM:SS - …`），秒级跳动；
@@ -232,6 +231,7 @@ export function TaskBar(props) {
     const [internalOpen, setInternalOpen] = useState(false);
     const open = controlledOpen ?? internalOpen;
     const warnedControlled = useRef(false);
+    const modalOpenAtPointerDown = useRef(false);
     useEffect(() => {
         if (controlledOpen === undefined || onOpenChange !== undefined || warnedControlled.current)
             return;
@@ -248,9 +248,6 @@ export function TaskBar(props) {
         }
         setInternalOpen(decision.value);
     }, [controlledOpen, internalOpen, onOpenChange]);
-    const foregroundActive = useForegroundOverlayActive();
-    // closeOnAction=false 时「保持 open 但让位」；默认模式下前台浮层仍走原来的关闭语义。
-    const suspended = shouldSuspendFloatingLayer(closeOnAction, foregroundActive);
     useSyncExternalStore(taskCenterStore.subscribe, taskCenterStore.getSnapshot, taskCenterStore.getSnapshot);
     // 新体系没有 hidden / 跨站开关：project=null 收全部，groups='*' 也收全部。
     const scopeProject = project === undefined ? null : project;
@@ -268,18 +265,15 @@ export function TaskBar(props) {
         middleware: [offset(6), flip({ padding: 8 }), shift({ padding: 8 })],
         whileElementsMounted: autoUpdate,
     });
-    // 默认模式：前台主浮层一出现就收起本面板。closeOnAction=false 时只挂起、不关闭。
-    const closeOnForeground = useCallback(() => {
-        if (!closeOnAction)
-            return;
-        setOpenState(false);
-    }, [closeOnAction, setOpenState]);
-    useDismissOnForegroundOverlay(closeOnForeground);
-    // 点外部 / Esc 关闭：挂起期间整层不响应事件，弹窗关掉后监听立即恢复。
+    // pointerdown 只采样，click 才判定：点外部开弹窗时 click 已能看到新弹窗；
+    // 点关闭弹窗时 pointerdown 记得它当时还开着，click 时弹窗虽已卸载也不会连带收起面板。
     useEffect(() => {
-        if (!open || suspended || typeof document === 'undefined')
+        if (!open || typeof document === 'undefined')
             return;
-        const onPointerDown = (event) => {
+        const onPointerDown = () => { modalOpenAtPointerDown.current = isModalDialogOpen(document); };
+        const onClick = (event) => {
+            const wasOpen = modalOpenAtPointerDown.current;
+            modalOpenAtPointerDown.current = false;
             const target = event.target;
             if (target === null)
                 return;
@@ -287,23 +281,28 @@ export function TaskBar(props) {
             const reference = refs.reference.current;
             const floating = refs.floating.current;
             const inside = reference?.contains?.(target) === true || floating?.contains?.(target) === true;
-            if (shouldCloseOnOutsidePointer(suspended, inside))
+            if (shouldCloseOnOutsideClick(inside, wasOpen, isModalDialogOpen(document)))
                 setOpenState(false);
         };
         const onKeyDown = (event) => {
-            if (event.key === 'Escape' && !suspended)
+            if (event.key === 'Escape' && !isModalDialogOpen(document))
                 setOpenState(false);
         };
         document.addEventListener('pointerdown', onPointerDown);
+        document.addEventListener('click', onClick);
         document.addEventListener('keydown', onKeyDown);
         return () => {
             document.removeEventListener('pointerdown', onPointerDown);
+            document.removeEventListener('click', onClick);
             document.removeEventListener('keydown', onKeyDown);
         };
-    }, [open, refs, setOpenState, suspended]);
+    }, [open, refs, setOpenState]);
     const icon = h('span', { className: `dshpc-taskbar__iconwrap${busy ? ' dshpc-taskbar__iconwrap--busy' : ''}` }, h(FontIcon, { name: defaultIcon }), busy ? h('span', { className: 'dshpc-taskbar__dot' }) : null);
-    const toggle = () => { if (!suspended)
-        setOpenState(!open); };
+    const toggle = () => {
+        if (typeof document !== 'undefined' && isModalDialogOpen(document))
+            return;
+        setOpenState(!open);
+    };
     // 被宽度约束时把「后台任务 + N 个运行中」并成**一段**文字：只留一个可收缩槽，
     // 计数不再作为 flex:none 的独立元素把箭头顶出边框；省略号与 hover 跑马灯都由这同一段负责。
     const labelText = t('taskbarLabel');
@@ -382,7 +381,6 @@ export function TaskBar(props) {
             ref: refs.setFloating,
             style: floatingStyles,
             className: 'dshpc-taskbar__float',
-            ...(suspended ? { 'data-dshpc-taskbar-suspended': '' } : {}),
         }, h(PanelSurface, { tier: 'menu', role: 'menu', className: 'dshpc-taskbar__panel' }, 
         // 空态只看「有没有可显示的行」，不看 busy（=有无运行中任务）：
         // 终态行在停留期也是有效行，最后一个运行任务结算时不能被一起撤掉。

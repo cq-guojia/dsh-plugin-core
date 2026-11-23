@@ -4337,78 +4337,40 @@ function PanelClose(props) {
 }
 
 // dist/ui/infra/overlay.js
-var FOREGROUND_OVERLAY_KEY = /* @__PURE__ */ Symbol.for("dshpc.foregroundOverlay.v1");
-function isForegroundOverlayStore(value) {
-  if (value === null || typeof value !== "object")
+function isVisibleModalNode(node) {
+  if (node.hasAttribute("hidden") || node.getAttribute("aria-hidden") === "true")
     return false;
-  const candidate = value;
-  return typeof candidate.count === "number" && candidate.listeners instanceof Set;
-}
-function foregroundStore() {
-  const g = globalThis;
-  const existing = g[FOREGROUND_OVERLAY_KEY];
-  if (existing !== void 0) {
-    if (!isForegroundOverlayStore(existing))
-      throw new Error("[dsh-plugin-core] incompatible foreground overlay store");
-    return existing;
+  if (node.closest('[hidden], [aria-hidden="true"], [data-dshpc-backgrounded]') !== null)
+    return false;
+  if (typeof window !== "undefined" && typeof window.getComputedStyle === "function") {
+    const computed = window.getComputedStyle(node);
+    return computed.visibility !== "hidden" && computed.display !== "none";
   }
-  const store = { count: 0, listeners: /* @__PURE__ */ new Set() };
-  g[FOREGROUND_OVERLAY_KEY] = store;
-  return store;
+  const style2 = node.style;
+  return style2?.visibility !== "hidden" && style2?.display !== "none";
 }
-function emitForegroundOverlay() {
-  for (const listener of foregroundStore().listeners) {
-    try {
-      listener();
-    } catch {
+function isModalDialogOpen(doc2) {
+  if (doc2 === void 0)
+    return false;
+  const nodes = doc2.querySelectorAll('dialog[open], [aria-modal="true"], [role="alertdialog"]');
+  for (const node of Array.from(nodes)) {
+    const ariaModal = node.getAttribute("aria-modal");
+    if (ariaModal === "false")
+      continue;
+    if (typeof node.matches === "function" && node.matches("dialog[open]")) {
+      let nativeModal = false;
+      try {
+        nativeModal = node.matches("dialog:modal");
+      } catch {
+        nativeModal = ariaModal !== "false";
+      }
+      if (!nativeModal && ariaModal !== "true")
+        continue;
     }
+    if (isVisibleModalNode(node))
+      return true;
   }
-}
-function acquireForegroundOverlay() {
-  foregroundStore().count += 1;
-  emitForegroundOverlay();
-}
-function releaseForegroundOverlay() {
-  const store = foregroundStore();
-  if (store.count === 0)
-    return;
-  store.count -= 1;
-  emitForegroundOverlay();
-}
-function getForegroundOverlayCount() {
-  return foregroundStore().count;
-}
-function getForegroundOverlayServerCount() {
-  return 0;
-}
-function getForegroundOverlayActive() {
-  return getForegroundOverlayCount() > 0;
-}
-function getForegroundOverlayServerActive() {
   return false;
-}
-function useForegroundOverlayActive() {
-  return (0, import_react11.useSyncExternalStore)(subscribeForegroundOverlay, getForegroundOverlayActive, getForegroundOverlayServerActive);
-}
-function subscribeForegroundOverlay(listener) {
-  const store = foregroundStore();
-  store.listeners.add(listener);
-  return () => {
-    store.listeners.delete(listener);
-  };
-}
-function shouldDismissOnForegroundOverlay(previous, current3) {
-  return previous === 0 && current3 > 0;
-}
-function useDismissOnForegroundOverlay(onDismiss) {
-  const count4 = (0, import_react11.useSyncExternalStore)(subscribeForegroundOverlay, getForegroundOverlayCount, getForegroundOverlayServerCount);
-  const previous = (0, import_react11.useRef)(count4);
-  (0, import_react11.useEffect)(() => {
-    const prev = previous.current;
-    previous.current = count4;
-    if (onDismiss !== void 0 && shouldDismissOnForegroundOverlay(prev, count4))
-      onDismiss();
-  }, [count4, onDismiss]);
 }
 var LockedContext = (0, import_react11.createContext)(false);
 var LockExemptContext = (0, import_react11.createContext)(false);
@@ -4451,15 +4413,6 @@ function useEscapeClose(enabled, onClose) {
 }
 function OverlayMask(props) {
   ensureComponentStyles("overlay", OVERLAY_CSS);
-  const foreground = props.attrs?.["data-dshpc-backgrounded"] === void 0;
-  (0, import_react11.useEffect)(() => {
-    if (!foreground)
-      return;
-    acquireForegroundOverlay();
-    return () => {
-      releaseForegroundOverlay();
-    };
-  }, [foreground]);
   return (0, import_react11.createElement)("div", {
     ...props.attrs,
     className: `dshpc-overlay dshpc-overlay--${props.kind}`,
@@ -6356,6 +6309,8 @@ function Modal(props) {
       PanelSurface,
       {
         tier: "modal",
+        role: "dialog",
+        attrs: { "aria-modal": "true" },
         className: `dshpc-modal${props.size ? ` dshpc-modal--${props.size}` : ""}${locked ? " dshpc-modal--locked dshpc-locked" : ""}${props.className !== void 0 && props.className !== "" ? ` ${props.className}` : ""}`,
         style: {
           width: props.width ?? s.width,
@@ -6523,6 +6478,8 @@ function SideSheet(props) {
         setUnmounted(true);
     },
     "aria-label": typeof props.title === "string" ? props.title : void 0,
+    role: "dialog",
+    "aria-modal": "true",
     // 面板上的点击不能再冒到遮罩（否则点正文就把自己关了）。
     onClick: (e) => e.stopPropagation()
   }, props.resizable === false ? null : (0, import_react23.createElement)("div", {
@@ -71278,8 +71235,8 @@ h(SideSheet, {
         "en": "This is the **background task hub**: work runs on the backend through open executors, the server owns task state, and the front end only registers, projects and forwards button presses. There is no client pull heartbeat, no status source, no dual-clock lease and no tombstone gate \u2014 a terminal state is driven once by the executor result or a server projection. Consumers write two wiring points: `mountTaskUI` registers handlers / terminal callback, `startTask` starts work; display uses the original `TaskBar` (icon/pill forms, sm/md/lg sizes, width and marquee) \u2014 no hand-drawn list."
       },
       {
-        "zh": "`TaskBar` \u9762\u677F\u662F**\u9875\u9762\u7EA7\u77AC\u65F6\u6D6E\u5C42**\uFF0C\u5C42\u7EA7\u4F4E\u4E8E\u62BD\u5C49 / \u5F39\u7A97 / \u8033\u6735 / \u83DC\u5355\uFF1A\u4EFB\u4F55\u4E3B\u6D6E\u5C42\u7684\u906E\u7F69\u90FD\u76D6\u5F97\u4F4F\u5B83\uFF0C\u6C38\u8FDC\u4E0D\u8BB8\u6D6E\u5230\u5F39\u7A97\u906E\u7F69\u4E4B\u4E0A\u3002`closeOnAction:false` \u8868\u793A\u70B9\u884C\u6309\u94AE\u540E\u9762\u677F\u4FDD\u6301 open\uFF1B\u82E5\u6B64\u65F6\u6253\u5F00 Modal / SideSheet\uFF0C\u9762\u677F\u53EA**\u6302\u8D77**\uFF08\u6574\u5C42\u9690\u85CF\u4E14\u4E0D\u5403\u6307\u9488\uFF09\uFF0C\u5F39\u7A97\u5185\u64CD\u4F5C\u65E2\u4E0D\u5173\u5B83\u4E5F\u4E0D\u5F00\u5B83\uFF1B\u5F39\u7A97\u4E00\u5173\u81EA\u52A8\u6062\u590D\uFF0C\u4E4B\u540E\u70B9\u9762\u677F\u5916\u3001Esc \u6216\u518D\u70B9\u89E6\u53D1\u5668\u90FD\u6B63\u5E38\u6536\u8D77\u3002\u53D7\u63A7\u6A21\u5F0F\u4E0B `onOpenChange(false)` \u53EF\u80FD\u91CD\u590D\u53D1\u51FA\uFF0C\u6D88\u8D39\u65B9\u5E94\u628A\u5B83\u5F53\u5E42\u7B49\u4FE1\u53F7\uFF1B\u4E0D\u56DE\u5199\u4F1A\u8BA9\u9762\u677F\u505C\u5728\u53D7\u63A7\u7684 `true`\u3002",
-        "en": "The `TaskBar` panel is a **page-level transient floating layer** below drawers / modals / ears / menus: any primary overlay mask covers it; it must never float above a modal mask. `closeOnAction:false` keeps the panel open after a row action; if a Modal / SideSheet then opens, the panel is only **suspended** (hidden and pointer-inert), so actions inside the overlay neither close nor open it; when the overlay closes the panel resumes, and outside clicks, Escape or the trigger close it normally. In controlled mode `onOpenChange(false)` may be emitted repeatedly \u2014 treat it as idempotent; not writing it back keeps the panel pinned to controlled `true`."
+        "zh": '`TaskBar` \u9762\u677F\u662F**\u9875\u9762\u7EA7\u77AC\u65F6\u6D6E\u5C42**\uFF0C\u5C42\u7EA7\u4F4E\u4E8E\u62BD\u5C49 / \u5F39\u7A97 / \u8033\u6735 / \u83DC\u5355\uFF1A\u89C6\u89C9\u4E0A\u7531\u4E3B\u6D6E\u5C42\u906E\u7F69\u81EA\u7136\u76D6\u4F4F\uFF0C\u6C38\u8FDC\u4E0D\u8BB8\u6D6E\u5230\u5F39\u7A97\u906E\u7F69\u4E4B\u4E0A\uFF1B\u9762\u677F\u4ECE\u4E0D\u88AB\u9690\u85CF\u6216\u6062\u590D\uFF0C\u5F39\u7A97\u5173\u6389\u540E\u5B83\u672C\u6765\u5C31\u5728\u3002\u884C\u4E3A\u4FA7\u53EA\u8BA4\u6807\u51C6\u6A21\u6001\u8BED\u4E49\uFF08\u539F\u751F `dialog` / `aria-modal="true"` / `alertdialog`\uFF09\uFF1A\u53EA\u8981\u9875\u9762\u5B58\u5728\u6D3B\u52A8\u6A21\u6001\uFF0C\u5916\u90E8\u70B9\u51FB\u3001Esc\u3001\u89E6\u53D1\u5668\u90FD\u4E0D\u6539 `open`\uFF1B\u6A21\u6001\u5173\u95ED\u540E\u8FD9\u4E9B\u8DEF\u5F84\u6062\u590D\u3002\u5916\u90E8\u6536\u8D77\u7531 `pointerdown` \u91C7\u6837\u6A21\u6001\u3001`click` \u53CC\u65F6\u523B\u5224\u5B9A\uFF1A\u65E2\u8986\u76D6\u300C\u70B9\u5916\u90E8\u6309\u94AE\u5F00\u5F39\u7A97\u300D\u65F6\u5F39\u7A97\u5C1A\u672A\u6302\u8F7D\uFF0C\u4E5F\u8986\u76D6\u300C\u70B9\u5173\u95ED\u5F39\u7A97\u300D\u65F6 click \u5DF2\u5378\u8F7D\u4F46 pointerdown \u4ECD\u5F00\u7740\u3002\u4E0D\u58F0\u660E\u6A21\u6001\u8BED\u4E49\u7684\u81EA\u7ED8\u6D6E\u5C42\u53EA\u80FD\u5F97\u5230\u89C6\u89C9\u906E\u6321\uFF0C\u5F97\u4E0D\u5230\u4E8B\u4EF6\u51BB\u7ED3\u2014\u2014\u8FD9\u662F\u6D6E\u5C42\u81EA\u8EAB\u7684\u53EF\u8BBF\u95EE\u6027\u5951\u7EA6\uFF0C\u4E0D\u662F TaskBar \u53BB\u731C\u79C1\u6709\u7C7B\u540D\u3002\u53D7\u63A7 `onOpenChange(false)` \u5E42\u7B49\u53EF\u91CD\u590D\u53D1\uFF1B\u4E0D\u56DE\u5199\u4F1A\u8BA9\u9762\u677F\u505C\u5728\u53D7\u63A7\u7684 `true`\u3002',
+        "en": 'The `TaskBar` panel is a **page-level transient floating layer** below drawers / modals / ears / menus: the primary overlay mask covers it visually; it is never hidden or restored, so it is still there when the overlay closes. Behavior uses standard modal semantics only (native `dialog`, `aria-modal="true"`, `alertdialog`): while an active modal exists, outside clicks, Escape and the trigger never change `open`; those paths resume when it closes. Outside dismissal samples modal state on `pointerdown` and decides on `click` using both moments: a click that opens a modal is judged after it mounts, and a click that closes a modal is not mistaken for an outside click on the task panel. A custom overlay that does not declare modal semantics gets visual coverage but not event freezing \u2014 that is the overlay\'s accessibility contract, not something TaskBar should guess from private class names. Controlled `onOpenChange(false)` is idempotent and may repeat; not writing it back keeps the panel pinned to controlled `true`.'
       },
       {
         "zh": "\u6240\u6709\u914D\u7F6E\u90FD\u662F**\u7EAF\u6570\u636E\u8DDF\u7740\u8BB0\u5F55\u8D70**\uFF1A\u6807\u9898\u3001Toast\u3001\u901A\u77E5\u3001\u6309\u94AE\u6587\u6848\u4E0E\u663E\u793A\u65F6\u673A\u5728\u53D1\u8D77\u65F6\u58F0\u660E\uFF0C\u4EFB\u4F55\u9875\u9762\u770B\u5230\u540C\u4E00\u6761\u4EFB\u52A1\u90FD\u6309\u540C\u4E00\u4EFD\u914D\u7F6E\u6E32\u67D3\uFF0C\u4E0D\u9700\u8981\u53D1\u8D77\u9875\u5728\u573A\u3002\u8DE8\u9875\u53EA\u4F20\u7ED3\u6784\u5316\u514B\u9686\u5B89\u5168\u7684\u503C\uFF0C\u4E0D\u5E26\u51FD\u6570\u3001\u7EC4\u4EF6\u6216 Promise\u3002",
@@ -71304,7 +71261,7 @@ h(SideSheet, {
       {
         "id": "bt-taskbar-example",
         "lang": "ts",
-        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar \u662F\u9AD8\u7EA7\u63A7\u4EF6\u7684\u5C55\u793A\u9762\uFF0C\u5355\u72EC\u4ECE adv/tasks/ui \u5F15\uFF1Badv/tasks \u53EA\u51FA\u903B\u8F91\uFF0CNode \u5F15\u5B83\u4E0D\u5E26 React\u3002\n// \u5C55\u793A\u680F\u6CBF\u7528\u6838\u5FC3\u539F UI\uFF1Aicon / pill \u4E24\u5F62\u6001\u3001sm/md/lg \u5C3A\u5BF8\u3001width/min/max \u5BBD\u5EA6\uFF0C\n// \u6587\u5B57\u8FC7\u957F\u81EA\u52A8\u7701\u7565 + hover \u8DD1\u9A6C\u706F\u3002\u6570\u636E\u6765\u81EA\u5171\u4EAB\u4EFB\u52A1\u6C60\uFF0C\u65E0\u9700\u672C\u63D2\u4EF6\u753B\u884C\u3002\n// pill \u957F\u6761\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// \u53EA\u6709\u56FE\u6807\uFF08\u6B63\u65B9\u5F62\uFF0C\u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u5E26\u7EFF\u70B9\uFF09\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// \u5B9A\u5BBD 220\uFF1B\u4E0A\u9650 110\uFF08\u653E\u4E0D\u4E0B\u7701\u7565\u53F7\u3001hover \u8DD1\u9A6C\u706F\uFF09\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// \u70B9\u884C\u6309\u94AE\u540E\u9ED8\u8BA4\u6536\u8D77\u9762\u677F\uFF1Bfalse = \u4FDD\u6301 open\uFF0C\u524D\u53F0\u5F39\u7A97\u671F\u95F4\u53EA\u6302\u8D77\u4E0D\u5173\u95ED\nh(TaskBar, { closeOnAction: false, groups: ['scan'] })\n// \u53D7\u63A7\uFF1A\u4F20 open \u5FC5\u987B\u540C\u65F6\u63A5 onOpenChange \u5E76\u56DE\u5199\uFF1BonOpenChange(false) \u5E42\u7B49\uFF0C\u53EF\u91CD\u590D\u53D1\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
+        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar \u662F\u9AD8\u7EA7\u63A7\u4EF6\u7684\u5C55\u793A\u9762\uFF0C\u5355\u72EC\u4ECE adv/tasks/ui \u5F15\uFF1Badv/tasks \u53EA\u51FA\u903B\u8F91\uFF0CNode \u5F15\u5B83\u4E0D\u5E26 React\u3002\n// \u5C55\u793A\u680F\u6CBF\u7528\u6838\u5FC3\u539F UI\uFF1Aicon / pill \u4E24\u5F62\u6001\u3001sm/md/lg \u5C3A\u5BF8\u3001width/min/max \u5BBD\u5EA6\uFF0C\n// \u6587\u5B57\u8FC7\u957F\u81EA\u52A8\u7701\u7565 + hover \u8DD1\u9A6C\u706F\u3002\u6570\u636E\u6765\u81EA\u5171\u4EAB\u4EFB\u52A1\u6C60\uFF0C\u65E0\u9700\u672C\u63D2\u4EF6\u753B\u884C\u3002\n// pill \u957F\u6761\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// \u53EA\u6709\u56FE\u6807\uFF08\u6B63\u65B9\u5F62\uFF0C\u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u5E26\u7EFF\u70B9\uFF09\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// \u5B9A\u5BBD 220\uFF1B\u4E0A\u9650 110\uFF08\u653E\u4E0D\u4E0B\u7701\u7565\u53F7\u3001hover \u8DD1\u9A6C\u706F\uFF09\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// \u70B9\u884C\u6309\u94AE\u540E\u9ED8\u8BA4\u6536\u8D77\u9762\u677F\uFF1Bfalse = \u4FDD\u6301 open\uFF0C\u906E\u7F69\u4F1A\u81EA\u7136\u76D6\u4F4F\u5B83\nh(TaskBar, { closeOnAction: false, groups: ['scan'] })\n// \u53D7\u63A7\uFF1A\u4F20 open \u5FC5\u987B\u540C\u65F6\u63A5 onOpenChange \u5E76\u56DE\u5199\uFF1BonOpenChange(false) \u5E42\u7B49\uFF0C\u53EF\u91CD\u590D\u53D1\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
       }
     ]
   },
@@ -71485,8 +71442,8 @@ h(SideSheet, {
             "type": "boolean",
             "def": "true",
             "desc": {
-              "zh": "\u70B9\u884C\u6309\u94AE\u540E\u662F\u5426\u6536\u8D77\u9762\u677F\uFF1Bfalse \u4FDD\u6301\u5C55\u5F00\uFF0C\u524D\u53F0\u4E3B\u6D6E\u5C42\u671F\u95F4\u53EA\u6302\u8D77\uFF08\u9690\u85CF\u4E14\u4E0D\u54CD\u5E94\u4E8B\u4EF6\uFF09\uFF0C\u5F39\u7A97\u5173\u540E\u81EA\u52A8\u6062\u590D\uFF0C\u4E4B\u540E\u5916\u90E8\u70B9\u51FB / Esc / \u89E6\u53D1\u5668\u7167\u5E38\u6536",
-              "en": "Close the panel after a row action; false keeps it open and only suspends it while a primary overlay is up (hidden and inert), resuming when the overlay closes; outside click / Escape / trigger then close normally"
+              "zh": "\u70B9\u884C\u6309\u94AE\u540E\u662F\u5426\u6536\u8D77\u9762\u677F\uFF1Bfalse \u4FDD\u6301\u5C55\u5F00\uFF0C\u6D3B\u52A8\u6A21\u6001\u7684\u906E\u7F69\u81EA\u7136\u76D6\u4F4F\u5B83\uFF0C\u6A21\u6001\u5185\u64CD\u4F5C\u4E0D\u6539 open\uFF1B\u6A21\u6001\u5173\u95ED\u540E\u5916\u90E8\u70B9\u51FB / Esc / \u89E6\u53D1\u5668\u7167\u5E38\u6536",
+              "en": "Close the panel after a row action; false keeps it open under an active modal mask without changing open; after the modal closes, outside click / Escape / trigger close normally"
             }
           },
           {
@@ -76202,7 +76159,7 @@ var import_react108 = require("react");
 var import_react106 = require("react");
 
 // dist/adv/tasks/task-bar-css.generated.js
-var TASK_BAR_CSS = "/* \u2500\u2500 TaskBar \xB7 \u540E\u53F0\u4EFB\u52A1\u4E2D\u5FC3\u7684\u901A\u7528\u5C55\u793A\u680F \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u89E6\u53D1\u5668\u672C\u4F53\u662F Button\uFF08\u957F\u6761 / \u7EAF\u56FE\u6807\u6B63\u65B9\u5F62\uFF09\u7684\u63CF\u8FB9\u6863\uFF1A\n   \u5706\u89D2 / \u8FB9\u6846 / hover / \u7126\u70B9\u73AF\u5168\u5728 button.css\uFF0C\u672C\u6587\u4EF6\u53EA\u8865\u5B83\u6CA1\u6709\u7684\uFF1A\n   \u56FE\u6807\u4F4D\u7684\u5C0F\u7EFF\u70B9\u4E0E\u547C\u5438\u3001\u8BA1\u6570\u6587\u6848\u3001\u4E0B\u62C9\u91CC\u300C\u4E00\u6761\u865A\u7EBF\u4E00\u683C\u300D\u7684\u6392\u7248\u3002\n   \u4E0B\u62C9\u5BB9\u5668\u8D70 PanelSurface(menu)\uFF0C\u8FD9\u91CC\u53EA\u7ED9\u5BBD\u5EA6\u4E0E\u6EDA\u52A8\u533A\uFF0C\u4E0D\u6539\u9762\u677F\u76AE\u80A4\u3002 */\n\n.dshpc-taskbar{display:inline-flex;}\n\n/* \u89E6\u53D1\u5668\uFF1A\u6574\u6BB5\u76AE\u80A4\u7167\u4E0B\u62C9\u6846\uFF08Picker \u7684 trigger\uFF09\u6765 \u2014\u2014 \u540C\u9AD8\u5EA6\u6863\u3001\u540C 1px \u52A0\u91CD\u63CF\u8FB9\u3001\n   \u540C md \u5706\u89D2\u3001\u540C 8px \u5DE6\u53F3\u5185\u8DDD\uFF1B\u53F3\u4FA7\u4E09\u89D2\u4E5F\u5C31 6px\uFF0C\u522B\u518D\u653E\u5927\u4E00\u53F7\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4E00\u5957\u76AE\uFF1A--pill \u662F\u56FE\u6807 + \u6587\u5B57 + \u8BA1\u6570 + \u4E09\u89D2\uFF0C--icon \u53EA\u6709\u56FE\u6807\u4E14\u5BBD\u9AD8\u76F8\u7B49\u3002 */\n.dshpc-taskbar__trigger{\n  display:inline-flex;align-items:center;gap:6px;box-sizing:border-box;overflow:hidden;\n  height:28px;padding:0 8px;\n  color:var(--dshpc-fg);background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);\n  font-family:inherit;font-size:var(--dshpc-font-md);line-height:1;cursor:pointer;\n}\n.dshpc-taskbar__trigger:hover{background:var(--dshpc-hover);}\n.dshpc-taskbar__trigger:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-taskbar__trigger--sm{height:24px;font-size:var(--dshpc-font-sm);}\n.dshpc-taskbar__trigger--lg{height:32px;}\n.dshpc-taskbar__trigger--icon{justify-content:center;padding:0;width:28px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--sm{width:24px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--lg{width:32px;}\n/* \u6587\u5B57\u5403\u5269\u4F59\u5BBD\uFF1A\u5B9A\u5BBD / \u7ED9\u4E86\u4E0A\u9650\u65F6\u5148\u538B\u5B83\uFF08\u56FE\u6807\u3001\u4E09\u89D2 flex:none \u4E0D\u8BA9\u4F4D\uFF09\u3002\n   \u7701\u7565\u53F7\u4E0E hover \u8DD1\u9A6C\u706F\u7531 MarqueeText\uFF08.dshpc-mq\uFF09\u81EA\u5DF1\u7BA1\uFF0C\u672C\u6587\u4EF6\u53EA\u7ED9\u53EF\u6536\u7F29\u7684\u5916\u58F3\u3002 */\n.dshpc-taskbar__label{flex:0 1 auto;min-width:0;white-space:nowrap;}\n.dshpc-taskbar__count{flex:none;}\n/* \u4E09\u89D2\u6C38\u8FDC\u8D34\u53F3\uFF1Aauto \u5916\u8FB9\u8DDD\u5403\u6389\u5B9A\u5BBD\u65F6\u7684\u5269\u4F59\u7A7A\u95F4\uFF1B\u6536\u7F29\u65F6\u5B83\u662F\u6700\u540E\u4E00\u4E2A flex:none\uFF0C\u4E0D\u4F1A\u88AB\u6324\u51FA\u6846\u3002 */\n.dshpc-taskbar__caret{flex:none;color:var(--dshpc-fg-3);margin-left:auto;}\n\n/* \u56FE\u6807\u4F4D\uFF1A\u7EFF\u70B9\u9489\u5728\u53F3\u4E0A\u89D2\uFF0C\u4E0D\u53C2\u4E0E\u5E03\u5C40\u3002\n   \u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u53EA\u6709\u5B57\u5F62\u81EA\u5DF1\u547C\u5438\uFF08\u5927\u5C0F\u5FAA\u73AF\uFF09\u2014\u2014 \u7EFF\u70B9\u8DDF\u7740\u7F29\u653E\u4F1A\u6643\u4F4D\u7F6E\uFF0C\u6240\u4EE5\u52A8\u753B\u6302\u5728 <i> \u4E0A\u3002 */\n.dshpc-taskbar__iconwrap{position:relative;display:inline-flex;align-items:center;justify-content:center;}\n.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:dshpc-taskbar-breathe 1.6s var(--dshpc-ease) infinite;}\n@keyframes dshpc-taskbar-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}\n@media (prefers-reduced-motion:reduce){.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:none}}\n.dshpc-taskbar__dot{\n  position:absolute;top:-2px;right:-3px;width:5px;height:5px;border-radius:50%;\n  background:var(--dshpc-success);box-shadow:0 0 0 2px var(--dshpc-surface-base);\n}\n.dshpc-taskbar__count{color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;margin-left:2px;}\n\n/* \u9875\u9762\u7EA7\u77AC\u65F6\u9762\u677F\uFF1A\u8D70 page-float \u6863\uFF08\u4F4E\u4E8E\u62BD\u5C49/\u5F39\u7A97\uFF09\uFF0C\u4EFB\u4F55\u4E3B\u6D6E\u5C42\u7684\u906E\u7F69\u90FD\u76D6\u5F97\u4F4F\u5B83\u3002\n   \u5FC5\u987B\u6302\u5728\u5916\u5C42\u5B9A\u4F4D div \u4E0A\uFF08floatingStyles \u5E26 transform\uFF0C\u4F1A\u5EFA stacking context\uFF09\u3002 */\n.dshpc-taskbar__float{z-index:var(--dshpc-z-page-float);}\n/* closeOnAction=false \u65F6\u524D\u53F0\u4E3B\u6D6E\u5C42\u671F\u95F4\u53EA\u6302\u8D77\u3001\u4E0D\u5173\u95ED\uFF1A\u6574\u5C42\u9690\u85CF\u4E14\u4E0D\u5403\u6307\u9488\u3002\n   \u4E0E backgrounded \u540C\u624B\u6CD5\uFF08visibility \u4FDD\u5E03\u5C40 / \u6EDA\u52A8\u4F4D\u7F6E\uFF09\uFF0C\u5F39\u7A97\u4E00\u5173\u7ACB\u523B\u6062\u590D\u3002 */\n.dshpc-taskbar__float[data-dshpc-taskbar-suspended]{visibility:hidden;pointer-events:none;}\n\n/* \u9762\u677F\u53EA\u8865\u5E03\u5C40\uFF1A\u5BBD\u5EA6\u8DDF\u7740\u89C6\u53E3\u6536\uFF0C\u5185\u8DDD\u5F52\u96F6 \u2014\u2014 \u884C\u81EA\u5DF1\u5E26\u5185\u8DDD\uFF0C\u865A\u7EBF\u624D\u80FD\u4E00\u6761\u901A\u5230\u5E95\u3002 */\n.dshpc-taskbar__panel{width:min(400px,calc(100vw - 24px));padding:0;overflow:hidden;}\n.dshpc-taskbar__list{max-height:320px;overflow:auto;}\n.dshpc-taskbar__empty{\n  padding:var(--dshpc-space-4) var(--dshpc-space-3);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n}\n\n/* \u4E00\u683C\u4E00\u6761\u865A\u7EBF\uFF1A\u884C\u4E0E\u884C\u4E4B\u95F4\u53EA\u753B\u5206\u9694\u7EBF\uFF0C\u884C\u672C\u8EAB\u4E0D\u5957\u5E95 / \u4E0D\u63CF\u8FB9 / \u4E0D\u5706\u89D2 \u2014\u2014 \u9762\u677F\u5DF2\u7ECF\u662F\u4E00\u5C42\u6846\u3002 */\n.dshpc-taskbar__item{\n  display:flex;align-items:center;gap:var(--dshpc-space-2);\n  padding:var(--dshpc-space-2) var(--dshpc-space-3);\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-taskbar__item + .dshpc-taskbar__item{border-top:1px dashed var(--dshpc-border);}\n/* \u884C hover\uFF082026-11-15 \u7528\u6237\uFF1A\u8DDF\u8868\u683C\u9009\u4E2D\u90A3\u79CD\u84DD\u5DEE\u4E0D\u591A\u3001\u6216\u66F4\u6D45\u7684\u6781\u6DE1\u84DD\uFF09\u3002\n   \u53EA\u662F\u300C\u9F20\u6807\u5728\u8FD9\u513F\u300D\u7684\u53CD\u9988 \u2014\u2014 \u884C\u4E0D\u7ED9 cursor / \u7126\u70B9\u73AF\uFF0C\u4E5F\u6CA1\u6709\u70B9\u51FB\u884C\u4E3A\uFF1B\u9009\u4E2D\u6001\u4E0D\u505A\u3002 */\n.dshpc-taskbar__item:hover{background:var(--dshpc-taskbar-row-hover);}\n/* \u7EC8\u6001\u505C\u7559\u5230\u70B9\u540E\u9000\u573A\uFF1A\u6DE1\u51FA + \u8F7B\u5FAE\u6536\u7F29\u6536\u8D77\uFF0C200ms \u4E0E JS \u7684 EXIT_ANIM_MS \u5BF9\u9F50\u3002\n   \u884C\u672C\u8EAB\u4E0D\u8BBE\u56FA\u5B9A\u9AD8\u5EA6\uFF0C\u7528 max-height + padding \u6536\u62E2\u5230 0 \u505A\u51FA\u300C\u8FD9\u4E00\u6761\u6CA1\u4E86\u300D\u7684\u6536\u8D77\u611F\u3002 */\n.dshpc-taskbar__item--leaving{\n  animation:dshpc-taskbar-row-out .2s var(--dshpc-ease) forwards;\n  overflow:hidden;pointer-events:none;\n}\n@keyframes dshpc-taskbar-row-out{\n  from{opacity:1;max-height:80px;padding-top:var(--dshpc-space-2);padding-bottom:var(--dshpc-space-2)}\n  to{opacity:0;max-height:0;padding-top:0;padding-bottom:0}\n}\n@media (prefers-reduced-motion:reduce){\n  .dshpc-taskbar__item{transition:none}\n  .dshpc-taskbar__item--leaving{animation-duration:.01ms}\n}\n\n/* \u884C\u5185\uFF1A\u56FE\u6807 + \u4E24\u884C\u6587\u5B57 + \u53F3\u4FA7\u52A8\u4F5C\u3002\u56FE\u6807\u4E0D\u5E26\u5E95\u677F\uFF0C\u53EA\u7559\u5B57\u5F62\u3002 */\n.dshpc-taskbar__row-icon{flex:none;display:inline-flex;align-items:center;color:var(--dshpc-fg-2);}\n.dshpc-taskbar__row-main{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1 1 auto;}\n/* \u6807\u9898\u4EA4\u7ED9 MarqueeText\uFF1A\u8FD9\u91CC\u53EA\u8865\u5B57\u4F53\u4E0E\u6536\u7F29\u7EA6\u675F\uFF0C\u7701\u7565\u53F7 / hover \u6EDA\u52A8\u7531 .dshpc-mq \u53CC\u5C42\u8D1F\u8D23\u3002 */\n.dshpc-taskbar__row-title{min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}\n/* \u7B2C\u4E8C\u884C\uFF1A\u65F6\u95F4 + \u5206\u9694\u7B26 + \u62AB\u9732\u6587\u5B57\u3002\u6574\u884C\u53EF\u6536\u7F29\uFF0C\u62AB\u9732\u6587\u5B57\u8D85\u957F\u7531\u5185\u5C42 MarqueeText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-taskbar__row-meta{display:flex;align-items:center;min-width:0;font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;}\n.dshpc-taskbar__row-detail{display:inline-flex;align-items:center;gap:.35em;min-width:0;flex:1 1 auto;}\n/* \u5206\u9694\u6A2A\u7EBF\u524D\u540E\u7559\u51FA\u53EF\u89C1\u7A7A\u9699\uFF08flex \u4F1A\u5403\u6389\u88F8\u7A7A\u683C\u5B57\u7B26\uFF0C\u6545\u7528 gap + \u72EC\u7ACB span\uFF09\u3002 */\n.dshpc-taskbar__row-sep{flex:none;color:var(--dshpc-fg-4);}\n/* FlipText \u91CC\u7684\u626B\u5149\u53EA\u88C1\u5728\u5B57\u5F62\u4E0A\uFF0C\u5916\u5C42\u5BB9\u5668\u4E0D\u80FD\u88C1\u5207\uFF1B\u7ED9\u4E2A\u6700\u5C0F\u5BBD\u8BA9\u5B83\u80FD\u6536\u7F29\u5230\u7701\u7565\u3002 */\n.dshpc-taskbar__row-detail .dshpc-flip{flex:1 1 auto;min-width:0;}\n.dshpc-taskbar__row-actions{flex:none;display:inline-flex;align-items:center;gap:var(--dshpc-space-1);}\n";
+var TASK_BAR_CSS = "/* \u2500\u2500 TaskBar \xB7 \u540E\u53F0\u4EFB\u52A1\u4E2D\u5FC3\u7684\u901A\u7528\u5C55\u793A\u680F \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n   \u89E6\u53D1\u5668\u672C\u4F53\u662F Button\uFF08\u957F\u6761 / \u7EAF\u56FE\u6807\u6B63\u65B9\u5F62\uFF09\u7684\u63CF\u8FB9\u6863\uFF1A\n   \u5706\u89D2 / \u8FB9\u6846 / hover / \u7126\u70B9\u73AF\u5168\u5728 button.css\uFF0C\u672C\u6587\u4EF6\u53EA\u8865\u5B83\u6CA1\u6709\u7684\uFF1A\n   \u56FE\u6807\u4F4D\u7684\u5C0F\u7EFF\u70B9\u4E0E\u547C\u5438\u3001\u8BA1\u6570\u6587\u6848\u3001\u4E0B\u62C9\u91CC\u300C\u4E00\u6761\u865A\u7EBF\u4E00\u683C\u300D\u7684\u6392\u7248\u3002\n   \u4E0B\u62C9\u5BB9\u5668\u8D70 PanelSurface(menu)\uFF0C\u8FD9\u91CC\u53EA\u7ED9\u5BBD\u5EA6\u4E0E\u6EDA\u52A8\u533A\uFF0C\u4E0D\u6539\u9762\u677F\u76AE\u80A4\u3002 */\n\n.dshpc-taskbar{display:inline-flex;}\n\n/* \u89E6\u53D1\u5668\uFF1A\u6574\u6BB5\u76AE\u80A4\u7167\u4E0B\u62C9\u6846\uFF08Picker \u7684 trigger\uFF09\u6765 \u2014\u2014 \u540C\u9AD8\u5EA6\u6863\u3001\u540C 1px \u52A0\u91CD\u63CF\u8FB9\u3001\n   \u540C md \u5706\u89D2\u3001\u540C 8px \u5DE6\u53F3\u5185\u8DDD\uFF1B\u53F3\u4FA7\u4E09\u89D2\u4E5F\u5C31 6px\uFF0C\u522B\u518D\u653E\u5927\u4E00\u53F7\u3002\n   \u4E24\u4E2A\u5F62\u6001\u4E00\u5957\u76AE\uFF1A--pill \u662F\u56FE\u6807 + \u6587\u5B57 + \u8BA1\u6570 + \u4E09\u89D2\uFF0C--icon \u53EA\u6709\u56FE\u6807\u4E14\u5BBD\u9AD8\u76F8\u7B49\u3002 */\n.dshpc-taskbar__trigger{\n  display:inline-flex;align-items:center;gap:6px;box-sizing:border-box;overflow:hidden;\n  height:28px;padding:0 8px;\n  color:var(--dshpc-fg);background:var(--dshpc-surface-1);\n  border:1px solid var(--dshpc-border-heavy);border-radius:var(--dshpc-radius-md);\n  font-family:inherit;font-size:var(--dshpc-font-md);line-height:1;cursor:pointer;\n}\n.dshpc-taskbar__trigger:hover{background:var(--dshpc-hover);}\n.dshpc-taskbar__trigger:focus-visible{outline:2px solid var(--dshpc-focus);outline-offset:1px;}\n.dshpc-taskbar__trigger--sm{height:24px;font-size:var(--dshpc-font-sm);}\n.dshpc-taskbar__trigger--lg{height:32px;}\n.dshpc-taskbar__trigger--icon{justify-content:center;padding:0;width:28px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--sm{width:24px;}\n.dshpc-taskbar__trigger--icon.dshpc-taskbar__trigger--lg{width:32px;}\n/* \u6587\u5B57\u5403\u5269\u4F59\u5BBD\uFF1A\u5B9A\u5BBD / \u7ED9\u4E86\u4E0A\u9650\u65F6\u5148\u538B\u5B83\uFF08\u56FE\u6807\u3001\u4E09\u89D2 flex:none \u4E0D\u8BA9\u4F4D\uFF09\u3002\n   \u7701\u7565\u53F7\u4E0E hover \u8DD1\u9A6C\u706F\u7531 MarqueeText\uFF08.dshpc-mq\uFF09\u81EA\u5DF1\u7BA1\uFF0C\u672C\u6587\u4EF6\u53EA\u7ED9\u53EF\u6536\u7F29\u7684\u5916\u58F3\u3002 */\n.dshpc-taskbar__label{flex:0 1 auto;min-width:0;white-space:nowrap;}\n.dshpc-taskbar__count{flex:none;}\n/* \u4E09\u89D2\u6C38\u8FDC\u8D34\u53F3\uFF1Aauto \u5916\u8FB9\u8DDD\u5403\u6389\u5B9A\u5BBD\u65F6\u7684\u5269\u4F59\u7A7A\u95F4\uFF1B\u6536\u7F29\u65F6\u5B83\u662F\u6700\u540E\u4E00\u4E2A flex:none\uFF0C\u4E0D\u4F1A\u88AB\u6324\u51FA\u6846\u3002 */\n.dshpc-taskbar__caret{flex:none;color:var(--dshpc-fg-3);margin-left:auto;}\n\n/* \u56FE\u6807\u4F4D\uFF1A\u7EFF\u70B9\u9489\u5728\u53F3\u4E0A\u89D2\uFF0C\u4E0D\u53C2\u4E0E\u5E03\u5C40\u3002\n   \u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u53EA\u6709\u5B57\u5F62\u81EA\u5DF1\u547C\u5438\uFF08\u5927\u5C0F\u5FAA\u73AF\uFF09\u2014\u2014 \u7EFF\u70B9\u8DDF\u7740\u7F29\u653E\u4F1A\u6643\u4F4D\u7F6E\uFF0C\u6240\u4EE5\u52A8\u753B\u6302\u5728 <i> \u4E0A\u3002 */\n.dshpc-taskbar__iconwrap{position:relative;display:inline-flex;align-items:center;justify-content:center;}\n.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:dshpc-taskbar-breathe 1.6s var(--dshpc-ease) infinite;}\n@keyframes dshpc-taskbar-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}\n@media (prefers-reduced-motion:reduce){.dshpc-taskbar__iconwrap--busy > .dshpc-icon{animation:none}}\n.dshpc-taskbar__dot{\n  position:absolute;top:-2px;right:-3px;width:5px;height:5px;border-radius:50%;\n  background:var(--dshpc-success);box-shadow:0 0 0 2px var(--dshpc-surface-base);\n}\n.dshpc-taskbar__count{color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;margin-left:2px;}\n\n/* \u9875\u9762\u7EA7\u77AC\u65F6\u9762\u677F\uFF1A\u8D70 page-float \u6863\uFF08\u4F4E\u4E8E\u62BD\u5C49/\u5F39\u7A97\uFF09\uFF0C\u4EFB\u4F55\u4E3B\u6D6E\u5C42\u7684\u906E\u7F69\u90FD\u76D6\u5F97\u4F4F\u5B83\u3002\n   \u5FC5\u987B\u6302\u5728\u5916\u5C42\u5B9A\u4F4D div \u4E0A\uFF08floatingStyles \u5E26 transform\uFF0C\u4F1A\u5EFA stacking context\uFF09\u3002 */\n.dshpc-taskbar__float{z-index:var(--dshpc-z-page-float);}\n\n/* \u9762\u677F\u53EA\u8865\u5E03\u5C40\uFF1A\u5BBD\u5EA6\u8DDF\u7740\u89C6\u53E3\u6536\uFF0C\u5185\u8DDD\u5F52\u96F6 \u2014\u2014 \u884C\u81EA\u5DF1\u5E26\u5185\u8DDD\uFF0C\u865A\u7EBF\u624D\u80FD\u4E00\u6761\u901A\u5230\u5E95\u3002 */\n.dshpc-taskbar__panel{width:min(400px,calc(100vw - 24px));padding:0;overflow:hidden;}\n.dshpc-taskbar__list{max-height:320px;overflow:auto;}\n.dshpc-taskbar__empty{\n  padding:var(--dshpc-space-4) var(--dshpc-space-3);text-align:center;\n  color:var(--dshpc-fg-3);font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);\n}\n\n/* \u4E00\u683C\u4E00\u6761\u865A\u7EBF\uFF1A\u884C\u4E0E\u884C\u4E4B\u95F4\u53EA\u753B\u5206\u9694\u7EBF\uFF0C\u884C\u672C\u8EAB\u4E0D\u5957\u5E95 / \u4E0D\u63CF\u8FB9 / \u4E0D\u5706\u89D2 \u2014\u2014 \u9762\u677F\u5DF2\u7ECF\u662F\u4E00\u5C42\u6846\u3002 */\n.dshpc-taskbar__item{\n  display:flex;align-items:center;gap:var(--dshpc-space-2);\n  padding:var(--dshpc-space-2) var(--dshpc-space-3);\n  transition:background-color var(--dshpc-dur-fast) var(--dshpc-ease);\n}\n.dshpc-taskbar__item + .dshpc-taskbar__item{border-top:1px dashed var(--dshpc-border);}\n/* \u884C hover\uFF082026-11-15 \u7528\u6237\uFF1A\u8DDF\u8868\u683C\u9009\u4E2D\u90A3\u79CD\u84DD\u5DEE\u4E0D\u591A\u3001\u6216\u66F4\u6D45\u7684\u6781\u6DE1\u84DD\uFF09\u3002\n   \u53EA\u662F\u300C\u9F20\u6807\u5728\u8FD9\u513F\u300D\u7684\u53CD\u9988 \u2014\u2014 \u884C\u4E0D\u7ED9 cursor / \u7126\u70B9\u73AF\uFF0C\u4E5F\u6CA1\u6709\u70B9\u51FB\u884C\u4E3A\uFF1B\u9009\u4E2D\u6001\u4E0D\u505A\u3002 */\n.dshpc-taskbar__item:hover{background:var(--dshpc-taskbar-row-hover);}\n/* \u7EC8\u6001\u505C\u7559\u5230\u70B9\u540E\u9000\u573A\uFF1A\u6DE1\u51FA + \u8F7B\u5FAE\u6536\u7F29\u6536\u8D77\uFF0C200ms \u4E0E JS \u7684 EXIT_ANIM_MS \u5BF9\u9F50\u3002\n   \u884C\u672C\u8EAB\u4E0D\u8BBE\u56FA\u5B9A\u9AD8\u5EA6\uFF0C\u7528 max-height + padding \u6536\u62E2\u5230 0 \u505A\u51FA\u300C\u8FD9\u4E00\u6761\u6CA1\u4E86\u300D\u7684\u6536\u8D77\u611F\u3002 */\n.dshpc-taskbar__item--leaving{\n  animation:dshpc-taskbar-row-out .2s var(--dshpc-ease) forwards;\n  overflow:hidden;pointer-events:none;\n}\n@keyframes dshpc-taskbar-row-out{\n  from{opacity:1;max-height:80px;padding-top:var(--dshpc-space-2);padding-bottom:var(--dshpc-space-2)}\n  to{opacity:0;max-height:0;padding-top:0;padding-bottom:0}\n}\n@media (prefers-reduced-motion:reduce){\n  .dshpc-taskbar__item{transition:none}\n  .dshpc-taskbar__item--leaving{animation-duration:.01ms}\n}\n\n/* \u884C\u5185\uFF1A\u56FE\u6807 + \u4E24\u884C\u6587\u5B57 + \u53F3\u4FA7\u52A8\u4F5C\u3002\u56FE\u6807\u4E0D\u5E26\u5E95\u677F\uFF0C\u53EA\u7559\u5B57\u5F62\u3002 */\n.dshpc-taskbar__row-icon{flex:none;display:inline-flex;align-items:center;color:var(--dshpc-fg-2);}\n.dshpc-taskbar__row-main{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1 1 auto;}\n/* \u6807\u9898\u4EA4\u7ED9 MarqueeText\uFF1A\u8FD9\u91CC\u53EA\u8865\u5B57\u4F53\u4E0E\u6536\u7F29\u7EA6\u675F\uFF0C\u7701\u7565\u53F7 / hover \u6EDA\u52A8\u7531 .dshpc-mq \u53CC\u5C42\u8D1F\u8D23\u3002 */\n.dshpc-taskbar__row-title{min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}\n/* \u7B2C\u4E8C\u884C\uFF1A\u65F6\u95F4 + \u5206\u9694\u7B26 + \u62AB\u9732\u6587\u5B57\u3002\u6574\u884C\u53EF\u6536\u7F29\uFF0C\u62AB\u9732\u6587\u5B57\u8D85\u957F\u7531\u5185\u5C42 MarqueeText \u7701\u7565 / hover \u8DD1\u9A6C\u706F\u3002 */\n.dshpc-taskbar__row-meta{display:flex;align-items:center;min-width:0;font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;}\n.dshpc-taskbar__row-detail{display:inline-flex;align-items:center;gap:.35em;min-width:0;flex:1 1 auto;}\n/* \u5206\u9694\u6A2A\u7EBF\u524D\u540E\u7559\u51FA\u53EF\u89C1\u7A7A\u9699\uFF08flex \u4F1A\u5403\u6389\u88F8\u7A7A\u683C\u5B57\u7B26\uFF0C\u6545\u7528 gap + \u72EC\u7ACB span\uFF09\u3002 */\n.dshpc-taskbar__row-sep{flex:none;color:var(--dshpc-fg-4);}\n/* FlipText \u91CC\u7684\u626B\u5149\u53EA\u88C1\u5728\u5B57\u5F62\u4E0A\uFF0C\u5916\u5C42\u5BB9\u5668\u4E0D\u80FD\u88C1\u5207\uFF1B\u7ED9\u4E2A\u6700\u5C0F\u5BBD\u8BA9\u5B83\u80FD\u6536\u7F29\u5230\u7701\u7565\u3002 */\n.dshpc-taskbar__row-detail .dshpc-flip{flex:1 1 auto;min-width:0;}\n.dshpc-taskbar__row-actions{flex:none;display:inline-flex;align-items:center;gap:var(--dshpc-space-1);}\n";
 
 // dist/adv/tasks/TaskBar.js
 var DEFAULT_ICON = "common.base:cpu";
@@ -76221,11 +76178,8 @@ function decideOpenState(current3, next, controlled) {
     return { kind: "setInternal", value: next };
   return { kind: "emit", value: next };
 }
-function shouldSuspendFloatingLayer(closeOnAction, foregroundActive) {
-  return !closeOnAction && foregroundActive;
-}
-function shouldCloseOnOutsidePointer(suspended, targetInside) {
-  return !suspended && !targetInside;
+function shouldCloseOnOutsideClick(targetInside, modalOpenAtPointerDown, modalOpenAtClick) {
+  return !targetInside && !modalOpenAtPointerDown && !modalOpenAtClick;
 }
 function Elapsed(props) {
   const settled = props.until !== void 0;
@@ -76346,6 +76300,7 @@ function TaskBar(props) {
   const [internalOpen, setInternalOpen] = (0, import_react106.useState)(false);
   const open = controlledOpen ?? internalOpen;
   const warnedControlled = (0, import_react106.useRef)(false);
+  const modalOpenAtPointerDown = (0, import_react106.useRef)(false);
   (0, import_react106.useEffect)(() => {
     if (controlledOpen === void 0 || onOpenChange !== void 0 || warnedControlled.current)
       return;
@@ -76362,8 +76317,6 @@ function TaskBar(props) {
     }
     setInternalOpen(decision.value);
   }, [controlledOpen, internalOpen, onOpenChange]);
-  const foregroundActive = useForegroundOverlayActive();
-  const suspended = shouldSuspendFloatingLayer(closeOnAction, foregroundActive);
   (0, import_react106.useSyncExternalStore)(taskCenterStore.subscribe, taskCenterStore.getSnapshot, taskCenterStore.getSnapshot);
   const scopeProject = project === void 0 ? null : project;
   const scopeGroups = groups === "*" ? void 0 : groups;
@@ -76378,40 +76331,42 @@ function TaskBar(props) {
     middleware: [offset3(6), flip3({ padding: 8 }), shift3({ padding: 8 })],
     whileElementsMounted: autoUpdate
   });
-  const closeOnForeground = (0, import_react106.useCallback)(() => {
-    if (!closeOnAction)
-      return;
-    setOpenState(false);
-  }, [closeOnAction, setOpenState]);
-  useDismissOnForegroundOverlay(closeOnForeground);
   (0, import_react106.useEffect)(() => {
-    if (!open || suspended || typeof document === "undefined")
+    if (!open || typeof document === "undefined")
       return;
-    const onPointerDown = (event) => {
+    const onPointerDown = () => {
+      modalOpenAtPointerDown.current = isModalDialogOpen(document);
+    };
+    const onClick = (event) => {
+      const wasOpen = modalOpenAtPointerDown.current;
+      modalOpenAtPointerDown.current = false;
       const target = event.target;
       if (target === null)
         return;
       const reference = refs.reference.current;
       const floating = refs.floating.current;
       const inside = reference?.contains?.(target) === true || floating?.contains?.(target) === true;
-      if (shouldCloseOnOutsidePointer(suspended, inside))
+      if (shouldCloseOnOutsideClick(inside, wasOpen, isModalDialogOpen(document)))
         setOpenState(false);
     };
     const onKeyDown = (event) => {
-      if (event.key === "Escape" && !suspended)
+      if (event.key === "Escape" && !isModalDialogOpen(document))
         setOpenState(false);
     };
     document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("click", onClick);
     document.addEventListener("keydown", onKeyDown);
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("click", onClick);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, refs, setOpenState, suspended]);
+  }, [open, refs, setOpenState]);
   const icon = (0, import_react106.createElement)("span", { className: `dshpc-taskbar__iconwrap${busy ? " dshpc-taskbar__iconwrap--busy" : ""}` }, (0, import_react106.createElement)(FontIcon, { name: defaultIcon }), busy ? (0, import_react106.createElement)("span", { className: "dshpc-taskbar__dot" }) : null);
   const toggle = () => {
-    if (!suspended)
-      setOpenState(!open);
+    if (typeof document !== "undefined" && isModalDialogOpen(document))
+      return;
+    setOpenState(!open);
   };
   const labelText = t("taskbarLabel");
   const countText2 = busy ? t("taskbarCount", { n: running }) : "";
@@ -76486,8 +76441,7 @@ function TaskBar(props) {
     {
       ref: refs.setFloating,
       style: floatingStyles,
-      className: "dshpc-taskbar__float",
-      ...suspended ? { "data-dshpc-taskbar-suspended": "" } : {}
+      className: "dshpc-taskbar__float"
     },
     (0, import_react106.createElement)(
       PanelSurface,
@@ -76813,9 +76767,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.46.1"}`],
-            [t3("buildDemo"), `v${"0.46.1"}`],
-            [t3("buildStamp"), "261123-194524-652"]
+            [t3("buildCore"), `v${"0.46.2"}`],
+            [t3("buildDemo"), `v${"0.46.2"}`],
+            [t3("buildStamp"), "261123-210324-435"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77130,9 +77084,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.46.1"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.46.1"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261123-194524-652")
+          (0, import_react112.createElement)("span", null, `core v${"0.46.2"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.46.2"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261123-210324-435")
         )
       )
     ),
