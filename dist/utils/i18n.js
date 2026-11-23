@@ -590,6 +590,8 @@ const DICT = {
         taskbarCount: '{n} 个运行中',
         taskbarEmpty: '暂无后台任务',
         taskbarDone: '已完成',
+        taskbarSucceeded: '成功',
+        taskbarFailed: '失败',
         taskbarActionFailed: '这条任务的操作已失效，可能是发起它的页面已刷新或关闭',
     },
     en: {
@@ -1173,6 +1175,8 @@ const DICT = {
         taskbarCount: '{n} running',
         taskbarEmpty: 'No background tasks',
         taskbarDone: 'Done',
+        taskbarSucceeded: 'Succeeded',
+        taskbarFailed: 'Failed',
         taskbarActionFailed: 'That action is no longer available — the page that started the task was refreshed or closed',
     },
 };

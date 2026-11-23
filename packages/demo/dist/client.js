@@ -981,6 +981,8 @@ var DICT = {
     taskbarCount: "{n} \u4E2A\u8FD0\u884C\u4E2D",
     taskbarEmpty: "\u6682\u65E0\u540E\u53F0\u4EFB\u52A1",
     taskbarDone: "\u5DF2\u5B8C\u6210",
+    taskbarSucceeded: "\u6210\u529F",
+    taskbarFailed: "\u5931\u8D25",
     taskbarActionFailed: "\u8FD9\u6761\u4EFB\u52A1\u7684\u64CD\u4F5C\u5DF2\u5931\u6548\uFF0C\u53EF\u80FD\u662F\u53D1\u8D77\u5B83\u7684\u9875\u9762\u5DF2\u5237\u65B0\u6216\u5173\u95ED"
   },
   en: {
@@ -1564,6 +1566,8 @@ var DICT = {
     taskbarCount: "{n} running",
     taskbarEmpty: "No background tasks",
     taskbarDone: "Done",
+    taskbarSucceeded: "Succeeded",
+    taskbarFailed: "Failed",
     taskbarActionFailed: "That action is no longer available \u2014 the page that started the task was refreshed or closed"
   }
 };
@@ -76286,11 +76290,19 @@ function decideOpenState(current3, next, controlled) {
 function shouldCloseOnOutsideClick(targetInside, modalOpenAtPointerDown, modalOpenAtClick) {
   return !targetInside && !modalOpenAtPointerDown && !modalOpenAtClick;
 }
+function settledChipOf(state) {
+  if (state === "done")
+    return { tone: "success", key: "taskbarSucceeded" };
+  if (state === "failed")
+    return { tone: "danger", key: "taskbarFailed" };
+  return { tone: "neutral", key: "taskbarDone" };
+}
 function Elapsed(props) {
   const settled = props.until !== void 0;
   const tick = useNowMs();
   const nowMs = props.until ?? tick;
-  const leading = settled ? (0, import_react106.createElement)(Chip, { tone: "success", size: "xs" }, t("taskbarDone")) : formatDurationHms(Math.max(0, nowMs - props.since));
+  const chip = settledChipOf(props.state);
+  const leading = settled ? (0, import_react106.createElement)(Chip, { tone: chip.tone, size: "xs" }, t(chip.key)) : formatDurationHms(Math.max(0, nowMs - props.since));
   const message = props.progress;
   return (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-meta" }, leading, message === void 0 || message === "" ? null : (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-detail" }, (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-sep" }, "-"), (0, import_react106.createElement)(FlipText, { text: message, sweep: true })));
 }
@@ -76498,7 +76510,7 @@ function TaskBar(props) {
     return (0, import_react106.createElement)("div", {
       key: task.id,
       className: `dshpc-taskbar__item${leavingIds.has(task.id) ? " dshpc-taskbar__item--leaving" : ""}`
-    }, (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-icon" }, (0, import_react106.createElement)(FontIcon, { name: iconNameOf(task, defaultIcon) })), (0, import_react106.createElement)("div", { className: "dshpc-taskbar__row-main" }, (0, import_react106.createElement)(MarqueeText, { text: formatDisplayTitle(task.title), className: "dshpc-taskbar__row-title" }), (0, import_react106.createElement)(Elapsed, { since: task.startedAt, until: task.settledAt, progress: task.progress?.message })), actions2.length === 0 ? null : (0, import_react106.createElement)(
+    }, (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-icon" }, (0, import_react106.createElement)(FontIcon, { name: iconNameOf(task, defaultIcon) })), (0, import_react106.createElement)("div", { className: "dshpc-taskbar__row-main" }, (0, import_react106.createElement)(MarqueeText, { text: formatDisplayTitle(task.title), className: "dshpc-taskbar__row-title" }), (0, import_react106.createElement)(Elapsed, { since: task.startedAt, until: task.settledAt, state: task.state, progress: task.progress?.message })), actions2.length === 0 ? null : (0, import_react106.createElement)(
       "div",
       {
         className: "dshpc-taskbar__row-actions",
@@ -76872,9 +76884,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.46.2"}`],
-            [t3("buildDemo"), `v${"0.46.2"}`],
-            [t3("buildStamp"), "261123-221859-451"]
+            [t3("buildCore"), `v${"0.46.3"}`],
+            [t3("buildDemo"), `v${"0.46.3"}`],
+            [t3("buildStamp"), "261123-223129-928"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77189,9 +77201,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.46.2"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.46.2"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261123-221859-451")
+          (0, import_react112.createElement)("span", null, `core v${"0.46.3"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.46.3"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261123-223129-928")
         )
       )
     ),

@@ -17,7 +17,7 @@ import { useNowMs } from '../../ui/infra/ticker.js'
 import { t } from '../../utils/i18n.js'
 import { formatDurationHms } from '../../utils/date.js'
 import { notifyTaskActionFailed, pressTaskButton, taskCenterStore } from './api.js'
-import { formatDisplayTitle, type TaskButton, type TaskNotificationRecord } from './model.js'
+import { formatDisplayTitle, type TaskButton, type TaskNotificationRecord, type TaskState } from './model.js'
 import { TASK_BAR_CSS } from './task-bar-css.js'
 import { isSettled } from './store.js'
 
@@ -132,9 +132,19 @@ export function shouldCloseOnOutsideClick(
   return !targetInside && !modalOpenAtPointerDown && !modalOpenAtClick
 }
 
+/** 终态标签：状态可信时区分成功 / 失败；认不出来就中性「完成」，不假成功。 */
+export function settledChipOf(state: TaskState | undefined): {
+  readonly tone: 'success' | 'danger' | 'neutral'
+  readonly key: 'taskbarSucceeded' | 'taskbarFailed' | 'taskbarDone'
+} {
+  if (state === 'done') return { tone: 'success', key: 'taskbarSucceeded' }
+  if (state === 'failed') return { tone: 'danger', key: 'taskbarFailed' }
+  return { tone: 'neutral', key: 'taskbarDone' }
+}
+
 /**
  * 第二行小字。运行中 = `MM:SS - 披露文字`（满小时 `HH:MM:SS - …`），秒级跳动；
- * 终态（`until` 有值）= 时间位置换成「已完成」小标签，后面仍可跟最后一段披露文字。
+ * 终态（`until` 有值）= 时间位置换成终态小标签（成功 / 失败 / 认不出时完成），后面仍可跟最后一段披露文字。
  *
  * - 时间只有数字与冒号，不写「已执行」；不足一小时 `MM:SS`，到一小时 `HH:MM:SS`。
  * - 有 `progress.message` 就跟一个 ` - ` 再显示它；没有就只显示时间 / 标签。
@@ -145,12 +155,13 @@ export function shouldCloseOnOutsideClick(
  * —— 别把 `useNowMs()` 提到 `TaskBar` 顶层，那会让整个展开面板每秒重渲一次。
  * 终态不再订阅心跳（`until` 已冻结）。
  */
-function Elapsed(props: { since: number; until?: number; progress?: string }): ReactNode {
+function Elapsed(props: { since: number; until?: number; state?: TaskState; progress?: string }): ReactNode {
   const settled = props.until !== undefined
   const tick = useNowMs() // hook 必须无条件调；终态下取 until，tick 变化不会用到
   const nowMs = props.until ?? tick
+  const chip = settledChipOf(props.state)
   const leading = settled
-    ? h(Chip, { tone: 'success', size: 'xs' }, t('taskbarDone'))
+    ? h(Chip, { tone: chip.tone, size: 'xs' }, t(chip.key))
     : formatDurationHms(Math.max(0, nowMs - props.since))
   const message = props.progress
   return h(
@@ -460,7 +471,7 @@ export function TaskBar(props: TaskBarProps): ReactNode {
         'div',
         { className: 'dshpc-taskbar__row-main' },
         h(MarqueeText, { text: formatDisplayTitle(task.title), className: 'dshpc-taskbar__row-title' }),
-        h(Elapsed, { since: task.startedAt, until: task.settledAt, progress: task.progress?.message }),
+        h(Elapsed, { since: task.startedAt, until: task.settledAt, state: task.state, progress: task.progress?.message }),
       ),
       actions.length === 0
         ? null

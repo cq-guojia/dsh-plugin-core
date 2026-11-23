@@ -1,6 +1,6 @@
 import { type CSSProperties, type ReactNode } from 'react';
 import { type ButtonSize } from '../../ui/actions/Button.js';
-import { type TaskNotificationRecord } from './model.js';
+import { type TaskNotificationRecord, type TaskState } from './model.js';
 /** 展示形态：只图标 / 图标 + 文字长条。 */
 export type TaskBarForm = 'icon' | 'pill';
 /**
@@ -78,6 +78,11 @@ export declare function decideOpenState(current: boolean, next: boolean, control
  * 关弹窗的那一下：pointerdown 时模态还在，click 时已卸载，不能把面板一起收掉。
  */
 export declare function shouldCloseOnOutsideClick(targetInside: boolean, modalOpenAtPointerDown: boolean, modalOpenAtClick: boolean): boolean;
+/** 终态标签：状态可信时区分成功 / 失败；认不出来就中性「完成」，不假成功。 */
+export declare function settledChipOf(state: TaskState | undefined): {
+    readonly tone: 'success' | 'danger' | 'neutral';
+    readonly key: 'taskbarSucceeded' | 'taskbarFailed' | 'taskbarDone';
+};
 /** 一条终态行在时刻 now 的展示阶段（纯派生，组件重挂也从 settledAt 重算，不会「恢复」）。 */
 export type RowSettlePhase = 'rest' | 'leaving' | 'gone';
 /**
