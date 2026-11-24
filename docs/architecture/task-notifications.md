@@ -80,12 +80,16 @@
 15. **运行身份由服务端给**：同 key 的 `startedAt` 须严格递增，`settledAt` 是终态必填的服务端时刻；
     同运行 `settledAt` first-wins，跨运行取新值。`TaskNotice.id` 须跨会话/重启全局唯一（UUID 或持久化计数，
     不能只用内存 `++seq`）；`origin` / `panelId` 由核心随提交发出、服务端回显，缺失时核心 fail-open 保留本地值而非拒收。
+    `origin` 是**标签页身份**：缺省取 `getTabOrigin()`（sessionStorage 按 origin + 标签页分区、刷新保留、关页即清），
+    与 `createNotifyScope().origin`（逻辑端实例 id，每次加载随机、只服务 BroadcastChannel 自过滤）是两个概念，不得合并——
+    前者随记录走决定终态弹卡归属，刷新后同一窗口仍是发起页；后者换了不影响归属。消费方自定义 `originId` 时须自行保证跨刷新稳定。
     消费方依赖必须与核心同号；401 停机时凭证刷新需在 `onGiveUp` 同步完成（或异步就绪后再接线），
     `online` 唤醒会用同一份 headers 重试，失败再次停机（有界）。
 
 ## 边界与已知限制
 
 - 跨标签页按钮回源（点 B 页的按钮回到 A 页执行）暂不实现；同标签页共享池内本页直执已覆盖主路径。
+- 浏览器「复制标签页」会连同 sessionStorage 一起复制：两个标签拿到同一个 tab origin，终态会在两边都弹；这是浏览器事实，按可接受边界处理。升级瞬间已在飞、带着旧随机 origin 的任务仍会丢一次终态 toast——旧值从未持久化，无法回收；升级后新提交的任务不受影响。
 - 终态记录留在快照里供 `when=done/failed` 的按钮渲染；留存策略由展示层决定，核心不定时清理。
 - `ui/task-ui` 只转发 `mountTaskUI`，零官方 `@deepseek-ai/*` 静态依赖；`ui` 入口 import 不会因宿主外解析不到平台模块而崩。
 

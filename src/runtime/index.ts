@@ -10,6 +10,7 @@ export {
   createNotifyScope,
   defaultNotifyScope,
   getDefaultTaskProject,
+  getTabOrigin,
   isEventBusLike,
   normalizeGroup,
   notifyMessage,

@@ -4,7 +4,7 @@
 
 本文件由 `scripts/gen-docs.mjs` 从同名 `.doc.ts` 生成，请勿手改。
 
-导出：notifyMessage、subscribeNotifications、createNotifyScope、defaultNotifyScope、setDefaultTaskProject、getDefaultTaskProject、resolveProject、normalizeGroup、NOTIFY_CHANNEL、NOTIFY_PROTOCOL、NOTIFY_PROJECT_KEY、NOTIFY_EVENTS_KEY、createEventBus、claimEventBus、createStore、RuntimeStore
+导出：notifyMessage、subscribeNotifications、createNotifyScope、defaultNotifyScope、getTabOrigin、setDefaultTaskProject、getDefaultTaskProject、resolveProject、normalizeGroup、NOTIFY_CHANNEL、NOTIFY_PROTOCOL、NOTIFY_PROJECT_KEY、NOTIFY_EVENTS_KEY、createEventBus、claimEventBus、createStore、RuntimeStore
 
 ## 概览
 
@@ -46,6 +46,10 @@ import 期不访问 `window` / `document` / `BroadcastChannel`：通道在第一
 
 > EN: There is no default behaviour: without a subscriber nothing is shown and the broadcast goes nowhere. The ready-made receiver is `ui/feedback/notify-bridge.ts` (turns a message into a toast payload); a plugin that wants no toasts simply never imports it.
 
+**两种 id 不要混**：`getTabOrigin()` 是标签页身份（sessionStorage，刷新保留、换标签页各异），任务归属用它；`createNotifyScope().origin` / `NotifyWire.origin` 是逻辑端实例 id（每次加载随机），只用于 BroadcastChannel 的自过滤与消息 id。把两者合一会让刷新后的任务被当成「别的页面」而丢掉终态 toast，或让同页两个 scope 互吞消息。
+
+> EN: **Do not mix the two ids**: `getTabOrigin()` is the tab identity (sessionStorage, kept across reloads, distinct per tab) used for task ownership; `createNotifyScope().origin` / `NotifyWire.origin` is the endpoint-instance id (random per load) used only for BroadcastChannel self-filtering and message ids. Merging them either drops a terminal toast after reload (the task looks like it came from another page) or makes two scopes on the same page swallow each other's messages.
+
 消息字段刻意保持通用：**不带 `taskId`、不带 `outcome`**。runtime 不认识任务，只关心事情发生了；不认识任务 UI 的订阅方也能按自己的职责处理。任务层若要把终态语义带出来，只映射成通用 `level: 'success' | 'error'`——那是语义级别，不是任务结果本体；要拿完整结果请用任务层的 `onSettled`。
 
 > EN: Message fields are deliberately generic: **no `taskId`, no `outcome`**. The runtime knows nothing about tasks, only that something happened, so a subscriber that never imports task UI can still act on it. The task layer maps terminal semantics to a generic `level: 'success' | 'error'` — a semantic level, not the task outcome itself; consumers that need the full result use the task-layer `onSettled`.
@@ -63,6 +67,7 @@ import 期不访问 `window` / `document` / `BroadcastChannel`：通道在第一
 | `getDefaultTaskProject()` | `() => string \| undefined` | — | undefined | 读当前默认分组 | Reads the current default group |
 | `createNotifyScope(options?)` | `(options?: { channelName?: string; origin?: string }) => NotifyScope` | — | 默认通道 / 随机 origin | 建一个独立逻辑端（同 `channelName` 的两个 scope 互收）；`dispose()` 关通道并清订阅者 | Builds an independent endpoint (two scopes sharing a `channelName` hear each other); `dispose()` closes the channel and drops subscribers |
 | `defaultNotifyScope()` | `() => NotifyScope` | — | — | 跨 bundle 单例的默认逻辑端：一条通道、一份订阅者名单 | The cross-bundle singleton endpoint: one channel, one subscriber list |
+| `getTabOrigin()` | `() => string` | — | sessionStorage 持久化，无存储退内存 | 标签页身份：刷新前后同一个值、不同标签页各异；任务归属用它，不是 scope 的随机 origin | Tab identity: stable across reloads, distinct per tab; used for task ownership, not the scope's random origin |
 | `resolveProject(project?)` | `(project?: string \| null) => string \| null` | — | — | 把「显式给 / 取默认」合成一个值；`null` 表示不按分组过滤（只有查询侧会传） | Folds explicit-or-default into one value; `null` means no group filter (query side only) |
 | `normalizeGroup(group?)` | `(group?: string) => string` | — | 'default' | 空串抛错，其余原样返回 | Rejects blank strings, returns anything else verbatim |
 | `NOTIFY_CHANNEL / NOTIFY_PROTOCOL` | `string / number` | — | — | 通道名与协议版本；协议升级时两者与几个 `NOTIFY_*_KEY` 一起换命名空间（跨副本 ABI，不能单方面改） | Channel name and protocol version; a protocol bump moves them and the `NOTIFY_*_KEY` symbols together (cross-copy ABI, never changed unilaterally) |

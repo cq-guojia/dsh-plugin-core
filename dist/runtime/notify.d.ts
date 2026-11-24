@@ -118,6 +118,15 @@ export interface NotifyScope {
     dispose(): void;
 }
 /**
+ * 标签页级身份：刷新前后同一个值，别的标签页各自不同。
+ *
+ * 与 `createNotifyScope().origin` 是两个概念：后者是逻辑端实例 id，每次加载都随机，只服务
+ * BroadcastChannel 的自过滤与 message id；本函数服务任务归属（`TaskRecord.origin`），
+ * 生命周期是标签页——否则刷新后终态 toast 会因「换页」被误判成别的页面而丢掉。
+ * 无存储环境（Node / 隐私模式 / 配额异常）退化为模块内存，等价于刷新即变的旧行为。
+ */
+export declare function getTabOrigin(): string;
+/**
  * 建一个逻辑端。同一个 `channelName` 的两个 scope 会互收（各自一条实例），
  * 这就是「跨页」在本模块里的形态 —— 真实浏览器里两个页面天然是两个 scope。
  */

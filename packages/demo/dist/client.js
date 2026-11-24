@@ -7676,6 +7676,39 @@ function makeOrigin() {
     return c4.randomUUID();
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 }
+var TAB_ORIGIN_KEY = "dshpc:notify:tab-origin:v1";
+var tabOriginFallback;
+function storage() {
+  try {
+    return typeof sessionStorage === "undefined" ? void 0 : sessionStorage;
+  } catch {
+    return void 0;
+  }
+}
+function getTabOrigin() {
+  const fallback = () => {
+    if (tabOriginFallback === void 0)
+      tabOriginFallback = makeOrigin();
+    return tabOriginFallback;
+  };
+  const store = storage();
+  if (store === void 0)
+    return fallback();
+  try {
+    const stored = store.getItem(TAB_ORIGIN_KEY);
+    if (stored !== null && stored !== "") {
+      tabOriginFallback = stored;
+      return stored;
+    }
+  } catch {
+  }
+  const origin = fallback();
+  try {
+    store.setItem(TAB_ORIGIN_KEY, origin);
+  } catch {
+  }
+  return origin;
+}
 function createNotifyScope(options = {}) {
   const channelName = options.channelName ?? NOTIFY_CHANNEL;
   const origin = options.origin ?? makeOrigin();
@@ -58680,7 +58713,7 @@ function connectTaskCenter(host) {
       patch[key2] = value;
   }
   Object.assign(stableHost, patch);
-  const pageOrigin = () => defaultNotifyScope().origin;
+  const pageOrigin = () => getTabOrigin();
   if (stableHost.originId === void 0)
     stableHost.originId = pageOrigin;
   const liveOrigin = () => stableHost.originId?.();
@@ -66796,6 +66829,10 @@ var docData = {
         "en": "There is no default behaviour: without a subscriber nothing is shown and the broadcast goes nowhere. The ready-made receiver is `ui/feedback/notify-bridge.ts` (turns a message into a toast payload); a plugin that wants no toasts simply never imports it."
       },
       {
+        "zh": "**\u4E24\u79CD id \u4E0D\u8981\u6DF7**\uFF1A`getTabOrigin()` \u662F\u6807\u7B7E\u9875\u8EAB\u4EFD\uFF08sessionStorage\uFF0C\u5237\u65B0\u4FDD\u7559\u3001\u6362\u6807\u7B7E\u9875\u5404\u5F02\uFF09\uFF0C\u4EFB\u52A1\u5F52\u5C5E\u7528\u5B83\uFF1B`createNotifyScope().origin` / `NotifyWire.origin` \u662F\u903B\u8F91\u7AEF\u5B9E\u4F8B id\uFF08\u6BCF\u6B21\u52A0\u8F7D\u968F\u673A\uFF09\uFF0C\u53EA\u7528\u4E8E BroadcastChannel \u7684\u81EA\u8FC7\u6EE4\u4E0E\u6D88\u606F id\u3002\u628A\u4E24\u8005\u5408\u4E00\u4F1A\u8BA9\u5237\u65B0\u540E\u7684\u4EFB\u52A1\u88AB\u5F53\u6210\u300C\u522B\u7684\u9875\u9762\u300D\u800C\u4E22\u6389\u7EC8\u6001 toast\uFF0C\u6216\u8BA9\u540C\u9875\u4E24\u4E2A scope \u4E92\u541E\u6D88\u606F\u3002",
+        "en": "**Do not mix the two ids**: `getTabOrigin()` is the tab identity (sessionStorage, kept across reloads, distinct per tab) used for task ownership; `createNotifyScope().origin` / `NotifyWire.origin` is the endpoint-instance id (random per load) used only for BroadcastChannel self-filtering and message ids. Merging them either drops a terminal toast after reload (the task looks like it came from another page) or makes two scopes on the same page swallow each other's messages."
+      },
+      {
         "zh": "\u6D88\u606F\u5B57\u6BB5\u523B\u610F\u4FDD\u6301\u901A\u7528\uFF1A**\u4E0D\u5E26 `taskId`\u3001\u4E0D\u5E26 `outcome`**\u3002runtime \u4E0D\u8BA4\u8BC6\u4EFB\u52A1\uFF0C\u53EA\u5173\u5FC3\u4E8B\u60C5\u53D1\u751F\u4E86\uFF1B\u4E0D\u8BA4\u8BC6\u4EFB\u52A1 UI \u7684\u8BA2\u9605\u65B9\u4E5F\u80FD\u6309\u81EA\u5DF1\u7684\u804C\u8D23\u5904\u7406\u3002\u4EFB\u52A1\u5C42\u82E5\u8981\u628A\u7EC8\u6001\u8BED\u4E49\u5E26\u51FA\u6765\uFF0C\u53EA\u6620\u5C04\u6210\u901A\u7528 `level: 'success' | 'error'`\u2014\u2014\u90A3\u662F\u8BED\u4E49\u7EA7\u522B\uFF0C\u4E0D\u662F\u4EFB\u52A1\u7ED3\u679C\u672C\u4F53\uFF1B\u8981\u62FF\u5B8C\u6574\u7ED3\u679C\u8BF7\u7528\u4EFB\u52A1\u5C42\u7684 `onSettled`\u3002",
         "en": "Message fields are deliberately generic: **no `taskId`, no `outcome`**. The runtime knows nothing about tasks, only that something happened, so a subscriber that never imports task UI can still act on it. The task layer maps terminal semantics to a generic `level: 'success' | 'error'` \u2014 a semantic level, not the task outcome itself; consumers that need the full result use the task-layer `onSettled`."
       }
@@ -66904,6 +66941,15 @@ var docData = {
             "desc": {
               "zh": "\u8DE8 bundle \u5355\u4F8B\u7684\u9ED8\u8BA4\u903B\u8F91\u7AEF\uFF1A\u4E00\u6761\u901A\u9053\u3001\u4E00\u4EFD\u8BA2\u9605\u8005\u540D\u5355",
               "en": "The cross-bundle singleton endpoint: one channel, one subscriber list"
+            }
+          },
+          {
+            "name": "getTabOrigin()",
+            "type": "() => string",
+            "def": "sessionStorage \u6301\u4E45\u5316\uFF0C\u65E0\u5B58\u50A8\u9000\u5185\u5B58",
+            "desc": {
+              "zh": "\u6807\u7B7E\u9875\u8EAB\u4EFD\uFF1A\u5237\u65B0\u524D\u540E\u540C\u4E00\u4E2A\u503C\u3001\u4E0D\u540C\u6807\u7B7E\u9875\u5404\u5F02\uFF1B\u4EFB\u52A1\u5F52\u5C5E\u7528\u5B83\uFF0C\u4E0D\u662F scope \u7684\u968F\u673A origin",
+              "en": "Tab identity: stable across reloads, distinct per tab; used for task ownership, not the scope's random origin"
             }
           },
           {
@@ -71602,8 +71648,8 @@ h(SideSheet, {
         "en": "Correctness contracts of the single-flight coordinator (v0.45.x, with later hardening): (1) epochs are Lamport `{tick,id}`; the max tick is written to localStorage only by the lock-holding owner (followers never write, avoiding a cross-tab read-modify-write that could overwrite a high value with a lower one), with a module-memory fallback whose max is taken together with the stored value; a new tab inherits that maximum before incrementing. Across realms (private mode / cleared site data, where each tab has its own memory fallback), if a lower-epoch owner appears, a follower holding a higher epoch broadcasts a fencing claim on any low-epoch authoritative message (signal / state-reply / frame); the lower-epoch owner yields its lock immediately on receiving a higher claim and re-mints a higher epoch \u2014 late baseline refetches also self-heal, the only convergence path that does not rely on shared storage. (2) `signal` only hints a baseline refetch and never installs an epoch, while `state-reply` is the sole installation entry and stale-epoch replies are dropped. (3) Notice replay carries the receiver watermark `noticeSince` (max server `settledAt` already received); the owner replays items with `settledAt >= since`, so a fresh tab is not flooded with history and same-millisecond extras are safe thanks to id de-duplication; this watermark only trims local BC replay and is not a server cursor \u2014 the server must generate real-clock `settledAt` values, never far-future ones; notices settled during a disconnect still come from the server outbox. (4) `visibilitychange` also fires when hiding, and `online` / `pageshow` / `resume` can happen in the background too \u2014 every wake event passes the same visibility gate, so a hidden page never clears halted. (5) The cross-tab baseline carries only server-confirmed rows: local optimistic rows (POST in flight) are never exported, otherwise a rollback applies only to the originating tab and other tabs keep a ghost `running` row forever."
       },
       {
-        "zh": "\u6D88\u8D39\u65B9 / \u670D\u52A1\u7AEF\u5FC5\u987B\u5C65\u884C\u7684\u5951\u7EA6\uFF08core \u4E0D\u80FD\u5355\u65B9\u4EE3\u52B3\uFF09\uFF1A\u2460 \u4F9D\u8D56\u5FC5\u987B\u5347\u5230\u4E0E\u672C\u7248\u540C\u53F7\uFF08\u4EE5\u6838\u5FC3 `package.json` \u4E3A\u51C6\uFF09\uFF0C\u9489\u65E7\u7248\u5219\u6240\u6709\u4FEE\u590D\u90FD\u4E0D\u751F\u6548\uFF1Bcore \u4E0D\u505A\u65E7\u7248\u672C\u517C\u5BB9\u5206\u652F\uFF0C\u4E14 store / executor \u5168\u5C40\u6536\u53E3\u7B26\u53F7\u5DF2\u968F\u534F\u8BAE\u5347 v2\uFF0C\u540C\u9875\u6DF7\u7248\u4E92\u4E0D\u6C61\u67D3\u3002\u2461 `TaskNotice.id` \u5FC5\u987B\u8DE8\u4F1A\u8BDD / \u5BBF\u4E3B\u91CD\u542F\u5168\u5C40\u552F\u4E00\u2014\u2014\u7528 UUID \u6216\u6301\u4E45\u5316\u5230\u78C1\u76D8\u7684\u5355\u8C03\u8BA1\u6570\uFF0C\u4E0D\u8981\u53EA\u7528\u5185\u5B58 `++seq`\uFF1Bcore \u6309 id \u5728 sessionStorage \u6709\u754C\u53BB\u91CD\uFF08\u6700\u8FD1 512 \u4E2A\uFF09\u5E76\u6309 project \u8BB0 settledAt \u6C34\u4F4D\uFF0C\u65E7 id \u88AB\u6324\u51FA\u540E\u66F4\u65E9\u7684\u56DE\u653E\u4ECD\u88AB\u541E\uFF0C\u4F46\u91CD\u542F\u91CD\u53F7\u4ECD\u4F1A\u88AB\u541E\u6389\u3001\u4E0D\u5F39\u5361\u3002\u2462 \u670D\u52A1\u7AEF\u5FC5\u987B\u5728\u6240\u6709 SSE \u5E27 / \u901A\u77E5\u91CC\u56DE\u663E\u63D0\u4EA4\u4F53\u91CC\u7684 `origin` / `panelId`\uFF08\u63D0\u4EA4\u54CD\u5E94\u65E0\u9700\u56DE\u663E\uFF0Ccore \u4E0D\u8BFB\u5B83\uFF09\uFF1B\u7F3A\u5B57\u6BB5\u65F6 core fail-open \u4FDD\u7559\u672C\u5730\u503C\u5E76\u6253\u4E00\u6B21 console.warn \u8BA9\u914D\u7F6E\u9519\u8BEF\u53EF\u53D1\u73B0\uFF08\u62D2\u6536\u4F1A\u8BA9\u4EFB\u52A1\u4ECE\u5217\u8868\u6D88\u5931\uFF09\uFF0C\u4F46 `scope:'origin'` \u7684\u5F39\u5361\u5F52\u5C5E\u4E0E\u300C\u67E5\u770B\u300D\u8DF3\u56DE\u53D1\u8D77\u9762\u677F\u4F1A\u5931\u6548\u3002\u2463 \u540C key \u7684 `startedAt` \u5FC5\u987B\u4E25\u683C\u9012\u589E\uFF08`max(Date.now(), last+1)`\uFF09\u2014\u2014\u5B83\u662F\u8FD0\u884C\u5B9E\u4F8B\u8EAB\u4EFD\uFF0Ccore \u7528 `<=` \u541E\u540C\u8FD0\u884C\u91CD\u653E\u662F\u523B\u610F\u7684\uFF1B\u649E\u53F7\u65F6\u65B0 running \u4E5F\u4F1A\u88AB\u5F53\u91CD\u653E\u541E\u3002\u505A\u4E0D\u5230\u65F6\u9700\u8BC4\u5BA1\u663E\u5F0F `runId`\uFF08\u542B store \u8EAB\u4EFD\u5224\u5B9A\u4E0E\u6587\u6863\u540C\u6B65\uFF09\uFF0Ccore \u4E0D\u5355\u65B9\u6269\u5C55\u534F\u8BAE\u3002\u2464 \u8FDE\u7EED\u4E24\u6B21 permanent 401 \u540E\u8FDB\u5165 core \u51B7\u5374\u7A97\u53E3\uFF1A\u7A97\u53E3\u5185 resume / \u5728\u7EBF\u5524\u9192 no-op\uFF0C\u6210\u529F\u5EFA\u6D41\u6E05\u96F6\uFF1B\u5728 `onGiveUp` \u91CC\u540C\u6B65\u5237\u65B0\u51ED\u8BC1\u540E\u91CD\u63A5\u7EBF\u4ECD\u7ACB\u5373\u751F\u6548\u3002\u2465 `online` \u9ED8\u8BA4\u5524\u9192\u505C\u673A\uFF1B\u8BBE `autoRecoverOnOnline:false` \u53EF\u5173\u95ED\u6B64\u4E8B\u4EF6\uFF0C\u4F9B\u4E25\u683C\u300C\u4EC5\u663E\u5F0F\u6062\u590D\u300D\u5E94\u7528\u4F7F\u7528\u2014\u2014\u51ED\u8BC1\u5C31\u7EEA\u540E\u663E\u5F0F\u8C03 `resume`\u3002\u5F00\u5173\u6BCF\u6B21 online \u4E8B\u4EF6\u8BFB\u53D6\u3001\u76D1\u542C\u5668\u59CB\u7EC8\u53EA\u7ED1\u4E00\u6B21\uFF0C\u5148 false \u540E true \u540E\u7F6E\u6539\u503C\u5373\u65F6\u751F\u6548\uFF08\u4E0D\u91CD\u7ED1\u3001\u4E0D\u6390\u6D41\uFF09\u3002",
-        "en": "Contracts the consumer / server must fulfil (the core cannot do these unilaterally): (1) Depend on the matching version (see the core `package.json`); pinning an older release means none of the fixes apply \u2014 the core keeps no back-compat branch, and the store / executor global symbols moved to v2 with the protocol so mixed versions on one page stay isolated. (2) A `TaskNotice.id` must be globally unique across sessions and host restarts \u2014 use a UUID or a counter persisted to disk, never an in-memory `++seq`; the core de-duplicates by id in bounded sessionStorage (latest 512) plus a per-project `settledAt` watermark, so older replays are still swallowed after the id set overflows, but an id reused after restart is swallowed and no card is shown. (3) The server must echo `origin` / `panelId` from the submit body in every SSE frame / notice (the submit response need not echo them \u2014 the core never reads it); when missing the core fail-opens to local values and logs one console.warn so the misconfiguration is discoverable (rejecting would make the task vanish from the list), but `scope:'origin'` announcement ownership and \"view\" jumping back to the originating panel stop working. (4) `startedAt` must strictly increase for the same key (`max(Date.now(), last+1)`) \u2014 it is the run identity and the core deliberately swallows same-run replays with `<=`; a collision also swallows the new running frame. If that cannot be guaranteed, an explicit `runId` (including store identity checks and docs) needs a separate review \u2014 the core does not extend the protocol unilaterally. (5) After two consecutive permanent 401s the core enters a cooldown: resume / network wake is a no-op in that window and resets on a successful connection; refreshing credentials synchronously in `onGiveUp` and re-wiring still resumes immediately. (6) `online` wakes a halt by default; `autoRecoverOnOnline:false` disables it for strict explicit-only apps \u2014 call `resume` once credentials are ready. The switch is read on every online event and the listener is bound only once, so switching from false to true after wiring takes effect immediately without rebinding or dropping the in-flight stream."
+        "zh": "\u6D88\u8D39\u65B9 / \u670D\u52A1\u7AEF\u5FC5\u987B\u5C65\u884C\u7684\u5951\u7EA6\uFF08core \u4E0D\u80FD\u5355\u65B9\u4EE3\u52B3\uFF09\uFF1A\u2460 \u4F9D\u8D56\u5FC5\u987B\u5347\u5230\u4E0E\u672C\u7248\u540C\u53F7\uFF08\u4EE5\u6838\u5FC3 `package.json` \u4E3A\u51C6\uFF09\uFF0C\u9489\u65E7\u7248\u5219\u6240\u6709\u4FEE\u590D\u90FD\u4E0D\u751F\u6548\uFF1Bcore \u4E0D\u505A\u65E7\u7248\u672C\u517C\u5BB9\u5206\u652F\uFF0C\u4E14 store / executor \u5168\u5C40\u6536\u53E3\u7B26\u53F7\u5DF2\u968F\u534F\u8BAE\u5347 v2\uFF0C\u540C\u9875\u6DF7\u7248\u4E92\u4E0D\u6C61\u67D3\u3002\u2461 `TaskNotice.id` \u5FC5\u987B\u8DE8\u4F1A\u8BDD / \u5BBF\u4E3B\u91CD\u542F\u5168\u5C40\u552F\u4E00\u2014\u2014\u7528 UUID \u6216\u6301\u4E45\u5316\u5230\u78C1\u76D8\u7684\u5355\u8C03\u8BA1\u6570\uFF0C\u4E0D\u8981\u53EA\u7528\u5185\u5B58 `++seq`\uFF1Bcore \u6309 id \u5728 sessionStorage \u6709\u754C\u53BB\u91CD\uFF08\u6700\u8FD1 512 \u4E2A\uFF09\u5E76\u6309 project \u8BB0 settledAt \u6C34\u4F4D\uFF0C\u65E7 id \u88AB\u6324\u51FA\u540E\u66F4\u65E9\u7684\u56DE\u653E\u4ECD\u88AB\u541E\uFF0C\u4F46\u91CD\u542F\u91CD\u53F7\u4ECD\u4F1A\u88AB\u541E\u6389\u3001\u4E0D\u5F39\u5361\u3002\u2462 \u670D\u52A1\u7AEF\u5FC5\u987B\u5728\u6240\u6709 SSE \u5E27 / \u901A\u77E5\u91CC\u56DE\u663E\u63D0\u4EA4\u4F53\u91CC\u7684 `origin` / `panelId`\uFF08\u63D0\u4EA4\u54CD\u5E94\u65E0\u9700\u56DE\u663E\uFF0Ccore \u4E0D\u8BFB\u5B83\uFF09\uFF1B\u7F3A\u5B57\u6BB5\u65F6 core fail-open \u4FDD\u7559\u672C\u5730\u503C\u5E76\u6253\u4E00\u6B21 console.warn \u8BA9\u914D\u7F6E\u9519\u8BEF\u53EF\u53D1\u73B0\uFF08\u62D2\u6536\u4F1A\u8BA9\u4EFB\u52A1\u4ECE\u5217\u8868\u6D88\u5931\uFF09\uFF0C\u4F46 `scope:'origin'` \u7684\u5F39\u5361\u5F52\u5C5E\u4E0E\u300C\u67E5\u770B\u300D\u8DF3\u56DE\u53D1\u8D77\u9762\u677F\u4F1A\u5931\u6548\u3002\u7F3A\u7701 `origin` \u53D6 `getTabOrigin()`\uFF08sessionStorage \u7684\u6807\u7B7E\u9875\u8EAB\u4EFD\uFF0C\u5237\u65B0\u4FDD\u7559\u3001\u6362\u6807\u7B7E\u9875\u5404\u5F02\uFF09\uFF0C\u56E0\u6B64\u4ECE\u540C\u4E00\u7A97\u53E3\u53D1\u8D77\u7684\u4EFB\u52A1\u5728\u5237\u65B0\u540E\u4ECD\u80FD\u5F39\u5361\uFF1B\u6CE8\u5165\u81EA\u5B9A\u4E49 `originId` \u7684\u6D88\u8D39\u65B9\u987B\u81EA\u884C\u4FDD\u8BC1\u5B83\u8DE8\u5237\u65B0\u7A33\u5B9A\uFF0C\u5E76\u8BA9\u670D\u52A1\u7AEF\u539F\u6837\u56DE\u663E\uFF0C\u5426\u5219\u5237\u65B0\u540E\u5F52\u5C5E\u5224\u5B9A\u4F1A\u5931\u914D\u3002\u2463 \u540C key \u7684 `startedAt` \u5FC5\u987B\u4E25\u683C\u9012\u589E\uFF08`max(Date.now(), last+1)`\uFF09\u2014\u2014\u5B83\u662F\u8FD0\u884C\u5B9E\u4F8B\u8EAB\u4EFD\uFF0Ccore \u7528 `<=` \u541E\u540C\u8FD0\u884C\u91CD\u653E\u662F\u523B\u610F\u7684\uFF1B\u649E\u53F7\u65F6\u65B0 running \u4E5F\u4F1A\u88AB\u5F53\u91CD\u653E\u541E\u3002\u505A\u4E0D\u5230\u65F6\u9700\u8BC4\u5BA1\u663E\u5F0F `runId`\uFF08\u542B store \u8EAB\u4EFD\u5224\u5B9A\u4E0E\u6587\u6863\u540C\u6B65\uFF09\uFF0Ccore \u4E0D\u5355\u65B9\u6269\u5C55\u534F\u8BAE\u3002\u2464 \u8FDE\u7EED\u4E24\u6B21 permanent 401 \u540E\u8FDB\u5165 core \u51B7\u5374\u7A97\u53E3\uFF1A\u7A97\u53E3\u5185 resume / \u5728\u7EBF\u5524\u9192 no-op\uFF0C\u6210\u529F\u5EFA\u6D41\u6E05\u96F6\uFF1B\u5728 `onGiveUp` \u91CC\u540C\u6B65\u5237\u65B0\u51ED\u8BC1\u540E\u91CD\u63A5\u7EBF\u4ECD\u7ACB\u5373\u751F\u6548\u3002\u2465 `online` \u9ED8\u8BA4\u5524\u9192\u505C\u673A\uFF1B\u8BBE `autoRecoverOnOnline:false` \u53EF\u5173\u95ED\u6B64\u4E8B\u4EF6\uFF0C\u4F9B\u4E25\u683C\u300C\u4EC5\u663E\u5F0F\u6062\u590D\u300D\u5E94\u7528\u4F7F\u7528\u2014\u2014\u51ED\u8BC1\u5C31\u7EEA\u540E\u663E\u5F0F\u8C03 `resume`\u3002\u5F00\u5173\u6BCF\u6B21 online \u4E8B\u4EF6\u8BFB\u53D6\u3001\u76D1\u542C\u5668\u59CB\u7EC8\u53EA\u7ED1\u4E00\u6B21\uFF0C\u5148 false \u540E true \u540E\u7F6E\u6539\u503C\u5373\u65F6\u751F\u6548\uFF08\u4E0D\u91CD\u7ED1\u3001\u4E0D\u6390\u6D41\uFF09\u3002",
+        "en": "Contracts the consumer / server must fulfil (the core cannot do these unilaterally): (1) Depend on the matching version (see the core `package.json`); pinning an older release means none of the fixes apply \u2014 the core keeps no back-compat branch, and the store / executor global symbols moved to v2 with the protocol so mixed versions on one page stay isolated. (2) A `TaskNotice.id` must be globally unique across sessions and host restarts \u2014 use a UUID or a counter persisted to disk, never an in-memory `++seq`; the core de-duplicates by id in bounded sessionStorage (latest 512) plus a per-project `settledAt` watermark, so older replays are still swallowed after the id set overflows, but an id reused after restart is swallowed and no card is shown. (3) The server must echo `origin` / `panelId` from the submit body in every SSE frame / notice (the submit response need not echo them \u2014 the core never reads it); when missing the core fail-opens to local values and logs one console.warn so the misconfiguration is discoverable (rejecting would make the task vanish from the list), but `scope:'origin'` announcement ownership and \"view\" jumping back to the originating panel stop working. The default `origin` comes from `getTabOrigin()` (a sessionStorage tab identity: kept across reloads, distinct per tab), so a task started in one window still announces after a reload; consumers injecting a custom `originId` must keep it stable across reloads and have the server echo it verbatim, otherwise ownership mismatches after a refresh. (4) `startedAt` must strictly increase for the same key (`max(Date.now(), last+1)`) \u2014 it is the run identity and the core deliberately swallows same-run replays with `<=`; a collision also swallows the new running frame. If that cannot be guaranteed, an explicit `runId` (including store identity checks and docs) needs a separate review \u2014 the core does not extend the protocol unilaterally. (5) After two consecutive permanent 401s the core enters a cooldown: resume / network wake is a no-op in that window and resets on a successful connection; refreshing credentials synchronously in `onGiveUp` and re-wiring still resumes immediately. (6) `online` wakes a halt by default; `autoRecoverOnOnline:false` disables it for strict explicit-only apps \u2014 call `resume` once credentials are ready. The switch is read on every online event and the listener is bound only once, so switching from false to true after wiring takes effect immediately without rebinding or dropping the in-flight stream."
       },
       {
         "zh": "`connectTaskLayout(ctx)` \u662F\u4ECE\u5BBF\u4E3B client ctx \u63A5 layout \u7684\u4FBF\u6377\u5165\u53E3\uFF1A\u901A\u8FC7 `ctx.inject(['layout'])` \u62FF layout \u670D\u52A1\uFF0C\u53D1\u8D77\u65F6\u4ECE `panelInfo.getSnapshot().activePanelId` \u81EA\u52A8\u8BB0\u9762\u677F\uFF08\u5BBF\u4E3B 0.2.2-rc.3 \u6838\u5B9E\uFF0C\u4E0D\u5728 ILayout \u9876\u5C42\uFF09\uFF0C\u70B9\u6309\u94AE\u65F6\u7528 `selectPanel(panelId)` \u5207\u56DE\u3002\u4E0D\u4F20 `streamUrl` \u65F6\u662F\u7EAF\u672C\u5730\u5185\u5B58\u6A21\u5F0F\uFF0C\u9002\u5408\u5355\u6D4B\u4E0E\u9884\u89C8\u7AD9\u3002",
@@ -76884,9 +76930,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.46.3"}`],
-            [t3("buildDemo"), `v${"0.46.3"}`],
-            [t3("buildStamp"), "261123-223129-928"]
+            [t3("buildCore"), `v${"0.46.4"}`],
+            [t3("buildDemo"), `v${"0.46.4"}`],
+            [t3("buildStamp"), "261124-105208-181"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77201,9 +77247,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.46.3"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.46.3"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261123-223129-928")
+          (0, import_react112.createElement)("span", null, `core v${"0.46.4"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.46.4"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261124-105208-181")
         )
       )
     ),

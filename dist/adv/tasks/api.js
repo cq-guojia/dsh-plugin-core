@@ -9,7 +9,7 @@
  */
 import { notify as notifyCard } from '../../ui/feedback/notify.js';
 import { t } from '../../utils/i18n.js';
-import { defaultNotifyScope, notifyMessage, resolveProject, subscribeNotifications as subscribeNotifyBus, } from '../../runtime/notify.js';
+import { getTabOrigin, notifyMessage, resolveProject, subscribeNotifications as subscribeNotifyBus, } from '../../runtime/notify.js';
 import { createCoordinator } from './coordinator.js';
 import { isDisplayTitle } from './model.js';
 import { connectSharedTaskStream } from './shared-stream.js';
@@ -289,9 +289,10 @@ export function connectTaskCenter(host) {
             patch[key] = value;
     }
     Object.assign(stableHost, patch);
-    // 页面级身份：优先用消费方注入的 originId，缺省才取通知总线的标签页 origin。
+    // 标签页身份：优先用消费方注入的 originId，缺省取 sessionStorage 里的 tab origin。
     // startTask 记 origin、toast/notify 判归属必须同一个来源，否则注入自定义 originId 时判定错位。
-    const pageOrigin = () => defaultNotifyScope().origin;
+    // 用 tab 级而非 defaultNotifyScope().origin（每次加载随机）：刷新后同一窗口仍是自己发起的任务。
+    const pageOrigin = () => getTabOrigin();
     if (stableHost.originId === undefined)
         stableHost.originId = pageOrigin;
     // toast / notify 两个默认层各自独立补齐：只配了其中一个，另一个仍要有默认，不能永久静默。
