@@ -1,7 +1,7 @@
 # 20261124-0244-3fda-修复刷新后终态-toast-丢失: 修复刷新后终态 toast 丢失
 
 - **Tags**: 终态通知, origin, sessionStorage, 刷新恢复
-- **Status**: open · 2026-11-24 02:44:13
+- **Status**: doing · 2026-11-24 02:45:07 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-24 02:44:13 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -34,3 +34,4 @@
 <!-- Maintained by the script: appended by new / claim / set / release / log / close. Do not edit.
      Backfill with: progress log --id 20261124-0244-3fda-修复刷新后终态-toast-丢失 --note "...". -->
 - 2026-11-24 02:44:13 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created
+- 2026-11-24 02:45:07 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
