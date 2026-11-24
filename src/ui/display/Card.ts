@@ -67,6 +67,8 @@ export interface CardSharedProps {
   hoverScope?: 'head' | 'card'
   /** 是否带底色：默认 true（Card = surface-1，StripCard = accent 浅底）；false 时底透明、边框仍在。 */
   filled?: boolean
+  /** 运算中：色条在原色上呼吸（系统减少动效时常亮）；只改视觉，不改点击 / 禁用行为。默认 false。 */
+  loading?: boolean
 }
 
 /** 数字按 px 写进 CSS 变量，字符串原样透传。 */
@@ -139,6 +141,7 @@ function CardShell(
     hover ? `dshpc-card--hover-${scope}` : '',
     props.filled === false ? 'dshpc-card--no-fill' : '',
     props.expanded === true ? 'dshpc-card--expanded' : '',
+    props.loading === true ? 'dshpc-card--loading' : '',
     props.className ?? '',
   ]
     .filter((s) => s !== '')

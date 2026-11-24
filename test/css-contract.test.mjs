@@ -629,3 +629,22 @@ test('自有基础类名在 CSS 与 TS 两侧一致（防漂移）', async () =>
     `icon.css 的选择器与 ICON_BASE_CLASS（${m[1]}）不一致`,
   )
 })
+
+test('FlipText 扫光浅色 70% 白不白成一片，深色用更深的中性灰且亮带够宽', () => {
+  assert.match(
+    FLIP_TEXT_CSS,
+    /\.dshpc-flip\{[^}]*--dshpc-sweep-hi:color-mix\(in srgb,var\(--dshpc-on-signal\) 70%,currentColor\)/,
+    '浅色高亮是 70% 白掺字色，不是纯白',
+  )
+  assert.match(
+    FLIP_TEXT_CSS,
+    /body\[data-ds-dark-theme\] \.dshpc-flip\{--dshpc-sweep-hi:var\(--dshpc-fg-4\)\}/,
+    '深色光带取比 fg-3 更深的中性灰 token',
+  )
+  assert.ok(!FLIP_TEXT_CSS.includes('--dshpc-cyan'), '深色扫光不许再用青色')
+  assert.match(
+    FLIP_TEXT_CSS,
+    /linear-gradient\(105deg,currentColor 0,currentColor 38%,var\(--dshpc-sweep-hi\) 46%,var\(--dshpc-sweep-hi\) 54%,currentColor 62%,currentColor 100%\)/,
+    '亮带保持 24% 渐变的高亮平台',
+  )
+})

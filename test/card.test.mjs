@@ -88,6 +88,20 @@ test('hoverable / filled 是独立开关，可单独也可同时', () => {
   assert.match(both, /dshpc-card--no-fill/)
 })
 
+test('loading 只让色条呼吸，颜色不变；不传时零回归', () => {
+  for (const Comp of [Card, StripCard]) {
+    const off = renderToStaticMarkup(createElement(Comp, null, '内容'))
+    assert.ok(!off.includes('dshpc-card--loading'), '默认不挂 loading')
+    const on = renderToStaticMarkup(createElement(Comp, { loading: true, accent: 'success' }, '内容'))
+    assert.match(on, /dshpc-card--loading/)
+    assert.match(on, /dshpc-card--success/, '原色档位照旧')
+    assert.match(on, /<span class="dshpc-card__bar" aria-hidden="true"><\/span>/, '色条 DOM 不变')
+  }
+  assert.match(CARD_CSS, /\.dshpc-card--loading \.dshpc-card__bar\{animation:dshpc-card-bar-breathe/)
+  assert.match(CARD_CSS, /@keyframes dshpc-card-bar-breathe\{0%,100%\{opacity:\.35\}50%\{opacity:1\}\}/)
+  assert.match(CARD_CSS, /@media \(prefers-reduced-motion:reduce\)\{\.dshpc-card--loading \.dshpc-card__bar\{animation:none;opacity:1\}\}/)
+})
+
 // 2026-11-07：两块区域各自独立。head（默认）= 头部区容器整块边到边变色、展开区完全不参与；
 // card = 整卡含展开区一起变色，由消费端显式选。绝不用「给展开区铺底色去盖根节点」。
 test('Card CSS：根节点零内距 + 头部区独立容器承载 hover', () => {

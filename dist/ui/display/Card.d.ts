@@ -53,6 +53,8 @@ export interface CardSharedProps {
     hoverScope?: 'head' | 'card';
     /** 是否带底色：默认 true（Card = surface-1，StripCard = accent 浅底）；false 时底透明、边框仍在。 */
     filled?: boolean;
+    /** 运算中：色条在原色上呼吸（系统减少动效时常亮）；只改视觉，不改点击 / 禁用行为。默认 false。 */
+    loading?: boolean;
 }
 /**
  * 卡片（框式）：复用 `Surface` 外框（surface 底 + 1px 边框 + 圆角 12），

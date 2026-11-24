@@ -43,7 +43,10 @@ h(StripCard, {
   // 要连展开区一起变色才显式写 hoverScope: 'card'
   expanded: open, onToggle: () => setOpen(!open),
   panel: h('div', null, '展开详情'),           // 展开内容放 panel，别塞进 children
-}, h('div', null, '标题 + 元信息'))`
+}, h('div', null, '标题 + 元信息'))
+
+// 运算中：只让色条在原色上呼吸，状态由调用方按数据维护
+h(Card, { accent: 'warning', loading: running }, h('div', null, '正在计算…'))`
 
 const surfaceExample = `import { Surface, Card } from 'dsh-plugin-core/ui'
 
@@ -733,6 +736,10 @@ h(CodeViewer, { text: draft, path: 'notes.md', t })`,
           zh: '`onClick` 让整块卡片可点，命中范围与 `hoverScope` 完全一致：默认 `head` 时点击层是 `__body`（内距圈四边都在里面），展开区 `__panel` 是它的兄弟节点、不绑任何事件，里面拖选复制也不受影响；显式 `card` 时点击层上提到根节点，整卡含展开区都响应。点击层拿 `role="button"`、`tabIndex=0` 与 Enter / Space，并有键盘焦点环；刻意不渲染成 `<button>`，因为调用方要在里面放按钮。`action` 与 `onToggle` 折叠箭头同在右侧槽，一层挡住冒泡，不会连带触发。不传 `onClick` 时外观与行为完全不变。',
           en: '`onClick` makes the whole card clickable over exactly the same area as `hoverScope`: with the default `head`, the hit layer is `__body` (all four padding edges included), while `__panel` is its sibling with no handlers at all, so text selection inside the expanded area is untouched. With explicit `card`, the hit layer moves up to the root and the expanded area responds too. The hit layer gets `role="button"`, `tabIndex=0`, Enter / Space and a keyboard focus ring. It is deliberately not a `<button>`, because callers put buttons inside. `action` and the `onToggle` arrow share the right-hand slot, which stops propagation so they never trigger the card. Without `onClick`, appearance and behaviour are unchanged.',
         },
+        {
+          zh: '`loading` 表示这一条正在运算：只有色条在原有颜色上呼吸（系统开启「减少动态效果」时退化为常亮），不改底色、不改点击或禁用行为；哪几条在运算由调用方按数据自行维护。两种卡片共用同一个最外层类名 `dshpc-card--loading`（`loading` 属性就是挂它），想直接在最外层 `className` 上写这个名字也一样生效。',
+          en: '`loading` marks this row as in progress: only the rail breathes in its existing color (static when reduced motion is enabled), with no change to the background or to click/disabled behaviour; the caller decides which rows are in progress. Both cards share the same root class `dshpc-card--loading` (that is what the `loading` prop adds); writing that name directly in the root `className` works too.',
+        },
       ],
       api: [
         {
@@ -749,6 +756,7 @@ h(CodeViewer, { text: draft, path: 'notes.md', t })`,
             { name: 'hoverable', type: 'boolean', def: '跟随 onClick', desc: { zh: '悬停变色 + 光标变 pointer，统一 --dshpc-card-hover；可显式传 false 关掉', en: 'Hover color plus a pointer cursor, using --dshpc-card-hover; defaults to on when onClick is set, pass false to disable' } },
             { name: 'hoverScope', type: "'head' | 'card'", def: "'head'", desc: { zh: "'head'（默认）只有头部区变色并可点、展开区完全不受影响；'card' 整卡含展开区一起变色、一起可点。变色只在 hover 开时生效", en: "'head' (default) limits both color and clicks to the header block, leaving the expanded area untouched; 'card' includes it in both. Color applies only when hover is on" } },
             { name: 'filled', type: 'boolean', def: "'true'", desc: { zh: '是否带底色；false 时底透明、边框仍在。默认有底（Card = surface-1 / StripCard = accent 浅底）', en: 'Background fill; false makes it transparent while keeping the border. Default on (Card = surface-1 / StripCard = accent tint)' } },
+            { name: 'loading', type: 'boolean', def: "'false'", desc: { zh: '运算中：色条在原色上呼吸，减少动效时常亮；仅视觉，不改点击 / 禁用行为', en: 'In progress: the rail pulses in its existing color and stays static under reduced motion; visual only, no click/disabled change' } },
             { name: 'className / style', type: '—', def: '—', desc: { zh: '追加类 / 样式；`style.padding` 摊成四根内距轴，同步头部区与展开区', en: 'Append class / style; `style.padding` expands into the four padding axes so the header and expanded area stay aligned' } },
           ],
         },
@@ -834,8 +842,8 @@ h(CodeViewer, { text: draft, path: 'notes.md', t })`,
           en: 'Widths follow Button / Chip: `width` wins; `minWidth` / `maxWidth` apply only when it is unset; none of the three means "follow the parent" (a flex child stretches naturally — that is how the dialog footer uses it). To put it on the left of a dialog footer, use the `notice` prop on `Modal` / `ConfirmModal` / `AlertModal` / `SideSheet` rather than wrapping it yourself.',
         },
         {
-          zh: '`sweep` = 常驻扫光：一道斜光每 1.8s 从文字上扫过，扫到的字提亮，甚至文案一直不变也看得出「还在干活」。**默认关**；`Modal` / `SideSheet` 的 `notice` 默认打开（确认框与过程提示的场景）。光只落在字形上（`background-clip:text`），不会在底栏的空白区显出一条白光，且亮色主题用白光、暗色主题用青光以保证浅字上也有反差；`prefers-reduced-motion` 下与翻牌一起关掉。',
-          en: '`sweep` is a persistent sheen: a slanted highlight crosses the text every 1.8s, brightening the characters it passes, so an unchanged line still reads as "still working". **Off by default**; the `notice` prop on `Modal` / `SideSheet` turns it on (confirm dialogs and progress hints). The light is clipped to the glyphs (`background-clip:text`), so it never shows as a white bar across the empty part of a footer; it uses white in light theme and cyan in dark theme to stay visible on light glyphs, and is turned off together with the flip under `prefers-reduced-motion`.',
+          zh: '`sweep` = 常驻扫光：一道斜光每 1.8s 从文字上扫过，甚至文案一直不变也看得出「还在干活」。**默认关**；`Modal` / `SideSheet` 的 `notice` 默认打开（确认框与过程提示的场景）。光只落在字形上（`background-clip:text`），不会在底栏的空白区显出一条白光；亮色主题用 70% 白光掺字色提亮，不会白成一片；暗色主题用更深的中性灰把光带压暗一档（不带色相）；亮带占渐变的 24%、中段是高亮平台，明暗两种主题都有明度差；`prefers-reduced-motion` 下与翻牌一起关掉。',
+          en: '`sweep` is a persistent sheen: a slanted highlight crosses the text every 1.8s, so an unchanged line still reads as "still working". **Off by default**; the `notice` prop on `Modal` / `SideSheet` turns it on (confirm dialogs and progress hints). The light is clipped to the glyphs (`background-clip:text`), so it never shows as a white bar across the empty part of a footer; light theme mixes 70% white with the text colour so the band never becomes solid white, while dark theme uses a deeper neutral grey that darkens the band (no colour cast). The band spans 24% of the gradient with a highlight plateau, giving contrast in both themes. It is turned off together with the flip under `prefers-reduced-motion`.',
         },
       ],
       api: [

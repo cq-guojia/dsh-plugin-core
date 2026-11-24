@@ -77,6 +77,11 @@
 .dshpc-card--bar-bottom .dshpc-card__bar{width:var(--card-bar-length);height:var(--card-bar-size);align-self:flex-start}
 .dshpc-card--bar-right .dshpc-card__bar,
 .dshpc-card--bar-bottom .dshpc-card__bar{order:1}
+/* 运算中：只让色条在原色上呼吸。用 opacity 不动几何 —— 根节点 overflow:hidden 会裁掉贴边条的缩放，
+   StripCard 的通高条缩放也会在两端露空；改 --card-accent 更会让浅底一起闪。减少动效时退化为常亮。 */
+.dshpc-card--loading .dshpc-card__bar{animation:dshpc-card-bar-breathe 1.2s var(--dshpc-ease) infinite}
+@keyframes dshpc-card-bar-breathe{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.dshpc-card--loading .dshpc-card__bar{animation:none;opacity:1}}
 
 /* ── 外观一 · StripCard：同色系浅底 + 1px 不可见占位边框 + 方角 + 4px 通高方角色条贴左缘 ──
    底色 / 方角 / 占位边框由 Surface 的三条修饰类提供（Card.ts 按 kind 传），此处只管内距与条子。 */

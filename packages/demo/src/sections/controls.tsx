@@ -1536,6 +1536,10 @@ export function CardPage(): ReturnType<typeof h> {
             h('div', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', marginTop: '4px' } }, '整卡含展开区一起变色'),
           ),
         ),
+        // 运算中：色条常亮呼吸，不用按钮触发
+        h(Card, { accent: 'business', loading: true, style: { padding: '8px 12px' } },
+          h('div', { style: { fontSize: 'var(--dshpc-font-sm)', color: 'var(--dshpc-fg-2)' } }, 'loading: true · 色条呼吸（运算中）'),
+        ),
         // accent 速览：单行紧凑卡，只看色条档位
         h(
           'div',
@@ -1643,6 +1647,10 @@ export function CardPage(): ReturnType<typeof h> {
             h('div', { style: { fontSize: 'var(--dshpc-font-md)' } }, '可选：整卡一起变色'),
             h('div', { style: { fontSize: 'var(--dshpc-font-xs)', color: 'var(--dshpc-fg-3)', marginTop: '4px' } }, "hoverScope: 'card'"),
           ),
+        ),
+        // 运算中：通高色条同样常亮呼吸
+        h(StripCard, { accent: 'success', loading: true, style: { padding: '8px 12px 8px 20px' } },
+          h('div', { style: { fontSize: 'var(--dshpc-font-sm)', color: 'var(--dshpc-fg-2)' } }, 'loading: true · 通高色条呼吸（运算中）'),
         ),
         // accent 速览：单行紧凑卡，只看色条档位（与 Card 节同款）
         h(

@@ -71,3 +71,4 @@ docs/                                               # 项目文档库入口与�
 - 2026-11-23（TaskBar 终态标签 · 发版 v0.46.3）：任务行终态小标签按 `state` 区分 `done`=绿色「成功」、`failed`=红色「失败」；状态缺失或无法识别时用中性「完成」，不再一律假成功。补中英文案与纯判定回归。
 - 2026-11-24（终态 toast 跨刷新归属 · 发版 v0.46.4）：任务 `origin` 缺省取 `getTabOrigin()`（sessionStorage 标签页身份，刷新保留、换页各异），与 `createNotifyScope().origin`（逻辑端实例随机 id，只服务 BroadcastChannel 自过滤）分离；刷新后同一窗口仍弹终态 toast，其它标签页不弹。补三条回归，同步 runtime / 任务通知文档真源与架构不变量。已知边界：复制标签页会同 origin 双弹，升级瞬间在飞旧任务丢一次终态 toast。
 - 2026-11-24（TaskBar 点击后保持展开 · 发版 v0.46.5）：`closeOnAction` 默认值从 `true` 翻转为 `false`——点行按钮后默认保持面板展开，便于连点多个动作；仅消费方显式传 `true` 才每次收起。同步 API 真源示例与描述。
+- 2026-11-24 12:11:42：api/ui 补 Card/StripCard 的 loading 色条呼吸与 FlipText 扫光两主题中性光口径

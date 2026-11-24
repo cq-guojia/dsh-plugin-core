@@ -80,6 +80,7 @@ function CardShell(kind, props) {
         hover ? `dshpc-card--hover-${scope}` : '',
         props.filled === false ? 'dshpc-card--no-fill' : '',
         props.expanded === true ? 'dshpc-card--expanded' : '',
+        props.loading === true ? 'dshpc-card--loading' : '',
         props.className ?? '',
     ]
         .filter((s) => s !== '')

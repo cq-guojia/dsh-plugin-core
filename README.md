@@ -135,7 +135,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 #### 展示
 
 - `Surface`——纯框容器，tone / 边框 / 内距 / 圆角四轴。
-- `Card` / `StripCard`——带强调色的卡片。
+- `Card` / `StripCard`——带强调色的卡片，可给 `loading` 让色条在原色上呼吸表示运算中。
 - `Chip`、`SectionHead`、`MarqueeText`、`FlipText`、`LiveText`。
 - `Table`——多行分组表头、通栏分组（一张表装多个板块）、跨行跨列、行选中、密度 / 斑马纹 / 边框开关、列级对齐与表头语义色、内置空态、加载态与加载更多、可选内置分页。数据驱动：不排序、不取数、不虚拟滚动。
 - `FieldHint`——独立的问号提示，浮层用的是宿主官方 tooltip。
