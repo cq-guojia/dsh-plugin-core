@@ -71315,7 +71315,7 @@ h(SideSheet, {
       {
         "id": "bt-taskbar-example",
         "lang": "ts",
-        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar \u662F\u9AD8\u7EA7\u63A7\u4EF6\u7684\u5C55\u793A\u9762\uFF0C\u5355\u72EC\u4ECE adv/tasks/ui \u5F15\uFF1Badv/tasks \u53EA\u51FA\u903B\u8F91\uFF0CNode \u5F15\u5B83\u4E0D\u5E26 React\u3002\n// \u5C55\u793A\u680F\u6CBF\u7528\u6838\u5FC3\u539F UI\uFF1Aicon / pill \u4E24\u5F62\u6001\u3001sm/md/lg \u5C3A\u5BF8\u3001width/min/max \u5BBD\u5EA6\uFF0C\n// \u6587\u5B57\u8FC7\u957F\u81EA\u52A8\u7701\u7565 + hover \u8DD1\u9A6C\u706F\u3002\u6570\u636E\u6765\u81EA\u5171\u4EAB\u4EFB\u52A1\u6C60\uFF0C\u65E0\u9700\u672C\u63D2\u4EF6\u753B\u884C\u3002\n// pill \u957F\u6761\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// \u53EA\u6709\u56FE\u6807\uFF08\u6B63\u65B9\u5F62\uFF0C\u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u5E26\u7EFF\u70B9\uFF09\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// \u5B9A\u5BBD 220\uFF1B\u4E0A\u9650 110\uFF08\u653E\u4E0D\u4E0B\u7701\u7565\u53F7\u3001hover \u8DD1\u9A6C\u706F\uFF09\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// \u70B9\u884C\u6309\u94AE\u540E\u9ED8\u8BA4\u6536\u8D77\u9762\u677F\uFF1Bfalse = \u4FDD\u6301 open\uFF0C\u906E\u7F69\u4F1A\u81EA\u7136\u76D6\u4F4F\u5B83\nh(TaskBar, { closeOnAction: false, groups: ['scan'] })\n// \u53D7\u63A7\uFF1A\u4F20 open \u5FC5\u987B\u540C\u65F6\u63A5 onOpenChange \u5E76\u56DE\u5199\uFF1BonOpenChange(false) \u5E42\u7B49\uFF0C\u53EF\u91CD\u590D\u53D1\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
+        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar \u662F\u9AD8\u7EA7\u63A7\u4EF6\u7684\u5C55\u793A\u9762\uFF0C\u5355\u72EC\u4ECE adv/tasks/ui \u5F15\uFF1Badv/tasks \u53EA\u51FA\u903B\u8F91\uFF0CNode \u5F15\u5B83\u4E0D\u5E26 React\u3002\n// \u5C55\u793A\u680F\u6CBF\u7528\u6838\u5FC3\u539F UI\uFF1Aicon / pill \u4E24\u5F62\u6001\u3001sm/md/lg \u5C3A\u5BF8\u3001width/min/max \u5BBD\u5EA6\uFF0C\n// \u6587\u5B57\u8FC7\u957F\u81EA\u52A8\u7701\u7565 + hover \u8DD1\u9A6C\u706F\u3002\u6570\u636E\u6765\u81EA\u5171\u4EAB\u4EFB\u52A1\u6C60\uFF0C\u65E0\u9700\u672C\u63D2\u4EF6\u753B\u884C\u3002\n// pill \u957F\u6761\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// \u53EA\u6709\u56FE\u6807\uFF08\u6B63\u65B9\u5F62\uFF0C\u6709\u4EFB\u52A1\u5728\u8DD1\u65F6\u5E26\u7EFF\u70B9\uFF09\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// \u5B9A\u5BBD 220\uFF1B\u4E0A\u9650 110\uFF08\u653E\u4E0D\u4E0B\u7701\u7565\u53F7\u3001hover \u8DD1\u9A6C\u706F\uFF09\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// \u70B9\u884C\u6309\u94AE\u540E\u9ED8\u8BA4\u4FDD\u6301\u5C55\u5F00\uFF0C\u4FBF\u4E8E\u8FDE\u70B9\u591A\u4E2A\u52A8\u4F5C\uFF1Btrue = \u6BCF\u70B9\u4E00\u6B21\u5C31\u6536\u8D77\nh(TaskBar, { closeOnAction: true, groups: ['scan'] })\n// \u53D7\u63A7\uFF1A\u4F20 open \u5FC5\u987B\u540C\u65F6\u63A5 onOpenChange \u5E76\u56DE\u5199\uFF1BonOpenChange(false) \u5E42\u7B49\uFF0C\u53EF\u91CD\u590D\u53D1\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
       }
     ]
   },
@@ -71507,10 +71507,10 @@ h(SideSheet, {
           {
             "name": "TaskBar.closeOnAction",
             "type": "boolean",
-            "def": "true",
+            "def": "false",
             "desc": {
-              "zh": "\u70B9\u884C\u6309\u94AE\u540E\u662F\u5426\u6536\u8D77\u9762\u677F\uFF1Bfalse \u4FDD\u6301\u5C55\u5F00\uFF0C\u6D3B\u52A8\u6A21\u6001\u7684\u906E\u7F69\u81EA\u7136\u76D6\u4F4F\u5B83\uFF0C\u6A21\u6001\u5185\u64CD\u4F5C\u4E0D\u6539 open\uFF1B\u6A21\u6001\u5173\u95ED\u540E\u5916\u90E8\u70B9\u51FB / Esc / \u89E6\u53D1\u5668\u7167\u5E38\u6536",
-              "en": "Close the panel after a row action; false keeps it open under an active modal mask without changing open; after the modal closes, outside click / Escape / trigger close normally"
+              "zh": "\u70B9\u884C\u6309\u94AE\u540E\u662F\u5426\u6536\u8D77\u9762\u677F\uFF1B\u9ED8\u8BA4 false \u4FDD\u6301\u5C55\u5F00\uFF0C\u4FBF\u4E8E\u8FDE\u70B9\u591A\u4E2A\u52A8\u4F5C\uFF1B\u4F20 true \u624D\u6BCF\u6B21\u6536\u8D77\u3002\u4FDD\u6301\u5C55\u5F00\u65F6\u6D3B\u52A8\u6A21\u6001\u7684\u906E\u7F69\u81EA\u7136\u76D6\u4F4F\u5B83\uFF0C\u6A21\u6001\u5185\u64CD\u4F5C\u4E0D\u6539 open\uFF1B\u6A21\u6001\u5173\u95ED\u540E\u5916\u90E8\u70B9\u51FB / Esc / \u89E6\u53D1\u5668\u7167\u5E38\u6536",
+              "en": "Whether to close the panel after a row action; defaults to false to stay open for consecutive actions, pass true to close each time. While staying open, an active modal mask covers it naturally without changing open; after the modal closes, outside click / Escape / trigger close normally"
             }
           },
           {
@@ -76446,7 +76446,7 @@ function useSettledRows(all, retainMs) {
 function TaskBar(props) {
   ensureComponentStyles("task-bar", TASK_BAR_CSS);
   useLocale();
-  const { form = "pill", size: size4 = "md", groups, project, onActionFailure, placement = "down", defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className: className2, style: style2, settleRetainMs = DEFAULT_SETTLE_RETAIN_MS, open: controlledOpen, onOpenChange, closeOnAction = true } = props;
+  const { form = "pill", size: size4 = "md", groups, project, onActionFailure, placement = "down", defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className: className2, style: style2, settleRetainMs = DEFAULT_SETTLE_RETAIN_MS, open: controlledOpen, onOpenChange, closeOnAction = false } = props;
   const actionSize = "sm";
   const triggerWidth = {};
   if (form === "pill") {
@@ -76930,9 +76930,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.46.4"}`],
-            [t3("buildDemo"), `v${"0.46.4"}`],
-            [t3("buildStamp"), "261124-105208-181"]
+            [t3("buildCore"), `v${"0.46.5"}`],
+            [t3("buildDemo"), `v${"0.46.5"}`],
+            [t3("buildStamp"), "261124-112659-007"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77247,9 +77247,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.46.4"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.46.4"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261124-105208-181")
+          (0, import_react112.createElement)("span", null, `core v${"0.46.5"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.46.5"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261124-112659-007")
         )
       )
     ),

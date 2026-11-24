@@ -82,8 +82,8 @@ h(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })
 // 定宽 220；上限 110（放不下省略号、hover 跑马灯）
 h(TaskBar, { width: 220, groups: ['scan'] })
 h(TaskBar, { maxWidth: 110, groups: ['scan'] })
-// 点行按钮后默认收起面板；false = 保持 open，遮罩会自然盖住它
-h(TaskBar, { closeOnAction: false, groups: ['scan'] })
+// 点行按钮后默认保持展开，便于连点多个动作；true = 每点一次就收起
+h(TaskBar, { closeOnAction: true, groups: ['scan'] })
 // 受控：传 open 必须同时接 onOpenChange 并回写；onOpenChange(false) 幂等，可重复发
 h(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })
 ```
@@ -158,7 +158,7 @@ serveTaskStream(ctx, {
 | `subscribeTaskNotifications(options)` | `(options) => () => void` | — | — | 收任务广播：scope=plugin 只收同项目（不传 project 时回落全局默认项目，没设则报错），global 收所有；收到纯数据自己处理 | Receive task broadcasts: scope=plugin filters to same project (falls back to the global default project when project is omitted, throws if unset), global receives all; plain data, consumer decides |
 | `mountTaskUI(options)` | `(options: MountTaskUIOptions) => () => void` | — | — | 注册 handlers + 订阅终态；handlers 按 project 命名空间（同名按钮不同项目互不覆盖），返回注销函数 | Registers handlers and subscribes to terminal states; handlers are namespaced by project (same button id in different projects does not collide); returns an unsubscribe function |
 | `TaskBar` | `React component` | — | — | 核心原生展示栏：pill/icon 形态、sm/md/lg 尺寸、固定宽 / 最小宽 / 最大宽，超长 hover 跑马灯；数据来自共享池 | Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool |
-| `TaskBar.closeOnAction` | `boolean` | — | true | 点行按钮后是否收起面板；false 保持展开，活动模态的遮罩自然盖住它，模态内操作不改 open；模态关闭后外部点击 / Esc / 触发器照常收 | Close the panel after a row action; false keeps it open under an active modal mask without changing open; after the modal closes, outside click / Escape / trigger close normally |
+| `TaskBar.closeOnAction` | `boolean` | — | false | 点行按钮后是否收起面板；默认 false 保持展开，便于连点多个动作；传 true 才每次收起。保持展开时活动模态的遮罩自然盖住它，模态内操作不改 open；模态关闭后外部点击 / Esc / 触发器照常收 | Whether to close the panel after a row action; defaults to false to stay open for consecutive actions, pass true to close each time. While staying open, an active modal mask covers it naturally without changing open; after the modal closes, outside click / Escape / trigger close normally |
 | `TaskBar.open` | `boolean \| undefined` | — | undefined | 受控展开态；传了就必须同时传 onOpenChange 并回写，运行中不要切换受控 / 非受控 | Controlled open state; pass together with onOpenChange and write it back; never switch controlled/uncontrolled at runtime |
 | `TaskBar.onOpenChange` | `(open: boolean) => void` | — | undefined | 展开态变化；自动收起发 false、触发器点开发 true；回调幂等可重复发，受控时必须回写 | Open-state changes; automatic dismissal emits false and the trigger emits true; idempotent and may repeat; controlled callers must write back |
 | `pressTaskButton(buttonId, taskId)` | `(buttonId: string, taskId: string) => boolean` | — | — | 先切回发起面板再执行 handler；找不到返回 false | Switches back to the originating panel before running the handler; false when not found |

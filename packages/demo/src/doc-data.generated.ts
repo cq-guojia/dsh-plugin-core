@@ -5050,7 +5050,7 @@ export const docData = {
       {
         "id": "bt-taskbar-example",
         "lang": "ts",
-        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar 是高级控件的展示面，单独从 adv/tasks/ui 引；adv/tasks 只出逻辑，Node 引它不带 React。\n// 展示栏沿用核心原 UI：icon / pill 两形态、sm/md/lg 尺寸、width/min/max 宽度，\n// 文字过长自动省略 + hover 跑马灯。数据来自共享任务池，无需本插件画行。\n// pill 长条\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// 只有图标（正方形，有任务在跑时带绿点）\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// 定宽 220；上限 110（放不下省略号、hover 跑马灯）\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// 点行按钮后默认收起面板；false = 保持 open，遮罩会自然盖住它\nh(TaskBar, { closeOnAction: false, groups: ['scan'] })\n// 受控：传 open 必须同时接 onOpenChange 并回写；onOpenChange(false) 幂等，可重复发\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
+        "src": "import { TaskBar } from 'dsh-plugin-core/adv/tasks/ui'\n\n// TaskBar 是高级控件的展示面，单独从 adv/tasks/ui 引；adv/tasks 只出逻辑，Node 引它不带 React。\n// 展示栏沿用核心原 UI：icon / pill 两形态、sm/md/lg 尺寸、width/min/max 宽度，\n// 文字过长自动省略 + hover 跑马灯。数据来自共享任务池，无需本插件画行。\n// pill 长条\nh(TaskBar, { groups: ['scan'] })\nh(TaskBar, { size: 'lg', groups: ['scan'] })\n// 只有图标（正方形，有任务在跑时带绿点）\nh(TaskBar, { form: 'icon', groups: ['scan'] })\nh(TaskBar, { form: 'icon', size: 'lg', groups: ['scan'] })\n// 定宽 220；上限 110（放不下省略号、hover 跑马灯）\nh(TaskBar, { width: 220, groups: ['scan'] })\nh(TaskBar, { maxWidth: 110, groups: ['scan'] })\n// 点行按钮后默认保持展开，便于连点多个动作；true = 每点一次就收起\nh(TaskBar, { closeOnAction: true, groups: ['scan'] })\n// 受控：传 open 必须同时接 onOpenChange 并回写；onOpenChange(false) 幂等，可重复发\nh(TaskBar, { open, onOpenChange: setOpen, groups: ['scan'] })"
       }
     ]
   },
@@ -5242,10 +5242,10 @@ export const docData = {
           {
             "name": "TaskBar.closeOnAction",
             "type": "boolean",
-            "def": "true",
+            "def": "false",
             "desc": {
-              "zh": "点行按钮后是否收起面板；false 保持展开，活动模态的遮罩自然盖住它，模态内操作不改 open；模态关闭后外部点击 / Esc / 触发器照常收",
-              "en": "Close the panel after a row action; false keeps it open under an active modal mask without changing open; after the modal closes, outside click / Escape / trigger close normally"
+              "zh": "点行按钮后是否收起面板；默认 false 保持展开，便于连点多个动作；传 true 才每次收起。保持展开时活动模态的遮罩自然盖住它，模态内操作不改 open；模态关闭后外部点击 / Esc / 触发器照常收",
+              "en": "Whether to close the panel after a row action; defaults to false to stay open for consecutive actions, pass true to close each time. While staying open, an active modal mask covers it naturally without changing open; after the modal closes, outside click / Escape / trigger close normally"
             }
           },
           {

@@ -51,7 +51,7 @@ export interface TaskBarProps {
     open?: boolean;
     /** 展开态变化。自动收起发 `false`，触发器点开发 `true`；受控时必须回写到 `open`。 */
     onOpenChange?: (open: boolean) => void;
-    /** 点行按钮后是否收起面板，默认 `true`（通用菜单「点项即收」）。传 `false` 可保持面板。 */
+    /** 点行按钮后是否收起面板，默认 `false`（保持展开，便于连点多个动作）。传 `true` 才收起。 */
     closeOnAction?: boolean;
     /**
      * 终态行在列表里停留多久再退场（毫秒），默认 60000 —— 给 `when: done/failed` 的行按钮留点击窗口。

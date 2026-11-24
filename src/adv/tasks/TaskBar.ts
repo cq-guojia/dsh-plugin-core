@@ -73,7 +73,7 @@ export interface TaskBarProps {
   open?: boolean
   /** 展开态变化。自动收起发 `false`，触发器点开发 `true`；受控时必须回写到 `open`。 */
   onOpenChange?: (open: boolean) => void
-  /** 点行按钮后是否收起面板，默认 `true`（通用菜单「点项即收」）。传 `false` 可保持面板。 */
+  /** 点行按钮后是否收起面板，默认 `false`（保持展开，便于连点多个动作）。传 `true` 才收起。 */
   closeOnAction?: boolean
   /**
    * 终态行在列表里停留多久再退场（毫秒），默认 60000 —— 给 `when: done/failed` 的行按钮留点击窗口。
@@ -323,7 +323,7 @@ export function TaskBar(props: TaskBarProps): ReactNode {
     form = 'pill', size = 'md', groups, project, onActionFailure, placement = 'down',
     defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className, style,
     settleRetainMs = DEFAULT_SETTLE_RETAIN_MS,
-    open: controlledOpen, onOpenChange, closeOnAction = true,
+    open: controlledOpen, onOpenChange, closeOnAction = false,
   } = props
 
   // 行内动作按钮一律最小号：面板里的动作是次要操作，不跟着触发器尺寸变（2026-11-15 用户）。
@@ -497,7 +497,7 @@ export function TaskBar(props: TaskBarProps): ReactNode {
                   icon: h(FontIcon, { name: glyph }),
                   ...(label === undefined ? { label: glyph } : {}),
                   onClick: () => {
-                    // 通用菜单「点项即收」：先关面板，再派发动作；失败仍按原口径报告。
+                    // 默认保持展开便于连点多个动作；消费方显式要求才先关面板再派发动作。
                     if (closeOnAction) setOpenState(false)
                     const ok = pressTaskButton(action.id, task.id)
                     if (ok) return

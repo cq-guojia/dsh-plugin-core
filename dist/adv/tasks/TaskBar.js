@@ -219,7 +219,7 @@ export function TaskBar(props) {
     ensureComponentStyles('task-bar', TASK_BAR_CSS);
     // 切语言要重渲，否则计数与空态文字停在旧语种。
     useLocale();
-    const { form = 'pill', size = 'md', groups, project, onActionFailure, placement = 'down', defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className, style, settleRetainMs = DEFAULT_SETTLE_RETAIN_MS, open: controlledOpen, onOpenChange, closeOnAction = true, } = props;
+    const { form = 'pill', size = 'md', groups, project, onActionFailure, placement = 'down', defaultIcon = DEFAULT_ICON, width, minWidth, maxWidth, className, style, settleRetainMs = DEFAULT_SETTLE_RETAIN_MS, open: controlledOpen, onOpenChange, closeOnAction = false, } = props;
     // 行内动作按钮一律最小号：面板里的动作是次要操作，不跟着触发器尺寸变（2026-11-15 用户）。
     const actionSize = 'sm';
     // 宽度三轴与 Button 同口径：固定宽优先，min / max 只在 width 未设时生效。
@@ -362,7 +362,7 @@ export function TaskBar(props) {
                     icon: h(FontIcon, { name: glyph }),
                     ...(label === undefined ? { label: glyph } : {}),
                     onClick: () => {
-                        // 通用菜单「点项即收」：先关面板，再派发动作；失败仍按原口径报告。
+                        // 默认保持展开便于连点多个动作；消费方显式要求才先关面板再派发动作。
                         if (closeOnAction)
                             setOpenState(false);
                         const ok = pressTaskButton(action.id, task.id);
