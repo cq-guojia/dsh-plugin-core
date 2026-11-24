@@ -1,7 +1,7 @@
 # 20261124-0244-3fda-修复刷新后终态-toast-丢失: 修复刷新后终态 toast 丢失
 
 - **Tags**: 终态通知, origin, sessionStorage, 刷新恢复
-- **Status**: doing · 2026-11-24 02:49:01 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: doing · 2026-11-24 02:52:25 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-24 02:44:13 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
@@ -15,11 +15,11 @@
 
 ## To Do
 
-- 待用户验收：真实浏览器里刷新后终态 toast 正常弹、别的标签页不弹。
+- 用户后续在真实浏览器里验收：刷新后终态 toast 正常弹、别的标签页不弹。
 
 ## Next
 
-- 用户验收；若复制标签页双弹边界或升级窗口旧任务丢一次 toast 不可接受，再按 `docs/architecture/task-notifications.md`「边界与已知限制」两条评估。
+- 验收若有异议再开新任务；本单已发版 v0.46.4，无待办动作。
 
 ## Process
 
@@ -30,7 +30,7 @@
 
 ## Conclusion
 
-刷新后终态 toast 丢失已修复：origin 改为 sessionStorage 的标签页级身份，逻辑端 id 仍随机，两者不再互相污染。已知边界：浏览器「复制标签页」会同 origin 双弹（接受）；升级瞬间已在飞、带旧随机 origin 的任务仍丢一次终态 toast（旧值从未持久化，无法回收）。未做提交 / 发版（用户未要求）。
+刷新后终态 toast 丢失已修复：origin 改为 sessionStorage 的标签页级身份，逻辑端 id 仍随机，两者不再互相污染。已知边界：浏览器「复制标签页」会同 origin 双弹（接受）；升级瞬间已在飞、带旧随机 origin 的任务仍丢一次终态 toast（旧值从未持久化，无法回收）。用户指令发版：core / demo 同号 bump 到 0.46.4，提交 + push + tag `v0.46.4`。
 
 ## Execution Log
 
@@ -39,3 +39,4 @@
 - 2026-11-24 02:44:13 · new · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · created
 - 2026-11-24 02:45:07 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
 - 2026-11-24 02:49:01 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 交付：getTabOrigin（sessionStorage tab 身份）替换默认 scope origin；src/runtime/notify.ts + api.ts:345 + 3 条回归 + 文档真源；build/test(631)/typecheck/build:demo/codelint 全过
+- 2026-11-24 02:52:25 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 发版 v0.46.4：core/demo 同号 bump，文档投影已同步，build/test(631)/typecheck/build:demo 全过，待 commit+push+tag
