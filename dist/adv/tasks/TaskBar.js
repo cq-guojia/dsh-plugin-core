@@ -65,16 +65,23 @@ export function settledChipOf(state) {
  *
  * - 时间只有数字与冒号，不写「已执行」；不足一小时 `MM:SS`，到一小时 `HH:MM:SS`。
  * - 有 `progress.message` 就跟一个 ` - ` 再显示它；没有就只显示时间 / 标签。
- * - 披露文字用 `FlipText(sweep)`：换字翻牌 + 常驻扫光，超长三点省略、hover 跑马灯都由它内层的
- *   `MarqueeText` 负责（与弹窗 notice 同一套，见 Modal / dsh-task-ledger）。
+ * - 披露文字用 `FlipText`：换字翻牌；运行中带常驻扫光（还在干活），终态关掉扫光、只留文字——
+ *   「成功 / 失败」标签已经表达了结束，再扫光会读成仍在进行中。超长三点省略、hover 跑马灯
+ *   都由它内层的 `MarqueeText` 负责（与弹窗 notice 同一套，见 Modal / dsh-task-ledger）。
  *
  * 只有这一小块订阅全站唯一心跳（`useNowMs` ⇒ `infra/ticker`），列表其余部分不跟着每秒重渲染
  * —— 别把 `useNowMs()` 提到 `TaskBar` 顶层，那会让整个展开面板每秒重渲一次。
  * 终态不再订阅心跳（`until` 已冻结）。
  */
+/** 扫光只属于运行中：终态标签已表达结束，文字保留但不再扫，否则读成「还在干活」。 */
+export function sweepOfSettled(settled) {
+    return !settled;
+}
 function Elapsed(props) {
-    const settled = props.until !== undefined;
-    const tick = useNowMs(); // hook 必须无条件调；终态下取 until，tick 变化不会用到
+    // 与 store.isSettled / settledAtOf 同一判据：终态由 state 决定，不看时钟在不在。
+    // 脏数据里 state=done 而 settledAt 缺失时，若按 until 判会显示假计时 + 扫光。
+    const settled = props.state !== undefined && isSettled(props.state);
+    const tick = useNowMs(); // hook 必须无条件调；终态下 leading 走 chip 分支，tick 不会用到
     const nowMs = props.until ?? tick;
     const chip = settledChipOf(props.state);
     const leading = settled
@@ -83,7 +90,7 @@ function Elapsed(props) {
     const message = props.progress;
     return h('span', { className: 'dshpc-taskbar__row-meta' }, leading, message === undefined || message === ''
         ? null
-        : h('span', { className: 'dshpc-taskbar__row-detail' }, h('span', { className: 'dshpc-taskbar__row-sep' }, '-'), h(FlipText, { text: message, sweep: true })));
+        : h('span', { className: 'dshpc-taskbar__row-detail' }, h('span', { className: 'dshpc-taskbar__row-sep' }, '-'), h(FlipText, { text: message, sweep: sweepOfSettled(settled) })));
 }
 /** 终态行默认停留时长：给 `when: done/failed` 的行按钮留点击窗口，到点才退场。 */
 const DEFAULT_SETTLE_RETAIN_MS = 60000;

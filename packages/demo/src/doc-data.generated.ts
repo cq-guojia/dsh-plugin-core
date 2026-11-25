@@ -5079,8 +5079,8 @@ export const docData = {
         "en": "The executor registry is an **open primitive that knows nothing about \"tasks\"**: `kind` is any string, the core neither enumerates nor validates names and hard-codes no branch for a particular execution style. Host agents (sessions) have an official API and can be wired directly; shell / plugin host scripts register their own handler on the host side (how it runs is their decision), while the core only registers, dispatches and relays progress and terminal state. All plugin copies in one tab share one registry, so an executor registered by A is callable by B."
       },
       {
-        "zh": "执行体拿到 `args`（纯数据）与 `ctx`：`ctx.report(progress)` 上报「最后一段话 + 可选数值进度」。返回 `{ outcome: 'done' | 'failed', reason? }` 即终态；抛错按 failed 结算。进度写进记录的显式字段 `progress`（message / updatedAt / current / total / percent），不塞进 `detail`。核心当前不提供取消信号，执行体不要等 `ctx.signal`。",
-        "en": "A handler receives `args` (plain data) and `ctx`: `ctx.report(progress)` reports the last message plus optional numeric progress. Returning `{ outcome: 'done' | 'failed', reason? }` settles the task; a thrown error settles as failed. Progress lands in the explicit `progress` field (message / updatedAt / current / total / percent), never inside `detail`. There is no cancellation signal in the core today — handlers must not wait on `ctx.signal`."
+        "zh": "执行体拿到 `args`（纯数据）与 `ctx`：`ctx.report(progress)` 上报「最后一段话 + 可选数值进度」。返回 `{ outcome: 'done' | 'failed', reason? }` 即终态；抛错按 failed 结算。进度写进记录的显式字段 `progress`（message / updatedAt / current / total / percent），不塞进 `detail`。`ctx.report` 是本地 executor API；服务端作业把真实进度写进 `TaskRecord.progress` 经 SSE 整条下发，且须保证同 key 的 `updatedAt` 严格递增（挂钟只作排序键，不用于跨进程对齐）。核心统一按 LWW 收敛，缺字段保留旧值、终态不扫光。核心当前不提供取消信号，执行体不要等 `ctx.signal`。",
+        "en": "A handler receives `args` (plain data) and `ctx`: `ctx.report(progress)` reports the last message plus optional numeric progress. Returning `{ outcome: 'done' | 'failed', reason? }` settles the task; a thrown error settles as failed. Progress lands in the explicit `progress` field (message / updatedAt / current / total / percent), never inside `detail`. `ctx.report` is a local executor API; server-side jobs write real progress into `TaskRecord.progress` and send the whole record over SSE, keeping `updatedAt` strictly increasing per key (the clock is only a sort key, not a cross-process alignment). The core converges with LWW: missing fields keep the previous value, and settled rows do not sweep. There is no cancellation signal in the core today — handlers must not wait on `ctx.signal`."
       }
     ],
     "code": [
@@ -5248,8 +5248,8 @@ export const docData = {
             "type": "React component",
             "def": "—",
             "desc": {
-              "zh": "核心原生展示栏：pill/icon 形态、sm/md/lg 尺寸、固定宽 / 最小宽 / 最大宽，超长 hover 跑马灯；数据来自共享池",
-              "en": "Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool"
+              "zh": "核心原生展示栏：pill/icon 形态、sm/md/lg 尺寸、固定宽 / 最小宽 / 最大宽，超长 hover 跑马灯；数据来自共享池。进度文字运行中带扫光、终态只留文字不再扫；形状不对的可选字段（progress / rowButtons）在入口剥离，不毁整条任务",
+              "en": "Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool. The progress message sweeps while running and stays without sweeping once settled; malformed optional fields (progress / rowButtons) are stripped at the boundary without rejecting the whole task"
             }
           },
           {

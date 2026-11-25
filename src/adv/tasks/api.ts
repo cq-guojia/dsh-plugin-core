@@ -235,13 +235,23 @@ export function isTaskRecord(value: unknown): value is TaskRecord {
 }
 
 /**
- * 投影前把坏 progress 剥离成「未提供」——核心 store 的 LWW 语义会把缺字段当保留旧值，
- * 于是畸形帧只丢掉那一段披露文字，不牵连整条任务状态（必填字段坏仍由 isTaskRecord 整帧拒收）。
+ * 投影前把坏的可选字段剥离成「未提供」——核心 store 的合并语义把缺字段当保留旧值，
+ * 于是畸形帧只丢掉那一个可选字段，不牵连整条任务状态（必填字段坏仍由 isTaskRecord 整帧拒收）。
+ * 每个被展示层直接消费的可选字段都要在这里挡一道：progress 交给 FlipText、rowButtons 被 .filter。
+ * 只挡「形状不对会抛错」的情况，不替调用方校验内容语义。
  */
 function sanitizeTask(task: TaskRecord): TaskRecord {
-  if (task.progress === undefined || isTaskProgress(task.progress)) return task
-  const { progress: _bad, ...rest } = task
-  return rest
+  let result = task
+  if (result.progress !== undefined && !isTaskProgress(result.progress)) {
+    const { progress: _bad, ...rest } = result
+    result = rest
+  }
+  const buttons = result.rowButtons
+  if (buttons !== undefined && (!Array.isArray(buttons) || buttons.some((b) => b === null || typeof b !== 'object'))) {
+    const { rowButtons: _bad, ...rest } = result
+    result = rest
+  }
+  return result
 }
 
 /** 状态投影（基线 / 增量）：只恢复列表，**不弹卡**。基线与增量同语义——真源可归一覆盖本地旧行（含乐观行），但单调守卫挡住旧终态复活。 */

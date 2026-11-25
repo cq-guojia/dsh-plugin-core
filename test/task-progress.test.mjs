@@ -5,6 +5,7 @@ import { isTaskProgress } from '../dist/adv/tasks/model.js'
 import { isTaskRecord, projectTasks, taskCenterStore } from '../dist/adv/tasks/api.js'
 import { createCoordinator } from '../dist/adv/tasks/coordinator.js'
 import { createExecutorRegistry } from '../dist/runtime/index.js'
+import { parseTaskFrames } from '../dist/adv/tasks/stream.js'
 
 const title = (description) => ({ category: '任务', description })
 const rec = (over = {}) => ({
@@ -79,6 +80,16 @@ test('progress：相同内容不触发 publish（revision 不变）', () => {
   assert.equal(s.getSnapshot().revision, before, '内容相同的帧不发多余通知')
   s.upsert(rec({ progress: prog('x', 2) }))
   assert.equal(s.getSnapshot().revision, before + 1, 'updatedAt 变了才算变更')
+  // stableJson 的动机：键序不同但内容相同的对象不得误判成变更
+  s.upsert(rec({ progress: { updatedAt: 2, message: 'x' } }))
+  assert.equal(s.getSnapshot().revision, before + 1, 'progress 键序不同不算变更')
+})
+
+test('跨运行：新 running 清掉旧终态的 settledAt，避免停留时钟被旧行污染', () => {
+  const s = createTaskStore()
+  s.upsert(rec({ key: 'k', state: 'done', settledAt: 50 }))
+  s.merge([rec({ key: 'k', startedAt: 200, state: 'running' })])
+  assert.equal(s.get('a').settledAt, undefined, '新运行不带旧结算时刻')
 })
 
 test('getByKey：按 (project,key) 取归一后的存活行', () => {
@@ -98,6 +109,28 @@ test('边界：projectTasks / ingest 对坏 progress 与缺 settledAt 的处理�
   assert.ok(taskCenterStore.get('bad-progress'), '坏 progress 不毁整帧，任务照常进列表')
   assert.equal(taskCenterStore.get('bad-progress').progress, undefined)
   assert.equal(taskCenterStore.get('bad-terminal'), undefined, '终态缺 settledAt 仍整帧拒收')
+  taskCenterStore.clearAll()
+})
+
+test('SSE 帧解析：坏 progress 与坏 rowButtons 的原始帧能正常解析成对象', () => {
+  const frame = (extra) => `event: task\ndata: ${JSON.stringify(rec(extra))}\n\n`
+  let parsed
+  parseTaskFrames(
+    frame({ id: 'sse-bad', progress: { message: 1, updatedAt: 2 }, rowButtons: 'not-an-array' }),
+    (task, snapshot) => { parsed = { task, snapshot } },
+  )
+  assert.equal(parsed.snapshot, false)
+  assert.equal(parsed.task.id, 'sse-bad')
+  // sanitizeTask 对这两个字段的剥离由下面的 projectTasks 用例验证（同一函数、四条入口共用）
+})
+
+test('边界：坏 rowButtons 被剥离，合法按钮保留', () => {
+  const bad = rec({ id: 'bad-btn', rowButtons: 'bad' })
+  const good = rec({ id: 'good-btn', rowButtons: [{ id: 'b', text: '查看', when: 'done' }] })
+  projectTasks([bad, good])
+  assert.ok(taskCenterStore.get('bad-btn'))
+  assert.equal(taskCenterStore.get('bad-btn').rowButtons, undefined, '坏按钮数组被剥离，任务不毁')
+  assert.equal(taskCenterStore.get('good-btn').rowButtons.length, 1, '合法按钮原样保留')
   taskCenterStore.clearAll()
 })
 

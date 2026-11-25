@@ -54,9 +54,10 @@
 8. **多副本收口**：executor 注册表与 task store 都挂 `globalThis[Symbol.for(...)]`，同页所有插件副本共用一份。
 9. **进度是一等公民、单一写入真源**：`progress: { message, updatedAt, current?, total?, percent? }` 由本地 `ctx.report()` 或服务端 SSE 上报，不塞进 `detail`。`store.ts` 的 `reconcile` 是 upsert / merge / mergeBaseline 三条写入路径共用的唯一合成点，progress 语义只实现一次：
    - **缺省保留**：帧不带 progress = 不表达变更，保留旧值（RFC 7386 部分更新语义）。终态帧不带 progress 因此天然保留最后一段文字——终态保留是这条规则的推论，不是特例分支。
+   - **展示语义**：`TaskBar` 的披露文字运行中带扫光（还在干活），终态关扫光、文字保留——「成功 / 失败」标签已表达结束，再扫光会读成仍在进行中。扫光开关是核心内部行为，不在 `TaskBarProps` 暴露。
    - **LWW 与乱序守卫**：同一次运行（`startedAt` 相同）内按 `updatedAt` 取新，更小的迟到帧丢弃其 progress；`updatedAt` 相等时后到覆盖（确定性裁决）。这条守卫在 `reconcile` 内，与 `isStaleAgainst` 的运行身份守卫正交——后者挡整帧，`reconcile` 挡字段。
    - **跨运行重置**：`startedAt` 变了就是新任务，不继承旧运行的文字（与 `settledAt` 的 sameRun 判据一致）。
-   - **边界校验**：`isTaskProgress` 校验形状；坏 progress 在 `api.ts` 的入口被剥离成「未提供」，只丢那一段披露，不拒收整条任务状态。必填字段坏仍由 `isTaskRecord` 整帧拒收。
+   - **边界校验**：`isTaskProgress` 校验形状；坏 progress / 非数组 rowButtons 在 `api.ts` 的 `sanitizeTask` 被剥离成「未提供」，只丢那一个可选字段，不拒收整条任务状态。两者都是展示层直接消费的字段（FlipText / `.filter`），形状不对会抛错。必填字段坏仍由 `isTaskRecord` 整帧拒收。
    - **服务端责任**：同 key 的 `updatedAt` 必须严格递增。挂钟只作排序键、不用于跨进程对齐；本地 `ctx.report` 用 `max(Date.now(), old+1)` 保证自身单调。服务端给倒挂值会触发 LWW 丢弃，核心不替服务端造序号。
    - **读取**：`taskCenterStore.getByKey(project, key)` 按业务键取存活行，消费方不必自己遍历快照找 key。
 10. **同源单飞、届全序**：每个 `streamUrl` 一条真 SSE，Web Locks 选主 + BroadcastChannel 扇出。届是 Lamport `{tick,id}`，

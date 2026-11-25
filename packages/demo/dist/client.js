@@ -58739,10 +58739,17 @@ function isTaskRecord(value) {
   return typeof v.id === "string" && typeof v.project === "string" && typeof v.group === "string" && isDisplayTitle(v.title) && isTaskToastConfig(v.toast) && (v.state === "running" || v.state === "done" || v.state === "failed") && typeof v.startedAt === "number" && Number.isFinite(v.startedAt) && (v.state === "running" ? v.settledAt === void 0 : settledAtOk);
 }
 function sanitizeTask(task) {
-  if (task.progress === void 0 || isTaskProgress(task.progress))
-    return task;
-  const { progress: _bad, ...rest } = task;
-  return rest;
+  let result = task;
+  if (result.progress !== void 0 && !isTaskProgress(result.progress)) {
+    const { progress: _bad, ...rest } = result;
+    result = rest;
+  }
+  const buttons = result.rowButtons;
+  if (buttons !== void 0 && (!Array.isArray(buttons) || buttons.some((b) => b === null || typeof b !== "object"))) {
+    const { rowButtons: _bad, ...rest } = result;
+    result = rest;
+  }
+  return result;
 }
 function ingestTask(raw, snapshot = false) {
   if (!isTaskRecord(raw))
@@ -71449,8 +71456,8 @@ h(SideSheet, {
         "en": 'The executor registry is an **open primitive that knows nothing about "tasks"**: `kind` is any string, the core neither enumerates nor validates names and hard-codes no branch for a particular execution style. Host agents (sessions) have an official API and can be wired directly; shell / plugin host scripts register their own handler on the host side (how it runs is their decision), while the core only registers, dispatches and relays progress and terminal state. All plugin copies in one tab share one registry, so an executor registered by A is callable by B.'
       },
       {
-        "zh": "\u6267\u884C\u4F53\u62FF\u5230 `args`\uFF08\u7EAF\u6570\u636E\uFF09\u4E0E `ctx`\uFF1A`ctx.report(progress)` \u4E0A\u62A5\u300C\u6700\u540E\u4E00\u6BB5\u8BDD + \u53EF\u9009\u6570\u503C\u8FDB\u5EA6\u300D\u3002\u8FD4\u56DE `{ outcome: 'done' | 'failed', reason? }` \u5373\u7EC8\u6001\uFF1B\u629B\u9519\u6309 failed \u7ED3\u7B97\u3002\u8FDB\u5EA6\u5199\u8FDB\u8BB0\u5F55\u7684\u663E\u5F0F\u5B57\u6BB5 `progress`\uFF08message / updatedAt / current / total / percent\uFF09\uFF0C\u4E0D\u585E\u8FDB `detail`\u3002\u6838\u5FC3\u5F53\u524D\u4E0D\u63D0\u4F9B\u53D6\u6D88\u4FE1\u53F7\uFF0C\u6267\u884C\u4F53\u4E0D\u8981\u7B49 `ctx.signal`\u3002",
-        "en": "A handler receives `args` (plain data) and `ctx`: `ctx.report(progress)` reports the last message plus optional numeric progress. Returning `{ outcome: 'done' | 'failed', reason? }` settles the task; a thrown error settles as failed. Progress lands in the explicit `progress` field (message / updatedAt / current / total / percent), never inside `detail`. There is no cancellation signal in the core today \u2014 handlers must not wait on `ctx.signal`."
+        "zh": "\u6267\u884C\u4F53\u62FF\u5230 `args`\uFF08\u7EAF\u6570\u636E\uFF09\u4E0E `ctx`\uFF1A`ctx.report(progress)` \u4E0A\u62A5\u300C\u6700\u540E\u4E00\u6BB5\u8BDD + \u53EF\u9009\u6570\u503C\u8FDB\u5EA6\u300D\u3002\u8FD4\u56DE `{ outcome: 'done' | 'failed', reason? }` \u5373\u7EC8\u6001\uFF1B\u629B\u9519\u6309 failed \u7ED3\u7B97\u3002\u8FDB\u5EA6\u5199\u8FDB\u8BB0\u5F55\u7684\u663E\u5F0F\u5B57\u6BB5 `progress`\uFF08message / updatedAt / current / total / percent\uFF09\uFF0C\u4E0D\u585E\u8FDB `detail`\u3002`ctx.report` \u662F\u672C\u5730 executor API\uFF1B\u670D\u52A1\u7AEF\u4F5C\u4E1A\u628A\u771F\u5B9E\u8FDB\u5EA6\u5199\u8FDB `TaskRecord.progress` \u7ECF SSE \u6574\u6761\u4E0B\u53D1\uFF0C\u4E14\u987B\u4FDD\u8BC1\u540C key \u7684 `updatedAt` \u4E25\u683C\u9012\u589E\uFF08\u6302\u949F\u53EA\u4F5C\u6392\u5E8F\u952E\uFF0C\u4E0D\u7528\u4E8E\u8DE8\u8FDB\u7A0B\u5BF9\u9F50\uFF09\u3002\u6838\u5FC3\u7EDF\u4E00\u6309 LWW \u6536\u655B\uFF0C\u7F3A\u5B57\u6BB5\u4FDD\u7559\u65E7\u503C\u3001\u7EC8\u6001\u4E0D\u626B\u5149\u3002\u6838\u5FC3\u5F53\u524D\u4E0D\u63D0\u4F9B\u53D6\u6D88\u4FE1\u53F7\uFF0C\u6267\u884C\u4F53\u4E0D\u8981\u7B49 `ctx.signal`\u3002",
+        "en": "A handler receives `args` (plain data) and `ctx`: `ctx.report(progress)` reports the last message plus optional numeric progress. Returning `{ outcome: 'done' | 'failed', reason? }` settles the task; a thrown error settles as failed. Progress lands in the explicit `progress` field (message / updatedAt / current / total / percent), never inside `detail`. `ctx.report` is a local executor API; server-side jobs write real progress into `TaskRecord.progress` and send the whole record over SSE, keeping `updatedAt` strictly increasing per key (the clock is only a sort key, not a cross-process alignment). The core converges with LWW: missing fields keep the previous value, and settled rows do not sweep. There is no cancellation signal in the core today \u2014 handlers must not wait on `ctx.signal`."
       }
     ],
     "code": [
@@ -71618,8 +71625,8 @@ h(SideSheet, {
             "type": "React component",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6838\u5FC3\u539F\u751F\u5C55\u793A\u680F\uFF1Apill/icon \u5F62\u6001\u3001sm/md/lg \u5C3A\u5BF8\u3001\u56FA\u5B9A\u5BBD / \u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\uFF0C\u8D85\u957F hover \u8DD1\u9A6C\u706F\uFF1B\u6570\u636E\u6765\u81EA\u5171\u4EAB\u6C60",
-              "en": "Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool"
+              "zh": "\u6838\u5FC3\u539F\u751F\u5C55\u793A\u680F\uFF1Apill/icon \u5F62\u6001\u3001sm/md/lg \u5C3A\u5BF8\u3001\u56FA\u5B9A\u5BBD / \u6700\u5C0F\u5BBD / \u6700\u5927\u5BBD\uFF0C\u8D85\u957F hover \u8DD1\u9A6C\u706F\uFF1B\u6570\u636E\u6765\u81EA\u5171\u4EAB\u6C60\u3002\u8FDB\u5EA6\u6587\u5B57\u8FD0\u884C\u4E2D\u5E26\u626B\u5149\u3001\u7EC8\u6001\u53EA\u7559\u6587\u5B57\u4E0D\u518D\u626B\uFF1B\u5F62\u72B6\u4E0D\u5BF9\u7684\u53EF\u9009\u5B57\u6BB5\uFF08progress / rowButtons\uFF09\u5728\u5165\u53E3\u5265\u79BB\uFF0C\u4E0D\u6BC1\u6574\u6761\u4EFB\u52A1",
+              "en": "Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool. The progress message sweeps while running and stays without sweeping once settled; malformed optional fields (progress / rowButtons) are stripped at the boundary without rejecting the whole task"
             }
           },
           {
@@ -76473,14 +76480,17 @@ function settledChipOf(state) {
     return { tone: "danger", key: "taskbarFailed" };
   return { tone: "neutral", key: "taskbarDone" };
 }
+function sweepOfSettled(settled) {
+  return !settled;
+}
 function Elapsed(props) {
-  const settled = props.until !== void 0;
+  const settled = props.state !== void 0 && isSettled(props.state);
   const tick = useNowMs();
   const nowMs = props.until ?? tick;
   const chip = settledChipOf(props.state);
   const leading = settled ? (0, import_react106.createElement)(Chip, { tone: chip.tone, size: "xs" }, t(chip.key)) : formatDurationHms(Math.max(0, nowMs - props.since));
   const message = props.progress;
-  return (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-meta" }, leading, message === void 0 || message === "" ? null : (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-detail" }, (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-sep" }, "-"), (0, import_react106.createElement)(FlipText, { text: message, sweep: true })));
+  return (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-meta" }, leading, message === void 0 || message === "" ? null : (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-detail" }, (0, import_react106.createElement)("span", { className: "dshpc-taskbar__row-sep" }, "-"), (0, import_react106.createElement)(FlipText, { text: message, sweep: sweepOfSettled(settled) })));
 }
 var DEFAULT_SETTLE_RETAIN_MS = 6e4;
 var EXIT_ANIM_MS = 200;
@@ -77060,9 +77070,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.46.9"}`],
-            [t3("buildDemo"), `v${"0.46.9"}`],
-            [t3("buildStamp"), "261125-150233-714"]
+            [t3("buildCore"), `v${"0.46.10"}`],
+            [t3("buildDemo"), `v${"0.46.10"}`],
+            [t3("buildStamp"), "261125-161851-656"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77377,9 +77387,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.46.9"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.46.9"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261125-150233-714")
+          (0, import_react112.createElement)("span", null, `core v${"0.46.10"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.46.10"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261125-161851-656")
         )
       )
     ),

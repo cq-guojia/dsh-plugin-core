@@ -83,6 +83,22 @@ export declare function settledChipOf(state: TaskState | undefined): {
     readonly tone: 'success' | 'danger' | 'neutral';
     readonly key: 'taskbarSucceeded' | 'taskbarFailed' | 'taskbarDone';
 };
+/**
+ * 第二行小字。运行中 = `MM:SS - 披露文字`（满小时 `HH:MM:SS - …`），秒级跳动；
+ * 终态（`until` 有值）= 时间位置换成终态小标签（成功 / 失败 / 认不出时完成），后面仍可跟最后一段披露文字。
+ *
+ * - 时间只有数字与冒号，不写「已执行」；不足一小时 `MM:SS`，到一小时 `HH:MM:SS`。
+ * - 有 `progress.message` 就跟一个 ` - ` 再显示它；没有就只显示时间 / 标签。
+ * - 披露文字用 `FlipText`：换字翻牌；运行中带常驻扫光（还在干活），终态关掉扫光、只留文字——
+ *   「成功 / 失败」标签已经表达了结束，再扫光会读成仍在进行中。超长三点省略、hover 跑马灯
+ *   都由它内层的 `MarqueeText` 负责（与弹窗 notice 同一套，见 Modal / dsh-task-ledger）。
+ *
+ * 只有这一小块订阅全站唯一心跳（`useNowMs` ⇒ `infra/ticker`），列表其余部分不跟着每秒重渲染
+ * —— 别把 `useNowMs()` 提到 `TaskBar` 顶层，那会让整个展开面板每秒重渲一次。
+ * 终态不再订阅心跳（`until` 已冻结）。
+ */
+/** 扫光只属于运行中：终态标签已表达结束，文字保留但不再扫，否则读成「还在干活」。 */
+export declare function sweepOfSettled(settled: boolean): boolean;
 /** 一条终态行在时刻 now 的展示阶段（纯派生，组件重挂也从 settledAt 重算，不会「恢复」）。 */
 export type RowSettlePhase = 'rest' | 'leaving' | 'gone';
 /**
