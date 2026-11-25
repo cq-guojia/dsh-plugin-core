@@ -85,7 +85,7 @@
 /* 标题交给 MarqueeText：这里只补字体与收缩约束，省略号 / hover 滚动由 .dshpc-mq 双层负责。 */
 .dshpc-taskbar__row-title{min-width:0;font-size:var(--dshpc-font-sm);line-height:var(--dshpc-line-sm);}
 /* 第二行：时间 + 分隔符 + 披露文字。整行可收缩，披露文字超长由内层 MarqueeText 省略 / hover 跑马灯。 */
-.dshpc-taskbar__row-meta{display:flex;align-items:center;min-width:0;font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;}
+.dshpc-taskbar__row-meta{display:flex;align-items:center;gap:.35em;min-width:0;font-size:var(--dshpc-font-xs);line-height:var(--dshpc-line-sm);color:var(--dshpc-fg-3);font-variant-numeric:tabular-nums;}
 .dshpc-taskbar__row-detail{display:inline-flex;align-items:center;gap:.35em;min-width:0;flex:1 1 auto;}
 /* 分隔横线前后留出可见空隙（flex 会吃掉裸空格字符，故用 gap + 独立 span）。 */
 .dshpc-taskbar__row-sep{flex:none;color:var(--dshpc-fg-4);}

@@ -54,7 +54,7 @@
 8. **多副本收口**：executor 注册表与 task store 都挂 `globalThis[Symbol.for(...)]`，同页所有插件副本共用一份。
 9. **进度是一等公民、单一写入真源**：`progress: { message, updatedAt, current?, total?, percent? }` 由本地 `ctx.report()` 或服务端 SSE 上报，不塞进 `detail`。`store.ts` 的 `reconcile` 是 upsert / merge / mergeBaseline 三条写入路径共用的唯一合成点，progress 语义只实现一次：
    - **缺省保留**：帧不带 progress = 不表达变更，保留旧值（RFC 7386 部分更新语义）。终态帧不带 progress 因此天然保留最后一段文字——终态保留是这条规则的推论，不是特例分支。
-   - **展示语义**：`TaskBar` 的披露文字运行中带扫光（还在干活），终态关扫光、文字保留——「成功 / 失败」标签已表达结束，再扫光会读成仍在进行中。扫光开关是核心内部行为，不在 `TaskBarProps` 暴露。
+   - **展示语义**：`TaskBar` 的披露文字只在运行中渲染，带扫光（还在干活）；终态只留「成功 / 失败」标签，文字连同扫光一起退场——任务已结束，再挂「正在归档会话…」会读成仍在进行中。store 仍保留 `progress` 数据（handler / selector 可读），只是展示层不渲染；`disclosureVisibleOf` 是核心内部判定，不在 `TaskBarProps` 暴露。时间 / 标签与分隔符、分隔符与文字之间由等距 gap 控制，裸空格在 flex 容器里会被吞掉。
    - **LWW 与乱序守卫**：同一次运行（`startedAt` 相同）内按 `updatedAt` 取新，更小的迟到帧丢弃其 progress；`updatedAt` 相等时后到覆盖（确定性裁决）。这条守卫在 `reconcile` 内，与 `isStaleAgainst` 的运行身份守卫正交——后者挡整帧，`reconcile` 挡字段。
    - **跨运行重置**：`startedAt` 变了就是新任务，不继承旧运行的文字（与 `settledAt` 的 sameRun 判据一致）。
    - **边界校验**：`isTaskProgress` 校验形状；坏 progress / 非数组 rowButtons 在 `api.ts` 的 `sanitizeTask` 被剥离成「未提供」，只丢那一个可选字段，不拒收整条任务状态。两者都是展示层直接消费的字段（FlipText / `.filter`），形状不对会抛错。必填字段坏仍由 `isTaskRecord` 整帧拒收。

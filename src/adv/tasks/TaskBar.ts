@@ -143,27 +143,27 @@ export function settledChipOf(state: TaskState | undefined): {
 }
 
 /**
- * 第二行小字。运行中 = `MM:SS - 披露文字`（满小时 `HH:MM:SS - …`），秒级跳动；
- * 终态（`until` 有值）= 时间位置换成终态小标签（成功 / 失败 / 认不出时完成），后面仍可跟最后一段披露文字。
+ * 第二行小字。运行中 = `MM:SS - 披露文字`（满小时 `HH:MM:SS - …`），秒级跳动 + 常驻扫光（还在干活）；
+ * 终态 = 只留终态小标签（成功 / 失败 / 认不出时完成），披露文字连同扫光一起退场——
+ * 任务已经结束，再挂一段「正在归档会话…」会读成仍在进行中。
  *
  * - 时间只有数字与冒号，不写「已执行」；不足一小时 `MM:SS`，到一小时 `HH:MM:SS`。
- * - 有 `progress.message` 就跟一个 ` - ` 再显示它；没有就只显示时间 / 标签。
- * - 披露文字用 `FlipText`：换字翻牌；运行中带常驻扫光（还在干活），终态关掉扫光、只留文字——
- *   「成功 / 失败」标签已经表达了结束，再扫光会读成仍在进行中。超长三点省略、hover 跑马灯
- *   都由它内层的 `MarqueeText` 负责（与弹窗 notice 同一套，见 Modal / dsh-task-ledger）。
+ * - 披露文字用 `FlipText`：换字翻牌 + 扫光；超长三点省略、hover 跑马灯都由它内层的
+ *   `MarqueeText` 负责（与弹窗 notice 同一套，见 Modal / dsh-task-ledger）。
+ * - store 仍保留 `progress` 数据（handler / selector 可读），只是终态不在这一行渲染它。
  *
  * 只有这一小块订阅全站唯一心跳（`useNowMs` ⇒ `infra/ticker`），列表其余部分不跟着每秒重渲染
  * —— 别把 `useNowMs()` 提到 `TaskBar` 顶层，那会让整个展开面板每秒重渲一次。
  * 终态不再订阅心跳（`until` 已冻结）。
  */
-/** 扫光只属于运行中：终态标签已表达结束，文字保留但不再扫，否则读成「还在干活」。 */
-export function sweepOfSettled(settled: boolean): boolean {
+/** 披露文字只在运行中显示：终态标签已经表达结束，文字不再渲染。 */
+export function disclosureVisibleOf(settled: boolean): boolean {
   return !settled
 }
 
 function Elapsed(props: { since: number; until?: number; state?: TaskState; progress?: string }): ReactNode {
   // 与 store.isSettled / settledAtOf 同一判据：终态由 state 决定，不看时钟在不在。
-  // 脏数据里 state=done 而 settledAt 缺失时，若按 until 判会显示假计时 + 扫光。
+  // 脏数据里 state=done 而 settledAt 缺失时，若按 until 判会显示假计时。
   const settled = props.state !== undefined && isSettled(props.state)
   const tick = useNowMs() // hook 必须无条件调；终态下 leading 走 chip 分支，tick 不会用到
   const nowMs = props.until ?? tick
@@ -171,7 +171,7 @@ function Elapsed(props: { since: number; until?: number; state?: TaskState; prog
   const leading = settled
     ? h(Chip, { tone: chip.tone, size: 'xs' }, t(chip.key))
     : formatDurationHms(Math.max(0, nowMs - props.since))
-  const message = props.progress
+  const message = disclosureVisibleOf(settled) ? props.progress : undefined
   return h(
     'span',
     { className: 'dshpc-taskbar__row-meta' },
@@ -182,7 +182,7 @@ function Elapsed(props: { since: number; until?: number; state?: TaskState; prog
           'span',
           { className: 'dshpc-taskbar__row-detail' },
           h('span', { className: 'dshpc-taskbar__row-sep' }, '-'),
-          h(FlipText, { text: message, sweep: sweepOfSettled(settled) }),
+          h(FlipText, { text: message, sweep: true }),
         ),
   )
 }
