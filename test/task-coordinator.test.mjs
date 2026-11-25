@@ -242,6 +242,27 @@ test('coordinator：面板未激活时点按钮先暂存并切回，重注册后
   assert.equal(called, 'defer-1', '重注册后补发到新 handler')
 })
 
+// 宿主在会话页时 activePanelId 为 null（接线转成 undefined）：也算离开发起页。
+test('coordinator：会话页点按钮（activePanelId 为 undefined）也暂存补发，不误报失效', async () => {
+  const store = createTaskStore()
+  const panels = []
+  let active // undefined = 宿主会话页
+  const c = createCoordinator({
+    store,
+    host: { activePanelId: () => active, selectPanel: (id) => { panels.push(id); active = id } },
+  })
+  const task = store.upsert({
+    id: 'defer-conversation', project: 'p', group: 'g', title: title('t'), state: 'done',
+    startedAt: 11, settledAt: 12, panelId: 'panel-a',
+  }).task
+  assert.equal(c.press('open', task.id), true, '会话页点击要受理，不能报"操作失效"')
+  assert.deepEqual(panels, ['panel-a'], '切回发起面板')
+  let called = null
+  c.registerHandlers({ open: (t) => { called = t.id } })
+  await new Promise((r) => setTimeout(r, 0))
+  assert.equal(called, 'defer-conversation', '发起页重注册后补发')
+})
+
 test('coordinator：双击同一按钮只补发一次', async () => {
   const store = createTaskStore()
   let active = 'panel-b'

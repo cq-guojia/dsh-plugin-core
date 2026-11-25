@@ -57778,10 +57778,8 @@ function createCoordinator(options = {}) {
         return false;
       const panelId = task.panelId;
       const active = host.activePanelId?.();
-      const away = panelId !== void 0 && active !== void 0 && active !== panelId;
+      const away = panelId !== void 0 && active !== panelId && host.selectPanel !== void 0;
       if (away && panelId !== void 0) {
-        if (host.selectPanel === void 0)
-          return false;
         const map = pendingMap();
         const key = `${task.project}\0${buttonId}\0${panelId}\0${task.startedAt}`;
         map.delete(key);
@@ -77013,9 +77011,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.46.7"}`],
-            [t3("buildDemo"), `v${"0.46.7"}`],
-            [t3("buildStamp"), "261125-090800-348"]
+            [t3("buildCore"), `v${"0.46.8"}`],
+            [t3("buildDemo"), `v${"0.46.8"}`],
+            [t3("buildStamp"), "261125-110155-860"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77330,9 +77328,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.46.7"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.46.7"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261125-090800-348")
+          (0, import_react112.createElement)("span", null, `core v${"0.46.8"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.46.8"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261125-110155-860")
         )
       )
     ),

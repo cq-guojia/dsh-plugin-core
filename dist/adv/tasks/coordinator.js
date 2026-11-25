@@ -200,12 +200,13 @@ export function createCoordinator(options = {}) {
                 return false;
             const panelId = task.panelId;
             const active = host.activePanelId?.();
-            // 发起页未激活：即使查到 handler 也可能是正在卸载的旧闭包（passive cleanup 未跑），
-            // 一律先暂存意图再切回，等该页重注册 handler 后补发，避免调到旧实例。
-            const away = panelId !== undefined && active !== undefined && active !== panelId;
+            // 发起页未激活：宿主在会话页时 activePanelId 为 null（被接线转成 undefined），
+            // 也算离开发起页。此时即使查到 handler 也可能是正在卸载的旧闭包，一律先暂存意图
+            // 再切回，等该页重注册 handler 后补发，避免调到旧实例。
+            // 无 layout 接线（selectPanel 缺席）时同步执行，不暂存——否则没有切回能力,
+            // 暂存就成死信。会话页（active undefined）由 active !== panelId 覆盖。
+            const away = panelId !== undefined && active !== panelId && host.selectPanel !== undefined;
             if (away && panelId !== undefined) {
-                if (host.selectPanel === undefined)
-                    return false;
                 const map = pendingMap();
                 const key = `${task.project}\u0000${buttonId}\u0000${panelId}\u0000${task.startedAt}`;
                 map.delete(key);
