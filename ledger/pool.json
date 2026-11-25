@@ -1,6 +1,7 @@
 {
   "tasks": {
     "20261125-0849-6336-测试任务二": {"category": null, "created": "2026-11-25 08:49:32", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": null, "owner_name": null, "started": null, "status": "open", "tags": ["测试"], "title": "测试任务二", "updated": "2026-11-25 08:49:32", "worklog": "worklog/202611/25-0849-6336-测试任务二.md"},
+    "20261125-0849-8dca-测试任务三": {"category": null, "created": "2026-11-25 08:49:43", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": null, "owner_name": null, "started": null, "status": "open", "tags": ["测试"], "title": "测试任务三", "updated": "2026-11-25 08:49:43", "worklog": "worklog/202611/25-0849-8dca-测试任务三.md"},
     "20261125-0849-cb33-测试任务一": {"category": null, "created": "2026-11-25 08:49:16", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": null, "owner_name": null, "started": null, "status": "open", "tags": ["测试"], "title": "测试任务一", "updated": "2026-11-25 08:49:16", "worklog": "worklog/202611/25-0849-cb33-测试任务一.md"}
   },
   "version": "20261022000000"
