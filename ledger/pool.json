@@ -1,6 +1,5 @@
 {
   "tasks": {
-    "20261124-0244-3fda-修复刷新后终态-toast-丢失": {"category": "缺陷修复", "created": "2026-11-24 02:44:13", "creator": "8d557c6d-7c93-43ac-8c73-5d623e82e1c6", "creator_name": "GuoJia-Agent", "finished": null, "owner": null, "owner_name": null, "started": "2026-11-24 02:45:07", "status": "open", "tags": ["终态通知", "origin", "sessionStorage", "刷新恢复"], "title": "修复刷新后终态 toast 丢失", "updated": "2026-11-25 14:30:01", "worklog": "worklog/202611/24-0244-3fda-修复刷新后终态-toast-丢失.md"}
   },
   "version": "20261022000000"
 }
