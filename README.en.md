@@ -157,7 +157,7 @@ The base for long-running backend work: execution lives on the server through op
 
 - Logic comes from `dsh-plugin-core/adv/tasks` (importable in Node, no React): `startTask` (title / toast / notify / buttons, all plain data), `mountTaskUI` (register handlers + subscribe to settlement on this page), `connectTaskCenter` / `connectTaskLayout` (server SSE wiring / automatic originating-panel recording), and the open-executor registry.
 - The bar `TaskBar` comes from `dsh-plugin-core/adv/tasks/ui` (React): icon/pill forms, sm/md/lg sizes, fixed / min / max width, marquee on overflow; it reads the shared pool — your plugin does not draw rows.
-- Three isolated streams: snapshot / status only project the list and never toast; only the one-shot `task-notice` with a unique id toasts, de-duplicated per tab (refresh / reconnect replays do not re-toast). Every button is drawn on every page; a click that finds no handler gives one i18n notice.
+- Three isolated streams: snapshot / status only project the list and never toast; only the one-shot `task-notice` with a unique id toasts, de-duplicated per tab (refresh / reconnect replays do not re-toast). Every button is drawn on every page; when the originating panel is inactive the press is stashed, that panel is brought back, and the action is replayed once its handler re-registers on remount (consumers must register/unregister handlers with the panel lifecycle); a notice is given only when no executable target truly exists.
 
 Full contract and wiring steps: [background task center](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/task-notifications.md) and [integration guide](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/guides/background-task-center.md).
 

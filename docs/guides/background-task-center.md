@@ -14,16 +14,18 @@
 
 ## 步骤
 
-1. **本页接线一次**（`client/task-ui.ts`）：注册按钮 id → 本页函数，订阅终态刷自己的数据。
-   列表与 Toast 共用这一份 handlers。**所有按钮在所有页都画**、不隐藏不置灰；点了跳回发起面板执行 handler，
-   找不到 handler 时（条目失效或注册它的插件已卸载）给一次统一提示。
+1. **接线随面板生命周期**（`client/task-ui.ts`）：注册按钮 id → 本页函数，订阅终态刷自己的数据。
+   列表与 Toast 共用这一份 handlers。**所有按钮在所有页都画**、不隐藏不置灰；发起面板不在前台时点按钮，
+   核心先暂存意图、切回该面板，等下面这份接线重新注册后补发 handler；面板已激活则立即执行。
+   无可执行目标（条目失效 / 无 panelId / 面板已激活仍无 handler）才给一次统一提示。
+   **切走时调返回的注销函数、切回来重新注册**——这是跨面板按钮生效的前提。
    `toast.*.scope:'all'` 每个标签页都弹卡、每页都有按钮；`'origin'` 只发起页弹卡（其它页无卡自然无按钮）。
 
    ```ts
    import { mountTaskUI } from 'dsh-plugin-core/ui/task-ui'
 
-   export function mountLedgerTaskUi(): void {
-     mountTaskUI({
+   export function mountLedgerTaskUi(): () => void {
+     return mountTaskUI({
        project: 'dsh-task-reminder',       // null / 省略 = 收所有项目
        groups: ['close'],
        handlers: {
@@ -33,6 +35,7 @@
        onSettled: () => refreshBoard(),    // 只刷自己的台账数据，核心列表自己刷
      })
    }
+   // 面板 useEffect 里 return mountLedgerTaskUi()，切走注销、重挂重注册。
    ```
 
 2. **每次发起**（`client/close-task.ts`）：标题、通知、按钮声明全是纯数据跟着记录走。
@@ -193,13 +196,14 @@ follower 的届。`signal` 只是「去拉基线」的提示、不安装届，�
 - 新开标签后不弹加入前的历史通知，只收加入后结算的通知；老标签断档重连只拿增量。
 - 先开 A、再开 B 并让 A 退出后 B 接管；A 中的 follower 仍能收到 B 的帧（届不回拨）。
 - 同一任务重跑（`startedAt` 更新）后再次结算会弹卡，旧运行的 `settledAt` 不会带过来。
-- 按钮一律照画；点一个失效按钮（条目过期 / 注册它的插件已卸载）会给一次统一提示，不静默。
+- 按钮一律照画；发起面板未激活时点按钮先暂存意图、切回后等该面板 handler 重注册补发（上限 32 条、8 秒未重注册即丢弃）；只有真正无可执行目标（条目过期 / 无 panelId / 面板已激活但无 handler）才给一次统一提示，不静默。
 
 ## 常见失败
 
 | 现象 | 原因 | 处理 |
 |---|---|---|
-| 点了按钮提示「操作已失效」 | 条目已过期，或注册 handler 的插件已卸载（`TaskBar` / Toast 都照画按钮，找不到就提示） | 在 `mountTaskUI` 重新注册 handlers（TaskBar 共用同一份） |
+| 点了按钮提示「操作已失效」 | 条目已过期 / 无 panelId / 面板已激活但无 handler（`TaskBar` / Toast 都照画按钮，无可执行目标就提示） | 确认 `mountTaskUI` 的 handlers 已按当前面板注册（TaskBar 共用同一份） |
+| 切到别的页点了按钮没反应 | 发起面板的 handlers 没有随面板重挂重新注册，暂存的意图 8 秒后丢弃 | 面板 `useEffect` 里 `return mountLedgerTaskUi()`，切走注销、重挂重注册 |
 | 终态弹两次 | 本地执行与服务端投影都当成终态分发 | 用 `coordinator.project` 统一投影，不另写分发路径 |
 | 进度不显示 | 进度塞进了 `detail` | 用 `ctx.report({ message })` 上报到显式 `progress` 字段 |
 | 切面板后 UI 落错页 | 自行调 handler，没走 `press` | 点击统一走核心列表 / `pressTaskButton` |

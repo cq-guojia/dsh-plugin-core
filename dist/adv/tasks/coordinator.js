@@ -23,10 +23,57 @@ function safeCall(label, fn) {
         console.error(`dsh-plugin-core: task ${label} failed`, error);
     }
 }
+/**
+ * 延后按钮意图：core 被内联进每个插件 bundle，模块级变量不共享，故挂 globalThis。
+ * key 含 (project, buttonId, panelId, startedAt)，覆盖写天然去重；上限 32 防无界增长。
+ */
+const PENDING_KEY = Symbol.for('dsh-plugin-core/tasks/pending/v1');
+const PENDING_TTL = 8000;
+const PENDING_CAP = 32;
+function pendingMap() {
+    const holder = globalThis;
+    let map = holder[PENDING_KEY];
+    if (map === undefined) {
+        map = new Map();
+        holder[PENDING_KEY] = map;
+    }
+    return map;
+}
 export function createCoordinator(options = {}) {
     const store = options.store ?? taskStore;
     const host = options.host ?? {};
     const registry = options.registry ?? executors;
+    /**
+     * 补发暂存的按钮意图。两个触发点：发起页 registerHandlers（新 handler 刚可用），
+     * 以及 press 暂存后的下一 macrotask（handler 本就常驻在 app 级、不需要重注册也能兑现）。
+     * - 每条重读 store.get，记录已被归一 id / 终态改写则丢弃。
+     * - activePanelId 不符只跳过不删除：面板可能尚未激活，等后续 drain；超时另有定时器清。
+     * - claim-once：先删再调，防重复执行；safeCall 包裹，坏 handler 不打断消费方 mount。
+     */
+    function drainPending() {
+        const map = pendingMap();
+        const now = Date.now();
+        for (const [key, pending] of map) {
+            if (now - pending.enqueuedAt > PENDING_TTL) {
+                map.delete(key);
+                continue;
+            }
+            const active = host.activePanelId?.();
+            if (active !== undefined && active !== pending.panelId)
+                continue;
+            const current = store.get(pending.taskId);
+            // 同键已被新一次运行接管（startedAt 变）：旧 toast 的意图不再兑现。
+            if (current === undefined || current.startedAt !== pending.startedAt) {
+                map.delete(key);
+                continue;
+            }
+            const handler = store.getHandler(pending.buttonId, current.project);
+            if (handler === undefined)
+                continue;
+            map.delete(key);
+            safeCall('deferred button handler', () => handler(current));
+        }
+    }
     /**
      * 终态对外分发：toast + notify + onSettled，各一次；单项失败不影响其它项。
      *
@@ -151,20 +198,43 @@ export function createCoordinator(options = {}) {
             const task = store.get(taskId);
             if (task === undefined)
                 return false;
+            const panelId = task.panelId;
+            const active = host.activePanelId?.();
+            // 发起页未激活：即使查到 handler 也可能是正在卸载的旧闭包（passive cleanup 未跑），
+            // 一律先暂存意图再切回，等该页重注册 handler 后补发，避免调到旧实例。
+            const away = panelId !== undefined && active !== undefined && active !== panelId;
+            if (away && panelId !== undefined) {
+                if (host.selectPanel === undefined)
+                    return false;
+                const map = pendingMap();
+                const key = `${task.project}\u0000${buttonId}\u0000${panelId}\u0000${task.startedAt}`;
+                map.delete(key);
+                map.set(key, { buttonId, taskId, panelId, startedAt: task.startedAt, enqueuedAt: Date.now() });
+                if (map.size > PENDING_CAP) {
+                    const oldest = map.keys().next().value;
+                    if (oldest !== undefined)
+                        map.delete(oldest);
+                }
+                safeCall('selectPanel', () => host.selectPanel?.(panelId));
+                return true;
+            }
+            // 面板已激活 / 无面板身份：同步执行。没 handler 就是死按钮，不切面板，直接告知失败。
             const handler = store.getHandler(buttonId, task.project);
-            // 没 handler 就是死按钮：不切面板（避免无意义跳走），直接告知失败。
             if (handler === undefined)
                 return false;
-            if (task.panelId !== undefined) {
-                const pid = task.panelId;
+            if (panelId !== undefined) {
+                const pid = panelId;
                 safeCall('selectPanel', () => host.selectPanel?.(pid));
             }
-            // 找到并调用了 handler 就返回 true；handler 自己内部抛错是它的责任，我们只记录、
-            // 不让异常冒泡打断核心的点击事件（职责分清：我们是联络点，不替被调方修 bug）。
             safeCall('button handler', () => handler(task));
             return true;
         },
-        registerHandlers: (map, project) => store.registerHandlers(map, project),
+        registerHandlers: (map, project) => {
+            const off = store.registerHandlers(map, project);
+            // microtask 保证 onSettled 订阅等本次 mount 的同步代码先完成；补发不占消费方的调用栈。
+            queueMicrotask(drainPending);
+            return off;
+        },
         onSettled: (listener) => store.onSettled(listener),
     };
 }

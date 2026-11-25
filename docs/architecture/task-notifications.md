@@ -28,9 +28,9 @@
 
 1. **终态只分发一次**：`store` 用 `announced` 去重；本地执行与服务端投影同时到达也不重复弹卡 / 回调。
 2. **终态不被迟到消息复活**：`store.merge` 见到本地已终态（`done`/`failed`）的记录时丢弃其 `running` 投影（判据是状态，不是 `settledAt` 是否存在——时钟可能因重放/擦除而不在，拿它当状态标志会让 guard 静默失效）。
-3. **按钮查找 handler 后切面板执行**：`press(buttonId, taskId)` 先 `store.get(taskId)` 取记录、`getHandler(buttonId, task.project)` 查本页 handler，找不到直接返回 false（不切面板，避免无意义跳走）；找到才 `host.selectPanel(task.panelId)` 再执行 handler。
+3. **按钮发起页未激活则暂存补发，已激活则同步执行**：`press(buttonId, taskId)` 先 `store.get(taskId)` 取记录，比对 `host.activePanelId()` 与 `task.panelId`。发起面板未激活时**即使查到 handler 也不调用**（可能是正在卸载的旧闭包），先把意图存进全局 pending（`Symbol.for('dsh-plugin-core/tasks/pending/v1')`，键 = project + buttonId + panelId + startedAt，双击覆盖去重、上限 32），再 `host.selectPanel(panelId)` 切回，返回 true；发起页重挂并 `registerHandlers` 时以 microtask 补发——重读 task、校验 activePanel、claim-once、`safeCall` 包裹，TTL 8 秒未重注册即丢弃。面板已激活则同步查 handler 并执行；无可执行目标（条目失效 / 无 panelId / 面板已激活仍无 handler / 无 selectPanel 能力）返回 false 报错，不静默留死信。
    `panelId` 由 `startTask` 从 `layout.panelInfo.getSnapshot().activePanelId` 自动记（宿主 0.2.2-rc.3 核实），消费方不传；本地与服务端模式都记，服务端模式随提交 payload 发出、由服务端回填到记录，服务端没回填时 `store.merge` / `deliverNotice` 保留本地那份。
-4. **按钮所有页都画、不隐藏不置灰**：`scope:'all'` 每页弹卡且每页都有按钮，`scope:'origin'` 只发起页弹卡（其它页无卡自然无按钮）；不按 `getHandler` 过滤。点击走 `press`（查到 handler 才切面板执行）；返回 false（条目失效 / 注册 handler 的插件已卸载）时给一次统一 i18n 提示（`notifyTaskActionFailed()` → `taskbarActionFailed`），不静默。`TaskBar` 可传 `onActionFailure` 自己接管该提示。
+4. **按钮所有页都画、不隐藏不置灰**：`scope:'all'` 每页弹卡且每页都有按钮，`scope:'origin'` 只发起页弹卡（其它页无卡自然无按钮）；不按 `getHandler` 过滤。点击走 `press`（发起页未激活 → 暂存 + 切回 + 重注册补发；已激活 → 同步执行）；返回 false（条目失效 / 无可执行目标）时给一次统一 i18n 提示（`notifyTaskActionFailed()` → `taskbarActionFailed`），不静默。`TaskBar` 可传 `onActionFailure` 自己接管该提示。消费方 handler 的注册位置须与发起页同生命周期（切走即注销、`registerHandlers` 时重注册），核心不要求消费方为此改动接线。
 5. **执行器开放、不写死、不兜底**：`kind` 是任意字符串；没有注册的执行体就结算为 failed，不自绘替代、不猜实现、不降级。
 6. **配置跟着记录走**：toast / notify / rowButtons 是记录上的纯数据，任何页面按同一份配置渲染；
    `scope: 'all'` 每页弹卡、`'origin'` 只发起页弹卡；按钮（Toast 与列表行）一律照画不隐藏，点了跳回发起面板执行。
@@ -88,7 +88,7 @@
 
 ## 边界与已知限制
 
-- 跨标签页按钮回源（点 B 页的按钮回到 A 页执行）暂不实现；同标签页共享池内本页直执已覆盖主路径。
+- 跨标签页按钮回源（点 B 标签的按钮回到 A 标签执行）暂不实现；同标签页跨面板点击走不变量 3 的暂存 / 切回 / 重注册补发，要求消费方 handlers 随面板生命周期注册 / 注销。
 - 浏览器「复制标签页」会连同 sessionStorage 一起复制：两个标签拿到同一个 tab origin，终态会在两边都弹；这是浏览器事实，按可接受边界处理。升级瞬间已在飞、带着旧随机 origin 的任务仍会丢一次终态 toast——旧值从未持久化，无法回收；升级后新提交的任务不受影响。
 - 终态记录留在快照里供 `when=done/failed` 的按钮渲染；留存策略由展示层决定，核心不定时清理。
 - `ui/task-ui` 只转发 `mountTaskUI`，零官方 `@deepseek-ai/*` 静态依赖；`ui` 入口 import 不会因宿主外解析不到平台模块而崩。

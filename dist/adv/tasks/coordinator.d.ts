@@ -55,7 +55,10 @@ export interface TaskCoordinator {
     project(records: readonly TaskRecord[]): void;
     /** 一次性完成通知入口：只有它触发 toast / notify / onSettled。 */
     deliverNotice(notice: TaskNotice): void;
-    /** 点按钮：先切回发起面板（同页），再找本页 handler 执行。返回是否找到 handler。 */
+    /**
+     * 点按钮：发起面板未激活时先暂存意图再切回，等该页 handler 重注册后补发；
+     * 面板已激活则同步执行。true = 已执行或已受理（要求消费方 handler 随面板生命周期注册/注销）。
+     */
     press(buttonId: string, taskId: string): boolean;
     registerHandlers(map: Readonly<Record<string, TaskHandler>>, project?: string | null): () => void;
     onSettled(listener: (s: TaskSettlement) => void): () => void;

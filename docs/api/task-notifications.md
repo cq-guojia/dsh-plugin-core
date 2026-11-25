@@ -10,9 +10,9 @@
 
 > EN: Backend execution + notification + core controls
 
-这里叫**后台任务中心**：执行在后端（开放执行器），状态真源在服务端，前端只登记、投影、转发按钮。没有前端 pull 心跳、没有状态源、没有双时钟租约、没有 tombstone 判死——终态由执行器结果或服务端投影直接驱动一次。消费方只写两处接线：`mountTaskUI` 注册 handlers / 订阅终态、`startTask` 发起；展示用核心原生的 `TaskBar`（icon/pill 形态、sm/md/lg 尺寸、宽度与跑马灯），不用自己画列表。
+这里叫**后台任务中心**：执行在后端（开放执行器），状态真源在服务端，前端只登记、投影、转发按钮。没有前端 pull 心跳、没有状态源、没有双时钟租约、没有 tombstone 判死——终态由执行器结果或服务端投影直接驱动一次。消费方只写两处接线：`mountTaskUI` 注册 handlers / 订阅终态、`startTask` 发起；`mountTaskUI` 的接线要随面板生命周期走（切走调返回的注销函数、切回重挂时重新注册），跨面板点按钮靠这次重注册补发。展示用核心原生的 `TaskBar`（icon/pill 形态、sm/md/lg 尺寸、宽度与跑马灯），不用自己画列表。
 
-> EN: This is the **background task hub**: work runs on the backend through open executors, the server owns task state, and the front end only registers, projects and forwards button presses. There is no client pull heartbeat, no status source, no dual-clock lease and no tombstone gate — a terminal state is driven once by the executor result or a server projection. Consumers write two wiring points: `mountTaskUI` registers handlers / terminal callback, `startTask` starts work; display uses the original `TaskBar` (icon/pill forms, sm/md/lg sizes, width and marquee) — no hand-drawn list.
+> EN: This is the **background task hub**: work runs on the backend through open executors, the server owns task state, and the front end only registers, projects and forwards button presses. There is no client pull heartbeat, no status source, no dual-clock lease and no tombstone gate — a terminal state is driven once by the executor result or a server projection. Consumers write two wiring points: `mountTaskUI` registers handlers / terminal callback, `startTask` starts work; keep `mountTaskUI` wiring tied to the panel lifecycle (call its disposer on unmount, re-register on remount) — cross-panel button presses are replayed on that re-registration. Display uses the original `TaskBar` (icon/pill forms, sm/md/lg sizes, width and marquee) — no hand-drawn list.
 
 `TaskBar` 面板是**页面级瞬时浮层**，层级低于抽屉 / 弹窗 / 耳朵 / 菜单：视觉上由主浮层遮罩自然盖住，永远不许浮到弹窗遮罩之上；面板从不被隐藏或恢复，弹窗关掉后它本来就在。行为侧只认标准模态语义（原生 `dialog` / `aria-modal="true"` / `alertdialog`）：只要页面存在活动模态，外部点击、Esc、触发器都不改 `open`；模态关闭后这些路径恢复。外部收起由 `pointerdown` 采样模态、`click` 双时刻判定：既覆盖「点外部按钮开弹窗」时弹窗尚未挂载，也覆盖「点关闭弹窗」时 click 已卸载但 pointerdown 仍开着。不声明模态语义的自绘浮层只能得到视觉遮挡，得不到事件冻结——这是浮层自身的可访问性契约，不是 TaskBar 去猜私有类名。受控 `onOpenChange(false)` 幂等可重复发；不回写会让面板停在受控的 `true`。
 
@@ -55,8 +55,10 @@ await startTask({
 ```ts id="bt-mount-ui-example"
 import { mountTaskUI } from 'dsh-plugin-core/ui/task-ui'
 
-// 本页接线一次：列表与 Toast 共用这一份 handlers，终态只刷消费方自己的数据。
-mountTaskUI({
+// 接线随面板生命周期：列表与 Toast 共用这一份 handlers，终态只刷消费方自己的数据。
+// 切面板时要注销（保留返回的 disposer），切回来重挂时再注册一次——
+// 跨面板按钮点击会先暂存意图、切回发起页，等这次重注册完成后才补发。
+const off = mountTaskUI({
   project: 'dsh-task-reminder',     // null / 省略 = 收所有项目
   groups: ['scan'],
   handlers: {
@@ -65,6 +67,7 @@ mountTaskUI({
   },
   onSettled: (task, outcome) => refreshBoard(),  // 核心列表自己刷，这里只刷自己的数据
 })
+// 面板卸载时调用 off()，重新挂载时重新执行上面的接线。
 ```
 
 ```ts id="bt-taskbar-example"
@@ -137,9 +140,9 @@ serveTaskStream(ctx, {
 
 > EN: Three channels with separate jobs: **toast** is the terminal card — `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`TaskButton`: `{ id, text, icon?, color? }`). **Notify** is a terminal message — `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send — scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record.
 
-按钮 id 查的是本页 `handlers`（列表与 Toast 共用同一份）。**所有按钮在所有页都画**，不隐藏、不置灰，也不按 origin 或 getHandler 过滤——点击走 `pressTaskButton` → `selectPanel(panelId)` 跳回发起面板再执行 handler，「查看」这类动作的 UI 落在发起面板上。这里的「所有页」受 scope 约束：`scope:"all"` 每页弹卡且每页都有按钮，`scope:"origin"` 只在发起页弹卡（其它页连卡都没有，自然没有按钮）。`panelId` 由核心在 `startTask` 时自动记录（本地与服务端模式都记，随提交给服务端回填），消费方不传。若 handler 找不到（条目已失效或注册它的插件已卸载），Toast 按钮与列表按钮都给一次提示（走核心 i18n）；列表按钮还可传 `onActionFailure` 自己接管。终态只分发一次：本地执行与服务端投影不会重复弹卡。
+按钮 id 查的是本页 `handlers`（列表与 Toast 共用同一份）。**所有按钮在所有页都画**，不隐藏、不置灰，也不按 origin 或 getHandler 过滤。点击走 `pressTaskButton`：若发起面板未激活，核心先暂存这次动作意图、`selectPanel(panelId)` 切回发起页，等该页重新注册 handler 时补发执行，「查看」这类动作的 UI 落在发起面板上；若发起面板已激活则立即执行。发起页缓存键为 (project, buttonId, panelId, startedAt)，双击去重，上限 32 条，超过 8 秒的暂存项在下次补发检查时丢弃。前提是消费方 handlers 随面板生命周期注册/注销（切走注销、重挂重新注册）。这里的「所有页」受 scope 约束：`scope:"all"` 每页弹卡且每页都有按钮，`scope:"origin"` 只在发起页弹卡（其它页连卡都没有，自然没有按钮）。`panelId` 由核心在 `startTask` 时自动记录（本地与服务端模式都记，随提交给服务端回填），消费方不传。真正找不到可执行目标（条目失效、无 panelId、或面板已激活仍无 handler）时，Toast 按钮与列表按钮都给一次提示（走核心 i18n）；列表按钮还可传 `onActionFailure` 自己接管。终态只分发一次：本地执行与服务端投影不会重复弹卡。
 
-> EN: A button id resolves against this page's `handlers` (shared by the list and toast). **Every button is drawn on every page** — never hidden, never greyed out, never filtered by origin or getHandler — and a click goes through `pressTaskButton` → `selectPanel(panelId)` to jump back to the originating panel before running the handler, so a "view" action lands its UI there. "Every page" is still bounded by scope: `scope:'all'` toasts and buttons on every page, `scope:'origin'` toasts only on the originating page (no card elsewhere, hence no button). `panelId` is recorded automatically by the core in `startTask` (both local and server modes, submitted for server backfill); consumers never pass it. If the handler is missing (stale entry or the registering plugin was unloaded), both the toast button and the list button give one notice (through the core i18n); list buttons may also pass `onActionFailure` to handle it themselves. Terminal states are delivered once: local execution and server projection never double-toast.
+> EN: A button id resolves against this page's `handlers` (shared by the list and toast). **Every button is drawn on every page** — never hidden, never greyed out, never filtered by origin or getHandler. On click, `pressTaskButton` checks the originating panel: when it is not active, the core stashes the action intent, calls `selectPanel(panelId)` to return there, and replays it once that page re-registers its handler, so a "view" action lands its UI on the originating panel; when the panel is already active, the handler runs immediately. Deferred actions are keyed by (project, buttonId, panelId, startedAt), de-duplicated on repeat clicks, capped at 32, and entries older than 8 seconds are dropped at the next drain. This requires the consumer to register/unregister handlers with the panel lifecycle (unsubscribe on unmount, re-register on remount). "Every page" is still bounded by scope: `scope:'all'` toasts and buttons on every page, `scope:'origin'` toasts only on the originating page (no card elsewhere, hence no button). `panelId` is recorded automatically by the core in `startTask` (both local and server modes, submitted for server backfill); consumers never pass it. When no executable target truly exists (stale entry, no panelId, or panel active but no handler), both the toast button and the list button give one notice (through the core i18n); list buttons may also pass `onActionFailure` to handle it themselves. Terminal states are delivered once: local execution and server projection never double-toast.
 
 | 参数 | 类型 | 必填 | 默认 | 说明(zh) | 说明(en) |
 |---|---|---|---|---|---|
@@ -156,12 +159,12 @@ serveTaskStream(ctx, {
 | `rowButtons[]` | `readonly TaskRowButton[]` | — | undefined | 列表行按钮声明，文案与 when 跟着记录走 | List-row button declarations; labels and when travel with the record |
 | `rowButtons[].when` | `'running' \| 'done' \| 'failed' \| 'always' \| undefined` | — | 'always' | 显示时机；同一 id 可按状态重复声明 | Visibility; the same id may be declared repeatedly per state |
 | `subscribeTaskNotifications(options)` | `(options) => () => void` | — | — | 收任务广播：scope=plugin 只收同项目（不传 project 时回落全局默认项目，没设则报错），global 收所有；收到纯数据自己处理 | Receive task broadcasts: scope=plugin filters to same project (falls back to the global default project when project is omitted, throws if unset), global receives all; plain data, consumer decides |
-| `mountTaskUI(options)` | `(options: MountTaskUIOptions) => () => void` | — | — | 注册 handlers + 订阅终态；handlers 按 project 命名空间（同名按钮不同项目互不覆盖），返回注销函数 | Registers handlers and subscribes to terminal states; handlers are namespaced by project (same button id in different projects does not collide); returns an unsubscribe function |
+| `mountTaskUI(options)` | `(options: MountTaskUIOptions) => () => void` | — | — | 注册 handlers + 订阅终态；handlers 按 project 命名空间（同名按钮不同项目互不覆盖），返回注销函数。须随面板生命周期注册/注销，重注册时核心补发该页暂存的按钮动作 | Registers handlers and subscribes to terminal states; handlers are namespaced by project (same button id in different projects does not collide); returns an unsubscribe function. Must be registered/unregistered with the panel lifecycle; re-registration replays deferred button actions for that page |
 | `TaskBar` | `React component` | — | — | 核心原生展示栏：pill/icon 形态、sm/md/lg 尺寸、固定宽 / 最小宽 / 最大宽，超长 hover 跑马灯；数据来自共享池 | Core native bar: pill/icon forms, sm/md/lg sizes, fixed/min/max width with hover marquee; reads the shared pool |
 | `TaskBar.closeOnAction` | `boolean` | — | false | 点行按钮后是否收起面板；默认 false 保持展开，便于连点多个动作；传 true 才每次收起。保持展开时活动模态的遮罩自然盖住它，模态内操作不改 open；模态关闭后外部点击 / Esc / 触发器照常收 | Whether to close the panel after a row action; defaults to false to stay open for consecutive actions, pass true to close each time. While staying open, an active modal mask covers it naturally without changing open; after the modal closes, outside click / Escape / trigger close normally |
 | `TaskBar.open` | `boolean \| undefined` | — | undefined | 受控展开态；传了就必须同时传 onOpenChange 并回写，运行中不要切换受控 / 非受控 | Controlled open state; pass together with onOpenChange and write it back; never switch controlled/uncontrolled at runtime |
 | `TaskBar.onOpenChange` | `(open: boolean) => void` | — | undefined | 展开态变化；自动收起发 false、触发器点开发 true；回调幂等可重复发，受控时必须回写 | Open-state changes; automatic dismissal emits false and the trigger emits true; idempotent and may repeat; controlled callers must write back |
-| `pressTaskButton(buttonId, taskId)` | `(buttonId: string, taskId: string) => boolean` | — | — | 先切回发起面板再执行 handler；找不到返回 false | Switches back to the originating panel before running the handler; false when not found |
+| `pressTaskButton(buttonId, taskId)` | `(buttonId: string, taskId: string) => boolean` | — | — | 发起面板未激活时暂存意图、切回后等 handler 重注册补发，返回 true；面板已激活则立即执行；无可执行目标返回 false | When the originating panel is inactive, stashes the intent, switches back and replays after the handler re-registers (true); runs immediately when the panel is active; false when no executable target exists |
 
 ## 交付边界：toast / notify / onSettled
 

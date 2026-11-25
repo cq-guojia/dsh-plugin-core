@@ -159,7 +159,7 @@ export function TaskEditor(props: { name: string; setName: (v: string) => void }
 
 - 逻辑从 `dsh-plugin-core/adv/tasks` 引（Node 可裸引、不带 React）：`startTask`（声明标题 / Toast / 通知 / 按钮，全是纯数据）、`mountTaskUI`（本页注册 handlers + 订阅终态）、`connectTaskCenter` / `connectTaskLayout`（服务端 SSE 接线 / 自动记发起面板）、开放执行器注册表。
 - 展示栏 `TaskBar` 从 `dsh-plugin-core/adv/tasks/ui` 引（React）：icon/pill 形态、sm/md/lg 尺寸、固定宽 / 最小宽 / 最大宽、超长跑马灯；数据来自共享池，本插件不画行。
-- 通知三流隔离：快照 / 状态流只投影列表不弹卡，带唯一 id 的一次性 `task-notice` 才弹卡并按标签页去重（刷新 / 重连不重弹）。按钮一律照画，点了找不到 handler 给一次 i18n 提示。
+- 通知三流隔离：快照 / 状态流只投影列表不弹卡，带唯一 id 的一次性 `task-notice` 才弹卡并按标签页去重（刷新 / 重连不重弹）。按钮一律照画；发起面板未激活时点按钮先暂存意图、切回发起页，等该页 handler 随面板重挂重新注册后补发（消费方须随面板生命周期注册/注销），只有真正无可执行目标才给一次 i18n 提示。
 
 完整契约与接入步骤见[后台任务中心](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/api/task-notifications.md)与[接入指南](https://github.com/cq-guojia/dsh-plugin-core/blob/main/docs/guides/background-task-center.md)。
 

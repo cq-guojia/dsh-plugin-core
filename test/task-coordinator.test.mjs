@@ -218,3 +218,105 @@ test('coordinator：乐观行归一后（id 永久带 submit: 前缀）重跑的
   assert.equal(notices.length, 0, '陈旧 notice 不误弹 notify')
   assert.equal(settled.length, 1, '陈旧 notice 不触发 onSettled')
 })
+
+// 发起页未激活 → 暂存意图 + 切回，handler 重注册后补发（跨面板按钮的核心路径）。
+test('coordinator：面板未激活时点按钮先暂存并切回，重注册后补发', async () => {
+  const store = createTaskStore()
+  const panels = []
+  let active = 'panel-b'
+  const host = {
+    activePanelId: () => active,
+    selectPanel: (id) => { panels.push(id); active = id },
+  }
+  const c = createCoordinator({ store, host })
+  const task = store.upsert({
+    id: 'defer-1', project: 'p', group: 'g', title: title('t'), state: 'done',
+    startedAt: 1, settledAt: 2, panelId: 'panel-a',
+  }).task
+  let called = null
+  assert.equal(c.press('open', task.id), true, '受理，不让 toast 误报失败')
+  assert.equal(called, null, '此刻旧 handler 未执行')
+  assert.deepEqual(panels, ['panel-a'], '已切回发起面板')
+  c.registerHandlers({ open: (t) => { called = t.id } })
+  await new Promise((r) => setTimeout(r, 0))
+  assert.equal(called, 'defer-1', '重注册后补发到新 handler')
+})
+
+test('coordinator：双击同一按钮只补发一次', async () => {
+  const store = createTaskStore()
+  let active = 'panel-b'
+  const c = createCoordinator({
+    store,
+    host: { activePanelId: () => active, selectPanel: () => {} },
+  })
+  const task = store.upsert({
+    id: 'defer-2', project: 'p', group: 'g', title: title('t'), state: 'done',
+    startedAt: 3, settledAt: 4, panelId: 'panel-a',
+  }).task
+  assert.equal(c.press('open', task.id), true)
+  assert.equal(c.press('open', task.id), true)
+  active = 'panel-a' // 发起页重挂完成
+  let count = 0
+  c.registerHandlers({ open: () => { count += 1 } })
+  await new Promise((r) => setTimeout(r, 0))
+  assert.equal(count, 1, '同 key 覆盖写，只执行一次')
+})
+
+test('coordinator：面板已激活但无 handler 仍返回 false', async () => {
+  const store = createTaskStore()
+  const c = createCoordinator({
+    store,
+    host: { activePanelId: () => 'panel-a', selectPanel: () => {} },
+  })
+  const task = store.upsert({
+    id: 'defer-3', project: 'p', group: 'g', title: title('t'), state: 'done',
+    startedAt: 5, settledAt: 6, panelId: 'panel-a',
+  }).task
+  assert.equal(c.press('missing', task.id), false, '无可等待的重注册，诚实报错')
+  await new Promise((r) => setTimeout(r, 0))
+})
+
+test('coordinator：错页注册不执行，意图保留到回到发起页再补发', async () => {
+  const store = createTaskStore()
+  let active = 'panel-b'
+  const c = createCoordinator({
+    store,
+    host: { activePanelId: () => active, selectPanel: (id) => { active = id } },
+  })
+  const task = store.upsert({
+    id: 'defer-4', project: 'p', group: 'g', title: title('t'), state: 'done',
+    startedAt: 7, settledAt: 8, panelId: 'panel-a',
+  }).task
+  assert.equal(c.press('open', task.id), true)
+  active = 'panel-c'
+  let called = false
+  c.registerHandlers({ open: () => { called = true } })
+  await new Promise((r) => setTimeout(r, 0))
+  assert.equal(called, false, '错页不执行')
+  active = 'panel-a'
+  c.registerHandlers({ open: () => { called = true } })
+  await new Promise((r) => setTimeout(r, 0))
+  assert.equal(called, true, '回到发起页仍补发，意图未被误删')
+})
+
+test('coordinator：handler 抛异常不冒泡，也不卡死后续补发', async () => {
+  const store = createTaskStore()
+  let active = 'panel-b'
+  const c = createCoordinator({
+    store,
+    host: { activePanelId: () => active, selectPanel: (id) => { active = id } },
+  })
+  const task = store.upsert({
+    id: 'defer-5', project: 'p', group: 'g', title: title('t'), state: 'done',
+    startedAt: 9, settledAt: 10, panelId: 'panel-a',
+  }).task
+  assert.equal(c.press('open', task.id), true)
+  let threw = false
+  try {
+    c.registerHandlers({ open: () => { throw new Error('boom') } })
+    await new Promise((r) => setTimeout(r, 0))
+  } catch {
+    threw = true
+  }
+  assert.equal(threw, false, '异常被 safeCall 吞掉')
+})

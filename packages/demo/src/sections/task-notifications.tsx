@@ -34,7 +34,7 @@ executors.register('demo:job', async (args, ctx) => {
   return { outcome: 'done' }
 })
 
-// ② 本页接线一次：列表与 Toast 共用 handlers，终态只刷自己的数据
+// ② 接线随面板生命周期：切走调 disposer、重挂重新注册；列表与 Toast 共用 handlers，重注册时补发暂存的按钮动作
 mountTaskUI({
   project: 'dsh-plugin-core-demo',
   groups: ['demo-jobs'],

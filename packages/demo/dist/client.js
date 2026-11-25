@@ -57639,10 +57639,45 @@ function safeCall(label, fn) {
     console.error(`dsh-plugin-core: task ${label} failed`, error);
   }
 }
+var PENDING_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/tasks/pending/v1");
+var PENDING_TTL = 8e3;
+var PENDING_CAP = 32;
+function pendingMap() {
+  const holder = globalThis;
+  let map = holder[PENDING_KEY];
+  if (map === void 0) {
+    map = /* @__PURE__ */ new Map();
+    holder[PENDING_KEY] = map;
+  }
+  return map;
+}
 function createCoordinator(options = {}) {
   const store = options.store ?? taskStore;
   const host = options.host ?? {};
   const registry = options.registry ?? executors;
+  function drainPending() {
+    const map = pendingMap();
+    const now = Date.now();
+    for (const [key, pending] of map) {
+      if (now - pending.enqueuedAt > PENDING_TTL) {
+        map.delete(key);
+        continue;
+      }
+      const active = host.activePanelId?.();
+      if (active !== void 0 && active !== pending.panelId)
+        continue;
+      const current3 = store.get(pending.taskId);
+      if (current3 === void 0 || current3.startedAt !== pending.startedAt) {
+        map.delete(key);
+        continue;
+      }
+      const handler = store.getHandler(pending.buttonId, current3.project);
+      if (handler === void 0)
+        continue;
+      map.delete(key);
+      safeCall("deferred button handler", () => handler(current3));
+    }
+  }
   function announce(task, state, reason) {
     const final = {
       ...task,
@@ -57741,17 +57776,39 @@ function createCoordinator(options = {}) {
       const task = store.get(taskId);
       if (task === void 0)
         return false;
+      const panelId = task.panelId;
+      const active = host.activePanelId?.();
+      const away = panelId !== void 0 && active !== void 0 && active !== panelId;
+      if (away && panelId !== void 0) {
+        if (host.selectPanel === void 0)
+          return false;
+        const map = pendingMap();
+        const key = `${task.project}\0${buttonId}\0${panelId}\0${task.startedAt}`;
+        map.delete(key);
+        map.set(key, { buttonId, taskId, panelId, startedAt: task.startedAt, enqueuedAt: Date.now() });
+        if (map.size > PENDING_CAP) {
+          const oldest = map.keys().next().value;
+          if (oldest !== void 0)
+            map.delete(oldest);
+        }
+        safeCall("selectPanel", () => host.selectPanel?.(panelId));
+        return true;
+      }
       const handler = store.getHandler(buttonId, task.project);
       if (handler === void 0)
         return false;
-      if (task.panelId !== void 0) {
-        const pid = task.panelId;
+      if (panelId !== void 0) {
+        const pid = panelId;
         safeCall("selectPanel", () => host.selectPanel?.(pid));
       }
       safeCall("button handler", () => handler(task));
       return true;
     },
-    registerHandlers: (map, project) => store.registerHandlers(map, project),
+    registerHandlers: (map, project) => {
+      const off = store.registerHandlers(map, project);
+      queueMicrotask(drainPending);
+      return off;
+    },
     onSettled: (listener) => store.onSettled(listener)
   };
 }
@@ -65615,7 +65672,7 @@ var DICT2 = {
     icUsageTitle: "\u7528\u6CD5",
     icUsageHint: "\u683C\u5B50\u53EA\u590D\u5236\u540D\u5B57\uFF0C\u5B8C\u6574\u5199\u6CD5\u770B\u53F3\u8FB9",
     tnNote: "\u672C\u9875\u53EA\u6F14\u793A\u6570\u636E\u9762\uFF1A\u72B6\u6001\u6C60\u3001\u8BA2\u9605\u3001\u4E8B\u4EF6\u603B\u7EBF\u3001\u8DE8\u9875\u540C\u6B65\u4E0E\u7ED3\u675F\u53E5\u67C4\u3002\u4EFB\u52A1\u3001\u6761\u6570\u3001revision\u3001\u65F6\u95F4\u4E0E\u4E8B\u4EF6\u5168\u90E8\u6765\u81EA\u771F\u5B9E API \u8C03\u7528\uFF0C\u6CA1\u6709\u6A21\u62DF\u6570\u636E\u3001\u6CA1\u6709\u5B9A\u65F6\u5668\u3001\u6CA1\u6709\u5360\u4F4D\u884C\u3002\u53EF\u6536\u8D77\u5F39\u7A97\u4E0E\u4E8B\u4EF6\u67E5\u770B\u63A7\u4EF6\u4E0D\u5728\u8FD9\u91CC\uFF0C\u7531\u540E\u7EED\u4EFB\u52A1\u5355\u72EC\u63D0\u4F9B\u3002",
-    tnCrossPage: "\u8DE8\u9875\u6F14\u793A\uFF1A\u5728\u53E6\u4E00\u4E2A\u540C\u6E90\u6807\u7B7E\u9875\u6253\u5F00\u672C\u9875\uFF0C\u4E24\u8FB9\u90FD\u7ECF\u670D\u52A1\u7AEF SSE \u6295\u5F71\u540C\u4E00\u6279\u4EFB\u52A1\uFF1B\u7EC8\u6001\u901A\u77E5\u6309 id \u5728\u5404\u81EA\u6807\u7B7E\u9875\u53BB\u91CD\uFF0C\u5237\u65B0 / \u91CD\u8FDE\u91CD\u63A8\u5386\u53F2\u4E0D\u91CD\u5F39\u3002\u6309\u94AE\u4E00\u5F8B\u7167\u753B\uFF0C\u70B9\u4E86\u5148\u5207\u56DE\u53D1\u8D77\u9762\u677F\u518D\u6267\u884C\u3002",
+    tnCrossPage: "\u8DE8\u9875\u6F14\u793A\uFF1A\u5728\u53E6\u4E00\u4E2A\u540C\u6E90\u6807\u7B7E\u9875\u6253\u5F00\u672C\u9875\uFF0C\u4E24\u8FB9\u90FD\u7ECF\u670D\u52A1\u7AEF SSE \u6295\u5F71\u540C\u4E00\u6279\u4EFB\u52A1\uFF1B\u7EC8\u6001\u901A\u77E5\u6309 id \u5728\u5404\u81EA\u6807\u7B7E\u9875\u53BB\u91CD\uFF0C\u5237\u65B0 / \u91CD\u8FDE\u91CD\u63A8\u5386\u53F2\u4E0D\u91CD\u5F39\u3002\u6309\u94AE\u4E00\u5F8B\u7167\u753B\uFF0C\u53D1\u8D77\u9762\u677F\u672A\u6FC0\u6D3B\u65F6\u70B9\u6309\u94AE\u5148\u6682\u5B58\u610F\u56FE\u3001\u5207\u56DE\u53D1\u8D77\u9875\uFF0C\u7B49 handler \u968F\u9762\u677F\u91CD\u6302\u91CD\u65B0\u6CE8\u518C\u540E\u8865\u53D1\uFF08\u6D88\u8D39\u65B9\u987B\u968F\u9762\u677F\u751F\u547D\u5468\u671F\u6CE8\u518C/\u6CE8\u9500\uFF09\u3002",
     tnBarTitle: "\u901A\u7528\u5C55\u793A\u680F",
     tnBarHint: "\u89E6\u53D1\u5668\u7167\u4E0B\u62C9\u6846\u7684\u76AE\uFF1B\u70B9\u5F00\u6BCF\u884C\u6709\u52A8\u4F5C\u6309\u94AE\uFF08\u56FA\u5B9A\u6700\u5C0F\u53F7\uFF1A\u4E0D\u4F20\u8272\u7070\u5E95\u3001\u4F20 color \u6362\u5E95\u8272\uFF0C\u53EA\u4F20 icon \u662F\u6B63\u65B9\u5F62\uFF09\uFF1B\u6BCF\u6B21\u6CE8\u518C\u90FD\u968F\u673A\u751F\u6210 0/1/2 \u9897\uFF1B\u6700\u540E\u4E24\u9897\u6F14\u793A\u5BBD\u5EA6\uFF1A\u5B9A\u5BBD 220\uFF0C\u4EE5\u53CA\u4E0A\u9650 110\uFF08\u653E\u4E0D\u4E0B\u5C31\u662F\u4E09\u4E2A\u70B9\uFF0C\u79FB\u4E0A\u53BB\u8DD1\u9A6C\u706F\uFF09",
     tnOpsTitle: "\u771F\u5B9E\u64CD\u4F5C\u53F0",
@@ -65909,7 +65966,7 @@ var DICT2 = {
     icUsageTitle: "Usage",
     icUsageHint: "a cell copies just the name; the full form is on the right",
     tnNote: "This page demos the data plane only: pool, subscription, event bus, cross-page sync and settlement handles. Rows, counts, revision, timestamps and events all come from real API calls \u2014 no mock data, no timers, no placeholder rows. Collapsible dialogs and the event-viewer control are not here; they arrive in separate tasks.",
-    tnCrossPage: "Cross-page demo: open this page in another same-origin tab; both project the same tasks from the server SSE. Terminal notices are de-duplicated by id per tab, so refresh / reconnect replays never re-toast. Buttons are always drawn; a click switches back to the originating panel before running.",
+    tnCrossPage: "Cross-page demo: open this page in another same-origin tab; both project the same tasks from the server SSE. Terminal notices are de-duplicated by id per tab, so refresh / reconnect replays never re-toast. Buttons are always drawn; when the originating panel is inactive the press is stashed, that panel is brought back, and the action is replayed once its handler re-registers on remount (consumers register/unregister handlers with the panel lifecycle).",
     tnBarTitle: "Ready-made bar",
     tnBarHint: "Trigger follows the dropdown skin; row actions are always the smallest size (grey by default, any color via color, icon-only renders as a square); every registration picks 0/1/2 buttons at random; the last two show sizing \u2014 width 220, and maxWidth 110 (ellipsis when it does not fit, marquee on hover)",
     tnOpsTitle: "Live controls",
@@ -71299,8 +71356,8 @@ h(SideSheet, {
     },
     "prose": [
       {
-        "zh": "\u8FD9\u91CC\u53EB**\u540E\u53F0\u4EFB\u52A1\u4E2D\u5FC3**\uFF1A\u6267\u884C\u5728\u540E\u7AEF\uFF08\u5F00\u653E\u6267\u884C\u5668\uFF09\uFF0C\u72B6\u6001\u771F\u6E90\u5728\u670D\u52A1\u7AEF\uFF0C\u524D\u7AEF\u53EA\u767B\u8BB0\u3001\u6295\u5F71\u3001\u8F6C\u53D1\u6309\u94AE\u3002\u6CA1\u6709\u524D\u7AEF pull \u5FC3\u8DF3\u3001\u6CA1\u6709\u72B6\u6001\u6E90\u3001\u6CA1\u6709\u53CC\u65F6\u949F\u79DF\u7EA6\u3001\u6CA1\u6709 tombstone \u5224\u6B7B\u2014\u2014\u7EC8\u6001\u7531\u6267\u884C\u5668\u7ED3\u679C\u6216\u670D\u52A1\u7AEF\u6295\u5F71\u76F4\u63A5\u9A71\u52A8\u4E00\u6B21\u3002\u6D88\u8D39\u65B9\u53EA\u5199\u4E24\u5904\u63A5\u7EBF\uFF1A`mountTaskUI` \u6CE8\u518C handlers / \u8BA2\u9605\u7EC8\u6001\u3001`startTask` \u53D1\u8D77\uFF1B\u5C55\u793A\u7528\u6838\u5FC3\u539F\u751F\u7684 `TaskBar`\uFF08icon/pill \u5F62\u6001\u3001sm/md/lg \u5C3A\u5BF8\u3001\u5BBD\u5EA6\u4E0E\u8DD1\u9A6C\u706F\uFF09\uFF0C\u4E0D\u7528\u81EA\u5DF1\u753B\u5217\u8868\u3002",
-        "en": "This is the **background task hub**: work runs on the backend through open executors, the server owns task state, and the front end only registers, projects and forwards button presses. There is no client pull heartbeat, no status source, no dual-clock lease and no tombstone gate \u2014 a terminal state is driven once by the executor result or a server projection. Consumers write two wiring points: `mountTaskUI` registers handlers / terminal callback, `startTask` starts work; display uses the original `TaskBar` (icon/pill forms, sm/md/lg sizes, width and marquee) \u2014 no hand-drawn list."
+        "zh": "\u8FD9\u91CC\u53EB**\u540E\u53F0\u4EFB\u52A1\u4E2D\u5FC3**\uFF1A\u6267\u884C\u5728\u540E\u7AEF\uFF08\u5F00\u653E\u6267\u884C\u5668\uFF09\uFF0C\u72B6\u6001\u771F\u6E90\u5728\u670D\u52A1\u7AEF\uFF0C\u524D\u7AEF\u53EA\u767B\u8BB0\u3001\u6295\u5F71\u3001\u8F6C\u53D1\u6309\u94AE\u3002\u6CA1\u6709\u524D\u7AEF pull \u5FC3\u8DF3\u3001\u6CA1\u6709\u72B6\u6001\u6E90\u3001\u6CA1\u6709\u53CC\u65F6\u949F\u79DF\u7EA6\u3001\u6CA1\u6709 tombstone \u5224\u6B7B\u2014\u2014\u7EC8\u6001\u7531\u6267\u884C\u5668\u7ED3\u679C\u6216\u670D\u52A1\u7AEF\u6295\u5F71\u76F4\u63A5\u9A71\u52A8\u4E00\u6B21\u3002\u6D88\u8D39\u65B9\u53EA\u5199\u4E24\u5904\u63A5\u7EBF\uFF1A`mountTaskUI` \u6CE8\u518C handlers / \u8BA2\u9605\u7EC8\u6001\u3001`startTask` \u53D1\u8D77\uFF1B`mountTaskUI` \u7684\u63A5\u7EBF\u8981\u968F\u9762\u677F\u751F\u547D\u5468\u671F\u8D70\uFF08\u5207\u8D70\u8C03\u8FD4\u56DE\u7684\u6CE8\u9500\u51FD\u6570\u3001\u5207\u56DE\u91CD\u6302\u65F6\u91CD\u65B0\u6CE8\u518C\uFF09\uFF0C\u8DE8\u9762\u677F\u70B9\u6309\u94AE\u9760\u8FD9\u6B21\u91CD\u6CE8\u518C\u8865\u53D1\u3002\u5C55\u793A\u7528\u6838\u5FC3\u539F\u751F\u7684 `TaskBar`\uFF08icon/pill \u5F62\u6001\u3001sm/md/lg \u5C3A\u5BF8\u3001\u5BBD\u5EA6\u4E0E\u8DD1\u9A6C\u706F\uFF09\uFF0C\u4E0D\u7528\u81EA\u5DF1\u753B\u5217\u8868\u3002",
+        "en": "This is the **background task hub**: work runs on the backend through open executors, the server owns task state, and the front end only registers, projects and forwards button presses. There is no client pull heartbeat, no status source, no dual-clock lease and no tombstone gate \u2014 a terminal state is driven once by the executor result or a server projection. Consumers write two wiring points: `mountTaskUI` registers handlers / terminal callback, `startTask` starts work; keep `mountTaskUI` wiring tied to the panel lifecycle (call its disposer on unmount, re-register on remount) \u2014 cross-panel button presses are replayed on that re-registration. Display uses the original `TaskBar` (icon/pill forms, sm/md/lg sizes, width and marquee) \u2014 no hand-drawn list."
       },
       {
         "zh": '`TaskBar` \u9762\u677F\u662F**\u9875\u9762\u7EA7\u77AC\u65F6\u6D6E\u5C42**\uFF0C\u5C42\u7EA7\u4F4E\u4E8E\u62BD\u5C49 / \u5F39\u7A97 / \u8033\u6735 / \u83DC\u5355\uFF1A\u89C6\u89C9\u4E0A\u7531\u4E3B\u6D6E\u5C42\u906E\u7F69\u81EA\u7136\u76D6\u4F4F\uFF0C\u6C38\u8FDC\u4E0D\u8BB8\u6D6E\u5230\u5F39\u7A97\u906E\u7F69\u4E4B\u4E0A\uFF1B\u9762\u677F\u4ECE\u4E0D\u88AB\u9690\u85CF\u6216\u6062\u590D\uFF0C\u5F39\u7A97\u5173\u6389\u540E\u5B83\u672C\u6765\u5C31\u5728\u3002\u884C\u4E3A\u4FA7\u53EA\u8BA4\u6807\u51C6\u6A21\u6001\u8BED\u4E49\uFF08\u539F\u751F `dialog` / `aria-modal="true"` / `alertdialog`\uFF09\uFF1A\u53EA\u8981\u9875\u9762\u5B58\u5728\u6D3B\u52A8\u6A21\u6001\uFF0C\u5916\u90E8\u70B9\u51FB\u3001Esc\u3001\u89E6\u53D1\u5668\u90FD\u4E0D\u6539 `open`\uFF1B\u6A21\u6001\u5173\u95ED\u540E\u8FD9\u4E9B\u8DEF\u5F84\u6062\u590D\u3002\u5916\u90E8\u6536\u8D77\u7531 `pointerdown` \u91C7\u6837\u6A21\u6001\u3001`click` \u53CC\u65F6\u523B\u5224\u5B9A\uFF1A\u65E2\u8986\u76D6\u300C\u70B9\u5916\u90E8\u6309\u94AE\u5F00\u5F39\u7A97\u300D\u65F6\u5F39\u7A97\u5C1A\u672A\u6302\u8F7D\uFF0C\u4E5F\u8986\u76D6\u300C\u70B9\u5173\u95ED\u5F39\u7A97\u300D\u65F6 click \u5DF2\u5378\u8F7D\u4F46 pointerdown \u4ECD\u5F00\u7740\u3002\u4E0D\u58F0\u660E\u6A21\u6001\u8BED\u4E49\u7684\u81EA\u7ED8\u6D6E\u5C42\u53EA\u80FD\u5F97\u5230\u89C6\u89C9\u906E\u6321\uFF0C\u5F97\u4E0D\u5230\u4E8B\u4EF6\u51BB\u7ED3\u2014\u2014\u8FD9\u662F\u6D6E\u5C42\u81EA\u8EAB\u7684\u53EF\u8BBF\u95EE\u6027\u5951\u7EA6\uFF0C\u4E0D\u662F TaskBar \u53BB\u731C\u79C1\u6709\u7C7B\u540D\u3002\u53D7\u63A7 `onOpenChange(false)` \u5E42\u7B49\u53EF\u91CD\u590D\u53D1\uFF1B\u4E0D\u56DE\u5199\u4F1A\u8BA9\u9762\u677F\u505C\u5728\u53D7\u63A7\u7684 `true`\u3002',
@@ -71324,7 +71381,7 @@ h(SideSheet, {
       {
         "id": "bt-mount-ui-example",
         "lang": "ts",
-        "src": "import { mountTaskUI } from 'dsh-plugin-core/ui/task-ui'\n\n// \u672C\u9875\u63A5\u7EBF\u4E00\u6B21\uFF1A\u5217\u8868\u4E0E Toast \u5171\u7528\u8FD9\u4E00\u4EFD handlers\uFF0C\u7EC8\u6001\u53EA\u5237\u6D88\u8D39\u65B9\u81EA\u5DF1\u7684\u6570\u636E\u3002\nmountTaskUI({\n  project: 'dsh-task-reminder',     // null / \u7701\u7565 = \u6536\u6240\u6709\u9879\u76EE\n  groups: ['scan'],\n  handlers: {\n    view: (task) => openLogPanel(task.detail?.logPath),\n    retry: (task) => void startScan(task.detail?.path),\n  },\n  onSettled: (task, outcome) => refreshBoard(),  // \u6838\u5FC3\u5217\u8868\u81EA\u5DF1\u5237\uFF0C\u8FD9\u91CC\u53EA\u5237\u81EA\u5DF1\u7684\u6570\u636E\n})"
+        "src": "import { mountTaskUI } from 'dsh-plugin-core/ui/task-ui'\n\n// \u63A5\u7EBF\u968F\u9762\u677F\u751F\u547D\u5468\u671F\uFF1A\u5217\u8868\u4E0E Toast \u5171\u7528\u8FD9\u4E00\u4EFD handlers\uFF0C\u7EC8\u6001\u53EA\u5237\u6D88\u8D39\u65B9\u81EA\u5DF1\u7684\u6570\u636E\u3002\n// \u5207\u9762\u677F\u65F6\u8981\u6CE8\u9500\uFF08\u4FDD\u7559\u8FD4\u56DE\u7684 disposer\uFF09\uFF0C\u5207\u56DE\u6765\u91CD\u6302\u65F6\u518D\u6CE8\u518C\u4E00\u6B21\u2014\u2014\n// \u8DE8\u9762\u677F\u6309\u94AE\u70B9\u51FB\u4F1A\u5148\u6682\u5B58\u610F\u56FE\u3001\u5207\u56DE\u53D1\u8D77\u9875\uFF0C\u7B49\u8FD9\u6B21\u91CD\u6CE8\u518C\u5B8C\u6210\u540E\u624D\u8865\u53D1\u3002\nconst off = mountTaskUI({\n  project: 'dsh-task-reminder',     // null / \u7701\u7565 = \u6536\u6240\u6709\u9879\u76EE\n  groups: ['scan'],\n  handlers: {\n    view: (task) => openLogPanel(task.detail?.logPath),\n    retry: (task) => void startScan(task.detail?.path),\n  },\n  onSettled: (task, outcome) => refreshBoard(),  // \u6838\u5FC3\u5217\u8868\u81EA\u5DF1\u5237\uFF0C\u8FD9\u91CC\u53EA\u5237\u81EA\u5DF1\u7684\u6570\u636E\n})\n// \u9762\u677F\u5378\u8F7D\u65F6\u8C03\u7528 off()\uFF0C\u91CD\u65B0\u6302\u8F7D\u65F6\u91CD\u65B0\u6267\u884C\u4E0A\u9762\u7684\u63A5\u7EBF\u3002"
       },
       {
         "id": "bt-taskbar-example",
@@ -71373,8 +71430,8 @@ h(SideSheet, {
         "en": "Three channels with separate jobs: **toast** is the terminal card \u2014 `toast.success` / `toast.failure` are fully symmetric, each with a `scope` (`all` every page, `origin` only the originating page) and one button (`TaskButton`: `{ id, text, icon?, color? }`). **Notify** is a terminal message \u2014 `message` plus plain `detail`, the same `scope`, the core only sends the notification and does no UI (cards/alerts are a decision by the receiver); the `broadcast` field is kept for compatibility but the core no longer uses it to decide whether to send \u2014 scope is decided by the scope/project chosen by the subscriber. **List buttons** are `rowButtons: [{ id, text, when }]`, where `when` is `running` / `done` / `failed` / `always` (default always); the same id may be declared repeatedly per state and travels with the record."
       },
       {
-        "zh": '\u6309\u94AE id \u67E5\u7684\u662F\u672C\u9875 `handlers`\uFF08\u5217\u8868\u4E0E Toast \u5171\u7528\u540C\u4E00\u4EFD\uFF09\u3002**\u6240\u6709\u6309\u94AE\u5728\u6240\u6709\u9875\u90FD\u753B**\uFF0C\u4E0D\u9690\u85CF\u3001\u4E0D\u7F6E\u7070\uFF0C\u4E5F\u4E0D\u6309 origin \u6216 getHandler \u8FC7\u6EE4\u2014\u2014\u70B9\u51FB\u8D70 `pressTaskButton` \u2192 `selectPanel(panelId)` \u8DF3\u56DE\u53D1\u8D77\u9762\u677F\u518D\u6267\u884C handler\uFF0C\u300C\u67E5\u770B\u300D\u8FD9\u7C7B\u52A8\u4F5C\u7684 UI \u843D\u5728\u53D1\u8D77\u9762\u677F\u4E0A\u3002\u8FD9\u91CC\u7684\u300C\u6240\u6709\u9875\u300D\u53D7 scope \u7EA6\u675F\uFF1A`scope:"all"` \u6BCF\u9875\u5F39\u5361\u4E14\u6BCF\u9875\u90FD\u6709\u6309\u94AE\uFF0C`scope:"origin"` \u53EA\u5728\u53D1\u8D77\u9875\u5F39\u5361\uFF08\u5176\u5B83\u9875\u8FDE\u5361\u90FD\u6CA1\u6709\uFF0C\u81EA\u7136\u6CA1\u6709\u6309\u94AE\uFF09\u3002`panelId` \u7531\u6838\u5FC3\u5728 `startTask` \u65F6\u81EA\u52A8\u8BB0\u5F55\uFF08\u672C\u5730\u4E0E\u670D\u52A1\u7AEF\u6A21\u5F0F\u90FD\u8BB0\uFF0C\u968F\u63D0\u4EA4\u7ED9\u670D\u52A1\u7AEF\u56DE\u586B\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u4F20\u3002\u82E5 handler \u627E\u4E0D\u5230\uFF08\u6761\u76EE\u5DF2\u5931\u6548\u6216\u6CE8\u518C\u5B83\u7684\u63D2\u4EF6\u5DF2\u5378\u8F7D\uFF09\uFF0CToast \u6309\u94AE\u4E0E\u5217\u8868\u6309\u94AE\u90FD\u7ED9\u4E00\u6B21\u63D0\u793A\uFF08\u8D70\u6838\u5FC3 i18n\uFF09\uFF1B\u5217\u8868\u6309\u94AE\u8FD8\u53EF\u4F20 `onActionFailure` \u81EA\u5DF1\u63A5\u7BA1\u3002\u7EC8\u6001\u53EA\u5206\u53D1\u4E00\u6B21\uFF1A\u672C\u5730\u6267\u884C\u4E0E\u670D\u52A1\u7AEF\u6295\u5F71\u4E0D\u4F1A\u91CD\u590D\u5F39\u5361\u3002',
-        "en": "A button id resolves against this page's `handlers` (shared by the list and toast). **Every button is drawn on every page** \u2014 never hidden, never greyed out, never filtered by origin or getHandler \u2014 and a click goes through `pressTaskButton` \u2192 `selectPanel(panelId)` to jump back to the originating panel before running the handler, so a \"view\" action lands its UI there. \"Every page\" is still bounded by scope: `scope:'all'` toasts and buttons on every page, `scope:'origin'` toasts only on the originating page (no card elsewhere, hence no button). `panelId` is recorded automatically by the core in `startTask` (both local and server modes, submitted for server backfill); consumers never pass it. If the handler is missing (stale entry or the registering plugin was unloaded), both the toast button and the list button give one notice (through the core i18n); list buttons may also pass `onActionFailure` to handle it themselves. Terminal states are delivered once: local execution and server projection never double-toast."
+        "zh": '\u6309\u94AE id \u67E5\u7684\u662F\u672C\u9875 `handlers`\uFF08\u5217\u8868\u4E0E Toast \u5171\u7528\u540C\u4E00\u4EFD\uFF09\u3002**\u6240\u6709\u6309\u94AE\u5728\u6240\u6709\u9875\u90FD\u753B**\uFF0C\u4E0D\u9690\u85CF\u3001\u4E0D\u7F6E\u7070\uFF0C\u4E5F\u4E0D\u6309 origin \u6216 getHandler \u8FC7\u6EE4\u3002\u70B9\u51FB\u8D70 `pressTaskButton`\uFF1A\u82E5\u53D1\u8D77\u9762\u677F\u672A\u6FC0\u6D3B\uFF0C\u6838\u5FC3\u5148\u6682\u5B58\u8FD9\u6B21\u52A8\u4F5C\u610F\u56FE\u3001`selectPanel(panelId)` \u5207\u56DE\u53D1\u8D77\u9875\uFF0C\u7B49\u8BE5\u9875\u91CD\u65B0\u6CE8\u518C handler \u65F6\u8865\u53D1\u6267\u884C\uFF0C\u300C\u67E5\u770B\u300D\u8FD9\u7C7B\u52A8\u4F5C\u7684 UI \u843D\u5728\u53D1\u8D77\u9762\u677F\u4E0A\uFF1B\u82E5\u53D1\u8D77\u9762\u677F\u5DF2\u6FC0\u6D3B\u5219\u7ACB\u5373\u6267\u884C\u3002\u53D1\u8D77\u9875\u7F13\u5B58\u952E\u4E3A (project, buttonId, panelId, startedAt)\uFF0C\u53CC\u51FB\u53BB\u91CD\uFF0C\u4E0A\u9650 32 \u6761\uFF0C\u8D85\u8FC7 8 \u79D2\u7684\u6682\u5B58\u9879\u5728\u4E0B\u6B21\u8865\u53D1\u68C0\u67E5\u65F6\u4E22\u5F03\u3002\u524D\u63D0\u662F\u6D88\u8D39\u65B9 handlers \u968F\u9762\u677F\u751F\u547D\u5468\u671F\u6CE8\u518C/\u6CE8\u9500\uFF08\u5207\u8D70\u6CE8\u9500\u3001\u91CD\u6302\u91CD\u65B0\u6CE8\u518C\uFF09\u3002\u8FD9\u91CC\u7684\u300C\u6240\u6709\u9875\u300D\u53D7 scope \u7EA6\u675F\uFF1A`scope:"all"` \u6BCF\u9875\u5F39\u5361\u4E14\u6BCF\u9875\u90FD\u6709\u6309\u94AE\uFF0C`scope:"origin"` \u53EA\u5728\u53D1\u8D77\u9875\u5F39\u5361\uFF08\u5176\u5B83\u9875\u8FDE\u5361\u90FD\u6CA1\u6709\uFF0C\u81EA\u7136\u6CA1\u6709\u6309\u94AE\uFF09\u3002`panelId` \u7531\u6838\u5FC3\u5728 `startTask` \u65F6\u81EA\u52A8\u8BB0\u5F55\uFF08\u672C\u5730\u4E0E\u670D\u52A1\u7AEF\u6A21\u5F0F\u90FD\u8BB0\uFF0C\u968F\u63D0\u4EA4\u7ED9\u670D\u52A1\u7AEF\u56DE\u586B\uFF09\uFF0C\u6D88\u8D39\u65B9\u4E0D\u4F20\u3002\u771F\u6B63\u627E\u4E0D\u5230\u53EF\u6267\u884C\u76EE\u6807\uFF08\u6761\u76EE\u5931\u6548\u3001\u65E0 panelId\u3001\u6216\u9762\u677F\u5DF2\u6FC0\u6D3B\u4ECD\u65E0 handler\uFF09\u65F6\uFF0CToast \u6309\u94AE\u4E0E\u5217\u8868\u6309\u94AE\u90FD\u7ED9\u4E00\u6B21\u63D0\u793A\uFF08\u8D70\u6838\u5FC3 i18n\uFF09\uFF1B\u5217\u8868\u6309\u94AE\u8FD8\u53EF\u4F20 `onActionFailure` \u81EA\u5DF1\u63A5\u7BA1\u3002\u7EC8\u6001\u53EA\u5206\u53D1\u4E00\u6B21\uFF1A\u672C\u5730\u6267\u884C\u4E0E\u670D\u52A1\u7AEF\u6295\u5F71\u4E0D\u4F1A\u91CD\u590D\u5F39\u5361\u3002',
+        "en": "A button id resolves against this page's `handlers` (shared by the list and toast). **Every button is drawn on every page** \u2014 never hidden, never greyed out, never filtered by origin or getHandler. On click, `pressTaskButton` checks the originating panel: when it is not active, the core stashes the action intent, calls `selectPanel(panelId)` to return there, and replays it once that page re-registers its handler, so a \"view\" action lands its UI on the originating panel; when the panel is already active, the handler runs immediately. Deferred actions are keyed by (project, buttonId, panelId, startedAt), de-duplicated on repeat clicks, capped at 32, and entries older than 8 seconds are dropped at the next drain. This requires the consumer to register/unregister handlers with the panel lifecycle (unsubscribe on unmount, re-register on remount). \"Every page\" is still bounded by scope: `scope:'all'` toasts and buttons on every page, `scope:'origin'` toasts only on the originating page (no card elsewhere, hence no button). `panelId` is recorded automatically by the core in `startTask` (both local and server modes, submitted for server backfill); consumers never pass it. When no executable target truly exists (stale entry, no panelId, or panel active but no handler), both the toast button and the list button give one notice (through the core i18n); list buttons may also pass `onActionFailure` to handle it themselves. Terminal states are delivered once: local execution and server projection never double-toast."
       }
     ],
     "api": [
@@ -71505,8 +71562,8 @@ h(SideSheet, {
             "type": "(options: MountTaskUIOptions) => () => void",
             "def": "\u2014",
             "desc": {
-              "zh": "\u6CE8\u518C handlers + \u8BA2\u9605\u7EC8\u6001\uFF1Bhandlers \u6309 project \u547D\u540D\u7A7A\u95F4\uFF08\u540C\u540D\u6309\u94AE\u4E0D\u540C\u9879\u76EE\u4E92\u4E0D\u8986\u76D6\uFF09\uFF0C\u8FD4\u56DE\u6CE8\u9500\u51FD\u6570",
-              "en": "Registers handlers and subscribes to terminal states; handlers are namespaced by project (same button id in different projects does not collide); returns an unsubscribe function"
+              "zh": "\u6CE8\u518C handlers + \u8BA2\u9605\u7EC8\u6001\uFF1Bhandlers \u6309 project \u547D\u540D\u7A7A\u95F4\uFF08\u540C\u540D\u6309\u94AE\u4E0D\u540C\u9879\u76EE\u4E92\u4E0D\u8986\u76D6\uFF09\uFF0C\u8FD4\u56DE\u6CE8\u9500\u51FD\u6570\u3002\u987B\u968F\u9762\u677F\u751F\u547D\u5468\u671F\u6CE8\u518C/\u6CE8\u9500\uFF0C\u91CD\u6CE8\u518C\u65F6\u6838\u5FC3\u8865\u53D1\u8BE5\u9875\u6682\u5B58\u7684\u6309\u94AE\u52A8\u4F5C",
+              "en": "Registers handlers and subscribes to terminal states; handlers are namespaced by project (same button id in different projects does not collide); returns an unsubscribe function. Must be registered/unregistered with the panel lifecycle; re-registration replays deferred button actions for that page"
             }
           },
           {
@@ -71550,8 +71607,8 @@ h(SideSheet, {
             "type": "(buttonId: string, taskId: string) => boolean",
             "def": "\u2014",
             "desc": {
-              "zh": "\u5148\u5207\u56DE\u53D1\u8D77\u9762\u677F\u518D\u6267\u884C handler\uFF1B\u627E\u4E0D\u5230\u8FD4\u56DE false",
-              "en": "Switches back to the originating panel before running the handler; false when not found"
+              "zh": "\u53D1\u8D77\u9762\u677F\u672A\u6FC0\u6D3B\u65F6\u6682\u5B58\u610F\u56FE\u3001\u5207\u56DE\u540E\u7B49 handler \u91CD\u6CE8\u518C\u8865\u53D1\uFF0C\u8FD4\u56DE true\uFF1B\u9762\u677F\u5DF2\u6FC0\u6D3B\u5219\u7ACB\u5373\u6267\u884C\uFF1B\u65E0\u53EF\u6267\u884C\u76EE\u6807\u8FD4\u56DE false",
+              "en": "When the originating panel is inactive, stashes the intent, switches back and replays after the handler re-registers (true); runs immediately when the panel is active; false when no executable target exists"
             }
           }
         ]
@@ -76660,7 +76717,7 @@ executors.register('demo:job', async (args, ctx) => {
   return { outcome: 'done' }
 })
 
-// \u2461 \u672C\u9875\u63A5\u7EBF\u4E00\u6B21\uFF1A\u5217\u8868\u4E0E Toast \u5171\u7528 handlers\uFF0C\u7EC8\u6001\u53EA\u5237\u81EA\u5DF1\u7684\u6570\u636E
+// \u2461 \u63A5\u7EBF\u968F\u9762\u677F\u751F\u547D\u5468\u671F\uFF1A\u5207\u8D70\u8C03 disposer\u3001\u91CD\u6302\u91CD\u65B0\u6CE8\u518C\uFF1B\u5217\u8868\u4E0E Toast \u5171\u7528 handlers\uFF0C\u91CD\u6CE8\u518C\u65F6\u8865\u53D1\u6682\u5B58\u7684\u6309\u94AE\u52A8\u4F5C
 mountTaskUI({
   project: 'dsh-plugin-core-demo',
   groups: ['demo-jobs'],
@@ -76956,9 +77013,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.46.6"}`],
-            [t3("buildDemo"), `v${"0.46.6"}`],
-            [t3("buildStamp"), "261124-121843-939"]
+            [t3("buildCore"), `v${"0.46.7"}`],
+            [t3("buildDemo"), `v${"0.46.7"}`],
+            [t3("buildStamp"), "261125-090800-348"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77273,9 +77330,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.46.6"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.46.6"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261124-121843-939")
+          (0, import_react112.createElement)("span", null, `core v${"0.46.7"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.46.7"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261125-090800-348")
         )
       )
     ),
