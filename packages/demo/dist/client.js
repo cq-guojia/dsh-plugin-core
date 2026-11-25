@@ -57398,6 +57398,13 @@ function isDisplayTitle(value) {
 function formatDisplayTitle(title) {
   return `${title.category}${TITLE_SEPARATOR}${title.description}`;
 }
+function isTaskProgress(value) {
+  if (value === null || typeof value !== "object")
+    return false;
+  const v = value;
+  const finite = (x) => typeof x === "number" && Number.isFinite(x);
+  return typeof v.message === "string" && finite(v.updatedAt) && (v.current === void 0 || finite(v.current)) && (v.total === void 0 || finite(v.total)) && (v.percent === void 0 || finite(v.percent));
+}
 function toastForState(config2, state) {
   return state === "done" ? config2?.success : state === "failed" ? config2?.failure : void 0;
 }
@@ -57407,22 +57414,45 @@ function notifyForState(config2, state) {
 
 // dist/adv/tasks/store.js
 var STORE_KEY = /* @__PURE__ */ Symbol.for("dsh-plugin-core/tasks/store/v2");
-function sameRecord(a, b) {
-  return JSON.stringify(a) === JSON.stringify(b);
+function stableJson(value) {
+  if (Array.isArray(value))
+    return `[${value.map(stableJson).join(",")}]`;
+  if (value !== null && typeof value === "object") {
+    return `{${Object.keys(value).sort().map((k) => `${JSON.stringify(k)}:${stableJson(value[k])}`).join(",")}}`;
+  }
+  return JSON.stringify(value) ?? "undefined";
 }
-function carryIdentity(next, old) {
+function sameRecord(a, b) {
+  return stableJson(a) === stableJson(b);
+}
+function mergeProgress(next, old, sameRun) {
+  if (!sameRun)
+    return isTaskProgress(next) ? next : void 0;
+  if (next === void 0)
+    return old;
+  if (!isTaskProgress(next))
+    return old;
+  if (old === void 0 || !isTaskProgress(old))
+    return next;
+  return next.updatedAt < old.updatedAt ? old : next;
+}
+function reconcile(next, old) {
   const origin = next.origin ?? old?.origin;
   const panelId = next.panelId ?? old?.panelId;
   const sameRun = old !== void 0 && old.startedAt === next.startedAt;
   const settledAt = isSettled(next.state) ? sameRun && old !== void 0 && isSettled(old.state) && old.settledAt !== void 0 ? old.settledAt : next.settledAt : void 0;
+  const progress = mergeProgress(next.progress, old?.progress, sameRun);
   const base3 = { ...next };
   if (!isSettled(next.state))
     delete base3.settledAt;
+  if (progress === void 0)
+    delete base3.progress;
   return {
     ...base3,
     ...origin === void 0 ? {} : { origin },
     ...panelId === void 0 ? {} : { panelId },
-    ...settledAt === void 0 ? {} : { settledAt }
+    ...settledAt === void 0 ? {} : { settledAt },
+    ...progress === void 0 ? {} : { progress }
   };
 }
 function createStore3() {
@@ -57475,14 +57505,16 @@ function createStore3() {
       clearOptimistic(sKey);
       if (isStaleAgainst(record, old, composite, wasOptimistic))
         continue;
-      const next = carryIdentity({ ...record, id: targetId }, old);
+      const next = reconcile({ ...record, id: targetId }, old);
       if (composite !== void 0)
         byKey.set(composite, next.id);
-      tasks2.set(next.id, next);
+      const updated = old === void 0 || !sameRecord(old, next);
+      if (updated) {
+        tasks2.set(next.id, next);
+        changed.push(next);
+      }
       if (next.state === "running")
         announced.delete(settlementKey(next));
-      if (old === void 0 || !sameRecord(old, next))
-        changed.push(next);
     }
     if (changed.length > 0)
       publish();
@@ -57505,9 +57537,12 @@ function createStore3() {
           existingId = priorId;
       }
       const targetId = existingId ?? task.id;
-      const existed = tasks2.has(targetId);
-      const stored = carryIdentity({ ...task, id: targetId }, tasks2.get(targetId));
-      tasks2.set(targetId, stored);
+      const old = tasks2.get(targetId);
+      const existed = old !== void 0;
+      const stored = reconcile({ ...task, id: targetId }, old);
+      const updated = old === void 0 || !sameRecord(old, stored);
+      if (updated)
+        tasks2.set(targetId, stored);
       if (composite !== void 0)
         byKey.set(composite, targetId);
       const sKey = settlementKey(stored);
@@ -57520,7 +57555,8 @@ function createStore3() {
       } else {
         clearOptimistic(sKey);
       }
-      publish();
+      if (updated)
+        publish();
       return { created: !existed, task: stored };
     },
     merge(records) {
@@ -57534,6 +57570,10 @@ function createStore3() {
     },
     get(id3) {
       return tasks2.get(id3);
+    },
+    getByKey(project, key) {
+      const id3 = byKey.get(`${project}\0${key}`);
+      return id3 === void 0 ? void 0 : tasks2.get(id3);
     },
     removeRunning(id3) {
       const mapped = optimisticById.get(id3);
@@ -57728,7 +57768,9 @@ function createCoordinator(options = {}) {
         const current3 = store.get(task.id);
         if (current3 === void 0 || current3.state === "done" || current3.state === "failed")
           return;
-        store.upsert({ ...current3, progress: { ...progress, updatedAt: Date.now() } });
+        const prior = current3.progress?.updatedAt;
+        const updatedAt = Math.max(Date.now(), prior === void 0 ? 0 : prior + 1);
+        store.upsert({ ...current3, progress: { ...progress, updatedAt } });
       }
     };
     Promise.resolve().then(() => handler(task.args ?? {}, ctx)).then((result) => settle(store.get(task.id) ?? task, result.outcome, result.reason)).catch((error) => settle(store.get(task.id) ?? task, "failed", String(error)));
@@ -58696,13 +58738,20 @@ function isTaskRecord(value) {
   const settledAtOk = typeof v.settledAt === "number" && Number.isFinite(v.settledAt);
   return typeof v.id === "string" && typeof v.project === "string" && typeof v.group === "string" && isDisplayTitle(v.title) && isTaskToastConfig(v.toast) && (v.state === "running" || v.state === "done" || v.state === "failed") && typeof v.startedAt === "number" && Number.isFinite(v.startedAt) && (v.state === "running" ? v.settledAt === void 0 : settledAtOk);
 }
+function sanitizeTask(task) {
+  if (task.progress === void 0 || isTaskProgress(task.progress))
+    return task;
+  const { progress: _bad, ...rest } = task;
+  return rest;
+}
 function ingestTask(raw, snapshot = false) {
   if (!isTaskRecord(raw))
     return;
+  const task = sanitizeTask(raw);
   if (snapshot)
-    taskStore.mergeBaseline([raw]);
+    taskStore.mergeBaseline([task]);
   else
-    coordinator.project([raw]);
+    coordinator.project([task]);
 }
 function isTaskNotice(value) {
   if (value === null || typeof value !== "object")
@@ -58716,7 +58765,7 @@ function ingestNotice(raw) {
   const notice = raw;
   if (!rememberNotice(notice.id, notice.task.settledAt, notice.task.project))
     return;
-  coordinator.deliverNotice(notice);
+  coordinator.deliverNotice({ ...notice, task: sanitizeTask(notice.task) });
 }
 function notifyTaskActionFailed() {
   notify(t("taskbarActionFailed"));
@@ -58858,7 +58907,7 @@ function connectTaskCenter(host) {
         getState: () => taskStore.getBaseline(),
         applyBaseline: (tasks2) => {
           const valid = tasks2.filter((task) => isTaskRecord(task));
-          taskStore.mergeBaseline(valid);
+          taskStore.mergeBaseline(valid.map(sanitizeTask));
         },
         lifecycle
       });
@@ -71770,8 +71819,8 @@ h(SideSheet, {
             "type": "TaskStore",
             "def": "\u5168\u5C40\u5355\u4F8B",
             "desc": {
-              "zh": "\u540C\u6807\u7B7E\u9875\u5171\u4EAB\u7684\u4EFB\u52A1\u72B6\u6001\uFF1BgetSnapshot / subscribe / select / getHandler / clearAll\uFF08\u5168\u6E05\uFF1A\u4EFB\u52A1\u3001\u5E42\u7B49\u952E\u3001\u7EC8\u6001\u58F0\u660E\u4E0E handlers\uFF0C\u6E05\u540E\u9700\u91CD\u65B0 mountTaskUI\uFF09",
-              "en": "Shared task state per tab; getSnapshot / subscribe / select / getHandler / clearAll (clears everything: tasks, idempotency keys, settlement claims and handlers \u2014 remount after)"
+              "zh": "\u540C\u6807\u7B7E\u9875\u5171\u4EAB\u7684\u4EFB\u52A1\u72B6\u6001\uFF1BgetSnapshot / subscribe / select / getByKey(project,key) / getHandler / clearAll\uFF08\u5168\u6E05\uFF1A\u4EFB\u52A1\u3001\u5E42\u7B49\u952E\u3001\u7EC8\u6001\u58F0\u660E\u4E0E handlers\uFF0C\u6E05\u540E\u9700\u91CD\u65B0 mountTaskUI\uFF09",
+              "en": "Shared task state per tab; getSnapshot / subscribe / select / getByKey(project,key) / getHandler / clearAll (clears everything: tasks, idempotency keys, settlement claims and handlers \u2014 remount after)"
             }
           }
         ]
@@ -71815,8 +71864,8 @@ h(SideSheet, {
             "type": "TaskProgress | undefined",
             "def": "undefined",
             "desc": {
-              "zh": "\u6700\u540E\u4E00\u6BB5\u8BDD + \u66F4\u65B0\u65F6\u95F4 + \u53EF\u9009\u6570\u503C\uFF0C\u663E\u5F0F\u5B57\u6BB5\uFF0C\u4E0D\u8FDB detail",
-              "en": "Last message + update time + optional numbers, an explicit field never stored in detail"
+              "zh": "\u6700\u540E\u4E00\u6BB5\u62AB\u9732\u6587\u5B57 + updatedAt + \u53EF\u9009\u6570\u503C\uFF0C\u663E\u5F0F\u5B57\u6BB5\uFF0C\u4E0D\u8FDB detail\u3002\u7F3A\u5B57\u6BB5=\u4FDD\u7559\u65E7\u503C\uFF08\u542B\u7EC8\u6001\u5E27\uFF09\uFF1B\u540C\u4E00\u6B21\u8FD0\u884C\u5185\u6309 updatedAt \u53D6\u65B0\uFF0C\u4E71\u5E8F\u65E7\u5E27\u4E22\u5F03\uFF1B\u91CD\u8DD1\uFF08startedAt \u53D8\uFF09\u4E0D\u5E26\u65E7\u6587\u5B57\uFF1B\u574F\u5F62\u72B6\u5728\u5165\u53E3\u5265\u79BB\u8BE5\u5B57\u6BB5\u3001\u4E0D\u6BC1\u6574\u5E27\u3002\u670D\u52A1\u7AEF\u987B\u4FDD\u8BC1\u540C key \u7684 updatedAt \u4E25\u683C\u9012\u589E",
+              "en": "Last disclosure message + updatedAt + optional numbers, an explicit field never stored in detail. Missing = keep previous (terminal frames included); within one run the newest updatedAt wins and late frames are dropped; a rerun (new startedAt) does not inherit the old message; malformed values are stripped at the boundary without rejecting the frame. The server must keep updatedAt strictly increasing per key"
             }
           },
           {
@@ -77011,9 +77060,9 @@ function ReferencePage() {
           "tbody",
           null,
           [
-            [t3("buildCore"), `v${"0.46.8"}`],
-            [t3("buildDemo"), `v${"0.46.8"}`],
-            [t3("buildStamp"), "261125-110155-860"]
+            [t3("buildCore"), `v${"0.46.9"}`],
+            [t3("buildDemo"), `v${"0.46.9"}`],
+            [t3("buildStamp"), "261125-150233-714"]
           ].map(
             ([label, value]) => (0, import_react110.createElement)(
               "tr",
@@ -77328,9 +77377,9 @@ function DemoPage() {
               lineHeight: "14px"
             }
           },
-          (0, import_react112.createElement)("span", null, `core v${"0.46.8"}`),
-          (0, import_react112.createElement)("span", null, `demo v${"0.46.8"}`),
-          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261125-110155-860")
+          (0, import_react112.createElement)("span", null, `core v${"0.46.9"}`),
+          (0, import_react112.createElement)("span", null, `demo v${"0.46.9"}`),
+          (0, import_react112.createElement)("span", { style: { marginTop: "4px", fontSize: "9px" } }, "261125-150233-714")
         )
       )
     ),

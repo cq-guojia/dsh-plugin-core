@@ -195,7 +195,9 @@ follower 的届。`signal` 只是「去拉基线」的提示、不安装届，�
 - 401 停机后切走标签（页面隐藏）不应触发重连；切回来才恢复订阅。
 - 新开标签后不弹加入前的历史通知，只收加入后结算的通知；老标签断档重连只拿增量。
 - 先开 A、再开 B 并让 A 退出后 B 接管；A 中的 follower 仍能收到 B 的帧（届不回拨）。
-- 同一任务重跑（`startedAt` 更新）后再次结算会弹卡，旧运行的 `settledAt` 不会带过来。
+- 同一任务重跑（`startedAt` 更新）后再次结算会弹卡，旧运行的 `settledAt` 与最后一段进度文字都不会带过来。
+- 服务端连发 `updatedAt` 递增的进度帧，再发一条不带 progress 的帧（如终态帧）：最后一段文字保留不丢。
+- 服务端倒序推两条进度帧：UI 只显示 `updatedAt` 更大的那段，不会被旧帧盖回。
 - 按钮一律照画；发起面板未激活时点按钮先暂存意图、切回后等该面板 handler 重注册补发（上限 32 条、8 秒未重注册即丢弃）；只有真正无可执行目标（条目过期 / 无 panelId / 面板已激活但无 handler）才给一次统一提示，不静默。
 
 ## 常见失败
@@ -205,7 +207,9 @@ follower 的届。`signal` 只是「去拉基线」的提示、不安装届，�
 | 点了按钮提示「操作已失效」 | 条目已过期 / 无 panelId / 面板已激活但无 handler（`TaskBar` / Toast 都照画按钮，无可执行目标就提示） | 确认 `mountTaskUI` 的 handlers 已按当前面板注册（TaskBar 共用同一份） |
 | 切到别的页点了按钮没反应 | 发起面板的 handlers 没有随面板重挂重新注册，暂存的意图 8 秒后丢弃 | 面板 `useEffect` 里 `return mountLedgerTaskUi()`，切走注销、重挂重注册 |
 | 终态弹两次 | 本地执行与服务端投影都当成终态分发 | 用 `coordinator.project` 统一投影，不另写分发路径 |
-| 进度不显示 | 进度塞进了 `detail` | 用 `ctx.report({ message })` 上报到显式 `progress` 字段 |
+| 进度不显示 | 进度塞进了 `detail`；或帧的 `updatedAt` 倒挂被 LWW 丢弃 | 用 `ctx.report({ message })` 上报到显式 `progress` 字段；服务端保证同 key 的 `updatedAt` 严格递增 |
+| 进度文字被清空 | 服务端发了不带 progress 的帧（按契约这是「不变更」，核心保留旧值） | 若确实要清空，发一条 `progress.message: ''` 且 `updatedAt` 更大的帧；别靠省略字段 |
+| 重跑后显示上一次的文字 | 服务端没更新 `startedAt`，核心认不出新运行 | 同 key 重跑时给新的、更大的 `startedAt`（与 `settledAt` 契约同一套运行身份） |
 | 切面板后 UI 落错页 | 自行调 handler，没走 `press` | 点击统一走核心列表 / `pressTaskButton` |
 | 刷新后按钮消失 | 未重新接线 | 每次插件挂载都调 `mountTaskUI` 重新注册 handlers |
 

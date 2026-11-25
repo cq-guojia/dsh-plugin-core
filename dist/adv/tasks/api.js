@@ -11,7 +11,7 @@ import { notify as notifyCard } from '../../ui/feedback/notify.js';
 import { t } from '../../utils/i18n.js';
 import { getTabOrigin, notifyMessage, resolveProject, subscribeNotifications as subscribeNotifyBus, } from '../../runtime/notify.js';
 import { createCoordinator } from './coordinator.js';
-import { isDisplayTitle } from './model.js';
+import { isDisplayTitle, isTaskProgress } from './model.js';
 import { connectSharedTaskStream } from './shared-stream.js';
 import { connectTaskStream } from './stream.js';
 import { taskStore } from './store.js';
@@ -179,14 +179,25 @@ export function isTaskRecord(value) {
             ? v.settledAt === undefined
             : settledAtOk));
 }
+/**
+ * 投影前把坏 progress 剥离成「未提供」——核心 store 的 LWW 语义会把缺字段当保留旧值，
+ * 于是畸形帧只丢掉那一段披露文字，不牵连整条任务状态（必填字段坏仍由 isTaskRecord 整帧拒收）。
+ */
+function sanitizeTask(task) {
+    if (task.progress === undefined || isTaskProgress(task.progress))
+        return task;
+    const { progress: _bad, ...rest } = task;
+    return rest;
+}
 /** 状态投影（基线 / 增量）：只恢复列表，**不弹卡**。基线与增量同语义——真源可归一覆盖本地旧行（含乐观行），但单调守卫挡住旧终态复活。 */
 function ingestTask(raw, snapshot = false) {
     if (!isTaskRecord(raw))
         return;
+    const task = sanitizeTask(raw);
     if (snapshot)
-        taskStore.mergeBaseline([raw]);
+        taskStore.mergeBaseline([task]);
     else
-        coordinator.project([raw]);
+        coordinator.project([task]);
 }
 function isTaskNotice(value) {
     if (value === null || typeof value !== 'object')
@@ -201,7 +212,7 @@ function ingestNotice(raw) {
     const notice = raw;
     if (!rememberNotice(notice.id, notice.task.settledAt, notice.task.project))
         return;
-    coordinator.deliverNotice(notice);
+    coordinator.deliverNotice({ ...notice, task: sanitizeTask(notice.task) });
 }
 /**
  * 按钮点了没生效时的统一提示：任务条目已失效 / 注册 handler 的插件已卸载（找不到方法）。
@@ -383,7 +394,7 @@ export function connectTaskCenter(host) {
                 getState: () => taskStore.getBaseline(),
                 applyBaseline: (tasks) => {
                     const valid = tasks.filter((task) => isTaskRecord(task));
-                    taskStore.mergeBaseline(valid);
+                    taskStore.mergeBaseline(valid.map(sanitizeTask));
                 },
                 lifecycle: lifecycle,
             });
@@ -496,7 +507,7 @@ export function pressTaskButton(buttonId, taskId) {
  * 否则会绕过校验进 store，导致终态行不消失、显示假计时（settledAt 契约的破口）。
  */
 export function projectTasks(records) {
-    coordinator.project(records.filter(isTaskRecord));
+    coordinator.project(records.filter(isTaskRecord).map(sanitizeTask));
 }
 /** 列表控件读取用的 store 快照。 */
 export const taskCenterStore = taskStore;

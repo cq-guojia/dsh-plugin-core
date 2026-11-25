@@ -64,11 +64,14 @@ export interface TaskRowButton extends TaskButton {
 /** 进度：最后更新时间 + 最后一段话 + 可选数值。正规字段，不进 detail。 */
 export interface TaskProgress {
     readonly message: string;
+    /** 真源分配的单调递增时刻（Date.now() 级别）。同 key 服务端须严格递增；仅用于排序，不用于展示。 */
     readonly updatedAt: number;
     readonly current?: number;
     readonly total?: number;
     readonly percent?: number;
 }
+/** 形状校验：坏 progress 在边界被剥离（保留旧值），不让它畸形地进 store 或渲染层。 */
+export declare function isTaskProgress(value: unknown): value is TaskProgress;
 /**
  * 一条任务记录。所有字段都是服务端下发或调用方给的纯数据，跨页克隆安全、无函数。
  */

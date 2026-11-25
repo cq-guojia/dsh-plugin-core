@@ -212,7 +212,11 @@ export function createCoordinator(options: CoordinatorOptions = {}): TaskCoordin
       report(progress: ExecutorProgress): void {
         const current = store.get(task.id)
         if (current === undefined || current.state === 'done' || current.state === 'failed') return
-        store.upsert({ ...current, progress: { ...progress, updatedAt: Date.now() } })
+        // 本地时钟只作这份进度的排序键：取 max(now, old+1) 保证多次上报严格递增，
+        // 与服务端时钟不同源也不影响——store 的 LWW 只在同一次运行内比较 updatedAt。
+        const prior = current.progress?.updatedAt
+        const updatedAt = Math.max(Date.now(), prior === undefined ? 0 : prior + 1)
+        store.upsert({ ...current, progress: { ...progress, updatedAt } })
       },
     }
     Promise.resolve()

@@ -1,10 +1,58 @@
+/**
+ * 后台任务的共享状态中心。
+ *
+ * 同标签页所有插件副本共用一个 store（Symbol.for 收口）——A 插件发起的任务、注册的 handler，
+ * B 插件的同页副本也看得到。这正是「在 B 页面点 A 的按钮，本页直接执行 A 的 handler」的基础。
+ *
+ * 纯数据 + 纯逻辑，零 React / 零宿主 / 零 DOM。React 侧用 useSyncExternalStore 接 getSnapshot/subscribe。
+ * 这里不判死、不算租约、不轮询：状态由服务端经 SSE 投影进来，本地只负责存与分发。
+ *
+ * 「终态只分发一次」的去重状态放在这里，不放 coordinator 实例里：coordinator 重接、客户端重连
+ * 推基线、同页多副本都会重新投影同一条终态，只有共享的 store 才能挡住重复 toast/notify/onSettled。
+ */
+import { isTaskProgress } from './model.js';
 // 与单飞协议 v2 / notify v2 对齐：同页混版插件不得共享同一 store（消费方第二轮封口 #1）。
 const STORE_KEY = Symbol.for('dsh-plugin-core/tasks/store/v2');
+/**
+ * 稳定相等判定：JSON.stringify 对键顺序敏感，合并出的新对象键序可能与旧对象不同
+ * （progress 来自 old vs next 时尤其明显），会把同一条记录误判成变更、白触发一次 publish。
+ * 递归排序对象键后再比较；源数据都是 JSON 安全纯值，无循环引用。
+ */
+function stableJson(value) {
+    if (Array.isArray(value))
+        return `[${value.map(stableJson).join(',')}]`;
+    if (value !== null && typeof value === 'object') {
+        return `{${Object.keys(value).sort()
+            .map((k) => `${JSON.stringify(k)}:${stableJson(value[k])}`).join(',')}}`;
+    }
+    return JSON.stringify(value) ?? 'undefined';
+}
 function sameRecord(a, b) {
-    return JSON.stringify(a) === JSON.stringify(b);
+    return stableJson(a) === stableJson(b);
 }
 /**
- * 就地更新时保留权威身份字段 + 维护结算时钟不变量。
+ * 进度合并（LWW）：只在同一次运行（startedAt 相同）内比较；跨运行的旧文字必须让位，
+ * 否则重跑会把上一次的披露文字带到新任务上。
+ *   - next 缺 progress ⇒ 保留 old（「缺字段=不表达变更」，RFC 7386 的部分更新语义）；
+ *     终态帧不带 progress 因此天然保留最后一段文字，终态保留不是特殊分支。
+ *   - old 缺 / 形状坏 ⇒ 采用 next（坏值在边界已剥离，这里再守一道，store 也可能被直接调用）。
+ *   - updatedAt 更小 ⇒ 旧帧迟到，丢弃其进度（乱序守卫，与整帧运行身份守卫正交）。
+ *   - 相同 updatedAt ⇒ 后到覆盖（last-wins，确定性裁决）。
+ */
+function mergeProgress(next, old, sameRun) {
+    if (!sameRun)
+        return isTaskProgress(next) ? next : undefined;
+    if (next === undefined)
+        return old;
+    if (!isTaskProgress(next))
+        return old;
+    if (old === undefined || !isTaskProgress(old))
+        return next;
+    return next.updatedAt < old.updatedAt ? old : next;
+}
+/**
+ * 单一写入真源：upsert / merge / mergeBaseline 三条路径共用的记录合成。
+ * 任何"某条路径漏带 progress 就清空文字"的 bug 都在这里一次性消除。
  *
  * origin / panelId：服务端漏发时保留本地发起身份（first-wins）。
  * settledAt 严格按状态派生，不靠「谁带了字段」：
@@ -14,26 +62,28 @@ function sameRecord(a, b) {
  *     绝不用本地 Date.now() 补——本地造时会盖住后到的真源时间且让重放签名漂移。
  * 入口 isTaskRecord 已保证终态必带有限数 settledAt，这里只做合并，不再补时。
  */
-function carryIdentity(next, old) {
+function reconcile(next, old) {
     const origin = next.origin ?? old?.origin;
     const panelId = next.panelId ?? old?.panelId;
-    // settledAt 的 first-wins 只在「同一次运行」内成立：state 帧与 notice 帧各带自己的时间时，
-    // 保留先到的那份（同一次结算不各算时间戳）。跨运行（startedAt 不同）必须取新值，
-    // 否则断网重跑只见到新终态时，新行会被打上旧运行的结算时刻 → TaskBar 判为早已过期（消费方 #3）。
+    // 同一次运行的判据贯穿 settledAt 与 progress：跨运行取新值，重跑不带旧运行的残留。
     const sameRun = old !== undefined && old.startedAt === next.startedAt;
     const settledAt = isSettled(next.state)
         ? (sameRun && old !== undefined && isSettled(old.state) && old.settledAt !== undefined
             ? old.settledAt : next.settledAt)
         : undefined;
+    const progress = mergeProgress(next.progress, old?.progress, sameRun);
     const base = { ...next };
     // running 必须不带 settledAt：显式删除，不能因 spread 旧键而残留。
     if (!isSettled(next.state))
         delete base.settledAt;
+    if (progress === undefined)
+        delete base.progress;
     return {
         ...base,
         ...(origin === undefined ? {} : { origin }),
         ...(panelId === undefined ? {} : { panelId }),
         ...(settledAt === undefined ? {} : { settledAt }),
+        ...(progress === undefined ? {} : { progress }),
     };
 }
 function createStore() {
@@ -109,14 +159,16 @@ function createStore() {
             clearOptimistic(sKey);
             if (isStaleAgainst(record, old, composite, wasOptimistic))
                 continue;
-            const next = carryIdentity({ ...record, id: targetId }, old);
+            const next = reconcile({ ...record, id: targetId }, old);
             if (composite !== undefined)
                 byKey.set(composite, next.id);
-            tasks.set(next.id, next);
+            const updated = old === undefined || !sameRecord(old, next);
+            if (updated) {
+                tasks.set(next.id, next);
+                changed.push(next);
+            }
             if (next.state === 'running')
                 announced.delete(settlementKey(next));
-            if (old === undefined || !sameRecord(old, next))
-                changed.push(next);
         }
         if (changed.length > 0)
             publish();
@@ -137,9 +189,12 @@ function createStore() {
                     existingId = priorId;
             }
             const targetId = existingId ?? task.id;
-            const existed = tasks.has(targetId);
-            const stored = carryIdentity({ ...task, id: targetId }, tasks.get(targetId));
-            tasks.set(targetId, stored);
+            const old = tasks.get(targetId);
+            const existed = old !== undefined;
+            const stored = reconcile({ ...task, id: targetId }, old);
+            const updated = old === undefined || !sameRecord(old, stored);
+            if (updated)
+                tasks.set(targetId, stored);
             // byKey 永远指向存活 id；否则第三次同键 upsert 会按不存在的旧 id 判成新建，堆出重复行。
             if (composite !== undefined)
                 byKey.set(composite, targetId);
@@ -154,7 +209,8 @@ function createStore() {
             else {
                 clearOptimistic(sKey);
             }
-            publish();
+            if (updated)
+                publish();
             return { created: !existed, task: stored };
         },
         merge(records) {
@@ -168,6 +224,10 @@ function createStore() {
         },
         get(id) {
             return tasks.get(id);
+        },
+        getByKey(project, key) {
+            const id = byKey.get(`${project}\u0000${key}`);
+            return id === undefined ? undefined : tasks.get(id);
         },
         removeRunning(id) {
             // 无论行归一到哪个 targetId，都按乐观行 id 反查清标记（复查 A 边界）。

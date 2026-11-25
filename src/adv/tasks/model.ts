@@ -89,10 +89,25 @@ export interface TaskRowButton extends TaskButton {
 /** 进度：最后更新时间 + 最后一段话 + 可选数值。正规字段，不进 detail。 */
 export interface TaskProgress {
   readonly message: string
+  /** 真源分配的单调递增时刻（Date.now() 级别）。同 key 服务端须严格递增；仅用于排序，不用于展示。 */
   readonly updatedAt: number
   readonly current?: number
   readonly total?: number
   readonly percent?: number
+}
+
+/** 形状校验：坏 progress 在边界被剥离（保留旧值），不让它畸形地进 store 或渲染层。 */
+export function isTaskProgress(value: unknown): value is TaskProgress {
+  if (value === null || typeof value !== 'object') return false
+  const v = value as Record<string, unknown>
+  const finite = (x: unknown): boolean => typeof x === 'number' && Number.isFinite(x)
+  return (
+    typeof v.message === 'string' &&
+    finite(v.updatedAt) &&
+    (v.current === undefined || finite(v.current)) &&
+    (v.total === undefined || finite(v.total)) &&
+    (v.percent === undefined || finite(v.percent))
+  )
 }
 
 /**

@@ -52,7 +52,13 @@
    客户端不维护 cursor / 版本门。跨标签 BC 扇出层的 `noticeSince` 水位只裁「本地回放哪些通知」，
    不参与服务端状态同步，也不是 cursor。
 8. **多副本收口**：executor 注册表与 task store 都挂 `globalThis[Symbol.for(...)]`，同页所有插件副本共用一份。
-9. **进度是显式字段**：`progress: { message, updatedAt, current?, total?, percent? }` 由 `ctx.report()` 上报，不塞进 `detail`。
+9. **进度是一等公民、单一写入真源**：`progress: { message, updatedAt, current?, total?, percent? }` 由本地 `ctx.report()` 或服务端 SSE 上报，不塞进 `detail`。`store.ts` 的 `reconcile` 是 upsert / merge / mergeBaseline 三条写入路径共用的唯一合成点，progress 语义只实现一次：
+   - **缺省保留**：帧不带 progress = 不表达变更，保留旧值（RFC 7386 部分更新语义）。终态帧不带 progress 因此天然保留最后一段文字——终态保留是这条规则的推论，不是特例分支。
+   - **LWW 与乱序守卫**：同一次运行（`startedAt` 相同）内按 `updatedAt` 取新，更小的迟到帧丢弃其 progress；`updatedAt` 相等时后到覆盖（确定性裁决）。这条守卫在 `reconcile` 内，与 `isStaleAgainst` 的运行身份守卫正交——后者挡整帧，`reconcile` 挡字段。
+   - **跨运行重置**：`startedAt` 变了就是新任务，不继承旧运行的文字（与 `settledAt` 的 sameRun 判据一致）。
+   - **边界校验**：`isTaskProgress` 校验形状；坏 progress 在 `api.ts` 的入口被剥离成「未提供」，只丢那一段披露，不拒收整条任务状态。必填字段坏仍由 `isTaskRecord` 整帧拒收。
+   - **服务端责任**：同 key 的 `updatedAt` 必须严格递增。挂钟只作排序键、不用于跨进程对齐；本地 `ctx.report` 用 `max(Date.now(), old+1)` 保证自身单调。服务端给倒挂值会触发 LWW 丢弃，核心不替服务端造序号。
+   - **读取**：`taskCenterStore.getByKey(project, key)` 按业务键取存活行，消费方不必自己遍历快照找 key。
 10. **同源单飞、届全序**：每个 `streamUrl` 一条真 SSE，Web Locks 选主 + BroadcastChannel 扇出。届是 Lamport `{tick,id}`，
     最大 tick 只由持锁 owner 落 localStorage（follower 不写，避免跨标签 read-modify-write 把高值覆盖回低值）；
     无存储退模块内存，且读取时取存储与内存的最大值。跨 realm（隐私模式 / 存储被清空，各标签内存兜底独立）
@@ -104,3 +110,4 @@
 - 2026-11-22（消费方第二轮残留封口）：不变量 10 的 fencing 扩到低届 reply / frame；不变量 14 的 streak 清零改挂真实 SSE 字节
 - 2026-11-22（边缘项封口）：不变量 14 补三项——online 监听器始终只绑一次且事件时读当前开关值（后置改值即时生效）、401 streak 在 `onGiveUp` 回调后累加（Node 直连同序，回调内重接不被冷却吞）、sessionStorage 写入失败时读路径并集内存 fallback（配额满仍按 id 去重）
 - 2026-11-22（真机 Lock 接口纠错）：不变量 10 补真实 Lock 形状（只有 name / mode，取消信号在 request 的 options.signal）与两条释放路径；测试夹具不得捏 signal 兜住接口误读
+- 2026-11-25（进度升为一等公民）：不变量 9 重写为完整 progress 契约——三条写入路径共用 `store.reconcile`、缺字段保留、LWW + updatedAt 乱序守卫、跨运行重置、坏值入口剥离、服务端单调责任、`getByKey` selector；终态保留作为缺省保留的推论明确入档

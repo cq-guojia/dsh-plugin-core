@@ -5449,8 +5449,8 @@ export const docData = {
             "type": "TaskStore",
             "def": "全局单例",
             "desc": {
-              "zh": "同标签页共享的任务状态；getSnapshot / subscribe / select / getHandler / clearAll（全清：任务、幂等键、终态声明与 handlers，清后需重新 mountTaskUI）",
-              "en": "Shared task state per tab; getSnapshot / subscribe / select / getHandler / clearAll (clears everything: tasks, idempotency keys, settlement claims and handlers — remount after)"
+              "zh": "同标签页共享的任务状态；getSnapshot / subscribe / select / getByKey(project,key) / getHandler / clearAll（全清：任务、幂等键、终态声明与 handlers，清后需重新 mountTaskUI）",
+              "en": "Shared task state per tab; getSnapshot / subscribe / select / getByKey(project,key) / getHandler / clearAll (clears everything: tasks, idempotency keys, settlement claims and handlers — remount after)"
             }
           }
         ]
@@ -5494,8 +5494,8 @@ export const docData = {
             "type": "TaskProgress | undefined",
             "def": "undefined",
             "desc": {
-              "zh": "最后一段话 + 更新时间 + 可选数值，显式字段，不进 detail",
-              "en": "Last message + update time + optional numbers, an explicit field never stored in detail"
+              "zh": "最后一段披露文字 + updatedAt + 可选数值，显式字段，不进 detail。缺字段=保留旧值（含终态帧）；同一次运行内按 updatedAt 取新，乱序旧帧丢弃；重跑（startedAt 变）不带旧文字；坏形状在入口剥离该字段、不毁整帧。服务端须保证同 key 的 updatedAt 严格递增",
+              "en": "Last disclosure message + updatedAt + optional numbers, an explicit field never stored in detail. Missing = keep previous (terminal frames included); within one run the newest updatedAt wins and late frames are dropped; a rerun (new startedAt) does not inherit the old message; malformed values are stripped at the boundary without rejecting the frame. The server must keep updatedAt strictly increasing per key"
             }
           },
           {

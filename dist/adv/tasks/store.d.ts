@@ -10,7 +10,7 @@
  * 「终态只分发一次」的去重状态放在这里，不放 coordinator 实例里：coordinator 重接、客户端重连
  * 推基线、同页多副本都会重新投影同一条终态，只有共享的 store 才能挡住重复 toast/notify/onSettled。
  */
-import type { TaskRecord, TaskRowButton, TaskSettlement, TaskState } from './model.js';
+import { type TaskRecord, type TaskRowButton, type TaskSettlement, type TaskState } from './model.js';
 export type TaskHandler = (task: TaskRecord) => void;
 export type TaskSettledListener = (settlement: TaskSettlement) => void;
 interface TaskStoreState {
@@ -42,6 +42,11 @@ export interface TaskStore {
      */
     getBaseline(): readonly TaskRecord[];
     get(id: string): TaskRecord | undefined;
+    /**
+     * 按业务幂等键读存活行（归一后的 id），供 progress / 状态披露按 (project,key) 定位，
+     * 不必自己遍历快照再按 key 找一遍。命中乐观行与命中真源行一视同仁。
+     */
+    getByKey(project: string, key: string): TaskRecord | undefined;
     /**
      * 删除一条仍在运行中的乐观行（提交失败回滚用）。
      * 只删「ident 对应且仍是 running」的记录：真源已改写（终态或别的运行行）时不删，
