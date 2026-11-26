@@ -1,8 +1,9 @@
 # 20261124-0244-3fda-修复刷新后终态-toast-丢失: 修复刷新后终态 toast 丢失
 
 - **Tags**: 终态通知, origin, sessionStorage, 刷新恢复
-- **Status**: doing · 2026-11-25 15:28:29 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Status**: done · 2026-11-26 00:45:36 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 - **Created**: 2026-11-24 02:44:13 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
+- **Sealed**: 2026-11-26 00:45:36 · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6
 
 <!-- Header lines are maintained by the script, fixed order: Tags → Status → Created → Sealed.
      The `- **Tags**: …` line is inserted at the top by new --tags; omitted when there are no tags
@@ -43,3 +44,4 @@
 - 2026-11-24 02:53:21 · log · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · 已发版：commit 97b381cc 已 push main，tag v0.46.4 已推送；留进行中待用户浏览器验收
 - 2026-11-25 14:30:01 · release · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · released to pool
 - 2026-11-25 15:28:29 · claim · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · claimed → doing
+- 2026-11-26 00:45:36 · close · @GuoJia-Agent · 8d557c6d-7c93-43ac-8c73-5d623e82e1c6 · sealed: 将 notify origin 改为 sessionStorage 标签页级身份，修复刷新后终态 toast 丢失问题，core/demo 同号发版至 v0.46.4
